@@ -2,7 +2,7 @@
   "name": "courselore",
   "version": "0.0.1",
   "scripts": {
-    "develop": "ts-node-dev src/index.ts",
+    "develop": "ts-node-dev --files src/index.ts",
     "test": "prettier --check 'src/**/*' 'static/**/*'",
     "build": "tsc && pkg --targets latest-macos,latest-linux,latest-win --out-path pkg .",
     "clean": "shx rm -rf lib pkg"
@@ -11,12 +11,14 @@
   "bin": "lib/index.js",
   "dependencies": {
     "express": "^4.17.1",
-    "sqlite": "^4.0.19",
-    "sqlite3": "^5.0.1"
+    "greenlock": "^4.0.4",
+    "greenlock-express": "^4.0.3",
+    "shelljs": "^0.8.4"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",
     "@types/node": "^14.14.21",
+    "@types/shelljs": "^0.8.8",
     "@types/sqlite3": "^3.1.6",
     "jest": "^26.6.3",
     "pkg": "github:leafac/pkg",
