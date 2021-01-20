@@ -62,13 +62,13 @@ if (require.main === module && app.get("courselore listen") !== false) {
     if (!fsSync.existsSync(TLS_KEYS_DIRECTORY))
       (async () => {
         shelljs.mkdir("-p", TLS_KEYS_DIRECTORY);
-        const greenlock = Greenlock.create(greenlockOptions);
-        await greenlock.manager.defaults({
+        const greenlockManager = Greenlock.create(greenlockOptions).manager;
+        await greenlockManager.defaults({
           agreeToTerms: true,
           subscriberEmail: app.get("courselore administrator email"),
         });
         const domains = app.get("courselore domains");
-        await greenlock.add({
+        await greenlockManager.add({
           subject: domains[0],
           altnames: domains,
         });
