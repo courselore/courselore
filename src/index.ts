@@ -13,11 +13,9 @@ import express from "express";
 import shelljs from "shelljs";
 import Greenlock from "greenlock";
 import GreenlockExpress from "greenlock-express";
+import taggedTemplateNoop from "tagged-template-noop";
 
-// FIXME:
-const noop = String.raw;
-
-const html = noop;
+const html = taggedTemplateNoop;
 
 export const templates = {
   html,
