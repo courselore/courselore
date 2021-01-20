@@ -12,7 +12,7 @@ if (fsSync.existsSync(CONFIGURATION_PATH))
 import express from "express";
 import shelljs from "shelljs";
 import Greenlock from "greenlock";
-import greenlockExpress from "greenlock-express";
+import GreenlockExpress from "greenlock-express";
 
 export const app = express();
 
@@ -37,7 +37,7 @@ const missingRequiredSettings = REQUIRED_SETTINGS.filter(
 );
 if (missingRequiredSettings.length > 0) {
   console.error(
-    `Missing the following required settings (did you set them on ‘${CONFIGURATION_PATH}’?): ${missingRequiredSettings
+    `Error: Missing the following required settings (did you set them on ‘${CONFIGURATION_PATH}’?): ${missingRequiredSettings
       .map((setting) => `‘${setting}’`)
       .join(", ")}`
   );
@@ -78,7 +78,7 @@ if (require.main === module && app.get("courselore listen") !== false) {
         process.exit();
       })();
     else {
-      greenlockExpress.init(greenlockOptions).serve(app);
+      GreenlockExpress.init(greenlockOptions).serve(app);
     }
   }
 }
