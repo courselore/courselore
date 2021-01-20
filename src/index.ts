@@ -14,10 +14,53 @@ import shelljs from "shelljs";
 import Greenlock from "greenlock";
 import GreenlockExpress from "greenlock-express";
 
+// FIXME:
+const noop = String.raw;
+
+const html = noop;
+
+export const templates = {
+  html,
+  layout: (
+    title: string | undefined,
+    body: string,
+    head?: string
+  ) => html`<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+          ${title !== undefined
+            ? `${title} · CourseLore`
+            : "CourseLore · The Open-Source Student Forum"}
+        </title>
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="stylesheet" href="/styles.css" />
+        ${head ?? ""}
+      </head>
+      <body>
+        ${body}
+      </body>
+    </html> `,
+};
+
 export const app = express();
 
 try {
-  require(CONFIGURATION_PATH)(app, require);
+  require(CONFIGURATION_PATH)(app, templates, require);
   console.log(`Loaded configuration from ${CONFIGURATION_PATH}`);
 } catch (error) {
   console.error(
@@ -44,7 +87,7 @@ if (missingRequiredSettings.length > 0) {
   process.exit(1);
 }
 
-app.use(express.static(path.join(__dirname, "..", "static")));
+app.use(express.static(path.join(__dirname, "../static")));
 
 if (require.main === module && app.get("courselore listen") !== false) {
   if (app.get("env") !== "production") {
@@ -53,7 +96,7 @@ if (require.main === module && app.get("courselore listen") !== false) {
       console.log(`Web server started at ${origin}`);
     });
   } else {
-    const TLS_KEYS_DIRECTORY = path.join(process.cwd(), "keys", "tls");
+    const TLS_KEYS_DIRECTORY = path.join(process.cwd(), "keys/tls");
     const greenlockOptions = {
       packageRoot: TLS_KEYS_DIRECTORY,
       packageAgent: `courselore/${VERSION}`,
