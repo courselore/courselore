@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "develop": "ts-node-dev --files src/index.ts",
-    "test": "prettier --check 'src/**/*' 'static/**/*'",
+    "test": "prettier --check 'src/**/*'",
     "build": "tsc && pkg --targets node14 --out-path pkg .",
     "clean": "shx rm -rf lib pkg",
     "deploy": "npm run clean && npm run build && ssh root@courselore.org 'mkdir -p courselore/' && rsync -av pkg/courselore root@courselore.org:courselore/"
