@@ -112,15 +112,13 @@ try {
   console.error(
     `Error: Failed to load configuration from ${CONFIGURATION_FILE}: ${error.message}`
   );
-  app.set("courselore origin", "http://localhost:4000");
+  app.set("courselore hostnames", ["localhost"]);
   app.set("courselore administrator email", "administrator@courselore.org");
 }
 const REQUIRED_SETTINGS = [
-  "courselore origin",
+  "courselore hostnames",
   "courselore administrator email",
 ];
-if (app.get("env") === "production" && app.get("courselore server") !== false)
-  REQUIRED_SETTINGS.push("courselore hostnames");
 const missingRequiredSettings = REQUIRED_SETTINGS.filter(
   (setting) => app.get(setting) === undefined
 );
@@ -133,6 +131,9 @@ if (missingRequiredSettings.length > 0) {
   process.exit(1);
 }
 layout = app.get("courselore layout");
+const BASE_URL = `http${app.get("env") !== "production" ? "" : "s"}://${
+  app.get("courselore hostnames")[0]
+}${app.get("env") !== "production" ? ":4000" : ""}`;
 
 app.use(express.static(path.join(__dirname, "../static")));
 if (CONFIGURATION_EXISTS)
@@ -140,9 +141,8 @@ if (CONFIGURATION_EXISTS)
 
 if (require.main === module && app.get("courselore server") !== false) {
   if (app.get("env") !== "production") {
-    const origin = app.get("courselore origin");
-    app.listen(Number(new URL(origin).port), () => {
-      console.log(`Web server started at ${origin}`);
+    app.listen(4000, () => {
+      console.log(`Web server started at ${BASE_URL}`);
     });
   } else {
     const TLS_KEYS_DIRECTORY = path.join(WORKING_DIRECTORY, "keys/tls");
