@@ -171,9 +171,10 @@ if (require.main === module && app.get("courselore listen") !== false) {
       })();
     else {
       app.use((req, res, next) => {
-        const canonicalDomain = domains[0];
-        if (req.hostname !== canonicalDomain)
-          res.redirect(`https://${canonicalDomain}${req.originalUrl}`);
+        const { hostname, originalUrl } = req;
+        const canonicalHostname = domains[0];
+        if (hostname !== canonicalHostname)
+          res.redirect(`https://${canonicalHostname}${originalUrl}`);
         else next();
       });
       GreenlockExpress.init(greenlockOptions).serve(app);
