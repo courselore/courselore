@@ -1,4 +1,4 @@
-declare module 'greenlock';
+declare module "greenlock";
 declare module "greenlock-express";
 
 /*
