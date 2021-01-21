@@ -1,0 +1,22 @@
+on: push
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: webfactory/ssh-agent@v0.4.1
+        if: github.ref == 'refs/heads/master'
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - run: npm install-ci-test
+      - run: |
+          cat >> ~/.ssh/known_hosts << "EOF"
+          courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDbbkic9/ALGdIVFvYTNB1OflKzcf06FZ3FtKOw3hPeMFmwAxvNtATwOHyqIKbqUI/Bs62FxrcNEnC8I1Icm3JxCBiNxV3/Mz83KDtCXQUikrYqse9piRenkNN/eGH/hhcppX8dzJoELZB1chXaR+gsruxrWVyCYTnzlx+yFx2PJ5Ab/NHcR7RDIYkwTL3HXLUreAeMfhQN+NDrO1mGIgJsMDb9HiGNDy/KQBT7GvUHrT7vS3W5/LniuLHNn0eK+QbdTb9MnA+itluFYEmCzqX9C98cD6Qo7DvPNIan0utr6ILFgnC6VrXypJsVmmtOT5qzX6mQzTXSxbikOVluaDN6AaMmUdOLHYmJ4wQI8+BhL19CsGTMGyXQEiOxYEfIlr5HcaEWLTkynBNQZ8YIAcJn37lNkgUwt+hqVOWL+PJmtiSQQ0EWO+4+hKynWStIY/u/XL+nDLgS3NnlF4IYNzpOhtpdrAXUrLlxFjuhyjBC0c7cbCHoeE4GdY4ltiNYlGM=
+          courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGuNGFumNlwwBS2bBqPQ5ULITPCBTyRRlFgDwPZdjhW42D6bRNK1+V9ZfGDinPIpCxBO+LSRZLp+w/J3duKr3H4=
+          courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICFANWFBMtbZHCN0klxccm9MwGkrmcC2l+Ol/bSFga2b
+          EOF
+          npm run deploy
+        if: github.ref == 'refs/heads/master'
