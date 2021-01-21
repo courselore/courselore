@@ -119,8 +119,8 @@ const REQUIRED_SETTINGS = [
   "courselore origin",
   "courselore administrator email",
 ];
-if (app.get("env") === "production" && app.get("courselore listen") !== false)
-  REQUIRED_SETTINGS.push("courselore domains");
+if (app.get("env") === "production" && app.get("courselore server") !== false)
+  REQUIRED_SETTINGS.push("courselore hostnames");
 const missingRequiredSettings = REQUIRED_SETTINGS.filter(
   (setting) => app.get(setting) === undefined
 );
@@ -138,7 +138,7 @@ app.use(express.static(path.join(__dirname, "../static")));
 if (CONFIGURATION_EXISTS)
   app.use(express.static(path.join(WORKING_DIRECTORY, "static")));
 
-if (require.main === module && app.get("courselore listen") !== false) {
+if (require.main === module && app.get("courselore server") !== false) {
   if (app.get("env") !== "production") {
     const origin = app.get("courselore origin");
     app.listen(Number(new URL(origin).port), () => {
@@ -151,7 +151,7 @@ if (require.main === module && app.get("courselore listen") !== false) {
       packageAgent: `courselore/${VERSION}`,
       maintainerEmail: app.get("courselore administrator email"),
     };
-    const domains = app.get("courselore domains");
+    const hostnames = app.get("courselore hostnames");
     if (!fsSync.existsSync(TLS_KEYS_DIRECTORY))
       (async () => {
         shelljs.mkdir("-p", TLS_KEYS_DIRECTORY);
@@ -161,8 +161,8 @@ if (require.main === module && app.get("courselore listen") !== false) {
           subscriberEmail: app.get("courselore administrator email"),
         });
         await greenlockManager.add({
-          subject: domains[0],
-          altnames: domains,
+          subject: hostnames[0],
+          altnames: hostnames,
         });
         console.log(
           "TLS keys configured. Restart CourseLore. Shutting down now..."
@@ -171,10 +171,10 @@ if (require.main === module && app.get("courselore listen") !== false) {
       })();
     else {
       app.use((req, res, next) => {
-        const { hostname, originalUrl } = req;
-        const canonicalHostname = domains[0];
+        const { protocol, hostname, originalUrl } = req;
+        const canonicalHostname = hostnames[0];
         if (hostname !== canonicalHostname)
-          res.redirect(`https://${canonicalHostname}${originalUrl}`);
+          res.redirect(`${protocol}://${canonicalHostname}${originalUrl}`);
         else next();
       });
       GreenlockExpress.init(greenlockOptions).serve(app);
