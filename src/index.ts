@@ -6,10 +6,10 @@ console.log(`CourseLore\nVersion: ${VERSION}`);
 
 import path from "path";
 import fsSync from "fs";
-const CWD = process.argv[2] ?? process.cwd();
-const CONFIGURATION_FILE = path.join(CWD, "courselore.js");
-if (fsSync.existsSync(CONFIGURATION_FILE))
-  process.env.NODE_ENV ??= "production";
+const WORKING_DIRECTORY = process.argv[2] ?? process.cwd();
+const CONFIGURATION_FILE = path.join(WORKING_DIRECTORY, "courselore.js");
+const CONFIGURATION_EXISTS = fsSync.existsSync(CONFIGURATION_FILE);
+if (CONFIGURATION_EXISTS) process.env.NODE_ENV ??= "production";
 import express from "express";
 import shelljs from "shelljs";
 import Greenlock from "greenlock";
@@ -135,6 +135,8 @@ if (missingRequiredSettings.length > 0) {
 layout = app.get("courselore layout");
 
 app.use(express.static(path.join(__dirname, "../static")));
+if (CONFIGURATION_EXISTS)
+  app.use(express.static(path.join(WORKING_DIRECTORY, "static")));
 
 if (require.main === module && app.get("courselore listen") !== false) {
   if (app.get("env") !== "production") {
@@ -143,12 +145,13 @@ if (require.main === module && app.get("courselore listen") !== false) {
       console.log(`Web server started at ${origin}`);
     });
   } else {
-    const TLS_KEYS_DIRECTORY = path.join(CWD, "keys/tls");
+    const TLS_KEYS_DIRECTORY = path.join(WORKING_DIRECTORY, "keys/tls");
     const greenlockOptions = {
       packageRoot: TLS_KEYS_DIRECTORY,
       packageAgent: `courselore/${VERSION}`,
       maintainerEmail: app.get("courselore administrator email"),
     };
+    const domains = app.get("courselore domains");
     if (!fsSync.existsSync(TLS_KEYS_DIRECTORY))
       (async () => {
         shelljs.mkdir("-p", TLS_KEYS_DIRECTORY);
@@ -157,7 +160,6 @@ if (require.main === module && app.get("courselore listen") !== false) {
           agreeToTerms: true,
           subscriberEmail: app.get("courselore administrator email"),
         });
-        const domains = app.get("courselore domains");
         await greenlockManager.add({
           subject: domains[0],
           altnames: domains,
@@ -168,6 +170,12 @@ if (require.main === module && app.get("courselore listen") !== false) {
         process.exit();
       })();
     else {
+      app.use((req, res, next) => {
+        const canonicalDomain = domains[0];
+        if (req.hostname !== canonicalDomain)
+          res.redirect(`https://${canonicalDomain}${req.originalUrl}`);
+        else next();
+      });
       GreenlockExpress.init(greenlockOptions).serve(app);
     }
   }
