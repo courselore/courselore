@@ -6,8 +6,7 @@
     "test": "prettier --check 'src/**/*' 'static/**/*'",
     "build": "tsc && pkg --targets node14 --out-path pkg .",
     "clean": "shx rm -rf lib pkg",
-    "deploy": "npm run clean && npm run build && rsync -av pkg/courselore root@courselore.org:courselore/",
-    "deploy:setup": "ssh root@courselore.org 'mkdir -p courselore/'"
+    "deploy": "npm run clean && npm run build && ssh root@courselore.org 'mkdir -p courselore/' && rsync -av pkg/courselore root@courselore.org:courselore/"
   },
   "main": "lib/index.js",
   "bin": "lib/index.js",
