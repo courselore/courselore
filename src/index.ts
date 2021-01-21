@@ -135,6 +135,14 @@ const BASE_URL = `http${app.get("env") !== "production" ? "" : "s"}://${
   app.get("courselore hostnames")[0]
 }${app.get("env") !== "production" ? ":4000" : ""}`;
 
+app.use((req, res, next) => {
+  const { protocol, hostname, originalUrl } = req;
+  const canonicalHostname = app.get("courselore hostnames")[0];
+  if (hostname !== canonicalHostname)
+    res.redirect(`${protocol}://${canonicalHostname}${originalUrl}`);
+  else next();
+});
+
 app.use(express.static(path.join(__dirname, "../static")));
 if (CONFIGURATION_EXISTS)
   app.use(express.static(path.join(WORKING_DIRECTORY, "static")));
@@ -151,7 +159,6 @@ if (require.main === module && app.get("courselore server") !== false) {
       packageAgent: `courselore/${VERSION}`,
       maintainerEmail: app.get("courselore administrator email"),
     };
-    const hostnames = app.get("courselore hostnames");
     if (!fsSync.existsSync(TLS_KEYS_DIRECTORY))
       (async () => {
         shelljs.mkdir("-p", TLS_KEYS_DIRECTORY);
@@ -160,6 +167,7 @@ if (require.main === module && app.get("courselore server") !== false) {
           agreeToTerms: true,
           subscriberEmail: app.get("courselore administrator email"),
         });
+        const hostnames = app.get("courselore hostnames");
         await greenlockManager.add({
           subject: hostnames[0],
           altnames: hostnames,
@@ -170,13 +178,6 @@ if (require.main === module && app.get("courselore server") !== false) {
         process.exit();
       })();
     else {
-      app.use((req, res, next) => {
-        const { protocol, hostname, originalUrl } = req;
-        const canonicalHostname = hostnames[0];
-        if (hostname !== canonicalHostname)
-          res.redirect(`${protocol}://${canonicalHostname}${originalUrl}`);
-        else next();
-      });
       GreenlockExpress.init(greenlockOptions).serve(app);
     }
   }
