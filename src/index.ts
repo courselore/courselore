@@ -143,9 +143,9 @@ app.use((req, res, next) => {
   else next();
 });
 
-app.use(express.static(path.join(__dirname, "../static")));
+app.use(express.static(path.join(__dirname, "../public")));
 if (CONFIGURATION_EXISTS)
-  app.use(express.static(path.join(WORKING_DIRECTORY, "static")));
+  app.use(express.static(path.join(WORKING_DIRECTORY, "public")));
 
 if (require.main === module && app.get("courselore server") !== false) {
   if (app.get("env") !== "production") {
