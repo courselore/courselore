@@ -51,7 +51,8 @@ export const app = express()
                 font-family: "Public Sans", sans-serif;
                 max-width: 600px;
                 padding: 0 1em;
-                margin: 2em auto;
+                margin: 1em auto;
+                -webkit-text-size-adjust: 100%;
               }
 
               a {
