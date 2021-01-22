@@ -4,10 +4,9 @@
   "scripts": {
     "develop": "ts-node-dev --files src/index.ts",
     "test": "prettier --check 'src/**/*'",
-    "build": "tsc",
-    "pkg": "pkg --targets node14 --out-path pkg .",
+    "build": "tsc && pkg --targets node14 --out-path pkg .",
     "clean": "shx rm -rf lib pkg",
-    "deploy": "npm run clean && npm run build && shx rm -rf node_modules && npm ci --production && npm run pkg && ssh root@courselore.org 'mkdir -p courselore/' && rsync -av pkg/courselore root@courselore.org:courselore/"
+    "deploy": "npm run build && ssh root@courselore.org 'mkdir -p courselore/' && rsync -av pkg/courselore root@courselore.org:courselore/"
   },
   "main": "lib/index.js",
   "bin": "lib/index.js",
