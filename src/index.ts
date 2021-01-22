@@ -116,12 +116,13 @@ if (require.main === module) {
     console.error(
       `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
     );
-    app
-      .set("url", "http://localhost:4000")
-      .set("administrator email", "administrator@courselore.org")
-      .listen(new URL(app.get("url")).port, () => {
-        console.log(`Web server started at ${app.get("url")}`);
-      });
+    if (app.get("env") === "development")
+      app
+        .set("url", "http://localhost:4000")
+        .set("administrator email", "administrator@courselore.org")
+        .listen(new URL(app.get("url")).port, () => {
+          console.log(`Development web server started at ${app.get("url")}`);
+        });
   }
   const REQUIRED_SETTINGS = ["url", "administrator email"];
   const missingRequiredSettings = REQUIRED_SETTINGS.filter(
