@@ -7,7 +7,7 @@ console.log(`CourseLore\nVersion: ${VERSION}`);
 import path from "path";
 import fsSync from "fs";
 const WORKING_DIRECTORY = process.argv[2] ?? process.cwd();
-const CONFIGURATION_FILE = path.join(WORKING_DIRECTORY, "courselore.js");
+const CONFIGURATION_FILE = path.join(WORKING_DIRECTORY, "configuration.js");
 const CONFIGURATION_EXISTS = fsSync.existsSync(CONFIGURATION_FILE);
 if (CONFIGURATION_EXISTS) process.env.NODE_ENV ??= "production";
 import express from "express";
