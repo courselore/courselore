@@ -12,8 +12,8 @@ const CONFIGURATION_EXISTS = fsSync.existsSync(CONFIGURATION_FILE);
 if (CONFIGURATION_EXISTS) process.env.NODE_ENV ??= "production";
 import express from "express";
 import shelljs from "shelljs";
-import Greenlock from "greenlock";
-import GreenlockExpress from "greenlock-express";
+const Greenlock = require("greenlock");
+const GreenlockExpress = require("greenlock-express");
 type HTML = string;
 import html from "tagged-template-noop";
 
