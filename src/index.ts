@@ -11,6 +11,9 @@ import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
+import xss from "xss";
+import sanitizeHtml from 'sanitize-html';
+import * as DOMPurify from 'dompurify';
 import * as shiki from "shiki";
 import { JSDOM } from "jsdom";
 import html from "tagged-template-noop";
@@ -160,13 +163,20 @@ const messages = [
   `
 # Hello
 
-<div>
+- [ ] TODO
+- [x] DONE
+
+| Hello | World |
+|-------|-------|
+| Test  | Table |
+
+<details>
 
 I am **math**: $\\alpha$
 
-</div>
+</details>
 
-<script>document.write("I don’t show up")</script>
+<script>document.write("I SHOULDN’T SHOW UP")</script>
 
 \`\`\`js
 function render(text: string): string {
@@ -215,7 +225,7 @@ function render(text: string): string {
       codeBlock.innerHTML,
       codeBlock.className.slice("language-".length)
     );
-  return dom.querySelector("wrapper")!.innerHTML;
+  return DOMPurify.sanitize(dom.querySelector("wrapper")!.innerHTML);
 }
 
 export default app;
