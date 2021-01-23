@@ -2,6 +2,17 @@
 
 import path from "path";
 import express from "express";
+import unified from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkRehype from "remark-rehype";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeStringify from "rehype-stringify";
+import * as shiki from "shiki";
+import { JSDOM } from "jsdom";
 import html from "tagged-template-noop";
 
 type HTML = string;
@@ -23,28 +34,51 @@ const app = express()
               rel="icon"
               type="image/png"
               sizes="32x32"
-              href="/favicon-32x32.png"
+              href="${app.get("url")}/favicon-32x32.png"
             />
             <link
               rel="icon"
               type="image/png"
               sizes="16x16"
-              href="/favicon-16x16.png"
+              href="${app.get("url")}/favicon-16x16.png"
             />
-            <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+            <link
+              rel="shortcut icon"
+              type="image/x-icon"
+              href="${app.get("url")}/favicon.ico"
+            />
             <style>
               /* https://pico-8.fandom.com/wiki/Palette */
 
               /* TODO: Remove unnecessary weights. */
-              @import "node_modules/@fontsource/public-sans/100.css";
-              @import "node_modules/@fontsource/public-sans/200.css";
-              @import "node_modules/@fontsource/public-sans/300.css";
-              @import "node_modules/@fontsource/public-sans/400.css";
-              @import "node_modules/@fontsource/public-sans/500.css";
-              @import "node_modules/@fontsource/public-sans/600.css";
-              @import "node_modules/@fontsource/public-sans/700.css";
-              @import "node_modules/@fontsource/public-sans/800.css";
-              @import "node_modules/@fontsource/public-sans/900.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/100.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/200.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/300.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/400.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/500.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/600.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/700.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/800.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/900.css";
+              @import "${app.get("url")}/node_modules/katex/dist/katex.min.css";
 
               body {
                 line-height: 1.5;
@@ -97,7 +131,92 @@ const app = express()
         </html>
       `.trimLeft()
   )
-  .use(express.static(path.join(__dirname, "../public")));
+  .use(express.static(path.join(__dirname, "../public")))
+  .use(express.urlencoded({ extended: true }))
+  .get("/forum", (req, res) => {
+    res.send(
+      app.get("layout")(
+        html`<title>Forum · CourseLore</title>`,
+        html`
+          <ul>
+            ${messages
+              .map((message) => html`<li>${render(message)}</li>`)
+              .join("")}
+          </ul>
+          <form method="post" action="/forum">
+            <p><textarea name="text"></textarea><button>Send</button></p>
+          </form>
+        `
+      )
+    );
+  })
+  .post("/forum", (req, res) => {
+    messages.push(req.body.text);
+    res.redirect("back");
+  });
+
+// const messages = new Array<string>();
+const messages = [
+  `
+# Hello
+
+<div>
+
+I am **math**: $\\alpha$
+
+</div>
+
+<script>document.write("I don’t show up")</script>
+
+\`\`\`js
+function render(text: string): string {
+  return (
+    unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkMath)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(rehypeKatex)
+      // .use(rehypeSanitize)
+      .use(rehypeStringify)
+      .processSync(text)
+      .toString()
+  );
+}
+\`\`\`
+`,
+];
+
+(async () => {
+  app.set(
+    "syntax highlighter",
+    await shiki.getHighlighter({ theme: "light-plus" })
+  );
+})();
+function render(text: string): string {
+  const renderedMarkdown = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(rehypeKatex)
+    // .use(rehypeSanitize)
+    .use(rehypeStringify)
+    .processSync(text)
+    .toString();
+  const dom = JSDOM.fragment(`<wrapper>${renderedMarkdown}</wrapper>`);
+  const syntaxHighlighter = app.get("syntax highlighter");
+  for (const codeBlock of dom.querySelectorAll(
+    `pre > code[class^="language-"]`
+  ))
+    codeBlock.parentElement!.outerHTML = syntaxHighlighter.codeToHtml(
+      codeBlock.innerHTML,
+      codeBlock.className.slice("language-".length)
+    );
+  return dom.querySelector("wrapper")!.innerHTML;
+}
 
 export default app;
 
