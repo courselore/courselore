@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@fontsource/public-sans": "^4.1.0"
+    "@fontsource/public-sans": "^4.1.0",
+    "katex": "^0.12.0"
   }
 }
