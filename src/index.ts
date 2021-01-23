@@ -122,7 +122,7 @@ if (require.main === module) {
         .set("url", "http://localhost:4000")
         .set("administrator email", "administrator@courselore.org")
         .listen(new URL(app.get("url")).port, () => {
-          console.log(`Development web server started at ${app.get("url")}`);
+          console.log(`Trial/Development web server started at ${app.get("url")}`);
         });
   }
   const REQUIRED_SETTINGS = ["url", "administrator email"];
