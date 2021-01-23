@@ -6,7 +6,7 @@ import html from "tagged-template-noop";
 
 type HTML = string;
 
-export const app = express()
+const app = express()
   .set(
     "layout",
     (head: HTML, body: HTML): HTML =>
@@ -99,6 +99,8 @@ export const app = express()
   )
   .use(express.static(path.join(__dirname, "../public")));
 
+export default app;
+
 if (require.main === module) {
   app
     .set("version", require("../package.json").version)
@@ -122,7 +124,9 @@ if (require.main === module) {
         .set("url", "http://localhost:4000")
         .set("administrator email", "administrator@courselore.org")
         .listen(new URL(app.get("url")).port, () => {
-          console.log(`Trial/Development web server started at ${app.get("url")}`);
+          console.log(
+            `Trial/Development web server started at ${app.get("url")}`
+          );
         });
   }
   const REQUIRED_SETTINGS = ["url", "administrator email"];
