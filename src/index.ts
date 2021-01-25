@@ -169,6 +169,8 @@ const messages = [
 
 Some _emphasis_, **importance**, and \`code\`.
 
+---
+
 # GFM
 
 ## Autolink literals
@@ -198,11 +200,15 @@ $$
 L = \\frac{1}{2} \\rho v^2 S C_L
 $$
 
-<div class="note">
+---
+
+<details class="note">
 
 A mix of *Markdown* and <em>HTML</em>.
 
-</div>
+</details>
+
+---
 
 <script>document.write("I SHOULDN’T SHOW UP!!!!")</script>
 
