@@ -11,8 +11,10 @@ import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
 const rehypeShiki = require("rehype-shiki");
 import rehypeSanitize from "rehype-sanitize";
+const rehypeSanitizeGitHubSchema = require("hast-util-sanitize/lib/github");
 import rehypeStringify from "rehype-stringify";
 import html from "tagged-template-noop";
+import deepMerge from "deepmerge";
 
 type HTML = string;
 
@@ -232,7 +234,16 @@ async function render(text: string): Promise<string> {
       .use(remarkMath)
       .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeRaw)
-      .use(rehypeSanitize)
+      .use(
+        rehypeSanitize,
+        deepMerge(rehypeSanitizeGitHubSchema, {
+          attributes: {
+            code: ["className"],
+            span: [["className", "math-inline"]] as any,
+            div: [["className", "math-display"]] as any,
+          },
+        })
+      )
       .use(rehypeKatex)
       .use(rehypeShiki, { theme: "light_plus" })
       .use(rehypeStringify)

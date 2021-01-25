@@ -11,6 +11,7 @@
   "main": "lib/index.js",
   "bin": "lib/index.js",
   "dependencies": {
+    "deepmerge": "^4.2.2",
     "express": "^4.17.1",
     "greenlock": "^4.0.4",
     "greenlock-express": "^4.0.3",
