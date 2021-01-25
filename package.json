@@ -11,11 +11,9 @@
   "main": "lib/index.js",
   "bin": "lib/index.js",
   "dependencies": {
-    "dompurify": "^2.2.6",
     "express": "^4.17.1",
     "greenlock": "^4.0.4",
     "greenlock-express": "^4.0.3",
-    "jsdom": "^16.4.0",
     "rehype-katex": "^4.0.0",
     "rehype-raw": "^5.0.0",
     "rehype-sanitize": "^4.0.0",
@@ -24,20 +22,14 @@
     "remark-math": "^4.0.0",
     "remark-parse": "^9.0.0",
     "remark-rehype": "^8.0.0",
-    "sanitize-html": "^2.3.1",
     "shelljs": "^0.8.4",
     "shiki": "^0.2.7",
     "tagged-template-noop": "^2.1.1",
-    "unified": "^9.2.0",
-    "xss": "^1.0.8"
+    "unified": "^9.2.0"
   },
   "devDependencies": {
-    "@types/dompurify": "^2.2.1",
     "@types/express": "^4.17.11",
-    "@types/jsdom": "^16.2.6",
     "@types/node": "^14.14.21",
-    "@types/sanitize-html": "^1.27.1",
-    "@types/shelljs": "^0.8.8",
     "jest": "^26.6.3",
     "pkg": "github:leafac/pkg",
     "prettier": "^2.2.1",

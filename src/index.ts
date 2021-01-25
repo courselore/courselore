@@ -136,7 +136,7 @@ const app = express()
   )
   .use(express.static(path.join(__dirname, "../public")))
   .use(express.urlencoded({ extended: true }))
-  .get("/forum", (req, res) => {
+  .get("/", (req, res) => {
     res.send(
       app.get("layout")(
         html`<title>Forum · CourseLore</title>`,
@@ -146,14 +146,14 @@ const app = express()
               .map((message) => html`<li>${render(message)}</li>`)
               .join("")}
           </ul>
-          <form method="post" action="/forum">
+          <form method="post" action="/">
             <p><textarea name="text"></textarea><button>Send</button></p>
           </form>
         `
       )
     );
   })
-  .post("/forum", (req, res) => {
+  .post("/", (req, res) => {
     messages.push(req.body.text);
     res.redirect("back");
   });
