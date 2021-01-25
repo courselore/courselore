@@ -9,9 +9,9 @@ import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
+const rehypeShiki = require("rehype-shiki");
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
-import * as shiki from "shiki";
 import html from "tagged-template-noop";
 
 type HTML = string;
@@ -132,15 +132,19 @@ const app = express()
   )
   .use(express.static(path.join(__dirname, "../public")))
   .use(express.urlencoded({ extended: true }))
-  .get("/", (req, res) => {
+  .get("/", async (req, res) => {
     res.send(
       app.get("layout")(
         html`<title>Forum · CourseLore</title>`,
         html`
           <ul>
-            ${messages
-              .map((message) => html`<li>${render(message)}</li>`)
-              .join("")}
+            ${(
+              await Promise.all(
+                messages.map(
+                  async (message) => html`<li>${await render(message)}</li>`
+                )
+              )
+            ).join("")}
           </ul>
           <form method="post" action="/">
             <p><textarea name="text"></textarea><button>Send</button></p>
@@ -228,18 +232,22 @@ function render(text: string): string {
 // (async () => {
 //   syntaxHighlighter = await shiki.getHighlighter({ theme: "light-plus" });
 // })();
-function render(text: string): string {
-  return unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkMath)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeRaw)
-    .use(rehypeKatex)
-    // .use(rehypeSanitize)
-    .use(rehypeStringify)
-    .processSync(text)
-    .toString();
+async function render(text: string): Promise<string> {
+  return (
+    (
+      await unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkMath)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeRaw)
+        .use(rehypeKatex)
+        .use(rehypeShiki, { theme: "light_plus" })
+        // .use(rehypeSanitize)
+        .use(rehypeStringify)
+        .process(text)
+    ).toString()
+  );
   // FIXME: https://github.com/shikijs/shiki/pull/114
   // syntaxHighlighter.codeToHtml!(
   //   codeBlock.innerHTML,
