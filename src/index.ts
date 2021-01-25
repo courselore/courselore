@@ -204,7 +204,7 @@ A mix of *Markdown* and <em>HTML</em>.
 
 <script>document.write("I SHOULDN’T SHOW UP!!!!")</script>
 
-\`\`\`javascript
+\`\`\`js
 function render(text: string): string {
   return (
     unified()
@@ -224,34 +224,20 @@ function render(text: string): string {
 `,
 ];
 
-// let syntaxHighlighter: ReturnType<typeof shiki.getHighlighter> extends Promise<
-//   infer T
-// >
-//   ? T
-//   : never;
-// (async () => {
-//   syntaxHighlighter = await shiki.getHighlighter({ theme: "light-plus" });
-// })();
 async function render(text: string): Promise<string> {
   return (
-    (
-      await unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkMath)
-        .use(remarkRehype, { allowDangerousHtml: true })
-        .use(rehypeRaw)
-        .use(rehypeKatex)
-        .use(rehypeShiki, { theme: "light_plus" })
-        // .use(rehypeSanitize)
-        .use(rehypeStringify)
-        .process(text)
-    ).toString()
-  );
-  // FIXME: https://github.com/shikijs/shiki/pull/114
-  // syntaxHighlighter.codeToHtml!(
-  //   codeBlock.innerHTML,
-  //   codeBlock.className.slice("language-".length)
+    await unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkMath)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(rehypeSanitize)
+      .use(rehypeKatex)
+      .use(rehypeShiki, { theme: "light_plus" })
+      .use(rehypeStringify)
+      .process(text)
+  ).toString();
 }
 
 export default app;
