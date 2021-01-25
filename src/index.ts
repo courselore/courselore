@@ -11,11 +11,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
-import xss from "xss";
-import sanitizeHtml from 'sanitize-html';
-import * as DOMPurify from 'dompurify';
 import * as shiki from "shiki";
-import { JSDOM } from "jsdom";
 import html from "tagged-template-noop";
 
 type HTML = string;
@@ -161,24 +157,50 @@ const app = express()
 // const messages = new Array<string>();
 const messages = [
   `
-# Hello
+# Hello world
 
-- [ ] TODO
-- [x] DONE
+> Block quote.
 
-| Hello | World |
-|-------|-------|
-| Test  | Table |
+Some _emphasis_, **importance**, and \`code\`.
 
-<details>
+# GFM
 
-I am **math**: $\\alpha$
+## Autolink literals
 
-</details>
+www.example.com, https://example.com, and contact@example.com.
 
-<script>document.write("I SHOULDN’T SHOW UP")</script>
+## Strikethrough
 
-\`\`\`js
+~one~ or ~~two~~ tildes.
+
+## Table
+
+| a | b  |  c |  d  |
+| - | :- | -: | :-: |
+
+## Tasklist
+
+* [ ] to do
+* [x] done
+
+---
+
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+equation.
+
+$$
+L = \\frac{1}{2} \\rho v^2 S C_L
+$$
+
+<div class="note">
+
+A mix of *Markdown* and <em>HTML</em>.
+
+</div>
+
+<script>document.write("I SHOULDN’T SHOW UP!!!!")</script>
+
+\`\`\`javascript
 function render(text: string): string {
   return (
     unified()
@@ -198,14 +220,16 @@ function render(text: string): string {
 `,
 ];
 
-(async () => {
-  app.set(
-    "syntax highlighter",
-    await shiki.getHighlighter({ theme: "light-plus" })
-  );
-})();
+// let syntaxHighlighter: ReturnType<typeof shiki.getHighlighter> extends Promise<
+//   infer T
+// >
+//   ? T
+//   : never;
+// (async () => {
+//   syntaxHighlighter = await shiki.getHighlighter({ theme: "light-plus" });
+// })();
 function render(text: string): string {
-  const renderedMarkdown = unified()
+  return unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
@@ -216,16 +240,10 @@ function render(text: string): string {
     .use(rehypeStringify)
     .processSync(text)
     .toString();
-  const dom = JSDOM.fragment(`<wrapper>${renderedMarkdown}</wrapper>`);
-  const syntaxHighlighter = app.get("syntax highlighter");
-  for (const codeBlock of dom.querySelectorAll(
-    `pre > code[class^="language-"]`
-  ))
-    codeBlock.parentElement!.outerHTML = syntaxHighlighter.codeToHtml(
-      codeBlock.innerHTML,
-      codeBlock.className.slice("language-".length)
-    );
-  return DOMPurify.sanitize(dom.querySelector("wrapper")!.innerHTML);
+  // FIXME: https://github.com/shikijs/shiki/pull/114
+  // syntaxHighlighter.codeToHtml!(
+  //   codeBlock.innerHTML,
+  //   codeBlock.className.slice("language-".length)
 }
 
 export default app;
