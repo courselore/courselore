@@ -134,19 +134,15 @@ const app = express()
   )
   .use(express.static(path.join(__dirname, "../public")))
   .use(express.urlencoded({ extended: true }))
-  .get("/", async (req, res) => {
+  .get("/", (req, res) => {
     res.send(
       app.get("layout")(
         html`<title>Forum · CourseLore</title>`,
         html`
           <ul>
-            ${(
-              await Promise.all(
-                messages.map(
-                  async (message) => html`<li>${await render(message)}</li>`
-                )
-              )
-            ).join("")}
+            ${messages
+              .map((message) => html`<li>${app.get("renderer")(message)}</li>`)
+              .join("")}
           </ul>
           <form method="post" action="/">
             <p><textarea name="text"></textarea><button>Send</button></p>
@@ -232,30 +228,28 @@ function render(text: string): string {
 `,
 ];
 
-async function render(text: string): Promise<string> {
-  return (
-    await unified()
-      .use(remarkParse)
-      .use(remarkGfm)
-      .use(remarkMath)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(
-        rehypeSanitize,
-        deepMerge(rehypeSanitizeGitHubSchema, {
-          attributes: {
-            code: ["className"],
-            span: [["className", "math-inline"]] as any,
-            div: [["className", "math-display"]] as any,
-          },
-        })
-      )
-      .use(rehypeKatex)
-      .use(rehypeShiki, { theme: "light_plus" })
-      .use(rehypeStringify)
-      .process(text)
-  ).toString();
-}
+const remarkConfiguration = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkMath)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeRaw)
+  .use(
+    rehypeSanitize,
+    deepMerge(rehypeSanitizeGitHubSchema, {
+      attributes: {
+        code: ["className"],
+        span: [["className", "math-inline"]] as any,
+        div: [["className", "math-display"]] as any,
+      },
+    })
+  )
+  .use(rehypeKatex)
+  // .use(rehypeShiki, { theme: "light_plus" })
+  .use(rehypeStringify);
+app.set("renderer", (text: string): string =>
+  remarkConfiguration.processSync(text).toString()
+);
 
 export default app;
 
