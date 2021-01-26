@@ -2,7 +2,7 @@
   "name": "courselore",
   "version": "0.0.1",
   "scripts": {
-    "develop": "ts-node-dev --files --poll src/index.ts",
+    "develop": "ts-node-dev --poll src/index.ts",
     "test": "prettier --check 'src/**/*'",
     "build": "tsc && pkg --targets node14 --out-path pkg .",
     "clean": "shx rm -rf lib pkg",
