@@ -9,7 +9,8 @@ import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
-const rehypeShiki = require("rehype-shiki");
+import rehypeShiki from "shiki-rehype";
+import * as shiki from "shiki";
 import rehypeSanitize from "rehype-sanitize";
 const rehypeSanitizeGitHubSchema = require("hast-util-sanitize/lib/github");
 import rehypeStringify from "rehype-stringify";
@@ -208,7 +209,7 @@ A mix of *Markdown* and <em>HTML</em>.
 
 <script>document.write("I SHOULDN’T SHOW UP!!!!")</script>
 
-\`\`\`js
+\`\`\`typescript
 function render(text: string): string {
   return (
     unified()
@@ -228,27 +229,32 @@ function render(text: string): string {
 `,
 ];
 
-const remarkConfiguration = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkMath)
-  .use(remarkRehype, { allowDangerousHtml: true })
-  .use(rehypeRaw)
-  .use(
-    rehypeSanitize,
-    deepMerge(rehypeSanitizeGitHubSchema, {
-      attributes: {
-        code: ["className"],
-        span: [["className", "math-inline"]] as any,
-        div: [["className", "math-display"]] as any,
-      },
+let remarkProcessor: unified.Processor;
+(async () => {
+  remarkProcessor = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(
+      rehypeSanitize,
+      deepMerge(rehypeSanitizeGitHubSchema, {
+        attributes: {
+          code: ["className"],
+          span: [["className", "math-inline"]] as any,
+          div: [["className", "math-display"]] as any,
+        },
+      })
+    )
+    .use(rehypeKatex)
+    .use(rehypeShiki, {
+      highlighter: await shiki.getHighlighter({ theme: "light-plus" }),
     })
-  )
-  .use(rehypeKatex)
-  // .use(rehypeShiki, { theme: "light_plus" })
-  .use(rehypeStringify);
+    .use(rehypeStringify);
+})();
 app.set("renderer", (text: string): string =>
-  remarkConfiguration.processSync(text).toString()
+  remarkProcessor.processSync(text).toString()
 );
 
 export default app;
