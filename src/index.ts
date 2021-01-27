@@ -273,44 +273,45 @@ function render(text: string): string {
 
 export default app;
 
-if (require.main === module) {
-  app.set("version", require("../package.json").version);
-  app.set("require", require);
+if (require.main === module)
+  (async () => {
+    app.set("version", require("../package.json").version);
+    app.set("require", require);
 
-  console.log(`CourseLore\nVersion: ${app.get("version")}`);
+    console.log(`CourseLore\nVersion: ${app.get("version")}`);
 
-  const CONFIGURATION_FILE = path.join(
-    process.argv[2] ?? process.cwd(),
-    "configuration.js"
-  );
-  try {
-    require(CONFIGURATION_FILE)(app);
-    console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
-  } catch (error) {
-    console.error(
-      `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
+    const CONFIGURATION_FILE = path.join(
+      process.argv[2] ?? process.cwd(),
+      "configuration.js"
     );
-    if (app.get("env") === "development") {
-      app.set("url", "http://localhost:4000");
-      app.set("administrator email", "administrator@courselore.org");
-      app.listen(new URL(app.get("url")).port, () => {
-        console.log(
-          `Demonstration/Development web server started at ${app.get("url")}`
-        );
-      });
+    try {
+      await require(CONFIGURATION_FILE)(app);
+      console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
+    } catch (error) {
+      console.error(
+        `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
+      );
+      if (app.get("env") === "development") {
+        app.set("url", "http://localhost:4000");
+        app.set("administrator email", "administrator@courselore.org");
+        app.listen(new URL(app.get("url")).port, () => {
+          console.log(
+            `Demonstration/Development web server started at ${app.get("url")}`
+          );
+        });
+      }
     }
-  }
 
-  const REQUIRED_SETTINGS = ["url", "administrator email"];
-  const missingRequiredSettings = REQUIRED_SETTINGS.filter(
-    (setting) => app.get(setting) === undefined
-  );
-  if (missingRequiredSettings.length > 0) {
-    console.error(
-      `Error: Missing the following required settings (did you set them on ‘${CONFIGURATION_FILE}’?): ${missingRequiredSettings
-        .map((setting) => `‘${setting}’`)
-        .join(", ")}`
+    const REQUIRED_SETTINGS = ["url", "administrator email"];
+    const missingRequiredSettings = REQUIRED_SETTINGS.filter(
+      (setting) => app.get(setting) === undefined
     );
-    process.exit(1);
-  }
-}
+    if (missingRequiredSettings.length > 0) {
+      console.error(
+        `Error: Missing the following required settings (did you set them on ‘${CONFIGURATION_FILE}’?): ${missingRequiredSettings
+          .map((setting) => `‘${setting}’`)
+          .join(", ")}`
+      );
+      process.exit(1);
+    }
+  })();
