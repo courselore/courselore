@@ -46,7 +46,10 @@
   },
   "pkg": {
     "assets": [
-      "public/**/*"
+      "public/**/*",
+      "node_modules/shiki-themes/data/**/*",
+      "node_modules/onigasm/lib/onigasm.wasm",
+      "node_modules/shiki-languages/data/**/*"
     ]
   }
 }
