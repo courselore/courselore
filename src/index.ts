@@ -20,128 +20,127 @@ import rehypeStringify from "rehype-stringify";
 
 type HTML = string;
 
-const app = express();
+async function appGenerator(): Promise<express.Express> {
+  const app = express();
 
-app.set(
-  "layout",
-  (head: HTML, body: HTML): HTML =>
-    html`
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="${app.get("url")}/favicon-32x32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="${app.get("url")}/favicon-16x16.png"
-          />
-          <link
-            rel="shortcut icon"
-            type="image/x-icon"
-            href="${app.get("url")}/favicon.ico"
-          />
-          <style>
-            /* https://pico-8.fandom.com/wiki/Palette */
+  app.set(
+    "layout",
+    (head: HTML, body: HTML): HTML =>
+      html`
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
+            <link
+              rel="icon"
+              type="image/png"
+              sizes="32x32"
+              href="${app.get("url")}/favicon-32x32.png"
+            />
+            <link
+              rel="icon"
+              type="image/png"
+              sizes="16x16"
+              href="${app.get("url")}/favicon-16x16.png"
+            />
+            <link
+              rel="shortcut icon"
+              type="image/x-icon"
+              href="${app.get("url")}/favicon.ico"
+            />
+            <style>
+              /* https://pico-8.fandom.com/wiki/Palette */
 
-            /* TODO: Remove unnecessary weights. */
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/100.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/200.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/300.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/400.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/500.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/600.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/700.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/800.css";
-            @import "${app.get(
-              "url"
-            )}/node_modules/@fontsource/public-sans/900.css";
-            @import "${app.get("url")}/node_modules/katex/dist/katex.min.css";
+              /* TODO: Remove unnecessary weights. */
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/100.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/200.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/300.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/400.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/500.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/600.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/700.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/800.css";
+              @import "${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/900.css";
+              @import "${app.get("url")}/node_modules/katex/dist/katex.min.css";
 
-            body {
-              line-height: 1.5;
-              font-family: "Public Sans", sans-serif;
-              max-width: 600px;
-              padding: 0 1em;
-              margin: 1em auto;
-              -webkit-text-size-adjust: 100%;
-            }
+              body {
+                line-height: 1.5;
+                font-family: "Public Sans", sans-serif;
+                max-width: 600px;
+                padding: 0 1em;
+                margin: 1em auto;
+                -webkit-text-size-adjust: 100%;
+              }
 
-            a {
-              color: inherit;
-            }
+              a {
+                color: inherit;
+              }
 
-            a.undecorated {
-              text-decoration: none;
-            }
+              a.undecorated {
+                text-decoration: none;
+              }
 
-            h1 {
-              line-height: 1.2;
-              font-size: 1.5em;
-              font-weight: 800;
-              margin-top: 1.5em;
-            }
+              h1 {
+                line-height: 1.2;
+                font-size: 1.5em;
+                font-weight: 800;
+                margin-top: 1.5em;
+              }
 
-            img,
-            svg {
-              max-width: 100%;
-              height: auto;
-            }
+              img,
+              svg {
+                max-width: 100%;
+                height: auto;
+              }
 
-            figure {
-              text-align: center;
-              font-size: 1.1em;
-            }
+              figure {
+                text-align: center;
+                font-size: 1.1em;
+              }
 
-            header {
-              text-align: center;
-            }
+              header {
+                text-align: center;
+              }
 
-            nav a {
-              text-decoration: none;
-            }
-          </style>
-          ${head}
-        </head>
-        <body>
-          ${body}
-        </body>
-      </html>
-    `.trimLeft()
-);
-app.set(
-  "text processor",
-  (text: string): HTML => textProcessor.processSync(text).toString()
-);
-let textProcessor: unified.Processor;
-(async () => {
-  textProcessor = unified()
+              nav a {
+                text-decoration: none;
+              }
+            </style>
+            ${head}
+          </head>
+          <body>
+            ${body}
+          </body>
+        </html>
+      `.trimLeft()
+  );
+  app.set(
+    "text processor",
+    (text: string): HTML => textProcessor.processSync(text).toString()
+  );
+  const textProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
@@ -163,118 +162,45 @@ let textProcessor: unified.Processor;
     })
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
-})();
 
-app.use(express.static(path.join(__dirname, "../public")));
-app.use(express.urlencoded({ extended: true }));
+  app.use(express.static(path.join(__dirname, "../public")));
+  app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
-  res.send(
-    app.get("layout")(
-      html`<title>Forum · CourseLore</title>`,
-      html`
-        <ul>
-          ${messages
-            .map(
-              (message) => html`<li>${app.get("text processor")(message)}</li>`
-            )
-            .join("")}
-        </ul>
-        <form method="post" action="/">
-          <p><textarea name="text"></textarea><button>Send</button></p>
-        </form>
-      `
-    )
-  );
-});
-app.post("/", (req, res) => {
-  messages.push(req.body.text);
-  res.redirect("back");
-});
-// const messages = new Array<string>();
-const messages = [
-  `
-# Hello world
+  app.get("/", (req, res) => {
+    res.send(
+      app.get("layout")(
+        html`<title>Forum · CourseLore</title>`,
+        html`
+          <ul>
+            ${messages
+              .map(
+                (message) =>
+                  html`<li>${app.get("text processor")(message)}</li>`
+              )
+              .join("")}
+          </ul>
+          <form method="post" action="/">
+            <p><textarea name="text"></textarea><button>Send</button></p>
+          </form>
+        `
+      )
+    );
+  });
+  app.post("/", (req, res) => {
+    messages.push(req.body.text);
+    res.redirect("back");
+  });
+  const messages = new Array<string>();
 
-> Block quote.
-
-Some _emphasis_, **importance**, and \`code\`.
-
----
-
-# GFM
-
-## Autolink literals
-
-www.example.com, https://example.com, and contact@example.com.
-
-## Strikethrough
-
-~one~ or ~~two~~ tildes.
-
-## Table
-
-| a | b  |  c |  d  |
-| - | :- | -: | :-: |
-
-## Tasklist
-
-* [ ] to do
-* [x] done
-
----
-
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
-equation.
-
-$$
-\\invalidMacro
-$$
-
-$$
-\\rule{500em}{500em}
-$$
-
-$$
-L = \\frac{1}{2} \\rho v^2 S C_L
-$$
-
----
-
-<details class="note">
-
-A mix of *Markdown* and <em>HTML</em>.
-
-</details>
-
----
-
-<script>document.write("I SHOULDN’T SHOW UP!!!!")</script>
-
-\`\`\`typescript
-function render(text: string): string {
-  return (
-    unified()
-      .use(remarkParse)
-      .use(remarkGfm)
-      .use(remarkMath)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(rehypeKatex)
-      // .use(rehypeSanitize)
-      .use(rehypeStringify)
-      .processSync(text)
-      .toString()
-  );
+  return app;
 }
-\`\`\`
-`,
-];
 
-export default app;
+export default appGenerator;
 
 if (require.main === module)
   (async () => {
+    const app = await appGenerator();
+
     app.set("version", require("../package.json").version);
     app.set("require", require);
 
