@@ -148,14 +148,14 @@ async function appGenerator(): Promise<express.Express> {
     .use(rehypeRaw)
     .use(
       rehypeSanitize,
-      (deepMerge(hastUtilSanitizeGitHubSchema, {
+      // FIXME: https://github.com/syntax-tree/hast-util-sanitize/pull/21
+      deepMerge<hastUtilSanitize.Schema>(hastUtilSanitizeGitHubSchema as any, {
         attributes: {
           code: ["className"],
           span: [["className", "math-inline"]],
           div: [["className", "math-display"]],
         },
-        // FIXME: https://github.com/syntax-tree/hast-util-sanitize/pull/21
-      }) as unknown) as hastUtilSanitize.Schema
+      })
     )
     .use(rehypeShiki, {
       highlighter: await shiki.getHighlighter({ theme: "light-plus" }),
