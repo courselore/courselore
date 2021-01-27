@@ -107,7 +107,7 @@ A mix of *Markdown* and <em>HTML</em>.
     ).toMatchInlineSnapshot(`"<p>👍🙌</p>"`);
   });
 
-  test("Syntax highlighting (Shiki)", () => {
+  test("syntax highlighting (Shiki)", () => {
     expect(
       app.get("text processor")(
         // prettier-ignore
@@ -134,7 +134,7 @@ shiki.getHighlighter({
     `);
   });
 
-  test("Mathematics (Katex)", () => {
+  test("mathematics (KaTeX)", () => {
     expect(
       app.get("text processor")(
         // prettier-ignore
