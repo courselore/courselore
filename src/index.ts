@@ -2,20 +2,21 @@
 
 import path from "path";
 import express from "express";
+import html from "tagged-template-noop";
 import unified from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
-import rehypeKatex from "rehype-katex";
+import rehypeSanitize from "rehype-sanitize";
+import hastUtilSanitize from "hast-util-sanitize";
+import hastUtilSanitizeGitHubSchema from "hast-util-sanitize/lib/github.json";
+import deepMerge from "deepmerge";
 import rehypeShiki from "shiki-rehype";
 import * as shiki from "shiki";
-import rehypeSanitize from "rehype-sanitize";
-const rehypeSanitizeGitHubSchema = require("hast-util-sanitize/lib/github");
+import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
-import html from "tagged-template-noop";
-import deepMerge from "deepmerge";
 
 type HTML = string;
 
@@ -125,7 +126,7 @@ const app = express()
                 text-decoration: none;
               }
             </style>
-            ${head ?? ""}
+            ${head}
           </head>
           <body>
             ${body}
@@ -142,7 +143,10 @@ const app = express()
         html`
           <ul>
             ${messages
-              .map((message) => html`<li>${app.get("renderer")(message)}</li>`)
+              .map(
+                (message) =>
+                  html`<li>${app.get("text processor")(message)}</li>`
+              )
               .join("")}
           </ul>
           <form method="post" action="/">
@@ -194,6 +198,14 @@ Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
 equation.
 
 $$
+\\invalidMacro
+$$
+
+$$
+\\rule{500em}{500em}
+$$
+
+$$
 L = \\frac{1}{2} \\rho v^2 S C_L
 $$
 
@@ -229,9 +241,9 @@ function render(text: string): string {
 `,
 ];
 
-let remarkProcessor: unified.Processor;
+let textProcessor: unified.Processor;
 (async () => {
-  remarkProcessor = unified()
+  textProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
@@ -239,22 +251,23 @@ let remarkProcessor: unified.Processor;
     .use(rehypeRaw)
     .use(
       rehypeSanitize,
-      deepMerge(rehypeSanitizeGitHubSchema, {
+      (deepMerge(hastUtilSanitizeGitHubSchema, {
         attributes: {
           code: ["className"],
-          span: [["className", "math-inline"]] as any,
-          div: [["className", "math-display"]] as any,
+          span: [["className", "math-inline"]],
+          div: [["className", "math-display"]],
         },
-      })
+        // FIXME: https://github.com/syntax-tree/hast-util-sanitize/pull/21
+      }) as unknown) as hastUtilSanitize.Schema
     )
-    .use(rehypeKatex)
     .use(rehypeShiki, {
       highlighter: await shiki.getHighlighter({ theme: "light-plus" }),
     })
+    .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
 })();
-app.set("renderer", (text: string): string =>
-  remarkProcessor.processSync(text).toString()
+app.set("text processor", (text: string): string =>
+  textProcessor.processSync(text).toString()
 );
 
 export default app;
@@ -283,7 +296,7 @@ if (require.main === module) {
         .set("administrator email", "administrator@courselore.org")
         .listen(new URL(app.get("url")).port, () => {
           console.log(
-            `Trial/Development web server started at ${app.get("url")}`
+            `Demonstration/Development web server started at ${app.get("url")}`
           );
         });
   }
