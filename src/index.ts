@@ -23,6 +23,12 @@ type HTML = string;
 async function appGenerator(): Promise<express.Express> {
   const app = express();
 
+  app.set("version", require("../package.json").version);
+  app.set("require", require);
+  if (["development", "test"].includes(app.get("env"))) {
+    app.set("url", "http://localhost:4000");
+    app.set("administrator email", "development@courselore.org");
+  }
   app.set(
     "layout",
     (head: HTML, body: HTML): HTML =>
@@ -201,9 +207,6 @@ if (require.main === module)
   (async () => {
     const app = await appGenerator();
 
-    app.set("version", require("../package.json").version);
-    app.set("require", require);
-
     console.log(`CourseLore\nVersion: ${app.get("version")}`);
 
     const CONFIGURATION_FILE = path.join(
@@ -217,15 +220,12 @@ if (require.main === module)
       console.error(
         `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
       );
-      if (app.get("env") === "development") {
-        app.set("url", "http://localhost:4000");
-        app.set("administrator email", "administrator@courselore.org");
+      if (app.get("env") === "development")
         app.listen(new URL(app.get("url")).port, () => {
           console.log(
             `Demonstration/Development web server started at ${app.get("url")}`
           );
         });
-      }
     }
 
     const REQUIRED_SETTINGS = ["url", "administrator email"];
