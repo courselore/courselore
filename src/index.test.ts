@@ -4,7 +4,7 @@ import express from "express";
 import markdown from "tagged-template-noop";
 import appGenerator from ".";
 
-describe("text processor", () => {
+describe("Text processor", () => {
   test("CommonMark", () => {
     expect(
       app.get("text processor")(
@@ -107,7 +107,7 @@ A mix of *Markdown* and <em>HTML</em>.
     ).toMatchInlineSnapshot(`"<p>👍🙌</p>"`);
   });
 
-  test("syntax highlighting (Shiki)", () => {
+  test("Syntax highlighting (Shiki)", () => {
     expect(
       app.get("text processor")(
         // prettier-ignore
@@ -134,7 +134,7 @@ shiki.getHighlighter({
     `);
   });
 
-  test("mathematics (KaTeX)", () => {
+  test("Mathematics (KaTeX)", () => {
     expect(
       app.get("text processor")(
         // prettier-ignore
