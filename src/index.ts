@@ -2,7 +2,7 @@
 
 import path from "path";
 import express from "express";
-import html from "tagged-template-noop";
+import html from "@leafac/html";
 import unified from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -13,7 +13,7 @@ import rehypeSanitize from "rehype-sanitize";
 import hastUtilSanitize from "hast-util-sanitize";
 import hastUtilSanitizeGitHubSchema from "hast-util-sanitize/lib/github.json";
 import deepMerge from "deepmerge";
-import rehypeShiki from "shiki-rehype";
+import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
@@ -45,51 +45,53 @@ async function appGenerator(): Promise<express.Express> {
               rel="icon"
               type="image/png"
               sizes="32x32"
-              href="${app.get("url")}/favicon-32x32.png"
+              href="$${app.get("url")}/favicon-32x32.png"
             />
             <link
               rel="icon"
               type="image/png"
               sizes="16x16"
-              href="${app.get("url")}/favicon-16x16.png"
+              href="$${app.get("url")}/favicon-16x16.png"
             />
             <link
               rel="shortcut icon"
               type="image/x-icon"
-              href="${app.get("url")}/favicon.ico"
+              href="$${app.get("url")}/favicon.ico"
             />
             <style>
               /* https://pico-8.fandom.com/wiki/Palette */
 
               /* TODO: Remove unnecessary weights. */
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/100.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/200.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/300.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/400.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/500.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/600.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/700.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/800.css";
-              @import "${app.get(
+              @import "$${app.get(
                 "url"
               )}/node_modules/@fontsource/public-sans/900.css";
-              @import "${app.get("url")}/node_modules/katex/dist/katex.min.css";
+              @import "$${app.get(
+                "url"
+              )}/node_modules/katex/dist/katex.min.css";
 
               body {
                 line-height: 1.5;
@@ -134,10 +136,10 @@ async function appGenerator(): Promise<express.Express> {
                 text-decoration: none;
               }
             </style>
-            ${head}
+            $${head}
           </head>
           <body>
-            ${body}
+            $${body}
           </body>
         </html>
       `.trimLeft()
@@ -178,12 +180,9 @@ async function appGenerator(): Promise<express.Express> {
         html`<title>Forum · CourseLore</title>`,
         html`
           <ul>
-            ${messages
-              .map(
-                (message) =>
-                  html`<li>${app.get("text processor")(message)}</li>`
-              )
-              .join("")}
+            $${messages.map(
+              (message) => html`<li>$${app.get("text processor")(message)}</li>`
+            )}
           </ul>
           <form method="post" action="/">
             <p><textarea name="text"></textarea><button>Send</button></p>
