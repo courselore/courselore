@@ -14,7 +14,11 @@ jobs:
         with:
           node-version: 14
       - run: npm install-ci-test && npm run build
+      - uses: master-atul/tar-action@v1.0.2
+        run: |
+          cd pkg
+          tar -czvf ${{ matrix.os }}.tar.gz *
       - uses: actions/upload-artifact@v2
         with:
           name: courselore-${{ matrix.runs-on }}
-          path: pkg/
+          path: pkg/${{ matrix.os }}.tar.gz
