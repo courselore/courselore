@@ -1,6 +1,29 @@
 {
   "name": "courselore",
-  "version": "0.0.1",
+  "version": "0.0.0",
+  "description": "The Open-Source Student Forum",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "bin": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/courselore/courselore.git"
+  },
+  "keywords": [
+    "forum",
+    "education",
+    "students",
+    "university"
+  ],
+  "author": "CourseLore",
+  "license": "GPL",
+  "bugs": {
+    "url": "https://github.com/courselore/courselore/issues"
+  },
+  "homepage": "https://github.com/courselore/courselore#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "develop": "ts-node-dev --poll src/index.ts",
     "test": "prettier --check 'src/**/*' && jest",
@@ -8,8 +31,6 @@
     "clean": "shx rm -rf lib pkg",
     "deploy": "npm run build && ssh root@courselore.org 'mkdir -p courselore/' && rsync -av pkg/courselore root@courselore.org:courselore/ && ssh root@courselore.org 'systemctl restart courselore'"
   },
-  "main": "lib/index.js",
-  "bin": "lib/index.js",
   "dependencies": {
     "@leafac/html": "^1.0.0",
     "@leafac/rehype-shiki": "^1.1.3",
