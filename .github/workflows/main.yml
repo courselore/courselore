@@ -17,11 +17,9 @@ jobs:
       - uses: master-atul/tar-action@v1.0.2
         with:
           command: c
-          cwd: ./pkg
-          files: |
-            *
+          files: pkg
           outPath: ${{ matrix.os }}.tar.gz
       - uses: actions/upload-artifact@v2
         with:
           name: courselore-${{ matrix.runs-on }}
-          path: pkg/${{ matrix.os }}.tar.gz
+          path: ${{ matrix.os }}.tar.gz
