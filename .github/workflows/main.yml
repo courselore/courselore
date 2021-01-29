@@ -14,10 +14,10 @@ jobs:
         with:
           node-version: 14
       - run: |
-        npm install-ci-test
-        npm run build
-        cd pkg
-        tar -cvzf pkg/courselore-${{ matrix.os }}.tar.gz *
+          npm install-ci-test
+          npm run build
+          cd pkg
+          tar -cvzf courselore-${{ matrix.os }}.tar.gz *
       - uses: actions/upload-artifact@v2
         with:
           name: courselore-${{ matrix.os }}.tar.gz
