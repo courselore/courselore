@@ -4,24 +4,17 @@
   "description": "The Open-Source Student Forum",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "bin": {
-    "courselore": "lib/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/courselore/courselore.git"
-  },
+  "bin": "lib/index.js",
+  "repository": "courselore/courselore",
   "keywords": [
     "forum",
     "education",
     "students",
     "university"
   ],
-  "author": "CourseLore",
+  "author": "CourseLore <npm@courselore.org> (https://courselore.org)",
   "license": "GPL",
-  "bugs": {
-    "url": "https://github.com/courselore/courselore/issues"
-  },
+  "bugs": "https://github.com/courselore/courselore/issues",
   "homepage": "https://github.com/courselore/courselore#readme",
   "publishConfig": {
     "access": "public"
