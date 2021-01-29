@@ -11,6 +11,10 @@ jobs:
         with:
           node-version: "14"
       - run: npm install-ci-test
+      - run: npm run build && npm publish
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: |
           cat >> ~/.ssh/known_hosts << "EOF"
           courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWOjzHPP1v+6gEeRAVzEB7l/RH+mt31heowjiUVNjgTnpT1FDL/T4yqmztwPrzhXUdBAy7M16H+88Padxm+/rJ5qfbw2dH7KtOA4RALYy9ruBl6HFdCf59eh01A97Py/AmxlpXysGAVcdcVjLsr0PvfoEGOqMlohc0sBjCjhoFcqkP9P57Q4Q3gcqgwjNYaZ1BSbI2G6J6kihjN7+b8pFCHCw8fqs7xo+7pDUv/rvqfBTUAFV7sovwQU0bZK6Z8gWXYFGG0NpKVojsKOHCrZpM8pBBDmleisrJhXmnKQ+Lj/JvYuaEM6cHZh6+RH7ua6S9eqlL8EErXf7GZ4SPuTo1ghNJ5H9cR3k8Px4Op5bDIIdPP767jwGHabZJ5Z8l9QnQajq85gcE7E3vZ1yT2BDKQsIDJeNpg1etTgw6hSUlBQsKx8TNaI9nROSnKwKbSI+sGmZlwrx11XimEkvaMaFmSZfpN+ne/2kmjc81Pr0WKb82sIPf3X2KzmWeChkZus8=
