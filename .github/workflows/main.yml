@@ -19,7 +19,7 @@ jobs:
           command: c
           cwd: ./pkg
           files: |
-            ./*
+            *
           outPath: ${{ matrix.os }}.tar.gz
       - uses: actions/upload-artifact@v2
         with:
