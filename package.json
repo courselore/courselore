@@ -24,7 +24,7 @@
     "test": "prettier --check \"src/**/*\" && jest",
     "build": "tsc && pkg --targets node14 --out-path pkg .",
     "clean": "shx rm -rf lib pkg",
-    "deploy": "npm run build && ssh root@courselore.org 'mkdir -p courselore/' && rsync -av pkg/courselore root@courselore.org:courselore/ && ssh root@courselore.org 'systemctl restart courselore'"
+    "deploy": "npm run build && ssh root@courselore.org \"mkdir -p courselore/\" && rsync -av pkg/courselore root@courselore.org:courselore/ && ssh root@courselore.org \"systemctl restart courselore\""
   },
   "dependencies": {
     "@leafac/html": "^1.0.0",
