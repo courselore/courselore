@@ -11,7 +11,8 @@ import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import hastUtilSanitize from "hast-util-sanitize";
-import hastUtilSanitizeGitHubSchema from "hast-util-sanitize/lib/github.json";
+// FIXME: https://github.com/syntax-tree/hast-util-sanitize/pull/21
+const hastUtilSanitizeGitHubSchema = require("hast-util-sanitize/lib/github.json");
 import deepMerge from "deepmerge";
 import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
@@ -154,8 +155,7 @@ async function appGenerator(): Promise<express.Express> {
     .use(rehypeRaw)
     .use(
       rehypeSanitize,
-      // FIXME: https://github.com/syntax-tree/hast-util-sanitize/pull/21
-      deepMerge<hastUtilSanitize.Schema>(hastUtilSanitizeGitHubSchema as any, {
+      deepMerge<hastUtilSanitize.Schema>(hastUtilSanitizeGitHubSchema, {
         attributes: {
           code: ["className"],
           span: [["className", "math-inline"]],

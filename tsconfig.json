@@ -8,7 +8,6 @@
     "outDir": "lib/",
     "rootDir": "src/",
     "strict": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true
+    "esModuleInterop": true
   }
 }
