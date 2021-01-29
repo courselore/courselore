@@ -13,4 +13,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
-      - run: npm install-ci-test
+      - run: npm install-ci-test && npm run build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: courselore-${{ matrix.runs-on }}
+          path: pkg/
