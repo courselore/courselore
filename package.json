@@ -1,10 +1,12 @@
 {
   "name": "courselore",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The Open-Source Student Forum",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "bin": "lib/index.js",
+  "bin": {
+    "courselore": "lib/index.js"
+  },
   "repository": "courselore/courselore",
   "keywords": [
     "forum",
