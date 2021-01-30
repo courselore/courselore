@@ -134,6 +134,18 @@ async function appGenerator(): Promise<express.Express> {
               nav a {
                 text-decoration: none;
               }
+
+              textarea {
+                width: 100%;
+                resize: vertical;
+                font-size: 1em;
+                background-color: white;
+                color: black;
+                border: 1px solid darkgray;
+                border-radius: 5px;
+                padding: 0.5em 0.7em;
+                outline: none;
+              }
             </style>
             $${head}
           </head>
@@ -172,27 +184,30 @@ async function appGenerator(): Promise<express.Express> {
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
 
-  app.get("/", (req, res) => {
-    res.send(
-      app.get("layout")(
-        html`<title>Forum · CourseLore</title>`,
-        html`
-          <ul>
-            $${messages.map(
-              (message) => html`<li>$${app.get("text processor")(message)}</li>`
-            )}
-          </ul>
-          <form method="post" action="/">
-            <p><textarea name="text"></textarea><button>Send</button></p>
-          </form>
-        `
-      )
-    );
-  });
-  app.post("/", (req, res) => {
-    messages.push(req.body.text);
-    res.redirect("back");
-  });
+  app
+    .route("/thread")
+    .get((req, res) => {
+      res.send(
+        app.get("layout")(
+          html`<title>Thread · CourseLore</title>`,
+          html`
+            <ul>
+              $${messages.map(
+                (message) =>
+                  html`<li>$${app.get("text processor")(message)}</li>`
+              )}
+            </ul>
+            <form method="post">
+              <p><textarea name="text"></textarea><br/><button>Send</button></p>
+            </form>
+          `
+        )
+      );
+    })
+    .post((req, res) => {
+      messages.push(req.body.text);
+      res.redirect("back");
+    });
   const messages = new Array<string>();
 
   return app;
