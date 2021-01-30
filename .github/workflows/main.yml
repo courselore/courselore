@@ -18,7 +18,7 @@ jobs:
           npm install-ci-test
           npm run build
           cd pkg
-          tar cvzf courselore.tar.gz *
+          tar cvzf courselore.tar.gz courselore
       - uses: actions/upload-artifact@v2
         with:
           path: pkg/courselore.tar.gz
@@ -56,13 +56,8 @@ jobs:
           asset_path: pkg/courselore.tar.gz
           asset_name: courselore-linux-${{ github.ref }}.tar.gz
           asset_content_type: application/gzip
-  other-os:
-    strategy:
-      matrix:
-        os:
-          - macos
-          - windows
-    runs-on: ${{ matrix.os }}-latest
+  macos:
+    runs-on: macos-latest
     needs: main
     steps:
       - uses: actions/checkout@v2
@@ -73,11 +68,11 @@ jobs:
           npm install-ci-test
           npm run build
           cd pkg
-          tar cvzf courselore.tar.gz *
+          tar cvzf courselore.tar.gz courselore
       - uses: actions/upload-artifact@v2
         with:
           path: pkg/courselore.tar.gz
-          name: courselore-${{ matrix.os }}-${{ github.sha }}.tar.gz
+          name: courselore-macos-${{ github.sha }}.tar.gz
       - uses: actions/upload-release-asset@v1
         if: startsWith(github.ref, 'refs/tags/v')
         env:
@@ -85,5 +80,31 @@ jobs:
         with:
           upload_url: ${{ needs.main.outputs.upload_url }}
           asset_path: pkg/courselore.tar.gz
-          asset_name: courselore-${{ matrix.os }}-${{ github.ref }}.tar.gz
+          asset_name: courselore-macos-${{ github.ref }}.tar.gz
+          asset_content_type: application/gzip
+  windows:
+    runs-on: windows-latest
+    needs: main
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: |
+          npm install-ci-test
+          npm run build
+          cd pkg
+          tar cvzf courselore.tar.gz courselore.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          path: pkg/courselore.tar.gz
+          name: courselore-windows-${{ github.sha }}.tar.gz
+      - uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.main.outputs.upload_url }}
+          asset_path: pkg/courselore.tar.gz
+          asset_name: courselore-windows-${{ github.ref }}.tar.gz
           asset_content_type: application/gzip
