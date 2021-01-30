@@ -4,6 +4,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create-release.outputs.upload_url }}
+      tag: ${{ steps.tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v2
       - uses: webfactory/ssh-agent@v0.4.1
@@ -39,14 +40,17 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: tag
       - uses: actions/create-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
         id: create-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
       - uses: actions/upload-release-asset@v1
         if: startsWith(github.ref, 'refs/tags/v')
         env:
@@ -54,7 +58,7 @@ jobs:
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: pkg/courselore.tar.gz
-          asset_name: courselore-linux-${{ github.ref }}.tar.gz
+          asset_name: courselore-linux-${{ steps.tag.outputs.tag }}.tar.gz
           asset_content_type: application/gzip
   macos:
     runs-on: macos-latest
@@ -80,7 +84,7 @@ jobs:
         with:
           upload_url: ${{ needs.main.outputs.upload_url }}
           asset_path: pkg/courselore.tar.gz
-          asset_name: courselore-macos-${{ github.ref }}.tar.gz
+          asset_name: courselore-macos-${{ needs.main.outputs.tag }}.tar.gz
           asset_content_type: application/gzip
   windows:
     runs-on: windows-latest
@@ -106,5 +110,5 @@ jobs:
         with:
           upload_url: ${{ needs.main.outputs.upload_url }}
           asset_path: pkg/courselore.tar.gz
-          asset_name: courselore-windows-${{ github.ref }}.tar.gz
+          asset_name: courselore-windows-${{ needs.main.outputs.tag }}.tar.gz
           asset_content_type: application/gzip
