@@ -18,7 +18,7 @@ jobs:
           npm install-ci-test
           npm run build
           cd pkg
-          tar -cvzf courselore.tar.gz *
+          tar cvzf courselore.tar.gz *
       - uses: actions/upload-artifact@v2
         with:
           path: pkg/courselore.tar.gz
@@ -73,7 +73,7 @@ jobs:
           npm install-ci-test
           npm run build
           cd pkg
-          tar -cvzf courselore.tar.gz *
+          tar cvzf courselore.tar.gz *
       - uses: actions/upload-artifact@v2
         with:
           path: pkg/courselore.tar.gz
