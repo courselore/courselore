@@ -23,8 +23,7 @@
     "develop": "ts-node-dev --poll src/index.ts",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
     "build": "tsc && pkg --targets node14 --out-path pkg .",
-    "clean": "shx rm -rf lib pkg",
-    "deploy": "npm run build && ssh root@courselore.org \"mkdir -p courselore/\" && rsync -av pkg/courselore root@courselore.org:courselore/ && ssh root@courselore.org \"systemctl restart courselore\""
+    "clean": "shx rm -rf lib pkg"
   },
   "dependencies": {
     "@leafac/html": "^1.0.0",
