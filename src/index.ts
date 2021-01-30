@@ -198,7 +198,9 @@ async function appGenerator(): Promise<express.Express> {
               )}
             </ul>
             <form method="post">
-              <p><textarea name="text"></textarea><br/><button>Send</button></p>
+              <p>
+                <textarea name="text"></textarea><br /><button>Send</button>
+              </p>
             </form>
           `
         )
