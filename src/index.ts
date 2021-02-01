@@ -64,6 +64,71 @@ async function appGenerator(): Promise<express.Express> {
               type="image/x-icon"
               href="${app.get("url")}/favicon.ico"
             />
+            <!-- TODO: Remove unnecessary weights. -->
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/100.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/200.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/300.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/400.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/500.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/600.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/700.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/800.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/public-sans/900.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/dialog-polyfill/dist/dialog-polyfill.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get("url")}/node_modules/katex/dist/katex.min.css"
+            />
             <style>
               /*
                 https://pico-8.fandom.com/wiki/Palette
@@ -71,37 +136,6 @@ async function appGenerator(): Promise<express.Express> {
                 #ff77a8
                 #29adff
               */
-
-              /* TODO: Remove unnecessary weights. */
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/100.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/200.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/300.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/400.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/500.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/600.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/700.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/800.css";
-              @import "${app.get(
-                "url"
-              )}/node_modules/@fontsource/public-sans/900.css";
-              @import "${app.get("url")}/node_modules/katex/dist/katex.min.css";
-
               body {
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
@@ -161,7 +195,7 @@ async function appGenerator(): Promise<express.Express> {
               "
             >
               <nav>
-                <a href=""
+                <a href="#" onclick="this.nextElementSibling.showModal();"
                   ><svg width="20" height="20" viewBox="0 0 20 20">
                     <g stroke="#83769c" stroke-width="2" stroke-linecap="round">
                       <line x1="3" y1="5" x2="17" y2="5" />
@@ -169,6 +203,9 @@ async function appGenerator(): Promise<express.Express> {
                       <line x1="3" y1="15" x2="17" y2="15" />
                     </g></svg
                 ></a>
+                <dialog>
+                  <p>Greetings, one and all!</p>
+                </dialog>
               </nav>
               <nav>
                 <a href="${app.get("url")}" style="display: inline-flex;">
@@ -189,6 +226,13 @@ async function appGenerator(): Promise<express.Express> {
             </header>
             <main>$${body}</main>
             <footer></footer>
+            <script src="${app.get(
+                "url"
+              )}/node_modules/dialog-polyfill/dist/dialog-polyfill.js"></script>
+            <script>
+              for (const dialog of document.querySelectorAll("dialog"))
+                dialogPolyfill.registerDialog(dialog);
+            </script>
           </body>
         </html>
       `.trimLeft()
