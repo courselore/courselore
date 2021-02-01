@@ -39,6 +39,10 @@ async function appGenerator(): Promise<express.Express> {
           <head>
             <meta charset="UTF-8" />
             <meta
+              name="generator"
+              content="CourseLore/v${app.get("version")}"
+            />
+            <meta
               name="viewport"
               content="width=device-width, initial-scale=1.0"
             />
