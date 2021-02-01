@@ -145,6 +145,10 @@ async function appGenerator(): Promise<express.Express> {
                 -webkit-text-size-adjust: 100%;
               }
 
+              ::selection {
+                background: #ff77a8;
+              }
+
               a {
                 color: inherit;
               }
@@ -213,10 +217,10 @@ async function appGenerator(): Promise<express.Express> {
                   <span
                     style="
                       font-weight: 900;
-                      color: #83769c;
                       margin-left: 0.3em;
                     "
-                    >CourseLore</span
+                    ><span style="color: #83769c;">Course</span
+                    ><span style="color: #ff77a8;">Lore</span></span
                   >
                 </a>
               </nav>
