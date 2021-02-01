@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "path";
+import fs from "fs/promises";
 import express from "express";
 import html from "@leafac/html";
 import unified from "unified";
@@ -64,7 +65,12 @@ async function appGenerator(): Promise<express.Express> {
               href="${app.get("url")}/favicon.ico"
             />
             <style>
-              /* https://pico-8.fandom.com/wiki/Palette */
+              /*
+                https://pico-8.fandom.com/wiki/Palette
+                #83769c
+                #ff77a8
+                #29adff
+              */
 
               /* TODO: Remove unnecessary weights. */
               @import "${app.get(
@@ -109,7 +115,8 @@ async function appGenerator(): Promise<express.Express> {
                 color: inherit;
               }
 
-              a.undecorated {
+              a.undecorated,
+              nav a {
                 text-decoration: none;
               }
 
@@ -131,16 +138,9 @@ async function appGenerator(): Promise<express.Express> {
                 font-size: 1.1em;
               }
 
-              header {
-                text-align: center;
-              }
-
-              nav a {
-                text-decoration: none;
-              }
-
               textarea {
                 width: 100%;
+                box-sizing: border-box;
                 resize: vertical;
                 font-size: 1em;
                 background-color: white;
@@ -154,10 +154,48 @@ async function appGenerator(): Promise<express.Express> {
             $${head}
           </head>
           <body>
-            $${body}
+            <header
+              style="
+                display: flex;
+                justify-content: space-between;
+              "
+            >
+              <nav>
+                <a href=""
+                  ><svg width="20" height="20" viewBox="0 0 20 20">
+                    <g stroke="#83769c" stroke-width="2" stroke-linecap="round">
+                      <line x1="3" y1="5" x2="17" y2="5" />
+                      <line x1="3" y1="10" x2="17" y2="10" />
+                      <line x1="3" y1="15" x2="17" y2="15" />
+                    </g></svg
+                ></a>
+              </nav>
+              <nav>
+                <a href="${app.get("url")}" style="display: inline-flex;">
+                  $${logo}
+                  <span
+                    style="
+                      font-weight: 900;
+                      color: #83769c;
+                      margin-left: 0.3em;
+                    "
+                    >CourseLore</span
+                  >
+                </a>
+              </nav>
+              <nav>
+                <a href="">PIC</a>
+              </nav>
+            </header>
+            <main>$${body}</main>
+            <footer></footer>
           </body>
         </html>
       `.trimLeft()
+  );
+  const logo = await fs.readFile(
+    path.join(__dirname, "../public/logo.svg"),
+    "utf-8"
   );
   app.set(
     "text processor",
