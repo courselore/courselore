@@ -189,6 +189,9 @@ async function appGenerator(): Promise<express.Express> {
                 outline: none;
               }
             </style>
+            <script src="${app.get(
+                "url"
+              )}/node_modules/dialog-polyfill/dist/dialog-polyfill.js"></script>
             $${head}
           </head>
           <body>
@@ -230,9 +233,6 @@ async function appGenerator(): Promise<express.Express> {
             </header>
             <main>$${body}</main>
             <footer></footer>
-            <script src="${app.get(
-                "url"
-              )}/node_modules/dialog-polyfill/dist/dialog-polyfill.js"></script>
             <script>
               for (const dialog of document.querySelectorAll("dialog"))
                 dialogPolyfill.registerDialog(dialog);
