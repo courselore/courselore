@@ -53,4 +53,4 @@ Follow the instructions below to install CourseLore on your own servers. This is
   1. Run network services, for example, a web server and an email server. In particular, you must be able to bind services to the network ports 80 and 443 for inbound connections, and you must be able to make outbound connections to port 25. You may also check for firewalls sitting in front of the server.
   2. Have access to the file system (read and write files). (Most providers of **Platform-as-a-Service (PaaS)**, for example, [Heroku](https://www.heroku.com), fail this criterion.)
 
-  If you plan on using a server provided by your institution, you may ask your system administrator about these features. Most VPSs provide these features.
+  If you plan on using a server provided by your institution, you may ask your system administrator about these features. Most servers for rent provide these features.
