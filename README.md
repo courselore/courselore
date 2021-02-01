@@ -54,3 +54,45 @@ Follow the instructions below to install CourseLore on your own servers. This is
   2. Have access to the file system (read and write files). (Most providers of **Platform-as-a-Service (PaaS)**, for example, [Heroku](https://www.heroku.com), fail this criterion.)
 
   If you plan on using a server provided by your institution, you may ask your system administrator about these features. Most servers for rent provide these features.
+
+**TODO: Continue instructions on how to install and setup everything.**
+
+### Setup a Development Environment to Contribute to CourseLore
+
+CourseLore has been designed to be a welcoming project for people who are new to contributing to open-source. Here’s what you need to install to get started:
+
+- [Node.js](https://nodejs.org/)
+- [Visual Studio Code](https://code.visualstudio.com) and the following Visual Studio Code extensions:
+  - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+  - [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html)
+  - [es6-string-css](https://marketplace.visualstudio.com/items?itemName=bashmish.es6-string-css)
+  - [es6-string-markdown](https://marketplace.visualstudio.com/items?itemName=jeoht.es6-string-markdown)
+- [Git](https://git-scm.com)
+
+**Clone and setup the project locally:**
+
+```console
+$ git clone https://github.com/courselore/courselore.git
+$ cd courselore
+$ npm install
+$ code .
+```
+
+**Run the development server:**
+
+```console
+$ npm run develop
+```
+
+**Run the tests:**
+
+```console
+$ npm test
+```
+
+**Release a new version:**
+
+```console
+$ npm version <major|minor|patch>
+$ git push --tags
+```
