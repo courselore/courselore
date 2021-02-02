@@ -122,6 +122,48 @@ async function appGenerator(): Promise<express.Express> {
             />
             <link
               rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/roboto-mono/100.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/roboto-mono/200.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/roboto-mono/300.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/roboto-mono/400.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/roboto-mono/500.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/roboto-mono/600.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/@fontsource/roboto-mono/700.css"
+            />
+            <link
+              rel="stylesheet"
               href="${app.get("url")}/node_modules/katex/dist/katex.min.css"
             />
             <style>
@@ -138,6 +180,19 @@ async function appGenerator(): Promise<express.Express> {
                 padding: 0 1em;
                 margin: 1em auto;
                 -webkit-text-size-adjust: 100%;
+              }
+
+              pre {
+                font-size: ${13 / 16}em;
+                line-height: 1.2;
+              }
+
+              code {
+                font-family: "Fira Mono", monospace;
+                font-family: "Source Code Pro", monospace;
+                font-family: "JetBrains Mono", monospace;
+                font-family: "Roboto Mono", monospace;
+                font-family: "IBM Plex Mono", monospace;
               }
 
               ::selection {
