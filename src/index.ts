@@ -135,6 +135,7 @@ async function appGenerator(): Promise<express.Express> {
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
                 margin: 0;
+                background-color: whitesmoke;
               }
 
               ::selection {
@@ -181,17 +182,25 @@ async function appGenerator(): Promise<express.Express> {
                 outline: none;
               }
 
-              button {
+              button,
+              .button {
                 cursor: pointer;
                 font-size: 1em;
                 background-color: white;
                 border: 1px solid darkgray;
                 border-radius: 5px;
+                padding: 0.2em;
+                text-decoration: none;
               }
 
-              button.undecorated {
+              button.undecorated,
+              .button.undecorated {
                 border: none;
                 background-color: transparent;
+              }
+
+              main {
+                padding: 0.5em;
               }
             </style>
             $${head}
@@ -203,7 +212,7 @@ async function appGenerator(): Promise<express.Express> {
                 justify-content: space-between;
                 background-color: #83769c;
                 color: white;
-                padding: 0.5em 1em;
+                padding: 0.5em;
               "
             >
               <nav>
@@ -271,6 +280,29 @@ async function appGenerator(): Promise<express.Express> {
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+
+  app.get("/", (req, res) => {
+    res.send(
+      app.get("layout")(
+        html`<title>CourseLore</title>`,
+        html`
+          <a class="button" href="${app.get("url")}/login?token=leandro"
+            >Login as Leandro (Student)</a
+          >
+          <a class="button" href="${app.get("url")}/login?token=ali"
+            >Login as Ali (Instructor)</a
+          >
+        `
+      )
+    );
+  });
+
+  app.get("/login", (req, res) => {
+    const { token, redirect } = req.body;
+    if (token === undefined || !["leandro", "ali"].includes(token))
+      return res.sendStatus(400);
+    res.redirect(app.get("url") + (redirect ?? "/"));
+  });
 
   app
     .route("/thread")
