@@ -34,7 +34,7 @@ async function appGenerator(): Promise<express.Express> {
   }
   app.set(
     "layout",
-    (head: HTML, body: HTML): HTML =>
+    (req: express.Request, head: HTML, body: HTML): HTML =>
       html`
         <!DOCTYPE html>
         <html lang="en">
@@ -239,11 +239,17 @@ async function appGenerator(): Promise<express.Express> {
                   >
                 </a>
               </nav>
-              <nav>
-                <form method="post" action="${app.get("url")}/logout">
-                  <button class="undecorated">Logout</button>
-                </form>
-              </nav>
+              $${req.session!.user === undefined
+                ? ""
+                : html`
+                    <nav>
+                      <form method="post" action="${app.get("url")}/logout">
+                        <button class="undecorated">
+                          Logout (${req.session!.user})
+                        </button>
+                      </form>
+                    </nav>
+                  `}
             </header>
             <main>$${body}</main>
             <footer></footer>
@@ -292,6 +298,7 @@ async function appGenerator(): Promise<express.Express> {
   app.get("/", (req, res) => {
     res.send(
       app.get("layout")(
+        req,
         html`<title>CourseLore</title>`,
         html`
           <a class="button" href="${app.get("url")}/login?token=leandro"
@@ -333,6 +340,7 @@ async function appGenerator(): Promise<express.Express> {
     .get((req, res) => {
       res.send(
         app.get("layout")(
+          req,
           html`<title>Thread · CourseLore</title>`,
           html`
             <ul>
