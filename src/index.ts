@@ -183,8 +183,8 @@ async function appGenerator(): Promise<express.Express> {
               }
 
               pre {
-                font-size: ${13 / 16}em;
-                line-height: 1.2;
+                font-size: 0.75em;
+                line-height: 1.3;
               }
 
               code {
@@ -368,42 +368,6 @@ async function appGenerator(): Promise<express.Express> {
         req,
         html`<title>CourseLore</title>`,
         html`
-          <p>
-            Exercitation veniam commodo voluptate dolore proident aliqua
-            excepteur Lorem minim excepteur ut. Minim consectetur tempor sit non
-            magna et elit esse ipsum eu anim deserunt sunt deserunt. Excepteur
-            consequat irure sint <code>reprehenderit</code> mollit aliqua
-            aliquip. Do aliquip aliquip fugiat non est minim laborum dolore
-            proident incididunt sint id ea excepteur. Consequat
-            <code>exercitation</code> irure et id magna amet mollit fugiat.
-            Consectetur aute adipisicing ea occaecat ut do ad occaecat nisi.
-            Pariatur proident aliqua enim aliqua pariatur culpa duis officia
-            dolore velit.
-          </p>
-          $${app.get("text processor")(`
-\`\`\`js
-app.use(
-  cookieSession({
-    secret: "TODO",
-  })
-);
-\`\`\`
-`)}
-          <p>
-            Eiusmod occaecat aute est irure incididunt dolor cupidatat et
-            deserunt enim et eiusmod duis ut. Dolor et consectetur anim pariatur
-            aliquip exercitation culpa. Aute enim labore ut aliqua veniam
-            voluptate. Adipisicing elit sit mollit reprehenderit enim enim ea
-            dolore aliqua labore voluptate velit velit. Ex laboris minim sunt
-            non. Adipisicing ut mollit excepteur laboris officia.
-          </p>
-          <p>
-            Quis occaecat duis sit cupidatat aute elit minim duis nulla
-            consectetur pariatur ut aute laboris. Fugiat cillum irure
-            reprehenderit pariatur exercitation nisi est nostrud commodo irure
-            duis aliquip sunt. In do minim culpa tempor laboris do fugiat
-            consequat. In ullamco id enim labore velit adipisicing in pariatur.
-          </p>
           <a class="button" href="${app.get("url")}/login?token=ali"
             >Login as Ali (Instructor)</a
           >
