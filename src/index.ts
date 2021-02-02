@@ -136,7 +136,6 @@ async function appGenerator(): Promise<express.Express> {
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
                 margin: 0;
-                background-color: whitesmoke;
               }
 
               ::selection {
@@ -209,47 +208,57 @@ async function appGenerator(): Promise<express.Express> {
           <body>
             <header
               style="
-                display: flex;
-                justify-content: space-between;
-                background-color: #83769c;
-                color: white;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                align-items: center;
                 padding: 0.5em;
+                border-bottom: 1px solid darkgray;
               "
             >
-              <nav>
-                <button class="undecorated">
-                  <svg width="20" height="20" viewBox="0 0 20 20">
-                    <g stroke="white" stroke-width="2" stroke-linecap="round">
-                      <line x1="3" y1="5" x2="17" y2="5" />
-                      <line x1="3" y1="10" x2="17" y2="10" />
-                      <line x1="3" y1="15" x2="17" y2="15" />
-                    </g>
-                  </svg>
-                </button>
+              <nav style="justify-self: start;">
+                $${req.session?.user === undefined
+                  ? ""
+                  : html`
+                      <button class="undecorated">
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                          <g
+                            stroke="black"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                          >
+                            <line x1="3" y1="5" x2="17" y2="5" />
+                            <line x1="3" y1="10" x2="17" y2="10" />
+                            <line x1="3" y1="15" x2="17" y2="15" />
+                          </g>
+                        </svg>
+                      </button>
+                    `}
               </nav>
-              <nav>
+              <nav style="justify-self: center;">
                 <a href="${app.get("url")}" style="display: inline-flex;">
                   $${logo}
                   <span
                     style="
+                      font-size: 1.5em;
                       font-weight: 900;
+                      color: #83769c;
                       margin-left: 0.3em;
                     "
                     >CourseLore</span
                   >
                 </a>
               </nav>
-              $${req.session!.user === undefined
-                ? ""
-                : html`
-                    <nav>
+              <nav style="justify-self: end;">
+                $${req.session?.user === undefined
+                  ? ""
+                  : html`
                       <form method="post" action="${app.get("url")}/logout">
                         <button class="undecorated">
-                          Logout (${req.session!.user})
+                          Logout (${req.session?.user})
                         </button>
                       </form>
-                    </nav>
-                  `}
+                    `}
+              </nav>
             </header>
             <main>$${body}</main>
             <footer></footer>
@@ -315,7 +324,7 @@ async function appGenerator(): Promise<express.Express> {
   app.get("/login", (req, res) => {
     const { token, redirect } = req.query;
     if (
-      req.session!.user !== undefined ||
+      req.session?.user !== undefined ||
       (token !== "leandro" && token !== "ali") ||
       (redirect !== undefined && typeof redirect !== "string")
     )
@@ -327,11 +336,11 @@ async function appGenerator(): Promise<express.Express> {
   app.post("/logout", (req, res) => {
     const { redirect } = req.query;
     if (
-      req.session!.user === undefined ||
+      req.session?.user === undefined ||
       (redirect !== undefined && typeof redirect !== "string")
     )
       return res.sendStatus(400);
-    delete req.session!.user;
+    delete req.session?.user;
     res.redirect(app.get("url") + (redirect ?? "/"));
   });
 
