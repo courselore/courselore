@@ -3,6 +3,7 @@
 import path from "path";
 import fs from "fs/promises";
 import express from "express";
+import cookieSession from "cookie-session";
 import html from "@leafac/html";
 import unified from "unified";
 import remarkParse from "remark-parse";
@@ -175,7 +176,6 @@ async function appGenerator(): Promise<express.Express> {
                 resize: vertical;
                 font-size: 1em;
                 background-color: white;
-                color: black;
                 border: 1px solid darkgray;
                 border-radius: 5px;
                 padding: 0.5em 0.7em;
@@ -187,6 +187,7 @@ async function appGenerator(): Promise<express.Express> {
                 cursor: pointer;
                 font-size: 1em;
                 background-color: white;
+                color: inherit;
                 border: 1px solid darkgray;
                 border-radius: 5px;
                 padding: 0.2em;
@@ -239,7 +240,9 @@ async function appGenerator(): Promise<express.Express> {
                 </a>
               </nav>
               <nav>
-                <a href="">PIC</a>
+                <form method="post" action="${app.get("url")}/logout">
+                  <button class="undecorated">Logout</button>
+                </form>
               </nav>
             </header>
             <main>$${body}</main>
@@ -280,6 +283,11 @@ async function appGenerator(): Promise<express.Express> {
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+  app.use(
+    cookieSession({
+      secret: "TODO",
+    })
+  );
 
   app.get("/", (req, res) => {
     res.send(
@@ -298,9 +306,25 @@ async function appGenerator(): Promise<express.Express> {
   });
 
   app.get("/login", (req, res) => {
-    const { token, redirect } = req.body;
-    if (token === undefined || !["leandro", "ali"].includes(token))
+    const { token, redirect } = req.query;
+    if (
+      req.session!.user !== undefined ||
+      (token !== "leandro" && token !== "ali") ||
+      (redirect !== undefined && typeof redirect !== "string")
+    )
       return res.sendStatus(400);
+    req.session!.user = `${token}@courselore.org`;
+    res.redirect(app.get("url") + (redirect ?? "/"));
+  });
+
+  app.post("/logout", (req, res) => {
+    const { redirect } = req.query;
+    if (
+      req.session!.user === undefined ||
+      (redirect !== undefined && typeof redirect !== "string")
+    )
+      return res.sendStatus(400);
+    delete req.session!.user;
     res.redirect(app.get("url") + (redirect ?? "/"));
   });
 
