@@ -133,9 +133,11 @@ async function appGenerator(): Promise<express.Express> {
               */
               body {
                 line-height: 1.5;
+                max-width: 600px;
                 font-family: "Public Sans", sans-serif;
+                padding: 0 1em;
+                margin: 1em auto;
                 -webkit-text-size-adjust: 100%;
-                margin: 0;
               }
 
               ::selection {
@@ -200,7 +202,6 @@ async function appGenerator(): Promise<express.Express> {
               }
 
               main {
-                padding: 0.5em;
               }
             </style>
             $${head}
@@ -209,10 +210,8 @@ async function appGenerator(): Promise<express.Express> {
             <header
               style="
                 display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-columns: 1fr 2fr 1fr;
                 align-items: center;
-                padding: 0.5em;
-                border-bottom: 1px solid darkgray;
               "
             >
               <nav style="justify-self: start;">
@@ -298,6 +297,12 @@ async function appGenerator(): Promise<express.Express> {
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+  // FIXME:
+  // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
+  // https://www.npmjs.com/package/cookie-session
+  // https://github.com/expressjs/express/blob/master/examples/cookie-sessions/index.js
+  // https://www.npmjs.com/package/express-session
+  // https://github.com/expressjs/express/blob/master/examples/session/index.js
   app.use(
     cookieSession({
       secret: "TODO",
@@ -305,16 +310,18 @@ async function appGenerator(): Promise<express.Express> {
   );
 
   app.get("/", (req, res) => {
+    if (req.session?.user !== undefined)
+      return res.redirect(app.get("url") + "/course");
     res.send(
       app.get("layout")(
         req,
         html`<title>CourseLore</title>`,
         html`
-          <a class="button" href="${app.get("url")}/login?token=leandro"
-            >Login as Leandro (Student)</a
-          >
           <a class="button" href="${app.get("url")}/login?token=ali"
             >Login as Ali (Instructor)</a
+          >
+          <a class="button" href="${app.get("url")}/login?token=leandro"
+            >Login as Leandro (Student)</a
           >
         `
       )
@@ -325,7 +332,7 @@ async function appGenerator(): Promise<express.Express> {
     const { token, redirect } = req.query;
     if (
       req.session?.user !== undefined ||
-      (token !== "leandro" && token !== "ali") ||
+      (token !== "ali" && token !== "leandro") ||
       (redirect !== undefined && typeof redirect !== "string")
     )
       return res.sendStatus(400);
@@ -342,6 +349,21 @@ async function appGenerator(): Promise<express.Express> {
       return res.sendStatus(400);
     delete req.session?.user;
     res.redirect(app.get("url") + (redirect ?? "/"));
+  });
+
+  app.use((req, res, next) => {
+    if (req.session?.user === undefined) return res.sendStatus(404);
+    else next();
+  });
+
+  app.get("/course", (req, res) => {
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>Course · CourseLore</title>`,
+        html`<a class="button" href="/thread">Go to thread</a>`
+      )
+    );
   });
 
   app
