@@ -121,12 +121,6 @@ async function appGenerator(): Promise<express.Express> {
             />
             <link
               rel="stylesheet"
-              href="${app.get(
-                "url"
-              )}/node_modules/dialog-polyfill/dist/dialog-polyfill.css"
-            />
-            <link
-              rel="stylesheet"
               href="${app.get("url")}/node_modules/katex/dist/katex.min.css"
             />
             <style>
@@ -191,9 +185,6 @@ async function appGenerator(): Promise<express.Express> {
                 cursor: pointer;
               }
             </style>
-            <script src="${app.get(
-                "url"
-              )}/node_modules/dialog-polyfill/dist/dialog-polyfill.js"></script>
             $${head}
           </head>
           <body>
@@ -207,7 +198,7 @@ async function appGenerator(): Promise<express.Express> {
               "
             >
               <nav>
-                <button onclick="this.nextElementSibling.showModal();">
+                <button>
                   <svg width="20" height="20" viewBox="0 0 20 20">
                     <g stroke="white" stroke-width="2" stroke-linecap="round">
                       <line x1="3" y1="5" x2="17" y2="5" />
@@ -216,9 +207,6 @@ async function appGenerator(): Promise<express.Express> {
                     </g>
                   </svg>
                 </button>
-                <dialog>
-                  <p>Greetings, one and all!</p>
-                </dialog>
               </nav>
               <nav>
                 <a href="${app.get("url")}" style="display: inline-flex;">
@@ -238,10 +226,6 @@ async function appGenerator(): Promise<express.Express> {
             </header>
             <main>$${body}</main>
             <footer></footer>
-            <script>
-              for (const dialog of document.querySelectorAll("dialog"))
-                dialogPolyfill.registerDialog(dialog);
-            </script>
           </body>
         </html>
       `.trimLeft()
