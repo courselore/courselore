@@ -183,6 +183,15 @@ async function appGenerator(): Promise<express.Express> {
 
               button {
                 cursor: pointer;
+                font-size: 1em;
+                background-color: white;
+                border: 1px solid darkgray;
+                border-radius: 5px;
+              }
+
+              button.undecorated {
+                border: none;
+                background-color: transparent;
               }
             </style>
             $${head}
@@ -198,7 +207,7 @@ async function appGenerator(): Promise<express.Express> {
               "
             >
               <nav>
-                <button>
+                <button class="undecorated">
                   <svg width="20" height="20" viewBox="0 0 20 20">
                     <g stroke="white" stroke-width="2" stroke-linecap="round">
                       <line x1="3" y1="5" x2="17" y2="5" />
