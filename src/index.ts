@@ -139,10 +139,8 @@ async function appGenerator(): Promise<express.Express> {
               body {
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
-                max-width: 600px;
-                padding: 0 1em;
-                margin: 1em auto;
                 -webkit-text-size-adjust: 100%;
+                margin: 0;
               }
 
               ::selection {
@@ -188,6 +186,10 @@ async function appGenerator(): Promise<express.Express> {
                 padding: 0.5em 0.7em;
                 outline: none;
               }
+
+              button {
+                cursor: pointer;
+              }
             </style>
             <script src="${app.get(
                 "url"
@@ -199,17 +201,21 @@ async function appGenerator(): Promise<express.Express> {
               style="
                 display: flex;
                 justify-content: space-between;
+                background-color: #83769c;
+                color: white;
+                padding: 0.5em 1em;
               "
             >
               <nav>
-                <a href="#" onclick="this.nextElementSibling.showModal();"
-                  ><svg width="20" height="20" viewBox="0 0 20 20">
-                    <g stroke="#83769c" stroke-width="2" stroke-linecap="round">
+                <button onclick="this.nextElementSibling.showModal();">
+                  <svg width="20" height="20" viewBox="0 0 20 20">
+                    <g stroke="white" stroke-width="2" stroke-linecap="round">
                       <line x1="3" y1="5" x2="17" y2="5" />
                       <line x1="3" y1="10" x2="17" y2="10" />
                       <line x1="3" y1="15" x2="17" y2="15" />
-                    </g></svg
-                ></a>
+                    </g>
+                  </svg>
+                </button>
                 <dialog>
                   <p>Greetings, one and all!</p>
                 </dialog>
@@ -222,8 +228,7 @@ async function appGenerator(): Promise<express.Express> {
                       font-weight: 900;
                       margin-left: 0.3em;
                     "
-                    ><span style="color: #83769c;">Course</span
-                    ><span style="color: #ff77a8;">Lore</span></span
+                    >CourseLore</span
                   >
                 </a>
               </nav>
