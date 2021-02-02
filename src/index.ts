@@ -253,7 +253,7 @@ async function appGenerator(): Promise<express.Express> {
                   : html`
                       <form method="post" action="${app.get("url")}/logout">
                         <button class="undecorated">
-                          Logout (${req.session?.user})
+                          Logout (${req.session!.user})
                         </button>
                       </form>
                     `}
@@ -347,7 +347,7 @@ async function appGenerator(): Promise<express.Express> {
       (redirect !== undefined && typeof redirect !== "string")
     )
       return res.sendStatus(400);
-    delete req.session?.user;
+    delete req.session!.user;
     res.redirect(app.get("url") + (redirect ?? "/"));
   });
 
@@ -375,9 +375,12 @@ async function appGenerator(): Promise<express.Express> {
           html`<title>Thread · CourseLore</title>`,
           html`
             <ul>
-              $${messages.map(
-                (message) =>
-                  html`<li>$${app.get("text processor")(message)}</li>`
+              $${posts.map(
+                ({ author, content, createdAt }) =>
+                  html`<li>
+                    ${author} says at ${createdAt}
+                    $${app.get("text processor")(content)}
+                  </li>`
               )}
             </ul>
             <form method="post">
@@ -390,10 +393,14 @@ async function appGenerator(): Promise<express.Express> {
       );
     })
     .post((req, res) => {
-      messages.push(req.body.text);
+      posts.push({
+        author: req.session!.user,
+        content: req.body.text,
+        createdAt: new Date().toISOString(),
+      });
       res.redirect("back");
     });
-  const messages = new Array<string>();
+  const posts: { author: string; content: string; createdAt: string }[] = [];
 
   return app;
 }
