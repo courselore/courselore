@@ -188,11 +188,7 @@ async function appGenerator(): Promise<express.Express> {
               }
 
               code {
-                font-family: "Fira Mono", monospace;
-                font-family: "Source Code Pro", monospace;
-                font-family: "JetBrains Mono", monospace;
                 font-family: "Roboto Mono", monospace;
-                font-family: "IBM Plex Mono", monospace;
               }
 
               ::selection {
