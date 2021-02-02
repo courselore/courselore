@@ -252,7 +252,9 @@ async function appGenerator(): Promise<express.Express> {
                 background-color: transparent;
               }
 
-              main {
+              pre,
+              .math-display {
+                overflow: scroll;
               }
             </style>
             $${head}
