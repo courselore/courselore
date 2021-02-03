@@ -33,8 +33,8 @@ async function appGenerator(): Promise<express.Express> {
     app.set("administrator email", "development@courselore.org");
   }
   app.set(
-    "layout",
-    (req: express.Request, head: HTML, body: HTML): HTML =>
+    "layout base",
+    (head: HTML, body: HTML): HTML =>
       html`
         <!DOCTYPE html>
         <html lang="en">
@@ -180,63 +180,73 @@ async function appGenerator(): Promise<express.Express> {
             $${head}
           </head>
           <body>
-            <header
-              style="
-                display: grid;
-                grid-template-columns: 1fr 2fr 1fr;
-                align-items: center;
-              "
-            >
-              <nav style="justify-self: start;">
-                $${req.session?.user === undefined
-                  ? ""
-                  : html`
-                      <button class="undecorated">
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                          <g
-                            stroke="black"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                          >
-                            <line x1="3" y1="5" x2="17" y2="5" />
-                            <line x1="3" y1="10" x2="17" y2="10" />
-                            <line x1="3" y1="15" x2="17" y2="15" />
-                          </g>
-                        </svg>
-                      </button>
-                    `}
-              </nav>
-              <nav style="justify-self: center;">
-                <a href="${app.get("url")}" style="display: inline-flex;">
-                  $${logo}
-                  <span
-                    style="
-                      font-size: 1.5em;
-                      font-weight: 900;
-                      color: #83769c;
-                      margin-left: 0.3em;
-                    "
-                    >CourseLore</span
-                  >
-                </a>
-              </nav>
-              <nav style="justify-self: end;">
-                $${req.session?.user === undefined
-                  ? ""
-                  : html`
-                      <form method="post" action="${app.get("url")}/logout">
-                        <button class="undecorated">
-                          Logout (${req.session!.user})
-                        </button>
-                      </form>
-                    `}
-              </nav>
-            </header>
-            <main>$${body}</main>
-            <footer></footer>
+            $${body}
           </body>
         </html>
       `.trimLeft()
+  );
+  app.set(
+    "layout",
+    (req: express.Request, head: HTML, body: HTML): HTML =>
+      app.get("layout base")(
+        head,
+        html`
+          <header
+            style="
+              display: grid;
+              grid-template-columns: 1fr 2fr 1fr;
+              align-items: center;
+            "
+          >
+            <nav style="justify-self: start;">
+              $${req.session?.user === undefined
+                ? ""
+                : html`
+                    <button class="undecorated">
+                      <svg width="20" height="20" viewBox="0 0 20 20">
+                        <g
+                          stroke="black"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <line x1="3" y1="5" x2="17" y2="5" />
+                          <line x1="3" y1="10" x2="17" y2="10" />
+                          <line x1="3" y1="15" x2="17" y2="15" />
+                        </g>
+                      </svg>
+                    </button>
+                  `}
+            </nav>
+            <nav style="justify-self: center;">
+              <a href="${app.get("url")}" style="display: inline-flex;">
+                $${logo}
+                <span
+                  style="
+                    font-size: 1.5em;
+                    font-weight: 900;
+                    color: #83769c;
+                    margin-left: 0.3em;
+                  "
+                  >CourseLore</span
+                >
+              </a>
+            </nav>
+            <nav style="justify-self: end;">
+              $${req.session?.user === undefined
+                ? ""
+                : html`
+                    <form method="post" action="${app.get("url")}/logout">
+                      <button class="undecorated">
+                        Logout (${req.session!.user})
+                      </button>
+                    </form>
+                  `}
+            </nav>
+          </header>
+          <main>$${body}</main>
+          <footer></footer>
+        `
+      )
   );
   const logo = await fs.readFile(
     path.join(__dirname, "../public/logo.svg"),
