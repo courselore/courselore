@@ -270,17 +270,6 @@ async function appGenerator(): Promise<express.Express> {
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
-  // FIXME:
-  // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
-  // https://www.npmjs.com/package/cookie-session
-  // https://github.com/expressjs/express/blob/master/examples/cookie-sessions/index.js
-  // https://www.npmjs.com/package/express-session
-  // https://github.com/expressjs/express/blob/master/examples/session/index.js
-  app.use(
-    cookieSession({
-      secret: "TODO",
-    })
-  );
 
   app.get("/", (req, res) => {
     if (req.session?.user !== undefined)
@@ -397,12 +386,16 @@ if (require.main === module)
       console.error(
         `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
       );
-      if (app.get("env") === "development")
-        app.listen(new URL(app.get("url")).port, () => {
+      if (app.get("env") === "development") {
+        const reverseProxy = express();
+        reverseProxy.use(cookieSession({ secret: "development" }));
+        reverseProxy.use(app);
+        reverseProxy.listen(new URL(app.get("url")).port, () => {
           console.log(
             `Demonstration/Development web server started at ${app.get("url")}`
           );
         });
+      }
     }
 
     const REQUIRED_SETTINGS = ["url", "administrator email"];
