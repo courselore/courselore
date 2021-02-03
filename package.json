@@ -50,7 +50,7 @@
     "unified": "^9.2.0"
   },
   "devDependencies": {
-    "@leafac/pkg": "^4.4.10",
+    "@leafac/pkg": "^4.4.11",
     "@types/cookie-session": "^2.0.42",
     "@types/express": "^4.17.11",
     "@types/node": "^14.14.21",
