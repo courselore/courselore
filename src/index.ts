@@ -188,7 +188,7 @@ async function appGenerator(): Promise<express.Express> {
             "
           >
             <nav style="justify-self: start;">
-              $${req.session?.user === undefined
+              $${req.session!.user === undefined
                 ? ""
                 : html`
                     <button>
@@ -221,7 +221,7 @@ async function appGenerator(): Promise<express.Express> {
               </a>
             </nav>
             <nav style="justify-self: end;">
-              $${req.session?.user === undefined
+              $${req.session!.user === undefined
                 ? ""
                 : html`
                     <form method="post" action="${app.get("url")}/logout">
@@ -267,51 +267,49 @@ async function appGenerator(): Promise<express.Express> {
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+  if (["development", "test"].includes(app.get("env")))
+    app.use(cookieSession({ secret: "development/test" }));
 
   app.get("/", (req, res) => {
-    if (req.session?.user !== undefined)
-      return res.redirect(app.get("url") + "/course");
-    res.send(
-      app.get("layout")(
-        req,
-        html`<title>CourseLore</title>`,
-        html`
-          <a class="button" href="${app.get("url")}/login?token=ali"
-            >Login as Ali (Instructor)</a
-          >
-          <a class="button" href="${app.get("url")}/login?token=leandro"
-            >Login as Leandro (Student)</a
-          >
-        `
-      )
+    res.redirect(
+      app.get("url") + (req.session!.user === undefined ? "/login" : "/course")
     );
   });
 
   app.get("/login", (req, res) => {
-    const { token, redirect } = req.query;
+    let { magic, redirect } = req.query;
+    redirect = redirect ?? "/";
+    if (typeof redirect !== "string") return res.sendStatus(400);
     if (
-      req.session?.user !== undefined ||
-      (token !== "ali" && token !== "leandro") ||
-      (redirect !== undefined && typeof redirect !== "string")
+      req.session!.user === undefined &&
+      !["ali", "leandro"].includes(magic as any)
     )
-      return res.sendStatus(400);
-    req.session!.user = `${token}@courselore.org`;
-    res.redirect(app.get("url") + (redirect ?? "/"));
+      return res.send(
+        app.get("layout")(
+          req,
+          html`<title>CourseLore</title>`,
+          html`
+            <a class="button" href="${app.get("url")}/login?magic=ali"
+              >Login as Ali (Instructor)</a
+            >
+            <a class="button" href="${app.get("url")}/login?magic=leandro"
+              >Login as Leandro (Student)</a
+            >
+          `
+        )
+      );
+    if (req.session!.user === undefined)
+      req.session!.user = `${magic}@courselore.org`;
+    res.redirect(app.get("url") + redirect);
   });
 
   app.post("/logout", (req, res) => {
-    const { redirect } = req.query;
-    if (
-      req.session?.user === undefined ||
-      (redirect !== undefined && typeof redirect !== "string")
-    )
-      return res.sendStatus(400);
     delete req.session!.user;
-    res.redirect(app.get("url") + (redirect ?? "/"));
+    res.redirect(app.get("url"));
   });
 
   app.use((req, res, next) => {
-    if (req.session?.user === undefined) return res.sendStatus(404);
+    if (req.session!.user === undefined) return res.sendStatus(404);
     else next();
   });
 
@@ -383,16 +381,12 @@ if (require.main === module)
       console.error(
         `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
       );
-      if (app.get("env") === "development") {
-        const reverseProxy = express();
-        reverseProxy.use(cookieSession({ secret: "development" }));
-        reverseProxy.use(app);
-        reverseProxy.listen(new URL(app.get("url")).port, () => {
+      if (app.get("env") === "development")
+        app.listen(new URL(app.get("url")).port, () => {
           console.log(
             `Demonstration/Development web server started at ${app.get("url")}`
           );
         });
-      }
     }
 
     const REQUIRED_SETTINGS = ["url", "administrator email"];
