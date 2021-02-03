@@ -102,19 +102,6 @@ async function appGenerator(): Promise<express.Express> {
                 -webkit-text-size-adjust: 100%;
               }
 
-              pre {
-                font-size: 0.75em;
-                line-height: 1.3;
-              }
-
-              code {
-                font-family: "Roboto Mono", monospace;
-              }
-
-              ::selection {
-                background: #ff77a8;
-              }
-
               a {
                 color: inherit;
               }
@@ -124,11 +111,13 @@ async function appGenerator(): Promise<express.Express> {
                 text-decoration: none;
               }
 
-              h1 {
-                line-height: 1.2;
-                font-size: 1.5em;
-                font-weight: 800;
-                margin-top: 1.5em;
+              code {
+                font-family: "Roboto Mono", monospace;
+              }
+
+              ::selection {
+                background-color: #ff77a8;
+                color: white;
               }
 
               img,
@@ -137,9 +126,26 @@ async function appGenerator(): Promise<express.Express> {
                 height: auto;
               }
 
+              h1 {
+                line-height: 1.2;
+                font-size: 1.5em;
+                font-weight: 800;
+                margin-top: 1.5em;
+              }
+
               figure {
                 text-align: center;
                 font-size: 1.1em;
+              }
+
+              pre,
+              .math-display {
+                overflow: scroll;
+              }
+
+              pre {
+                font-size: 0.75em;
+                line-height: 1.3;
               }
 
               textarea {
@@ -149,32 +155,22 @@ async function appGenerator(): Promise<express.Express> {
                 font-size: 1em;
                 background-color: white;
                 border: 1px solid darkgray;
-                border-radius: 5px;
+                border-radius: 10px;
                 padding: 0.5em 0.7em;
                 outline: none;
               }
 
               button,
               .button {
-                cursor: pointer;
                 font-size: 1em;
-                background-color: white;
-                color: inherit;
-                border: 1px solid darkgray;
-                border-radius: 5px;
-                padding: 0.2em;
+                font-weight: 700;
                 text-decoration: none;
-              }
-
-              button.undecorated,
-              .button.undecorated {
+                background-color: #83769c;
+                color: white;
+                padding: 0.5em;
                 border: none;
-                background-color: transparent;
-              }
-
-              pre,
-              .math-display {
-                overflow: scroll;
+                border-radius: 10px;
+                cursor: pointer;
               }
             </style>
             $${head}
@@ -202,7 +198,7 @@ async function appGenerator(): Promise<express.Express> {
               $${req.session?.user === undefined
                 ? ""
                 : html`
-                    <button class="undecorated">
+                    <button>
                       <svg width="20" height="20" viewBox="0 0 20 20">
                         <g
                           stroke="black"
@@ -236,9 +232,7 @@ async function appGenerator(): Promise<express.Express> {
                 ? ""
                 : html`
                     <form method="post" action="${app.get("url")}/logout">
-                      <button class="undecorated">
-                        Logout (${req.session!.user})
-                      </button>
+                      <button>Logout (${req.session!.user})</button>
                     </form>
                   `}
             </nav>
