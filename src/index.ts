@@ -131,11 +131,6 @@ async function appGenerator(): Promise<express.Express> {
                 margin-top: 1.5em;
               }
 
-              figure {
-                text-align: center;
-                font-size: 1.1em;
-              }
-
               pre,
               .math-display {
                 overflow: scroll;
