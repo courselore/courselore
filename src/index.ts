@@ -95,11 +95,9 @@ async function appGenerator(): Promise<express.Express> {
               */
               body {
                 line-height: 1.5;
-                max-width: 600px;
                 font-family: "Public Sans", sans-serif;
-                padding: 0 1em;
-                margin: 1em auto;
                 -webkit-text-size-adjust: 100%;
+                margin: 0;
               }
 
               a {
