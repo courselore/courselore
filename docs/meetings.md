@@ -2,7 +2,9 @@
 
 - Last week Dr. Scott asked what are the operating system dependencies to run the `courselore` executable (which is generated with @leafac/pkg). To answer this, I tested putting the binary in a Docker container created from [scratch](https://hub.docker.com/_/scratch); that didn’t work. Then I tried [alpine](https://hub.docker.com/_/alpine); that didn’t work either! Then I tried [ubuntu](https://hub.docker.com/_/ubuntu/); that worked (naturally, since we’re running Ubuntu in production & on GitHub Actions). So, as it turns out, not only does the `courselore` executable need some support from the operating system, but it seems like lightweight things like musl libc may not be enough. I’ll take that…
 
-- Changes to the website: Wider & mentions API.
+- Changes to the website: Wider & mentions API. (Also, using the text processor in CourseLore to render Markdown for the text!)
+
+- Wrote documentation at https://github.com/courselore/courselore and these documents you’re looking at.
 
 ### 2020-01-30
 
