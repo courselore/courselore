@@ -99,4 +99,4 @@ $ git push --tags
 
 ### Nightly Builds
 
-Besides the [releases](https://github.com/courselore/courselore/releases), you may also download binaries for every commit as [GitHub Action Artifacts](https://github.com/courselore/courselore/actions) (you must be logged into GitHub). These so-called nightly builds are useful to test the bleeding edge before a release, but aren’t recommended for general users.
+Besides the [releases](https://github.com/courselore/courselore/releases), you may also download binaries for every commit as [GitHub Action Artifacts](https://github.com/courselore/courselore/actions) (you must be logged into GitHub). These so-called nightly builds are useful to test the bleeding edge before a release, but aren’t recommended for regular users.
