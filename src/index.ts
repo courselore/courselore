@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs/promises";
 import express from "express";
 import cookieSession from "cookie-session";
+import * as expressValidator from "express-validator";
 import html from "@leafac/html";
 import unified from "unified";
 import remarkParse from "remark-parse";
@@ -20,6 +21,8 @@ import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
+import cryptoRandomString from "crypto-random-string";
+import dayjs from "dayjs";
 
 type HTML = string;
 
@@ -32,6 +35,9 @@ async function appGenerator(): Promise<express.Express> {
     app.set("url", "http://localhost:4000");
     app.set("administrator email", "development@courselore.org");
   }
+  app.set("token characters", "cfhjkprtvwxy3479");
+  app.set("token login length", 20);
+  app.set("magic link expiration", [10, "minutes"]);
   app.set(
     "layout base",
     (head: HTML, body: HTML): HTML =>
@@ -272,41 +278,95 @@ async function appGenerator(): Promise<express.Express> {
 
   app.get("/", (req, res) => {
     res.redirect(
-      app.get("url") + (req.session!.user === undefined ? "/login" : "/course")
+      `${app.get("url")}${
+        req.session!.user === undefined ? "/login" : "/course"
+      }`
     );
   });
 
   app.get("/login", (req, res) => {
-    let { magic, redirect } = req.query;
-    redirect = redirect ?? "/";
-    if (typeof redirect !== "string") return res.sendStatus(400);
+    if (req.session!.user !== undefined)
+      return res.redirect(`${app.get("url")}/`);
+    return res.send(
+      app.get("layout")(
+        req,
+        html`<title>Login · CourseLore</title>`,
+        html`
+          <form method="post">
+            <label>Email: <input name="email" type="email" required /></label>
+            <button>Login</button>
+          </form>
+        `
+      )
+    );
+  });
+  app.post("/login", expressValidator.body("email").isEmail(), (req, res) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json(errors.array());
+    // FIXME: Delete all other tokens for same address.
+    const { email } = req.body;
+    const token = cryptoRandomString({
+      length: app.get("token login length"),
+      characters: app.get("token characters"),
+    });
+    const expiration = app.get("magic link expiration");
+    const expiresAt = dayjs()
+      .add(...(app.get("magic link expiration") as [number, dayjs.OpUnitType]))
+      .toDate();
+    loginTokens.set(token, {
+      email,
+      expiresAt,
+    });
+    const magicLink = `${app.get("url")}/login/${token}`;
+    return res.send(
+      app.get("layout")(
+        req,
+        html`<title>Login · CourseLore</title>`,
+        html`
+          <p>
+            At this point CourseLore would send you an email with a magic link
+            for login, but because this is only an early-stage demonstration,
+            here’s the magic link instead (it’s valid for
+            ${expiration.join(" ")}):<br />
+            <a href="${magicLink}">${magicLink}</a><br />
+          </p>
+        `
+      )
+    );
+  });
+  app.get("/login/:token", (req, res) => {
+    const { token } = req.params;
+    const loginToken = loginTokens.get(token);
+    loginTokens.delete(token);
     if (
-      req.session!.user === undefined &&
-      !["ali", "leandro"].includes(magic as any)
+      loginToken === undefined ||
+      dayjs(loginToken.expiresAt).isBefore(dayjs())
     )
       return res.send(
         app.get("layout")(
           req,
-          html`<title>CourseLore</title>`,
+          html`<title>Login · CourseLore</title>`,
           html`
-            <a class="button" href="${app.get("url")}/login?magic=ali"
-              >Login as Ali (Instructor)</a
-            >
-            <a class="button" href="${app.get("url")}/login?magic=leandro"
-              >Login as Leandro (Student)</a
-            >
+            <p>
+              Error: Invalid magic link.
+              <a href="${app.get("url")}/login">Try logging in again</a>
+            </p>
           `
         )
       );
-    if (req.session!.user === undefined)
-      req.session!.user = `${magic}@courselore.org`;
-    res.redirect(app.get("url") + redirect);
+    req.session!.user = loginToken.email;
+    res.redirect(`${app.get("url")}/`);
   });
-
   app.post("/logout", (req, res) => {
     delete req.session!.user;
-    res.redirect(app.get("url"));
+    res.redirect(`${app.get("url")}/`);
   });
+  type LoginTokenKey = string;
+  interface LoginTokenValue {
+    email: string;
+    expiresAt: Date;
+  }
+  const loginTokens: Map<LoginTokenKey, LoginTokenValue> = new Map();
 
   app.use((req, res, next) => {
     if (req.session!.user === undefined) return res.sendStatus(404);
@@ -323,40 +383,36 @@ async function appGenerator(): Promise<express.Express> {
     );
   });
 
-  app
-    .route("/thread")
-    .get((req, res) => {
-      res.send(
-        app.get("layout")(
-          req,
-          html`<title>Thread · CourseLore</title>`,
-          html`
-            <ul>
-              $${posts.map(
-                ({ author, content, createdAt }) =>
-                  html`<li>
-                    ${author} says at ${createdAt}
-                    $${app.get("text processor")(content)}
-                  </li>`
-              )}
-            </ul>
-            <form method="post">
-              <p>
-                <textarea name="text"></textarea><br /><button>Send</button>
-              </p>
-            </form>
-          `
-        )
-      );
-    })
-    .post((req, res) => {
-      posts.push({
-        author: req.session!.user,
-        content: req.body.text,
-        createdAt: new Date().toISOString(),
-      });
-      res.redirect("back");
+  app.get("/thread", (req, res) => {
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>Thread · CourseLore</title>`,
+        html`
+          <ul>
+            $${posts.map(
+              ({ author, content, createdAt }) =>
+                html`<li>
+                  ${author} says at ${createdAt}
+                  $${app.get("text processor")(content)}
+                </li>`
+            )}
+          </ul>
+          <form method="post">
+            <p><textarea name="text"></textarea><br /><button>Send</button></p>
+          </form>
+        `
+      )
+    );
+  });
+  app.post("/thread", (req, res) => {
+    posts.push({
+      author: req.session!.user,
+      content: req.body.text,
+      createdAt: new Date().toISOString(),
     });
+    res.redirect("back");
+  });
   const posts: { author: string; content: string; createdAt: string }[] = [];
 
   return app;
