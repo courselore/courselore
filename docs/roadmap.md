@@ -1,5 +1,10 @@
 ### Features
 
+#### Authentication
+
+- Magic links.
+  - https://www.youtube.com/watch?v=KiYfWaGRHTc
+
 #### User Profile
 
 - Gravatar.
