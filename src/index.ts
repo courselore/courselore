@@ -5,6 +5,8 @@ import fs from "fs/promises";
 import express from "express";
 import cookieSession from "cookie-session";
 import * as expressValidator from "express-validator";
+import { Database, sql } from "@leafac/sqlite";
+import databaseMigrate from "@leafac/sqlite-migration";
 import html from "@leafac/html";
 import unified from "unified";
 import remarkParse from "remark-parse";
@@ -23,6 +25,9 @@ import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 import cryptoRandomString from "crypto-random-string";
 import dayjs from "dayjs";
+import shell from "shelljs";
+
+const ROOT_PATH = process.argv[2] ?? process.cwd();
 
 type HTML = string;
 
@@ -277,13 +282,49 @@ async function appGenerator(): Promise<express.Express> {
     app.use(cookieSession({ secret: "development/test" }));
 
   app.get("/", (req, res) => {
-    res.redirect(
-      `${app.get("url")}${
-        req.session!.user === undefined ? "/login" : "/course"
-      }`
+    if (req.session!.user === undefined)
+      return res.send(
+        app.get("layout")(
+          req,
+          html`<title>CourseLore</title>`,
+          authenticationForm
+        )
+      );
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>CourseLore</title>`,
+        html`
+          <p>
+            TODO: If you aren’t in any courses, say welcome message and
+            encourage you to join/create a course. If you’re in only one course,
+            redirect to it. If you’re in multiple courses, show an aggregate
+            feed of the activities in all courses.
+          </p>
+        `
+      )
+    );
+  });
+  const authenticationForm = html`
+    <form method="post" action="${app.get("url")}/authentication">
+      <label>Email: <input name="email" type="email" required /></label>
+      <button>Sign up</button>
+      <button>Login</button>
+    </form>
+  `;
+
+  app.get("/authentication", (req, res) => {
+    if (req.session!.user !== undefined) return res.redirect(app.get("url"));
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>Authentication · CourseLore</title>`,
+        authenticationForm
+      )
     );
   });
 
+  /*
   app.get("/login", (req, res) => {
     if (req.session!.user !== undefined)
       return res.redirect(`${app.get("url")}/`);
@@ -372,7 +413,9 @@ async function appGenerator(): Promise<express.Express> {
     if (req.session!.user === undefined) return res.sendStatus(404);
     else next();
   });
+  */
 
+  /*
   app.get("/course", (req, res) => {
     res.send(
       app.get("layout")(
@@ -414,6 +457,36 @@ async function appGenerator(): Promise<express.Express> {
     res.redirect("back");
   });
   const posts: { author: string; content: string; createdAt: string }[] = [];
+  */
+
+  // FIXME: Open the database using smarter configuration, for example, WAL and PRAGMA foreign keys.
+  shell.mkdir("-p", path.join(ROOT_PATH, "data"));
+  const database = new Database(
+    app.get("env") === "test"
+      ? ":memory:"
+      : path.join(ROOT_PATH, "data/courselore.db")
+  );
+  const migrations = [
+    sql`
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL
+      );
+
+      CREATE TABLE authenticationTokens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE,
+        expiresAt TEXT NOT NULL
+      );
+    `,
+  ];
+  const databaseMigrationResult = databaseMigrate(database, migrations);
+  app.set("database", database);
+  console.log(
+    `Database migration: ${databaseMigrationResult} migrations executed`
+  );
 
   return app;
 }
@@ -426,10 +499,7 @@ if (require.main === module)
 
     console.log(`CourseLore\nVersion: ${app.get("version")}`);
 
-    const CONFIGURATION_FILE = path.join(
-      process.argv[2] ?? process.cwd(),
-      "configuration.js"
-    );
+    const CONFIGURATION_FILE = path.join(ROOT_PATH, "configuration.js");
     try {
       await require(CONFIGURATION_FILE)(app);
       console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
