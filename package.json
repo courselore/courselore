@@ -33,8 +33,6 @@
     "@leafac/sqlite": "^1.1.1",
     "@leafac/sqlite-migration": "^1.0.1",
     "cookie-session": "^1.4.0",
-    "crypto-random-string": "^3.3.0",
-    "dayjs": "^1.10.4",
     "deepmerge": "^4.2.2",
     "express": "^4.17.1",
     "express-validator": "^6.9.2",

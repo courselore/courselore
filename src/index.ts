@@ -2,6 +2,7 @@
 
 import path from "path";
 import fs from "fs/promises";
+import crypto from "crypto";
 import express from "express";
 import cookieSession from "cookie-session";
 import * as expressValidator from "express-validator";
@@ -23,8 +24,6 @@ import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
-import cryptoRandomString from "crypto-random-string";
-import dayjs from "dayjs";
 import shell from "shelljs";
 
 const ROOT_PATH = process.argv[2] ?? process.cwd();
@@ -40,9 +39,6 @@ async function appGenerator(): Promise<express.Express> {
     app.set("url", "http://localhost:4000");
     app.set("administrator email", "development@courselore.org");
   }
-  app.set("token characters", "cfhjkprtvwxy3479");
-  app.set("token login length", 20);
-  app.set("magic link expiration", [10, "minutes"]);
   app.set(
     "layout base",
     (head: HTML, body: HTML): HTML =>
@@ -351,9 +347,8 @@ async function appGenerator(): Promise<express.Express> {
       characters: app.get("token characters"),
     });
     const expiration = app.get("magic link expiration");
-    const expiresAt = dayjs()
-      .add(...(app.get("magic link expiration") as [number, dayjs.OpUnitType]))
-      .toDate();
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 5);
     loginTokens.set(token, {
       email,
       expiresAt,
@@ -381,7 +376,7 @@ async function appGenerator(): Promise<express.Express> {
     loginTokens.delete(token);
     if (
       loginToken === undefined ||
-      dayjs(loginToken.expiresAt).isBefore(dayjs())
+      loginToken.expiresAt < new Date()
     )
       return res.send(
         app.get("layout")(
@@ -487,6 +482,16 @@ async function appGenerator(): Promise<express.Express> {
   console.log(
     `Database migration: ${databaseMigrationResult} migrations executed`
   );
+
+  function newToken(length: number): string {
+    const unambiguousCharacters = "cfhjkprtvwxy3479";
+    const buffer: string[] = [];
+    for (let index = 0; index < length; index++)
+      buffer.push(
+        unambiguousCharacters[crypto.randomInt(unambiguousCharacters.length)]
+      );
+    return buffer.join("");
+  }
 
   return app;
 }
