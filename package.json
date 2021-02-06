@@ -73,9 +73,10 @@
   "pkg": {
     "assets": [
       "public/**/*",
+      "node_modules/better-sqlite3/build/Release/better_sqlite3.node",
       "node_modules/shiki-themes/data/**/*",
-      "node_modules/onigasm/lib/onigasm.wasm",
-      "node_modules/shiki-languages/data/**/*"
+      "node_modules/shiki-languages/data/**/*",
+      "node_modules/onigasm/lib/onigasm.wasm"
     ]
   }
 }
