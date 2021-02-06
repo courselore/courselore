@@ -72,7 +72,7 @@ async function appGenerator(): Promise<express.Express> {
               type="image/x-icon"
               href="${app.get("url")}/favicon.ico"
             />
-            <!-- TODO: Remove unnecessary weights. -->
+            <!-- TODO: Inline these files. -->
             $${[100, 200, 300, 400, 500, 600, 700, 800, 900].map(
               (weight) => html`<link
                 rel="stylesheet"
@@ -286,17 +286,11 @@ async function appGenerator(): Promise<express.Express> {
         app.get("layout")(
           req,
           html`<title>CourseLore</title>`,
-          authenticationForm
+          authenticationForm()
         )
       );
     next();
   });
-  const authenticationForm = html`
-    <form method="post" action="${app.get("url")}/login">
-      <label>Email: <input name="email" type="email" required /></label>
-      <button>Sign up / Login</button>
-    </form>
-  `;
 
   app.get("/login", (req, res) => {
     if (req.session!.email !== undefined) return res.redirect(app.get("url"));
@@ -304,10 +298,17 @@ async function appGenerator(): Promise<express.Express> {
       app.get("layout")(
         req,
         html`<title>Authentication · CourseLore</title>`,
-        authenticationForm
+        authenticationForm()
       )
     );
   });
+
+  const authenticationForm = () => html`
+    <form method="post" action="${app.get("url")}/login">
+      <label>Email: <input name="email" type="email" required /></label>
+      <button>Sign up / Login</button>
+    </form>
+  `;
 
   app.post("/login", expressValidator.body("email").isEmail(), (req, res) => {
     const errors = expressValidator.validationResult(req);
