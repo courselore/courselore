@@ -25,6 +25,8 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 import shell from "shelljs";
+// FIXME: Update to Node 15
+import cryptoRandomString from "crypto-random-string";
 
 const ROOT_PATH = process.argv[2] ?? process.cwd();
 
@@ -569,13 +571,7 @@ async function appGenerator(): Promise<express.Express> {
   );
 
   function newToken(length: number): string {
-    const unambiguousCharacters = "cfhjkprtvwxy3479";
-    const buffer: string[] = [];
-    for (let index = 0; index < length; index++)
-      buffer.push(
-        unambiguousCharacters[crypto.randomInt(unambiguousCharacters.length)]
-      );
-    return buffer.join("");
+    return cryptoRandomString({ length, characters: "cfhjkprtvwxy3479" });
   }
 
   return app;
