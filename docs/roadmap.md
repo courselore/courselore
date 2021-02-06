@@ -4,6 +4,7 @@
 
 - Magic links.
   - https://www.youtube.com/watch?v=KiYfWaGRHTc
+- Deep links & redirects.
 
 #### User Profile
 
@@ -38,6 +39,7 @@
 
 - 400s.
 - 500s.
+- Form validation errors.
 
 #### Search
 

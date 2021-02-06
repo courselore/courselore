@@ -195,7 +195,7 @@ async function appGenerator(): Promise<express.Express> {
             "
           >
             <nav style="justify-self: start;">
-              $${req.session!.user === undefined
+              $${req.session!.email === undefined
                 ? ""
                 : html`
                     <button>
@@ -228,11 +228,11 @@ async function appGenerator(): Promise<express.Express> {
               </a>
             </nav>
             <nav style="justify-self: end;">
-              $${req.session!.user === undefined
+              $${req.session!.email === undefined
                 ? ""
                 : html`
                     <form method="post" action="${app.get("url")}/logout">
-                      <button>Logout (${req.session!.user})</button>
+                      <button>Logout (${req.session!.email})</button>
                     </form>
                   `}
             </nav>
@@ -278,7 +278,7 @@ async function appGenerator(): Promise<express.Express> {
     app.use(cookieSession({ secret: "development/test" }));
 
   app.get("/", (req, res) => {
-    if (req.session!.user === undefined)
+    if (req.session!.email === undefined)
       return res.send(
         app.get("layout")(
           req,
@@ -302,15 +302,14 @@ async function appGenerator(): Promise<express.Express> {
     );
   });
   const authenticationForm = html`
-    <form method="post" action="${app.get("url")}/authentication">
+    <form method="post" action="${app.get("url")}/login">
       <label>Email: <input name="email" type="email" required /></label>
-      <button>Sign up</button>
-      <button>Login</button>
+      <button>Sign up / Login</button>
     </form>
   `;
 
-  app.get("/authentication", (req, res) => {
-    if (req.session!.user !== undefined) return res.redirect(app.get("url"));
+  app.get("/login", (req, res) => {
+    if (req.session!.email !== undefined) return res.redirect(app.get("url"));
     res.send(
       app.get("layout")(
         req,
@@ -320,63 +319,52 @@ async function appGenerator(): Promise<express.Express> {
     );
   });
 
-  /*
-  app.get("/login", (req, res) => {
-    if (req.session!.user !== undefined)
-      return res.redirect(`${app.get("url")}/`);
-    return res.send(
-      app.get("layout")(
-        req,
-        html`<title>Login · CourseLore</title>`,
-        html`
-          <form method="post">
-            <label>Email: <input name="email" type="email" required /></label>
-            <button>Login</button>
-          </form>
-        `
-      )
-    );
-  });
-  app.post("/login", expressValidator.body("email").isEmail(), (req, res) => {
-    const errors = expressValidator.validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json(errors.array());
-    // FIXME: Delete all other tokens for same address.
-    const { email } = req.body;
-    const token = cryptoRandomString({
-      length: app.get("token login length"),
-      characters: app.get("token characters"),
-    });
-    const expiration = app.get("magic link expiration");
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 5);
-    loginTokens.set(token, {
-      email,
-      expiresAt,
-    });
-    const magicLink = `${app.get("url")}/login/${token}`;
-    return res.send(
-      app.get("layout")(
-        req,
-        html`<title>Login · CourseLore</title>`,
-        html`
-          <p>
-            At this point CourseLore would send you an email with a magic link
-            for login, but because this is only an early-stage demonstration,
-            here’s the magic link instead (it’s valid for
-            ${expiration.join(" ")}):<br />
-            <a href="${magicLink}">${magicLink}</a><br />
-          </p>
-        `
-      )
-    );
-  });
+  app.post(
+    "/login",
+    expressValidator.body("email").isEmail(),
+    (req, res) => {
+      const errors = expressValidator.validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json(errors.array());
+      const { email } = req.body;
+      database.run(
+        sql`DELETE FROM authenticationTokens WHERE email = ${email}`
+      );
+      const token = newToken(20);
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+      database.run(
+        sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
+      );
+      const magicLink = `${app.get("url")}/login/${token}`;
+      return res.send(
+        app.get("layout")(
+          req,
+          html`<title>Login · CourseLore</title>`,
+          html`
+            <p>
+              At this point CourseLore would send you an email with a magic link
+              for login, but because this is only an early-stage demonstration,
+              here’s the magic link instead (valid until
+              ${expiresAt.toISOString()}):<br />
+              <a href="${magicLink}">${magicLink}</a><br />
+            </p>
+          `
+        )
+      );
+    }
+  );
+
   app.get("/login/:token", (req, res) => {
     const { token } = req.params;
-    const loginToken = loginTokens.get(token);
-    loginTokens.delete(token);
+    const authenticationToken = database.get<{
+      email: string;
+      expiresAt: string;
+    }>(
+      sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
+    );
     if (
-      loginToken === undefined ||
-      loginToken.expiresAt < new Date()
+      authenticationToken === undefined ||
+      new Date(authenticationToken.expiresAt) < new Date()
     )
       return res.send(
         app.get("layout")(
@@ -384,28 +372,113 @@ async function appGenerator(): Promise<express.Express> {
           html`<title>Login · CourseLore</title>`,
           html`
             <p>
-              Error: Invalid magic link.
+              Error: Invalid or expired magic link.
               <a href="${app.get("url")}/login">Try logging in again</a>
             </p>
           `
         )
       );
-    req.session!.user = loginToken.email;
+    database.run(sql`DELETE FROM authenticationTokens WHERE token = ${token}`);
+    const { email } = authenticationToken;
+    const isNewUser =
+      database.get<{ output: number }>(
+        sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS output`
+      ).output === 0;
+    if (isNewUser) {
+      const token = newToken(20);
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+      database.run(
+        sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
+      );
+      return res.send(
+        app.get("layout")(
+          req,
+          html`<title>Sign up · CourseLore</title>`,
+          html`
+            <p>Welcome to CourseLore!</p>
+            <form method="post" action="${app.get("url")}/users">
+              <input type="hidden" name="token" value="${token}" />
+              <label>Name: <input type="text" name="name" /></label>
+              <button>Create account</button>
+            </form>
+          `
+        )
+      );
+    }
+    req.session!.email = authenticationToken.email;
     res.redirect(`${app.get("url")}/`);
   });
-  app.post("/logout", (req, res) => {
-    delete req.session!.user;
-    res.redirect(`${app.get("url")}/`);
-  });
-  type LoginTokenKey = string;
-  interface LoginTokenValue {
-    email: string;
-    expiresAt: Date;
-  }
-  const loginTokens: Map<LoginTokenKey, LoginTokenValue> = new Map();
 
+  app.post(
+    "/users",
+    expressValidator.body("token").exists(),
+    expressValidator.body("name").exists(),
+    (req, res) => {
+      const errors = expressValidator.validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json(errors.array());
+      const { token, name } = req.body;
+      const authenticationToken = database.get<{
+        email: string;
+        expiresAt: string;
+      }>(
+        sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
+      );
+      if (
+        authenticationToken === undefined ||
+        new Date(authenticationToken.expiresAt) < new Date()
+      )
+        return res.send(
+          app.get("layout")(
+            req,
+            html`<title>Sign up · CourseLore</title>`,
+            html`
+              <p>
+                Error: Invalid or expired magic link.
+                <a href="${app.get("url")}/login"
+                  >Try signing up again</a
+                >
+              </p>
+            `
+          )
+        );
+      database.run(
+        sql`DELETE FROM authenticationTokens WHERE token = ${token}`
+      );
+      const { email } = authenticationToken;
+      const isNewUser =
+        database.get<{ output: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS output`
+        ).output === 0;
+      if (!isNewUser)
+        return res.status(400).send(
+          app.get("layout")(
+            req,
+            html`<title>Sign up · CourseLore</title>`,
+            html`
+              <p>
+                Error: There already is an account with that email.
+                <a href="${app.get("url")}/login">Try just logging in</a>
+              </p>
+            `
+          )
+        );
+      database.run(
+        sql`INSERT INTO users (email, name) VALUES (${email}, ${name})`
+      );
+      req.session!.email = authenticationToken.email;
+      res.redirect(`${app.get("url")}/`);
+    }
+  );
+
+  app.post("/logout", (req, res) => {
+    delete req.session!.email;
+    res.redirect(`${app.get("url")}/`);
+  });
+
+  /*
   app.use((req, res, next) => {
-    if (req.session!.user === undefined) return res.sendStatus(404);
+    if (req.session!.email === undefined) return res.sendStatus(404);
     else next();
   });
   */
@@ -445,7 +518,7 @@ async function appGenerator(): Promise<express.Express> {
   });
   app.post("/thread", (req, res) => {
     posts.push({
-      author: req.session!.user,
+      author: req.session!.email,
       content: req.body.text,
       createdAt: new Date().toISOString(),
     });
@@ -478,7 +551,6 @@ async function appGenerator(): Promise<express.Express> {
     `,
   ];
   const databaseMigrationResult = databaseMigrate(database, migrations);
-  app.set("database", database);
   console.log(
     `Database migration: ${databaseMigrationResult} migrations executed`
   );
