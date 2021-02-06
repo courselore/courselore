@@ -160,6 +160,7 @@ async function appGenerator(): Promise<express.Express> {
                 outline: none;
               }
 
+              /*
               button,
               .button {
                 font-size: 1em;
@@ -171,6 +172,12 @@ async function appGenerator(): Promise<express.Express> {
                 border: none;
                 border-radius: 10px;
                 cursor: pointer;
+              }
+              */
+
+              body {
+                max-width: 600px;
+                margin: 1em auto;
               }
             </style>
             $${head}
@@ -195,7 +202,7 @@ async function appGenerator(): Promise<express.Express> {
             "
           >
             <nav style="justify-self: start;">
-              $${req.session!.email === undefined
+              <!--$${req.session!.email === undefined
                 ? ""
                 : html`
                     <button>
@@ -211,7 +218,7 @@ async function appGenerator(): Promise<express.Express> {
                         </g>
                       </svg>
                     </button>
-                  `}
+                  `}-->
             </nav>
             <nav style="justify-self: center;">
               <a href="${app.get("url")}" style="display: inline-flex;">
@@ -277,7 +284,7 @@ async function appGenerator(): Promise<express.Express> {
   if (["development", "test"].includes(app.get("env")))
     app.use(cookieSession({ secret: "development/test" }));
 
-  app.get("/", (req, res) => {
+  app.get("/", (req, res, next) => {
     if (req.session!.email === undefined)
       return res.send(
         app.get("layout")(
@@ -286,20 +293,7 @@ async function appGenerator(): Promise<express.Express> {
           authenticationForm
         )
       );
-    res.send(
-      app.get("layout")(
-        req,
-        html`<title>CourseLore</title>`,
-        html`
-          <p>
-            TODO: If you aren’t in any courses, say welcome message and
-            encourage you to join/create a course. If you’re in only one course,
-            redirect to it. If you’re in multiple courses, show an aggregate
-            feed of the activities in all courses.
-          </p>
-        `
-      )
-    );
+    next();
   });
   const authenticationForm = html`
     <form method="post" action="${app.get("url")}/login">
@@ -319,40 +313,34 @@ async function appGenerator(): Promise<express.Express> {
     );
   });
 
-  app.post(
-    "/login",
-    expressValidator.body("email").isEmail(),
-    (req, res) => {
-      const errors = expressValidator.validationResult(req);
-      if (!errors.isEmpty()) return res.status(400).json(errors.array());
-      const { email } = req.body;
-      database.run(
-        sql`DELETE FROM authenticationTokens WHERE email = ${email}`
-      );
-      const token = newToken(20);
-      const expiresAt = new Date();
-      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-      database.run(
-        sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
-      );
-      const magicLink = `${app.get("url")}/login/${token}`;
-      return res.send(
-        app.get("layout")(
-          req,
-          html`<title>Login · CourseLore</title>`,
-          html`
-            <p>
-              At this point CourseLore would send you an email with a magic link
-              for login, but because this is only an early-stage demonstration,
-              here’s the magic link instead (valid until
-              ${expiresAt.toISOString()}):<br />
-              <a href="${magicLink}">${magicLink}</a><br />
-            </p>
-          `
-        )
-      );
-    }
-  );
+  app.post("/login", expressValidator.body("email").isEmail(), (req, res) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json(errors.array());
+    const { email } = req.body;
+    database.run(sql`DELETE FROM authenticationTokens WHERE email = ${email}`);
+    const token = newToken(20);
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+    database.run(
+      sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
+    );
+    const magicLink = `${app.get("url")}/login/${token}`;
+    return res.send(
+      app.get("layout")(
+        req,
+        html`<title>Login · CourseLore</title>`,
+        html`
+          <p>
+            At this point CourseLore would send you an email with a magic link
+            for login, but because this is only an early-stage demonstration,
+            here’s the magic link instead (valid until
+            ${expiresAt.toISOString()}):<br />
+            <a href="${magicLink}">${magicLink}</a><br />
+          </p>
+        `
+      )
+    );
+  });
 
   app.get("/login/:token", (req, res) => {
     const { token } = req.params;
@@ -435,9 +423,7 @@ async function appGenerator(): Promise<express.Express> {
             html`
               <p>
                 Error: Invalid or expired magic link.
-                <a href="${app.get("url")}/login"
-                  >Try signing up again</a
-                >
+                <a href="${app.get("url")}/login">Try signing up again</a>
               </p>
             `
           )
@@ -476,12 +462,27 @@ async function appGenerator(): Promise<express.Express> {
     res.redirect(`${app.get("url")}/`);
   });
 
-  /*
   app.use((req, res, next) => {
     if (req.session!.email === undefined) return res.sendStatus(404);
     else next();
   });
-  */
+
+  app.get("/", (req, res) => {
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>CourseLore</title>`,
+        html`
+          <p>
+            TODO: If you aren’t in any courses, say welcome message and
+            encourage you to join/create a course. If you’re in only one course,
+            redirect to it. If you’re in multiple courses, show an aggregate
+            feed of the activities in all courses.
+          </p>
+        `
+      )
+    );
+  });
 
   /*
   app.get("/course", (req, res) => {
@@ -549,10 +550,25 @@ async function appGenerator(): Promise<express.Express> {
         expiresAt TEXT NOT NULL
       );
     `,
+    sql`
+      CREATE TABLE courses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL
+      );
+
+      CREATE TABLE enrollments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user INTEGER NOT NULL REFERENCES users,
+        course INTEGER NOT NULL REFERENCES courses,
+        role TEXT NOT NULL,
+        UNIQUE (user, course)
+      );
+    `,
   ];
   const databaseMigrationResult = databaseMigrate(database, migrations);
   console.log(
-    `Database migration: ${databaseMigrationResult} migrations executed`
+    `Database migration: ${databaseMigrationResult} migration(s) executed`
   );
 
   function newToken(length: number): string {
