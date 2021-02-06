@@ -1,10 +1,26 @@
-### Upcoming
+### 2021-02-06
+
+- Wrote documentation at https://github.com/courselore/courselore and these documents you’re looking at.
 
 - Last week Dr. Scott asked what are the operating system dependencies to run the `courselore` executable (which is generated with @leafac/pkg). To answer this, I tested putting the binary in a Docker container created from [scratch](https://hub.docker.com/_/scratch); that didn’t work. Then I tried [alpine](https://hub.docker.com/_/alpine); that didn’t work either! Then I tried [ubuntu](https://hub.docker.com/_/ubuntu/); that worked (naturally, since we’re running Ubuntu in production & on GitHub Actions). So, as it turns out, not only does the `courselore` executable need some support from the operating system, but it seems like lightweight things like musl libc may not be enough. I’ll take that…
 
-- Changes to the website: Wider & mentions API. (Also, using the text processor in CourseLore to render Markdown for the text!)
+- Did the signup / login flow with magic links: https://courselore.org/login
 
-- Wrote documentation at https://github.com/courselore/courselore and these documents you’re looking at.
+  - Login workflow
+  - Sessions
+  - Database
+
+- Changes to the website:
+
+  - Wider.
+  - Mention API.
+  - Convert to Markdown and use the text processing pipeline we developed for forum posts.
+
+- Open-source contributions:
+
+  - <https://www.npmjs.com/package/@leafac/sqlite>
+  - <https://www.npmjs.com/package/@leafac/sqlite-migration>
+  - <https://github.com/leafac/pkg/commit/ccc29eadc33f7a92179a68614e9d7ab1b5017e6c>
 
 ### 2020-01-30
 
