@@ -163,6 +163,15 @@ async function appGenerator(): Promise<express.Express> {
                 outline: none;
               }
 
+              .TODO {
+                font-size: 0.875em;
+                background-color: whitesmoke;
+                box-sizing: border-box;
+                padding: 0 1em;
+                border: 1px solid darkgray;
+                border-radius: 10px;
+              }
+
               /*
               button,
               .button {
@@ -282,35 +291,153 @@ async function appGenerator(): Promise<express.Express> {
   if (["development", "test"].includes(app.get("env")))
     app.use(cookieSession({ secret: "development/test" }));
 
-  app.get("/", (req, res, next) => {
-    if (req.session!.email === undefined)
-      return res.send(
-        app.get("layout")(
-          req,
-          html`<title>CourseLore</title>`,
-          authenticationForm()
-        )
-      );
-    next();
-  });
+  const unauthenticatedRoutes = express.Router();
 
-  app.get("/login", (req, res) => {
-    if (req.session!.email !== undefined) return res.redirect(app.get("url"));
+  unauthenticatedRoutes.get("/", (req, res) => {
     res.send(
       app.get("layout")(
         req,
-        html`<title>Authentication · CourseLore</title>`,
-        authenticationForm()
+        html`<title>CourseLore</title>`,
+        html`
+          <a href="${app.get("url")}/sign-in">Sign in</a>
+          <a href="${app.get("url")}/sign-up">Sign up</a>
+        `
       )
     );
   });
 
-  const authenticationForm = () => html`
-    <form method="post" action="${app.get("url")}/login">
-      <label>Email: <input name="email" type="email" required /></label>
-      <button>Sign up / Login</button>
-    </form>
-  `;
+  unauthenticatedRoutes.get("/sign-up", (req, res) => {
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>Sign up · CourseLore</title>`,
+        html`
+          <h1>Sign up to CourseLore</h1>
+          <form method="post" action="${app.get("url")}/sign-up">
+            <input
+              name="email"
+              type="email"
+              placeholder="me@university.edu"
+              required
+            />
+            <button>Continue</button>
+          </form>
+          <p>
+            <small>
+              Already have an account?
+              <a href="${app.get("url")}/sign-in">Sign in</a>.
+            </small>
+          </p>
+        `
+      )
+    );
+  });
+
+  // FIXME: Make more sophisticated use of expressValidator.
+  unauthenticatedRoutes.post(
+    "/sign-up",
+    expressValidator.body("email").isEmail(),
+    (req, res) => {
+      const errors = expressValidator.validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json(errors.array());
+
+      const { email } = req.body;
+
+      database.run(
+        sql`DELETE FROM authenticationTokens WHERE email = ${email}`
+      );
+      const token = newToken(20);
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+      database.run(
+        sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
+      );
+
+      if (
+        database.get<{ userExists: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS userExists`
+        ).userExists === 1
+      ) {
+        const magicLink = `${app.get("url")}/sign-in/${token}`;
+        return res.send(
+          app.get("layout")(
+            req,
+            html`<title>Sign in · CourseLore</title>`,
+            html`
+              <p>
+                It turns out that you already have a CourseLore account! We just
+                sent you an email for you to sign in.
+              </p>
+              <p>
+                <strong>
+                  Please check your email and click on the magic link to
+                  continue.
+                </strong>
+              </p>
+              <form method="post" action="${app.get("url")}/sign-up">
+                <input type="hidden" name="email" value="${email}" />
+                <p>
+                  <small>
+                    Can’t find the email? <button>Resend</button>.
+                  </small>
+                </p>
+              </form>
+              <div class="TODO">
+                <p>
+                  At this point CourseLore would have sent you an email, but
+                  because this is only an early-stage demonstration, here’s what
+                  you’d find in that email instead:
+                </p>
+
+                <p>
+                  <strong>Subject:</strong><br />Here’s your magic link to sign
+                  in to CourseLore
+                </p>
+                <p>
+                  <strong>Body:</strong><br />
+                  <a href="${magicLink}">${magicLink}</a><br />
+                  <small>
+                    Expires in 10 minutes (${expiresAt.toISOString()}).
+                  </small>
+                </p>
+              </div>
+            `
+          )
+        );
+      }
+
+      const magicLink = `${app.get("url")}/sign-up/${token}`;
+      res.send(
+        app.get("layout")(
+          req,
+          html`<title>Sign up · CourseLore</title>`,
+          html`
+            <p>
+              At this point CourseLore would send you an email with a magic link
+              for signing up, but because this is only an early-stage
+              demonstration, here’s the magic link instead (valid until
+              ${expiresAt.toISOString()}):<br />
+              <a href="${magicLink}">${magicLink}</a><br />
+            </p>
+          `
+        )
+      );
+    }
+  );
+
+  app.use((req, res, next) => {
+    if (req.session!.email === undefined) next();
+    else next("route");
+  }, unauthenticatedRoutes);
+
+  const authenticatedRoutes = express.Router();
+
+  app.use((req, res, next) => {
+    if (req.session!.email !== undefined) next();
+    else next("route");
+  }, authenticatedRoutes);
+
+  /*
 
   app.post("/login", expressValidator.body("email").isEmail(), (req, res) => {
     const errors = expressValidator.validationResult(req);

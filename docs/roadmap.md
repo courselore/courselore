@@ -5,6 +5,7 @@
 - Magic links.
   - https://www.youtube.com/watch?v=KiYfWaGRHTc
 - Deep links & redirects.
+- Prevent people from trying to brute-force login. Put a limit on the amount of magic links you may generate in a period.
 
 #### User Profile
 
