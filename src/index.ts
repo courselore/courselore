@@ -365,8 +365,8 @@ async function appGenerator(): Promise<express.Express> {
             html`<title>Sign in · CourseLore</title>`,
             html`
               <p>
-                It turns out that you already have a CourseLore account! We just
-                sent you an email for you to sign in.
+                You already have a CourseLore account! We sent you an email to
+                sign in.
               </p>
               <p>
                 <strong>
@@ -385,13 +385,13 @@ async function appGenerator(): Promise<express.Express> {
               <div class="TODO">
                 <p>
                   At this point CourseLore would have sent you an email, but
-                  because this is only an early-stage demonstration, here’s what
-                  you’d find in that email instead:
+                  this is only an early-stage demonstration and we want to make
+                  your life easier, so here’s what you’d find in that email
+                  instead:
                 </p>
-
+                <p><strong>From:</strong><br />CourseLore</p>
                 <p>
-                  <strong>Subject:</strong><br />Here’s your magic link to sign
-                  in to CourseLore
+                  <strong>Subject:</strong><br />Here’s your sign-in magic link
                 </p>
                 <p>
                   <strong>Body:</strong><br />
