@@ -104,7 +104,8 @@ async function appGenerator(): Promise<express.Express> {
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
-                margin: 0;
+                max-width: 600px;
+                margin: 1em auto;
               }
 
               a {
@@ -174,11 +175,6 @@ async function appGenerator(): Promise<express.Express> {
                 cursor: pointer;
               }
               */
-
-              body {
-                max-width: 600px;
-                margin: 1em auto;
-              }
             </style>
             $${head}
           </head>
