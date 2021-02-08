@@ -2,7 +2,6 @@
 
 import path from "path";
 import fs from "fs/promises";
-import crypto from "crypto";
 import express from "express";
 import cookieSession from "cookie-session";
 import * as expressValidator from "express-validator";
@@ -17,15 +16,13 @@ import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import hastUtilSanitize from "hast-util-sanitize";
-// FIXME: https://github.com/syntax-tree/hast-util-sanitize/pull/21
-const hastUtilSanitizeGitHubSchema = require("hast-util-sanitize/lib/github.json");
 import deepMerge from "deepmerge";
 import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 import shell from "shelljs";
-// FIXME: Update to Node 15
+// FIXME: Update to Node 15 and use crypto
 import cryptoRandomString from "crypto-random-string";
 
 const ROOT_PATH = process.argv[2] ?? process.cwd();
@@ -272,13 +269,21 @@ async function appGenerator(): Promise<express.Express> {
     .use(rehypeRaw)
     .use(
       rehypeSanitize,
-      deepMerge<hastUtilSanitize.Schema>(hastUtilSanitizeGitHubSchema, {
-        attributes: {
-          code: ["className"],
-          span: [["className", "math-inline"]],
-          div: [["className", "math-display"]],
-        },
-      })
+      deepMerge<hastUtilSanitize.Schema>(
+        JSON.parse(
+          await fs.readFile(
+            require.resolve("hast-util-sanitize/lib/github.json"),
+            "utf-8"
+          )
+        ),
+        {
+          attributes: {
+            code: ["className"],
+            span: [["className", "math-inline"]],
+            div: [["className", "math-display"]],
+          },
+        }
+      )
     )
     .use(rehypeShiki, {
       highlighter: await shiki.getHighlighter({ theme: "light-plus" }),
@@ -356,7 +361,7 @@ async function appGenerator(): Promise<express.Express> {
       if (
         database.get<{ userExists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS userExists`
-        ).userExists === 1
+        )!.userExists === 1
       ) {
         const magicLink = `${app.get("url")}/sign-in/${token}`;
         return res.send(
