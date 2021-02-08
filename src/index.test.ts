@@ -4,6 +4,16 @@ import express from "express";
 import markdown from "tagged-template-noop";
 import appGenerator from ".";
 
+let app: express.Express;
+let server: http.Server;
+beforeAll(async () => {
+  app = await appGenerator();
+  server = app.listen();
+});
+afterAll(() => {
+  server.close();
+});
+
 describe("Text processor", () => {
   test("CommonMark", () => {
     expect(
@@ -183,14 +193,4 @@ $$
       <div class=\\"math-display\\"><span class=\\"katex-display\\"><span class=\\"katex\\"><span class=\\"katex-mathml\\"><math xmlns=\\"http://www.w3.org/1998/Math/MathML\\" display=\\"block\\"><semantics><mrow><mpadded height=\\"+0em\\" voffset=\\"0em\\"><mspace mathbackground=\\"black\\" width=\\"25em\\" height=\\"25em\\"></mspace></mpadded></mrow><annotation encoding=\\"application/x-tex\\">\\\\rule{500em}{500em}</annotation></semantics></math></span><span class=\\"katex-html\\" aria-hidden=\\"true\\"><span class=\\"base\\"><span class=\\"strut\\" style=\\"height:25em;vertical-align:0em;\\"></span><span class=\\"mord rule\\" style=\\"border-right-width:25em;border-top-width:25em;bottom:0em;\\"></span></span></span></span></span></div>"
     `);
   });
-});
-
-let app: express.Express;
-let server: http.Server;
-beforeAll(async () => {
-  app = await appGenerator();
-  server = app.listen();
-});
-afterAll(() => {
-  server.close();
 });
