@@ -25,8 +25,6 @@ import shell from "shelljs";
 // FIXME: Update Node and use crypto.randomInt()
 import cryptoRandomString from "crypto-random-string";
 
-const ROOT_PATH = process.argv[2] ?? process.cwd();
-
 type HTML = string;
 
 async function appGenerator(): Promise<express.Express> {
@@ -39,6 +37,7 @@ async function appGenerator(): Promise<express.Express> {
     ).version
   );
   app.set("require", require);
+  app.set("root path", process.argv[2] ?? process.cwd());
   if (["development", "test"].includes(app.get("env"))) {
     app.set("url", "http://localhost:4000");
     app.set("administrator email", "development@courselore.org");
@@ -665,11 +664,11 @@ async function appGenerator(): Promise<express.Express> {
   */
 
   // FIXME: Open the database using smarter configuration, for example, WAL and PRAGMA foreign keys.
-  shell.mkdir("-p", path.join(ROOT_PATH, "data"));
+  shell.mkdir("-p", path.join(app.get("root path"), "data"));
   const database = new Database(
     app.get("env") === "test"
       ? ":memory:"
-      : path.join(ROOT_PATH, "data/courselore.db")
+      : path.join(app.get("root path"), "data/courselore.db")
   );
   const migrations = [
     sql`
@@ -722,7 +721,10 @@ if (require.main === module)
 
     console.log(`CourseLore\nVersion: ${app.get("version")}`);
 
-    const CONFIGURATION_FILE = path.join(ROOT_PATH, "configuration.js");
+    const CONFIGURATION_FILE = path.join(
+      app.get("root path"),
+      "configuration.js"
+    );
     try {
       (await import(CONFIGURATION_FILE))(app);
       console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
