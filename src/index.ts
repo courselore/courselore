@@ -292,8 +292,6 @@ async function appGenerator(): Promise<express.Express> {
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
-  if (["development", "test"].includes(app.get("env")))
-    app.use(cookieSession({ secret: "development/test" }));
 
   const unauthenticatedRoutes = express.Router();
 
@@ -728,11 +726,15 @@ if (require.main === module)
         `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
       );
       if (app.get("env") === "development")
-        app.listen(new URL(app.get("url")).port, () => {
-          console.log(
-            `Demonstration/Development web server started at ${app.get("url")}`
-          );
-        });
+        express()
+          .use(cookieSession({ secret: "development" }))
+          .listen(new URL(app.get("url")).port, () => {
+            console.log(
+              `Demonstration/Development web server started at ${app.get(
+                "url"
+              )}`
+            );
+          });
     }
 
     const REQUIRED_SETTINGS = ["url", "administrator email"];
