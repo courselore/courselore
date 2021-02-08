@@ -22,7 +22,7 @@
     "access": "public"
   },
   "scripts": {
-    "develop": "ts-node-dev --poll src/index.ts",
+    "start": "ts-node-dev --poll src/index.ts",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
     "build": "tsc && pkg --targets node14 --out-path pkg .",
     "clean": "shx rm -rf lib pkg"

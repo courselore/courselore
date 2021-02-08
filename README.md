@@ -27,7 +27,7 @@ You may run the CourseLore demonstration server on your own computer to play aro
   $ git clone https://github.com/courselore/courselore.git
   $ cd courselore
   $ npm install
-  $ npm run develop
+  $ npm start
   ```
 
 ### Host Your Own CourseLore Instance
@@ -81,7 +81,7 @@ $ code .
 **Run the development server:**
 
 ```console
-$ npm run develop
+$ npm start
 ```
 
 **Run the tests:**
