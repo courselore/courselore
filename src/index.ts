@@ -25,6 +25,9 @@ import rehypeStringify from "rehype-stringify";
 import shell from "shelljs";
 // FIXME: Update Node and use crypto.randomInt()
 import cryptoRandomString from "crypto-random-string";
+import inquirer from "inquirer";
+import javascript from "tagged-template-noop";
+import prettier from "prettier";
 
 type HTML = string;
 
@@ -695,10 +698,7 @@ async function appGenerator(): Promise<express.Express> {
       );
     `,
   ];
-  const databaseMigrationResult = databaseMigrate(database, migrations);
-  console.log(
-    `Database migration: ${databaseMigrationResult} migration(s) executed`
-  );
+  databaseMigrate(database, migrations);
 
   function newToken(length: number): string {
     return cryptoRandomString({ length, characters: "cfhjkprtvwxy3479" });
@@ -718,48 +718,87 @@ if (require.main === module)
     console.log(`CourseLore\nVersion: ${app.get("version")}`);
 
     try {
-      (await import(CONFIGURATION_FILE))(app);
+      (await import(CONFIGURATION_FILE)).default(app);
     } catch (error) {
-      if (error.code !== "ENOENT") {
+      if (error.code !== "MODULE_NOT_FOUND") {
         console.error(
           `Failed to load configuration from ${CONFIGURATION_FILE} (probably there’s a problem with your configuration): ${error.message}`
         );
         process.exit(1);
       }
-    }
+      if (
+        (
+          await inquirer.prompt([
+            {
+              type: "list",
+              name: "answer",
+              message: `There’s no configuration file at ${CONFIGURATION_FILE}, what would you like to do?`,
+              choices: [
+                `Create a configuration file at ${CONFIGURATION_FILE}`,
+                "Stop",
+              ],
+            },
+          ])
+        ).answer == "Stop"
+      )
+        process.exit();
+      switch (
+        (
+          await inquirer.prompt([
+            {
+              type: "list",
+              name: "answer",
+              message: `What kind of configuration file would you like to create?`,
+              choices: ["Demonstration/Development", "Production"],
+            },
+          ])
+        ).answer
+      ) {
+        case "Demonstration/Development":
+          const url = (
+            await inquirer.prompt([
+              {
+                name: "answer",
+                message: `What URL would you like to use to access the application (for example, to test on your computer, the URL may be http://localhost:4000; and to test on your network, for example on your phone, the URL may be http://<your-machine-name>.local:4000)?`,
+                default: "http://localhost:4000",
+              },
+            ])
+          ).answer;
+          await fs.writeFile(
+            CONFIGURATION_FILE,
+            prettier.format(
+              javascript`
+                module.exports = (app) => {
+                  const courseloreRequire = app.get("require");
+                  const express = courseloreRequire("express");
+                  const cookieSession = courseloreRequire("cookie-session");
 
-    if (fs.access(CONFIGURATION_FILE))
-      try {
-        console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
-      } catch (error) {}
+                  app.set("url", "${url}")
+                  app.set("administrator email", "demonstration-development@courselore.org")
 
-    try {
-    } catch (error) {
-      console.error(
-        `Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
-      );
-      if (app.get("env") === "development")
-        express()
-          .use(cookieSession({ secret: "development" }))
-          .listen(new URL(app.get("url")).port, () => {
-            console.log(
-              `Demonstration/Development web server started at ${app.get(
-                "url"
-              )}`
-            );
-          });
-    }
-
-    const REQUIRED_SETTINGS = ["url", "administrator email"];
-    const missingRequiredSettings = REQUIRED_SETTINGS.filter(
-      (setting) => app.get(setting) === undefined
-    );
-    if (missingRequiredSettings.length > 0) {
-      console.error(
-        `Missing the following required settings (did you set them on ‘${CONFIGURATION_FILE}’?): ${missingRequiredSettings
-          .map((setting) => `‘${setting}’`)
-          .join(", ")}`
-      );
-      process.exit(1);
+                  const reverseProxy = express();
+                
+                  reverseProxy.use(cookieSession({ secret: "demonstration/development" }));
+                  reverseProxy.use(app);
+                
+                  reverseProxy.listen(new URL(app.get("url")).port, () => {
+                    console.log(
+                      \`Demonstration/Development web server started at \${app.get(
+                        "url"
+                      )}\`
+                      );
+                  });
+                };
+              `,
+              { parser: "babel" }
+            )
+          );
+          break;
+        case "Production":
+          console.error("TODO");
+          process.exit(1);
+          break;
+      }
+      (await import(CONFIGURATION_FILE)).default(app);
     }
   })();
