@@ -22,7 +22,7 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 import shell from "shelljs";
-// FIXME: Update to Node 15 and use crypto
+// FIXME: Update Node and use crypto
 import cryptoRandomString from "crypto-random-string";
 
 const ROOT_PATH = process.argv[2] ?? process.cwd();
