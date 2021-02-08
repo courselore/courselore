@@ -75,23 +75,18 @@ async function appGenerator(): Promise<express.Express> {
               type="image/x-icon"
               href="${app.get("url")}/favicon.ico"
             />
-            <!-- TODO: Inline these files. -->
-            $${[100, 200, 300, 400, 500, 600, 700, 800, 900].map(
-              (weight) => html`<link
-                rel="stylesheet"
-                href="${app.get(
-                  "url"
-                )}/node_modules/@fontsource/public-sans/${weight}.css"
-              />`
-            )}
-            $${[100, 200, 300, 400, 500, 600, 700].map(
-              (weight) => html`<link
-                rel="stylesheet"
-                href="${app.get(
-                  "url"
-                )}/node_modules/@fontsource/roboto-mono/${weight}.css"
-              />`
-            )}
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/typeface-public-sans/index.css"
+            />
+            <link
+              rel="stylesheet"
+              href="${app.get(
+                "url"
+              )}/node_modules/typeface-roboto-mono/index.css"
+            />
             <link
               rel="stylesheet"
               href="${app.get("url")}/node_modules/katex/dist/katex.min.css"
