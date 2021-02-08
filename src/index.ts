@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import process from "process";
 import path from "path";
 import fs from "fs/promises";
 import express from "express";
@@ -488,7 +489,7 @@ async function appGenerator(): Promise<express.Express> {
           html`<title>Login · CourseLore</title>`,
           html`
             <p>
-              Error: Invalid or expired magic link.
+              Invalid or expired magic link.
               <a href="${app.get("url")}/login">Try logging in again</a>
             </p>
           `
@@ -550,7 +551,7 @@ async function appGenerator(): Promise<express.Express> {
             html`<title>Sign up · CourseLore</title>`,
             html`
               <p>
-                Error: Invalid or expired magic link.
+                Invalid or expired magic link.
                 <a href="${app.get("url")}/login">Try signing up again</a>
               </p>
             `
@@ -571,7 +572,7 @@ async function appGenerator(): Promise<express.Express> {
             html`<title>Sign up · CourseLore</title>`,
             html`
               <p>
-                Error: There already is an account with that email.
+                There already is an account with that email.
                 <a href="${app.get("url")}/login">Try just logging in</a>
               </p>
             `
@@ -656,7 +657,7 @@ async function appGenerator(): Promise<express.Express> {
   const posts: { author: string; content: string; createdAt: string }[] = [];
   */
 
-  // FIXME: Open the database using smarter configuration, for example, WAL and PRAGMA foreign keys.
+  // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
   shell.mkdir("-p", path.join(app.get("root path"), "data"));
   const database = new Database(
     app.get("env") === "test"
@@ -712,18 +713,30 @@ if (require.main === module)
   (async () => {
     const app = await appGenerator();
 
+    const CONFIGURATION_FILE = path.join(app.get("root path"), "courselore.js");
+
     console.log(`CourseLore\nVersion: ${app.get("version")}`);
 
-    const CONFIGURATION_FILE = path.join(
-      app.get("root path"),
-      "configuration.js"
-    );
     try {
       (await import(CONFIGURATION_FILE))(app);
-      console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
+    } catch (error) {
+      if (error.code !== "ENOENT") {
+        console.error(
+          `Failed to load configuration from ${CONFIGURATION_FILE} (probably there’s a problem with your configuration): ${error.message}`
+        );
+        process.exit(1);
+      }
+    }
+
+    if (fs.access(CONFIGURATION_FILE))
+      try {
+        console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
+      } catch (error) {}
+
+    try {
     } catch (error) {
       console.error(
-        `Error: Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
+        `Failed to load configuration at ‘${CONFIGURATION_FILE}’: ${error.message}`
       );
       if (app.get("env") === "development")
         express()
@@ -743,7 +756,7 @@ if (require.main === module)
     );
     if (missingRequiredSettings.length > 0) {
       console.error(
-        `Error: Missing the following required settings (did you set them on ‘${CONFIGURATION_FILE}’?): ${missingRequiredSettings
+        `Missing the following required settings (did you set them on ‘${CONFIGURATION_FILE}’?): ${missingRequiredSettings
           .map((setting) => `‘${setting}’`)
           .join(", ")}`
       );
