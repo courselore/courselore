@@ -55,7 +55,15 @@
 - Docker.
 - “One-click deployment” for different platforms like DigitalOcean, Linode, and so forth.
 
-### Deployment Improvements
+### Improvements
+
+#### Code Base
+
+- Produce native ESM:
+  - It’s too fresh, assess again start 2021-08.
+  - Blocked by experimental support in ts-node-dev (https://github.com/TypeStrong/ts-node/issues/1007) & Jest (https://jestjs.io/docs/en/ecmascript-modules).
+
+#### Deployment
 
 - Graceful HTTP shutdown
 

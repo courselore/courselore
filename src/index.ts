@@ -724,7 +724,7 @@ if (require.main === module)
 
     const CONFIGURATION_FILE = path.join(ROOT_PATH, "configuration.js");
     try {
-      await require(CONFIGURATION_FILE)(app);
+      (await import(CONFIGURATION_FILE))(app);
       console.log(`Loaded configuration from ‘${CONFIGURATION_FILE}’`);
     } catch (error) {
       console.error(
