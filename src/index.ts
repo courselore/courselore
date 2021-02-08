@@ -32,7 +32,12 @@ type HTML = string;
 async function appGenerator(): Promise<express.Express> {
   const app = express();
 
-  app.set("version", require("../package.json").version);
+  app.set(
+    "version",
+    JSON.parse(
+      await fs.readFile(path.join(__dirname, "../package.json"), "utf-8")
+    ).version
+  );
   app.set("require", require);
   if (["development", "test"].includes(app.get("env"))) {
     app.set("url", "http://localhost:4000");
