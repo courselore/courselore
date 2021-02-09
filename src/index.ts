@@ -49,10 +49,9 @@ async function appGenerator(): Promise<express.Express> {
   );
   app.set("require", require);
   app.set("root path", process.argv[2] ?? process.cwd());
-  if (["development", "test"].includes(app.get("env"))) {
-    app.set("url", "http://localhost:4000");
-    app.set("administrator email", "development@courselore.org");
-  }
+  app.set("url", "http://localhost:4000");
+  app.set("administrator email", "demonstration-development@courselore.org");
+  app.enable("demonstration");
   app.set(
     "layout base",
     (head: HTML, body: HTML): HTML =>
@@ -670,7 +669,7 @@ async function appGenerator(): Promise<express.Express> {
       ? ":memory:"
       : path.join(app.get("root path"), "var/courselore-runtime.db")
   );
-  databaseMigrate(database, [
+  databaseMigrate(runtimeDatabase, [
     sql`
       CREATE TABLE authenticationTokens (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -713,45 +712,54 @@ if (require.main === module)
       }
       if (
         (
-          await inquirer.prompt([
-            {
-              type: "list",
-              name: "answer",
-              message: `There’s no configuration file at ‘${app.get(
-                "configuration"
-              )}’, what would you like to do?`,
-              choices: [
-                `Create a configuration file at ‘${app.get("configuration")}’`,
-                "Exit",
-              ],
-            },
-          ])
+          await inquirer.prompt({
+            type: "list",
+            message: `There’s no configuration file at ‘${app.get(
+              "configuration"
+            )}’, what would you like to do?`,
+            choices: [
+              `Create a configuration file at ‘${app.get("configuration")}’`,
+              "Exit",
+            ],
+            name: "answer",
+          })
         ).answer == "Exit"
       )
         process.exit();
       switch (
         (
-          await inquirer.prompt([
-            {
-              type: "list",
-              name: "answer",
-              message:
-                "What kind of configuration file would you like to create?",
-              choices: ["Demonstration/Development", "Production"],
-            },
-          ])
+          await inquirer.prompt({
+            type: "list",
+            message:
+              "What kind of configuration file would you like to create?",
+            choices: ["Demonstration/Development", "Production"],
+            name: "answer",
+          })
         ).answer
       ) {
         case "Demonstration/Development":
-          const url = (
-            await inquirer.prompt([
-              {
+          let url: string | undefined;
+          if (
+            (
+              await inquirer.prompt({
+                type: "list",
                 name: "answer",
-                message: `What URL would you like to use to access the application (for example, to test on your computer, the URL may be http://localhost:4000; and to test on your network, for example on your phone, the URL may be http://<your-machine-name>.local:4000)?`,
-                default: "http://localhost:4000",
-              },
-            ])
-          ).answer;
+                message:
+                  "From where would you like to access this CourseLore demonstration?",
+                choices: [
+                  "Only from this machine on which I’m running CourseLore",
+                  "From other devices as well (for example, my phone)",
+                ],
+              })
+            ).answer === "From other devices as well (for example, my phone)"
+          )
+            url = (
+              await inquirer.prompt({
+                type: "input",
+                name: "answer",
+                message: `From what URL can other devices access this machine? (For example, http://<your-machine-name>.local:4000)`,
+              })
+            ).answer;
           await fs.writeFile(
             app.get("configuration"),
             prettier.format(
@@ -761,8 +769,11 @@ if (require.main === module)
                   const express = courseloreRequire("express");
                   const cookieSession = courseloreRequire("cookie-session");
 
-                  app.set("url", "${url}")
-                  app.set("administrator email", "demonstration-development@courselore.org")
+                  ${
+                    url === undefined
+                      ? javascript``
+                      : javascript`app.set("url", "${url}");`
+                  }
 
                   const reverseProxy = express();
                 
