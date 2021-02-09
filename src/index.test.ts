@@ -6,12 +6,12 @@ import http from "http";
 import express from "express";
 import cookieSession from "cookie-session";
 import markdown from "tagged-template-noop";
-import newApp from ".";
+import courselore from ".";
 
 let app: express.Express;
 let server: http.Server;
 beforeAll(async () => {
-  app = await newApp(
+  app = await courselore(
     await fs.mkdtemp(path.join(os.tmpdir(), "courselore-test-"))
   );
   server = express()
