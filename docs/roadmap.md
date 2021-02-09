@@ -63,6 +63,10 @@
   - It’s too fresh, assess again start 2021-08.
   - Blocked by experimental support in ts-node-dev (https://github.com/TypeStrong/ts-node/issues/1007) & Jest (https://jestjs.io/docs/en/ecmascript-modules).
   - ESM unlocks top-level await and eliminates the need for `appGenerator()`.
+- Consider using a CSS framework:
+  - Bootstrap: The most popular.
+  - TailwindCSS: The hot new option.
+- <https://github.com/wclr/ts-node-dev/issues/243>: Stop using `--pool` when calling `ts-node-dev`.
 
 #### Deployment
 
@@ -83,6 +87,46 @@
 - csurf.
 - Compression.
 
+- HTTPS:
+
+  - Consider using <https://www.npmjs.com/package/@small-tech/https>
+  - Use Caddy
+    - Manage with https://pm2.keymetrics.io/docs/usage/pm2-api/
+  - Use another reverse-proxy / load balancing solution: https://balance.inlab.net
+  - Use certbot:
+    - <https://www.sitepoint.com/how-to-use-ssltls-with-node-js/>
+  - Or roll out our own thing:
+    - ACME implementations
+      - <https://www.npmjs.com/package/acme-v2>
+      - <https://www.npmjs.com/package/acme-client>
+      - <https://www.npmjs.com/package/acme-middleware>
+      - <https://github.com/publishlab/node-acme-client>
+      - <https://github.com/compulim/acme-http-01-azure-key-vault-middleware>
+      - <https://letsencrypt.org/docs/client-options/>
+    - ACME description: <https://tools.ietf.org/html/rfc8555>
+    - Implementations of cryptography
+      - Node’s crypto
+      - <https://github.com/brix/crypto-js>
+      - <https://github.com/digitalbazaar/forge>
+    - Other considerations:
+      - HSTS:
+        - <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security>
+        - Helmet.
+    - HTTP → HTTPS
+      - <https://www.npmjs.com/package/express-force-https>
+  - Verify: https://www.ssllabs.com
+
+- HTTP/2:
+  - <https://github.com/expressjs/express/issues/3388>: Express doesn’t work with Node’s http/2 implementation, because the `req` and `res` aren’t compatible.
+  - Using Greenlock: https://git.rootprojects.org/root/greenlock-express.js/src/branch/master/examples/http2/server.js
+  - Use the spdy package (seems abandoned, and people said it doesn’t work with recent versions of node: https://github.com/spdy-http2/node-spdy/issues/380)
+  - Try express 5.
+  - <https://gist.github.com/studentIvan/6c78886c140067936ff379031fd12e14>
+  - Frameworks that seem to support it out of the box:
+    - koa
+    - Hapi
+    - tinyhttp
+
 ### Open-Source Contributions
 
 - <https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50794>: Add more specific types to better-sqlite3 with generics.
@@ -92,9 +136,13 @@
 - <https://github.com/syntax-tree/hast-util-sanitize/pull/21>: Add types to the JSON in hast-util-sanitize.
 - <https://npm.im/hast-util-to-text>: Write types.
   - <https://github.com/leafac/rehype-shiki/blob/ca1725c13aa720bf552ded5e71be65c129d15967/src/index.ts#L3-L4>
+- Questions about Greenlock
+  - <https://git.rootprojects.org/root/greenlock.js/issues/41>: Does it use https://greenlock.domains or does it go straight to LetsEncrypt?
+  - <https://git.rootprojects.org/root/greenlock-express.js/issues/50>: Can we get TypeScript types?
 
 ### Marketing
 
+- Newsletter
 - Create CourseLore Gravatar
   - Use in npm
 
