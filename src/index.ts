@@ -3,12 +3,16 @@
 import process from "process";
 import path from "path";
 import fs from "fs/promises";
+
 import express from "express";
-import cookieSession from "cookie-session";
 import * as expressValidator from "express-validator";
+
 import { Database, sql } from "@leafac/sqlite";
 import databaseMigrate from "@leafac/sqlite-migration";
+
 import html from "@leafac/html";
+import javascript from "tagged-template-noop";
+
 import unified from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -22,11 +26,14 @@ import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
+
 import shell from "shelljs";
+
 // FIXME: Update Node and use crypto.randomInt()
 import cryptoRandomString from "crypto-random-string";
+
 import inquirer from "inquirer";
-import javascript from "tagged-template-noop";
+
 import prettier from "prettier";
 
 type HTML = string;
@@ -54,10 +61,7 @@ async function appGenerator(): Promise<express.Express> {
         <html lang="en">
           <head>
             <meta charset="UTF-8" />
-            <meta
-              name="generator"
-              content="CourseLore/v${app.get("version")}"
-            />
+            <meta name="generator" content="CourseLore/${app.get("version")}" />
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1.0"
@@ -319,7 +323,7 @@ async function appGenerator(): Promise<express.Express> {
         html`<title>Sign up · CourseLore</title>`,
         html`
           <h1>Sign up to CourseLore</h1>
-          <form method="post" action="${app.get("url")}/sign-up">
+          <form method="post" action="${app.get("url")}/authenticate">
             <input
               name="email"
               type="email"
@@ -341,7 +345,7 @@ async function appGenerator(): Promise<express.Express> {
 
   // FIXME: Make more sophisticated use of expressValidator.
   unauthenticatedRoutes.post(
-    "/sign-up",
+    "/authenticate",
     expressValidator.body("email").isEmail(),
     (req, res) => {
       const errors = expressValidator.validationResult(req);
@@ -667,7 +671,7 @@ async function appGenerator(): Promise<express.Express> {
       ? ":memory:"
       : path.join(app.get("root path"), "data/courselore.db")
   );
-  const migrations = [
+  databaseMigrate(database, [
     sql`
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -697,8 +701,7 @@ async function appGenerator(): Promise<express.Express> {
         UNIQUE (user, course)
       );
     `,
-  ];
-  databaseMigrate(database, migrations);
+  ]);
 
   function newToken(length: number): string {
     return cryptoRandomString({ length, characters: "cfhjkprtvwxy3479" });
@@ -713,16 +716,20 @@ if (require.main === module)
   (async () => {
     const app = await appGenerator();
 
-    const CONFIGURATION_FILE = path.join(app.get("root path"), "courselore.js");
-
     console.log(`CourseLore\nVersion: ${app.get("version")}`);
 
+    app.set("configuration", path.join(app.get("root path"), "courselore.js"));
+
     try {
-      (await import(CONFIGURATION_FILE)).default(app);
+      (await import(app.get("configuration"))).default(app);
     } catch (error) {
       if (error.code !== "MODULE_NOT_FOUND") {
         console.error(
-          `Failed to load configuration from ${CONFIGURATION_FILE} (probably there’s a problem with your configuration): ${error.message}`
+          `Failed to load configuration from ‘${app.get(
+            "configuration"
+          )}’ (probably there’s a problem with your configuration): ${
+            error.message
+          }`
         );
         process.exit(1);
       }
@@ -732,14 +739,16 @@ if (require.main === module)
             {
               type: "list",
               name: "answer",
-              message: `There’s no configuration file at ${CONFIGURATION_FILE}, what would you like to do?`,
+              message: `There’s no configuration file at ‘${app.get(
+                "configuration"
+              )}’, what would you like to do?`,
               choices: [
-                `Create a configuration file at ${CONFIGURATION_FILE}`,
-                "Stop",
+                `Create a configuration file at ‘${app.get("configuration")}’`,
+                "Exit",
               ],
             },
           ])
-        ).answer == "Stop"
+        ).answer == "Exit"
       )
         process.exit();
       switch (
@@ -748,7 +757,8 @@ if (require.main === module)
             {
               type: "list",
               name: "answer",
-              message: `What kind of configuration file would you like to create?`,
+              message:
+                "What kind of configuration file would you like to create?",
               choices: ["Demonstration/Development", "Production"],
             },
           ])
@@ -765,7 +775,7 @@ if (require.main === module)
             ])
           ).answer;
           await fs.writeFile(
-            CONFIGURATION_FILE,
+            app.get("configuration"),
             prettier.format(
               javascript`
                 module.exports = (app) => {
@@ -782,23 +792,22 @@ if (require.main === module)
                   reverseProxy.use(app);
                 
                   reverseProxy.listen(new URL(app.get("url")).port, () => {
-                    console.log(
-                      \`Demonstration/Development web server started at \${app.get(
-                        "url"
-                      )}\`
-                      );
+                    console.log(\`Demonstration/Development web server started at \${app.get("url")}\`);
                   });
                 };
               `,
               { parser: "babel" }
             )
           );
+          console.log(
+            `Created configuration file at ‘${app.get("configuration")}’`
+          );
+          (await import(app.get("configuration"))).default(app);
           break;
         case "Production":
           console.error("TODO");
           process.exit(1);
           break;
       }
-      (await import(CONFIGURATION_FILE)).default(app);
     }
   })();
