@@ -1,6 +1,10 @@
 /node_modules/
+
 /lib/
 /pkg/
+
 /courselore.js
+
 /data/
+/tmp/
 /keys/

@@ -353,13 +353,13 @@ async function appGenerator(): Promise<express.Express> {
 
       const { email } = req.body;
 
-      database.run(
+      runtimeDatabase.run(
         sql`DELETE FROM authenticationTokens WHERE email = ${email}`
       );
       const token = newToken(20);
       const expiresAt = new Date();
       expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-      database.run(
+      runtimeDatabase.run(
         sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
       );
 
@@ -679,14 +679,6 @@ async function appGenerator(): Promise<express.Express> {
         name TEXT NOT NULL
       );
 
-      CREATE TABLE authenticationTokens (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        token TEXT NOT NULL UNIQUE,
-        email TEXT NOT NULL UNIQUE,
-        expiresAt TEXT NOT NULL
-      );
-    `,
-    sql`
       CREATE TABLE courses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         token TEXT NOT NULL UNIQUE,
@@ -699,6 +691,22 @@ async function appGenerator(): Promise<express.Express> {
         course INTEGER NOT NULL REFERENCES courses,
         role TEXT NOT NULL,
         UNIQUE (user, course)
+      );
+    `,
+  ]);
+  shell.mkdir("-p", path.join(app.get("root path"), "tmp"));
+  const runtimeDatabase = new Database(
+    app.get("env") === "test"
+      ? ":memory:"
+      : path.join(app.get("root path"), "tmp/courselore-runtime.db")
+  );
+  databaseMigrate(database, [
+    sql`
+      CREATE TABLE authenticationTokens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE,
+        expiresAt TEXT NOT NULL
       );
     `,
   ]);
