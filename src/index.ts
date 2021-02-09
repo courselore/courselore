@@ -706,7 +706,7 @@ if (require.main === module)
         (
           await inquirer.prompt({
             type: "list",
-            message: `There’s no configuration file at ‘${CONFIGURATION}’, what would you like to do?`,
+            message: `There’s no configuration file at ‘${CONFIGURATION}’. What would you like to do?`,
             choices: [
               `Create a configuration file at ‘${CONFIGURATION}’`,
               "Exit",
@@ -787,6 +787,7 @@ if (require.main === module)
       }
       configuration = (await import(CONFIGURATION)).default;
     }
+    console.log(`Configuration loaded from ‘${CONFIGURATION}’`);
     const app = await newApp(ROOT);
     app.set("require", require);
     await configuration(app);
