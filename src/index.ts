@@ -39,9 +39,7 @@ import prettier from "prettier";
 
 type HTML = string;
 
-const VERSION = JSON.parse(
-  fsSync.readFileSync(path.join(__dirname, "../package.json"), "utf-8")
-).version;
+const VERSION = require("../package.json").version;
 
 export default async function courselore(
   rootDirectory: string
@@ -276,12 +274,7 @@ export default async function courselore(
     .use(
       rehypeSanitize,
       deepMerge<hastUtilSanitize.Schema>(
-        JSON.parse(
-          await fs.readFile(
-            require.resolve("hast-util-sanitize/lib/github.json"),
-            "utf-8"
-          )
-        ),
+        require("hast-util-sanitize/lib/github.json"),
         {
           attributes: {
             code: ["className"],
@@ -694,7 +687,7 @@ export default async function courselore(
 
   let configuration: (require: NodeRequire) => Promise<void>;
   try {
-    configuration = (await import(CONFIGURATION_FILE)).default;
+    configuration = require(CONFIGURATION_FILE);
   } catch (error) {
     if (error.code !== "MODULE_NOT_FOUND") {
       console.error(
@@ -788,7 +781,7 @@ export default async function courselore(
         process.exit(1);
         break;
     }
-    configuration = (await import(CONFIGURATION_FILE)).default;
+    configuration = require(CONFIGURATION_FILE);
   }
   console.log(`Configuration loaded from ‘${CONFIGURATION_FILE}’`);
   await configuration(require);
