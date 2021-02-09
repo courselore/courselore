@@ -1,5 +1,71 @@
 ### Features
 
+#### Email
+
+- Requirements
+  - DNS:
+    - MX DNS record
+      - Check with <https://toolbox.googleapps.com/apps/checkmx/>
+    - PTR DNS record
+      - IPv4 & IPv6
+      - Check with <https://intodns.com/>
+    - SPF
+      - <https://support.google.com/a/answer/33786#zippy=>
+    - DMARC
+      - <https://support.google.com/a/topic/2759254>
+  - DKIM
+    - <https://support.google.com/a/answer/174124?visit_id=637457136864921918-3619574292&ref_topic=2752442&rd=1#zippy=>
+    - Key of 1024 bits or longer (recommended is 2048 bits)
+  - TLS??
+  - MTA-STS??
+  - ARC??
+    - http://arc-spec.org
+  - Blacklists
+    - Check with
+      - https://support.google.com/mail/answer/9981691?visit_id=637457136864921918-3619574292&rd=1
+      - https://transparencyreport.google.com/safe-browsing/search
+  - Unsubscribe
+    - “Use one-click unsubscribe”:
+      - <https://support.google.com/mail/answer/81126?hl=en>
+        - <https://tools.ietf.org/html/rfc2369>
+        - <https://tools.ietf.org/html/rfc8058>
+    - Generic troubleshooter
+      - <https://support.google.com/mail/troubleshooter/2696779>
+- Why not third-party
+  - Share data with third party!
+  - Cost
+  - More stuff to configure
+- Third-parties
+  - SendGrid
+  - SES
+  - https://blog.mailtrap.io/free-smtp-servers/
+- Libraries
+  - https://www.npmjs.com/package/sendmail
+  - Nodemailer direct transport (https://github.com/nodemailer/nodemailer/issues/1227)
+  - https://www.npmjs.com/package/sendmail
+  - https://nodemailer.com/extras/smtp-connection/
+  - https://github.com/andris9/mailauth
+  - https://www.npmjs.com/package/usemail
+  - Haraka
+  - https://github.com/substack/node-smtp-protocol
+  - https://github.com/zone-eu/zone-mta
+- Boxed solutions
+  - https://mailinabox.email
+  - https://www.iredmail.org
+  - https://modoboa.org/en/
+  - https://github.com/sovereign/sovereign
+  - https://mailu.io/1.7/
+  - https://mailcow.email
+    - https://www.servermania.com/kb/articles/setup-your-own-email-server/
+- Howtos
+  - <https://medium.com/@stoyanov.veseline/self-hosting-a-mail-server-in-2019-6d29542dadd4>
+  - https://sealedabstract.com/code/nsa-proof-your-e-mail-in-2-hours/
+  - https://blog.mailtrap.io/setup-smtp-server/
+  - https://arstechnica.com/information-technology/2014/02/how-to-run-your-own-e-mail-server-with-your-own-domain-part-1/
+- Testing
+  - https://mailtrap.io/
+  - https://mailslurper.com
+
 #### Authentication
 
 - Magic links.
@@ -52,10 +118,33 @@
 
 #### More Deployment Strategies
 
-- Docker.
+- Supervisors
+  - systemd
+  - PM2
+  - Nodemon
+  - Forever
+- Packagers
+  - Docker
+  - https://github.com/vercel/pkg/pull/837#issuecomment-775362263
+  - Electron (for demo only, of course)
 - “One-click deployment” for different platforms like DigitalOcean, Linode, and so forth.
+  - DigitalOcean
+  - Linode
+  - Amazon
+  - Google Cloud
+  - https://sandstorm.io
 
 ### Improvements
+
+#### Page Transitions & Client-Side JavaScript
+
+- https://hotwire.dev
+  - https://github.com/turbolinks/turbolinks
+- https://docs.stimulusreflex.com
+- https://barba.js.org
+- https://swup.js.org/getting-started
+- https://unpoly.com
+- https://youtube.github.io/spfjs/
 
 #### Code Base
 
@@ -132,6 +221,8 @@
 - Auto-updater
 - `download.courselore.org` points to installer.
 
+### Documentation
+
 ### Open-Source Contributions
 
 - <https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50794>: Add more specific types to better-sqlite3 with generics.
@@ -150,7 +241,41 @@
 - Newsletter
 - Create CourseLore Gravatar
   - Use in npm
+- Create accounts on:
+  - Patreon
+  - PayPal
+  - Facebook
+  - Instagram
+  - Reddit
 
 ### References
 
+- GitHub
+- Slack
+- <https://campuswire.com>
+- <https://piazza.com/>
+- <https://discourse.org>
+- <https://us.edstem.org>
+- <https://aula.education>
+- <https://yellowdig.com>
+- <https://moodle.org>
+- Canvas
+- <https://www.reddit.com>
+- Basecamp
+- <https://www.codegrade.com/>
+  - <https://app.codegra.de/login>
+  - <https://github.com/CodeGra-de>
+  - <https://github.com/CodeGrade/bottlenose>
+- <https://glacial-plateau-47269.herokuapp.com/>
+  - <https://glacial-plateau-47269.herokuapp.com/jhu/login>
 - <https://www.acadly.com/>
+- References in self-hosting
+  - https://www.reddit.com/r/selfhosted/
+  - Discourse
+  - Mattermost
+  - Moodle
+  - GitLab
+  - WordPress
+  - https://github.com/RocketChat/Rocket.Chat
+  - https://gitea.io/
+  - https://gogs.io/
