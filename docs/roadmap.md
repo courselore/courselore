@@ -1,5 +1,57 @@
 ### Features
 
+#### Courses
+
+- Enrollment (user ↔ course) roles
+  - Instructor
+  - Assistant
+  - Student
+- States
+  - Draft
+  - Enrollment
+  - Running
+  - Archived
+- Create roles and manage permissions
+- Tag-based actions
+
+#### Forum
+
+- Only one kind of post in threads
+- Configurable anonymity
+  - Only instructors may identify the person
+  - Instructors and assistants may identify the person (default)
+  - No-one may identify the person
+- Don’t implement that idea of collaboratively coming up with an answer (like Piazza) (no-one in the courses I was involved with used that; people just write follow-up answers)
+- Notifications
+  - How
+    - Email
+    - In-app
+  - What
+    - Subscribe to threads
+    - Subscribe to whole courses
+    - Staff may send messages that are notified to everyone
+- Tags
+- Reactions & Badges
+  - Only allow positive reactions? (Like Facebook) (Probably yes)
+  - Allow both positive and negative reactions? (like GitHub / Reddit)
+  - Created by/Endorsed by instructor
+- States
+  - Open
+  - Closed
+- Visibility
+  - To students
+  - To staff only (and students that may have posted on it)
+
+#### API
+
+- To integrate with other platforms, like, LMS
+- To ask a question from within the text editor, for example
+
+#### Authentication
+
+- SSO with Hopkins ID
+  - SAML
+
 #### Email
 
 - Requirements
@@ -116,29 +168,12 @@
   - Reference: GitHub let’s you search in different scopes like that.
 - Courses in the system (for joining a course).
 
-#### More Deployment Strategies
-
-- Supervisors
-  - systemd
-  - PM2
-  - Nodemon
-  - Forever
-- Packagers
-  - Docker
-  - https://github.com/vercel/pkg/pull/837#issuecomment-775362263
-  - Electron (for demo only, of course)
-- “One-click deployment” for different platforms like DigitalOcean, Linode, and so forth.
-  - DigitalOcean
-  - Linode
-  - Amazon
-  - Google Cloud
-  - https://sandstorm.io
-
 ### Improvements
 
 #### Page Transitions & Client-Side JavaScript
 
 - https://hotwire.dev
+  - https://www.npmjs.com/package/express-hotwire
   - https://github.com/turbolinks/turbolinks
 - https://docs.stimulusreflex.com
 - https://barba.js.org
@@ -221,6 +256,26 @@
 - Auto-updater
 - `download.courselore.org` points to installer.
 
+- A version hosted by us for other people to use (not just demo)
+
+  - In addition, or as an alternative, a demo version that self destructs every hour (like Moodle: https://moodle.org/demo)
+
+- Supervisors
+  - systemd
+  - PM2
+  - Nodemon
+  - Forever
+- Packagers
+  - Docker
+  - https://github.com/vercel/pkg/pull/837#issuecomment-775362263
+  - Electron (for demo only, of course)
+- “One-click deployment” for different platforms like DigitalOcean, Linode, and so forth.
+  - DigitalOcean
+  - Linode
+  - Amazon
+  - Google Cloud
+  - https://sandstorm.io
+
 ### Documentation
 
 ### Open-Source Contributions
@@ -279,3 +334,4 @@
   - https://github.com/RocketChat/Rocket.Chat
   - https://gitea.io/
   - https://gogs.io/
+- <https://github.com/npm/roadmap/projects/1>: A meta-reference on how to present the roadmap moving forward.
