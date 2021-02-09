@@ -47,11 +47,6 @@
 - To integrate with other platforms, like, LMS
 - To ask a question from within the text editor, for example
 
-#### Authentication
-
-- SSO with Hopkins ID
-  - SAML
-
 #### Email
 
 - Requirements
@@ -83,6 +78,8 @@
         - <https://tools.ietf.org/html/rfc8058>
     - Generic troubleshooter
       - <https://support.google.com/mail/troubleshooter/2696779>
+  - VERP
+    - <https://meta.discourse.org/t/handling-bouncing-e-mails/45343>
 - Why not third-party
   - Share data with third party!
   - Cost
@@ -120,10 +117,34 @@
 
 #### Authentication
 
-- Magic links.
+- Passwordless authentication (Magic links)
+  - https://github.com/nickbalestra/zero
+  - https://github.com/mxstbr/passport-magic-login
+  - https://github.com/vinialbano/passport-magic-link
+  - http://www.passportjs.org/packages/passport-passwordless/
+  - https://github.com/florianheinemann/passwordless
+  - https://hacks.mozilla.org/2014/10/passwordless-authentication-secure-simple-and-fast-to-deploy/
+  - https://reallifeprogramming.com/how-to-implement-magic-link-authentication-using-jwt-in-node-8193196bcd78?gi=10747bc1322e
+  - Don’t say whether the user is on the database: https://www.linkedin.com/pulse/dont-do-you-implement-magic-links-authentication-adrian-oprea
+  - https://blog.jacksonbates.com/passwordless
+  - https://www.freecodecamp.org/news/360-million-reasons-to-destroy-all-passwords-9a100b2b5001/
+  - https://www.npmjs.com/package/passport-jwt#extracting-the-jwt-from-the-request
   - https://www.youtube.com/watch?v=KiYfWaGRHTc
+  - https://softwareontheroad.com/nodejs-jwt-authentication-oauth/
+  - https://medium.com/@aleksandrasays/sending-magic-links-with-nodejs-765a8686996
+  - https://hackernoon.com/expressjs-integration-guide-for-passwordless-authentication-with-didapp-y55p3yss
+  - https://github.com/alsmola/nopassword
+  - https://www.wired.com/2016/06/hey-stop-using-texts-two-factor-authentication/
+  - https://medium.com/@ninjudd/lets-boycott-passwords-680d97eddb01
+  - https://medium.com/@ninjudd/passwords-are-obsolete-9ed56d483eb
+  - https://notes.xoxco.com/post/27999787765/is-it-time-for-password-less-login
+  - https://notes.xoxco.com/post/28288684632/more-on-password-less-login
+  - Let’s not use JWT, because you have to check if a token has already been used anyway; at that point, just give a plain token that you stored in the database.
+    - https://www.youtube.com/watch?v=dgg1dvs0Bn4
 - Deep links & redirects.
 - Prevent people from trying to brute-force login. Put a limit on the amount of magic links you may generate in a period.
+- SSO with Hopkins ID
+  - SAML
 
 #### User Profile
 
@@ -167,6 +188,13 @@
   - Search in all courses you’re taking (for example, search for `deadline extension`).
   - Reference: GitHub let’s you search in different scopes like that.
 - Courses in the system (for joining a course).
+
+### Non-Functional Features
+
+- Easy to self-host
+- Works on mobile (no apps) & desktop
+- Modern & uncluttered interface
+- Fast
 
 ### Improvements
 
