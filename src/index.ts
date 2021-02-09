@@ -3,6 +3,7 @@
 import process from "process";
 import path from "path";
 import fs from "fs/promises";
+import fsSync from "fs";
 
 import express from "express";
 import * as expressValidator from "express-validator";
@@ -38,17 +39,14 @@ import prettier from "prettier";
 
 type HTML = string;
 
-async function appGenerator(): Promise<express.Express> {
+const VERSION = JSON.parse(
+  fsSync.readFileSync(path.join(__dirname, "../package.json"), "utf-8")
+).version;
+
+export default async function newApp(root: string): Promise<express.Express> {
   const app = express();
 
-  app.set(
-    "version",
-    JSON.parse(
-      await fs.readFile(path.join(__dirname, "../package.json"), "utf-8")
-    ).version
-  );
-  app.set("require", require);
-  app.set("root path", process.argv[2] ?? process.cwd());
+  app.set("version", VERSION);
   app.set("url", "http://localhost:4000");
   app.set("administrator email", "demonstration-development@courselore.org");
   app.enable("demonstration");
@@ -634,11 +632,11 @@ async function appGenerator(): Promise<express.Express> {
   */
 
   // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
-  shell.mkdir("-p", path.join(app.get("root path"), "data"));
+  shell.mkdir("-p", path.join(root, "data"));
   const database = new Database(
     app.get("env") === "test"
       ? ":memory:"
-      : path.join(app.get("root path"), "data/courselore.db")
+      : path.join(root, "data/courselore.db")
   );
   databaseMigrate(database, [
     sql`
@@ -663,11 +661,11 @@ async function appGenerator(): Promise<express.Express> {
       );
     `,
   ]);
-  shell.mkdir("-p", path.join(app.get("root path"), "var"));
+  shell.mkdir("-p", path.join(root, "var"));
   const runtimeDatabase = new Database(
     app.get("env") === "test"
       ? ":memory:"
-      : path.join(app.get("root path"), "var/courselore-runtime.db")
+      : path.join(root, "var/courselore-runtime.db")
   );
   databaseMigrate(runtimeDatabase, [
     sql`
@@ -687,26 +685,20 @@ async function appGenerator(): Promise<express.Express> {
   return app;
 }
 
-export default appGenerator;
-
 if (require.main === module)
   (async () => {
-    const app = await appGenerator();
+    console.log(`CourseLore\nVersion: ${VERSION}`);
 
-    console.log(`CourseLore\nVersion: ${app.get("version")}`);
+    const ROOT = process.argv[2] ?? process.cwd();
+    const CONFIGURATION = path.join(ROOT, "courselore.js");
 
-    app.set("configuration", path.join(app.get("root path"), "courselore.js"));
-
+    let configuration: (app: express.Application) => Promise<void>;
     try {
-      (await import(app.get("configuration"))).default(app);
+      configuration = (await import(CONFIGURATION)).default;
     } catch (error) {
       if (error.code !== "MODULE_NOT_FOUND") {
         console.error(
-          `Failed to load configuration from ‘${app.get(
-            "configuration"
-          )}’ (probably there’s a problem with your configuration): ${
-            error.message
-          }`
+          `Failed to load configuration from ‘${CONFIGURATION}’ (probably there’s a problem with your configuration): ${error.message}`
         );
         process.exit(1);
       }
@@ -714,11 +706,9 @@ if (require.main === module)
         (
           await inquirer.prompt({
             type: "list",
-            message: `There’s no configuration file at ‘${app.get(
-              "configuration"
-            )}’, what would you like to do?`,
+            message: `There’s no configuration file at ‘${CONFIGURATION}’, what would you like to do?`,
             choices: [
-              `Create a configuration file at ‘${app.get("configuration")}’`,
+              `Create a configuration file at ‘${CONFIGURATION}’`,
               "Exit",
             ],
             name: "answer",
@@ -761,7 +751,7 @@ if (require.main === module)
               })
             ).answer;
           await fs.writeFile(
-            app.get("configuration"),
+            CONFIGURATION,
             prettier.format(
               javascript`
                 module.exports = (app) => {
@@ -788,15 +778,16 @@ if (require.main === module)
               { parser: "babel" }
             )
           );
-          console.log(
-            `Created configuration file at ‘${app.get("configuration")}’`
-          );
-          (await import(app.get("configuration"))).default(app);
+          console.log(`Created configuration file at ‘${CONFIGURATION}’`);
           break;
         case "Production":
           console.error("TODO");
           process.exit(1);
           break;
       }
+      configuration = (await import(CONFIGURATION)).default;
     }
+    const app = await newApp(ROOT);
+    app.set("require", require);
+    await configuration(app);
   })();

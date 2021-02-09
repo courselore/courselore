@@ -1,14 +1,15 @@
 import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
 import http from "http";
+import path from "path";
 import express from "express";
 import cookieSession from "cookie-session";
 import markdown from "tagged-template-noop";
-import appGenerator from ".";
+import newApp from ".";
 
 let app: express.Express;
 let server: http.Server;
 beforeAll(async () => {
-  app = await appGenerator();
+  app = await newApp(path.join(__dirname, ".."));
   server = express()
     .use(cookieSession({ secret: "test" }))
     .use(app)
