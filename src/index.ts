@@ -680,10 +680,8 @@ export default async function courselore(
 
   console.log(`CourseLore\nVersion: ${VERSION}`);
 
-  const CONFIGURATION_FILE = path.join(
-    process.argv[2] ?? process.cwd(),
-    "courselore.js"
-  );
+  const CONFIGURATION_FILE =
+    process.argv[2] ?? path.join(process.cwd(), "courselore.js");
 
   let configuration: (require: NodeRequire) => Promise<void>;
   try {
