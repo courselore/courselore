@@ -356,79 +356,49 @@ async function appGenerator(): Promise<express.Express> {
       runtimeDatabase.run(
         sql`DELETE FROM authenticationTokens WHERE email = ${email}`
       );
-      const token = newToken(20);
+      const token = newToken(40);
       const expiresAt = new Date();
       expiresAt.setMinutes(expiresAt.getMinutes() + 10);
       runtimeDatabase.run(
         sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
       );
 
-      if (
-        database.get<{ userExists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS userExists`
-        )!.userExists === 1
-      ) {
-        const magicLink = `${app.get("url")}/sign-in/${token}`;
-        return res.send(
-          app.get("layout")(
-            req,
-            html`<title>Sign in · CourseLore</title>`,
-            html`
-              <p>
-                You already have a CourseLore account! We sent you an email to
-                sign in.
-              </p>
-              <p>
-                <strong>
-                  Please check your email and click on the magic link to
-                  continue.
-                </strong>
-              </p>
-              <form method="post" action="${app.get("url")}/sign-up">
-                <input type="hidden" name="email" value="${email}" />
-                <p>
-                  <small>
-                    Can’t find the email? <button>Resend</button>.
-                  </small>
-                </p>
-              </form>
-              <div class="TODO">
-                <p>
-                  At this point CourseLore would have sent you an email, but
-                  this is only an early-stage demonstration and we want to make
-                  your life easier, so here’s what you’d find in that email
-                  instead:
-                </p>
-                <p><strong>From:</strong><br />CourseLore</p>
-                <p>
-                  <strong>Subject:</strong><br />Here’s your sign-in magic link
-                </p>
-                <p>
-                  <strong>Body:</strong><br />
-                  <a href="${magicLink}">${magicLink}</a><br />
-                  <small>
-                    Expires in 10 minutes (${expiresAt.toISOString()}).
-                  </small>
-                </p>
-              </div>
-            `
-          )
-        );
-      }
-
-      const magicLink = `${app.get("url")}/sign-up/${token}`;
-      res.send(
+      const magicLink = `${app.get("url")}/authenticate/${token}`;
+      return res.send(
         app.get("layout")(
           req,
-          html`<title>Sign up · CourseLore</title>`,
+          html`<title>Authenticate · CourseLore</title>`,
           html`
             <p>
-              At this point CourseLore would send you an email with a magic link
-              for signing up, but because this is only an early-stage
-              demonstration, here’s the magic link instead (valid until
-              ${expiresAt.toISOString()}):<br />
-              <a href="${magicLink}">${magicLink}</a><br />
+              <strong>
+                Please check the inbox for ${email} and click on the magic link
+                to continue.
+              </strong>
             </p>
+            <form method="post" action="${app.get("url")}/authenticate">
+              <input type="hidden" name="email" value="${email}" />
+              <p>
+                <small><button>Resend</button>.</small>
+              </p>
+            </form>
+            <div class="TODO">
+              <p>
+                At this point CourseLore would have sent you an email, but this
+                is only an early-stage demonstration and we want to make your
+                life easier, so here’s what you’d find in that email instead:
+              </p>
+              <p><strong>From:</strong><br />CourseLore</p>
+              <p>
+                <strong>Subject:</strong><br />Here’s your sign-in magic link
+              </p>
+              <p>
+                <strong>Body:</strong><br />
+                <a href="${magicLink}">${magicLink}</a><br />
+                <small>
+                  Expires in 10 minutes (${expiresAt.toISOString()}).
+                </small>
+              </p>
+            </div>
           `
         )
       );
@@ -694,11 +664,11 @@ async function appGenerator(): Promise<express.Express> {
       );
     `,
   ]);
-  shell.mkdir("-p", path.join(app.get("root path"), "tmp"));
+  shell.mkdir("-p", path.join(app.get("root path"), "var"));
   const runtimeDatabase = new Database(
     app.get("env") === "test"
       ? ":memory:"
-      : path.join(app.get("root path"), "tmp/courselore-runtime.db")
+      : path.join(app.get("root path"), "var/courselore-runtime.db")
   );
   databaseMigrate(database, [
     sql`
