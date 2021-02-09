@@ -43,7 +43,9 @@ const VERSION = JSON.parse(
   fsSync.readFileSync(path.join(__dirname, "../package.json"), "utf-8")
 ).version;
 
-export default async function newApp(root: string): Promise<express.Express> {
+export default async function newApp(
+  rootDirectory: string
+): Promise<express.Express> {
   const app = express();
 
   app.set("version", VERSION);
@@ -632,12 +634,8 @@ export default async function newApp(root: string): Promise<express.Express> {
   */
 
   // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
-  shell.mkdir("-p", path.join(root, "data"));
-  const database = new Database(
-    app.get("env") === "test"
-      ? ":memory:"
-      : path.join(root, "data/courselore.db")
-  );
+  shell.mkdir("-p", path.join(rootDirectory, "data"));
+  const database = new Database(path.join(rootDirectory, "data/courselore.db"));
   databaseMigrate(database, [
     sql`
       CREATE TABLE users (
@@ -661,11 +659,9 @@ export default async function newApp(root: string): Promise<express.Express> {
       );
     `,
   ]);
-  shell.mkdir("-p", path.join(root, "var"));
+  shell.mkdir("-p", path.join(rootDirectory, "var"));
   const runtimeDatabase = new Database(
-    app.get("env") === "test"
-      ? ":memory:"
-      : path.join(root, "var/courselore-runtime.db")
+    path.join(rootDirectory, "var/courselore-runtime.db")
   );
   databaseMigrate(runtimeDatabase, [
     sql`
@@ -689,16 +685,16 @@ if (require.main === module)
   (async () => {
     console.log(`CourseLore\nVersion: ${VERSION}`);
 
-    const ROOT = process.argv[2] ?? process.cwd();
-    const CONFIGURATION = path.join(ROOT, "courselore.js");
+    const ROOT_DIRECTORY = process.argv[2] ?? process.cwd();
+    const CONFIGURATION_FILE = path.join(ROOT_DIRECTORY, "courselore.js");
 
     let configuration: (app: express.Application) => Promise<void>;
     try {
-      configuration = (await import(CONFIGURATION)).default;
+      configuration = (await import(CONFIGURATION_FILE)).default;
     } catch (error) {
       if (error.code !== "MODULE_NOT_FOUND") {
         console.error(
-          `Failed to load configuration from ‘${CONFIGURATION}’ (probably there’s a problem with your configuration): ${error.message}`
+          `Failed to load configuration from ‘${CONFIGURATION_FILE}’ (probably there’s a problem with your configuration): ${error.message}`
         );
         process.exit(1);
       }
@@ -706,9 +702,9 @@ if (require.main === module)
         (
           await inquirer.prompt({
             type: "list",
-            message: `There’s no configuration file at ‘${CONFIGURATION}’. What would you like to do?`,
+            message: `There’s no configuration file at ‘${CONFIGURATION_FILE}’. What would you like to do?`,
             choices: [
-              `Create a configuration file at ‘${CONFIGURATION}’`,
+              `Create a configuration file at ‘${CONFIGURATION_FILE}’`,
               "Exit",
             ],
             name: "answer",
@@ -751,7 +747,7 @@ if (require.main === module)
               })
             ).answer;
           await fs.writeFile(
-            CONFIGURATION,
+            CONFIGURATION_FILE,
             prettier.format(
               javascript`
                 module.exports = (app) => {
@@ -778,17 +774,17 @@ if (require.main === module)
               { parser: "babel" }
             )
           );
-          console.log(`Created configuration file at ‘${CONFIGURATION}’`);
+          console.log(`Created configuration file at ‘${CONFIGURATION_FILE}’`);
           break;
         case "Production":
           console.error("TODO");
           process.exit(1);
           break;
       }
-      configuration = (await import(CONFIGURATION)).default;
+      configuration = (await import(CONFIGURATION_FILE)).default;
     }
-    console.log(`Configuration loaded from ‘${CONFIGURATION}’`);
-    const app = await newApp(ROOT);
+    console.log(`Configuration loaded from ‘${CONFIGURATION_FILE}’`);
+    const app = await newApp(ROOT_DIRECTORY);
     app.set("require", require);
     await configuration(app);
   })();

@@ -1,6 +1,8 @@
 import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
-import http from "http";
+import os from "os";
+import fs from "fs/promises";
 import path from "path";
+import http from "http";
 import express from "express";
 import cookieSession from "cookie-session";
 import markdown from "tagged-template-noop";
@@ -9,7 +11,9 @@ import newApp from ".";
 let app: express.Express;
 let server: http.Server;
 beforeAll(async () => {
-  app = await newApp(path.join(__dirname, ".."));
+  app = await newApp(
+    await fs.mkdtemp(path.join(os.tmpdir(), "courselore-test-"))
+  );
   server = express()
     .use(cookieSession({ secret: "test" }))
     .use(app)
