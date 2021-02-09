@@ -67,6 +67,7 @@
   - Bootstrap: The most popular.
   - TailwindCSS: The hot new option.
 - <https://github.com/wclr/ts-node-dev/issues/243>: Stop using `--pool` when calling `ts-node-dev`.
+- Call Prettier to check contents of `public/` folders.
 
 #### Deployment
 
@@ -117,6 +118,7 @@
   - Verify: https://www.ssllabs.com
 
 - HTTP/2:
+
   - <https://github.com/expressjs/express/issues/3388>: Express doesn’t work with Node’s http/2 implementation, because the `req` and `res` aren’t compatible.
   - Using Greenlock: https://git.rootprojects.org/root/greenlock-express.js/src/branch/master/examples/http2/server.js
   - Use the spdy package (seems abandoned, and people said it doesn’t work with recent versions of node: https://github.com/spdy-http2/node-spdy/issues/380)
@@ -126,6 +128,9 @@
     - koa
     - Hapi
     - tinyhttp
+
+- Auto-updater
+- `download.courselore.org` points to installer.
 
 ### Open-Source Contributions
 
