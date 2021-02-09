@@ -3,7 +3,6 @@
 import process from "process";
 import path from "path";
 import fs from "fs/promises";
-import fsSync from "fs";
 
 import express from "express";
 import * as expressValidator from "express-validator";
@@ -678,7 +677,7 @@ export default async function courselore(
 (async () => {
   if (require.main !== module) return;
 
-  console.log(`CourseLore\nVersion: ${VERSION}`);
+  console.log(`CourseLore/${VERSION}`);
 
   const CONFIGURATION_FILE =
     process.argv[2] ?? path.join(process.cwd(), "courselore.js");
