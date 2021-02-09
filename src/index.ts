@@ -751,9 +751,9 @@ if (require.main === module)
             prettier.format(
               javascript`
                 module.exports = (app) => {
-                  const courseloreRequire = app.get("require");
-                  const express = courseloreRequire("express");
-                  const cookieSession = courseloreRequire("cookie-session");
+                  const appRequire = app.get("require");
+                  const express = appRequire("express");
+                  const cookieSession = appRequire("cookie-session");
 
                   ${
                     url === undefined
