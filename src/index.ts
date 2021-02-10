@@ -761,112 +761,112 @@ $$
   return app;
 }
 
-(async () => {
-  if (require.main !== module) return;
+if (require.main !== module)
+  (async () => {
+    console.log(`CourseLore/${VERSION}`);
 
-  console.log(`CourseLore/${VERSION}`);
+    const CONFIGURATION_FILE =
+      process.argv[2] ?? path.join(process.cwd(), "courselore.js");
 
-  const CONFIGURATION_FILE =
-    process.argv[2] ?? path.join(process.cwd(), "courselore.js");
-
-  let configuration: (require: NodeRequire) => Promise<void>;
-  try {
-    configuration = require(CONFIGURATION_FILE);
-  } catch (error) {
-    if (error.code !== "MODULE_NOT_FOUND") {
-      console.error(
-        `Failed to load configuration from ‘${CONFIGURATION_FILE}’ (probably there’s a problem with your configuration): ${error.message}`
-      );
-      process.exit(1);
-    }
-    if (
-      (
-        await inquirer.prompt({
-          type: "list",
-          message: `There’s no configuration file at ‘${CONFIGURATION_FILE}’. What would you like to do?`,
-          choices: [
-            `Create a configuration file at ‘${CONFIGURATION_FILE}’`,
-            "Exit",
-          ],
-          name: "answer",
-        })
-      ).answer == "Exit"
-    )
-      process.exit();
-    switch (
-      (
-        await inquirer.prompt({
-          type: "list",
-          message: "What kind of configuration file would you like to create?",
-          choices: ["Demonstration/Development", "Production"],
-          name: "answer",
-        })
-      ).answer
-    ) {
-      case "Demonstration/Development":
-        let url: string | undefined;
-        if (
-          (
-            await inquirer.prompt({
-              type: "list",
-              name: "answer",
-              message:
-                "From where would you like to access this CourseLore demonstration?",
-              choices: [
-                "Only from this machine on which I’m running CourseLore",
-                "From other devices as well (for example, my phone)",
-              ],
-            })
-          ).answer === "From other devices as well (for example, my phone)"
-        )
-          url = (
-            await inquirer.prompt({
-              type: "input",
-              name: "answer",
-              message: `From what URL can other devices access this machine? (For example, http://<your-machine-name>.local:4000)`,
-            })
-          ).answer;
-        await fs.writeFile(
-          CONFIGURATION_FILE,
-          prettier.format(
-            javascript`
-              module.exports = async (require) => {
-                const express = require("express");
-                const cookieSession = require("cookie-session");
-                const courselore = require(".").default;
-              
-                const app = await courselore(__dirname);
-              
-                ${
-                  url === undefined
-                    ? javascript``
-                    : javascript`app.set("url", "${url}");`
-                }
-
-                const reverseProxy = express();
-              
-                reverseProxy.use(cookieSession({ secret: "demonstration/development" }));
-                reverseProxy.use(app);
-              
-                reverseProxy.listen(new URL(app.get("url")).port, () => {
-                  console.log(
-                    \`Demonstration/Development web server started at \${app.get("url")}\`
-                  );
-                });
-              };
-            `,
-            { parser: "babel" }
-          )
+    let configuration: (require: NodeRequire) => Promise<void>;
+    try {
+      configuration = require(CONFIGURATION_FILE);
+    } catch (error) {
+      if (error.code !== "MODULE_NOT_FOUND") {
+        console.error(
+          `Failed to load configuration from ‘${CONFIGURATION_FILE}’ (probably there’s a problem with your configuration): ${error.message}`
         );
-        console.log(`Created configuration file at ‘${CONFIGURATION_FILE}’`);
-        break;
-      case "Production":
-        console.error("TODO");
         process.exit(1);
-        break;
+      }
+      if (
+        (
+          await inquirer.prompt({
+            type: "list",
+            message: `There’s no configuration file at ‘${CONFIGURATION_FILE}’. What would you like to do?`,
+            choices: [
+              `Create a configuration file at ‘${CONFIGURATION_FILE}’`,
+              "Exit",
+            ],
+            name: "answer",
+          })
+        ).answer == "Exit"
+      )
+        process.exit();
+      switch (
+        (
+          await inquirer.prompt({
+            type: "list",
+            message:
+              "What kind of configuration file would you like to create?",
+            choices: ["Demonstration/Development", "Production"],
+            name: "answer",
+          })
+        ).answer
+      ) {
+        case "Demonstration/Development":
+          let url: string | undefined;
+          if (
+            (
+              await inquirer.prompt({
+                type: "list",
+                name: "answer",
+                message:
+                  "From where would you like to access this CourseLore demonstration?",
+                choices: [
+                  "Only from this machine on which I’m running CourseLore",
+                  "From other devices as well (for example, my phone)",
+                ],
+              })
+            ).answer === "From other devices as well (for example, my phone)"
+          )
+            url = (
+              await inquirer.prompt({
+                type: "input",
+                name: "answer",
+                message: `With what URL can other devices access this machine? (For example, http://<your-machine-name>.local:4000)`,
+              })
+            ).answer;
+          await fs.writeFile(
+            CONFIGURATION_FILE,
+            prettier.format(
+              javascript`
+                module.exports = async (require) => {
+                  const express = require("express");
+                  const cookieSession = require("cookie-session");
+                  const courselore = require(".").default;
+                
+                  const app = await courselore(__dirname);
+                
+                  ${
+                    url === undefined
+                      ? javascript``
+                      : javascript`app.set("url", "${url}");`
+                  }
+
+                  const reverseProxy = express();
+                
+                  reverseProxy.use(cookieSession({ secret: "demonstration/development" }));
+                  reverseProxy.use(app);
+                
+                  reverseProxy.listen(new URL(app.get("url")).port, () => {
+                    console.log(
+                      \`Demonstration/Development web server started at \${app.get("url")}\`
+                    );
+                  });
+                };
+              `,
+              { parser: "babel" }
+            )
+          );
+          console.log(`Created configuration file at ‘${CONFIGURATION_FILE}’`);
+          break;
+        case "Production":
+          console.error("TODO");
+          process.exit(1);
+          break;
+      }
+      configuration = require(CONFIGURATION_FILE);
     }
-    configuration = require(CONFIGURATION_FILE);
-  }
-  console.log(`Configuration loaded from ‘${CONFIGURATION_FILE}’`);
-  await configuration(require);
-})();
+    console.log(`Configuration loaded from ‘${CONFIGURATION_FILE}’`);
+    await configuration(require);
+  })();
