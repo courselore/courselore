@@ -863,8 +863,6 @@ if (require.main === module)
             prettier.format(
               javascript`
                 module.exports = async (require) => {
-                  const express = require("express");
-                  const cookieSession = require("cookie-session");
                   const courselore = require(".").default;
                 
                   const app = await courselore(__dirname);
@@ -875,12 +873,7 @@ if (require.main === module)
                       : javascript`app.set("url", "${url}");`
                   }
 
-                  const reverseProxy = express();
-                
-                  reverseProxy.use(cookieSession({ secret: "demonstration/development" }));
-                  reverseProxy.use(app);
-                
-                  reverseProxy.listen(new URL(app.get("url")).port, () => {
+                  app.listen(new URL(app.get("url")).port, () => {
                     console.log(
                       \`Demonstration/Development web server started at \${app.get("url")}\`
                     );
