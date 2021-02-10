@@ -862,6 +862,38 @@ if (require.main === module)
         case "Production":
           console.error("TODO");
           process.exit(1);
+          /*
+  const fsSync = require("fs");
+  const Greenlock = require("greenlock");
+  const TLS_KEYS_DIRECTORY = path.join(__dirname, "var/keys/tls");
+  const GREENLOCK_OPTIONS = {
+    packageRoot: TLS_KEYS_DIRECTORY,
+    packageAgent: `CourseLore/${VERSION}`,
+    maintainerEmail: administratorEmail,
+  };
+  const HOSTNAMES = [
+    "courselore.org",
+    "www.courselore.org",
+    "courselore.com",
+    "www.courselore.com",
+  ];
+  if (!fsSync.existsSync(TLS_KEYS_DIRECTORY)) {
+    shelljs.mkdir("-p", TLS_KEYS_DIRECTORY);
+    const greenlockManager = Greenlock.create(GREENLOCK_OPTIONS).manager;
+    await greenlockManager.defaults({
+      agreeToTerms: true,
+      subscriberEmail: app.get("administrator email"),
+    });
+    await greenlockManager.add({
+      subject: HOSTNAMES[0],
+      altnames: HOSTNAMES,
+    });
+    console.log(
+      "TLS keys configured. Restart CourseLore. Shutting down now..."
+    );
+    process.exit();
+  }
+          */
           break;
       }
       configuration = require(CONFIGURATION_FILE);
