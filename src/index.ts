@@ -5,6 +5,8 @@ import path from "path";
 import fs from "fs/promises";
 
 import express from "express";
+import cookieSession from "cookie-session";
+
 import * as expressValidator from "express-validator";
 
 import { Database, sql } from "@leafac/sqlite";
@@ -289,8 +291,167 @@ export default async function courselore(
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
 
+  // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
+  shell.mkdir("-p", path.join(rootDirectory, "data"));
+  const database = new Database(path.join(rootDirectory, "data/courselore.db"));
+  app.set("database", database);
+  databaseMigrate(database, [
+    sql`
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL
+      );
+
+      CREATE TABLE courses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL
+      );
+
+      CREATE TABLE enrollments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user INTEGER NOT NULL REFERENCES users,
+        course INTEGER NOT NULL REFERENCES courses,
+        role TEXT NOT NULL,
+        UNIQUE (user, course)
+      );
+    `,
+  ]);
+
+  /*
+  Fixtures
+
+# CommonMark
+
+> Block quote.
+
+Some _emphasis_, **importance**, and `code`.
+
+---
+
+# GitHub Flavored Markdown (GFM)
+
+## Autolink literals
+
+www.example.com, https://example.com, and contact@example.com.
+
+## Strikethrough
+
+~one~ or ~~two~~ tildes.
+
+## Table
+
+| a | b  |  c |  d  |
+| - | :- | -: | :-: |
+
+## Tasklist
+
+* [ ] to do
+* [x] done
+
+---
+
+# HTML
+
+<details class="note">
+
+A mix of *Markdown* and <em>HTML</em>.
+
+</details>
+
+---
+
+# Cross-Site Scripting (XSS)
+
+👍<script>document.write("💩");</script>🙌
+
+---
+
+# Syntax highlighting (Shiki)
+
+```javascript
+const shiki = require('shiki')
+
+shiki.getHighlighter({
+  theme: 'nord'
+}).then(highlighter => {
+  console.log(highlighter.codeToHtml(`console.log('shiki');`, 'js'))
+})
+```
+
+---
+
+# Mathematics (KaTeX)
+
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+equation.
+
+$$
+L = \frac{1}{2} \rho v^2 S C_L
+$$
+
+A raw dollar sign: \$
+
+$$
+\invalidMacro
+$$
+
+Prevent large width/height visual affronts:
+
+$$
+\rule{500em}{500em}
+$$
+
+  */
+
+  shell.mkdir("-p", path.join(rootDirectory, "var"));
+  const runtimeDatabase = new Database(
+    path.join(rootDirectory, "var/courselore-runtime.db")
+  );
+  app.set("runtime database", runtimeDatabase);
+  databaseMigrate(runtimeDatabase, [
+    sql`
+      CREATE TABLE secrets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        key TEXT NOT NULL UNIQUE,
+        value TEXT NOT NULL
+      );
+
+      CREATE TABLE authenticationTokens (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE,
+        expiresAt TEXT NOT NULL
+      );
+    `,
+  ]);
+
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+
+  // FIXME:
+  // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
+  // https://www.npmjs.com/package/cookie-session
+  // https://github.com/expressjs/express/blob/master/examples/cookie-sessions/index.js
+  // https://www.npmjs.com/package/express-session
+  // https://github.com/expressjs/express/blob/master/examples/session/index.js
+  app.use(
+    cookieSession({
+      secret: runtimeDatabase.executeTransaction<string>(() => {
+        let cookieSecret = runtimeDatabase.get<{ value: string }>(
+          sql`SELECT value FROM secrets WHERE key = ${"cookie"}`
+        )?.value;
+        if (cookieSecret === undefined) {
+          cookieSecret = newToken(60);
+          runtimeDatabase.run(
+            sql`INSERT INTO secrets (key, value) VALUES (${"cookie"}, ${cookieSecret})`
+          );
+        }
+        return cookieSecret;
+      }),
+    })
+  );
 
   const unauthenticatedRoutes = express.Router();
 
@@ -624,134 +785,6 @@ export default async function courselore(
   });
   const posts: { author: string; content: string; createdAt: string }[] = [];
   */
-
-  // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
-  shell.mkdir("-p", path.join(rootDirectory, "data"));
-  const database = new Database(path.join(rootDirectory, "data/courselore.db"));
-  databaseMigrate(database, [
-    sql`
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL
-      );
-
-      CREATE TABLE courses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        token TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL
-      );
-
-      CREATE TABLE enrollments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user INTEGER NOT NULL REFERENCES users,
-        course INTEGER NOT NULL REFERENCES courses,
-        role TEXT NOT NULL,
-        UNIQUE (user, course)
-      );
-    `,
-  ]);
-
-  /*
-  Fixtures
-
-# CommonMark
-
-> Block quote.
-
-Some _emphasis_, **importance**, and `code`.
-
----
-
-# GitHub Flavored Markdown (GFM)
-
-## Autolink literals
-
-www.example.com, https://example.com, and contact@example.com.
-
-## Strikethrough
-
-~one~ or ~~two~~ tildes.
-
-## Table
-
-| a | b  |  c |  d  |
-| - | :- | -: | :-: |
-
-## Tasklist
-
-* [ ] to do
-* [x] done
-
----
-
-# HTML
-
-<details class="note">
-
-A mix of *Markdown* and <em>HTML</em>.
-
-</details>
-
----
-
-# Cross-Site Scripting (XSS)
-
-👍<script>document.write("💩");</script>🙌
-
----
-
-# Syntax highlighting (Shiki)
-
-```javascript
-const shiki = require('shiki')
-
-shiki.getHighlighter({
-  theme: 'nord'
-}).then(highlighter => {
-  console.log(highlighter.codeToHtml(`console.log('shiki');`, 'js'))
-})
-```
-
----
-
-# Mathematics (KaTeX)
-
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
-equation.
-
-$$
-L = \frac{1}{2} \rho v^2 S C_L
-$$
-
-A raw dollar sign: \$
-
-$$
-\invalidMacro
-$$
-
-Prevent large width/height visual affronts:
-
-$$
-\rule{500em}{500em}
-$$
-
-  */
-
-  shell.mkdir("-p", path.join(rootDirectory, "var"));
-  const runtimeDatabase = new Database(
-    path.join(rootDirectory, "var/courselore-runtime.db")
-  );
-  databaseMigrate(runtimeDatabase, [
-    sql`
-      CREATE TABLE authenticationTokens (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        token TEXT NOT NULL UNIQUE,
-        email TEXT NOT NULL UNIQUE,
-        expiresAt TEXT NOT NULL
-      );
-    `,
-  ]);
 
   function newToken(length: number): string {
     return cryptoRandomString({ length, characters: "cfhjkprtvwxy3479" });
