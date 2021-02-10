@@ -112,11 +112,19 @@ export default async function courselore(
                 margin: 1em auto;
               }
 
-              a {
+              a,
+              .a {
                 color: inherit;
+                background-color: inherit;
+                border: none;
+                font-size: 1em;
+                text-decoration: underline;
+                padding: 0;
+                cursor: pointer;
               }
 
               a.undecorated,
+              .a.undecorated,
               nav a {
                 text-decoration: none;
               }
@@ -165,7 +173,7 @@ export default async function courselore(
                 outline: none;
               }
 
-              .TODO {
+              .demonstration {
                 font-size: 0.875em;
                 background-color: whitesmoke;
                 box-sizing: border-box;
@@ -425,6 +433,16 @@ $$
         expiresAt TEXT NOT NULL
       );
     `,
+
+    sql`
+      CREATE TABLE emailQueue (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        to_ TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        body TEXT NOT NULL,
+        tryAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `,
   ]);
 
   app.use(express.static(path.join(__dirname, "../public")));
@@ -495,11 +513,27 @@ $$
     );
   });
 
+  // TODO: Extract into package
+  // References:
+  // https://github.com/reactjs/server-components-demo/blob/2d9fb948b7073f5f07e22d71350422ee9e1cc7f3/server/api.server.js#L44-L52
+  // https://github.com/Abazhenov/express-async-handler
+  function asyncHandler(
+    handler: express.RequestHandler
+  ): express.RequestHandler {
+    return async (req, res, next) => {
+      try {
+        return await handler(req, res, next);
+      } catch (x) {
+        next(x);
+      }
+    };
+  }
+
   // FIXME: Make more sophisticated use of expressValidator.
   unauthenticatedRoutes.post(
     "/authenticate",
     expressValidator.body("email").isEmail(),
-    (req, res) => {
+    asyncHandler(async (req, res) => {
       const errors = expressValidator.validationResult(req);
       if (!errors.isEmpty()) return res.status(400).json(errors.array());
 
@@ -516,45 +550,31 @@ $$
       );
 
       const magicLink = `${app.get("url")}/authenticate/${token}`;
+      const sentEmail = await sendEmail({
+        to: email,
+        subject: "Here’s your magic link",
+        body: html`<p><a href="${magicLink}">${magicLink}</a></p>`,
+      });
       return res.send(
         app.get("layout")(
           req,
           html`<title>Authenticate · CourseLore</title>`,
           html`
-            <p>
-              <strong>
-                Please check the inbox for ${email} and click on the magic link
-                to continue.
-              </strong>
-            </p>
             <form method="post" action="${app.get("url")}/authenticate">
               <input type="hidden" name="email" value="${email}" />
               <p>
-                <small><button>Resend</button>.</small>
+                <strong>
+                  Please check ${email} (including the spam folder) and click on
+                  the magic link to continue.
+                  <small><button class="a">Resend</button>.</small>
+                </strong>
               </p>
             </form>
-            <div class="TODO">
-              <p>
-                At this point CourseLore would have sent you an email, but this
-                is only an early-stage demonstration and we want to make your
-                life easier, so here’s what you’d find in that email instead:
-              </p>
-              <p><strong>From:</strong><br />CourseLore</p>
-              <p>
-                <strong>Subject:</strong><br />Here’s your sign-in magic link
-              </p>
-              <p>
-                <strong>Body:</strong><br />
-                <a href="${magicLink}">${magicLink}</a><br />
-                <small>
-                  Expires in 10 minutes (${expiresAt.toISOString()}).
-                </small>
-              </p>
-            </div>
+            $${sentEmail}
           `
         )
       );
-    }
+    })
   );
 
   app.use((req, res, next) => {
@@ -790,6 +810,35 @@ $$
     return cryptoRandomString({ length, characters: "cfhjkprtvwxy3479" });
   }
 
+  async function sendEmail({
+    to,
+    subject,
+    body,
+  }: {
+    to: string;
+    subject: string;
+    body: string;
+  }): Promise<string> {
+    if (app.get("demonstration"))
+      return html`
+        <div class="demonstration">
+          <p>
+            CourseLore is running in demonstration mode, so it doesn’t send
+            emails. Here’s the email that would have been sent:
+          </p>
+          <p><strong>From:</strong> CourseLore</p>
+          <p><strong>To:</strong> ${to}</p>
+          <p><strong>Subject:</strong> ${subject}</p>
+          <p><strong>Body:</strong></p>
+          $${body}
+        </div>
+      `;
+    runtimeDatabase.run(
+      sql`INSERT INTO emailQueue (to_, subject, body, tryAt) VALUES (${to}, ${subject}, ${body}, ${new Date().toISOString()})`
+    );
+    return html``;
+  }
+
   return app;
 }
 
@@ -919,6 +968,7 @@ if (require.main === module)
     );
     process.exit();
   }
+  app.disable("demonstration");
           */
           break;
       }
