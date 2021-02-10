@@ -761,7 +761,7 @@ $$
   return app;
 }
 
-if (require.main !== module)
+if (require.main === module)
   (async () => {
     console.log(`CourseLore/${VERSION}`);
 
@@ -823,7 +823,7 @@ if (require.main !== module)
               await inquirer.prompt({
                 type: "input",
                 name: "answer",
-                message: `With what URL can other devices access this machine? (For example, http://<your-machine-name>.local:4000)`,
+                message: `With what URL can other devices access this machine (for example, ‘http://<your-machine-name>.local:4000’)?`,
               })
             ).answer;
           await fs.writeFile(
