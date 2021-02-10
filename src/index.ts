@@ -626,7 +626,6 @@ export default async function courselore(
   */
 
   // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
-  // TODO: Log database paths & migrations.
   shell.mkdir("-p", path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
   databaseMigrate(database, [
