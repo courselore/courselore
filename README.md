@@ -157,6 +157,7 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 #### Email
 
 - Requirements
+  - IPv6.
   - DNS:
     - MX DNS record
       - Check with <https://toolbox.googleapps.com/apps/checkmx/>
@@ -170,7 +171,7 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - DKIM
     - <https://support.google.com/a/answer/174124?visit_id=637457136864921918-3619574292&ref_topic=2752442&rd=1#zippy=>
     - Key of 1024 bits or longer (recommended is 2048 bits)
-  - TLS??
+  - TLS
   - MTA-STS??
   - ARC??
     - http://arc-spec.org
