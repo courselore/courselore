@@ -4,9 +4,7 @@
   "description": "The Open-Source Student Forum",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "bin": {
-    "courselore": "lib/index.js"
-  },
+  "bin": "lib/index.js",
   "repository": "courselore/courselore",
   "keywords": [
     "forum",
