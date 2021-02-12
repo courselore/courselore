@@ -5,8 +5,8 @@ import path from "path";
 import fs from "fs/promises";
 
 import express from "express";
+import core from "express-serve-static-core";
 import cookieSession from "cookie-session";
-
 import * as expressValidator from "express-validator";
 
 import { Database, sql } from "@leafac/sqlite";
@@ -30,12 +30,8 @@ import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 
 import shell from "shelljs";
-
-// FIXME: Update Node and use crypto.randomInt()
 import cryptoRandomString from "crypto-random-string";
-
 import inquirer from "inquirer";
-
 import prettier from "prettier";
 
 type HTML = string;
@@ -513,43 +509,13 @@ $$
     );
   });
 
-  // TODO:
-  // https://github.com/Abazhenov/express-async-handler/pull/42
-  // https://github.com/Abazhenov/express-async-handler
-  // https://github.com/reactjs/server-components-demo/blob/2d9fb948b7073f5f07e22d71350422ee9e1cc7f3/server/api.server.js#L44-L52
-  // https://github.com/lynxtaa/express-better-async-wrap/blob/master/src/index.ts
-  // https://github.com/Greenfields/express-async-wrap / https://unpkg.com/browse/@types/express-async-wrap@1.0.0/
-  function asyncHandler(
-    handler: express.RequestHandler
-  ): express.RequestHandler {
-    return async (req, res, next) => {
-      try {
-        return await handler(req, res, next);
-      } catch (x) {
-        next(x);
-      }
-    };
-  }
-
-  function asyncErrorHandler(
-    handler: express.ErrorRequestHandler
-  ): express.ErrorRequestHandler {
-    return async (err, req, res, next) => {
-      try {
-        return await handler(err, req, res, next);
-      } catch (x) {
-        next(x);
-      }
-    };
-  }
-
   // FIXME: Make more sophisticated use of expressValidator.
-  unauthenticatedRoutes.post(
+  unauthenticatedRoutes.post<core.ParamsDictionary, string, { email: string }>(
     "/authenticate",
     expressValidator.body("email").isEmail(),
-    asyncHandler(async (req, res) => {
+    (req, res) => {
       const errors = expressValidator.validationResult(req);
-      if (!errors.isEmpty()) return res.status(400).json(errors.array());
+      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
 
       const { email } = req.body;
 
@@ -564,7 +530,7 @@ $$
       );
 
       const magicLink = `${app.get("url")}/authenticate/${token}`;
-      const sentEmail = await sendEmail({
+      const sentEmail = sendEmail({
         to: email,
         subject: "Here’s your magic link",
         body: html`<p><a href="${magicLink}">${magicLink}</a></p>`,
@@ -588,8 +554,14 @@ $$
           `
         )
       );
-    })
+    }
   );
+
+  // unauthenticatedRoutes.get<{ token: number }>(
+  //   "/authenticate/:token",
+  //   (req, res) => {
+  //   }
+  // );
 
   app.use((req, res, next) => {
     if (req.session!.email === undefined) next();
@@ -824,7 +796,7 @@ $$
     return cryptoRandomString({ length, characters: "cfhjkprtvwxy3479" });
   }
 
-  async function sendEmail({
+  function sendEmail({
     to,
     subject,
     body,
@@ -832,7 +804,7 @@ $$
     to: string;
     subject: string;
     body: string;
-  }): Promise<string> {
+  }): string {
     if (app.get("demonstration"))
       return html`
         <div class="demonstration">

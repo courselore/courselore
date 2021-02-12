@@ -22,8 +22,8 @@
   "scripts": {
     "start": "ts-node-dev --poll src/index.ts",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
-    "build": "tsc && pkg --targets node14 --out-path pkg .",
-    "clean": "shx rm -rf lib pkg"
+    "build": "tsc && caxa . \"node lib/index.js\" courselore",
+    "clean": "shx rm -rf lib courselore"
   },
   "dependencies": {
     "@leafac/html": "^1.0.0",
@@ -31,7 +31,7 @@
     "@leafac/sqlite": "^1.1.2",
     "@leafac/sqlite-migration": "^1.0.3",
     "cookie-session": "^1.4.0",
-    "crypto-random-string": "^3.3.0",
+    "crypto-random-string": "^3.3.1",
     "deepmerge": "^4.2.2",
     "express": "^4.17.1",
     "express-validator": "^6.9.2",
@@ -54,12 +54,12 @@
     "unified": "^9.2.0"
   },
   "devDependencies": {
-    "@leafac/pkg": "^4.4.11",
     "@types/cookie-session": "^2.0.42",
     "@types/express": "^4.17.11",
     "@types/inquirer": "^7.3.1",
     "@types/node": "^14.14.21",
     "@types/shelljs": "^0.8.8",
+    "caxa": "^0.0.1",
     "jest": "^26.6.3",
     "shx": "^0.3.3",
     "ts-jest": "^26.4.4",
@@ -69,14 +69,5 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
-  },
-  "pkg": {
-    "assets": [
-      "public/**/*",
-      "node_modules/better-sqlite3/build/Release/better_sqlite3.node",
-      "node_modules/shiki-themes/data/**/*",
-      "node_modules/shiki-languages/data/**/*",
-      "node_modules/onigasm/lib/onigasm.wasm"
-    ]
   }
 }
