@@ -22,8 +22,10 @@
   "scripts": {
     "start": "ts-node-dev --poll src/index.ts",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
-    "build": "tsc && caxa . \"node lib/index.js\" courselore",
-    "clean": "shx rm -rf lib courselore"
+    "build": "tsc && caxa \"$PWD\" \"node [CAXA]/lib/index.js\" courselore",
+    "clean": "shx rm -rf lib courselore",
+    "clean:data": "shx rm -rf data var",
+    "clean:configuration": "srx rm courselore.js"
   },
   "dependencies": {
     "@leafac/html": "^1.0.0",
