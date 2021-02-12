@@ -469,7 +469,7 @@ $$
 
   const unauthenticatedRoutes = express.Router();
 
-  unauthenticatedRoutes.get("/", (req, res) => {
+  unauthenticatedRoutes.get(["/", "/authenticate"], (req, res) => {
     res.send(
       app.get("layout")(
         req,
@@ -543,11 +543,8 @@ $$
             <form method="post" action="${app.get("url")}/authenticate">
               <input type="hidden" name="email" value="${email}" />
               <p>
-                <strong>
-                  Please check ${email} (including the spam folder) and click on
-                  the magic link to continue.
-                  <small><button class="a">Resend</button>.</small>
-                </strong>
+                Check ${email} (including the spam folder) and click on the
+                magic link to continue. <button class="a">Resend</button>.
               </p>
             </form>
             $${sentEmail}
@@ -557,11 +554,68 @@ $$
     }
   );
 
-  // unauthenticatedRoutes.get<{ token: number }>(
-  //   "/authenticate/:token",
-  //   (req, res) => {
-  //   }
-  // );
+  unauthenticatedRoutes.get<{ token: string }>(
+    "/authenticate/:token",
+    (req, res) => {
+      const { token } = req.params;
+      const authenticationToken = database.get<{
+        email: string;
+        expiresAt: string;
+      }>(
+        sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
+      );
+      database.run(
+        sql`DELETE FROM authenticationTokens WHERE token = ${token}`
+      );
+      if (
+        authenticationToken === undefined ||
+        new Date(authenticationToken.expiresAt) < new Date()
+      )
+        return res.send(
+          app.get("layout")(
+            req,
+            html`<title>Authentication · CourseLore</title>`,
+            html`
+              <p>
+                This magic link is invalid or has expired. Let’s take it from
+                the top:
+                <a href="${app.get("url")}/sign-in">Sign in</a>.
+                <a href="${app.get("url")}/sign-up">Sign up</a>.
+              </p>
+            `
+          )
+        );
+      const { email } = authenticationToken;
+      const isNewUser =
+        database.get<{ output: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS output`
+        )!.output === 0;
+      if (isNewUser) {
+        const token = newToken(40);
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+        database.run(
+          sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
+        );
+        return res.send(
+          app.get("layout")(
+            req,
+            html`<title>Sign up · CourseLore</title>`,
+            html`
+              <form method="post" action="${app.get("url")}/users">
+                <h1>Welcome to CourseLore!</h1>
+                <input type="hidden" name="token" value="${token}" />
+                <label>Name: <input type="text" name="name" /></label>
+                <button>Create account</button>
+              </form>
+            `
+          )
+        );
+      }
+      req.session!.email = authenticationToken.email;
+      res.redirect(`${app.get("url")}/`);
+    }
+  );
 
   app.use((req, res, next) => {
     if (req.session!.email === undefined) next();
@@ -576,92 +630,6 @@ $$
   }, authenticatedRoutes);
 
   /*
-
-  app.post("/login", expressValidator.body("email").isEmail(), (req, res) => {
-    const errors = expressValidator.validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json(errors.array());
-    const { email } = req.body;
-    database.run(sql`DELETE FROM authenticationTokens WHERE email = ${email}`);
-    const token = newToken(20);
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-    database.run(
-      sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
-    );
-    const magicLink = `${app.get("url")}/login/${token}`;
-    return res.send(
-      app.get("layout")(
-        req,
-        html`<title>Login · CourseLore</title>`,
-        html`
-          <p>
-            At this point CourseLore would send you an email with a magic link
-            for login, but because this is only an early-stage demonstration,
-            here’s the magic link instead (valid until
-            ${expiresAt.toISOString()}):<br />
-            <a href="${magicLink}">${magicLink}</a><br />
-          </p>
-        `
-      )
-    );
-  });
-
-  app.get("/login/:token", (req, res) => {
-    const { token } = req.params;
-    const authenticationToken = database.get<{
-      email: string;
-      expiresAt: string;
-    }>(
-      sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
-    );
-    if (
-      authenticationToken === undefined ||
-      new Date(authenticationToken.expiresAt) < new Date()
-    )
-      return res.send(
-        app.get("layout")(
-          req,
-          html`<title>Login · CourseLore</title>`,
-          html`
-            <p>
-              Invalid or expired magic link.
-              <a href="${app.get("url")}/login">Try logging in again</a>
-            </p>
-          `
-        )
-      );
-    database.run(sql`DELETE FROM authenticationTokens WHERE token = ${token}`);
-    const { email } = authenticationToken;
-    const isNewUser =
-      database.get<{ output: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS output`
-      ).output === 0;
-    if (isNewUser) {
-      const token = newToken(20);
-      const expiresAt = new Date();
-      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-      database.run(
-        sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
-      );
-      return res.send(
-        app.get("layout")(
-          req,
-          html`<title>Sign up · CourseLore</title>`,
-          html`
-            <p>Welcome to CourseLore!</p>
-            <form method="post" action="${app.get("url")}/users">
-              <input type="hidden" name="token" value="${token}" />
-              <label>Name: <input type="text" name="name" /></label>
-              <button>Create account</button>
-            </form>
-          `
-        )
-      );
-    }
-    req.session!.email = authenticationToken.email;
-    res.redirect(`${app.get("url")}/`);
-  });
-
   app.post(
     "/users",
     expressValidator.body("token").exists(),
@@ -810,7 +778,7 @@ $$
         <div class="demonstration">
           <p>
             CourseLore is running in demonstration mode, so it doesn’t send
-            emails. Here’s the email that would have been sent:
+            emails. Here’s what would have been sent:
           </p>
           <p><strong>From:</strong> CourseLore</p>
           <p><strong>To:</strong> ${to}</p>
