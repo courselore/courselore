@@ -477,8 +477,18 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 ### Meetings
 
 <details>
+<summary>2021-02-13</summary>
 
-### 2021-02-06
+- Finish the account creation workflow and wired it to the authentication workflow demonstrated last week.
+- Tried to use [ECMAScript modules](https://nodejs.org/api/esm.html) (because of top-level async/await). Still too fresh. While Node’s support for them isn’t experimental anymore, some of the underlying infrastructure still is, so other tools in the ecosystem (for example, Jest & ts-node-dev) don’t support them very well (require flags and whatnot).
+- Had issues with some native modules (for example, sharp) not working with @leafac/pkg. Ended up creating <https://npm.im/caxa>.
+- Had issues with types for <https://www.npmjs.com/package/express-async-handler>. Ended up creating <https://npm.im/@leafac/express-async-handler>.
+- Created a proper **demonstration** mode for CourseLore.
+
+</details>
+
+<details>
+<summary>2021-02-06</summary>
 
 - Wrote documentation at https://github.com/courselore/courselore and these documents you’re looking at.
 
@@ -502,7 +512,10 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - <https://www.npmjs.com/package/@leafac/sqlite-migration>
   - <https://github.com/leafac/pkg/commit/ccc29eadc33f7a92179a68614e9d7ab1b5017e6c>
 
-### 2020-01-30
+</details>
+
+<details>
+<summary>2020-01-30</summary>
 
 #### Progress Report
 
@@ -563,5 +576,54 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - We’re going with Option 2 for now, as it seems like a good sweet-spot in terms of security, simplicity to implement, and generality. It works for every university without extra effort on our part. That said, we may still give Option 1 as an alternative (as Slack does). Also, people may customize CourseLore with their own routes to implement Option 3.
 
   - **Note:** We’re following Slack in the approach to authentication (the so-called **magic link**), but we’re **not** going to have the weird separation of accounts per team that Slack has. There will only be one CourseLore account per email and the user may join multiple courses.
+
+</details>
+
+<details>
+<summary>2021-01-06</summary>
+
+- The project has officially started! 🙌
+- How we’re different from existing platforms
+  - Open-source
+  - Self-hosting option
+  - Privacy & more care with students data
+  - Slicker interface than Piazza
+  - Lightweight when compared to full LMS like Moodle
+  - Articles showing that people care about these issues:
+    - https://thetech.com/2020/03/05/piazza-security
+    - https://www.stanforddaily.com/2020/10/04/concerned-with-piazzas-data-privacy-management-some-professors-look-to-alternative-discussion-forums/
+    - https://matheducators.stackexchange.com/questions/7406/more-user-friendly-alternatives-to-piazza-service
+    - https://redecentralize.org
+- We’re meeting on Saturdays, at 10:00 EST
+- Our next steps are to come up with a name and investigate the competition to come up with a list of initial features
+
+</details>
+
+<details>
+<summary>2021-01-05</summary>
+
+- Vision
+  - An open-source platform for course interactions
+- Key features
+  - Piazza
+    - Q&A
+    - Announcements
+    - Anonymity
+    - Chat
+  - More interactive/modern interface
+  - FERPA compliance and stuff
+- Competition
+  - https://piazza.com/
+  - https://campuswire.com
+  - https://discourse.org
+    - Hartz at MIT doing it - see https://thetech.com/2020/03/05/piazza-security
+    - https://www.stanforddaily.com/2020/10/04/concerned-with-piazzas-data-privacy-management-some-professors-look-to-alternative-discussion-forums/
+    - https://matheducators.stackexchange.com/questions/7406/more-user-friendly-alternatives-to-piazza-service
+    - Could we do a Discourse plugin?
+  - https://us.edstem.org
+  - https://aula.education
+  - https://yellowdig.com
+  - Moodle
+    - It’s a whole LMS, not a Q&A
 
 </details>
