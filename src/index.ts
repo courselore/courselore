@@ -169,13 +169,21 @@ export default async function courselore(
                 outline: none;
               }
 
-              .demonstration {
+              .demonstration,
+              .TODO {
                 font-size: 0.875em;
                 background-color: whitesmoke;
                 box-sizing: border-box;
                 padding: 0 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
+              }
+
+              .TODO::before {
+                content: "TODO";
+                font-weight: 700;
+                display: block;
+                margin-top: 0.5em;
               }
 
               /*
@@ -251,8 +259,8 @@ export default async function courselore(
               $${req.session!.email === undefined
                 ? ""
                 : html`
-                    <form method="post" action="${app.get("url")}/logout">
-                      <button>Logout (${req.session!.email})</button>
+                    <form method="post" action="${app.get("url")}/sign-out">
+                      <button>Sign out (${req.session!.email})</button>
                     </form>
                   `}
             </nav>
@@ -469,14 +477,21 @@ $$
 
   const unauthenticatedRoutes = express.Router();
 
+  app.use((req, res, next) => {
+    if (req.session!.email === undefined) unauthenticatedRoutes(req, res, next);
+    else next();
+  });
+
   unauthenticatedRoutes.get(["/", "/authenticate"], (req, res) => {
     res.send(
       app.get("layout")(
         req,
         html`<title>CourseLore</title>`,
         html`
-          <a href="${app.get("url")}/sign-in">Sign in</a>
-          <a href="${app.get("url")}/sign-up">Sign up</a>
+          <p>
+            <a href="${app.get("url")}/sign-in">Sign in</a>
+            <a href="${app.get("url")}/sign-up">Sign up</a>
+          </p>
         `
       )
     );
@@ -502,6 +517,33 @@ $$
             <small>
               Already have an account?
               <a href="${app.get("url")}/sign-in">Sign in</a>.
+            </small>
+          </p>
+        `
+      )
+    );
+  });
+
+  unauthenticatedRoutes.get("/sign-in", (req, res) => {
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>Sign in · CourseLore</title>`,
+        html`
+          <h1>Sign in to CourseLore</h1>
+          <form method="post" action="${app.get("url")}/authenticate">
+            <input
+              name="email"
+              type="email"
+              placeholder="me@university.edu"
+              required
+            />
+            <button>Continue</button>
+          </form>
+          <p>
+            <small>
+              Don’t have an account?
+              <a href="${app.get("url")}/sign-up">Sign up</a>.
             </small>
           </p>
         `
@@ -558,13 +600,13 @@ $$
     "/authenticate/:token",
     (req, res) => {
       const { token } = req.params;
-      const authenticationToken = database.get<{
+      const authenticationToken = runtimeDatabase.get<{
         email: string;
         expiresAt: string;
       }>(
         sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
       );
-      database.run(
+      runtimeDatabase.run(
         sql`DELETE FROM authenticationTokens WHERE token = ${token}`
       );
       if (
@@ -577,8 +619,7 @@ $$
             html`<title>Authentication · CourseLore</title>`,
             html`
               <p>
-                This magic link is invalid or has expired. Let’s take it from
-                the top:
+                This magic link is invalid or has expired.
                 <a href="${app.get("url")}/sign-in">Sign in</a>.
                 <a href="${app.get("url")}/sign-up">Sign up</a>.
               </p>
@@ -586,15 +627,15 @@ $$
           )
         );
       const { email } = authenticationToken;
-      const isNewUser =
+      if (
         database.get<{ output: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS output`
-        )!.output === 0;
-      if (isNewUser) {
+        )!.output === 0
+      ) {
         const token = newToken(40);
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-        database.run(
+        runtimeDatabase.run(
           sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
         );
         return res.send(
@@ -604,9 +645,14 @@ $$
             html`
               <form method="post" action="${app.get("url")}/users">
                 <h1>Welcome to CourseLore!</h1>
-                <input type="hidden" name="token" value="${token}" />
-                <label>Name: <input type="text" name="name" /></label>
-                <button>Create account</button>
+                <p>
+                  <input type="hidden" name="token" value="${token}" />
+                  <input type="text" name="name" placeholder="Your name…" />
+                  <button>Create account</button>
+                </p>
+                <div class="TODO">
+                  <p>Ask for more user information here. What information?</p>
+                </div>
               </form>
             `
           )
@@ -617,17 +663,93 @@ $$
     }
   );
 
-  app.use((req, res, next) => {
-    if (req.session!.email === undefined) next();
-    else next("route");
-  }, unauthenticatedRoutes);
+  unauthenticatedRoutes.post<
+    core.ParamsDictionary,
+    string,
+    { token: string; name: string }
+  >(
+    "/users",
+    expressValidator.body("token").exists(),
+    expressValidator.body("name").exists(),
+    (req, res) => {
+      const errors = expressValidator.validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
+
+      const { token, name } = req.body;
+      const authenticationToken = runtimeDatabase.get<{
+        email: string;
+        expiresAt: string;
+      }>(
+        sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
+      );
+      runtimeDatabase.run(
+        sql`DELETE FROM authenticationTokens WHERE token = ${token}`
+      );
+      database.executeTransaction(() => {
+        if (
+          authenticationToken === undefined ||
+          new Date(authenticationToken.expiresAt) < new Date() ||
+          database.get<{ output: number }>(
+            sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${authenticationToken.email}) AS output`
+          )!.output === 1
+        )
+          return res.send(
+            app.get("layout")(
+              req,
+              html`<title>Account creation · CourseLore</title>`,
+              html`
+                <p>
+                  Something went wrong in the creation of your account.
+                  <a href="${app.get("url")}/sign-up">Start over</a>.
+                </p>
+              `
+            )
+          );
+        const { email } = authenticationToken;
+        database.run(
+          sql`INSERT INTO users (email, name) VALUES (${email}, ${name})`
+        );
+        req.session!.email = email;
+        res.redirect(`${app.get("url")}/`);
+      });
+    }
+  );
 
   const authenticatedRoutes = express.Router();
 
   app.use((req, res, next) => {
-    if (req.session!.email !== undefined) next();
-    else next("route");
-  }, authenticatedRoutes);
+    if (req.session!.email !== undefined) authenticatedRoutes(req, res, next);
+    else next();
+  });
+
+  authenticatedRoutes.post("/sign-out", (req, res) => {
+    delete req.session!.email;
+    res.redirect(`${app.get("url")}/`);
+  });
+
+  authenticatedRoutes.get("/", (req, res) => {
+    res.send(
+      app.get("layout")(
+        req,
+        html`<title>CourseLore</title>`,
+        html`
+          <h1>
+            Hi
+            ${database.get<{ name: string }>(
+              sql`SELECT name FROM users WHERE email = ${req.session!.email}`
+            )!.name},
+          </h1>
+          <div class="TODO">
+            <p>
+              If the user isn’t enrolled in courses, show a welcome page for
+              them to either create a course or join a course. If the user is
+              enrolled in courses, show a feed.
+            </p>
+          </div>
+        `
+      )
+    );
+  });
 
   /*
   app.post(
