@@ -34,14 +34,14 @@ import cryptoRandomString from "crypto-random-string";
 import inquirer from "inquirer";
 import prettier from "prettier";
 
-type HTML = string;
-
 const VERSION = require("../package.json").version;
 
 export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
   const app = express();
+
+  type HTML = string;
 
   app.set("version", VERSION);
   app.set("url", "http://localhost:4000");
@@ -302,6 +302,10 @@ export default async function courselore(
     })
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
+
+  const ROLES = ["instructor", "assistant", "student"] as const;
+
+  type Role = typeof ROLES[number];
 
   // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
   shell.mkdir("-p", path.join(rootDirectory, "data"));
@@ -728,6 +732,17 @@ $$
   });
 
   authenticatedRoutes.get("/", (req, res) => {
+    const courses = database.all<{ token: string; name: string; role: Role }>(
+      sql`
+        SELECT courses.token as token, courses.name as name, enrollments.role as role
+        FROM courses
+        JOIN enrollments ON courses.id = enrollments.course
+        JOIN users ON enrollments.user = users.id
+        WHERE users.email = ${req.session!.email}
+      `
+    );
+    if (courses.length === 1)
+      return res.redirect(`${app.get("url")}/${courses[0].token}`);
     res.send(
       app.get("layout")(
         req,
@@ -739,13 +754,36 @@ $$
               sql`SELECT name FROM users WHERE email = ${req.session!.email}`
             )!.name},
           </h1>
-          <div class="TODO">
-            <p>
-              If the user isn’t enrolled in courses, show a welcome page for
-              them to either create a course or join a course. If the user is
-              enrolled in courses, show a feed.
-            </p>
-          </div>
+          $${courses.length === 0
+            ? html`
+                <p>
+                  It looks like you’re new here. What would you like to do?
+                  <a href="${app.get("url")}/courses/new">Create a course</a>.
+                  <a href="${app.get("url")}/courses/join"
+                    >Join an existing course</a
+                  >.
+                </p>
+              `
+            : html`
+                <p>Here’s what’s going on with your courses:</p>
+                <ul>
+                  $${courses.map(
+                    ({ token, name, role }) =>
+                      html`<li>
+                        <a href="${app.get("url")}/${token}"
+                          >${name} (${role})</a
+                        >
+                      </li>`
+                  )}
+                </ul>
+                <div class="TODO">
+                  <p>
+                    At this point we’re just showing a list of courses in which
+                    the person in enrolled. In the future we’d probably like to
+                    show a news feed with relevant updates from all courses.
+                  </p>
+                </div>
+              `}
         `
       )
     );
