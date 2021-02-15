@@ -9,11 +9,11 @@ shell.exec("npm prune --production");
 shell.exec("npm dedupe");
 shell.cp(process.execPath, "node_modules/.bin/");
 
-const packagePath = path.join(shell.tempdir(), "courselore.zip");
-console.log(`::set-output name=package::${packagePath}`);
+const packageFile = path.join(shell.tempdir(), "courselore.zip");
+console.log(`::set-output name=package::${packageFile}`);
 
 const package = archiver("zip");
-package.pipe(fs.createWriteStream(packagePath));
+package.pipe(fs.createWriteStream(packageFile));
 package.directory(".", "courselore/src");
 package.append(
   `#!/usr/bin/env sh
