@@ -1,9 +1,5 @@
 /node_modules/
-
 /lib/
-/courselore
-
-/courselore.js
-
+/configuration.js
 /data/
 /var/

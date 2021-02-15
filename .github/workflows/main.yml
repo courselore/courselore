@@ -18,6 +18,21 @@ jobs:
       - run: |
           npm install-ci-test
           npm run build
+          npm prune --production
+          npm dedupe
+          rm -rf .git
+          mkdir -p /tmp/build/courselore/src
+          cp -R . /tmp/build/courselore/src/
+          cd /tmp/build/courselore
+          cp "$(which node)" src/node_modules/.bin/
+          cat > courselore << "EOF"
+          #!/usr/bin/env sh
+          ROOT_DIRECTORY=$(dirname "$0")
+          "$ROOT_DIRECTORY/src/node_modules/.bin/node" "$ROOT_DIRECTORY/src/lib/index.js" "$ROOT_DIRECTORY/configuration.js"
+          EOF
+          chmod +x courselore
+          cd ..
+          tar -czf courselore.tar.gz courselore
       - run: |
           cat >> ~/.ssh/known_hosts << "EOF"
           courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWOjzHPP1v+6gEeRAVzEB7l/RH+mt31heowjiUVNjgTnpT1FDL/T4yqmztwPrzhXUdBAy7M16H+88Padxm+/rJ5qfbw2dH7KtOA4RALYy9ruBl6HFdCf59eh01A97Py/AmxlpXysGAVcdcVjLsr0PvfoEGOqMlohc0sBjCjhoFcqkP9P57Q4Q3gcqgwjNYaZ1BSbI2G6J6kihjN7+b8pFCHCw8fqs7xo+7pDUv/rvqfBTUAFV7sovwQU0bZK6Z8gWXYFGG0NpKVojsKOHCrZpM8pBBDmleisrJhXmnKQ+Lj/JvYuaEM6cHZh6+RH7ua6S9eqlL8EErXf7GZ4SPuTo1ghNJ5H9cR3k8Px4Op5bDIIdPP767jwGHabZJ5Z8l9QnQajq85gcE7E3vZ1yT2BDKQsIDJeNpg1etTgw6hSUlBQsKx8TNaI9nROSnKwKbSI+sGmZlwrx11XimEkvaMaFmSZfpN+ne/2kmjc81Pr0WKb82sIPf3X2KzmWeChkZus8=
@@ -25,8 +40,9 @@ jobs:
           courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBCGyIA9/oiJt/qrQNeNoIRNKA8CFc/ppPMnrtw2NW+7
           EOF
 
-          ssh root@courselore.org "mkdir -p courselore/"
-          rsync -av courselore root@courselore.org:courselore/
+          ssh root@courselore.org "mkdir -p courselore/src/"
+          rsync -av /tmp/build/courselore/courselore root@courselore.org:courselore/courselore
+          rsync -av --delete /tmp/build/courselore/src/ root@courselore.org:courselore/src/
 
           ssh root@courselore.org "systemctl restart courselore"
         if: github.ref == 'refs/heads/master'
@@ -34,10 +50,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: tar -cvzf courselore.tar.gz courselore
       - uses: actions/upload-artifact@v2
         with:
-          path: courselore.tar.gz
+          path: /tmp/build/courselore.tar.gz
           name: courselore-linux-${{ github.sha }}.tar.gz
       - run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
         if: startsWith(github.ref, 'refs/tags/v')
@@ -56,34 +71,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: courselore.tar.gz
+          asset_path: /tmp/build/courselore.tar.gz
           asset_name: courselore-linux-${{ steps.tag.outputs.tag }}.tar.gz
           asset_content_type: application/gzip
-  macos:
-    runs-on: macos-latest
-    needs: main
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 15
-      - run: |
-          npm install-ci-test
-          npm run build
-          tar -cvzf courselore.tar.gz courselore
-      - uses: actions/upload-artifact@v2
-        with:
-          path: courselore.tar.gz
-          name: courselore-macos-${{ github.sha }}.tar.gz
-      - uses: actions/upload-release-asset@v1
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.main.outputs.upload_url }}
-          asset_path: courselore.tar.gz
-          asset_name: courselore-macos-${{ needs.main.outputs.tag }}.tar.gz
-          asset_content_type: application/gzip
+  # macos:
+  #   runs-on: macos-latest
+  #   needs: main
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 15
+  #     - run: |
+  #         npm install-ci-test
+  #         npm run build
+  #         tar -cvzf courselore.tar.gz courselore
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         path: courselore.tar.gz
+  #         name: courselore-macos-${{ github.sha }}.tar.gz
+  #     - uses: actions/upload-release-asset@v1
+  #       if: startsWith(github.ref, 'refs/tags/v')
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ needs.main.outputs.upload_url }}
+  #         asset_path: courselore.tar.gz
+  #         asset_name: courselore-macos-${{ needs.main.outputs.tag }}.tar.gz
+  #         asset_content_type: application/gzip
   # windows:
   #   runs-on: windows-latest
   #   needs: main

@@ -864,7 +864,7 @@ if (require.main === module)
     console.log(`CourseLore/${VERSION}`);
 
     const CONFIGURATION_FILE =
-      process.argv[2] ?? path.join(process.cwd(), "courselore.js");
+      process.argv[2] ?? path.join(process.cwd(), "configuration.js");
 
     let configuration: (require: NodeRequire) => Promise<void>;
     try {
