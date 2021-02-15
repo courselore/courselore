@@ -9,7 +9,7 @@ shell.exec("npm dedupe");
 shell.cp(process.execPath, "node_modules/.bin/");
 
 const package = archiver("zip");
-package.pipe(fs.createWriteStream("../courselore.zip"));
+package.pipe(fs.createWriteStream("/tmp/courselore.zip"));
 package.directory(".", "courselore/src");
 package.append(
   `#!/usr/bin/env sh
