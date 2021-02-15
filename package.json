@@ -22,7 +22,7 @@
   "scripts": {
     "start": "ts-node-dev --poll src/index.ts",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
-    "build": "tsc"
+    "prepare": "tsc"
   },
   "dependencies": {
     "@leafac/html": "^1.0.0",
