@@ -17,8 +17,7 @@ package.pipe(fs.createWriteStream(packagePath));
 package.directory(".", "courselore/src");
 package.append(
   `#!/usr/bin/env sh
-export ROOT_DIRECTORY=$(dirname "$0")
-env PATH="$ROOT_DIRECTORY/src/node_modules/.bin":$PATH node "$ROOT_DIRECTORY/src/lib/index.js" "$ROOT_DIRECTORY/configuration.js" "$@"
+$(dirname "$0")/src/node_modules/.bin/node "$(dirname "$0")/src/lib/index.js" "$(dirname "$0")/configuration.js" "$@"
 `,
   { name: "courselore/courselore", mode: 0o755 }
 );
