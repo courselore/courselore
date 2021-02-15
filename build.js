@@ -1,5 +1,6 @@
 const process = require("process");
 const fs = require("fs");
+const path = require("path");
 const shell = require("shelljs");
 const archiver = require("archiver");
 
