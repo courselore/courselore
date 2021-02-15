@@ -41,8 +41,8 @@ jobs:
           EOF
 
           ssh root@courselore.org "mkdir -p courselore/src/"
-          rsync -av /tmp/build/courselore/courselore root@courselore.org:courselore/courselore
-          rsync -av --delete /tmp/build/courselore/src/ root@courselore.org:courselore/src/
+          rsync -a /tmp/build/courselore/courselore root@courselore.org:courselore/courselore
+          rsync -a --delete /tmp/build/courselore/src/ root@courselore.org:courselore/src/
 
           ssh root@courselore.org "systemctl restart courselore"
         if: github.ref == 'refs/heads/master'
