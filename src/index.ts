@@ -303,6 +303,13 @@ export default async function courselore(
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
 
+  interface User {
+    id: number;
+    createdAt: string;
+    email: string;
+    name: string;
+  }
+
   const ROLES = ["instructor", "assistant", "student"] as const;
 
   type Role = typeof ROLES[number];
@@ -492,27 +499,30 @@ $$
 
   const unauthenticatedRoutes = express.Router();
 
-  app.use((req, res, next) => {
-    if (req.session!.email === undefined) unauthenticatedRoutes(req, res, next);
-    else next();
+  app.use<{}, HTML, {}, {}, {}>((req, res, next) => {
+    if (req.session!.email !== undefined) return next();
+    unauthenticatedRoutes(req, res, next);
   });
 
-  unauthenticatedRoutes.get(["/", "/authenticate"], (req, res) => {
-    res.send(
-      app.get("layout")(
-        req,
-        html`<title>CourseLore</title>`,
-        html`
-          <p>
-            <a href="${app.get("url")}/sign-in">Sign in</a>
-            <a href="${app.get("url")}/sign-up">Sign up</a>
-          </p>
-        `
-      )
-    );
-  });
+  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>(
+    ["/", "/authenticate"],
+    (req, res) => {
+      res.send(
+        app.get("layout")(
+          req,
+          html`<title>CourseLore</title>`,
+          html`
+            <p>
+              <a href="${app.get("url")}/sign-in">Sign in</a>
+              <a href="${app.get("url")}/sign-up">Sign up</a>
+            </p>
+          `
+        )
+      );
+    }
+  );
 
-  unauthenticatedRoutes.get("/sign-up", (req, res) => {
+  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>("/sign-up", (req, res) => {
     res.send(
       app.get("layout")(
         req,
@@ -539,7 +549,7 @@ $$
     );
   });
 
-  unauthenticatedRoutes.get("/sign-in", (req, res) => {
+  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>("/sign-in", (req, res) => {
     res.send(
       app.get("layout")(
         req,
@@ -567,7 +577,7 @@ $$
   });
 
   // FIXME: Make more sophisticated use of expressValidator.
-  unauthenticatedRoutes.post<core.ParamsDictionary, string, { email: string }>(
+  unauthenticatedRoutes.post<{}, HTML, { email: string }, {}, {}>(
     "/authenticate",
     expressValidator.body("email").isEmail(),
     (req, res) => {
@@ -612,7 +622,7 @@ $$
     }
   );
 
-  unauthenticatedRoutes.get<{ token: string }>(
+  unauthenticatedRoutes.get<{ token: string }, HTML, {}, {}, {}>(
     "/authenticate/:token",
     (req, res) => {
       const { token } = req.params;
@@ -677,11 +687,7 @@ $$
     }
   );
 
-  unauthenticatedRoutes.post<
-    core.ParamsDictionary,
-    string,
-    { token: string; name: string }
-  >(
+  unauthenticatedRoutes.post<{}, HTML, { token: string; name: string }, {}, {}>(
     "/users",
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
@@ -731,24 +737,36 @@ $$
 
   const authenticatedRoutes = express.Router();
 
-  app.use((req, res, next) => {
-    if (req.session!.email !== undefined) authenticatedRoutes(req, res, next);
-    else next();
+  app.use<{}, HTML, {}, {}, { user: User }>((req, res, next) => {
+    const { email } = req.session!;
+    if (email === undefined) return next();
+    const user = database.get<User>(
+      sql`SELECT "id", "createdAt", "email", "name" FROM "users" WHERE "email" = ${email}`
+    );
+    if (user === undefined) {
+      delete req.session!.email;
+      return res.redirect(`${app.get("url")}/`);
+    }
+    res.locals.user = user;
+    authenticatedRoutes(req, res, next);
   });
 
-  authenticatedRoutes.post("/sign-out", (req, res) => {
-    delete req.session!.email;
-    res.redirect(`${app.get("url")}/`);
-  });
+  authenticatedRoutes.post<{}, never, {}, {}, { user: User }>(
+    "/sign-out",
+    (req, res) => {
+      delete req.session!.email;
+      res.redirect(`${app.get("url")}/`);
+    }
+  );
 
-  authenticatedRoutes.get("/", (req, res) => {
+  authenticatedRoutes.get<{}, HTML, {}, {}, { user: User }>("/", (req, res) => {
     const courses = database.all<{ token: string; name: string; role: Role }>(
       sql`
         SELECT "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."role" AS "role"
         FROM "courses"
         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
         JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "users"."email" = ${req.session!.email}
+        WHERE "users"."id" = ${res.locals.user.id}
       `
     );
     if (courses.length === 1)
@@ -847,7 +865,7 @@ $$
     to: string;
     subject: string;
     body: string;
-  }): string {
+  }): HTML {
     if (app.get("demonstration"))
       return html`
         <div class="demonstration">
@@ -863,7 +881,7 @@ $$
         </div>
       `;
     runtimeDatabase.run(
-      sql`INSERT INTO emailQueue (to, subject, body, tryAt) VALUES (${to}, ${subject}, ${body}, ${new Date().toISOString()})`
+      sql`INSERT INTO "emailQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
     );
     return html``;
   }
