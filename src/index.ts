@@ -448,7 +448,7 @@ $$
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
         "token" TEXT NOT NULL UNIQUE,
         "email" TEXT NOT NULL UNIQUE,
-        "expiresAt" TEXT DEFAULT datetime('now', '+10 minutes')
+        "expiresAt" TEXT DEFAULT (datetime('now', '+10 minutes'))
       );
 
       CREATE TABLE "emailQueue" (
