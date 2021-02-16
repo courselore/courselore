@@ -316,6 +316,13 @@ export default async function courselore(
   const ROLES = ["instructor", "assistant", "student"] as const;
   type Role = typeof ROLES[number];
 
+  interface Course {
+    id: number;
+    token: string;
+    name: string;
+    role: Role;
+  }
+
   // FIXME: Open the databases using more appropriate configuration, for example, WAL and PRAGMA foreign keys.
   shell.mkdir("-p", path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
@@ -531,13 +538,15 @@ $$
           html`
             <h1>Sign ${req.path === "/sign-up" ? "up" : "in"} to CourseLore</h1>
             <form method="post">
-              <input
-                name="email"
-                type="email"
-                placeholder="me@university.edu"
-                required
-              />
-              <button>Continue</button>
+              <p>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="me@university.edu"
+                  required
+                />
+                <button>Continue</button>
+              </p>
             </form>
             <p>
               <small>
@@ -602,13 +611,13 @@ $$
             Sign ${req.path === "/sign-up" ? "up" : "in"} · CourseLore
           </title>`,
           html`
+            <p>
+              To continue with sign ${req.path === "/sign-up" ? "up" : "in"},
+              check ${email} and follow the magic link.
+            </p>
             <form method="post">
-              <input type="hidden" name="email" value="${email}" />
               <p>
-                To continue with sign ${req.path === "/sign-up" ? "up" : "in"},
-                check ${email} and follow the magic link.
-              </p>
-              <p>
+                <input type="hidden" name="email" value="${email}" />
                 <small>
                   Didn’t receive the email? Already checked the spam folder?
                   <button class="a">Resend</button>.
@@ -671,10 +680,11 @@ $$
             res,
             html`<title>Sign up · CourseLore</title>`,
             html`
+              <h1>Welcome to CourseLore!</h1>
               <form method="post" action="${app.get("url")}/users">
-                <h1>Welcome to CourseLore!</h1>
                 <p>
                   <input type="hidden" name="token" value="${token}" />
+                  <input type="text" value="${email}" disabled />
                   <input type="text" name="name" placeholder="Your name…" />
                   <button>Create account</button>
                 </p>
@@ -750,7 +760,7 @@ $$
     );
     if (user === undefined) {
       delete req.session!.email;
-      return res.redirect(`${app.get("url")}/`);
+      return next();
     }
     res.locals.user = user;
     authenticatedRoutes(req, res, next);
@@ -785,12 +795,16 @@ $$
           <h1>Hi ${res.locals.user.name},</h1>
           $${courses.length === 0
             ? html`
+                <p>It looks like you’re new here. What would you like to do?</p>
                 <p>
-                  It looks like you’re new here. What would you like to do?
-                  <a href="${app.get("url")}/courses/new">Create a course</a>.
-                  <a href="${app.get("url")}/courses/join"
-                    >Join an existing course</a
+                  <a href="${app.get("url")}/courses"
+                    ><strong>Create a new course</strong></a
                   >.
+                </p>
+                <p>
+                  Or, to <strong>join an existing course</strong>, you either
+                  have to be invited or go to the course URL (it looks something
+                  like <code>${app.get("url")}/${newToken(10)}</code>).
                 </p>
               `
             : html`
@@ -817,6 +831,97 @@ $$
       )
     );
   });
+
+  authenticatedRoutes.get<{}, HTML, {}, {}, { user: User }>(
+    "/courses",
+    (req, res) => {
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>Create a new course · CourseLore</title>`,
+          html`
+            <h1>Create a new course</h1>
+            <form method="post">
+              <p>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Course name…"
+                  required
+                />
+                <button>Create course</button>
+              </p>
+              <div class="TODO">
+                <p>
+                  Ask more questions here, for example, what’s the person’s role
+                  in the course, how they’d like for other people to enroll
+                  (either by invitation or via a link), and so forth…
+                </p>
+              </div>
+            </form>
+          `
+        )
+      );
+    }
+  );
+
+  authenticatedRoutes.post<{}, never, { name: string }, {}, { user: User }>(
+    "/courses",
+    expressValidator.body("name").exists(),
+    (req, res) => {
+      const errors = expressValidator.validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
+
+      const token = newToken(10);
+      database.executeTransaction(() => {
+        const courseId = database.run(
+          sql`INSERT INTO "courses" ("token", "name") VALUES (${token}, ${req.body.name})`
+        ).lastInsertRowid;
+        database.run(
+          sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
+            res.locals.user.id
+          }, ${courseId}, ${"instructor"})`
+        );
+      });
+      res.redirect(`${app.get("url")}/${token}`);
+    }
+  );
+
+  const courseRoutes = express.Router();
+
+  authenticatedRoutes.use<
+    { token: string },
+    HTML,
+    {},
+    {},
+    { user: User; course: Course }
+  >("/:token", (req, res, next) => {
+    const course = database.get<Course>(
+      sql`
+          SELECT "courses"."id" AS "id", "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."role" AS "role"
+          FROM "courses"
+          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+          WHERE "courses"."token" = ${req.params.token} AND "enrollments"."user" = ${res.locals.user.id}`
+    );
+    if (course === undefined) return next();
+    res.locals.course = course;
+    courseRoutes(req, res, next);
+  });
+
+  courseRoutes.get<{}, HTML, {}, {}, { user: User; course: Course }>(
+    "/",
+    (req, res) => {
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>${res.locals.course.name} · CourseLore</title>`,
+          html` <h1>${res.locals.course.name}</h1> `
+        )
+      );
+    }
+  );
 
   /*
   app.get("/thread", (req, res) => {

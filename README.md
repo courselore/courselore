@@ -120,6 +120,15 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - Archived
 - Create roles and manage permissions
 - Tag-based actions
+- Allow course assistants to create courses?
+- Different ways to enroll in the course
+  - Invitation only
+  - By URL
+  - What roles can sign up for themselves
+  - Course manager (instructors?) should confirm sign up
+- Manage people in the course
+  - Change their roles
+  - Remove them from the course
 
 #### Forum
 
@@ -256,7 +265,9 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 
 #### User Profile
 
+- Usual CRUD on user profile (name, and so forth).
 - Gravatar.
+- Multiple emails? Probably not, just the one institutional email (which is the account identifier). If people are affiliated with many institutions it’s likely they’ll be using different CourseLore instances anyway…
 
 #### API
 
