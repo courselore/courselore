@@ -109,6 +109,8 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 
 #### Courses
 
+- Basic CRUD:
+  - Rename course, and that sort of thing
 - Enrollment (user ↔ course) roles
   - Instructor
   - Assistant
@@ -129,6 +131,7 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 - Manage people in the course
   - Change their roles
   - Remove them from the course
+- Allow people to disenroll from a course (but we get to keep their contributions as “ghost”)
 
 #### Forum
 
@@ -268,6 +271,7 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 - Usual CRUD on user profile (name, and so forth).
 - Gravatar.
 - Multiple emails? Probably not, just the one institutional email (which is the account identifier). If people are affiliated with many institutions it’s likely they’ll be using different CourseLore instances anyway…
+- Allow people to remove their accounts.
 
 #### API
 

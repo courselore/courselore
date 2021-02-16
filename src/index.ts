@@ -320,6 +320,7 @@ export default async function courselore(
     id: number;
     token: string;
     name: string;
+    enrollment: number;
     role: Role;
   }
 
@@ -350,6 +351,16 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses",
         "role" TEXT NOT NULL,
         UNIQUE ("user", "course")
+      );
+    `,
+
+    sql`
+      CREATE TABLE "threads" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "course" INTEGER NOT NULL REFERENCES "courses",
+        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        "title" TEXT NOT NULL
       );
     `,
   ]);
@@ -899,7 +910,7 @@ $$
   >("/:token", (req, res, next) => {
     const course = database.get<Course>(
       sql`
-          SELECT "courses"."id" AS "id", "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."role" AS "role"
+          SELECT "courses"."id" AS "id", "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."id" AS "enrollment", "enrollments"."role" AS "role"
           FROM "courses"
           JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
           WHERE "courses"."token" = ${req.params.token} AND "enrollments"."user" = ${res.locals.user.id}`
@@ -917,7 +928,7 @@ $$
           req,
           res,
           html`<title>${res.locals.course.name} · CourseLore</title>`,
-          html` <h1>${res.locals.course.name}</h1> `
+          html`<h1>${res.locals.course.name}</h1>`
         )
       );
     }
