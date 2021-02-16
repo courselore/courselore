@@ -209,7 +209,12 @@ export default async function courselore(
   );
   app.set(
     "layout",
-    (req: express.Request, head: HTML, body: HTML): HTML =>
+    (
+      req: express.Request,
+      res: express.Response,
+      head: HTML,
+      body: HTML
+    ): HTML =>
       app.get("layout base")(
         head,
         html`
@@ -222,7 +227,7 @@ export default async function courselore(
           >
             <nav style="justify-self: start;">
               <!--$${req.session!.email === undefined
-                ? ""
+                ? html``
                 : html`
                     <button>
                       <svg width="20" height="20" viewBox="0 0 20 20">
@@ -254,11 +259,11 @@ export default async function courselore(
               </a>
             </nav>
             <nav style="justify-self: end;">
-              $${req.session!.email === undefined
-                ? ""
+              $${res.locals.user === undefined
+                ? html``
                 : html`
                     <form method="post" action="${app.get("url")}/sign-out">
-                      <button>Sign out (${req.session!.email})</button>
+                      <button>Sign out (${res.locals.user.name})</button>
                     </form>
                   `}
             </nav>
@@ -501,6 +506,7 @@ $$
       res.send(
         app.get("layout")(
           req,
+          res,
           html`<title>CourseLore</title>`,
           html`
             <p>
@@ -517,6 +523,7 @@ $$
     res.send(
       app.get("layout")(
         req,
+        res,
         html`<title>Sign up · CourseLore</title>`,
         html`
           <h1>Sign up to CourseLore</h1>
@@ -544,6 +551,7 @@ $$
     res.send(
       app.get("layout")(
         req,
+        res,
         html`<title>Sign in · CourseLore</title>`,
         html`
           <h1>Sign in to CourseLore</h1>
@@ -597,6 +605,7 @@ $$
       return res.send(
         app.get("layout")(
           req,
+          res,
           html`<title>Authenticate · CourseLore</title>`,
           html`
             <form method="post" action="${app.get("url")}/authenticate">
@@ -633,6 +642,7 @@ $$
         return res.send(
           app.get("layout")(
             req,
+            res,
             html`<title>Authentication · CourseLore</title>`,
             html`
               <p>
@@ -656,6 +666,7 @@ $$
         return res.send(
           app.get("layout")(
             req,
+            res,
             html`<title>Sign up · CourseLore</title>`,
             html`
               <form method="post" action="${app.get("url")}/users">
@@ -707,6 +718,7 @@ $$
           return res.send(
             app.get("layout")(
               req,
+              res,
               html`<title>Account creation · CourseLore</title>`,
               html`
                 <p>
@@ -765,16 +777,10 @@ $$
     res.send(
       app.get("layout")(
         req,
+        res,
         html`<title>CourseLore</title>`,
         html`
-          <h1>
-            Hi
-            ${database.get<{ name: string }>(
-              sql`SELECT "name" FROM "users" WHERE "email" = ${
-                req.session!.email
-              }`
-            )!.name},
-          </h1>
+          <h1>Hi ${res.locals.user.name},</h1>
           $${courses.length === 0
             ? html`
                 <p>
@@ -814,7 +820,7 @@ $$
   app.get("/thread", (req, res) => {
     res.send(
       app.get("layout")(
-        req,
+        req,res,
         html`<title>Thread · CourseLore</title>`,
         html`
           <ul>
