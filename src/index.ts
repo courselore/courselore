@@ -314,10 +314,9 @@ export default async function courselore(
   }
 
   const ROLES = ["instructor", "assistant", "student"] as const;
-
   type Role = typeof ROLES[number];
 
-  // FIXME: Open the databases using smarter configuration, for example, WAL and PRAGMA foreign keys.
+  // FIXME: Open the databases using more appropriate configuration, for example, WAL and PRAGMA foreign keys.
   shell.mkdir("-p", path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
   app.set("database", database);
@@ -519,65 +518,49 @@ $$
     }
   );
 
-  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>("/sign-up", (req, res) => {
-    res.send(
-      app.get("layout")(
-        req,
-        res,
-        html`<title>Sign up · CourseLore</title>`,
-        html`
-          <h1>Sign up to CourseLore</h1>
-          <form method="post" action="${app.get("url")}/authenticate">
-            <input
-              name="email"
-              type="email"
-              placeholder="me@university.edu"
-              required
-            />
-            <button>Continue</button>
-          </form>
-          <p>
-            <small>
-              Already have an account?
-              <a href="${app.get("url")}/sign-in">Sign in</a>.
-            </small>
-          </p>
-        `
-      )
-    );
-  });
-
-  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>("/sign-in", (req, res) => {
-    res.send(
-      app.get("layout")(
-        req,
-        res,
-        html`<title>Sign in · CourseLore</title>`,
-        html`
-          <h1>Sign in to CourseLore</h1>
-          <form method="post" action="${app.get("url")}/authenticate">
-            <input
-              name="email"
-              type="email"
-              placeholder="me@university.edu"
-              required
-            />
-            <button>Continue</button>
-          </form>
-          <p>
-            <small>
-              Don’t have an account?
-              <a href="${app.get("url")}/sign-up">Sign up</a>.
-            </small>
-          </p>
-        `
-      )
-    );
-  });
+  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>(
+    ["/sign-up", "/sign-in"],
+    (req, res) => {
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>
+            Sign ${req.path === "/sign-up" ? "up" : "in"} · CourseLore
+          </title>`,
+          html`
+            <h1>Sign ${req.path === "/sign-up" ? "up" : "in"} to CourseLore</h1>
+            <form method="post">
+              <input
+                name="email"
+                type="email"
+                placeholder="me@university.edu"
+                required
+              />
+              <button>Continue</button>
+            </form>
+            <p>
+              <small>
+                $${req.path === "/sign-up"
+                  ? html`
+                      Already have an account?
+                      <a href="${app.get("url")}/sign-in">Sign in</a>.
+                    `
+                  : html`
+                      Don’t have an account yet?
+                      <a href="${app.get("url")}/sign-up">Sign up</a>.
+                    `}
+              </small>
+            </p>
+          `
+        )
+      );
+    }
+  );
 
   // FIXME: Make more sophisticated use of expressValidator.
   unauthenticatedRoutes.post<{}, HTML, { email: string }, {}, {}>(
-    "/authenticate",
+    ["/sign-up", "/sign-in"],
     expressValidator.body("email").isEmail(),
     (req, res) => {
       const errors = expressValidator.validationResult(req);
@@ -593,10 +576,19 @@ $$
         sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
       );
 
-      const magicLink = `${app.get("url")}/authenticate/${token}`;
+      const userExists =
+        database.get<{ exists: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
+        )!.exists === 1;
+
+      const magicLink = `${app.get("url")}/sign-${
+        userExists ? "in" : "up"
+      }/${token}`;
       const sentEmail = sendEmail({
         to: email,
-        subject: "Here’s your magic link",
+        subject: `Here’s your magic link to sign ${
+          userExists ? "in" : "up"
+        } to CourseLore`,
         body: html`
           <p><a href="${magicLink}">${magicLink}</a></p>
           <p><small>Expires in 10 minutes.</small></p>
@@ -606,13 +598,21 @@ $$
         app.get("layout")(
           req,
           res,
-          html`<title>Authenticate · CourseLore</title>`,
+          html`<title>
+            Sign ${req.path === "/sign-up" ? "up" : "in"} · CourseLore
+          </title>`,
           html`
-            <form method="post" action="${app.get("url")}/authenticate">
+            <form method="post">
               <input type="hidden" name="email" value="${email}" />
               <p>
-                Check ${email} (including the spam folder) and click on the
-                magic link to continue. <button class="a">Resend</button>.
+                To continue with sign ${req.path === "/sign-up" ? "up" : "in"},
+                check ${email} and follow the magic link.
+              </p>
+              <p>
+                <small>
+                  Didn’t receive the email? Already checked the spam folder?
+                  <button class="a">Resend</button>.
+                </small>
               </p>
             </form>
             $${sentEmail}
@@ -623,7 +623,7 @@ $$
   );
 
   unauthenticatedRoutes.get<{ token: string }, HTML, {}, {}, {}>(
-    "/authenticate/:token",
+    ["/sign-up/:token", "/sign-in/:token"],
     (req, res) => {
       const { token } = req.params;
       const authenticationToken = runtimeDatabase.get<{
@@ -643,7 +643,9 @@ $$
           app.get("layout")(
             req,
             res,
-            html`<title>Authentication · CourseLore</title>`,
+            html`<title>
+              Sign ${req.path.startsWith("/sign-up") ? "up" : "in"} · CourseLore
+            </title>`,
             html`
               <p>
                 This magic link is invalid or has expired.
@@ -655,9 +657,9 @@ $$
         );
       const { email } = authenticationToken;
       if (
-        database.get<{ output: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "output"`
-        )!.output === 0
+        database.get<{ exists: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
+        )!.exists === 0
       ) {
         const token = newToken(40);
         runtimeDatabase.run(
@@ -711,18 +713,18 @@ $$
         if (
           authenticationToken === undefined ||
           new Date(authenticationToken.expiresAt) < new Date() ||
-          database.get<{ output: number }>(
-            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "output"`
-          )!.output === 1
+          database.get<{ exists: number }>(
+            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
+          )!.exists === 1
         )
           return res.send(
             app.get("layout")(
               req,
               res,
-              html`<title>Account creation · CourseLore</title>`,
+              html`<title>Sign up · CourseLore</title>`,
               html`
                 <p>
-                  Something went wrong in the creation of your account.
+                  Something went wrong in your sign up.
                   <a href="${app.get("url")}/sign-up">Start over</a>.
                 </p>
               `
