@@ -499,14 +499,14 @@ $$
     })
   );
 
-  const unauthenticatedRoutes = express.Router();
+  const unauthenticatedRouter = express.Router();
 
   app.use<{}, HTML, {}, {}, {}>((req, res, next) => {
     if (req.session!.email !== undefined) return next();
-    unauthenticatedRoutes(req, res, next);
+    unauthenticatedRouter(req, res, next);
   });
 
-  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>(
+  unauthenticatedRouter.get<{}, HTML, {}, {}, {}>(
     ["/", "/authenticate"],
     (req, res) => {
       res.send(
@@ -525,7 +525,7 @@ $$
     }
   );
 
-  unauthenticatedRoutes.get<{}, HTML, {}, {}, {}>(
+  unauthenticatedRouter.get<{}, HTML, {}, {}, {}>(
     ["/sign-up", "/sign-in"],
     (req, res) => {
       res.send(
@@ -568,7 +568,7 @@ $$
   );
 
   // FIXME: Make more sophisticated use of expressValidator.
-  unauthenticatedRoutes.post<{}, HTML, { email: string }, {}, {}>(
+  unauthenticatedRouter.post<{}, HTML, { email: string }, {}, {}>(
     ["/sign-up", "/sign-in"],
     expressValidator.body("email").isEmail(),
     (req, res) => {
@@ -631,7 +631,7 @@ $$
     }
   );
 
-  unauthenticatedRoutes.get<{ token: string }, HTML, {}, {}, {}>(
+  unauthenticatedRouter.get<{ token: string }, HTML, {}, {}, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
     (req, res) => {
       const { token } = req.params;
@@ -701,7 +701,7 @@ $$
     }
   );
 
-  unauthenticatedRoutes.post<{}, HTML, { token: string; name: string }, {}, {}>(
+  unauthenticatedRouter.post<{}, HTML, { token: string; name: string }, {}, {}>(
     "/users",
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
@@ -750,7 +750,7 @@ $$
     }
   );
 
-  const authenticatedRoutes = express.Router();
+  const authenticatedRouter = express.Router();
 
   app.use<{}, HTML, {}, {}, { user: User }>((req, res, next) => {
     const { email } = req.session!;
@@ -763,10 +763,10 @@ $$
       return next();
     }
     res.locals.user = user;
-    authenticatedRoutes(req, res, next);
+    authenticatedRouter(req, res, next);
   });
 
-  authenticatedRoutes.post<{}, never, {}, {}, { user: User }>(
+  authenticatedRouter.post<{}, never, {}, {}, { user: User }>(
     "/sign-out",
     (req, res) => {
       delete req.session!.email;
@@ -774,7 +774,7 @@ $$
     }
   );
 
-  authenticatedRoutes.get<{}, HTML, {}, {}, { user: User }>("/", (req, res) => {
+  authenticatedRouter.get<{}, HTML, {}, {}, { user: User }>("/", (req, res) => {
     const courses = database.all<{ token: string; name: string; role: Role }>(
       sql`
         SELECT "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."role" AS "role"
@@ -832,7 +832,7 @@ $$
     );
   });
 
-  authenticatedRoutes.get<{}, HTML, {}, {}, { user: User }>(
+  authenticatedRouter.get<{}, HTML, {}, {}, { user: User }>(
     "/courses",
     (req, res) => {
       res.send(
@@ -866,7 +866,7 @@ $$
     }
   );
 
-  authenticatedRoutes.post<{}, never, { name: string }, {}, { user: User }>(
+  authenticatedRouter.post<{}, never, { name: string }, {}, { user: User }>(
     "/courses",
     expressValidator.body("name").exists(),
     (req, res) => {
@@ -888,9 +888,9 @@ $$
     }
   );
 
-  const courseRoutes = express.Router();
+  const courseRouter = express.Router();
 
-  authenticatedRoutes.use<
+  authenticatedRouter.use<
     { token: string },
     HTML,
     {},
@@ -906,10 +906,10 @@ $$
     );
     if (course === undefined) return next();
     res.locals.course = course;
-    courseRoutes(req, res, next);
+    courseRouter(req, res, next);
   });
 
-  courseRoutes.get<{}, HTML, {}, {}, { user: User; course: Course }>(
+  courseRouter.get<{}, HTML, {}, {}, { user: User; course: Course }>(
     "/",
     (req, res) => {
       res.send(
