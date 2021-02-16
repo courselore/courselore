@@ -924,6 +924,7 @@ if (require.main === module)
                 message: `With what URL can other devices access this machine (for example, ‘http://<your-machine-name>.local:4000’)?`,
               })
             ).answer;
+          shell.mkdir("-p", path.dirname(CONFIGURATION_FILE));
           await fs.writeFile(
             CONFIGURATION_FILE,
             prettier.format(
