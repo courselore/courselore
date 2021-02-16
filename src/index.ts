@@ -5,7 +5,6 @@ import path from "path";
 import fs from "fs/promises";
 
 import express from "express";
-import core from "express-serve-static-core";
 import cookieSession from "cookie-session";
 import * as expressValidator from "express-validator";
 
@@ -43,7 +42,6 @@ export default async function courselore(
 
   type HTML = string;
 
-  app.set("version", VERSION);
   app.set("url", "http://localhost:4000");
   app.set("administrator email", "demonstration-development@courselore.org");
   app.enable("demonstration");
@@ -55,7 +53,7 @@ export default async function courselore(
         <html lang="en">
           <head>
             <meta charset="UTF-8" />
-            <meta name="generator" content="CourseLore/${app.get("version")}" />
+            <meta name="generator" content="CourseLore/${VERSION}" />
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1.0"
@@ -320,13 +318,6 @@ export default async function courselore(
   app.set("database", database);
   databaseMigrate(database, [
     sql`
-      CREATE TABLE "settings" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
-        "key" TEXT NOT NULL UNIQUE,
-        "value" TEXT NOT NULL
-      );
-
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
