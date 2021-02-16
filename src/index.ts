@@ -313,24 +313,34 @@ export default async function courselore(
   app.set("database", database);
   databaseMigrate(database, [
     sql`
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL
+      CREATE TABLE "settings" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "key" TEXT NOT NULL UNIQUE,
+        "value" TEXT NOT NULL
       );
 
-      CREATE TABLE courses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        token TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL
+      CREATE TABLE "users" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "email" TEXT NOT NULL UNIQUE,
+        "name" TEXT NOT NULL
       );
 
-      CREATE TABLE enrollments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user INTEGER NOT NULL REFERENCES users,
-        course INTEGER NOT NULL REFERENCES courses,
-        role TEXT NOT NULL,
-        UNIQUE (user, course)
+      CREATE TABLE "courses" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "token" TEXT NOT NULL UNIQUE,
+        "name" TEXT NOT NULL
+      );
+
+      CREATE TABLE "enrollments" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "user" INTEGER NOT NULL REFERENCES "users",
+        "course" INTEGER NOT NULL REFERENCES "courses",
+        "role" TEXT NOT NULL,
+        UNIQUE ("user", "course")
       );
     `,
   ]);
@@ -428,27 +438,28 @@ $$
   app.set("runtime database", runtimeDatabase);
   databaseMigrate(runtimeDatabase, [
     sql`
-      CREATE TABLE secrets (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        key TEXT NOT NULL UNIQUE,
-        value TEXT NOT NULL
+      CREATE TABLE "settings" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "key" TEXT NOT NULL UNIQUE,
+        "value" TEXT NOT NULL
       );
 
-      CREATE TABLE authenticationTokens (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        token TEXT NOT NULL UNIQUE,
-        email TEXT NOT NULL UNIQUE,
-        expiresAt TEXT NOT NULL
+      CREATE TABLE "authenticationTokens" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "token" TEXT NOT NULL UNIQUE,
+        "email" TEXT NOT NULL UNIQUE,
+        "expiresAt" TEXT DEFAULT datetime('now', '+10 minutes')
       );
-    `,
 
-    sql`
-      CREATE TABLE emailQueue (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        to_ TEXT NOT NULL,
-        subject TEXT NOT NULL,
-        body TEXT NOT NULL,
-        tryAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      CREATE TABLE "emailQueue" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "to" TEXT NOT NULL,
+        "subject" TEXT NOT NULL,
+        "body" TEXT NOT NULL,
+        "tryAt" TEXT DEFAULT CURRENT_TIMESTAMP
       );
     `,
   ]);
@@ -466,12 +477,12 @@ $$
     cookieSession({
       secret: runtimeDatabase.executeTransaction<string>(() => {
         let cookieSecret = runtimeDatabase.get<{ value: string }>(
-          sql`SELECT value FROM secrets WHERE key = ${"cookie"}`
+          sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookie"}`
         )?.value;
         if (cookieSecret === undefined) {
           cookieSecret = newToken(60);
           runtimeDatabase.run(
-            sql`INSERT INTO secrets (key, value) VALUES (${"cookie"}, ${cookieSecret})`
+            sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookie"}, ${cookieSecret})`
           );
         }
         return cookieSecret;
@@ -566,20 +577,21 @@ $$
       const { email } = req.body;
 
       runtimeDatabase.run(
-        sql`DELETE FROM authenticationTokens WHERE email = ${email}`
+        sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
       );
       const token = newToken(40);
-      const expiresAt = new Date();
-      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
       runtimeDatabase.run(
-        sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
+        sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
       );
 
       const magicLink = `${app.get("url")}/authenticate/${token}`;
       const sentEmail = sendEmail({
         to: email,
         subject: "Here’s your magic link",
-        body: html`<p><a href="${magicLink}">${magicLink}</a></p>`,
+        body: html`
+          <p><a href="${magicLink}">${magicLink}</a></p>
+          <p><small>Expires in 10 minutes.</small></p>
+        `,
       });
       return res.send(
         app.get("layout")(
@@ -608,10 +620,10 @@ $$
         email: string;
         expiresAt: string;
       }>(
-        sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
+        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${token}`
       );
       runtimeDatabase.run(
-        sql`DELETE FROM authenticationTokens WHERE token = ${token}`
+        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
       );
       if (
         authenticationToken === undefined ||
@@ -633,14 +645,12 @@ $$
       const { email } = authenticationToken;
       if (
         database.get<{ output: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${email}) AS output`
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "output"`
         )!.output === 0
       ) {
         const token = newToken(40);
-        const expiresAt = new Date();
-        expiresAt.setMinutes(expiresAt.getMinutes() + 10);
         runtimeDatabase.run(
-          sql`INSERT INTO authenticationTokens (token, email, expiresAt) VALUES (${token}, ${email}, ${expiresAt.toISOString()})`
+          sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
         );
         return res.send(
           app.get("layout")(
@@ -684,17 +694,17 @@ $$
         email: string;
         expiresAt: string;
       }>(
-        sql`SELECT email, expiresAt FROM authenticationTokens WHERE token = ${token}`
+        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${token}`
       );
       runtimeDatabase.run(
-        sql`DELETE FROM authenticationTokens WHERE token = ${token}`
+        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
       );
       database.executeTransaction(() => {
         if (
           authenticationToken === undefined ||
           new Date(authenticationToken.expiresAt) < new Date() ||
           database.get<{ output: number }>(
-            sql`SELECT EXISTS(SELECT 1 FROM users WHERE email = ${authenticationToken.email}) AS output`
+            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "output"`
           )!.output === 1
         )
           return res.send(
@@ -711,7 +721,7 @@ $$
           );
         const { email } = authenticationToken;
         database.run(
-          sql`INSERT INTO users (email, name) VALUES (${email}, ${name})`
+          sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${name})`
         );
         req.session!.email = email;
         res.redirect(`${app.get("url")}/`);
@@ -734,11 +744,11 @@ $$
   authenticatedRoutes.get("/", (req, res) => {
     const courses = database.all<{ token: string; name: string; role: Role }>(
       sql`
-        SELECT courses.token as token, courses.name as name, enrollments.role as role
-        FROM courses
-        JOIN enrollments ON courses.id = enrollments.course
-        JOIN users ON enrollments.user = users.id
-        WHERE users.email = ${req.session!.email}
+        SELECT "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."role" AS "role"
+        FROM "courses"
+        JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        WHERE "users"."email" = ${req.session!.email}
       `
     );
     if (courses.length === 1)
@@ -751,7 +761,9 @@ $$
           <h1>
             Hi
             ${database.get<{ name: string }>(
-              sql`SELECT name FROM users WHERE email = ${req.session!.email}`
+              sql`SELECT "name" FROM "users" WHERE "email" = ${
+                req.session!.email
+              }`
             )!.name},
           </h1>
           $${courses.length === 0
@@ -851,7 +863,7 @@ $$
         </div>
       `;
     runtimeDatabase.run(
-      sql`INSERT INTO emailQueue (to_, subject, body, tryAt) VALUES (${to}, ${subject}, ${body}, ${new Date().toISOString()})`
+      sql`INSERT INTO emailQueue (to, subject, body, tryAt) VALUES (${to}, ${subject}, ${body}, ${new Date().toISOString()})`
     );
     return html``;
   }
