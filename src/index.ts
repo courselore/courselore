@@ -756,16 +756,19 @@ $$
   const authenticatedRouter = express.Router();
 
   app.use<{}, HTML, {}, {}, {}>((req, res, next) => {
-    const { email } = req.session!;
-    if (
-      email === undefined ||
-      database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
-      )!.exists === 0
-    ) {
-      delete req.session!.email;
-      next();
-    } else authenticatedRouter(req, res, next);
+    database.executeTransaction(() => {
+      if (
+        req.session!.email === undefined ||
+        database.get<{ exists: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
+            req.session!.email
+          }) AS "exists"`
+        )!.exists === 0
+      ) {
+        delete req.session!.email;
+        next();
+      } else authenticatedRouter(req, res, next);
+    });
   });
 
   authenticatedRouter.post<{}, never, {}, {}, {}>("/sign-out", (req, res) => {
@@ -921,27 +924,56 @@ $$
 
   const courseRouter = express.Router();
 
-  authenticatedRouter.use<{ token: string }, HTML, {}, {}, {}>(
-    "/:token",
-    (req, res, next) => {
+  authenticatedRouter.use<
+    { token: string },
+    HTML,
+    {},
+    {},
+    { courseToken: string }
+  >("/:token", (req, res, next) => {
+    database.executeTransaction(() => {
       if (
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "token" = ${req.params.token}) AS "exists"`
         )!.exists === 0
       )
         next();
-      else courseRouter(req, res, next);
-    }
-  );
+      else {
+        res.locals.courseToken = req.params.token;
+        courseRouter(req, res, next);
+      }
+    });
+  });
 
-  courseRouter.get<{ token: string }, HTML, {}, {}, {}>(
+  const unenrolledCourseRouter = express.Router();
+
+  // courseRouter.use<{}, HTML, {}, {}, { courseToken: string }>((req, res, next) => {
+  //   database.executeTransaction(() => {
+  //     if (
+  //       database.get<{ exists: number }>(
+  //         sql`
+  //           SELECT EXISTS(
+  //             SELECT 1
+  //             FROM "enrollments"
+  //             JOIN "users" ON "enrollments"."user" = "users"."id"
+  //             WHERE "users"."email" = ${req.session!.email}
+  //           ) AS "exists"
+  //         `
+  //       )!.exists === 0
+  //   )
+  //       next();
+  //     else {
+  //       res.locals.courseToken = req.params.token;
+  //       courseRouter(req, res, next);
+  //     }
+  //   });
+  // });
+
+  courseRouter.get<{}, HTML, {}, {}, { courseToken: string }>(
     "/",
     (req, res, next) => {
       database.executeTransaction(() => {
         if (
-          database.get<{ exists: number }>(
-            sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "token" = ${req.params.token}) AS "exists"`
-          )!.exists === 1 &&
           database.get<{ exists: number }>(
             sql`
               SELECT EXISTS(
@@ -954,7 +986,7 @@ $$
           )!.exists === 0
         ) {
           const name = database.get<{ name: string }>(
-            sql`SELECT "name" FROM "courses" WHERE "token" = ${req.params.token}`
+            sql`SELECT "name" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
           )!.name;
           res.send(
             app.get("layout")(
