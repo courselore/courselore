@@ -344,15 +344,15 @@ export default async function courselore(
         "role" TEXT NOT NULL,
         UNIQUE ("user", "course")
       );
-    `,
 
-    sql`
       CREATE TABLE "threads" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "reference" INTEGER NULL,
         "course" INTEGER NOT NULL REFERENCES "courses",
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "title" TEXT NOT NULL
+        "title" TEXT NOT NULL,
+        UNIQUE ("reference", "course")
       );
     `,
   ]);
@@ -1011,8 +1011,13 @@ $$
                 `
               )!.role})
             </h1>
+            <p>
+              <a href="${app.get("url")}/${res.locals.courseToken}/threads/new"
+                >Create a new thread</a
+              >
+            </p>
             <div class="TODO">
-              <p>Show threads and allow for the creation of threads.</p>
+              <p>List existing threads</p>
             </div>
           `
         )
