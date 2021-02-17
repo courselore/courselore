@@ -485,41 +485,34 @@ $$
   // https://github.com/expressjs/express/blob/master/examples/cookie-sessions/index.js
   // https://www.npmjs.com/package/express-session
   // https://github.com/expressjs/express/blob/master/examples/session/index.js
-  app.use(
-    cookieSession({
-      secret: runtimeDatabase.executeTransaction<string>(() => {
-        let cookieSecret = runtimeDatabase.get<{ value: string }>(
-          sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookie"}`
-        )?.value;
-        if (cookieSecret === undefined) {
-          cookieSecret = newToken(60);
-          runtimeDatabase.run(
-            sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookie"}, ${cookieSecret})`
-          );
-        }
-        return cookieSecret;
-      }),
-    })
-  );
+  let cookieSecret = runtimeDatabase.get<{ value: string }>(
+    sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookie"}`
+  )?.value;
+  if (cookieSecret === undefined) {
+    cookieSecret = newToken(60);
+    runtimeDatabase.run(
+      sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookie"}, ${cookieSecret})`
+    );
+  }
+  app.use(cookieSession({ secret: cookieSecret }));
 
   const unauthenticatedRouter = express.Router();
   const authenticatedRouter = express.Router();
 
   app.use<{}, unknown, {}, {}, {}>((req, res, next) => {
-    if (req.session!.email === undefined) unauthenticatedRouter(req, res, next);
-    else
-      database.executeTransaction(() => {
-        if (
-          database.get<{ exists: number }>(
-            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
-              req.session!.email
-            }) AS "exists"`
-          )!.exists === 0
-        ) {
-          delete req.session!.email;
-          res.redirect(`${app.get("url")}/`);
-        } else authenticatedRouter(req, res, next);
-      });
+    if (req.session!.email === undefined)
+      return unauthenticatedRouter(req, res, next);
+    if (
+      database.get<{ exists: number }>(
+        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
+          req.session!.email
+        }) AS "exists"`
+      )!.exists === 0
+    ) {
+      delete req.session!.email;
+      return res.redirect(`${app.get("url")}/`);
+    }
+    authenticatedRouter(req, res, next);
   });
 
   unauthenticatedRouter.get<{}, HTML, {}, {}, {}>(
@@ -735,34 +728,32 @@ $$
       runtimeDatabase.run(
         sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
       );
-      database.executeTransaction(() => {
-        if (
-          authenticationToken === undefined ||
-          new Date(authenticationToken.expiresAt) < new Date() ||
-          database.get<{ exists: number }>(
-            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
-          )!.exists === 1
-        )
-          return res.send(
-            app.get("layout")(
-              req,
-              res,
-              html`<title>Sign up · CourseLore</title>`,
-              html`
-                <p>
-                  Something went wrong in your sign up.
-                  <a href="${app.get("url")}/sign-up">Start over</a>.
-                </p>
-              `
-            )
-          );
-        const { email } = authenticationToken;
-        database.run(
-          sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${name})`
+      if (
+        authenticationToken === undefined ||
+        new Date(authenticationToken.expiresAt) < new Date() ||
+        database.get<{ exists: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
+        )!.exists === 1
+      )
+        return res.send(
+          app.get("layout")(
+            req,
+            res,
+            html`<title>Sign up · CourseLore</title>`,
+            html`
+              <p>
+                Something went wrong in your sign up.
+                <a href="${app.get("url")}/sign-up">Start over</a>.
+              </p>
+            `
+          )
         );
-        req.session!.email = email;
-        res.redirect(`${app.get("url")}/`);
-      });
+      const { email } = authenticationToken;
+      database.run(
+        sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${name})`
+      );
+      req.session!.email = email;
+      res.redirect(`${app.get("url")}/`);
     }
   );
 
@@ -772,92 +763,87 @@ $$
   });
 
   authenticatedRouter.get<{}, HTML, {}, {}, {}>("/", (req, res) => {
-    database.executeTransaction(() => {
-      const { enrollmentsCount } = database.get<{ enrollmentsCount: number }>(
-        sql`SELECT COUNT(*) AS "enrollmentsCount" FROM "enrollments" JOIN "users" ON "enrollments"."user" = "users"."id" WHERE "users"."email" = ${
-          req.session!.email
-        }`
-      )!;
-      if (enrollmentsCount == 1)
-        return res.redirect(
-          `${app.get("url")}/${
-            database.get<{ token: string }>(
-              sql`
-                SELECT "courses"."token" AS "token"
-                FROM "courses"
-                JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                WHERE "users"."email" = ${req.session!.email}
+    const { enrollmentsCount } = database.get<{ enrollmentsCount: number }>(
+      sql`SELECT COUNT(*) AS "enrollmentsCount" FROM "enrollments" JOIN "users" ON "enrollments"."user" = "users"."id" WHERE "users"."email" = ${
+        req.session!.email
+      }`
+    )!;
+    if (enrollmentsCount == 1)
+      return res.redirect(
+        `${app.get("url")}/${
+          database.get<{ token: string }>(
+            sql`
+              SELECT "courses"."token" AS "token"
+              FROM "courses"
+              JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+              JOIN "users" ON "enrollments"."user" = "users"."id"
+              WHERE "users"."email" = ${req.session!.email}
               `
-            )!.token
-          }`
-        );
-      res.send(
-        app.get("layout")(
-          req,
-          res,
-          html`<title>CourseLore</title>`,
-          html`
-            <h1>
-              Hi
-              ${database.get<{ name: string }>(
-                sql`SELECT "name" FROM "users" WHERE "email" = ${
-                  req.session!.email
-                }`
-              )!.name},
-            </h1>
-            $${enrollmentsCount === 0
-              ? html`
-                  <p>
-                    It looks like you’re new here. What would you like to do?
-                  </p>
-                  <p>
-                    <a href="${app.get("url")}/courses/new"
-                      ><strong>Create a new course</strong></a
-                    >.
-                  </p>
-                  <p>
-                    Or, to <strong>enroll on an existing course</strong>, you
-                    either have to be invited or go to the course URL (it looks
-                    something like
-                    <code>${app.get("url")}/${newToken(10)}</code>).
-                  </p>
-                `
-              : html`
-                  <p>Here’s what’s going on with your courses:</p>
-                  <ul>
-                    $${database
-                      .all<{ token: string; name: string; role: Role }>(
-                        sql`
+          )!.token
+        }`
+      );
+    res.send(
+      app.get("layout")(
+        req,
+        res,
+        html`<title>CourseLore</title>`,
+        html`
+          <h1>
+            Hi
+            ${database.get<{ name: string }>(
+              sql`SELECT "name" FROM "users" WHERE "email" = ${
+                req.session!.email
+              }`
+            )!.name},
+          </h1>
+          $${enrollmentsCount === 0
+            ? html`
+                <p>It looks like you’re new here. What would you like to do?</p>
+                <p>
+                  <a href="${app.get("url")}/courses/new"
+                    ><strong>Create a new course</strong></a
+                  >.
+                </p>
+                <p>
+                  Or, to <strong>enroll on an existing course</strong>, you
+                  either have to be invited or go to the course URL (it looks
+                  something like
+                  <code>${app.get("url")}/${newToken(10)}</code>).
+                </p>
+              `
+            : html`
+                <p>Here’s what’s going on with your courses:</p>
+                <ul>
+                  $${database
+                    .all<{ token: string; name: string; role: Role }>(
+                      sql`
                         SELECT "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."role" AS "role"
                         FROM "courses"
                         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
                         JOIN "users" ON "enrollments"."user" = "users"."id"
                         WHERE "users"."token" = ${req.session!.email}
                       `
-                      )
-                      .map(
-                        ({ token, name, role }) =>
-                          html`<li>
-                            <a href="${app.get("url")}/${token}"
-                              >${name} (${role})</a
-                            >
-                          </li>`
-                      )}
-                  </ul>
-                  <div class="TODO">
-                    <p>
-                      At this point we’re just showing a list of courses in
-                      which the person in enrolled. In the future we’d probably
-                      like to show a news feed with relevant updates from all
-                      courses.
-                    </p>
-                  </div>
-                `}
-          `
-        )
-      );
-    });
+                    )
+                    .map(
+                      ({ token, name, role }) =>
+                        html`<li>
+                          <a href="${app.get("url")}/${token}"
+                            >${name} (${role})</a
+                          >
+                        </li>`
+                    )}
+                </ul>
+                <div class="TODO">
+                  <p>
+                    At this point we’re just showing a list of courses in which
+                    the person in enrolled. In the future we’d probably like to
+                    show a news feed with relevant updates from all courses.
+                  </p>
+                </div>
+              `}
+        `
+      )
+    );
   });
 
   authenticatedRouter.get<{}, HTML, {}, {}, {}>("/courses/new", (req, res) => {
@@ -899,20 +885,16 @@ $$
       if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
 
       const token = newToken(10);
-      database.executeTransaction(() => {
-        const courseId = database.run(
-          sql`INSERT INTO "courses" ("token", "name") VALUES (${token}, ${req.body.name})`
-        ).lastInsertRowid;
-        database.run(
-          sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
-            database.get<{ id: number }>(
-              sql`SELECT "id" FROM "users" WHERE "email" = ${
-                req.session!.email
-              }`
-            )!.id
-          }, ${courseId}, ${"instructor"})`
-        );
-      });
+      const courseId = database.run(
+        sql`INSERT INTO "courses" ("token", "name") VALUES (${token}, ${req.body.name})`
+      ).lastInsertRowid;
+      database.run(
+        sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
+          database.get<{ id: number }>(
+            sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
+          )!.id
+        }, ${courseId}, ${"instructor"})`
+      );
       res.redirect(`${app.get("url")}/${token}`);
     }
   );
@@ -927,18 +909,16 @@ $$
     {},
     { courseToken: string }
   >("/:token", (req, res, next) => {
-    database.executeTransaction(() => {
-      if (
-        database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "token" = ${req.params.token}) AS "exists"`
-        )!.exists === 0
-      )
-        next();
-      else {
-        res.locals.courseToken = req.params.token;
-        if (
-          database.get<{ exists: number }>(
-            sql`
+    if (
+      database.get<{ exists: number }>(
+        sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "token" = ${req.params.token}) AS "exists"`
+      )!.exists === 0
+    )
+      return next();
+    res.locals.courseToken = req.params.token;
+    if (
+      database.get<{ exists: number }>(
+        sql`
               SELECT EXISTS(
                 SELECT 1
                 FROM "enrollments"
@@ -947,12 +927,10 @@ $$
                 WHERE "users"."email" = ${req.session!.email}
               ) AS "exists"
             `
-          )!.exists === 0
-        )
-          unenrolledCourseRouter(req, res, next);
-        else enrolledCourseRouter(req, res, next);
-      }
-    });
+      )!.exists === 0
+    )
+      return unenrolledCourseRouter(req, res, next);
+    enrolledCourseRouter(req, res, next);
   });
 
   unenrolledCourseRouter.get<{}, HTML, {}, {}, { courseToken: string }>(

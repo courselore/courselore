@@ -337,7 +337,18 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 #### Code Base
 
 - Consider using **session per request** middleware for database transactions.
-  - https://goenning.net/2017/06/20/session-per-request-pattern-go/
+  - Considerations:
+    - We shouldn’t keep the transaction open across ticks of the event loop, which entails that all request handlers would have to be synchronous.
+    - Moreover, as far as I can tell the only way to run a middle **after** the router is to listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
+    - Maybe I can just call `next()` and then look at the `res.statusCode`?
+  - References:
+    - https://goenning.net/2017/06/20/session-per-request-pattern-go/
+    - https://stackoverflow.com/questions/24258782/node-express-4-middleware-after-routes
+    - https://www.lunchbadger.com/blog/tracking-the-performance-of-express-js-routes-and-middleware/
+    - https://stackoverflow.com/questions/27484361/is-it-possible-to-use-some-sort-of-middleware-after-sending-the-response-with
+    - https://stackoverflow.com/questions/44647617/middleware-after-all-route-in-nodejs
+    - https://github.com/jshttp/on-finished
+    - https://github.com/pillarjs/router/issues/18
 - Produce native ESM:
   - It’s too fresh, assess again start 2021-08.
   - Blocked by experimental support in ts-node-dev (https://github.com/TypeStrong/ts-node/issues/1007) & Jest (https://jestjs.io/docs/en/ecmascript-modules).
