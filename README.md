@@ -132,6 +132,8 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - Change their roles
   - Remove them from the course
 - Allow people to disenroll from a course (but we get to keep their contributions as “ghost”)
+- Allow people who aren’t even users to sign up & enroll in a single operation
+  - Do it with a simple `redirect` option in the sign up process
 
 #### Forum
 
