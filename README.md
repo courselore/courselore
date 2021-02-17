@@ -336,6 +336,8 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 
 #### Code Base
 
+- Consider using **session per request** middleware for database transactions.
+  - https://goenning.net/2017/06/20/session-per-request-pattern-go/
 - Produce native ESM:
   - It’s too fresh, assess again start 2021-08.
   - Blocked by experimental support in ts-node-dev (https://github.com/TypeStrong/ts-node/issues/1007) & Jest (https://jestjs.io/docs/en/ecmascript-modules).

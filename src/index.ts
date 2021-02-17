@@ -503,10 +503,23 @@ $$
   );
 
   const unauthenticatedRouter = express.Router();
+  const authenticatedRouter = express.Router();
 
-  app.use<{}, HTML, {}, {}, {}>((req, res, next) => {
-    if (req.session!.email !== undefined) next();
-    else unauthenticatedRouter(req, res, next);
+  app.use<{}, unknown, {}, {}, {}>((req, res, next) => {
+    if (req.session!.email === undefined) unauthenticatedRouter(req, res, next);
+    else
+      database.executeTransaction(() => {
+        if (
+          database.get<{ exists: number }>(
+            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
+              req.session!.email
+            }) AS "exists"`
+          )!.exists === 0
+        ) {
+          delete req.session!.email;
+          res.redirect(`${app.get("url")}/`);
+        } else authenticatedRouter(req, res, next);
+      });
   });
 
   unauthenticatedRouter.get<{}, HTML, {}, {}, {}>(
@@ -753,24 +766,6 @@ $$
     }
   );
 
-  const authenticatedRouter = express.Router();
-
-  app.use<{}, HTML, {}, {}, {}>((req, res, next) => {
-    database.executeTransaction(() => {
-      if (
-        req.session!.email === undefined ||
-        database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
-            req.session!.email
-          }) AS "exists"`
-        )!.exists === 0
-      ) {
-        delete req.session!.email;
-        next();
-      } else authenticatedRouter(req, res, next);
-    });
-  });
-
   authenticatedRouter.post<{}, never, {}, {}, {}>("/sign-out", (req, res) => {
     delete req.session!.email;
     res.redirect(`${app.get("url")}/`);
@@ -922,11 +917,12 @@ $$
     }
   );
 
-  const courseRouter = express.Router();
+  const unenrolledCourseRouter = express.Router();
+  const enrolledCourseRouter = express.Router();
 
   authenticatedRouter.use<
     { token: string },
-    HTML,
+    unknown,
     {},
     {},
     { courseToken: string }
@@ -940,39 +936,6 @@ $$
         next();
       else {
         res.locals.courseToken = req.params.token;
-        courseRouter(req, res, next);
-      }
-    });
-  });
-
-  const unenrolledCourseRouter = express.Router();
-
-  // courseRouter.use<{}, HTML, {}, {}, { courseToken: string }>((req, res, next) => {
-  //   database.executeTransaction(() => {
-  //     if (
-  //       database.get<{ exists: number }>(
-  //         sql`
-  //           SELECT EXISTS(
-  //             SELECT 1
-  //             FROM "enrollments"
-  //             JOIN "users" ON "enrollments"."user" = "users"."id"
-  //             WHERE "users"."email" = ${req.session!.email}
-  //           ) AS "exists"
-  //         `
-  //       )!.exists === 0
-  //   )
-  //       next();
-  //     else {
-  //       res.locals.courseToken = req.params.token;
-  //       courseRouter(req, res, next);
-  //     }
-  //   });
-  // });
-
-  courseRouter.get<{}, HTML, {}, {}, { courseToken: string }>(
-    "/",
-    (req, res, next) => {
-      database.executeTransaction(() => {
         if (
           database.get<{ exists: number }>(
             sql`
@@ -980,37 +943,45 @@ $$
                 SELECT 1
                 FROM "enrollments"
                 JOIN "users" ON "enrollments"."user" = "users"."id"
+                JOIN "courses" ON "enrollments"."course" = "courses"."id"
                 WHERE "users"."email" = ${req.session!.email}
               ) AS "exists"
             `
           )!.exists === 0
-        ) {
-          const name = database.get<{ name: string }>(
-            sql`SELECT "name" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
-          )!.name;
-          res.send(
-            app.get("layout")(
-              req,
-              res,
-              html`<title>${name} · CourseLore</title>`,
-              html`
-                <h1>Enroll on ${name}</h1>
-                <form method="post">
-                  <p>
-                    as
-                    <select name="role" required>
-                      <option value="student">student</option>
-                      <option value="assistant">assistant</option>
-                      <option value="instructor">instructor</option>
-                    </select>
-                    <button>Enroll</button>
-                  </p>
-                </form>
-              `
-            )
-          );
-        } else next();
-      });
+        )
+          unenrolledCourseRouter(req, res, next);
+        else enrolledCourseRouter(req, res, next);
+      }
+    });
+  });
+
+  unenrolledCourseRouter.get<{}, HTML, {}, {}, { courseToken: string }>(
+    "/",
+    (req, res, next) => {
+      const name = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
+      )!.name;
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>${name} · CourseLore</title>`,
+          html`
+            <h1>Enroll on ${name}</h1>
+            <form method="post">
+              <p>
+                as
+                <select name="role" required>
+                  <option value="student">student</option>
+                  <option value="assistant">assistant</option>
+                  <option value="instructor">instructor</option>
+                </select>
+                <button>Enroll</button>
+              </p>
+            </form>
+          `
+        )
+      );
     }
   );
 
@@ -1059,7 +1030,7 @@ $$
   const posts: { author: string; content: string; createdAt: string }[] = [];
   */
 
-  app.use((req, res) => {
+  app.use<{}, HTML, {}, {}, {}>((req, res) => {
     res.send(
       app.get("layout")(
         req,
