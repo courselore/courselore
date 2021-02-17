@@ -486,12 +486,12 @@ $$
   // https://www.npmjs.com/package/express-session
   // https://github.com/expressjs/express/blob/master/examples/session/index.js
   let cookieSecret = runtimeDatabase.get<{ value: string }>(
-    sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookie"}`
+    sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
   )?.value;
   if (cookieSecret === undefined) {
     cookieSecret = newToken(60);
     runtimeDatabase.run(
-      sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookie"}, ${cookieSecret})`
+      sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookieSecret"}, ${cookieSecret})`
     );
   }
   app.use(cookieSession({ secret: cookieSecret }));
@@ -919,14 +919,14 @@ $$
     if (
       database.get<{ exists: number }>(
         sql`
-              SELECT EXISTS(
-                SELECT 1
-                FROM "enrollments"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                WHERE "users"."email" = ${req.session!.email}
-              ) AS "exists"
-            `
+          SELECT EXISTS(
+            SELECT 1
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id"
+            JOIN "courses" ON "enrollments"."course" = "courses"."id"
+            WHERE "users"."email" = ${req.session!.email}
+          ) AS "exists"
+        `
       )!.exists === 0
     )
       return unenrolledCourseRouter(req, res, next);
@@ -963,16 +963,62 @@ $$
     }
   );
 
-  // courseRouter.get<{}, HTML, {}, {}, {}>("/", (req, res) => {
-  //   res.send(
-  //     app.get("layout")(
-  //       req,
-  //       res,
-  //       html`<title>${res.locals.course.name} · CourseLore</title>`,
-  //       html`<h1>${res.locals.course.name}</h1>`
-  //     )
-  //   );
-  // });
+  unenrolledCourseRouter.post<
+    {},
+    never,
+    { role: Role },
+    {},
+    { courseToken: string }
+  >("/", expressValidator.body("role").isIn(ROLES as any), (req, res, next) => {
+    const errors = expressValidator.validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
+
+    database.run(
+      sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
+        database.get<{ id: number }>(
+          sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
+        )!.id
+      }, ${
+        database.get<{ id: number }>(
+          sql`SELECT "id" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
+        )!.id
+      }, ${req.body.role})`
+    );
+    res.redirect(`${app.get("url")}/${res.locals.courseToken}`);
+  });
+
+  enrolledCourseRouter.get<{}, HTML, {}, {}, { courseToken: string }>(
+    "/",
+    (req, res, next) => {
+      const name = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
+      )!.name;
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>${name} · CourseLore</title>`,
+          html`
+            <h1>
+              ${name}
+              (${database.get<{ role: Role }>(
+                sql`
+                  SELECT "enrollments"."role" AS "role"
+                  FROM "enrollments"
+                  JOIN "users" ON "enrollments"."user" = "users"."id"
+                  JOIN "courses" ON "enrollments"."course" = "courses"."id"
+                  WHERE "courses"."token" = ${res.locals.courseToken}
+                `
+              )!.role})
+            </h1>
+            <div class="TODO">
+              <p>Show threads and allow for the creation of threads.</p>
+            </div>
+          `
+        )
+      );
+    }
+  );
 
   /*
   app.get("/thread", (req, res) => {

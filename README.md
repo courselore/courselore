@@ -341,6 +341,7 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
     - We shouldn’t keep the transaction open across ticks of the event loop, which entails that all request handlers would have to be synchronous.
     - Moreover, as far as I can tell the only way to run a middle **after** the router is to listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
     - Maybe I can just call `next()` and then look at the `res.statusCode`?
+    - I think that transactions are only relevant if you’re running in cluster mode, because otherwise Node.js is single-threaded and queries are serialized, anyway.
   - References:
     - https://goenning.net/2017/06/20/session-per-request-pattern-go/
     - https://stackoverflow.com/questions/24258782/node-express-4-middleware-after-routes
