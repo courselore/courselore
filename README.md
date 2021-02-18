@@ -314,6 +314,8 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - Reference: GitHub let’s you search in different scopes like that.
 - Courses in the system (for joining a course).
 
+#### Translate to Other Languages
+
 ### Non-Functional Features
 
 - Easy to self-host
@@ -322,6 +324,13 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 - Fast
 
 ### Improvements
+
+#### Tests
+
+- Approaches:
+  - (What we’re doing now) https://github.com/sindresorhus/got + https://github.com/jsdom/jsdom : Simplest and the best for now since we’re doing server-side rendering.
+  - https://github.com/puppeteer/puppeteer / https://github.com/smooth-code/jest-puppeteer : It’s a bit more magic, since it actually runs a browser.
+  - https://www.cypress.io : Full-blown magic…
 
 #### Page Transitions & Client-Side JavaScript
 

@@ -23,7 +23,7 @@ if (process.platform !== "win32")
     { name: "courselore/courselore", mode: 0o755 }
   );
 else
-  package.append(String.raw`"src\node_modules\.bin\node.exe" "src\lib\index.js"`, {
+  package.append(`"src\\node_modules\\.bin\\node.exe" "src\\lib\\index.js"`, {
     name: "courselore/courselore.cmd",
   });
 
