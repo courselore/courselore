@@ -5,9 +5,11 @@ module.exports = async (require) => {
   const { sql } = require("@leafac/sqlite");
   const AutoEncrypt = require("@small-tech/auto-encrypt");
   const courselore = require(".").default;
-  const website = require("../website/src/index")(require);
+  const website = require("../website/index")(require);
 
-  const app = await courselore(__dirname);
+  const ROOT_DIRECTORY = "/root/courselore";
+
+  const app = await courselore(ROOT_DIRECTORY);
 
   app.set("url", "https://courselore.org");
   app.set("administrator email", "administrator@courselore.org");
@@ -40,7 +42,7 @@ module.exports = async (require) => {
           "courselore.com",
           "www.courselore.com",
         ],
-        settingsPath: path.join(__dirname, "var/keys/tls"),
+        settingsPath: path.join(ROOT_DIRECTORY, "var/keys/tls"),
       },
       reverseProxy
     )
