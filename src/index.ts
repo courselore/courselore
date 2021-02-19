@@ -411,37 +411,31 @@ export default async function courselore(
   }
   app.use(cookieSession({ secret: cookieSecret }));
 
-  const unauthenticated: express.RequestHandler<{}, any, {}, {}, {}> = (
+  const isAuthenticated: (
+    isAuthenticated: boolean
+  ) => express.RequestHandler<{}, any, {}, {}, {}> = (isAuthenticated) => (
     req,
     res,
     next
   ) => {
-    if (req.session!.email !== undefined) return next("route");
-    next();
-  };
-
-  const authenticated: express.RequestHandler<{}, any, {}, {}, {}> = (
-    req,
-    res,
-    next
-  ) => {
-    if (req.session!.email === undefined) return next("route");
-    if (
-      database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
-          req.session!.email
-        }) AS "exists"`
-      )!.exists === 0
-    ) {
+    if (!isAuthenticated && req.session!.email === undefined) return next();
+    if (isAuthenticated && req.session!.email !== undefined) {
+      if (
+        database.get<{ exists: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
+            req.session!.email
+          }) AS "exists"`
+        )!.exists === 1
+      )
+        return next();
       delete req.session!.email;
-      return next("route");
     }
-    next();
+    next("route");
   };
 
   app.get<{}, HTML, {}, {}, {}>(
     ["/", "/authenticate"],
-    unauthenticated,
+    isAuthenticated(false),
     (req, res) => {
       res.send(
         app.get("layout")(
@@ -461,7 +455,7 @@ export default async function courselore(
 
   app.get<{}, HTML, {}, {}, {}>(
     ["/sign-up", "/sign-in"],
-    unauthenticated,
+    isAuthenticated(false),
     (req, res) => {
       res.send(
         app.get("layout")(
@@ -505,7 +499,7 @@ export default async function courselore(
   // TODO: Make more sophisticated use of expressValidator.
   app.post<{}, HTML, { email: string }, {}, {}>(
     ["/sign-up", "/sign-in"],
-    unauthenticated,
+    isAuthenticated(false),
     expressValidator.body("email").isEmail(),
     (req, res) => {
       runtimeDatabase.run(
@@ -562,7 +556,7 @@ export default async function courselore(
   // TODO: Maybe abstract the part that checks whether the ‘authenticationToken’ is valid in this route and the next?
   app.get<{ token: string }, HTML, {}, {}, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
-    unauthenticated,
+    isAuthenticated(false),
     (req, res) => {
       const authenticationToken = runtimeDatabase.get<{
         email: string;
@@ -635,7 +629,7 @@ export default async function courselore(
 
   app.post<{}, HTML, { token: string; name: string }, {}, {}>(
     "/users",
-    unauthenticated,
+    isAuthenticated(false),
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
     (req, res) => {
@@ -676,12 +670,16 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, any, {}, {}, {}>("/sign-out", authenticated, (req, res) => {
-    delete req.session!.email;
-    res.redirect(`${app.get("url")}/`);
-  });
+  app.post<{}, any, {}, {}, {}>(
+    "/sign-out",
+    isAuthenticated(true),
+    (req, res) => {
+      delete req.session!.email;
+      res.redirect(`${app.get("url")}/`);
+    }
+  );
 
-  app.get<{}, HTML, {}, {}, {}>("/", authenticated, (req, res) => {
+  app.get<{}, HTML, {}, {}, {}>("/", isAuthenticated(true), (req, res) => {
     const enrollmentsCount = database.get<{ enrollmentsCount: number }>(
       sql`
         SELECT COUNT(*) AS "enrollmentsCount"
@@ -773,40 +771,44 @@ export default async function courselore(
     );
   });
 
-  app.get<{}, HTML, {}, {}, {}>("/courses/new", authenticated, (req, res) => {
-    res.send(
-      app.get("layout")(
-        req,
-        res,
-        html`<title>Create a new course · CourseLore</title>`,
-        html`
-          <h1>Create a new course</h1>
-          <form method="post" action="${app.get("url")}/courses">
-            <p>
-              <input
-                type="text"
-                name="name"
-                placeholder="Course name…"
-                required
-              />
-              <button>Create course</button>
-            </p>
-            <div class="TODO">
+  app.get<{}, HTML, {}, {}, {}>(
+    "/courses/new",
+    isAuthenticated(true),
+    (req, res) => {
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>Create a new course · CourseLore</title>`,
+          html`
+            <h1>Create a new course</h1>
+            <form method="post" action="${app.get("url")}/courses">
               <p>
-                Ask more questions here, for example, what’s the person’s role
-                in the course, how they’d like for other people to enroll
-                (either by invitation or via a link), and so forth…
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Course name…"
+                  required
+                />
+                <button>Create course</button>
               </p>
-            </div>
-          </form>
-        `
-      )
-    );
-  });
+              <div class="TODO">
+                <p>
+                  Ask more questions here, for example, what’s the person’s role
+                  in the course, how they’d like for other people to enroll
+                  (either by invitation or via a link), and so forth…
+                </p>
+              </div>
+            </form>
+          `
+        )
+      );
+    }
+  );
 
   app.post<{}, any, { name: string }, {}, {}>(
     "/courses",
-    authenticated,
+    isAuthenticated(true),
     expressValidator.body("name").exists(),
     (req, res) => {
       const newReference = cryptoRandomString({ length: 10, type: "numeric" });
@@ -834,68 +836,40 @@ export default async function courselore(
     if (
       database.get<{ exists: number }>(
         sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "reference" = ${req.params.courseReference}) AS "exists"`
-      )!.exists === 0
-    )
-      return next("route");
-    next();
-  };
-
-  // TODO: Maybe extract ‘isCourseEnrolled’ with query used in this handler and the next.
-  const courseUnenrolled: express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    {}
-  > = (req, res, next) => {
-    if (
-      database.get<{ exists: number }>(
-        sql`
-          SELECT EXISTS(
-            SELECT 1
-            FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id"
-            JOIN "courses" ON "enrollments"."course" = "courses"."id"
-            WHERE "users"."email" = ${req.session!.email} AND
-                  "courses"."reference" = ${req.params.courseReference}
-          ) AS "exists"
-        `
       )!.exists === 1
     )
-      return next("route");
-    next();
+      return next();
+    next("route");
   };
 
-  const courseEnrolled: express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    {}
-  > = (req, res, next) => {
+  const isCourseEnrolled: (
+    isCourseEnrolled: boolean
+  ) => express.RequestHandler<{ courseReference: string }, any, {}, {}, {}> = (
+    isCourseEnrolled
+  ) => (req, res, next) => {
     if (
       database.get<{ exists: number }>(
         sql`
-          SELECT EXISTS(
-            SELECT 1
-            FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id"
-            JOIN "courses" ON "enrollments"."course" = "courses"."id"
-            WHERE "users"."email" = ${req.session!.email} AND
-                  "courses"."reference" = ${req.params.courseReference}
-          ) AS "exists"
-        `
-      )!.exists === 0
+        SELECT EXISTS(
+          SELECT 1
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          WHERE "users"."email" = ${req.session!.email} AND
+                "courses"."reference" = ${req.params.courseReference}
+        ) AS "exists"
+      `
+      )!.exists === (isCourseEnrolled ? 1 : 0)
     )
-      return next("route");
-    next();
+      return next();
+    next("route");
   };
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
-    authenticated,
+    isAuthenticated(true),
     courseExists,
-    courseUnenrolled,
+    isCourseEnrolled(false),
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -926,9 +900,9 @@ export default async function courselore(
 
   app.post<{ courseReference: string }, any, { role: Role }, {}, {}>(
     "/:courseReference",
-    authenticated,
+    isAuthenticated(true),
     courseExists,
-    courseUnenrolled,
+    isCourseEnrolled(false),
     expressValidator.body("role").isIn(ROLES as any),
     (req, res) => {
       const course = database.get<{ id: number }>(
@@ -947,9 +921,9 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
-    authenticated,
+    isAuthenticated(true),
     courseExists,
-    courseEnrolled,
+    isCourseEnrolled(true),
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -1024,7 +998,7 @@ export default async function courselore(
 
   app.post<{}, HTML, { text: string }, {}, {}>(
     "/preview",
-    authenticated,
+    isAuthenticated(true),
     expressValidator.body("text").exists(),
     (req, res) => {
       res.send(app.get("text processor")(req.body.text));
