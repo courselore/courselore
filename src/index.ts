@@ -332,7 +332,7 @@ export default async function courselore(
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
-        "token" TEXT NOT NULL UNIQUE,
+        "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL
       );
 
@@ -404,7 +404,7 @@ export default async function courselore(
     sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
   )?.value;
   if (cookieSecret === undefined) {
-    cookieSecret = newToken(60);
+    cookieSecret = cryptoRandomString({ length: 60, type: "alphanumeric" });
     runtimeDatabase.run(
       sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookieSecret"}, ${cookieSecret})`
     );
@@ -438,6 +438,8 @@ export default async function courselore(
     }
     next();
   };
+
+  // TODO: Maybe abstract the part that checks whether the ‘authenticationToken’ is valid?
 
   app.get<{}, HTML, {}, {}, {}>(
     ["/", "/authenticate"],
@@ -516,7 +518,7 @@ export default async function courselore(
       runtimeDatabase.run(
         sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
       );
-      const token = newToken(40);
+      const token = cryptoRandomString({ length: 40, type: "numeric" });
       runtimeDatabase.run(
         sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
       );
@@ -607,7 +609,7 @@ export default async function courselore(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
         )!.exists === 0
       ) {
-        const token = newToken(40);
+        const token = cryptoRandomString({ length: 40, type: "numeric" });
         runtimeDatabase.run(
           sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
         );
@@ -700,15 +702,15 @@ export default async function courselore(
     if (enrollmentsCount == 1)
       return res.redirect(
         `${app.get("url")}/${
-          database.get<{ token: string }>(
+          database.get<{ reference: string }>(
             sql`
-              SELECT "courses"."token" AS "token"
+              SELECT "courses"."reference" AS "reference"
               FROM "courses"
               JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
               JOIN "users" ON "enrollments"."user" = "users"."id"
               WHERE "users"."email" = ${req.session!.email}
               `
-          )!.token
+          )!.reference
         }`
       );
     res.send(
@@ -737,26 +739,31 @@ export default async function courselore(
                   Or, to <strong>enroll on an existing course</strong>, you
                   either have to be invited or go to the course URL (it looks
                   something like
-                  <code>${app.get("url")}/${newToken(10)}</code>).
+                  <code
+                    >${app.get("url")}/${cryptoRandomString({
+                      length: 10,
+                      type: "numeric",
+                    })}</code
+                  >).
                 </p>
               `
             : html`
                 <p>Here’s what’s going on with your courses:</p>
                 <ul>
                   $${database
-                    .all<{ token: string; name: string; role: Role }>(
+                    .all<{ reference: string; name: string; role: Role }>(
                       sql`
-                        SELECT "courses"."token" AS "token", "courses"."name" AS "name", "enrollments"."role" AS "role"
+                        SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
                         FROM "courses"
                         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
                         JOIN "users" ON "enrollments"."user" = "users"."id"
-                        WHERE "users"."token" = ${req.session!.email}
+                        WHERE "users"."email" = ${req.session!.email}
                       `
                     )
                     .map(
-                      ({ token, name, role }) =>
+                      ({ reference, name, role }) =>
                         html`<li>
-                          <a href="${app.get("url")}/${token}"
+                          <a href="${app.get("url")}/${reference}"
                             >${name} (${role})</a
                           >
                         </li>`
@@ -814,9 +821,9 @@ export default async function courselore(
       const errors = expressValidator.validationResult(req);
       if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
 
-      const token = newToken(10);
+      const reference = cryptoRandomString({length: 10, type: "numeric"});
       const courseId = database.run(
-        sql`INSERT INTO "courses" ("token", "name") VALUES (${token}, ${req.body.name})`
+        sql`INSERT INTO "courses" ("reference", "name") VALUES (${reference}, ${req.body.name})`
       ).lastInsertRowid;
       database.run(
         sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
@@ -825,12 +832,12 @@ export default async function courselore(
           )!.id
         }, ${courseId}, ${"instructor"})`
       );
-      res.redirect(`${app.get("url")}/${token}`);
+      res.redirect(`${app.get("url")}/${reference}`);
     }
   );
 
   const courseExists: express.RequestHandler<
-    { courseToken: string },
+    { courseReference: string },
     any,
     {},
     {},
@@ -838,7 +845,7 @@ export default async function courselore(
   > = (req, res, next) => {
     if (
       database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "token" = ${req.params.courseToken}) AS "exists"`
+        sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "reference" = ${req.params.courseReference}) AS "exists"`
       )!.exists === 0
     )
       return next("route");
@@ -846,7 +853,7 @@ export default async function courselore(
   };
 
   const courseUnenrolled: express.RequestHandler<
-    { courseToken: string },
+    { courseReference: string },
     any,
     {},
     {},
@@ -861,7 +868,7 @@ export default async function courselore(
             JOIN "users" ON "enrollments"."user" = "users"."id"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "users"."email" = ${req.session!.email} AND
-                  "courses"."token" = ${req.params.courseToken}
+                  "courses"."reference" = ${req.params.courseReference}
           ) AS "exists"
         `
       )!.exists === 1
@@ -871,7 +878,7 @@ export default async function courselore(
   };
 
   const courseEnrolled: express.RequestHandler<
-    { courseToken: string },
+    { courseReference: string },
     any,
     {},
     {},
@@ -886,7 +893,7 @@ export default async function courselore(
             JOIN "users" ON "enrollments"."user" = "users"."id"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "users"."email" = ${req.session!.email} AND
-                  "courses"."token" = ${req.params.courseToken}
+                  "courses"."reference" = ${req.params.courseReference}
           ) AS "exists"
         `
       )!.exists === 0
@@ -895,14 +902,14 @@ export default async function courselore(
     next();
   };
 
-  app.get<{ courseToken: string }, HTML, {}, {}, {}>(
-    "/:courseToken",
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/:courseReference",
     authenticated,
     courseExists,
     courseUnenrolled,
     (req, res, next) => {
       const name = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "token" = ${req.params.courseToken}`
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!.name;
       res.send(
         app.get("layout")(
@@ -928,8 +935,8 @@ export default async function courselore(
     }
   );
 
-  app.post<{ courseToken: string }, any, { role: Role }, {}, {}>(
-    "/:courseToken",
+  app.post<{ courseReference: string }, any, { role: Role }, {}, {}>(
+    "/:courseReference",
     authenticated,
     courseExists,
     courseUnenrolled,
@@ -945,22 +952,22 @@ export default async function courselore(
           )!.id
         }, ${
           database.get<{ id: number }>(
-            sql`SELECT "id" FROM "courses" WHERE "token" = ${req.params.courseToken}`
+            sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
           )!.id
         }, ${req.body.role})`
       );
-      res.redirect(`${app.get("url")}/${req.params.courseToken}`);
+      res.redirect(`${app.get("url")}/${req.params.courseReference}`);
     }
   );
 
-  app.get<{ courseToken: string }, HTML, {}, {}, {}>(
-    "/:courseToken",
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/:courseReference",
     authenticated,
     courseExists,
     courseEnrolled,
     (req, res, next) => {
       const name = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "token" = ${req.params.courseToken}`
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!.name;
       res.send(
         app.get("layout")(
@@ -976,12 +983,12 @@ export default async function courselore(
                   FROM "enrollments"
                   JOIN "users" ON "enrollments"."user" = "users"."id"
                   JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                  WHERE "courses"."token" = ${req.params.courseToken}
+                  WHERE "courses"."reference" = ${req.params.courseReference}
                 `
               )!.role})
             </h1>
             <p>
-              <a href="${app.get("url")}/${req.params.courseToken}/threads/new"
+              <a href="${app.get("url")}/${req.params.courseReference}/threads/new"
                 >Create a new thread</a
               >
             </p>
@@ -1030,6 +1037,7 @@ export default async function courselore(
 
   app.post<{}, HTML, { text: string }, {}, {}>(
     "/preview",
+    authenticated,
     expressValidator.body("text").exists(),
     (req, res) => {
       res.send(app.get("text processor")(req.body.text));
@@ -1046,10 +1054,6 @@ export default async function courselore(
       )
     );
   });
-
-  function newToken(length: number): string {
-    return cryptoRandomString({ length, characters: "cfhjkprtvwxy3479" });
-  }
 
   function sendEmail({
     to,
