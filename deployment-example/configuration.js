@@ -5,7 +5,7 @@ module.exports = async (require) => {
   const { sql } = require("@leafac/sqlite");
   const AutoEncrypt = require("@small-tech/auto-encrypt");
   const courselore = require(".").default;
-  const website = require("../website/index")(require);
+  const customization = require("../customization-example/index")(require);
 
   const ROOT_DIRECTORY = "/root/courselore";
 
@@ -30,7 +30,7 @@ module.exports = async (require) => {
         ).value,
     })
   );
-  reverseProxy.use(website(app));
+  reverseProxy.use(customization(app));
   reverseProxy.use(app);
 
   AutoEncrypt.https
