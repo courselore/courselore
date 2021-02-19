@@ -510,49 +510,44 @@ export default async function courselore(
     unauthenticated,
     expressValidator.body("email").isEmail(),
     (req, res) => {
-      const { email } = req.body;
-
       runtimeDatabase.run(
-        sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
+        sql`DELETE FROM "authenticationTokens" WHERE "email" = ${req.body.email}`
       );
-      const token = cryptoRandomString({ length: 40, type: "numeric" });
+      const newToken = cryptoRandomString({ length: 40, type: "numeric" });
       runtimeDatabase.run(
-        sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
+        sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${req.body.email})`
       );
 
-      const userExists =
+      const realPreposition =
         database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
-        )!.exists === 1;
-
-      const magicLink = `${app.get("url")}/sign-${
-        userExists ? "in" : "up"
-      }/${token}`;
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${req.body.email}) AS "exists"`
+        )!.exists === 0
+          ? "up"
+          : "in";
+      const magicLink = `${app.get("url")}/sign-${realPreposition}/${newToken}`;
       const sentEmail = sendEmail({
-        to: email,
-        subject: `Here’s your magic link to sign ${
-          userExists ? "in" : "up"
-        } to CourseLore`,
+        to: req.body.email,
+        subject: `Here’s your magic link to sign ${realPreposition} to CourseLore`,
         body: html`
           <p><a href="${magicLink}">${magicLink}</a></p>
           <p><small>Expires in 10 minutes.</small></p>
         `,
       });
+
+      const pretendPreposition = req.path === "/sign-up" ? "up" : "in";
       return res.send(
         app.get("layout")(
           req,
           res,
-          html`<title>
-            Sign ${req.path === "/sign-up" ? "up" : "in"} · CourseLore
-          </title>`,
+          html`<title>Sign ${pretendPreposition} · CourseLore</title>`,
           html`
             <p>
-              To continue with sign ${req.path === "/sign-up" ? "up" : "in"},
-              check ${email} and follow the magic link.
+              To continue with sign ${pretendPreposition}, check
+              ${req.body.email} and follow the magic link.
             </p>
             <form method="post">
               <p>
-                <input type="hidden" name="email" value="${email}" />
+                <input type="hidden" name="email" value="${req.body.email}" />
                 <small>
                   Didn’t receive the email? Already checked the spam folder?
                   <button class="a">Resend</button>.
@@ -570,15 +565,14 @@ export default async function courselore(
     ["/sign-up/:token", "/sign-in/:token"],
     unauthenticated,
     (req, res) => {
-      const { token } = req.params;
       const authenticationToken = runtimeDatabase.get<{
         email: string;
         expiresAt: string;
       }>(
-        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${token}`
+        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${req.params.token}`
       );
       runtimeDatabase.run(
-        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
+        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${req.params.token}`
       );
       if (
         authenticationToken === undefined ||
@@ -600,15 +594,14 @@ export default async function courselore(
             `
           )
         );
-      const { email } = authenticationToken;
       if (
         database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
         )!.exists === 0
       ) {
-        const token = cryptoRandomString({ length: 40, type: "numeric" });
+        const newToken = cryptoRandomString({ length: 40, type: "numeric" });
         runtimeDatabase.run(
-          sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
+          sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${authenticationToken.email})`
         );
         return res.send(
           app.get("layout")(
@@ -619,8 +612,12 @@ export default async function courselore(
               <h1>Welcome to CourseLore!</h1>
               <form method="post" action="${app.get("url")}/users">
                 <p>
-                  <input type="hidden" name="token" value="${token}" />
-                  <input type="text" value="${email}" disabled />
+                  <input type="hidden" name="token" value="${newToken}" />
+                  <input
+                    type="text"
+                    value="${authenticationToken.email}"
+                    disabled
+                  />
                   <input type="text" name="name" placeholder="Your name…" />
                   <button>Create account</button>
                 </p>
@@ -643,15 +640,14 @@ export default async function courselore(
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
     (req, res) => {
-      const { token, name } = req.body;
       const authenticationToken = runtimeDatabase.get<{
         email: string;
         expiresAt: string;
       }>(
-        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${token}`
+        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${req.body.token}`
       );
       runtimeDatabase.run(
-        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
+        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${req.body.token}`
       );
       if (
         authenticationToken === undefined ||
@@ -673,11 +669,10 @@ export default async function courselore(
             `
           )
         );
-      const { email } = authenticationToken;
       database.run(
-        sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${name})`
+        sql`INSERT INTO "users" ("email", "name") VALUES (${authenticationToken.email}, ${req.body.name})`
       );
-      req.session!.email = email;
+      req.session!.email = authenticationToken.email;
       res.redirect(`${app.get("url")}/`);
     }
   );
@@ -812,9 +807,9 @@ export default async function courselore(
     authenticated,
     expressValidator.body("name").exists(),
     (req, res) => {
-      const reference = cryptoRandomString({ length: 10, type: "numeric" });
+      const newReference = cryptoRandomString({ length: 10, type: "numeric" });
       const courseId = database.run(
-        sql`INSERT INTO "courses" ("reference", "name") VALUES (${reference}, ${req.body.name})`
+        sql`INSERT INTO "courses" ("reference", "name") VALUES (${newReference}, ${req.body.name})`
       ).lastInsertRowid;
       database.run(
         sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
@@ -823,7 +818,7 @@ export default async function courselore(
           )!.id
         }, ${courseId}, ${"instructor"})`
       );
-      res.redirect(`${app.get("url")}/${reference}`);
+      res.redirect(`${app.get("url")}/${newReference}`);
     }
   );
 
