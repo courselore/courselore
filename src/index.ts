@@ -356,6 +356,19 @@ export default async function courselore(
         UNIQUE ("course", "reference")
       );
     `,
+
+    sql`
+      CREATE TABLE "posts" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "thread" INTEGER NOT NULL REFERENCES "threads",
+        "reference" INTEGER NOT NULL,
+        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        "content" TEXT NOT NULL,
+        UNIQUE ("thread", "reference")
+      );
+    `,
   ]);
 
   shell.mkdir("-p", path.join(rootDirectory, "var"));
@@ -837,6 +850,7 @@ export default async function courselore(
     },
   ];
 
+  // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…)
   const isCourseEnrolled: (
     isCourseEnrolled: boolean
   ) => express.RequestHandler<
@@ -966,39 +980,156 @@ export default async function courselore(
     }
   );
 
-  /*
-  app.get("/thread", (req, res) => {
-    res.send(
-      app.get("layout")(
-        req,res,
-        html`<title>Thread · CourseLore</title>`,
-        html`
-          <ul>
-            $${posts.map(
-              ({ author, content, createdAt }) =>
-                html`<li>
-                  ${author} says at ${createdAt}
-                  $${app.get("text processor")(content)}
-                </li>`
-            )}
-          </ul>
-          <form method="post">
-            <p><textarea name="text"></textarea><br /><button>Send</button></p>
-          </form>
-        `
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/:courseReference/threads/new",
+    ...isCourseEnrolled(true),
+    (req, res) => {
+      const course = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>${course.name} · CourseLore</title>`,
+          html`
+            <h1>${course.name} · Create a new thread</h1>
+            <form
+              method="post"
+              action="${app.get("url")}/${req.params.courseReference}/threads"
+            >
+              <input type="text" name="title" placeholder="Title…" />
+              <textarea name="content"></textarea>
+              <button>Create thread</button>
+            </form>
+          `
+        )
+      );
+    }
+  );
+
+  app.post<
+    { courseReference: string },
+    HTML,
+    { title: string; content: string },
+    {},
+    {}
+  >(
+    "/:courseReference/threads",
+    ...isCourseEnrolled(true),
+    expressValidator.body("title").exists(),
+    expressValidator.body("content").exists(),
+    (req, res) => {
+      const newThreadReference =
+        database.get<{ newThreadReference: number }>(sql`
+          SELECT MAX("threads"."reference") + 1 AS "newThreadReference"
+          FROM "threads"
+          JOIN "courses" ON "threads"."course" = "courses"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference}
+        `)?.newThreadReference ?? 1;
+      database.run(sql`
+        INSERT INTO "threads" ("course", "reference", "author", "title")
+        VALUES (
+          ${
+            database.get<{ id: number }>(
+              sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+            )!.id
+          },
+          ${newThreadReference},
+          ${
+            database.get<{ id: number }>(sql`
+              SELECT "enrollments"."id" AS "id"
+              FROM "enrollments"
+              JOIN "users" ON "enrollments"."user" = "users"."id"
+              JOIN "courses" ON "enrollments"."course" = "courses"."id"
+              WHERE "courses"."reference" = ${req.params.courseReference} AND
+                    "users"."email" = ${req.session!.email}
+            `)!.id
+          },
+  ${req.body.title}
+        )
+      `);
+      // TODO: Add the initial post.
+      res.redirect(
+        `${app.get("url")}/${
+          req.params.courseReference
+        }/threads/${newThreadReference}`
+      );
+    }
+  );
+
+  const threadAccessible: express.RequestHandler<
+    { courseReference: string; threadReference: string },
+    any,
+    {},
+    {},
+    {}
+  >[] = [
+    ...isCourseEnrolled(true),
+    (req, res, next) => {
+      if (
+        database.get<{ exists: number }>(
+          sql`
+            SELECT EXISTS(
+              SELECT 1
+              FROM "threads"
+              JOIN "courses" ON "threads"."course" = "courses"."id"
+              WHERE "threads"."reference" = ${req.params.threadReference} AND
+                    "courses"."reference" = ${req.params.courseReference}
+            ) AS "exists"
+          `
+        )!.exists === 1
       )
-    );
-  });
-  app.post("/thread", (req, res) => {
-    posts.push({
-      author: req.session!.email,
-      content: req.body.text,
-      createdAt: new Date().toISOString(),
-    });
-    res.redirect("back");
-  });
-  const posts: { author: string; content: string; createdAt: string }[] = [];
-  */
+        return next();
+      next("route");
+    },
+  ];
+
+  app.get<
+    { courseReference: string; threadReference: string },
+    HTML,
+    {},
+    {},
+    {}
+  >(
+    "/:courseReference/threads/:threadReference",
+    ...threadAccessible,
+    (req, res) => {
+      const thread = database.get<{
+        createdAt: string;
+        updatedAt: string;
+        title: string;
+      }>(
+        sql`
+          SELECT "threads"."createdAt" AS "createdAt", "threads"."updatedAt" AS "updatedAt", "threads"."title" AS "title"
+          FROM "threads"
+          JOIN "courses" ON "threads"."course" = "courses"."id"
+          WHERE "threads"."reference" = ${req.params.threadReference} AND
+                "courses"."reference" = ${req.params.courseReference}
+        `
+      )!;
+      res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>${thread.title} · CourseLore</title>`,
+          html`
+            <h1>${thread.title}</h1>
+            <div class="TODO">
+              <ul>
+                <li>
+                  Show more information about the thread (author,
+                  creation/update time, and so forth).
+                </li>
+                <li>Show posts.</li>
+                <li>Add editor for creating a new post.</li>
+              </ul>
+            </div>
+          `
+        )
+      );
+    }
+  );
 
   app.post<{}, HTML, { text: string }, {}, {}>(
     "/preview",
