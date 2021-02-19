@@ -413,29 +413,27 @@ export default async function courselore(
 
   const isAuthenticated: (
     isAuthenticated: boolean
-  ) => express.RequestHandler<{}, any, {}, {}, {}> = (isAuthenticated) => (
-    req,
-    res,
-    next
-  ) => {
-    if (!isAuthenticated && req.session!.email === undefined) return next();
-    if (isAuthenticated && req.session!.email !== undefined) {
-      if (
-        database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
-            req.session!.email
-          }) AS "exists"`
-        )!.exists === 1
-      )
-        return next();
-      delete req.session!.email;
-    }
-    next("route");
-  };
+  ) => express.RequestHandler<{}, any, {}, {}, {}>[] = (isAuthenticated) => [
+    (req, res, next) => {
+      if (!isAuthenticated && req.session!.email === undefined) return next();
+      if (isAuthenticated && req.session!.email !== undefined) {
+        if (
+          database.get<{ exists: number }>(
+            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
+              req.session!.email
+            }) AS "exists"`
+          )!.exists === 1
+        )
+          return next();
+        delete req.session!.email;
+      }
+      next("route");
+    },
+  ];
 
   app.get<{}, HTML, {}, {}, {}>(
     ["/", "/authenticate"],
-    isAuthenticated(false),
+    ...isAuthenticated(false),
     (req, res) => {
       res.send(
         app.get("layout")(
@@ -455,7 +453,7 @@ export default async function courselore(
 
   app.get<{}, HTML, {}, {}, {}>(
     ["/sign-up", "/sign-in"],
-    isAuthenticated(false),
+    ...isAuthenticated(false),
     (req, res) => {
       res.send(
         app.get("layout")(
@@ -499,7 +497,7 @@ export default async function courselore(
   // TODO: Make more sophisticated use of expressValidator.
   app.post<{}, HTML, { email: string }, {}, {}>(
     ["/sign-up", "/sign-in"],
-    isAuthenticated(false),
+    ...isAuthenticated(false),
     expressValidator.body("email").isEmail(),
     (req, res) => {
       runtimeDatabase.run(
@@ -556,7 +554,7 @@ export default async function courselore(
   // TODO: Maybe abstract the part that checks whether the ‘authenticationToken’ is valid in this route and the next?
   app.get<{ token: string }, HTML, {}, {}, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
-    isAuthenticated(false),
+    ...isAuthenticated(false),
     (req, res) => {
       const authenticationToken = runtimeDatabase.get<{
         email: string;
@@ -629,7 +627,7 @@ export default async function courselore(
 
   app.post<{}, HTML, { token: string; name: string }, {}, {}>(
     "/users",
-    isAuthenticated(false),
+    ...isAuthenticated(false),
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
     (req, res) => {
@@ -672,14 +670,14 @@ export default async function courselore(
 
   app.post<{}, any, {}, {}, {}>(
     "/sign-out",
-    isAuthenticated(true),
+    ...isAuthenticated(true),
     (req, res) => {
       delete req.session!.email;
       res.redirect(`${app.get("url")}/`);
     }
   );
 
-  app.get<{}, HTML, {}, {}, {}>("/", isAuthenticated(true), (req, res) => {
+  app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(true), (req, res) => {
     const enrollmentsCount = database.get<{ enrollmentsCount: number }>(
       sql`
         SELECT COUNT(*) AS "enrollmentsCount"
@@ -773,7 +771,7 @@ export default async function courselore(
 
   app.get<{}, HTML, {}, {}, {}>(
     "/courses/new",
-    isAuthenticated(true),
+    ...isAuthenticated(true),
     (req, res) => {
       res.send(
         app.get("layout")(
@@ -808,7 +806,7 @@ export default async function courselore(
 
   app.post<{}, any, { name: string }, {}, {}>(
     "/courses",
-    isAuthenticated(true),
+    ...isAuthenticated(true),
     expressValidator.body("name").exists(),
     (req, res) => {
       const newReference = cryptoRandomString({ length: 10, type: "numeric" });
@@ -832,24 +830,33 @@ export default async function courselore(
     {},
     {},
     {}
-  > = (req, res, next) => {
-    if (
-      database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "reference" = ${req.params.courseReference}) AS "exists"`
-      )!.exists === 1
-    )
-      return next();
-    next("route");
-  };
+  >[] = [
+    (req, res, next) => {
+      if (
+        database.get<{ exists: number }>(
+          sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "reference" = ${req.params.courseReference}) AS "exists"`
+        )!.exists === 1
+      )
+        return next();
+      next("route");
+    },
+  ];
 
   const isCourseEnrolled: (
     isCourseEnrolled: boolean
-  ) => express.RequestHandler<{ courseReference: string }, any, {}, {}, {}> = (
-    isCourseEnrolled
-  ) => (req, res, next) => {
-    if (
-      database.get<{ exists: number }>(
-        sql`
+  ) => express.RequestHandler<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    {}
+  >[] = (isCourseEnrolled) => [
+    ...isAuthenticated(true),
+    ...courseExists,
+    (req, res, next) => {
+      if (
+        database.get<{ exists: number }>(
+          sql`
         SELECT EXISTS(
           SELECT 1
           FROM "enrollments"
@@ -859,17 +866,16 @@ export default async function courselore(
                 "courses"."reference" = ${req.params.courseReference}
         ) AS "exists"
       `
-      )!.exists === (isCourseEnrolled ? 1 : 0)
-    )
-      return next();
-    next("route");
-  };
+        )!.exists === (isCourseEnrolled ? 1 : 0)
+      )
+        return next();
+      next("route");
+    },
+  ];
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
-    isAuthenticated(true),
-    courseExists,
-    isCourseEnrolled(false),
+    ...isCourseEnrolled(false),
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -900,9 +906,7 @@ export default async function courselore(
 
   app.post<{ courseReference: string }, any, { role: Role }, {}, {}>(
     "/:courseReference",
-    isAuthenticated(true),
-    courseExists,
-    isCourseEnrolled(false),
+    ...isCourseEnrolled(false),
     expressValidator.body("role").isIn(ROLES as any),
     (req, res) => {
       const course = database.get<{ id: number }>(
@@ -921,9 +925,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
-    isAuthenticated(true),
-    courseExists,
-    isCourseEnrolled(true),
+    ...isCourseEnrolled(true),
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -998,7 +1000,7 @@ export default async function courselore(
 
   app.post<{}, HTML, { text: string }, {}, {}>(
     "/preview",
-    isAuthenticated(true),
+    ...isAuthenticated(true),
     expressValidator.body("text").exists(),
     (req, res) => {
       res.send(app.get("text processor")(req.body.text));
