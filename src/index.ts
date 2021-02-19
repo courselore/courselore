@@ -411,12 +411,21 @@ export default async function courselore(
   }
   app.use(cookieSession({ secret: cookieSecret }));
 
-  const unauthenticatedRouter = express.Router();
-  const authenticatedRouter = express.Router();
+  const unauthenticated: express.RequestHandler<{}, any, {}, {}, {}> = (
+    req,
+    res,
+    next
+  ) => {
+    if (req.session!.email !== undefined) return next("route");
+    next();
+  };
 
-  app.use<{}, unknown, {}, {}, {}>((req, res, next) => {
-    if (req.session!.email === undefined)
-      return unauthenticatedRouter(req, res, next);
+  const authenticated: express.RequestHandler<{}, any, {}, {}, {}> = (
+    req,
+    res,
+    next
+  ) => {
+    if (req.session!.email === undefined) return next("route");
     if (
       database.get<{ exists: number }>(
         sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
@@ -425,13 +434,14 @@ export default async function courselore(
       )!.exists === 0
     ) {
       delete req.session!.email;
-      return res.redirect(`${app.get("url")}/`);
+      return next("route");
     }
-    authenticatedRouter(req, res, next);
-  });
+    next();
+  };
 
-  unauthenticatedRouter.get<{}, HTML, {}, {}, {}>(
+  app.get<{}, HTML, {}, {}, {}>(
     ["/", "/authenticate"],
+    unauthenticated,
     (req, res) => {
       res.send(
         app.get("layout")(
@@ -449,8 +459,9 @@ export default async function courselore(
     }
   );
 
-  unauthenticatedRouter.get<{}, HTML, {}, {}, {}>(
+  app.get<{}, HTML, {}, {}, {}>(
     ["/sign-up", "/sign-in"],
+    unauthenticated,
     (req, res) => {
       res.send(
         app.get("layout")(
@@ -492,8 +503,9 @@ export default async function courselore(
   );
 
   // FIXME: Make more sophisticated use of expressValidator.
-  unauthenticatedRouter.post<{}, HTML, { email: string }, {}, {}>(
+  app.post<{}, HTML, { email: string }, {}, {}>(
     ["/sign-up", "/sign-in"],
+    unauthenticated,
     expressValidator.body("email").isEmail(),
     (req, res) => {
       const errors = expressValidator.validationResult(req);
@@ -555,8 +567,9 @@ export default async function courselore(
     }
   );
 
-  unauthenticatedRouter.get<{ token: string }, HTML, {}, {}, {}>(
+  app.get<{ token: string }, HTML, {}, {}, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
+    unauthenticated,
     (req, res) => {
       const { token } = req.params;
       const authenticationToken = runtimeDatabase.get<{
@@ -625,8 +638,9 @@ export default async function courselore(
     }
   );
 
-  unauthenticatedRouter.post<{}, HTML, { token: string; name: string }, {}, {}>(
+  app.post<{}, HTML, { token: string; name: string }, {}, {}>(
     "/users",
+    unauthenticated,
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
     (req, res) => {
@@ -672,12 +686,12 @@ export default async function courselore(
     }
   );
 
-  authenticatedRouter.post<{}, never, {}, {}, {}>("/sign-out", (req, res) => {
+  app.post<{}, any, {}, {}, {}>("/sign-out", authenticated, (req, res) => {
     delete req.session!.email;
     res.redirect(`${app.get("url")}/`);
   });
 
-  authenticatedRouter.get<{}, HTML, {}, {}, {}>("/", (req, res) => {
+  app.get<{}, HTML, {}, {}, {}>("/", authenticated, (req, res) => {
     const { enrollmentsCount } = database.get<{ enrollmentsCount: number }>(
       sql`SELECT COUNT(*) AS "enrollmentsCount" FROM "enrollments" JOIN "users" ON "enrollments"."user" = "users"."id" WHERE "users"."email" = ${
         req.session!.email
@@ -761,7 +775,7 @@ export default async function courselore(
     );
   });
 
-  authenticatedRouter.get<{}, HTML, {}, {}, {}>("/courses/new", (req, res) => {
+  app.get<{}, HTML, {}, {}, {}>("/courses/new", authenticated, (req, res) => {
     res.send(
       app.get("layout")(
         req,
@@ -792,8 +806,9 @@ export default async function courselore(
     );
   });
 
-  authenticatedRouter.post<{}, never, { name: string }, {}, {}>(
+  app.post<{}, any, { name: string }, {}, {}>(
     "/courses",
+    authenticated,
     expressValidator.body("name").exists(),
     (req, res) => {
       const errors = expressValidator.validationResult(req);
@@ -814,23 +829,29 @@ export default async function courselore(
     }
   );
 
-  const unenrolledCourseRouter = express.Router();
-  const enrolledCourseRouter = express.Router();
-
-  authenticatedRouter.use<
-    { token: string },
-    unknown,
+  const courseExists: express.RequestHandler<
+    { courseToken: string },
+    any,
     {},
     {},
-    { courseToken: string }
-  >("/:token", (req, res, next) => {
+    {}
+  > = (req, res, next) => {
     if (
       database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "token" = ${req.params.token}) AS "exists"`
+        sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "token" = ${req.params.courseToken}) AS "exists"`
       )!.exists === 0
     )
-      return next();
-    res.locals.courseToken = req.params.token;
+      return next("route");
+    next();
+  };
+
+  const courseUnenrolled: express.RequestHandler<
+    { courseToken: string },
+    any,
+    {},
+    {},
+    {}
+  > = (req, res, next) => {
     if (
       database.get<{ exists: number }>(
         sql`
@@ -839,20 +860,49 @@ export default async function courselore(
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
-            WHERE "users"."email" = ${req.session!.email}
+            WHERE "users"."email" = ${req.session!.email} AND
+                  "courses"."token" = ${req.params.courseToken}
+          ) AS "exists"
+        `
+      )!.exists === 1
+    )
+      return next("route");
+    next();
+  };
+
+  const courseEnrolled: express.RequestHandler<
+    { courseToken: string },
+    any,
+    {},
+    {},
+    {}
+  > = (req, res, next) => {
+    if (
+      database.get<{ exists: number }>(
+        sql`
+          SELECT EXISTS(
+            SELECT 1
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id"
+            JOIN "courses" ON "enrollments"."course" = "courses"."id"
+            WHERE "users"."email" = ${req.session!.email} AND
+                  "courses"."token" = ${req.params.courseToken}
           ) AS "exists"
         `
       )!.exists === 0
     )
-      return unenrolledCourseRouter(req, res, next);
-    enrolledCourseRouter(req, res, next);
-  });
+      return next("route");
+    next();
+  };
 
-  unenrolledCourseRouter.get<{}, HTML, {}, {}, { courseToken: string }>(
-    "/",
+  app.get<{ courseToken: string }, HTML, {}, {}, {}>(
+    "/:courseToken",
+    authenticated,
+    courseExists,
+    courseUnenrolled,
     (req, res, next) => {
       const name = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
+        sql`SELECT "name" FROM "courses" WHERE "token" = ${req.params.courseToken}`
       )!.name;
       res.send(
         app.get("layout")(
@@ -878,35 +928,39 @@ export default async function courselore(
     }
   );
 
-  unenrolledCourseRouter.post<
-    {},
-    never,
-    { role: Role },
-    {},
-    { courseToken: string }
-  >("/", expressValidator.body("role").isIn(ROLES as any), (req, res, next) => {
-    const errors = expressValidator.validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
+  app.post<{ courseToken: string }, any, { role: Role }, {}, {}>(
+    "/:courseToken",
+    authenticated,
+    courseExists,
+    courseUnenrolled,
+    expressValidator.body("role").isIn(ROLES as any),
+    (req, res, next) => {
+      const errors = expressValidator.validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
 
-    database.run(
-      sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
-        database.get<{ id: number }>(
-          sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-        )!.id
-      }, ${
-        database.get<{ id: number }>(
-          sql`SELECT "id" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
-        )!.id
-      }, ${req.body.role})`
-    );
-    res.redirect(`${app.get("url")}/${res.locals.courseToken}`);
-  });
+      database.run(
+        sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
+          database.get<{ id: number }>(
+            sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
+          )!.id
+        }, ${
+          database.get<{ id: number }>(
+            sql`SELECT "id" FROM "courses" WHERE "token" = ${req.params.courseToken}`
+          )!.id
+        }, ${req.body.role})`
+      );
+      res.redirect(`${app.get("url")}/${req.params.courseToken}`);
+    }
+  );
 
-  enrolledCourseRouter.get<{}, HTML, {}, {}, { courseToken: string }>(
-    "/",
+  app.get<{ courseToken: string }, HTML, {}, {}, {}>(
+    "/:courseToken",
+    authenticated,
+    courseExists,
+    courseEnrolled,
     (req, res, next) => {
       const name = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "token" = ${res.locals.courseToken}`
+        sql`SELECT "name" FROM "courses" WHERE "token" = ${req.params.courseToken}`
       )!.name;
       res.send(
         app.get("layout")(
@@ -922,12 +976,12 @@ export default async function courselore(
                   FROM "enrollments"
                   JOIN "users" ON "enrollments"."user" = "users"."id"
                   JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                  WHERE "courses"."token" = ${res.locals.courseToken}
+                  WHERE "courses"."token" = ${req.params.courseToken}
                 `
               )!.role})
             </h1>
             <p>
-              <a href="${app.get("url")}/${res.locals.courseToken}/threads/new"
+              <a href="${app.get("url")}/${req.params.courseToken}/threads/new"
                 >Create a new thread</a
               >
             </p>
@@ -974,7 +1028,7 @@ export default async function courselore(
   const posts: { author: string; content: string; createdAt: string }[] = [];
   */
 
-  authenticatedRouter.post<{}, HTML, { text: string }, {}, {}>(
+  app.post<{}, HTML, { text: string }, {}, {}>(
     "/preview",
     expressValidator.body("text").exists(),
     (req, res) => {
