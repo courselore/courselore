@@ -439,8 +439,6 @@ export default async function courselore(
     next();
   };
 
-  // TODO: Maybe abstract the part that checks whether the ‘authenticationToken’ is valid?
-
   app.get<{}, HTML, {}, {}, {}>(
     ["/", "/authenticate"],
     unauthenticated,
@@ -504,7 +502,7 @@ export default async function courselore(
     }
   );
 
-  // FIXME: Make more sophisticated use of expressValidator.
+  // TODO: Make more sophisticated use of expressValidator.
   app.post<{}, HTML, { email: string }, {}, {}>(
     ["/sign-up", "/sign-in"],
     unauthenticated,
@@ -561,6 +559,7 @@ export default async function courselore(
     }
   );
 
+  // TODO: Maybe abstract the part that checks whether the ‘authenticationToken’ is valid in this route and the next?
   app.get<{ token: string }, HTML, {}, {}, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
     unauthenticated,
@@ -683,11 +682,14 @@ export default async function courselore(
   });
 
   app.get<{}, HTML, {}, {}, {}>("/", authenticated, (req, res) => {
-    const { enrollmentsCount } = database.get<{ enrollmentsCount: number }>(
-      sql`SELECT COUNT(*) AS "enrollmentsCount" FROM "enrollments" JOIN "users" ON "enrollments"."user" = "users"."id" WHERE "users"."email" = ${
-        req.session!.email
-      }`
-    )!;
+    const enrollmentsCount = database.get<{ enrollmentsCount: number }>(
+      sql`
+        SELECT COUNT(*) AS "enrollmentsCount"
+        FROM "enrollments"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        WHERE "users"."email" = ${req.session!.email}
+      `
+    )!.enrollmentsCount;
     if (enrollmentsCount == 1)
       return res.redirect(
         `${app.get("url")}/${
@@ -698,7 +700,7 @@ export default async function courselore(
               JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
               JOIN "users" ON "enrollments"."user" = "users"."id"
               WHERE "users"."email" = ${req.session!.email}
-              `
+            `
           )!.reference
         }`
       );
@@ -838,6 +840,7 @@ export default async function courselore(
     next();
   };
 
+  // TODO: Maybe extract ‘isCourseEnrolled’ with query used in this handler and the next.
   const courseUnenrolled: express.RequestHandler<
     { courseReference: string },
     any,
@@ -894,16 +897,16 @@ export default async function courselore(
     courseExists,
     courseUnenrolled,
     (req, res) => {
-      const name = database.get<{ name: string }>(
+      const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!.name;
+      )!;
       res.send(
         app.get("layout")(
           req,
           res,
-          html`<title>${name} · CourseLore</title>`,
+          html`<title>${course.name} · CourseLore</title>`,
           html`
-            <h1>Enroll on ${name}</h1>
+            <h1>Enroll on ${course.name}</h1>
             <form method="post">
               <p>
                 as
@@ -928,16 +931,15 @@ export default async function courselore(
     courseUnenrolled,
     expressValidator.body("role").isIn(ROLES as any),
     (req, res) => {
+      const course = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
       database.run(
         sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
           database.get<{ id: number }>(
             sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
           )!.id
-        }, ${
-          database.get<{ id: number }>(
-            sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-          )!.id
-        }, ${req.body.role})`
+        }, ${course.id}, ${req.body.role})`
       );
       res.redirect(`${app.get("url")}/${req.params.courseReference}`);
     }
@@ -949,17 +951,17 @@ export default async function courselore(
     courseExists,
     courseEnrolled,
     (req, res) => {
-      const name = database.get<{ name: string }>(
+      const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!.name;
+      )!;
       res.send(
         app.get("layout")(
           req,
           res,
-          html`<title>${name} · CourseLore</title>`,
+          html`<title>${course.name} · CourseLore</title>`,
           html`
             <h1>
-              ${name}
+              ${course.name}
               (${database.get<{ role: Role }>(
                 sql`
                   SELECT "enrollments"."role" AS "role"
