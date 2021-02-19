@@ -821,7 +821,7 @@ export default async function courselore(
       const errors = expressValidator.validationResult(req);
       if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
 
-      const reference = cryptoRandomString({length: 10, type: "numeric"});
+      const reference = cryptoRandomString({ length: 10, type: "numeric" });
       const courseId = database.run(
         sql`INSERT INTO "courses" ("reference", "name") VALUES (${reference}, ${req.body.name})`
       ).lastInsertRowid;
@@ -907,7 +907,7 @@ export default async function courselore(
     authenticated,
     courseExists,
     courseUnenrolled,
-    (req, res, next) => {
+    (req, res) => {
       const name = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!.name;
@@ -941,7 +941,7 @@ export default async function courselore(
     courseExists,
     courseUnenrolled,
     expressValidator.body("role").isIn(ROLES as any),
-    (req, res, next) => {
+    (req, res) => {
       const errors = expressValidator.validationResult(req);
       if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
 
@@ -965,7 +965,7 @@ export default async function courselore(
     authenticated,
     courseExists,
     courseEnrolled,
-    (req, res, next) => {
+    (req, res) => {
       const name = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!.name;
@@ -988,7 +988,9 @@ export default async function courselore(
               )!.role})
             </h1>
             <p>
-              <a href="${app.get("url")}/${req.params.courseReference}/threads/new"
+              <a
+                href="${app.get("url")}/${req.params
+                  .courseReference}/threads/new"
                 >Create a new thread</a
               >
             </p>
