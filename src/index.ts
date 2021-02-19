@@ -348,11 +348,12 @@ export default async function courselore(
       CREATE TABLE "threads" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
-        "reference" INTEGER NULL,
+        "updatedAt" TEXT DEFAULT CURRENT_TIMESTAMP,
         "course" INTEGER NOT NULL REFERENCES "courses",
+        "reference" INTEGER NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "title" TEXT NOT NULL,
-        UNIQUE ("reference", "course")
+        UNIQUE ("course", "reference")
       );
     `,
   ]);
