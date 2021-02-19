@@ -455,15 +455,14 @@ export default async function courselore(
     ["/sign-up", "/sign-in"],
     ...isAuthenticated(false),
     (req, res) => {
+      const preposition = req.path === "/sign-up" ? "up" : "in";
       res.send(
         app.get("layout")(
           req,
           res,
-          html`<title>
-            Sign ${req.path === "/sign-up" ? "up" : "in"} · CourseLore
-          </title>`,
+          html`<title>Sign ${preposition} · CourseLore</title>`,
           html`
-            <h1>Sign ${req.path === "/sign-up" ? "up" : "in"} to CourseLore</h1>
+            <h1>Sign ${preposition} to CourseLore</h1>
             <form method="post">
               <p>
                 <input
@@ -477,15 +476,12 @@ export default async function courselore(
             </form>
             <p>
               <small>
-                $${req.path === "/sign-up"
-                  ? html`
-                      Already have an account?
-                      <a href="${app.get("url")}/sign-in">Sign in</a>.
-                    `
-                  : html`
-                      Don’t have an account yet?
-                      <a href="${app.get("url")}/sign-up">Sign up</a>.
-                    `}
+                ${preposition === "up"
+                  ? "Already have an account?"
+                  : "Don’t have an account yet?"}
+                <a href="${app.get("url")}/sign-${preposition}"
+                  >Sign ${preposition}</a
+                >.
               </small>
             </p>
           `
@@ -579,8 +575,7 @@ export default async function courselore(
             html`
               <p>
                 This magic link is invalid or has expired.
-                <a href="${app.get("url")}/sign-in">Sign in</a>.
-                <a href="${app.get("url")}/sign-up">Sign up</a>.
+                <a href="${app.get("url")}${req.path}">Start over</a>.
               </p>
             `
           )
@@ -857,15 +852,15 @@ export default async function courselore(
       if (
         database.get<{ exists: number }>(
           sql`
-        SELECT EXISTS(
-          SELECT 1
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          JOIN "courses" ON "enrollments"."course" = "courses"."id"
-          WHERE "users"."email" = ${req.session!.email} AND
-                "courses"."reference" = ${req.params.courseReference}
-        ) AS "exists"
-      `
+            SELECT EXISTS(
+              SELECT 1
+              FROM "enrollments"
+              JOIN "users" ON "enrollments"."user" = "users"."id"
+              JOIN "courses" ON "enrollments"."course" = "courses"."id"
+              WHERE "users"."email" = ${req.session!.email} AND
+                    "courses"."reference" = ${req.params.courseReference}
+            ) AS "exists"
+          `
         )!.exists === (isCourseEnrolled ? 1 : 0)
       )
         return next();
@@ -909,15 +904,16 @@ export default async function courselore(
     ...isCourseEnrolled(false),
     expressValidator.body("role").isIn(ROLES as any),
     (req, res) => {
-      const course = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
       database.run(
         sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
           database.get<{ id: number }>(
             sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
           )!.id
-        }, ${course.id}, ${req.body.role})`
+        }, ${
+          database.get<{ id: number }>(
+            sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+          )!.id
+        }, ${req.body.role})`
       );
       res.redirect(`${app.get("url")}/${req.params.courseReference}`);
     }
@@ -944,7 +940,10 @@ export default async function courselore(
                   FROM "enrollments"
                   JOIN "users" ON "enrollments"."user" = "users"."id"
                   JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                  WHERE "courses"."reference" = ${req.params.courseReference}
+                  WHERE "courses"."reference" = ${
+                    req.params.courseReference
+                  } AND
+                        "users"."email" = ${req.session!.email}
                 `
               )!.role})
             </h1>
@@ -956,7 +955,10 @@ export default async function courselore(
               >
             </p>
             <div class="TODO">
-              <p>List existing threads</p>
+              <ul>
+                <li>Help instructor invite other users.</li>
+                <li>List existing threads.</li>
+              </ul>
             </div>
           `
         )
