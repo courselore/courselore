@@ -510,9 +510,6 @@ export default async function courselore(
     unauthenticated,
     expressValidator.body("email").isEmail(),
     (req, res) => {
-      const errors = expressValidator.validationResult(req);
-      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
-
       const { email } = req.body;
 
       runtimeDatabase.run(
@@ -646,9 +643,6 @@ export default async function courselore(
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
     (req, res) => {
-      const errors = expressValidator.validationResult(req);
-      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
-
       const { token, name } = req.body;
       const authenticationToken = runtimeDatabase.get<{
         email: string;
@@ -818,9 +812,6 @@ export default async function courselore(
     authenticated,
     expressValidator.body("name").exists(),
     (req, res) => {
-      const errors = expressValidator.validationResult(req);
-      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
-
       const reference = cryptoRandomString({ length: 10, type: "numeric" });
       const courseId = database.run(
         sql`INSERT INTO "courses" ("reference", "name") VALUES (${reference}, ${req.body.name})`
@@ -942,9 +933,6 @@ export default async function courselore(
     courseUnenrolled,
     expressValidator.body("role").isIn(ROLES as any),
     (req, res) => {
-      const errors = expressValidator.validationResult(req);
-      if (!errors.isEmpty()) return res.status(400).json(errors.array() as any);
-
       database.run(
         sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
           database.get<{ id: number }>(
