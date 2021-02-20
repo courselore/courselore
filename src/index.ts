@@ -2,7 +2,7 @@
 
 import process from "process";
 import path from "path";
-import fs from "fs/promises";
+import fs from "fs-extra";
 
 import express from "express";
 import cookieSession from "cookie-session";
@@ -28,7 +28,6 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 
-import shell from "shelljs";
 import cryptoRandomString from "crypto-random-string";
 import inquirer from "inquirer";
 import prettier from "prettier";
@@ -317,7 +316,7 @@ export default async function courselore(
   type Role = typeof ROLES[number];
 
   // FIXME: Open the databases using more appropriate configuration, for example, WAL and PRAGMA foreign keys.
-  shell.mkdir("-p", path.join(rootDirectory, "data"));
+  await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
   app.set("database", database);
   databaseMigrate(database, [
@@ -371,7 +370,7 @@ export default async function courselore(
     `,
   ]);
 
-  shell.mkdir("-p", path.join(rootDirectory, "var"));
+  await fs.ensureDir(path.join(rootDirectory, "var"));
   const runtimeDatabase = new Database(
     path.join(rootDirectory, "var/courselore-runtime.db")
   );
@@ -1249,7 +1248,7 @@ if (require.main === module)
                 message: `With what URL can other devices access this machine (for example, ‘http://<your-machine-name>.local:4000’)?`,
               })
             ).answer;
-          shell.mkdir("-p", path.dirname(CONFIGURATION_FILE));
+          await fs.ensureDir(path.dirname(CONFIGURATION_FILE));
           await fs.writeFile(
             CONFIGURATION_FILE,
             prettier.format(
