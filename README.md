@@ -517,6 +517,24 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 ### Meetings
 
 <details>
+<summary>2021-02-20</summary>
+
+- Demonstration:
+  - Clearer communication in sign-up/sign-in.
+  - Create course.
+  - Join course.
+  - Create thread.
+- Automated tests.
+  - **Got + JSDOM** / Puppeteer / Cypress / Selenium.
+- The packaging is working on Windows.
+- How to invite people to the course?
+  - With link.
+  - With a list of emails.
+- How should threads look like? One page for the list of threads and one page per thread (à la GitHub Issues), or one page with both the list of threads and one thread (à la Mail.app (and Piazza, for that matter…))?
+
+</details>
+
+<details>
 <summary>2021-02-13</summary>
 
 - Finish the account creation workflow and wired it to the authentication workflow demonstrated last week.

@@ -107,12 +107,13 @@ export default async function courselore(
 
               a,
               .a {
-                color: inherit;
-                background-color: inherit;
-                border: none;
                 font-size: 1em;
                 text-decoration: underline;
+                color: inherit;
+                background-color: inherit;
                 padding: 0;
+                border: none;
+                border-radius: 0px;
                 cursor: pointer;
               }
 
@@ -154,18 +155,6 @@ export default async function courselore(
                 line-height: 1.3;
               }
 
-              textarea {
-                width: 100%;
-                box-sizing: border-box;
-                resize: vertical;
-                font-size: 1em;
-                background-color: white;
-                border: 1px solid darkgray;
-                border-radius: 10px;
-                padding: 0.5em 0.7em;
-                outline: none;
-              }
-
               .demonstration,
               .TODO {
                 font-size: 0.875em;
@@ -183,20 +172,39 @@ export default async function courselore(
                 margin-top: 0.5em;
               }
 
-              /*
+              input,
+              textarea,
               button,
               .button {
                 font-size: 1em;
+                margin: 0;
+              }
+
+              input,
+              textarea {
+                background-color: white;
+                border: 1px solid darkgray;
+                border-radius: 10px;
+                padding: 0.5em 0.7em;
+              }
+
+              textarea {
+                width: 100%;
+                box-sizing: border-box;
+                resize: vertical;
+              }
+
+              button,
+              .button {
                 font-weight: 700;
                 text-decoration: none;
                 background-color: #83769c;
                 color: white;
-                padding: 0.5em;
+                padding: 0.5em 0.7em;
                 border: none;
                 border-radius: 10px;
                 cursor: pointer;
               }
-              */
             </style>
             $${head}
           </head>
@@ -851,7 +859,7 @@ export default async function courselore(
     },
   ];
 
-  // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…)
+  // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
   const isCourseEnrolled: (
     isCourseEnrolled: boolean
   ) => express.RequestHandler<
@@ -967,7 +975,7 @@ export default async function courselore(
                 href="${app.get("url")}/${req.params
                   .courseReference}/threads/new"
                 >Create a new thread</a
-              >
+              >.
             </p>
             <div class="TODO">
               <ul>
@@ -999,9 +1007,19 @@ export default async function courselore(
               method="post"
               action="${app.get("url")}/${req.params.courseReference}/threads"
             >
-              <input type="text" name="title" placeholder="Title…" />
+              <p>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Title…"
+                  autocomplete="off"
+                  style="box-sizing: border-box; width: 100%;"
+                />
+              </p>
               <textarea name="content"></textarea>
-              <button>Create thread</button>
+              <p>
+                <button>Create thread</button>
+              </p>
             </form>
           `
         )
