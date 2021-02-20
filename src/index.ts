@@ -942,6 +942,15 @@ export default async function courselore(
     }
   );
 
+  // TODO: A widget for <time>
+  // https://github.com/catamphetamine/javascript-time-ago
+  // https://github.com/azer/relative-date
+  // https://benborgers.com/posts/js-relative-date
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+  //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
+  // https://day.js.org
+  // http://timeago.yarp.com
+  // https://sugarjs.com
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
     ...isCourseEnrolled(true),
@@ -977,10 +986,61 @@ export default async function courselore(
                 >Create a new thread</a
               >.
             </p>
+            $${database
+              .all<{
+                createdAt: string;
+                updatedAt: string;
+                reference: string;
+                authorName: string | undefined;
+                title: string;
+              }>(
+                sql`
+                  SELECT "threads"."createdAt" AS "createdAt",
+                         "threads"."updatedAt" AS "updatedAt",
+                         "threads"."reference" AS "reference",
+                         "author"."name" AS "authorName",
+                         "threads"."title" AS "title"
+                  FROM "threads"
+                  JOIN "courses" ON "threads"."course" = "courses"."id"
+                  LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
+                  LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
+                  WHERE "courses"."reference" = ${req.params.courseReference}
+                  ORDER BY "threads"."reference" DESC
+                `
+              )
+              .map(
+                ({ createdAt, updatedAt, reference, authorName, title }) =>
+                  html`
+                    <p style="line-height: 1.2;">
+                      <a
+                        href="${app.get("url")}/${req.params
+                          .courseReference}/threads/${reference}"
+                        class="undecorated"
+                        style="display: block;"
+                      >
+                        <strong>${title}</strong><br />
+                        <small style="color: dimgray;">
+                          #${reference} created
+                          <time datetime="${createdAt}" title="${createdAt}"
+                            >at ${createdAt}</time
+                          >
+                          ${updatedAt !== createdAt
+                            ? html` (and last updated
+                                <time
+                                  datetime="${updatedAt}"
+                                  title="${updatedAt}"
+                                  >at ${updatedAt}</time
+                                >)`
+                            : html``}
+                          by ${authorName ?? "Ghost"}
+                        </small>
+                      </a>
+                    </p>
+                  `
+              )}
             <div class="TODO">
               <ul>
                 <li>Help instructor invite other users.</li>
-                <li>List existing threads.</li>
               </ul>
             </div>
           `
