@@ -3,7 +3,7 @@ Description=Courselore
 After=network.target
 
 [Service]
-ExecStart=/root/courselore/src/node_modules/.bin/node /root/courselore/src/lib/index.js /root/courselore/src/deployment-example/configuration.js
+ExecStart=/root/courselore/app/node_modules/.bin/node /root/courselore/app/lib/index.js /root/courselore/app/deployment-example/configuration.js
 Environment=NODE_ENV=production
 User=root
 Restart=always
