@@ -26,8 +26,8 @@ jobs:
           courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBCGyIA9/oiJt/qrQNeNoIRNKA8CFc/ppPMnrtw2NW+7
           EOF
 
-          ssh root@courselore.org "mkdir -p courselore/src/"
-          rsync -a --delete ./ root@courselore.org:courselore/src/
+          ssh root@courselore.org "mkdir -p courselore/app/"
+          rsync -a --delete ./ root@courselore.org:courselore/app/
 
           rsync -a deployment-example/courselore.service root@courselore.org:/etc/systemd/system/
 
