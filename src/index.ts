@@ -427,19 +427,25 @@ export default async function courselore(
     isAuthenticated: boolean
   ) => express.RequestHandler<{}, any, {}, {}, {}>[] = (isAuthenticated) => [
     (req, res, next) => {
-      if (!isAuthenticated && req.session!.email === undefined) return next();
-      if (isAuthenticated && req.session!.email !== undefined) {
-        if (
-          database.get<{ exists: number }>(
-            sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
-              req.session!.email
-            }) AS "exists"`
-          )!.exists === 1
-        )
-          return next();
-        delete req.session!.email;
+      switch (isAuthenticated) {
+        case false:
+          if (req.session!.email !== undefined) return next("route");
+          break;
+        case true:
+          if (req.session!.email === undefined) return next("route");
+          if (
+            database.get<{ exists: number }>(
+              sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
+                req.session!.email
+              }) AS "exists"`
+            )!.exists === 0
+          ) {
+            delete req.session!.email;
+            return next("route");
+          }
+          break;
       }
-      next("route");
+      next();
     },
   ];
 
@@ -559,24 +565,29 @@ export default async function courselore(
     }
   );
 
-  // TODO: Maybe abstract the part that checks whether the ‘authenticationToken’ is valid in this route and the next?
+  function getAuthenticationToken(
+    token: string
+  ): { email: string } | undefined {
+    const authenticationToken = runtimeDatabase.get<{
+      email: string;
+      expiresAt: string;
+    }>(
+      sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${token}`
+    );
+    if (authenticationToken === undefined) return;
+    runtimeDatabase.run(
+      sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
+    );
+    if (new Date() < new Date(authenticationToken.expiresAt))
+      return authenticationToken;
+  }
+
   app.get<{ token: string }, HTML, {}, {}, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
     ...isAuthenticated(false),
     (req, res) => {
-      const authenticationToken = runtimeDatabase.get<{
-        email: string;
-        expiresAt: string;
-      }>(
-        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${req.params.token}`
-      );
-      runtimeDatabase.run(
-        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${req.params.token}`
-      );
-      if (
-        authenticationToken === undefined ||
-        new Date(authenticationToken.expiresAt) < new Date()
-      )
+      const authenticationToken = getAuthenticationToken(req.params.token);
+      if (authenticationToken === undefined)
         return res.send(
           app.get("layout")(
             req,
@@ -638,18 +649,9 @@ export default async function courselore(
     expressValidator.body("token").exists(),
     expressValidator.body("name").exists(),
     (req, res) => {
-      const authenticationToken = runtimeDatabase.get<{
-        email: string;
-        expiresAt: string;
-      }>(
-        sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${req.body.token}`
-      );
-      runtimeDatabase.run(
-        sql`DELETE FROM "authenticationTokens" WHERE "token" = ${req.body.token}`
-      );
+      const authenticationToken = getAuthenticationToken(req.body.token);
       if (
         authenticationToken === undefined ||
-        new Date(authenticationToken.expiresAt) < new Date() ||
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
         )!.exists === 1
@@ -842,10 +844,10 @@ export default async function courselore(
       if (
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "reference" = ${req.params.courseReference}) AS "exists"`
-        )!.exists === 1
+        )!.exists === 0
       )
-        return next();
-      next("route");
+        return next("route");
+      next();
     },
   ];
 
@@ -874,10 +876,10 @@ export default async function courselore(
                     "courses"."reference" = ${req.params.courseReference}
             ) AS "exists"
           `
-        )!.exists === (isCourseEnrolled ? 1 : 0)
+        )!.exists !== (isCourseEnrolled ? 1 : 0)
       )
-        return next();
-      next("route");
+        return next("route");
+      next();
     },
   ];
 

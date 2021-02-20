@@ -12,8 +12,8 @@ module.exports = (require) => {
     const router = express.Router();
 
     router.use((req, res, next) => {
-      if (req.session.email === undefined) return next();
-      next("router");
+      if (req.session.email !== undefined) return next("router");
+      next();
     });
 
     router.use(express.static(path.join(__dirname, "public")));
