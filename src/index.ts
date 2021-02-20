@@ -2,7 +2,6 @@
 
 import process from "process";
 import path from "path";
-import fs from "fs-extra";
 
 import express from "express";
 import cookieSession from "cookie-session";
@@ -28,6 +27,7 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 
+import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import inquirer from "inquirer";
 import prettier from "prettier";
