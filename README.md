@@ -134,6 +134,9 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 - Allow people to disenroll from a course (but we get to keep their contributions as “ghost”)
 - Allow people who aren’t even users to sign up & enroll in a single operation
   - Do it with a simple `redirect` option in the sign up process
+- Enroll with link or with a list of emails.
+  - Different links for different roles.
+  - Expiration dates on links.
 
 #### Forum
 
@@ -294,11 +297,15 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 
 #### Textarea Niceties
 
+- GitHub-style, not Trix-style.
+  - https://typora.io
+  - https://www.notion.so
 - Store what the user wrote per thread/chat, even if they move to other threads/chats.
   - Garlic.js does that, but it seems a bit old and requires jQuery. Use localStorage instead.
 - Some helpers to input Markdown & LaTeX (similar to what GitHub has).
 - Upload files (like images), and have them embedded (similar to what GitHub has).
   - Packages to handle multipart form data: busboy, multer, formidable, multiparty, connect-multiparty, and pez.
+- Templates for questions (like GitHub Issues).
 
 #### Error Pages
 
@@ -315,6 +322,15 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 - Courses in the system (for joining a course).
 
 #### Translate to Other Languages
+
+#### Metrics
+
+- For courses in which participation is graded.
+
+### Live Course Communication during the Lectures
+
+- https://www.sli.do
+- https://pigeonholelive.com/features-qna/
 
 ### Non-Functional Features
 
@@ -527,10 +543,20 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 - Automated tests.
   - **Got + JSDOM** / Puppeteer / Cypress / Selenium.
 - The packaging is working on Windows.
+- What do we want the text editor to look like?
+  - Simple, like GitHub’s.
 - How to invite people to the course?
   - With link.
+    - Different links for different roles.
   - With a list of emails.
+  - Expiration dates on invitations.
 - How should threads look like? One page for the list of threads and one page per thread (à la GitHub Issues), or one page with both the list of threads and one thread (à la Mail.app (and Piazza, for that matter…))?
+  - We’re going GitHub-style on mobile and Mail.app style on the desktop.
+- Show participation grades for courses in which that’s graded. (We don’t do the grading, we just present the statistics.)
+- Templates for questions.
+- Live course communication during the lectures:
+  - https://www.sli.do
+  - https://pigeonholelive.com/features-qna/
 
 </details>
 
