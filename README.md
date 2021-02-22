@@ -300,12 +300,21 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 - GitHub-style, not Trix-style.
   - https://typora.io
   - https://www.notion.so
+  - https://marktext.app
 - Store what the user wrote per thread/chat, even if they move to other threads/chats.
   - Garlic.js does that, but it seems a bit old and requires jQuery. Use localStorage instead.
 - Some helpers to input Markdown & LaTeX (similar to what GitHub has).
 - Upload files (like images), and have them embedded (similar to what GitHub has).
   - Packages to handle multipart form data: busboy, multer, formidable, multiparty, connect-multiparty, and pez.
 - Templates for questions (like GitHub Issues).
+
+#### Queues
+
+- For background tasks, such as sending email.
+- Consider follow the **bad practice** of using a database (SQLite, in this case) as a queue.
+    - http://sqlite.1065341.n5.nabble.com/SQLite-is-perfect-for-FILE-based-MESSAGE-QUEUE-td57343.html
+    - https://rdrr.io/cran/liteq/man/liteq.html
+    - https://github.com/kd0kfo/smq/wiki/About-SMQ
 
 #### Error Pages
 
@@ -526,6 +535,7 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - https://github.com/RocketChat/Rocket.Chat
   - https://gitea.io/
   - https://gogs.io/
+  - https://hub.balena.io
 - <https://github.com/npm/roadmap/projects/1>: A meta-reference on how to present the roadmap moving forward.
 
 </details>
