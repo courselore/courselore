@@ -186,7 +186,7 @@ export default async function courselore(
                 background-color: white;
                 border: 1px solid darkgray;
                 border-radius: 10px;
-                padding: 0.5em 0.7em;
+                padding: 0.2em 1em;
               }
 
               textarea {
@@ -197,15 +197,20 @@ export default async function courselore(
 
               button,
               .button {
-                font-weight: 700;
                 text-decoration: none;
                 background-color: #83769c;
                 color: white;
                 display: inline-block;
-                padding: 0.5em 0.7em;
+                padding: 0.2em 1em;
                 border: none;
                 border-radius: 10px;
                 cursor: pointer;
+              }
+
+              .button--secondary {
+                background-color: inherit;
+                color: #83769c;
+                border: 1px solid #83769c;
               }
 
               :not(:checked) + .toggleable {
@@ -254,7 +259,7 @@ export default async function courselore(
                   <span
                     style="
                       font-size: 1.5em;
-                      font-weight: 900;
+                      font-weight: 800;
                       color: #83769c;
                       margin-left: 0.3em;
                     "
@@ -270,6 +275,7 @@ export default async function courselore(
                         for="toggle--signed-in-menu"
                         class="button"
                         style="
+                          font-weight: 700;
                           text-align: center;
                           background-color: #ff77a8;
                           width: 30px;
@@ -489,8 +495,12 @@ export default async function courselore(
           html`<title>CourseLore</title>`,
           html`
             <p>
-              <a href="${app.get("url")}/sign-in" class="undecorated">Sign in</a>
-              <a href="${app.get("url")}/sign-up" class="undecorated">Sign up</a>
+              <a
+                href="${app.get("url")}/sign-in"
+                class="button button--secondary"
+                >Sign in</a
+              >
+              <a href="${app.get("url")}/sign-up" class="button">Sign up</a>
             </p>
           `
         )
@@ -503,6 +513,7 @@ export default async function courselore(
     ...isAuthenticated(false),
     (req, res) => {
       const preposition = req.path === "/sign-up" ? "up" : "in";
+      const alternativePreposition = preposition === "up" ? "in" : "up";
       res.send(
         app.get("layout")(
           req,
@@ -526,8 +537,8 @@ export default async function courselore(
                 ${preposition === "up"
                   ? "Already have an account?"
                   : "Don’t have an account yet?"}
-                <a href="${app.get("url")}/sign-${preposition}"
-                  >Sign ${preposition}</a
+                <a href="${app.get("url")}/sign-${alternativePreposition}"
+                  >Sign ${alternativePreposition}</a
                 >.
               </small>
             </p>
@@ -1004,8 +1015,9 @@ export default async function courselore(
               <a
                 href="${app.get("url")}/${req.params
                   .courseReference}/threads/new"
-                >Create a new thread</a
-              >.
+                class="button button--secondary"
+                >New thread</a
+              >
             </p>
             $${database
               .all<{
