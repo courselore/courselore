@@ -18,8 +18,8 @@ module.exports = async (require) => {
 
   reverseProxy.use((req, res, next) => {
     if (req.hostname !== new URL(app.get("url")).hostname)
-      res.redirect(`${app.get("url")}${req.originalUrl}`);
-    else next();
+      return res.redirect(`${app.get("url")}${req.originalUrl}`);
+    next();
   });
   reverseProxy.use(
     cookieSession({

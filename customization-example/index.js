@@ -246,6 +246,8 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
 
 # I’m Interested! How Do I Participate?
 
+**Try our [very early demos](${app.get("url")}/authenticate)!**
+
 **Return here in February to start trying out the super-early CourseLore development demos!**
 
 **Educators & Students:** We want to hear [your feedback](mailto:feedback@courselore.com).
