@@ -98,6 +98,8 @@ export default async function courselore(
                 #29adff
               */
 
+              /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
+
               body {
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
@@ -162,7 +164,7 @@ export default async function courselore(
                 font-size: 0.875em;
                 background-color: whitesmoke;
                 box-sizing: border-box;
-                padding: 0 1em;
+                padding: 0 2em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
               }
@@ -310,7 +312,7 @@ export default async function courselore(
                     <nav>
                       ${user.name} ${`<${req.session!.email}>`}
                       <form method="post" action="${app.get("url")}/sign-out">
-                        <button class="a">Sign out</button>
+                        <button class="button--secondary">Sign out</button>
                       </form>
                     </nav>
                   </div>
@@ -500,7 +502,14 @@ export default async function courselore(
         app.get("layout")(
           req,
           res,
-          html`<title>CourseLore</title>`,
+          html`
+            <title>CourseLore · The Open-Source Student Forum</title>
+            <style>
+              main {
+                text-align: center;
+              }
+            </style>
+          `,
           html`
             <p>
               <a
@@ -526,7 +535,14 @@ export default async function courselore(
         app.get("layout")(
           req,
           res,
-          html`<title>Sign ${preposition} · CourseLore</title>`,
+          html`
+            <title>Sign ${preposition} · CourseLore</title>
+            <style>
+              main {
+                text-align: center;
+              }
+            </style>
+          `,
           html`
             <h1>Sign ${preposition} to CourseLore</h1>
             <form method="post">
@@ -537,8 +553,8 @@ export default async function courselore(
                   placeholder="me@university.edu"
                   required
                 />
-                <button>Continue</button>
               </p>
+              <p><button>Continue</button></p>
             </form>
             <p>
               <small>
@@ -1024,7 +1040,7 @@ export default async function courselore(
               <a
                 href="${app.get("url")}/${req.params
                   .courseReference}/threads/new"
-                class="button button--secondary"
+                class="button"
                 >New thread</a
               >
             </p>
