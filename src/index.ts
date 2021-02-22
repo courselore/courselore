@@ -579,10 +579,10 @@ export default async function courselore(
       const magicLink = `${app.get("url")}/sign-${realPreposition}/${newToken}`;
       const sentEmail = sendEmail({
         to: req.body.email,
-        subject: `Here’s your magic link to sign ${realPreposition} to CourseLore`,
+        subject: `Magic sign-${realPreposition} link`,
         body: html`
           <p><a href="${magicLink}">${magicLink}</a></p>
-          <p><small>Expires in 10 minutes.</small></p>
+          <p><small>Expires in 10 minutes and may only be used once.</small></p>
         `,
       });
 
@@ -595,7 +595,8 @@ export default async function courselore(
           html`
             <p>
               To continue with sign ${pretendPreposition}, check
-              ${req.body.email} and follow the magic link.
+              ${req.body.email} and click on the magic
+              sign-${pretendPreposition} link.
             </p>
             <form method="post">
               <p>
@@ -644,7 +645,7 @@ export default async function courselore(
             html`<title>Sign ${preposition} · CourseLore</title>`,
             html`
               <p>
-                This magic link is invalid or has expired.
+                This magic sign-${preposition} link is invalid or has expired.
                 <a href="${app.get("url")}/sign-${preposition}">Start over</a>.
               </p>
             `
