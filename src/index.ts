@@ -231,6 +231,49 @@ export default async function courselore(
           </head>
           <body>
             $${body}
+            <script>
+              // TODO: Extract this into a library?
+              const relativeTimeFormat = new Intl.RelativeTimeFormat("en", {
+                numeric: "auto",
+              });
+              (function relativeTimes() {
+                const now = new Date();
+                for (const element of document.querySelectorAll(
+                  "time.relative"
+                )) {
+                  const difference =
+                    new Date(element.getAttribute("datetime")) - new Date();
+                  const absoluteDifference = Math.abs(difference);
+                  const minutes =
+                    new Date().setMinutes(now.getMinutes() + 1) - now;
+                  const hours = new Date().setHours(now.getHours() + 1) - now;
+                  const days = new Date().setDate(now.getDate() + 1) - now;
+                  const weeks = new Date().setDate(now.getDate() + 7) - now;
+                  const months = new Date().setMonth(now.getMonth() + 1) - now;
+                  const years =
+                    new Date().setFullYear(now.getFullYear() + 1) - now;
+                  const [value, unit] =
+                    absoluteDifference < minutes
+                      ? [0, "seconds"]
+                      : absoluteDifference < hours
+                      ? [difference / minutes, "minutes"]
+                      : absoluteDifference < days
+                      ? [difference / hours, "hours"]
+                      : absoluteDifference < weeks
+                      ? [difference / days, "days"]
+                      : absoluteDifference < months
+                      ? [difference / weeks, "weeks"]
+                      : absoluteDifference < years
+                      ? [difference / months, "months"]
+                      : [difference / years, "years"];
+                  element.innerText = relativeTimeFormat.format(
+                    Math.round(value),
+                    unit
+                  );
+                }
+                window.setTimeout(relativeTimes, 60 * 1000);
+              })();
+            </script>
           </body>
         </html>
       `.trimLeft()
@@ -332,6 +375,7 @@ export default async function courselore(
     "text processor",
     (text: string): HTML => textProcessor.processSync(text).toString()
   );
+  // TODO: Convert references to other threads like ‘#57’ into links.
   const textProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -1001,15 +1045,6 @@ export default async function courselore(
     }
   );
 
-  // TODO: A widget for <time>
-  // https://github.com/catamphetamine/javascript-time-ago
-  // https://github.com/azer/relative-date
-  // https://benborgers.com/posts/js-relative-date
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-  //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
-  // https://day.js.org
-  // http://timeago.yarp.com
-  // https://sugarjs.com
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
     ...isCourseEnrolled(true),
@@ -1080,17 +1115,10 @@ export default async function courselore(
                       >
                         <strong>${title}</strong><br />
                         <small style="color: dimgray;">
-                          #${reference} created
-                          <time datetime="${createdAt}" title="${createdAt}"
-                            >at ${createdAt}</time
-                          >
+                          #${reference} created $${relativeTime(createdAt)}
                           ${updatedAt !== createdAt
                             ? html` (and last updated
-                                <time
-                                  datetime="${updatedAt}"
-                                  title="${updatedAt}"
-                                  >at ${updatedAt}</time
-                                >)`
+                              $${relativeTime(updatedAt)})`
                             : html``}
                           by ${authorName ?? "Ghost"}
                         </small>
@@ -1317,6 +1345,16 @@ export default async function courselore(
       sql`INSERT INTO "emailQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
     );
     return html``;
+  }
+
+  function relativeTime(time: string): HTML {
+    const timeString = new Date(time).toISOString();
+    return html`<time
+      datetime="${timeString}"
+      title="${timeString}"
+      class="relative"
+      >at ${timeString}</time
+    >`;
   }
 
   return app;
