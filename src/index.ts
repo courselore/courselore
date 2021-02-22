@@ -97,6 +97,7 @@ export default async function courselore(
                 #ff77a8
                 #29adff
               */
+
               body {
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
@@ -117,9 +118,9 @@ export default async function courselore(
                 cursor: pointer;
               }
 
-              a.undecorated,
-              .a.undecorated,
-              nav a {
+              .undecorated,
+              nav a,
+              nav .a {
                 text-decoration: none;
               }
 
@@ -189,8 +190,8 @@ export default async function courselore(
               }
 
               textarea {
-                width: 100%;
                 box-sizing: border-box;
+                width: 100%;
                 resize: vertical;
               }
 
@@ -200,10 +201,15 @@ export default async function courselore(
                 text-decoration: none;
                 background-color: #83769c;
                 color: white;
+                display: inline-block;
                 padding: 0.5em 0.7em;
                 border: none;
                 border-radius: 10px;
                 cursor: pointer;
+              }
+
+              :not(:checked) + .toggleable {
+                display: none;
               }
             </style>
             $${head}
@@ -221,71 +227,86 @@ export default async function courselore(
       res: express.Response,
       head: HTML,
       body: HTML
-    ): HTML =>
-      app.get("layout base")(
+    ): HTML => {
+      const user =
+        req.session!.email === undefined
+          ? undefined
+          : database.get<{ name: string }>(
+              sql`SELECT "name" FROM "users" WHERE "email" = ${
+                req.session!.email
+              }`
+            )!;
+      return app.get("layout base")(
         head,
         html`
-          <header
-            style="
-              display: grid;
-              grid-template-columns: 1fr 2fr 1fr;
-              align-items: center;
-            "
-          >
-            <nav style="justify-self: start;">
-              <!--$${req.session!.email === undefined
-                ? html``
-                : html`
-                    <button>
-                      <svg width="20" height="20" viewBox="0 0 20 20">
-                        <g
-                          stroke="black"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                        >
-                          <line x1="3" y1="5" x2="17" y2="5" />
-                          <line x1="3" y1="10" x2="17" y2="10" />
-                          <line x1="3" y1="15" x2="17" y2="15" />
-                        </g>
-                      </svg>
-                    </button>
-                  `}-->
-            </nav>
-            <nav style="justify-self: center;">
-              <a href="${app.get("url")}" style="display: inline-flex;">
-                $${logo}
-                <span
-                  style="
-                    font-size: 1.5em;
-                    font-weight: 900;
-                    color: #83769c;
-                    margin-left: 0.3em;
-                  "
-                  >CourseLore</span
-                >
-              </a>
-            </nav>
-            <nav style="justify-self: end;">
-              $${req.session!.email === undefined
-                ? html``
-                : html`
-                    <form method="post" action="${app.get("url")}/sign-out">
-                      <button>
-                        Sign out
-                        (${database.get<{ name: string }>(
-                          sql`SELECT "name" FROM "users" WHERE "email" = ${
-                            req.session!.email
-                          }`
-                        )!.name})
-                      </button>
-                    </form>
-                  `}
-            </nav>
+          <header>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 2fr 1fr;
+                align-items: center;
+              "
+            >
+              <nav style="justify-self: start;"></nav>
+              <nav style="justify-self: center;">
+                <a href="${app.get("url")}" style="display: inline-flex;">
+                  $${logo}
+                  <span
+                    style="
+                      font-size: 1.5em;
+                      font-weight: 900;
+                      color: #83769c;
+                      margin-left: 0.3em;
+                    "
+                    >CourseLore</span
+                  >
+                </a>
+              </nav>
+              <nav style="justify-self: end;">
+                $${user === undefined
+                  ? html``
+                  : html`
+                      <label
+                        for="toggle--signed-in-menu"
+                        class="button"
+                        style="
+                          text-align: center;
+                          background-color: #ff77a8;
+                          width: 30px;
+                          height: 30px;
+                          line-height: 30px;
+                          padding: 0;
+                          border-radius: 50%;
+                        "
+                      >
+                        ${user.name[0]}
+                      </label>
+                    `}
+              </nav>
+            </div>
+            $${user === undefined
+              ? html``
+              : html`
+                  <input
+                    type="checkbox"
+                    id="toggle--signed-in-menu"
+                    style="display: none;"
+                  />
+                  <div class="toggleable">
+                    <nav>
+                      ${user.name} ${`<${req.session!.email}>`}
+                      <form method="post" action="${app.get("url")}/sign-out">
+                        <button class="a">Sign out</button>
+                      </form>
+                    </nav>
+                  </div>
+                `}
           </header>
           <main>$${body}</main>
           <footer></footer>
         `
-      )
+      );
+    }
   );
   const logo = await fs.readFile(
     path.join(__dirname, "../public/logo.svg"),
@@ -468,8 +489,8 @@ export default async function courselore(
           html`<title>CourseLore</title>`,
           html`
             <p>
-              <a href="${app.get("url")}/sign-in">Sign in</a>
-              <a href="${app.get("url")}/sign-up">Sign up</a>
+              <a href="${app.get("url")}/sign-in" class="undecorated">Sign in</a>
+              <a href="${app.get("url")}/sign-up" class="undecorated">Sign up</a>
             </p>
           `
         )
