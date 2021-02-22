@@ -178,6 +178,7 @@ export default async function courselore(
               textarea,
               button,
               .button {
+                font-family: "Public Sans", sans-serif;
                 font-size: 1em;
                 line-height: 1.5;
                 margin: 0;
