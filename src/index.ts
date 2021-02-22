@@ -552,6 +552,8 @@ export default async function courselore(
                   type="email"
                   placeholder="me@university.edu"
                   required
+                  autofocus
+                  size="30"
                 />
               </p>
               <p><button>Continue</button></p>
