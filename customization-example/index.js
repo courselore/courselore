@@ -24,14 +24,6 @@ module.exports = (require) => {
           html`
             <title>CourseLore · The Open-Source Student Forum</title>
             <style>
-              @media (max-width: 1279px), (max-height: 699px) {
-                body {
-                  max-width: 600px;
-                  padding: 0 1em;
-                  margin: 1em auto;
-                }
-              }
-
               @media (min-width: 1280px) and (min-height: 700px) {
                 body {
                   margin: 0;

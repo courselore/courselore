@@ -103,6 +103,7 @@ export default async function courselore(
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
                 max-width: 600px;
+                padding: 0 1em;
                 margin: 1em auto;
               }
 
@@ -178,6 +179,7 @@ export default async function courselore(
               button,
               .button {
                 font-size: 1em;
+                line-height: 1.5;
                 margin: 0;
               }
 
@@ -187,6 +189,11 @@ export default async function courselore(
                 border: 1px solid darkgray;
                 border-radius: 10px;
                 padding: 0.2em 1em;
+              }
+
+              input[type="text"],
+              input[type="email"] {
+                -webkit-appearance: none;
               }
 
               textarea {
@@ -627,22 +634,22 @@ export default async function courselore(
     ...isAuthenticated(false),
     (req, res) => {
       const authenticationToken = getAuthenticationToken(req.params.token);
-      if (authenticationToken === undefined)
+      if (authenticationToken === undefined) {
+        const preposition = req.path.startsWith("/sign-up") ? "up" : "in";
         return res.send(
           app.get("layout")(
             req,
             res,
-            html`<title>
-              Sign ${req.path.startsWith("/sign-up") ? "up" : "in"} · CourseLore
-            </title>`,
+            html`<title>Sign ${preposition} · CourseLore</title>`,
             html`
               <p>
                 This magic link is invalid or has expired.
-                <a href="${app.get("url")}${req.path}">Start over</a>.
+                <a href="${app.get("url")}/sign-${preposition}">Start over</a>.
               </p>
             `
           )
         );
+      }
       if (
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
