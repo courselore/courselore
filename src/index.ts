@@ -206,7 +206,8 @@ export default async function courselore(
                 text-decoration: none;
               }
 
-              button {
+              button,
+              .button {
                 cursor: pointer;
                 color: inherit;
                 background-color: inherit;
@@ -289,6 +290,7 @@ export default async function courselore(
                       ? [difference / months, "months"]
                       : [difference / years, "years"];
                   element.innerText = relativeTimeFormat.format(
+                    // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
                     Math.round(value),
                     unit
                   );
@@ -323,12 +325,11 @@ export default async function courselore(
             <div
               style="
                 display: grid;
-                grid-template-columns: 1fr 2fr 1fr;
+                grid-template-columns: 1fr 1fr;
                 align-items: center;
               "
             >
-              <nav style="justify-self: start;"></nav>
-              <nav style="justify-self: center;">
+              <nav style="justify-self: left;">
                 <a href="${app.get("url")}" style="display: inline-flex;">
                   $${logo}
                   <span
@@ -342,7 +343,7 @@ export default async function courselore(
                   >
                 </a>
               </nav>
-              <nav style="justify-self: end;">
+              <nav style="justify-self: right;">
                 $${user === undefined
                   ? html``
                   : html`
