@@ -98,7 +98,7 @@ export default async function courselore(
               /*
             https://pico-8.fandom.com/wiki/Palette
             #83769c / darker #6e6382 #584f69
-            #ff77a8
+            #ff77a8 / darker #E66C98
             #29adff
           */
 
@@ -456,6 +456,9 @@ export default async function courselore(
                           line-height: 30px;
                           padding: 0;
                           border-radius: 50%;
+                        "
+                        style:hover="
+                          color: #E66C98;
                         "
                       >
                         ${user.name[0]}
