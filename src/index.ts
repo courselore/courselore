@@ -93,7 +93,7 @@ export default async function courselore(
             <style>
               /*
                 https://pico-8.fandom.com/wiki/Palette
-                #83769c
+                #83769c / darker #6e6382 #584f69
                 #ff77a8
                 #29adff
               */
@@ -112,14 +112,8 @@ export default async function courselore(
 
               a,
               .a {
-                font-size: 1em;
                 text-decoration: underline;
                 color: inherit;
-                background-color: inherit;
-                padding: 0;
-                border: none;
-                border-radius: 0px;
-                cursor: pointer;
               }
 
               .undecorated,
@@ -205,7 +199,15 @@ export default async function courselore(
                 resize: vertical;
               }
 
-              button,
+              button {
+                cursor: pointer;
+                color: inherit;
+                background-color: inherit;
+                padding: 0;
+                border: none;
+              }
+
+              button:not(.a),
               .button {
                 text-decoration: none;
                 background-color: #83769c;
@@ -215,12 +217,28 @@ export default async function courselore(
                 border: none;
                 border-radius: 10px;
                 cursor: pointer;
+                transition-duration: 0.2s;
+                transition-property: color, background-color, border-color;
               }
 
               .button--outline {
                 background-color: inherit;
                 color: #83769c;
                 border: 1px solid #83769c;
+              }
+
+              button:not(.a):hover,
+              .button:hover {
+                color: white;
+                background-color: #6e6382;
+                border-color: transparent;
+              }
+
+              button:not(.a):active,
+              .button:active {
+                color: white;
+                background-color: #584f69;
+                border-color: transparent;
               }
 
               :not(:checked) + .toggleable {
@@ -1160,9 +1178,10 @@ export default async function courselore(
                   placeholder="Title…"
                   autocomplete="off"
                   style="box-sizing: border-box; width: 100%;"
+                  required
                 />
               </p>
-              <textarea name="content"></textarea>
+              <textarea name="content" required></textarea>
               <p>
                 <button>Create thread</button>
               </p>
