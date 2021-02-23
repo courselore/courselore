@@ -92,7 +92,7 @@ module.exports = (require) => {
                           width="500"
                           height="100"
                           rx="10"
-                          fill="#83769c"
+                          fill="#83769C"
                         />
                         <text font-size="5em">CourseLore</text>
                       </g>
@@ -103,7 +103,7 @@ module.exports = (require) => {
                           width="420"
                           height="50"
                           rx="10"
-                          fill="#ff77a8"
+                          fill="#FF77A8"
                         />
                         <text font-size="1.5em"
                           >The Open-Source Student Forum</text
@@ -116,7 +116,7 @@ module.exports = (require) => {
                           width="280"
                           height="30"
                           rx="10"
-                          fill="#29adff"
+                          fill="#29ADFF"
                         />
                         <text font-size="0.8em" letter-spacing="3">
                           COMING SEPTEMBER 2021!
@@ -292,8 +292,8 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
       >
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#83769c" />
-            <stop offset="100%" stop-color="#ff77a8" />
+            <stop offset="0%" stop-color="#83769C" />
+            <stop offset="100%" stop-color="#FF77A8" />
           </linearGradient>
         </defs>
         <polyline

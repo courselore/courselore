@@ -97,9 +97,9 @@ export default async function courselore(
             <style>
               /*
             https://pico-8.fandom.com/wiki/Palette
-            #83769c / darker #6e6382 #584f69
-            #ff77a8 / darker #E66C98
-            #29adff
+            #83769C / darker #6E6382 #584F69
+            #FF77A8 / darker #E66C98
+            #29ADFF
           */
 
               /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
@@ -120,7 +120,7 @@ export default async function courselore(
 
               ::selection {
                 color: white;
-                background-color: #ff77a8;
+                background-color: #FF77A8;
               }
 
               img,
@@ -204,7 +204,7 @@ export default async function courselore(
 
               a:hover,
               .a:hover {
-                color: #ff77a8;
+                color: #FF77A8;
               }
 
               .undecorated,
@@ -226,7 +226,7 @@ export default async function courselore(
               button:not(.a),
               .button {
                 color: white;
-                background-color: #83769c;
+                background-color: #83769C;
                 display: inline-block;
                 padding: 0.2em 1em;
                 border-radius: 10px;
@@ -237,22 +237,22 @@ export default async function courselore(
               }
 
               .button--outline {
-                color: #83769c;
+                color: #83769C;
                 background-color: inherit;
-                border: 1px solid #83769c;
+                border: 1px solid #83769C;
               }
 
               button:not(.a):hover,
               .button:hover {
                 color: white;
-                background-color: #6e6382;
+                background-color: #6E6382;
                 border-color: transparent;
               }
 
               button:not(.a):active,
               .button:active {
                 color: white;
-                background-color: #584f69;
+                background-color: #584F69;
                 border-color: transparent;
               }
 
@@ -429,12 +429,12 @@ export default async function courselore(
                     style="
                       font-size: 1.5em;
                       font-weight: 800;
-                      color: #83769c;
+                      color: #83769C;
                       margin-left: 0.3em;
                       transition: color: 0.2s;
                     "
                     style:hover="
-                      color: #6e6382;
+                      color: #6E6382;
                     "
                     >CourseLore</span
                   >
@@ -450,7 +450,7 @@ export default async function courselore(
                         style="
                           font-weight: 700;
                           text-align: center;
-                          background-color: #ff77a8;
+                          background-color: #FF77A8;
                           width: 30px;
                           height: 30px;
                           line-height: 30px;
