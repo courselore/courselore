@@ -110,25 +110,13 @@ export default async function courselore(
                 margin: 1em auto;
               }
 
-              a,
-              .a {
-                text-decoration: underline;
-                color: inherit;
-              }
-
-              .undecorated,
-              nav a,
-              nav .a {
-                text-decoration: none;
-              }
-
               code {
                 font-family: "Roboto Mono", monospace;
               }
 
               ::selection {
-                background-color: #ff77a8;
                 color: white;
+                background-color: #ff77a8;
               }
 
               img,
@@ -199,6 +187,19 @@ export default async function courselore(
                 resize: vertical;
               }
 
+              a,
+              .a {
+                text-decoration: underline;
+                color: inherit;
+              }
+
+              .undecorated,
+              .button,
+              nav a,
+              nav .a {
+                text-decoration: none;
+              }
+
               button {
                 cursor: pointer;
                 color: inherit;
@@ -209,21 +210,18 @@ export default async function courselore(
 
               button:not(.a),
               .button {
-                text-decoration: none;
-                background-color: #83769c;
                 color: white;
+                background-color: #83769c;
                 display: inline-block;
                 padding: 0.2em 1em;
-                border: none;
                 border-radius: 10px;
-                cursor: pointer;
                 transition-duration: 0.2s;
                 transition-property: color, background-color, border-color;
               }
 
               .button--outline {
-                background-color: inherit;
                 color: #83769c;
+                background-color: inherit;
                 border: 1px solid #83769c;
               }
 
