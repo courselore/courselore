@@ -324,12 +324,12 @@ export default async function courselore(
           <header>
             <div
               style="
-                display: grid;
-                grid-template-columns: 1fr 1fr;
+                display: flex;
+                justify-content: space-between;
                 align-items: center;
               "
             >
-              <nav style="justify-self: left;">
+              <nav>
                 <a href="${app.get("url")}" style="display: inline-flex;">
                   $${logo}
                   <span
@@ -343,7 +343,7 @@ export default async function courselore(
                   >
                 </a>
               </nav>
-              <nav style="justify-self: right;">
+              <nav>
                 $${user === undefined
                   ? html``
                   : html`
