@@ -136,7 +136,7 @@ module.exports = (require) => {
                     .getAttribute("points")
                     .split(" ")
                     .map(Number);
-                  (function draw(time) {
+                  (function animateBackground(time) {
                     polyline.setAttribute(
                       "points",
                       points
@@ -148,7 +148,7 @@ module.exports = (require) => {
                         )
                         .join(" ")
                     );
-                    window.requestAnimationFrame(draw);
+                    window.requestAnimationFrame(animateBackground);
                   })(0);
                 </script>
                 <nav>
