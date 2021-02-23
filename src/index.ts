@@ -153,6 +153,8 @@ export default async function courselore(
                 padding: 0 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
+                box-shadow: inset 0px 1px rgba(255, 255, 255, 0.1),
+                  0px 1px rgba(0, 0, 0, 0.1);
               }
 
               .TODO::before {
@@ -175,9 +177,11 @@ export default async function courselore(
               input,
               textarea {
                 background-color: white;
+                padding: 0.2em 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
-                padding: 0.2em 1em;
+                box-shadow: inset 0px 1px rgba(255, 255, 255, 0.1),
+                  0px 1px rgba(0, 0, 0, 0.1);
               }
 
               input[type="text"],
@@ -226,6 +230,8 @@ export default async function courselore(
                 display: inline-block;
                 padding: 0.2em 1em;
                 border-radius: 10px;
+                box-shadow: inset 0px 1px rgba(255, 255, 255, 0.1),
+                  0px 1px rgba(0, 0, 0, 0.1);
                 transition-duration: 0.2s;
                 transition-property: color, background-color, border-color;
               }
@@ -378,7 +384,7 @@ export default async function courselore(
                 >
                   $${logo}
                   <script>
-                    const ANIMATION_SPEED = 0.001;
+                    const ANIMATION_SPEED = 0.002;
                     const ANIMATION_AMOUNT = 1;
                     const polyline = document.currentScript.previousElementSibling.querySelector(
                       "polyline"
