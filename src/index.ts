@@ -308,6 +308,12 @@ export default async function courselore(
       // TODO: Make this possibly faster by using Rehype instead of JSDOM (though we have to benchmark to be sure…)
       // TODO: Extract this into a package. Or at least into its own function outside the definition of the template.
       // TODO: Use more inline styles in the templates and in the customization.
+      // TODO: Add support for all pseudo-classes, pseudo-elements, and media queries.
+      //       https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes
+      //         https://www.npmjs.com/package/pseudo-classes
+      //       https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
+      //       https://github.com/postcss/postcss
+      //       https://github.com/brettstimmerman/mensch
       const dom = new JSDOM(rawHTML);
       const document = dom.window.document;
       const inlineStyles: CSS[] = [];
