@@ -2,6 +2,7 @@
 
 import process from "process";
 import path from "path";
+import crypto from "crypto";
 
 import express from "express";
 import cookieSession from "cookie-session";
@@ -11,6 +12,7 @@ import { Database, sql } from "@leafac/sqlite";
 import databaseMigrate from "@leafac/sqlite-migration";
 
 import html from "@leafac/html";
+import css from "tagged-template-noop";
 import javascript from "tagged-template-noop";
 
 import unified from "unified";
@@ -27,6 +29,7 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 
+import { JSDOM } from "jsdom";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import inquirer from "inquirer";
@@ -40,14 +43,15 @@ export default async function courselore(
   const app = express();
 
   type HTML = string;
+  type CSS = string;
 
   app.set("url", "http://localhost:4000");
   app.set("administrator email", "demonstration-development@courselore.org");
   app.enable("demonstration");
   app.set(
     "layout base",
-    (head: HTML, body: HTML): HTML =>
-      html`
+    (head: HTML, body: HTML): HTML => {
+      const rawHTML = html`
         <!DOCTYPE html>
         <html lang="en">
           <head>
@@ -92,11 +96,11 @@ export default async function courselore(
             />
             <style>
               /*
-                https://pico-8.fandom.com/wiki/Palette
-                #83769c / darker #6e6382 #584f69
-                #ff77a8
-                #29adff
-              */
+            https://pico-8.fandom.com/wiki/Palette
+            #83769c / darker #6e6382 #584f69
+            #ff77a8
+            #29adff
+          */
 
               /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
 
@@ -300,7 +304,37 @@ export default async function courselore(
             </script>
           </body>
         </html>
-      `.trimLeft()
+      `;
+      // TODO: Make this possibly faster by using Rehype instead of JSDOM (though we have to benchmark to be sure…)
+      // TODO: Extract this into a package. Or at least into its own function outside the definition of the template.
+      // TODO: Use more inline styles in the templates and in the customization.
+      const dom = new JSDOM(rawHTML);
+      const document = dom.window.document;
+      const inlineStyles: CSS[] = [];
+      for (const element of document.querySelectorAll("[style]")) {
+        const styles = element.getAttribute("style")!;
+        element.removeAttribute("style");
+        const className = `_${crypto
+          .createHash("sha256")
+          .update(styles)
+          .digest("hex")}`;
+        element.classList.add(className);
+        inlineStyles.push(css`
+          .${className} {
+            ${styles}
+          }
+        `);
+      }
+      document.head.insertAdjacentHTML(
+        "beforeend",
+        html`
+          <style>
+            ${inlineStyles}
+          </style>
+        `
+      );
+      return dom.serialize();
+    }
   );
   app.set(
     "layout",
@@ -385,6 +419,10 @@ export default async function courselore(
                       font-weight: 800;
                       color: #83769c;
                       margin-left: 0.3em;
+                      transition: color: 0.2s;
+                    "
+                    style:hover="
+                      color: #6e6382;
                     "
                     >CourseLore</span
                   >
