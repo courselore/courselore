@@ -191,6 +191,12 @@ export default async function courselore(
               .a {
                 text-decoration: underline;
                 color: inherit;
+                transition: color 0.2s;
+              }
+
+              a:hover,
+              .a:hover {
+                color: #ff77a8;
               }
 
               .undecorated,
