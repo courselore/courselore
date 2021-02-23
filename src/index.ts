@@ -195,6 +195,10 @@ export default async function courselore(
                 resize: vertical;
               }
 
+              ::-webkit-resizer {
+                display: none;
+              }
+
               a,
               .a {
                 text-decoration: underline;
