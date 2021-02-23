@@ -120,7 +120,7 @@ export default async function courselore(
 
               ::selection {
                 color: white;
-                background-color: #FF77A8;
+                background-color: #ff77a8;
               }
 
               img,
@@ -204,7 +204,7 @@ export default async function courselore(
 
               a:hover,
               .a:hover {
-                color: #FF77A8;
+                color: #ff77a8;
               }
 
               .undecorated,
@@ -226,7 +226,7 @@ export default async function courselore(
               button:not(.a),
               .button {
                 color: white;
-                background-color: #83769C;
+                background-color: #83769c;
                 display: inline-block;
                 padding: 0.2em 1em;
                 border-radius: 10px;
@@ -237,22 +237,22 @@ export default async function courselore(
               }
 
               .button--outline {
-                color: #83769C;
+                color: #83769c;
                 background-color: inherit;
-                border: 1px solid #83769C;
+                border: 1px solid #83769c;
               }
 
               button:not(.a):hover,
               .button:hover {
                 color: white;
-                background-color: #6E6382;
+                background-color: #6e6382;
                 border-color: transparent;
               }
 
               button:not(.a):active,
               .button:active {
                 color: white;
-                background-color: #584F69;
+                background-color: #584f69;
                 border-color: transparent;
               }
 
