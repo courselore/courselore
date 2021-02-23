@@ -355,7 +355,7 @@ export default async function courselore(
                     <nav>
                       ${user.name} ${`<${req.session!.email}>`}
                       <form method="post" action="${app.get("url")}/sign-out">
-                        <button class="button--outline">Sign out</button>
+                        <button class="a">Sign out</button>
                       </form>
                     </nav>
                   </div>
