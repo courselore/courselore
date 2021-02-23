@@ -101,6 +101,7 @@ export default async function courselore(
               /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
 
               body {
+                font-size: 14px;
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
@@ -155,16 +156,15 @@ export default async function courselore(
               }
 
               pre {
-                font-size: 0.75em;
+                font-size: 0.857em;
                 line-height: 1.3;
               }
 
               .demonstration,
               .TODO {
-                font-size: 0.875em;
                 background-color: whitesmoke;
                 box-sizing: border-box;
-                padding: 0 2em;
+                padding: 0 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
               }
@@ -217,7 +217,7 @@ export default async function courselore(
                 cursor: pointer;
               }
 
-              .button--secondary {
+              .button--outline {
                 background-color: inherit;
                 color: #83769c;
                 border: 1px solid #83769c;
@@ -355,7 +355,7 @@ export default async function courselore(
                     <nav>
                       ${user.name} ${`<${req.session!.email}>`}
                       <form method="post" action="${app.get("url")}/sign-out">
-                        <button class="button--secondary">Sign out</button>
+                        <button class="button--outline">Sign out</button>
                       </form>
                     </nav>
                   </div>
@@ -556,9 +556,7 @@ export default async function courselore(
           `,
           html`
             <p>
-              <a
-                href="${app.get("url")}/sign-in"
-                class="button button--secondary"
+              <a href="${app.get("url")}/sign-in" class="button button--outline"
                 >Sign in</a
               >
               <a href="${app.get("url")}/sign-up" class="button">Sign up</a>
