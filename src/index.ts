@@ -330,8 +330,55 @@ export default async function courselore(
               "
             >
               <nav>
-                <a href="${app.get("url")}" style="display: inline-flex;">
+                <a
+                  href="${app.get("url")}"
+                  style="display: inline-flex;"
+                  onmouseover="shouldAnimateLogo = true;"
+                  onmouseout="shouldAnimateLogo = false;"
+                >
                   $${logo}
+                  <script>
+                    const ANIMATION_SPEED = 0.001;
+                    const ANIMATION_AMOUNT = 1;
+                    const polyline = document.currentScript.previousElementSibling.querySelector(
+                      "polyline"
+                    );
+                    const points = polyline
+                      .getAttribute("points")
+                      .split(" ")
+                      .map(Number);
+                    let shouldAnimateLogo = false;
+                    let isAnimatingLogo = false;
+                    let timeOffset = 0;
+                    let lastTime = 0;
+                    (function animateLogo(time) {
+                      if (!isAnimatingLogo && shouldAnimateLogo) {
+                        isAnimatingLogo = true;
+                        timeOffset += time - lastTime;
+                      }
+                      if (isAnimatingLogo && !shouldAnimateLogo) {
+                        isAnimatingLogo = false;
+                        lastTime = time;
+                      }
+                      if (isAnimatingLogo)
+                        polyline.setAttribute(
+                          "points",
+                          points
+                            .map(
+                              (coordinate, index) =>
+                                coordinate +
+                                Math.sin(
+                                  (time - timeOffset) *
+                                    ANIMATION_SPEED *
+                                    Math.sin(index)
+                                ) *
+                                  ANIMATION_AMOUNT
+                            )
+                            .join(" ")
+                        );
+                      window.requestAnimationFrame(animateLogo);
+                    })(0);
+                  </script>
                   <span
                     style="
                       font-size: 1.5em;
