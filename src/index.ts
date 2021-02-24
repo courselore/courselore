@@ -392,7 +392,9 @@ export default async function courselore(
             <div
               style="
                 display: flex;
-                justify-content: space-between;
+                justify-content: space-${user === undefined
+                ? "around"
+                : "between"};
                 align-items: center;
               "
             >
@@ -456,10 +458,10 @@ export default async function courselore(
                   >
                 </a>
               </nav>
-              <nav>
-                $${user === undefined
-                  ? html``
-                  : html`
+              $${user === undefined
+                ? html``
+                : html`
+                    <nav>
                       <label
                         for="toggle--signed-in-menu"
                         class="button"
@@ -479,8 +481,8 @@ export default async function courselore(
                       >
                         ${user.name[0]}
                       </label>
-                    `}
-              </nav>
+                    </nav>
+                  `}
             </div>
             $${user === undefined
               ? html``
