@@ -1348,7 +1348,7 @@ export default async function courselore(
         database.get<{ newThreadReference: number }>(sql`
           SELECT MAX("threads"."reference") + 1 AS "newThreadReference"
           FROM "threads"
-          WHERE "threads"."course" =  = ${course.id}
+          WHERE "threads"."course" = ${course.id}
         `)?.newThreadReference ?? 1;
       const author = database.get<{ id: number }>(sql`
         SELECT "enrollments"."id" AS "id"
@@ -1414,13 +1414,9 @@ export default async function courselore(
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
-      const thread = database.get<{
-        createdAt: string;
-        updatedAt: string;
-        title: string;
-      }>(
+      const thread = database.get<{ id: number; title: string }>(
         sql`
-          SELECT "threads"."createdAt" AS "createdAt", "threads"."updatedAt" AS "updatedAt", "threads"."title" AS "title"
+          SELECT "threads"."id" AS "id", "threads"."title" AS "title"
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
           WHERE "threads"."reference" = ${req.params.threadReference} AND
@@ -1433,7 +1429,24 @@ export default async function courselore(
           res,
           html`<title>${thread.title} · CourseLore</title>`,
           html`
-            <h1>${thread.title} · ${course.name}</h1>
+            <h1>
+              ${thread.title} · ${course.name}
+              <small
+                style="
+                  font-size: 0.75em;
+                  font-weight: 400;
+                  color: gray;
+                "
+              >
+                <a
+                  href="${app.get("url")}/${req.params
+                    .courseReference}/threads/${req.params.threadReference}"
+                  class="undecorated"
+                  >#${req.params.threadReference}</a
+                >
+              </small>
+            </h1>
+
             <div class="TODO">
               <ul>
                 <li>
