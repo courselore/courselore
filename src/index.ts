@@ -1007,10 +1007,9 @@ export default async function courselore(
               `
             : html`
                 <p>Here’s what’s going on with your courses:</p>
-                <ul>
-                  $${database
-                    .all<{ reference: string; name: string; role: Role }>(
-                      sql`
+                $${database
+                  .all<{ reference: string; name: string; role: Role }>(
+                    sql`
                         SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
                         FROM "courses"
                         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
@@ -1018,16 +1017,17 @@ export default async function courselore(
                         WHERE "users"."email" = ${req.session!.email}
                         ORDER BY "enrollments"."createdAt" DESC
                       `
-                    )
-                    .map(
-                      ({ reference, name, role }) =>
-                        html`<li>
+                  )
+                  .map(
+                    ({ reference, name, role }) =>
+                      html`
+                        <p>
                           <a href="${app.get("url")}/${reference}"
                             >${name} (${role})</a
                           >
-                        </li>`
-                    )}
-                </ul>
+                        </p>
+                      `
+                  )}
                 <div class="TODO">
                   <p>
                     At this point we’re just showing a list of courses in which
@@ -1341,36 +1341,31 @@ export default async function courselore(
     expressValidator.body("title").exists(),
     expressValidator.body("content").exists(),
     (req, res) => {
+      const course = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
       const newThreadReference =
         database.get<{ newThreadReference: number }>(sql`
           SELECT MAX("threads"."reference") + 1 AS "newThreadReference"
           FROM "threads"
-          JOIN "courses" ON "threads"."course" = "courses"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference}
+          WHERE "threads"."course" =  = ${course.id}
         `)?.newThreadReference ?? 1;
-      database.run(sql`
+      const author = database.get<{ id: number }>(sql`
+        SELECT "enrollments"."id" AS "id"
+        FROM "enrollments"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        JOIN "courses" ON "enrollments"."course" = "courses"."id"
+        WHERE "users"."email" = ${req.session!.email} AND
+              "courses"."id" = ${course.id}
+      `)!;
+      const threadId = database.run(sql`
         INSERT INTO "threads" ("course", "reference", "author", "title")
-        VALUES (
-          ${
-            database.get<{ id: number }>(
-              sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-            )!.id
-          },
-          ${newThreadReference},
-          ${
-            database.get<{ id: number }>(sql`
-              SELECT "enrollments"."id" AS "id"
-              FROM "enrollments"
-              JOIN "users" ON "enrollments"."user" = "users"."id"
-              JOIN "courses" ON "enrollments"."course" = "courses"."id"
-              WHERE "courses"."reference" = ${req.params.courseReference} AND
-                    "users"."email" = ${req.session!.email}
-            `)!.id
-          },
-  ${req.body.title}
-        )
+        VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
+      `).lastInsertRowid;
+      database.run(sql`
+        INSERT INTO "posts" ("thread", "reference", "author", "content")
+        VALUES (${threadId}, ${1}, ${author.id}, ${req.body.content})
       `);
-      // TODO: Add the initial post.
       res.redirect(
         `${app.get("url")}/${
           req.params.courseReference
@@ -1416,6 +1411,9 @@ export default async function courselore(
     "/:courseReference/threads/:threadReference",
     ...threadAccessible,
     (req, res) => {
+      const course = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
       const thread = database.get<{
         createdAt: string;
         updatedAt: string;
@@ -1435,7 +1433,7 @@ export default async function courselore(
           res,
           html`<title>${thread.title} · CourseLore</title>`,
           html`
-            <h1>${thread.title}</h1>
+            <h1>${thread.title} · ${course.name}</h1>
             <div class="TODO">
               <ul>
                 <li>
