@@ -150,12 +150,19 @@ export default async function courselore(
 
               .box,
               .demonstration,
-              .TODO {
-                box-sizing: border-box;
-                padding: 0 1em;
+              .TODO,
+              input,
+              textarea {
                 border: 1px solid darkgray;
                 border-radius: 10px;
                 box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+              }
+
+              .box,
+              .demonstration,
+              .TODO {
+                box-sizing: border-box;
+                padding: 0 1em;
               }
 
               .demonstration,
@@ -185,9 +192,6 @@ export default async function courselore(
               textarea {
                 background-color: transparent;
                 padding: 0.2em 1em;
-                border: 1px solid darkgray;
-                border-radius: 10px;
-                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
               }
 
               input[type="text"],
@@ -256,7 +260,7 @@ export default async function courselore(
                 transition-duration: 0.2s;
               }
 
-              .button--outline {
+              .button--outline:not(.a) {
                 color: #83769c;
                 background-color: white;
               }
@@ -1507,11 +1511,41 @@ export default async function courselore(
                 `
               )}
 
-            <div class="TODO">
-              <ul>
-                <li>Add editor for creating a new post.</li>
-              </ul>
-            </div>
+            <!-- TODO: Add keyboard shortcuts for posting. Here and in the create thread form as well. -->
+            <form method="post" style="position: relative;">
+              <textarea name="content" required></textarea>
+              <p
+                style="
+                text-align: right;
+                color: dimgray;
+              "
+              >
+                <small>
+                  <a
+                    href="https://guides.github.com/features/mastering-markdown/"
+                    class="undecorated"
+                    >Markdown</a
+                  >
+                  &
+                  <a
+                    href="https://katex.org/docs/supported.html"
+                    class="undecorated"
+                    >LaTeX</a
+                  >
+                  are supported
+                </small>
+              </p>
+              <p
+                style="
+                  display: flex;
+                  flex-direction: row-reverse;
+                "
+              >
+                <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
+                <button style="margin-left: 0.5em;">Post</button>
+                <!-- <button class="button--outline">Preview</button> -->
+              </p>
+            </form>
           `
         )
       );
