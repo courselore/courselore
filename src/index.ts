@@ -324,6 +324,14 @@ export default async function courselore(
       //       https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
       //       https://github.com/postcss/postcss
       //       https://github.com/brettstimmerman/mensch
+      // https://stackoverflow.com/questions/10963997/css-parser-for-javascript
+      // https://github.com/CSSLint/parser-lib
+      // https://github.com/NV/CSSOM
+      // https://github.com/reworkcss/css
+      // https://www.npmjs.com/package/cssparser
+      // https://rahulnpadalkar.medium.com/css-parser-in-javascript-578eba0977e5
+      // https://github.com/rahulnpadalkar/CSSParser
+      // http://glazman.org/JSCSSP/
       const dom = new JSDOM(rawHTML);
       const document = dom.window.document;
       const inlineStyles: CSS[] = [];
