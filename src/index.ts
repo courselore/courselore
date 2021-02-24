@@ -153,7 +153,7 @@ export default async function courselore(
                 padding: 0 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
-                box-shadow: inset 0px 1px #ffffff33, 0px 1px #00000033;
+                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
               }
 
               .TODO::before {
@@ -166,7 +166,8 @@ export default async function courselore(
               input,
               textarea,
               button,
-              .button {
+              .button,
+              .button--outline {
                 font-family: "Public Sans", sans-serif;
                 font-size: 1em;
                 line-height: 1.5;
@@ -175,11 +176,11 @@ export default async function courselore(
 
               input,
               textarea {
-                background-color: white;
+                background-color: transparent;
                 padding: 0.2em 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
-                box-shadow: inset 0px 1px #ffffff33, 0px 1px #00000033;
+                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
               }
 
               input[type="text"],
@@ -199,9 +200,16 @@ export default async function courselore(
 
               a,
               .a {
-                text-decoration: underline;
                 color: inherit;
                 transition: color 0.2s;
+              }
+
+              .a {
+                text-decoration: underline;
+                background-color: inherit;
+                display: inline;
+                padding: 0;
+                border: none;
               }
 
               a:hover,
@@ -211,50 +219,51 @@ export default async function courselore(
 
               .undecorated,
               .button,
+              .button--outline,
               nav a,
               nav .a {
                 text-decoration: none;
               }
 
-              button,
-              .button {
+              button {
                 cursor: pointer;
-                color: inherit;
-                background-color: inherit;
-                padding: 0;
-                border: none;
+              }
+
+              .button,
+              .button--outline {
+                display: inline-block;
               }
 
               button:not(.a),
-              .button {
+              .button,
+              .button--outline {
                 color: white;
                 background-color: #83769c;
-                display: inline-block;
                 padding: 0.2em 1em;
+                border: 1px solid #83769c;
                 border-radius: 10px;
-                box-shadow: inset 0px 1px #ffffff33, 0px 1px #00000033;
+                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+                transition-property: color, background-color;
                 transition-duration: 0.2s;
-                transition-property: color, background-color, border-color;
               }
 
               .button--outline {
                 color: #83769c;
-                background-color: inherit;
-                border: 1px solid #83769c;
+                background-color: white;
               }
 
               button:not(.a):hover,
-              .button:hover {
+              .button:hover,
+              .button--outline:hover {
                 color: white;
                 background-color: #6e6382;
-                border-color: transparent;
               }
 
               button:not(.a):active,
-              .button:active {
+              .button:active,
+              .button--outline:active {
                 color: white;
                 background-color: #584f69;
-                border-color: transparent;
               }
 
               :not(:checked) + .toggleable {
@@ -688,7 +697,7 @@ export default async function courselore(
           `,
           html`
             <p>
-              <a href="${app.get("url")}/sign-in" class="button button--outline"
+              <a href="${app.get("url")}/sign-in" class="button--outline"
                 >Sign in</a
               >
               <a href="${app.get("url")}/sign-up" class="button">Sign up</a>
