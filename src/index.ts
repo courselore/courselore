@@ -1076,15 +1076,16 @@ export default async function courselore(
     expressValidator.body("name").exists(),
     (req, res) => {
       const newReference = cryptoRandomString({ length: 10, type: "numeric" });
-      const courseId = database.run(
+      const newCourseId = database.run(
         sql`INSERT INTO "courses" ("reference", "name") VALUES (${newReference}, ${req.body.name})`
       ).lastInsertRowid;
+      const user = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
       database.run(
         sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
-          database.get<{ id: number }>(
-            sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-          )!.id
-        }, ${courseId}, ${"instructor"})`
+          user.id
+        }, ${newCourseId}, ${"instructor"})`
       );
       res.redirect(`${app.get("url")}/${newReference}`);
     }
