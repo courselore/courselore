@@ -1110,15 +1110,15 @@ export default async function courselore(
   ];
 
   // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
-  const isCourseEnrolled: (
-    isCourseEnrolled: boolean
+  const isEnrolledInCourse: (
+    isEnrolledInCourse: boolean
   ) => express.RequestHandler<
     { courseReference: string },
     any,
     {},
     {},
     {}
-  >[] = (isCourseEnrolled) => [
+  >[] = (isEnrolledInCourse) => [
     ...isAuthenticated(true),
     ...courseExists,
     (req, res, next) => {
@@ -1134,7 +1134,7 @@ export default async function courselore(
                     "courses"."reference" = ${req.params.courseReference}
             ) AS "exists"
           `
-        )!.exists !== (isCourseEnrolled ? 1 : 0)
+        )!.exists !== (isEnrolledInCourse ? 1 : 0)
       )
         return next("route");
       next();
@@ -1143,7 +1143,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
-    ...isCourseEnrolled(false),
+    ...isEnrolledInCourse(false),
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -1174,7 +1174,7 @@ export default async function courselore(
 
   app.post<{ courseReference: string }, any, { role: Role }, {}, {}>(
     "/:courseReference",
-    ...isCourseEnrolled(false),
+    ...isEnrolledInCourse(false),
     expressValidator.body("role").isIn(ROLES as any),
     (req, res) => {
       database.run(
@@ -1194,7 +1194,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
-    ...isCourseEnrolled(true),
+    ...isEnrolledInCourse(true),
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -1286,7 +1286,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference/threads/new",
-    ...isCourseEnrolled(true),
+    ...isEnrolledInCourse(true),
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -1331,7 +1331,7 @@ export default async function courselore(
     {}
   >(
     "/:courseReference/threads",
-    ...isCourseEnrolled(true),
+    ...isEnrolledInCourse(true),
     expressValidator.body("title").exists(),
     expressValidator.body("content").exists(),
     (req, res) => {
@@ -1380,7 +1380,7 @@ export default async function courselore(
     {},
     {}
   >[] = [
-    ...isCourseEnrolled(true),
+    ...isEnrolledInCourse(true),
     (req, res, next) => {
       if (
         database.get<{ exists: number }>(
