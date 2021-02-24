@@ -398,10 +398,13 @@ export default async function courselore(
                 align-items: center;
               "
             >
-              <nav>
+              <nav style="display: flex;">
                 <a
                   href="${app.get("url")}"
-                  style="display: inline-flex;"
+                  style="
+                    display: flex;
+                    align-items: center;
+                  "
                   onmouseover="
                     stopLogoAnimation = false;
                     logoAnimationTimeOffset += performance.now() - lastLogoAnimationStop;
