@@ -758,20 +758,24 @@ export default async function courselore(
     }
   );
 
+  function createAuthenticationToken(email: string): string {
+    runtimeDatabase.run(
+      sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
+    );
+    const newToken = cryptoRandomString({ length: 40, type: "numeric" });
+    runtimeDatabase.run(
+      sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${email})`
+    );
+    return newToken;
+  }
+
   // TODO: Make more sophisticated use of expressValidator.
   app.post<{}, HTML, { email: string }, {}, {}>(
     ["/sign-up", "/sign-in"],
     ...isAuthenticated(false),
     expressValidator.body("email").isEmail(),
     (req, res) => {
-      runtimeDatabase.run(
-        sql`DELETE FROM "authenticationTokens" WHERE "email" = ${req.body.email}`
-      );
-      const newToken = cryptoRandomString({ length: 40, type: "numeric" });
-      runtimeDatabase.run(
-        sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${req.body.email})`
-      );
-
+      const newToken = createAuthenticationToken(req.body.email);
       const realPreposition =
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${req.body.email}) AS "exists"`
@@ -859,10 +863,7 @@ export default async function courselore(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
         )!.exists === 0
       ) {
-        const newToken = cryptoRandomString({ length: 40, type: "numeric" });
-        runtimeDatabase.run(
-          sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${authenticationToken.email})`
-        );
+        const newToken = createAuthenticationToken(authenticationToken.email);
         return res.send(
           app.get("layout")(
             req,
