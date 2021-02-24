@@ -227,7 +227,9 @@ export default async function courselore(
                 text-decoration: none;
               }
 
-              button {
+              button,
+              .button,
+              .button--outline {
                 cursor: pointer;
               }
 
@@ -466,13 +468,13 @@ export default async function courselore(
                           text-align: center;
                           background-color: #FF77A8;
                           width: 30px;
-                          height: 30px;
                           line-height: 30px;
                           padding: 0;
+                          border-color: #FF77A8;
                           border-radius: 50%;
                         "
                         style:hover="
-                          color: #E66C98;
+                          background-color: #E66C98;
                         "
                       >
                         ${user.name[0]}
