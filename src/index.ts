@@ -883,7 +883,13 @@ export default async function courselore(
                     value="${authenticationToken.email}"
                     disabled
                   />
-                  <input type="text" name="name" placeholder="Your name…" />
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your name…"
+                    required
+                    autofocus
+                  />
                   <button>Create account</button>
                 </p>
                 <div class="TODO">
@@ -1052,7 +1058,9 @@ export default async function courselore(
                   type="text"
                   name="name"
                   placeholder="Course name…"
+                  autocomplete="off"
                   required
+                  autofocus
                 />
                 <button>Create course</button>
               </p>
@@ -1177,16 +1185,14 @@ export default async function courselore(
     ...isEnrolledInCourse(false),
     expressValidator.body("role").isIn(ROLES as any),
     (req, res) => {
+      const user = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
+      const course = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
       database.run(
-        sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
-          database.get<{ id: number }>(
-            sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-          )!.id
-        }, ${
-          database.get<{ id: number }>(
-            sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-          )!.id
-        }, ${req.body.role})`
+        sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${user.id}, ${course.id}, ${req.body.role})`
       );
       res.redirect(`${app.get("url")}/${req.params.courseReference}`);
     }
@@ -1297,7 +1303,7 @@ export default async function courselore(
           res,
           html`<title>${course.name} · CourseLore</title>`,
           html`
-            <h1>${course.name} · Create a new thread</h1>
+            <h1>Create a new thread · ${course.name}</h1>
             <form
               method="post"
               action="${app.get("url")}/${req.params.courseReference}/threads"
