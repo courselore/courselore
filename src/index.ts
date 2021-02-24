@@ -1552,6 +1552,50 @@ export default async function courselore(
     }
   );
 
+  app.post<
+    { courseReference: string; threadReference: string },
+    HTML,
+    { content: string },
+    {},
+    {}
+  >(
+    "/:courseReference/threads/:threadReference",
+    ...threadAccessible,
+    expressValidator.body("content").exists(),
+    (req, res) => {
+      // FIXME: Maybe we can do this whole series of queries in one…
+      const thread = database.get<{ id: number; title: string }>(sql`
+        SELECT "threads"."id" AS "id"
+        FROM "threads"
+        JOIN "courses" ON "threads"."course" = "courses"."id"
+        WHERE "threads"."reference" = ${req.params.threadReference} AND
+              "courses"."reference" = ${req.params.courseReference}
+      `)!;
+      const newPostReference = database.get<{ newPostReference: number }>(sql`
+        SELECT MAX("posts"."reference") + 1 AS "newPostReference"
+        FROM "posts"
+        WHERE "posts"."thread" = ${thread.id}
+      `)!.newPostReference;
+      const author = database.get<{ id: number }>(sql`
+        SELECT "enrollments"."id" AS "id"
+        FROM "enrollments"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        JOIN "courses" ON "enrollments"."course" = "courses"."id"
+        WHERE "users"."email" = ${req.session!.email} AND
+              "courses"."reference" = ${req.params.courseReference}
+      `)!;
+      database.run(sql`
+        INSERT INTO "posts" ("thread", "reference", "author", "content")
+        VALUES (${thread.id}, ${newPostReference}, ${author.id}, ${req.body.content})
+      `);
+      res.redirect(
+        `${app.get("url")}/${req.params.courseReference}/threads/${
+          req.params.threadReference
+        }#${newPostReference}`
+      );
+    }
+  );
+
   app.post<{}, HTML, { text: string }, {}, {}>(
     "/preview",
     ...isAuthenticated(true),
