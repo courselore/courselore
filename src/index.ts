@@ -148,14 +148,19 @@ export default async function courselore(
                 line-height: 1.3;
               }
 
+              .box,
               .demonstration,
               .TODO {
-                background-color: whitesmoke;
                 box-sizing: border-box;
                 padding: 0 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
                 box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+              }
+
+              .demonstration,
+              .TODO {
+                background-color: whitesmoke;
               }
 
               .TODO::before {
@@ -272,6 +277,20 @@ export default async function courselore(
 
               :not(:checked) + .toggleable {
                 display: none;
+              }
+
+              .avatar {
+                font-weight: 700;
+                text-align: center;
+                color: white;
+                background-color: #ff77a8;
+                display: inline-block;
+                width: 30px;
+                line-height: 30px;
+                padding: 0;
+                border-color: #ff77a8;
+                border-radius: 50%;
+                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
               }
             </style>
             $${head}
@@ -465,23 +484,7 @@ export default async function courselore(
                 ? html``
                 : html`
                     <nav>
-                      <label
-                        for="toggle--signed-in-menu"
-                        class="button"
-                        style="
-                          font-weight: 700;
-                          text-align: center;
-                          background-color: #FF77A8;
-                          width: 30px;
-                          line-height: 30px;
-                          padding: 0;
-                          border-color: #FF77A8;
-                          border-radius: 50%;
-                        "
-                        style:hover="
-                          background-color: #E66C98;
-                        "
-                      >
+                      <label for="toggle--signed-in-menu" class="button avatar">
                         ${user.name[0]}
                       </label>
                     </nav>
@@ -554,6 +557,7 @@ export default async function courselore(
   await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
   app.set("database", database);
+  // FIXME: Maybe ‘reference’s should be TEXT, because of private threads. But does TEXT sort the right way?
   databaseMigrate(database, [
     sql`
       CREATE TABLE "users" (
@@ -1447,13 +1451,64 @@ export default async function courselore(
               </small>
             </h1>
 
+            $${database
+              .all<{
+                createdAt: string;
+                updatedAt: string;
+                postReference: number;
+                authorName: string | undefined;
+                content: string;
+              }>(
+                sql`
+                SELECT "posts"."createdAt" AS "createdAt",
+                       "posts"."updatedAt" AS "updatedAt",
+                       "posts"."reference" AS "postReference",
+                       "author"."name" AS "authorName",
+                       "posts"."content" AS "content"
+                FROM "posts"
+                LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
+                LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
+                WHERE "posts"."thread" = ${thread.id}
+                ORDER BY "posts"."createdAt" ASC
+              `
+              )
+              .map(
+                ({
+                  createdAt,
+                  updatedAt,
+                  postReference,
+                  authorName,
+                  content,
+                }) => html`
+                  <section id="${postReference}" class="box">
+                    <p>
+                      <span class="avatar" style="margin-right: 0.5em;"
+                        >${authorName?.[0] ?? "G"}</span
+                      >
+                      <strong>${authorName ?? "Ghost"}</strong>
+                      <span style="color: dimgray;"
+                        >said
+                        $${relativeTime(createdAt)}${updatedAt !== createdAt
+                          ? html` (and last updated $${relativeTime(updatedAt)})`
+                          : html``}
+                        <small style="color: gray;">
+                          <a
+                            href="${app.get("url")}/${req.params
+                              .courseReference}/threads/${req.params
+                              .threadReference}#${postReference}"
+                            class="undecorated"
+                            >#${req.params.threadReference}/${postReference}</a
+                          >
+                        </small>
+                      </span>
+                    </p>
+                    $${app.get("text processor")(content)}
+                  </section>
+                `
+              )}
+
             <div class="TODO">
               <ul>
-                <li>
-                  Show more information about the thread (author,
-                  creation/update time, and so forth).
-                </li>
-                <li>Show posts.</li>
                 <li>Add editor for creating a new post.</li>
               </ul>
             </div>
