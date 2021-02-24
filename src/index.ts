@@ -96,11 +96,11 @@ export default async function courselore(
             />
             <style>
               /*
-            https://pico-8.fandom.com/wiki/Palette
-            #83769C / darker #6E6382 #584F69
-            #FF77A8 / darker #E66C98
-            #29ADFF
-          */
+                https://pico-8.fandom.com/wiki/Palette
+                #83769C / darker #6E6382 #584F69
+                #FF77A8 / darker #E66C98
+                #29ADFF
+              */
 
               /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
 
@@ -153,8 +153,7 @@ export default async function courselore(
                 padding: 0 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
-                box-shadow: inset 0px 1px rgba(255, 255, 255, 0.1),
-                  0px 1px rgba(0, 0, 0, 0.1);
+                box-shadow: inset 0px 1px #ffffff33, 0px 1px #00000033;
               }
 
               .TODO::before {
@@ -180,8 +179,7 @@ export default async function courselore(
                 padding: 0.2em 1em;
                 border: 1px solid darkgray;
                 border-radius: 10px;
-                box-shadow: inset 0px 1px rgba(255, 255, 255, 0.1),
-                  0px 1px rgba(0, 0, 0, 0.1);
+                box-shadow: inset 0px 1px #ffffff33, 0px 1px #00000033;
               }
 
               input[type="text"],
@@ -234,8 +232,7 @@ export default async function courselore(
                 display: inline-block;
                 padding: 0.2em 1em;
                 border-radius: 10px;
-                box-shadow: inset 0px 1px rgba(255, 255, 255, 0.1),
-                  0px 1px rgba(0, 0, 0, 0.1);
+                box-shadow: inset 0px 1px #ffffff33, 0px 1px #00000033;
                 transition-duration: 0.2s;
                 transition-property: color, background-color, border-color;
               }
