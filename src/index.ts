@@ -47,7 +47,9 @@ export default async function courselore(
 
   app.set("url", "http://localhost:4000");
   app.set("administrator email", "demonstration-development@courselore.org");
+
   app.enable("demonstration");
+
   app.set(
     "layout base",
     (head: HTML, body: HTML): HTML => {
@@ -276,40 +278,37 @@ export default async function courselore(
             $${body}
             <script>
               // TODO: Extract this into a library?
-              const relativeTimeFormat = new Intl.RelativeTimeFormat("en", {
+              const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
                 numeric: "auto",
               });
+              const MINUTES = 60 * 1000;
+              const HOURS = 60 * MINUTES;
+              const DAYS = 24 * HOURS;
+              const WEEKS = 7 * DAYS;
+              const MONTHS = 30 * DAYS;
+              const YEARS = 365 * DAYS;
               (function relativeTimes() {
-                const now = new Date();
                 for (const element of document.querySelectorAll(
                   "time.relative"
                 )) {
                   const difference =
                     new Date(element.getAttribute("datetime")) - new Date();
                   const absoluteDifference = Math.abs(difference);
-                  const minutes =
-                    new Date().setMinutes(now.getMinutes() + 1) - now;
-                  const hours = new Date().setHours(now.getHours() + 1) - now;
-                  const days = new Date().setDate(now.getDate() + 1) - now;
-                  const weeks = new Date().setDate(now.getDate() + 7) - now;
-                  const months = new Date().setMonth(now.getMonth() + 1) - now;
-                  const years =
-                    new Date().setFullYear(now.getFullYear() + 1) - now;
                   const [value, unit] =
-                    absoluteDifference < minutes
+                    absoluteDifference < MINUTES
                       ? [0, "seconds"]
-                      : absoluteDifference < hours
-                      ? [difference / minutes, "minutes"]
-                      : absoluteDifference < days
-                      ? [difference / hours, "hours"]
-                      : absoluteDifference < weeks
-                      ? [difference / days, "days"]
-                      : absoluteDifference < months
-                      ? [difference / weeks, "weeks"]
-                      : absoluteDifference < years
-                      ? [difference / months, "months"]
-                      : [difference / years, "years"];
-                  element.innerText = relativeTimeFormat.format(
+                      : absoluteDifference < HOURS
+                      ? [difference / MINUTES, "minutes"]
+                      : absoluteDifference < DAYS
+                      ? [difference / HOURS, "hours"]
+                      : absoluteDifference < WEEKS
+                      ? [difference / DAYS, "days"]
+                      : absoluteDifference < MONTHS
+                      ? [difference / WEEKS, "weeks"]
+                      : absoluteDifference < YEARS
+                      ? [difference / MONTHS, "months"]
+                      : [difference / YEARS, "years"];
+                  element.innerText = RELATIVE_TIME_FORMAT.format(
                     // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
                     Math.round(value),
                     unit
@@ -321,6 +320,7 @@ export default async function courselore(
           </body>
         </html>
       `;
+
       // TODO: Make this possibly faster by using Rehype instead of JSDOM (though we have to benchmark to be sure…)
       // TODO: Extract this into a package. Or at least into its own function outside the definition of the template.
       // TODO: Use more inline styles in the templates and in the customization.
@@ -366,6 +366,7 @@ export default async function courselore(
       return dom.serialize();
     }
   );
+
   app.set(
     "layout",
     (
@@ -512,6 +513,7 @@ export default async function courselore(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
   );
+
   app.set(
     "text processor",
     (text: string): HTML => textProcessor.processSync(text).toString()
