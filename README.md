@@ -128,6 +128,7 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
   - By URL
   - What roles can sign up for themselves
   - Course manager (instructors?) should confirm sign up
+  - Generate a QR code with link, for instructors to use in class
 - Manage people in the course
   - Change their roles
   - Remove them from the course

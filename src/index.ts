@@ -414,7 +414,7 @@ export default async function courselore(
                 >
                   $${logo}
                   <script>
-                    const ANIMATION_SPEED = 0.001;
+                    const ANIMATION_SPEED = 0.0005;
                     const ANIMATION_AMOUNT = 1;
                     const polyline = document.currentScript.previousElementSibling.querySelector(
                       "polyline"
@@ -494,10 +494,11 @@ export default async function courselore(
                   />
                   <div class="toggleable">
                     <nav>
-                      ${user.name} ${`<${req.session!.email}>`}
+                      <p>${user.name} ${`<${req.session!.email}>`}</p>
                       <form method="post" action="${app.get("url")}/sign-out">
-                        <button class="a">Sign out</button>
+                        <p><button class="a">Sign out</button></p>
                       </form>
+                      <a href="${app.get("url")}/courses/new">New course</a>
                     </nav>
                   </div>
                 `}
@@ -979,9 +980,9 @@ export default async function courselore(
             ? html`
                 <p>It looks like you’re new here. What would you like to do?</p>
                 <p>
-                  <a href="${app.get("url")}/courses/new"
-                    ><strong>Create a new course</strong></a
-                  >.
+                  <a href="${app.get("url")}/courses/new" class="button"
+                    >Create a new course</a
+                  >
                 </p>
                 <p>
                   Or, to <strong>enroll on an existing course</strong>, you
@@ -1006,6 +1007,7 @@ export default async function courselore(
                         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
                         JOIN "users" ON "enrollments"."user" = "users"."id"
                         WHERE "users"."email" = ${req.session!.email}
+                        ORDER BY "enrollments"."createdAt" DESC
                       `
                     )
                     .map(
