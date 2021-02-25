@@ -163,6 +163,7 @@ export default async function courselore(
               .TODO {
                 box-sizing: border-box;
                 padding: 0 1em;
+                margin-bottom: 1em;
               }
 
               .demonstration,
@@ -178,6 +179,16 @@ export default async function courselore(
               }
 
               input,
+              textarea {
+                transition: border-color 0.2s;
+              }
+
+              input:focus,
+              textarea:focus {
+                border-color: #ff77a8;
+              }
+
+              input,
               textarea,
               button,
               .button,
@@ -186,6 +197,7 @@ export default async function courselore(
                 font-size: 1em;
                 line-height: 1.5;
                 margin: 0;
+                outline: none;
               }
 
               input,
@@ -860,7 +872,14 @@ export default async function courselore(
           app.get("layout")(
             req,
             res,
-            html`<title>Sign ${preposition} · CourseLore</title>`,
+            html`
+              <title>Sign ${preposition} · CourseLore</title>
+              <style>
+                main {
+                  text-align: center;
+                }
+              </style>
+            `,
             html`
               <p>
                 This magic sign-${preposition} link is invalid or has expired.
@@ -1516,9 +1535,10 @@ export default async function courselore(
               <textarea name="content" required></textarea>
               <p
                 style="
-                text-align: right;
-                color: dimgray;
-              "
+                  text-align: right;
+                  color: dimgray;
+                  margin-top: -0.5em;
+                "
               >
                 <small>
                   <a
