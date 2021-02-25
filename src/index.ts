@@ -268,7 +268,7 @@ export default async function courselore(
                 border: 1px solid #83769c;
                 border-radius: 10px;
                 box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
-                transition-property: color, background-color;
+                transition-property: color, background-color, border-color;
                 transition-duration: 0.2s;
               }
 
@@ -289,6 +289,15 @@ export default async function courselore(
               .button--outline:active {
                 color: white;
                 background-color: #584f69;
+              }
+
+              button:not(.a):disabled,
+              .button.disabled,
+              .button--outline.disabled {
+                color: dimgray;
+                background-color: white;
+                border-color: dimgray;
+                cursor: not-allowed;
               }
 
               :not(:checked) + .toggleable {
@@ -1566,7 +1575,6 @@ export default async function courselore(
                 "
               >
                 <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
-                <!-- TODO: Style disabled buttons. -->
                 <button style="margin-left: 0.5em;">Post</button>
                 <button
                   onclick="${javascript`
@@ -1574,6 +1582,7 @@ export default async function courselore(
                     (async () => {
                       const form = event.target.closest("form");
                       event.target.disabled = true;
+                      event.target.style.cursor = "wait";
                       form.querySelector(".preview--target").innerHTML = await (
                         await fetch("${app.get("url")}/preview", {
                           method: "POST",
@@ -1581,6 +1590,7 @@ export default async function courselore(
                         })
                       ).text();
                       event.target.disabled = false;
+                      event.target.style.cursor = "pointer";
                       event.target.style.display = "none";
                       form.querySelector(".edit").style.display = "inline-block";
                       form.querySelector(".edit--target").style.display = "none";
