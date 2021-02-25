@@ -362,6 +362,22 @@ export default async function courselore(
                 }
                 window.setTimeout(relativeTimes, 60 * 1000);
               })();
+
+              document
+                .querySelector("body")
+                .addEventListener("click", (event) => {
+                  const element = event.target;
+                  if (
+                    (element.tagName === "BUTTON" &&
+                      !element.classList.contains("a")) ||
+                    element.classList.contains(".button") ||
+                    element.classList.contains(".button--outline")
+                  ) {
+                    if (element.tagName === "BUTTON") element.disabled = true;
+                    else element.classList.add("disabled");
+                    element.style.cursor = "wait";
+                  }
+                });
             </script>
           </body>
         </html>
@@ -535,7 +551,7 @@ export default async function courselore(
                 `}
           </header>
           <main>$${body}</main>
-          <footer></footer>
+          <footer><!-- TODO: Put stuff here --></footer>
         `
       );
     }
@@ -1578,20 +1594,21 @@ export default async function courselore(
                 <button style="margin-left: 0.5em;">Post</button>
                 <button
                   onclick="${javascript`
-                    event.preventDefault();
                     (async () => {
-                      const form = event.target.closest("form");
-                      event.target.disabled = true;
-                      event.target.style.cursor = "wait";
+                      // FIXME: It seems like all events are being prevented!
+                      event.preventDefault();
+                      const element = event.target;
+                      const form = element.closest("form");
                       form.querySelector(".preview--target").innerHTML = await (
                         await fetch("${app.get("url")}/preview", {
                           method: "POST",
                           body: new URLSearchParams(new FormData(form)),
                         })
                       ).text();
-                      event.target.disabled = false;
-                      event.target.style.cursor = "pointer";
-                      event.target.style.display = "none";
+                      // TODO: Extract this bit that re-enables a button. (Part 1)
+                      element.disabled = false;
+                      element.style.cursor = "pointer";
+                      element.style.display = "none";
                       form.querySelector(".edit").style.display = "inline-block";
                       form.querySelector(".edit--target").style.display = "none";
                     })();
@@ -1603,8 +1620,12 @@ export default async function courselore(
                 <button
                   onclick="${javascript`
                     event.preventDefault();
-                    const form = event.target.closest("form");
-                    event.target.style.display = "none";
+                    const element = event.target;
+                    const form = element.closest("form");
+                    element.style.display = "none";
+                    // TODO: Extract this bit that re-enables a button. (Part 2)
+                    element.disabled = false;
+                    element.style.cursor = "pointer";
                     form.querySelector(".edit--target").style.display = "block";
                     form.querySelector(".preview").style.display = "inline-block";
                     form.querySelector(".preview--target").innerHTML = "";
@@ -1667,12 +1688,16 @@ export default async function courselore(
     }
   );
 
+  // TODO: Render the outline of a post
   app.post<{}, HTML, { content: string }, {}, {}>(
     "/preview",
     ...isAuthenticated(true),
     expressValidator.body("content").exists(),
     (req, res) => {
-      res.send(app.get("text processor")(req.body.content));
+      // FIXME: Remove this delay that I introduced to test the preview feature.
+      setTimeout(() => {
+        res.send(app.get("text processor")(req.body.content));
+      }, 5000);
     }
   );
 
