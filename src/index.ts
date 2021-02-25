@@ -1608,6 +1608,7 @@ export default async function courselore(
                       // TODO: Extract this bit that re-enables a button. (Part 1)
                       element.disabled = false;
                       element.style.cursor = "pointer";
+                      // TODO: Use element.hidden instead of element.style.display
                       element.style.display = "none";
                       form.querySelector(".edit").style.display = "inline-block";
                       form.querySelector(".edit--target").style.display = "none";
