@@ -55,7 +55,7 @@ Follow the instructions below to install CourseLore on your own servers. This is
 
   If you plan on using a server provided by your institution, you may ask your system administrator about these features. Most servers for rent provide these features.
 
-**TODO: Continue instructions on how to install and setup everything.**
+<!-- TODO: Continue instructions on how to install and setup everything. -->
 
 ### Setup a Development Environment to Contribute to CourseLore
 
@@ -68,6 +68,31 @@ CourseLore has been designed to be a welcoming project for people who are new to
   - [es6-string-css](https://marketplace.visualstudio.com/items?itemName=bashmish.es6-string-css)
   - [es6-string-markdown](https://marketplace.visualstudio.com/items?itemName=jeoht.es6-string-markdown)
 - [Git](https://git-scm.com)
+
+<!--
+TODO:
+- Windows setup:
+  - Administrator `cmd.exe`/PowerShell.
+  - `choco install nodejs git vscode`
+  - `npm install --global windows-build-tools`
+  - Ctrl-P in VS Code: `ext install esbenp.prettier-vscode Tobermory.es6-string-html bashmish.es6-string-css jeoht.es6-string-markdown` (this actually applies to every system)
+  - You may need to close and reopen `cmd.exe`/PowerShell between these commands.
+
+- Ubuntu setup:
+```
+curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash -
+sudo apt install git build-essential nodejs
+sudo snap install code --classic
+```
+
+- macOS setup:
+
+```
+brew install git node visual-studio-code
+```
+
+Configure git.
+-->
 
 **Clone and setup the project locally:**
 
