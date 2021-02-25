@@ -1531,30 +1531,34 @@ export default async function courselore(
               )}
 
             <!-- TODO: Add keyboard shortcuts for posting. Here and in the create thread form as well. -->
-            <form method="post" style="position: relative;">
-              <textarea name="content" required></textarea>
-              <p
-                style="
-                  text-align: right;
-                  color: dimgray;
-                  margin-top: -0.5em;
-                "
-              >
-                <small>
-                  <a
-                    href="https://guides.github.com/features/mastering-markdown/"
-                    class="undecorated"
-                    >Markdown</a
-                  >
-                  &
-                  <a
-                    href="https://katex.org/docs/supported.html"
-                    class="undecorated"
-                    >LaTeX</a
-                  >
-                  are supported
-                </small>
-              </p>
+            <!-- TODO: Add css tagged template literal everywhere -->
+            <form method="post">
+              <div class="edit--target">
+                <textarea name="content" required></textarea>
+                <p
+                  style="${css`
+                    text-align: right;
+                    color: dimgray;
+                    margin-top: -0.5em;
+                  `}"
+                >
+                  <small>
+                    <a
+                      href="https://guides.github.com/features/mastering-markdown/"
+                      class="undecorated"
+                      >Markdown</a
+                    >
+                    &
+                    <a
+                      href="https://katex.org/docs/supported.html"
+                      class="undecorated"
+                      >LaTeX</a
+                    >
+                    are supported
+                  </small>
+                </p>
+              </div>
+              <div class="preview--target"></div>
               <p
                 style="
                   display: flex;
@@ -1562,8 +1566,45 @@ export default async function courselore(
                 "
               >
                 <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
+                <!-- TODO: Style disabled buttons. -->
                 <button style="margin-left: 0.5em;">Post</button>
-                <!-- <button class="button--outline">Preview</button> -->
+                <button
+                  onclick="${javascript`
+                    event.preventDefault();
+                    (async () => {
+                      const form = event.target.closest("form");
+                      event.target.disabled = true;
+                      form.querySelector(".preview--target").innerHTML = await (
+                        await fetch("${app.get("url")}/preview", {
+                          method: "POST",
+                          body: new URLSearchParams(new FormData(form)),
+                        })
+                      ).text();
+                      event.target.disabled = false;
+                      event.target.style.display = "none";
+                      form.querySelector(".edit").style.display = "inline-block";
+                      form.querySelector(".edit--target").style.display = "none";
+                    })();
+                  `}"
+                  class="button--outline preview"
+                >
+                  Preview
+                </button>
+                <button
+                  onclick="${javascript`
+                    event.preventDefault();
+                    const form = event.target.closest("form");
+                    event.target.style.display = "none";
+                    form.querySelector(".edit--target").style.display = "block";
+                    form.querySelector(".preview").style.display = "inline-block";
+                    form.querySelector(".preview--target").innerHTML = "";
+                  `}"
+                  class="button--outline edit"
+                  style="display: none;"
+                >
+                  Edit
+                </button>
+                <!-- TODO: What happens if the content includes a form? -->
               </p>
             </form>
           `
@@ -1616,12 +1657,12 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, HTML, { text: string }, {}, {}>(
+  app.post<{}, HTML, { content: string }, {}, {}>(
     "/preview",
     ...isAuthenticated(true),
-    expressValidator.body("text").exists(),
+    expressValidator.body("content").exists(),
     (req, res) => {
-      res.send(app.get("text processor")(req.body.text));
+      res.send(app.get("text processor")(req.body.content));
     }
   );
 
