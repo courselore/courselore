@@ -1398,16 +1398,108 @@ export default async function courselore(
                   required
                 />
               </p>
-              <textarea name="content" required></textarea>
-              <p>
-                <button>Create thread</button>
-              </p>
+              $${textEditor("Create thread")}
             </form>
           `
         )
       );
     }
   );
+
+  // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
+  function textEditor(submit: string): HTML {
+    return html`
+      <div class="edit--target">
+        <textarea name="content" required></textarea>
+        <p
+          style="${css`
+            text-align: right;
+            color: dimgray;
+            margin-top: -0.5em;
+          `}"
+        >
+          <small>
+            <a
+              href="https://guides.github.com/features/mastering-markdown/"
+              class="undecorated"
+              >Markdown</a
+            >
+            &
+            <a href="https://katex.org/docs/supported.html" class="undecorated"
+              >LaTeX</a
+            >
+            are supported
+          </small>
+        </p>
+      </div>
+      <div
+        class="preview--target box"
+        style="${css`
+          background-color: whitesmoke;
+        `}"
+        hidden
+      ></div>
+      <p
+        style="${css`
+          display: flex;
+          flex-direction: row-reverse;
+        `}"
+      >
+        <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
+        <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
+        <button
+          style="${css`
+            margin-left: 0.5em;
+          `}"
+        >
+          ${submit}
+        </button>
+        <button
+          type="button"
+          onclick="${javascript`
+            (async () => {
+              const form = event.target.closest("form");
+              if (!form.reportValidity()) {
+                enableButton(event.target);
+                return;
+              }
+              const previewTarget = form.querySelector(".preview--target");
+              previewTarget.innerHTML = await (
+                await fetch("${app.get("url")}/preview", {
+                  method: "POST",
+                  body: new URLSearchParams(new FormData(form)),
+                })
+              ).text();
+              previewTarget.hidden = false;
+              form.querySelector(".edit--target").hidden = true;
+              event.target.hidden = true;
+              enableButton(event.target);
+              form.querySelector(".edit").hidden = false;
+            })();
+          `}"
+          class="preview button--outline"
+        >
+          Preview
+        </button>
+        <button
+          type="button"
+          onclick="${javascript`
+            const form = event.target.closest("form");
+            form.querySelector(".edit--target").hidden = false;
+            form.querySelector(".preview--target").hidden = true;
+            event.target.hidden = true;
+            enableButton(event.target);
+            form.querySelector(".preview").hidden = false;
+          `}"
+          class="edit button--outline"
+          hidden
+        >
+          Edit
+        </button>
+        <!-- TODO: What happens if the content includes a form? -->
+      </p>
+    `;
+  }
 
   app.post<
     { courseReference: string },
@@ -1595,100 +1687,7 @@ export default async function courselore(
               )}
 
             <!-- TODO: Add keyboard shortcuts for posting. Here and in the create thread form as well. -->
-            <!-- TODO: Add css tagged template literal everywhere -->
-            <form method="post">
-              <div class="edit--target">
-                <textarea name="content" required></textarea>
-                <p
-                  style="${css`
-                    text-align: right;
-                    color: dimgray;
-                    margin-top: -0.5em;
-                  `}"
-                >
-                  <small>
-                    <a
-                      href="https://guides.github.com/features/mastering-markdown/"
-                      class="undecorated"
-                      >Markdown</a
-                    >
-                    &
-                    <a
-                      href="https://katex.org/docs/supported.html"
-                      class="undecorated"
-                      >LaTeX</a
-                    >
-                    are supported
-                  </small>
-                </p>
-              </div>
-              <div
-                class="preview--target box"
-                style="${css`
-                  background-color: whitesmoke;
-                `}"
-                hidden
-              ></div>
-              <p
-                style="${css`
-                  display: flex;
-                  flex-direction: row-reverse;
-                `}"
-              >
-                <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
-                <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
-                <button
-                  style="${css`
-                    margin-left: 0.5em;
-                  `}"
-                >
-                  Post
-                </button>
-                <button
-                  type="button"
-                  onclick="${javascript`
-                    (async () => {
-                      const form = event.target.closest("form");
-                      if (!form.reportValidity()) {
-                        enableButton(event.target);
-                        return;
-                      }
-                      const previewTarget = form.querySelector(".preview--target");
-                      previewTarget.innerHTML = await (
-                        await fetch("${app.get("url")}/preview", {
-                          method: "POST",
-                          body: new URLSearchParams(new FormData(form)),
-                        })
-                      ).text();
-                      previewTarget.hidden = false;
-                      form.querySelector(".edit--target").hidden = true;
-                      event.target.hidden = true;
-                      enableButton(event.target);
-                      form.querySelector(".edit").hidden = false;
-                    })();
-                  `}"
-                  class="preview button--outline"
-                >
-                  Preview
-                </button>
-                <button
-                  type="button"
-                  onclick="${javascript`
-                    const form = event.target.closest("form");
-                    form.querySelector(".edit--target").hidden = false;
-                    form.querySelector(".preview--target").hidden = true;
-                    event.target.hidden = true;
-                    enableButton(event.target);
-                    form.querySelector(".preview").hidden = false;
-                  `}"
-                  class="edit button--outline"
-                  hidden
-                >
-                  Edit
-                </button>
-                <!-- TODO: What happens if the content includes a form? -->
-              </p>
-            </form>
+            <form method="post">$${textEditor("Post")}</form>
           `
         )
       );
@@ -1739,7 +1738,6 @@ export default async function courselore(
     }
   );
 
-  // TODO: Render the outline of a post
   app.post<{}, HTML, { content: string }, {}, {}>(
     "/preview",
     ...isAuthenticated(true),
