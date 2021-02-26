@@ -179,16 +179,6 @@ export default async function courselore(
               }
 
               input,
-              textarea {
-                transition: border-color 0.2s;
-              }
-
-              input:focus,
-              textarea:focus {
-                border-color: #ff77a8;
-              }
-
-              input,
               textarea,
               button,
               .button,
@@ -204,6 +194,12 @@ export default async function courselore(
               textarea {
                 background-color: transparent;
                 padding: 0.2em 1em;
+                transition: border-color 0.2s;
+              }
+
+              input:focus,
+              textarea:focus {
+                border-color: #ff77a8;
               }
 
               input[type="text"],
@@ -272,7 +268,7 @@ export default async function courselore(
                 transition-duration: 0.2s;
               }
 
-              .button--outline:not(.a) {
+              .button--outline {
                 color: #83769c;
                 background-color: white;
               }
@@ -297,7 +293,7 @@ export default async function courselore(
                 color: dimgray;
                 background-color: white;
                 border-color: dimgray;
-                cursor: not-allowed;
+                cursor: wait;
               }
 
               :not(:checked) + .toggleable {
@@ -363,21 +359,19 @@ export default async function courselore(
                 window.setTimeout(relativeTimes, 60 * 1000);
               })();
 
-              document
-                .querySelector("body")
-                .addEventListener("click", (event) => {
-                  const element = event.target;
-                  if (
-                    (element.tagName === "BUTTON" &&
-                      !element.classList.contains("a")) ||
-                    element.classList.contains(".button") ||
-                    element.classList.contains(".button--outline")
-                  ) {
-                    if (element.tagName === "BUTTON") element.disabled = true;
-                    else element.classList.add("disabled");
-                    element.style.cursor = "wait";
-                  }
-                });
+              document.body.addEventListener(
+                "click",
+                (event) => {
+                  if (event.target.tagName === "BUTTON")
+                    event.target.disabled = true;
+                  else if (
+                    event.target.classList.contains("button") ||
+                    event.target.classList.contains("button--outline")
+                  )
+                    event.target.classList.add("disabled");
+                },
+                true
+              );
             </script>
           </body>
         </html>
@@ -565,7 +559,8 @@ export default async function courselore(
     "text processor",
     (text: string): HTML => textProcessor.processSync(text).toString()
   );
-  // TODO: Convert references to other threads like ‘#57’ into links.
+  // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
+  // TODO: Extract this into a library?
   const textProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -685,6 +680,11 @@ export default async function courselore(
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+
+  // FIXME: Remove this, which is only here for testing buttons & lag
+  app.use((req, res, next) => {
+    setTimeout(next, 2000);
+  });
 
   // FIXME:
   // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
@@ -1591,47 +1591,42 @@ export default async function courselore(
                 "
               >
                 <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
+                <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
                 <button style="margin-left: 0.5em;">Post</button>
                 <button
                   onclick="${javascript`
                     (async () => {
-                      // FIXME: It seems like all events are being prevented!
                       event.preventDefault();
-                      const element = event.target;
-                      const form = element.closest("form");
+                      const form = event.target.closest("form");
+                      if (!form.reportValidity()) return;
                       form.querySelector(".preview--target").innerHTML = await (
                         await fetch("${app.get("url")}/preview", {
                           method: "POST",
                           body: new URLSearchParams(new FormData(form)),
                         })
                       ).text();
-                      // TODO: Extract this bit that re-enables a button. (Part 1)
-                      element.disabled = false;
-                      element.style.cursor = "pointer";
+                      event.target.disabled = false;
                       // TODO: Use element.hidden instead of element.style.display
-                      element.style.display = "none";
+                      event.target.style.display = "none";
                       form.querySelector(".edit").style.display = "inline-block";
                       form.querySelector(".edit--target").style.display = "none";
                     })();
                   `}"
-                  class="button--outline preview"
+                  class="preview button--outline"
                 >
                   Preview
                 </button>
                 <button
                   onclick="${javascript`
                     event.preventDefault();
-                    const element = event.target;
-                    const form = element.closest("form");
-                    element.style.display = "none";
-                    // TODO: Extract this bit that re-enables a button. (Part 2)
-                    element.disabled = false;
-                    element.style.cursor = "pointer";
+                    const form = event.target.closest("form");
+                    event.target.style.display = "none";
+                    event.target.disabled = false;
                     form.querySelector(".edit--target").style.display = "block";
                     form.querySelector(".preview").style.display = "inline-block";
                     form.querySelector(".preview--target").innerHTML = "";
                   `}"
-                  class="button--outline edit"
+                  class="edit button--outline"
                   style="display: none;"
                 >
                   Edit
@@ -1695,10 +1690,7 @@ export default async function courselore(
     ...isAuthenticated(true),
     expressValidator.body("content").exists(),
     (req, res) => {
-      // FIXME: Remove this delay that I introduced to test the preview feature.
-      setTimeout(() => {
-        res.send(app.get("text processor")(req.body.content));
-      }, 5000);
+      res.send(app.get("text processor")(req.body.content));
     }
   );
 
