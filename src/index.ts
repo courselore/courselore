@@ -146,6 +146,7 @@ export default async function courselore(
               pre {
                 font-size: 0.857em;
                 line-height: 1.3;
+                background-color: transparent !important;
               }
 
               .box,
@@ -210,6 +211,7 @@ export default async function courselore(
               textarea {
                 box-sizing: border-box;
                 width: 100%;
+                padding: 1em;
                 resize: vertical;
               }
 
@@ -312,6 +314,10 @@ export default async function courselore(
                 border-color: #ff77a8;
                 border-radius: 50%;
                 box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+              }
+
+              [hidden] {
+                display: none;
               }
             </style>
             $${head}
@@ -541,11 +547,7 @@ export default async function courselore(
             $${user === undefined
               ? html``
               : html`
-                  <input
-                    type="checkbox"
-                    id="toggle--signed-in-menu"
-                    style="display: none;"
-                  />
+                  <input type="checkbox" id="toggle--signed-in-menu" hidden />
                   <div class="toggleable">
                     <nav>
                       <p>${user.name} ${`<${req.session!.email}>`}</p>
@@ -693,11 +695,6 @@ export default async function courselore(
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
-
-  // FIXME: Remove this, which is only here for testing buttons & lag
-  app.use((req, res, next) => {
-    setTimeout(next, 2000);
-  });
 
   // FIXME:
   // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
@@ -1596,7 +1593,13 @@ export default async function courselore(
                   </small>
                 </p>
               </div>
-              <div class="preview--target"></div>
+              <div
+                class="preview--target box"
+                style="${css`
+                  background-color: whitesmoke;
+                `}"
+                hidden
+              ></div>
               <p
                 style="
                   display: flex;
@@ -1615,17 +1618,18 @@ export default async function courselore(
                         enableButton(event.target);
                         return;
                       }
-                      form.querySelector(".preview--target").innerHTML = await (
+                      const previewTarget = form.querySelector(".preview--target");
+                      previewTarget.innerHTML = await (
                         await fetch("${app.get("url")}/preview", {
                           method: "POST",
                           body: new URLSearchParams(new FormData(form)),
                         })
                       ).text();
-                      // TODO: Use element.hidden instead of element.style.display
-                      event.target.style.display = "none";
+                      previewTarget.hidden = false;
+                      form.querySelector(".edit--target").hidden = true;
+                      event.target.hidden = true;
                       enableButton(event.target);
-                      form.querySelector(".edit").style.display = "inline-block";
-                      form.querySelector(".edit--target").style.display = "none";
+                      form.querySelector(".edit").hidden = false;
                     })();
                   `}"
                   class="preview button--outline"
@@ -1636,14 +1640,14 @@ export default async function courselore(
                   type="button"
                   onclick="${javascript`
                     const form = event.target.closest("form");
-                    event.target.style.display = "none";
+                    form.querySelector(".edit--target").hidden = false;
+                    form.querySelector(".preview--target").hidden = true;
+                    event.target.hidden = true;
                     enableButton(event.target);
-                    form.querySelector(".edit--target").style.display = "block";
-                    form.querySelector(".preview").style.display = "inline-block";
-                    form.querySelector(".preview--target").innerHTML = "";
+                    form.querySelector(".preview").hidden = false;
                   `}"
                   class="edit button--outline"
-                  style="display: none;"
+                  hidden
                 >
                   Edit
                 </button>
