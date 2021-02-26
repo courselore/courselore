@@ -268,7 +268,7 @@ export default async function courselore(
                 transition-duration: 0.2s;
               }
 
-              .button--outline {
+              .button--outline:not(.a) {
                 color: #83769c;
                 background-color: white;
               }
@@ -291,7 +291,7 @@ export default async function courselore(
               .button.disabled,
               .button--outline.disabled {
                 color: dimgray;
-                background-color: white;
+                background-color: whitesmoke;
                 border-color: dimgray;
                 cursor: wait;
               }
@@ -374,6 +374,17 @@ export default async function courselore(
                 },
                 true
               );
+
+              function enableButton(element) {
+                window.setTimeout(() => {
+                  if (element.tagName === "BUTTON") element.disabled = false;
+                  else if (
+                    element.classList.contains("button") ||
+                    element.classList.contains("button--outline")
+                  )
+                    element.classList.remove("disabled");
+                }, 0);
+              }
             </script>
           </body>
         </html>
@@ -1596,20 +1607,23 @@ export default async function courselore(
                 <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
                 <button style="margin-left: 0.5em;">Post</button>
                 <button
-                  formaction="${app.get("url")}/preview"
+                  type="button"
                   onclick="${javascript`
                     (async () => {
                       const form = event.target.closest("form");
-                      if (!form.reportValidity()) {event.target.disabled = false;return;}
+                      if (!form.reportValidity()) {
+                        enableButton(event.target);
+                        return;
+                      }
                       form.querySelector(".preview--target").innerHTML = await (
                         await fetch("${app.get("url")}/preview", {
                           method: "POST",
                           body: new URLSearchParams(new FormData(form)),
                         })
                       ).text();
-                      event.target.disabled = false;
                       // TODO: Use element.hidden instead of element.style.display
                       event.target.style.display = "none";
+                      enableButton(event.target);
                       form.querySelector(".edit").style.display = "inline-block";
                       form.querySelector(".edit--target").style.display = "none";
                     })();
@@ -1623,7 +1637,7 @@ export default async function courselore(
                   onclick="${javascript`
                     const form = event.target.closest("form");
                     event.target.style.display = "none";
-                    event.target.disabled = false;
+                    enableButton(event.target);
                     form.querySelector(".edit--target").style.display = "block";
                     form.querySelector(".preview").style.display = "inline-block";
                     form.querySelector(".preview--target").innerHTML = "";
