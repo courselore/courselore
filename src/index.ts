@@ -257,7 +257,7 @@ export default async function courselore(
                 display: inline-block;
               }
 
-              button:not(.a),
+              button:not(.a):not(.avatar),
               .button,
               .button--outline {
                 color: white;
@@ -270,36 +270,32 @@ export default async function courselore(
                 transition-duration: 0.2s;
               }
 
-              .button--outline:not(.a) {
+              .button--outline:not(.a):not(.avatar) {
                 color: #83769c;
                 background-color: white;
               }
 
-              button:not(.a):hover,
+              button:not(.a):not(.avatar):hover,
               .button:hover,
               .button--outline:hover {
                 color: white;
                 background-color: #6e6382;
               }
 
-              button:not(.a):active,
+              button:not(.a):not(.avatar):active,
               .button:active,
               .button--outline:active {
                 color: white;
                 background-color: #584f69;
               }
 
-              button:not(.a):disabled,
+              button:not(.a):not(.avatar):disabled,
               .button.disabled,
               .button--outline.disabled {
                 color: dimgray;
                 background-color: whitesmoke;
                 border-color: dimgray;
                 cursor: wait;
-              }
-
-              :not(:checked) + .toggleable {
-                display: none;
               }
 
               .avatar {
@@ -311,7 +307,7 @@ export default async function courselore(
                 width: 30px;
                 line-height: 30px;
                 padding: 0;
-                border-color: #ff77a8;
+                border: 1px solid #ff77a8;
                 border-radius: 50%;
                 box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
               }
@@ -520,13 +516,13 @@ export default async function courselore(
                     }
                   </script>
                   <span
-                    style="
+                    style="${css`
                       font-size: 1.5em;
                       font-weight: 800;
                       color: #83769C;
                       margin-left: 0.3em;
                       transition: color: 0.2s;
-                    "
+                    `}"
                     style:hover="
                       color: #6E6382;
                     "
@@ -538,17 +534,24 @@ export default async function courselore(
                 ? html``
                 : html`
                     <nav>
-                      <label for="toggle--signed-in-menu" class="button avatar">
+                      <button
+                        type="button"
+                        class="avatar"
+                        onclick="${javascript`
+                          const target = document.querySelector("#signed-in-menu");
+                          target.hidden = !target.hidden;
+                          enableButton(event.target);
+                        `}"
+                      >
                         ${user.name[0]}
-                      </label>
+                      </button>
                     </nav>
                   `}
             </div>
             $${user === undefined
               ? html``
               : html`
-                  <input type="checkbox" id="toggle--signed-in-menu" hidden />
-                  <div class="toggleable">
+                  <div id="signed-in-menu" hidden>
                     <nav>
                       <p>${user.name} ${`<${req.session!.email}>`}</p>
                       <form method="post" action="${app.get("url")}/sign-out">
