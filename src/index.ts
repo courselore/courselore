@@ -277,21 +277,21 @@ export default async function courselore(
 
               button:not(.a):not(.avatar):hover,
               .button:hover,
-              .button--outline:hover {
+              .button--outline:not(.a):not(.avatar):hover {
                 color: white;
                 background-color: #6e6382;
               }
 
               button:not(.a):not(.avatar):active,
               .button:active,
-              .button--outline:active {
+              .button--outline:not(.a):not(.avatar):active {
                 color: white;
                 background-color: #584f69;
               }
 
               button:not(.a):not(.avatar):disabled,
               .button.disabled,
-              .button--outline.disabled {
+              .button--outline:not(.a):not(.avatar).disabled {
                 color: dimgray;
                 background-color: whitesmoke;
                 border-color: dimgray;
@@ -454,6 +454,14 @@ export default async function courselore(
                 req.session!.email
               }`
             )!;
+
+      const course =
+        req.params.courseReference === undefined
+          ? undefined
+          : database.get<{ name: string }>(
+              sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+            )!;
+
       return app.get("layout base")(
         head,
         html`
@@ -563,6 +571,23 @@ export default async function courselore(
                     </nav>
                   </div>
                 `}
+            $${course === undefined
+              ? html``
+              : html`<h1>
+                  ${course.name}
+                  (${database.get<{ role: Role }>(
+                    sql`
+                      SELECT "enrollments"."role" AS "role"
+                      FROM "enrollments"
+                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                      JOIN "courses" ON "enrollments"."course" = "courses"."id"
+                      WHERE "courses"."reference" = ${
+                        req.params.courseReference
+                      } AND
+                            "users"."email" = ${req.session!.email}
+                    `
+                  )!.role})
+                </h1>`}
           </header>
           <main>$${body}</main>
           <footer><!-- TODO: Put stuff here --></footer>
@@ -1278,21 +1303,6 @@ export default async function courselore(
           res,
           html`<title>${course.name} · CourseLore</title>`,
           html`
-            <h1>
-              ${course.name}
-              (${database.get<{ role: Role }>(
-                sql`
-                  SELECT "enrollments"."role" AS "role"
-                  FROM "enrollments"
-                  JOIN "users" ON "enrollments"."user" = "users"."id"
-                  JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                  WHERE "courses"."reference" = ${
-                    req.params.courseReference
-                  } AND
-                        "users"."email" = ${req.session!.email}
-                `
-              )!.role})
-            </h1>
             <p>
               <a
                 href="${app.get("url")}/${req.params
@@ -1380,7 +1390,7 @@ export default async function courselore(
           res,
           html`<title>${course.name} · CourseLore</title>`,
           html`
-            <h1>Create a new thread · ${course.name}</h1>
+            <h1>Create a new thread</h1>
             <form
               method="post"
               action="${app.get("url")}/${req.params.courseReference}/threads"
@@ -1407,6 +1417,7 @@ export default async function courselore(
   );
 
   // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
+  // FIXME: Don’t require whole form to be valid, just the text editor itself.
   function textEditor(submit: string): HTML {
     return html`
       <div class="edit--target">
@@ -1602,7 +1613,7 @@ export default async function courselore(
           html`<title>${thread.title} · CourseLore</title>`,
           html`
             <h1>
-              ${thread.title} · ${course.name}
+              ${thread.title}
               <small
                 style="${css`
                   font-size: 0.75em;
