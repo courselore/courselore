@@ -362,13 +362,15 @@ export default async function courselore(
               document.body.addEventListener(
                 "click",
                 (event) => {
-                  if (event.target.tagName === "BUTTON")
-                    event.target.disabled = true;
-                  else if (
-                    event.target.classList.contains("button") ||
-                    event.target.classList.contains("button--outline")
-                  )
-                    event.target.classList.add("disabled");
+                  window.setTimeout(() => {
+                    if (event.target.tagName === "BUTTON")
+                      event.target.disabled = true;
+                    else if (
+                      event.target.classList.contains("button") ||
+                      event.target.classList.contains("button--outline")
+                    )
+                      event.target.classList.add("disabled");
+                  }, 0);
                 },
                 true
               );
@@ -1594,11 +1596,11 @@ export default async function courselore(
                 <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
                 <button style="margin-left: 0.5em;">Post</button>
                 <button
+                  formaction="${app.get("url")}/preview"
                   onclick="${javascript`
                     (async () => {
-                      event.preventDefault();
                       const form = event.target.closest("form");
-                      if (!form.reportValidity()) return;
+                      if (!form.reportValidity()) {event.target.disabled = false;return;}
                       form.querySelector(".preview--target").innerHTML = await (
                         await fetch("${app.get("url")}/preview", {
                           method: "POST",
@@ -1617,8 +1619,8 @@ export default async function courselore(
                   Preview
                 </button>
                 <button
+                  type="button"
                   onclick="${javascript`
-                    event.preventDefault();
                     const form = event.target.closest("form");
                     event.target.style.display = "none";
                     event.target.disabled = false;
