@@ -459,30 +459,32 @@ export default async function courselore(
         html`
           <header>
             <div
-              style="
+              style="${css`
                 display: flex;
-                justify-content: space-${user === undefined
-                ? "around"
-                : "between"};
+                justify-content: space-${user === undefined ? "around" : "between"};
                 align-items: center;
-              "
+              `}"
             >
-              <nav style="display: flex;">
+              <nav
+                style="${css`
+                  display: flex;
+                `}"
+              >
                 <a
                   href="${app.get("url")}"
-                  style="
+                  style="${css`
                     display: flex;
                     align-items: center;
-                  "
-                  onmouseover="
+                  `}"
+                  onmouseover="${javascript`
                     stopLogoAnimation = false;
                     logoAnimationTimeOffset += performance.now() - lastLogoAnimationStop;
                     window.requestAnimationFrame(animateLogo);
-                  "
-                  onmouseout="
+                  `}"
+                  onmouseout="${javascript`
                     stopLogoAnimation = true;
                     lastLogoAnimationStop = performance.now();
-                  "
+                  `}"
                 >
                   $${logo}
                   <script>
@@ -519,13 +521,13 @@ export default async function courselore(
                     style="${css`
                       font-size: 1.5em;
                       font-weight: 800;
-                      color: #83769C;
+                      color: #83769c;
                       margin-left: 0.3em;
-                      transition: color: 0.2s;
+                      transition: color 0.2s;
                     `}"
-                    style:hover="
-                      color: #6E6382;
-                    "
+                    style:hover="${css`
+                      color: #6e6382;
+                    `}"
                     >CourseLore</span
                   >
                 </a>
@@ -1324,15 +1326,25 @@ export default async function courselore(
               .map(
                 ({ createdAt, updatedAt, reference, authorName, title }) =>
                   html`
-                    <p style="line-height: 1.2;">
+                    <p
+                      style="${css`
+                        line-height: 1.2;
+                      `}"
+                    >
                       <a
                         href="${app.get("url")}/${req.params
                           .courseReference}/threads/${reference}"
                         class="undecorated"
-                        style="display: block;"
+                        style="${css`
+                          display: block;
+                        `}"
                       >
                         <strong>${title}</strong><br />
-                        <small style="color: dimgray;">
+                        <small
+                          style="${css`
+                            color: dimgray;
+                          `}"
+                        >
                           #${reference} created $${relativeTime(createdAt)}
                           ${updatedAt !== createdAt
                             ? html` (and last updated
@@ -1379,7 +1391,10 @@ export default async function courselore(
                   name="title"
                   placeholder="Title…"
                   autocomplete="off"
-                  style="box-sizing: border-box; width: 100%;"
+                  style="${css`
+                    box-sizing: border-box;
+                    width: 100%;
+                  `}"
                   required
                 />
               </p>
@@ -1497,11 +1512,11 @@ export default async function courselore(
             <h1>
               ${thread.title} · ${course.name}
               <small
-                style="
+                style="${css`
                   font-size: 0.75em;
                   font-weight: 400;
                   color: gray;
-                "
+                `}"
               >
                 <a
                   href="${app.get("url")}/${req.params
@@ -1543,16 +1558,27 @@ export default async function courselore(
                 }) => html`
                   <section id="${postReference}" class="box">
                     <p>
-                      <span class="avatar" style="margin-right: 0.5em;"
+                      <span
+                        class="avatar"
+                        style="${css`
+                          margin-right: 0.5em;
+                        `}"
                         >${authorName?.[0] ?? "G"}</span
                       >
                       <strong>${authorName ?? "Ghost"}</strong>
-                      <span style="color: dimgray;"
+                      <span
+                        style="${css`
+                          color: dimgray;
+                        `}"
                         >said
                         $${relativeTime(createdAt)}${updatedAt !== createdAt
                           ? html` (and last updated $${relativeTime(updatedAt)})`
                           : html``}
-                        <small style="color: gray;">
+                        <small
+                          style="${css`
+                            color: gray;
+                          `}"
+                        >
                           <a
                             href="${app.get("url")}/${req.params
                               .courseReference}/threads/${req.params
@@ -1604,14 +1630,20 @@ export default async function courselore(
                 hidden
               ></div>
               <p
-                style="
+                style="${css`
                   display: flex;
                   flex-direction: row-reverse;
-                "
+                `}"
               >
                 <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
                 <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
-                <button style="margin-left: 0.5em;">Post</button>
+                <button
+                  style="${css`
+                    margin-left: 0.5em;
+                  `}"
+                >
+                  Post
+                </button>
                 <button
                   type="button"
                   onclick="${javascript`
