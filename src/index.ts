@@ -1863,7 +1863,7 @@ if (require.main === module)
       
                         app.listen(new URL(app.get("url")).port, () => {
                           console.log(
-                            \`Demonstration/Development web server started at \${app.get("url")}\`
+                            ${'`Demonstration/Development web server started at ${app.get("url")}`'}
                           );
                         });
                       };
