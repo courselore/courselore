@@ -100,7 +100,7 @@ export default async function courselore(
               /*
                 https://pico-8.fandom.com/wiki/Palette
                 #83769c / darker #6e6382 #584f69
-                #ff77a8 / darker #e66c98
+                #ff77a8 / darker #e66c98 #cc6088
                 #29adff
               */
 
@@ -318,6 +318,14 @@ export default async function courselore(
 
               .REMOVE-ME--logo:hover {
                 color: #6e6382;
+              }
+
+              .REMOVE-ME--signed-in-menu--button:hover {
+                background-color: #e66c98;
+              }
+
+              .REMOVE-ME--signed-in-menu--button:active {
+                background-color: #cc6088;
               }
             </style>
             $${head}
@@ -540,7 +548,7 @@ export default async function courselore(
                     style:hover="${css`
                       color: #6e6382;
                     `}"
-                    class="REMOVE-ME--LOGO"
+                    class="REMOVE-ME--logo"
                     >CourseLore</span
                   >
                 </a>
@@ -551,7 +559,10 @@ export default async function courselore(
                     <nav>
                       <button
                         type="button"
-                        class="avatar"
+                        class="avatar REMOVE-ME--signed-in-menu--button"
+                        style="${css`
+                          transition: background-color 0.2s;
+                        `}"
                         onclick="${javascript`
                           const target = document.querySelector("#signed-in-menu");
                           target.hidden = !target.hidden;
@@ -572,16 +583,20 @@ export default async function courselore(
                       <form method="post" action="${app.get("url")}/sign-out">
                         <p><button class="a">Sign out</button></p>
                       </form>
-                      <a href="${app.get("url")}/courses/new">New course</a>
                     </nav>
                   </div>
                 `}
             $${course === undefined
               ? html``
-              : html`<h1>
-                  ${course.name}
-                  (${database.get<{ role: Role }>(
-                    sql`
+              : html`
+                  <h1>
+                    <a
+                      href="${app.get("url")}/${req.params.courseReference}"
+                      class="undecorated"
+                    >
+                      ${course.name}
+                      (${database.get<{ role: Role }>(
+                        sql`
                       SELECT "enrollments"."role" AS "role"
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -591,8 +606,10 @@ export default async function courselore(
                       } AND
                             "users"."email" = ${req.session!.email}
                     `
-                  )!.role})
-                </h1>`}
+                      )!.role})
+                    </a>
+                  </h1>
+                `}
           </header>
           <main>$${body}</main>
           <footer><!-- TODO: Put stuff here --></footer>
@@ -1103,6 +1120,11 @@ export default async function courselore(
                 </p>
               `
             : html`
+                <p>
+                  <a href="${app.get("url")}/courses/new" class="button"
+                    >New course</a
+                  >
+                </p>
                 <p>Here’s what’s going on with your courses:</p>
                 $${database
                   .all<{ reference: string; name: string; role: Role }>(
