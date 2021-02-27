@@ -99,9 +99,9 @@ export default async function courselore(
             <style>
               /*
                 https://pico-8.fandom.com/wiki/Palette
-                #83769C / darker #6E6382 #584F69
-                #FF77A8 / darker #E66C98
-                #29ADFF
+                #83769c / darker #6e6382 #584f69
+                #ff77a8 / darker #e66c98
+                #29adff
               */
 
               /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
@@ -314,6 +314,10 @@ export default async function courselore(
 
               [hidden] {
                 display: none;
+              }
+
+              .REMOVE-ME--logo:hover {
+                color: #6e6382;
               }
             </style>
             $${head}
@@ -536,6 +540,7 @@ export default async function courselore(
                     style:hover="${css`
                       color: #6e6382;
                     `}"
+                    class="REMOVE-ME--LOGO"
                     >CourseLore</span
                   >
                 </a>
