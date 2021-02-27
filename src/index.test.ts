@@ -45,7 +45,7 @@ test("/preview (Text processor)", async () => {
     (
       await client.post("preview", {
         form: {
-          text:
+          content:
             // prettier-ignore
             markdown`
 # CommonMark

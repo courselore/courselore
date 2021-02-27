@@ -99,9 +99,9 @@ export default async function courselore(
             <style>
               /*
                 https://pico-8.fandom.com/wiki/Palette
-                #83769C / darker #6E6382 #584F69
-                #FF77A8 / darker #E66C98
-                #29ADFF
+                #83769c / darker #6e6382 #584f69
+                #ff77a8 / darker #e66c98 #cc6088
+                #29adff
               */
 
               /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
@@ -146,6 +146,7 @@ export default async function courselore(
               pre {
                 font-size: 0.857em;
                 line-height: 1.3;
+                background-color: transparent !important;
               }
 
               .box,
@@ -179,16 +180,6 @@ export default async function courselore(
               }
 
               input,
-              textarea {
-                transition: border-color 0.2s;
-              }
-
-              input:focus,
-              textarea:focus {
-                border-color: #ff77a8;
-              }
-
-              input,
               textarea,
               button,
               .button,
@@ -204,6 +195,12 @@ export default async function courselore(
               textarea {
                 background-color: transparent;
                 padding: 0.2em 1em;
+                transition: border-color 0.2s;
+              }
+
+              input:focus,
+              textarea:focus {
+                border-color: #ff77a8;
               }
 
               input[type="text"],
@@ -214,6 +211,7 @@ export default async function courselore(
               textarea {
                 box-sizing: border-box;
                 width: 100%;
+                padding: 1em;
                 resize: vertical;
               }
 
@@ -259,7 +257,7 @@ export default async function courselore(
                 display: inline-block;
               }
 
-              button:not(.a),
+              button:not(.a):not(.avatar),
               .button,
               .button--outline {
                 color: white;
@@ -272,36 +270,32 @@ export default async function courselore(
                 transition-duration: 0.2s;
               }
 
-              .button--outline:not(.a) {
+              .button--outline:not(.a):not(.avatar) {
                 color: #83769c;
                 background-color: white;
               }
 
-              button:not(.a):hover,
+              button:not(.a):not(.avatar):hover,
               .button:hover,
-              .button--outline:hover {
+              .button--outline:not(.a):not(.avatar):hover {
                 color: white;
                 background-color: #6e6382;
               }
 
-              button:not(.a):active,
+              button:not(.a):not(.avatar):active,
               .button:active,
-              .button--outline:active {
+              .button--outline:not(.a):not(.avatar):active {
                 color: white;
                 background-color: #584f69;
               }
 
-              button:not(.a):disabled,
+              button:not(.a):not(.avatar):disabled,
               .button.disabled,
-              .button--outline.disabled {
+              .button--outline:not(.a):not(.avatar).disabled {
                 color: dimgray;
-                background-color: white;
+                background-color: whitesmoke;
                 border-color: dimgray;
-                cursor: not-allowed;
-              }
-
-              :not(:checked) + .toggleable {
-                display: none;
+                cursor: wait;
               }
 
               .avatar {
@@ -313,9 +307,25 @@ export default async function courselore(
                 width: 30px;
                 line-height: 30px;
                 padding: 0;
-                border-color: #ff77a8;
+                border: 1px solid #ff77a8;
                 border-radius: 50%;
                 box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+              }
+
+              [hidden] {
+                display: none;
+              }
+
+              .REMOVE-ME--logo:hover {
+                color: #6e6382;
+              }
+
+              .REMOVE-ME--signed-in-menu--button:hover {
+                background-color: #e66c98;
+              }
+
+              .REMOVE-ME--signed-in-menu--button:active {
+                background-color: #cc6088;
               }
             </style>
             $${head}
@@ -363,21 +373,32 @@ export default async function courselore(
                 window.setTimeout(relativeTimes, 60 * 1000);
               })();
 
-              document
-                .querySelector("body")
-                .addEventListener("click", (event) => {
-                  const element = event.target;
-                  if (
-                    (element.tagName === "BUTTON" &&
-                      !element.classList.contains("a")) ||
-                    element.classList.contains(".button") ||
-                    element.classList.contains(".button--outline")
-                  ) {
-                    if (element.tagName === "BUTTON") element.disabled = true;
-                    else element.classList.add("disabled");
-                    element.style.cursor = "wait";
-                  }
-                });
+              document.body.addEventListener(
+                "click",
+                (event) => {
+                  window.setTimeout(() => {
+                    if (event.target.tagName === "BUTTON")
+                      event.target.disabled = true;
+                    else if (
+                      event.target.classList.contains("button") ||
+                      event.target.classList.contains("button--outline")
+                    )
+                      event.target.classList.add("disabled");
+                  }, 0);
+                },
+                true
+              );
+
+              function enableButton(element) {
+                window.setTimeout(() => {
+                  if (element.tagName === "BUTTON") element.disabled = false;
+                  else if (
+                    element.classList.contains("button") ||
+                    element.classList.contains("button--outline")
+                  )
+                    element.classList.remove("disabled");
+                }, 0);
+              }
             </script>
           </body>
         </html>
@@ -457,35 +478,45 @@ export default async function courselore(
                 req.session!.email
               }`
             )!;
+
+      const course =
+        req.params.courseReference === undefined
+          ? undefined
+          : database.get<{ name: string }>(
+              sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+            )!;
+
       return app.get("layout base")(
         head,
         html`
           <header>
             <div
-              style="
+              style="${css`
                 display: flex;
-                justify-content: space-${user === undefined
-                ? "around"
-                : "between"};
+                justify-content: space-${user === undefined ? "around" : "between"};
                 align-items: center;
-              "
+              `}"
             >
-              <nav style="display: flex;">
+              <nav
+                style="${css`
+                  display: flex;
+                `}"
+              >
                 <a
                   href="${app.get("url")}"
-                  style="
+                  style="${css`
                     display: flex;
                     align-items: center;
-                  "
-                  onmouseover="
+                  `}"
+                  onmouseover="${javascript`
                     stopLogoAnimation = false;
                     logoAnimationTimeOffset += performance.now() - lastLogoAnimationStop;
                     window.requestAnimationFrame(animateLogo);
-                  "
-                  onmouseout="
+                  `}"
+                  onmouseout="${javascript`
                     stopLogoAnimation = true;
                     lastLogoAnimationStop = performance.now();
-                  "
+                  `}"
                 >
                   $${logo}
                   <script>
@@ -519,16 +550,17 @@ export default async function courselore(
                     }
                   </script>
                   <span
-                    style="
+                    style="${css`
                       font-size: 1.5em;
                       font-weight: 800;
-                      color: #83769C;
+                      color: #83769c;
                       margin-left: 0.3em;
-                      transition: color: 0.2s;
-                    "
-                    style:hover="
-                      color: #6E6382;
-                    "
+                      transition: color 0.2s;
+                    `}"
+                    style:hover="${css`
+                      color: #6e6382;
+                    `}"
+                    class="REMOVE-ME--logo"
                     >CourseLore</span
                   >
                 </a>
@@ -537,29 +569,58 @@ export default async function courselore(
                 ? html``
                 : html`
                     <nav>
-                      <label for="toggle--signed-in-menu" class="button avatar">
+                      <button
+                        type="button"
+                        class="avatar REMOVE-ME--signed-in-menu--button"
+                        style="${css`
+                          transition: background-color 0.2s;
+                        `}"
+                        onclick="${javascript`
+                          const target = document.querySelector("#signed-in-menu");
+                          target.hidden = !target.hidden;
+                          enableButton(event.target);
+                        `}"
+                      >
                         ${user.name[0]}
-                      </label>
+                      </button>
                     </nav>
                   `}
             </div>
             $${user === undefined
               ? html``
               : html`
-                  <input
-                    type="checkbox"
-                    id="toggle--signed-in-menu"
-                    style="display: none;"
-                  />
-                  <div class="toggleable">
+                  <div id="signed-in-menu" hidden>
                     <nav>
                       <p>${user.name} ${`<${req.session!.email}>`}</p>
                       <form method="post" action="${app.get("url")}/sign-out">
                         <p><button class="a">Sign out</button></p>
                       </form>
-                      <a href="${app.get("url")}/courses/new">New course</a>
                     </nav>
                   </div>
+                `}
+            $${course === undefined
+              ? html``
+              : html`
+                  <h1>
+                    <a
+                      href="${app.get("url")}/${req.params.courseReference}"
+                      class="undecorated"
+                    >
+                      ${course.name}
+                      (${database.get<{ role: Role }>(
+                        sql`
+                      SELECT "enrollments"."role" AS "role"
+                      FROM "enrollments"
+                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                      JOIN "courses" ON "enrollments"."course" = "courses"."id"
+                      WHERE "courses"."reference" = ${
+                        req.params.courseReference
+                      } AND
+                            "users"."email" = ${req.session!.email}
+                    `
+                      )!.role})
+                    </a>
+                  </h1>
                 `}
           </header>
           <main>$${body}</main>
@@ -577,7 +638,8 @@ export default async function courselore(
     "text processor",
     (text: string): HTML => textProcessor.processSync(text).toString()
   );
-  // TODO: Convert references to other threads like ‘#57’ into links.
+  // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
+  // TODO: Extract this into a library?
   const textProcessor = unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -1070,6 +1132,11 @@ export default async function courselore(
                 </p>
               `
             : html`
+                <p>
+                  <a href="${app.get("url")}/courses/new" class="button"
+                    >New course</a
+                  >
+                </p>
                 <p>Here’s what’s going on with your courses:</p>
                 $${database
                   .all<{ reference: string; name: string; role: Role }>(
@@ -1275,21 +1342,6 @@ export default async function courselore(
           res,
           html`<title>${course.name} · CourseLore</title>`,
           html`
-            <h1>
-              ${course.name}
-              (${database.get<{ role: Role }>(
-                sql`
-                  SELECT "enrollments"."role" AS "role"
-                  FROM "enrollments"
-                  JOIN "users" ON "enrollments"."user" = "users"."id"
-                  JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                  WHERE "courses"."reference" = ${
-                    req.params.courseReference
-                  } AND
-                        "users"."email" = ${req.session!.email}
-                `
-              )!.role})
-            </h1>
             <p>
               <a
                 href="${app.get("url")}/${req.params
@@ -1323,15 +1375,25 @@ export default async function courselore(
               .map(
                 ({ createdAt, updatedAt, reference, authorName, title }) =>
                   html`
-                    <p style="line-height: 1.2;">
+                    <p
+                      style="${css`
+                        line-height: 1.2;
+                      `}"
+                    >
                       <a
                         href="${app.get("url")}/${req.params
                           .courseReference}/threads/${reference}"
                         class="undecorated"
-                        style="display: block;"
+                        style="${css`
+                          display: block;
+                        `}"
                       >
                         <strong>${title}</strong><br />
-                        <small style="color: dimgray;">
+                        <small
+                          style="${css`
+                            color: dimgray;
+                          `}"
+                        >
                           #${reference} created $${relativeTime(createdAt)}
                           ${updatedAt !== createdAt
                             ? html` (and last updated
@@ -1367,7 +1429,7 @@ export default async function courselore(
           res,
           html`<title>${course.name} · CourseLore</title>`,
           html`
-            <h1>Create a new thread · ${course.name}</h1>
+            <h1>Create a new thread</h1>
             <form
               method="post"
               action="${app.get("url")}/${req.params.courseReference}/threads"
@@ -1378,20 +1440,116 @@ export default async function courselore(
                   name="title"
                   placeholder="Title…"
                   autocomplete="off"
-                  style="box-sizing: border-box; width: 100%;"
+                  style="${css`
+                    box-sizing: border-box;
+                    width: 100%;
+                  `}"
                   required
                 />
               </p>
-              <textarea name="content" required></textarea>
-              <p>
-                <button>Create thread</button>
-              </p>
+              $${textEditor("Create thread")}
             </form>
           `
         )
       );
     }
   );
+
+  // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
+  // FIXME: Don’t require whole form to be valid, just the text editor itself.
+  function textEditor(submit: string): HTML {
+    return html`
+      <div class="edit--target">
+        <textarea name="content" required></textarea>
+        <p
+          style="${css`
+            text-align: right;
+            color: dimgray;
+            margin-top: -0.5em;
+          `}"
+        >
+          <small>
+            <a
+              href="https://guides.github.com/features/mastering-markdown/"
+              class="undecorated"
+              >Markdown</a
+            >
+            &
+            <a href="https://katex.org/docs/supported.html" class="undecorated"
+              >LaTeX</a
+            >
+            are supported
+          </small>
+        </p>
+      </div>
+      <div
+        class="preview--target box"
+        style="${css`
+          background-color: whitesmoke;
+        `}"
+        hidden
+      ></div>
+      <p
+        style="${css`
+          display: flex;
+          flex-direction: row-reverse;
+        `}"
+      >
+        <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
+        <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
+        <button
+          style="${css`
+            margin-left: 0.5em;
+          `}"
+        >
+          ${submit}
+        </button>
+        <button
+          type="button"
+          onclick="${javascript`
+            (async () => {
+              const form = event.target.closest("form");
+              if (!form.reportValidity()) {
+                enableButton(event.target);
+                return;
+              }
+              const previewTarget = form.querySelector(".preview--target");
+              previewTarget.innerHTML = await (
+                await fetch("${app.get("url")}/preview", {
+                  method: "POST",
+                  body: new URLSearchParams(new FormData(form)),
+                })
+              ).text();
+              previewTarget.hidden = false;
+              form.querySelector(".edit--target").hidden = true;
+              event.target.hidden = true;
+              enableButton(event.target);
+              form.querySelector(".edit").hidden = false;
+            })();
+          `}"
+          class="preview button--outline"
+        >
+          Preview
+        </button>
+        <button
+          type="button"
+          onclick="${javascript`
+            const form = event.target.closest("form");
+            form.querySelector(".edit--target").hidden = false;
+            form.querySelector(".preview--target").hidden = true;
+            event.target.hidden = true;
+            enableButton(event.target);
+            form.querySelector(".preview").hidden = false;
+          `}"
+          class="edit button--outline"
+          hidden
+        >
+          Edit
+        </button>
+        <!-- TODO: What happens if the content includes a form? -->
+      </p>
+    `;
+  }
 
   app.post<
     { courseReference: string },
@@ -1494,13 +1652,13 @@ export default async function courselore(
           html`<title>${thread.title} · CourseLore</title>`,
           html`
             <h1>
-              ${thread.title} · ${course.name}
+              ${thread.title}
               <small
-                style="
+                style="${css`
                   font-size: 0.75em;
                   font-weight: 400;
                   color: gray;
-                "
+                `}"
               >
                 <a
                   href="${app.get("url")}/${req.params
@@ -1542,16 +1700,27 @@ export default async function courselore(
                 }) => html`
                   <section id="${postReference}" class="box">
                     <p>
-                      <span class="avatar" style="margin-right: 0.5em;"
+                      <span
+                        class="avatar"
+                        style="${css`
+                          margin-right: 0.5em;
+                        `}"
                         >${authorName?.[0] ?? "G"}</span
                       >
                       <strong>${authorName ?? "Ghost"}</strong>
-                      <span style="color: dimgray;"
+                      <span
+                        style="${css`
+                          color: dimgray;
+                        `}"
                         >said
                         $${relativeTime(createdAt)}${updatedAt !== createdAt
                           ? html` (and last updated $${relativeTime(updatedAt)})`
                           : html``}
-                        <small style="color: gray;">
+                        <small
+                          style="${css`
+                            color: gray;
+                          `}"
+                        >
                           <a
                             href="${app.get("url")}/${req.params
                               .courseReference}/threads/${req.params
@@ -1568,89 +1737,7 @@ export default async function courselore(
               )}
 
             <!-- TODO: Add keyboard shortcuts for posting. Here and in the create thread form as well. -->
-            <!-- TODO: Add css tagged template literal everywhere -->
-            <form method="post">
-              <div class="edit--target">
-                <textarea name="content" required></textarea>
-                <p
-                  style="${css`
-                    text-align: right;
-                    color: dimgray;
-                    margin-top: -0.5em;
-                  `}"
-                >
-                  <small>
-                    <a
-                      href="https://guides.github.com/features/mastering-markdown/"
-                      class="undecorated"
-                      >Markdown</a
-                    >
-                    &
-                    <a
-                      href="https://katex.org/docs/supported.html"
-                      class="undecorated"
-                      >LaTeX</a
-                    >
-                    are supported
-                  </small>
-                </p>
-              </div>
-              <div class="preview--target"></div>
-              <p
-                style="
-                  display: flex;
-                  flex-direction: row-reverse;
-                "
-              >
-                <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
-                <button style="margin-left: 0.5em;">Post</button>
-                <button
-                  onclick="${javascript`
-                    (async () => {
-                      // FIXME: It seems like all events are being prevented!
-                      event.preventDefault();
-                      const element = event.target;
-                      const form = element.closest("form");
-                      form.querySelector(".preview--target").innerHTML = await (
-                        await fetch("${app.get("url")}/preview", {
-                          method: "POST",
-                          body: new URLSearchParams(new FormData(form)),
-                        })
-                      ).text();
-                      // TODO: Extract this bit that re-enables a button. (Part 1)
-                      element.disabled = false;
-                      element.style.cursor = "pointer";
-                      // TODO: Use element.hidden instead of element.style.display
-                      element.style.display = "none";
-                      form.querySelector(".edit").style.display = "inline-block";
-                      form.querySelector(".edit--target").style.display = "none";
-                    })();
-                  `}"
-                  class="button--outline preview"
-                >
-                  Preview
-                </button>
-                <button
-                  onclick="${javascript`
-                    event.preventDefault();
-                    const element = event.target;
-                    const form = element.closest("form");
-                    element.style.display = "none";
-                    // TODO: Extract this bit that re-enables a button. (Part 2)
-                    element.disabled = false;
-                    element.style.cursor = "pointer";
-                    form.querySelector(".edit--target").style.display = "block";
-                    form.querySelector(".preview").style.display = "inline-block";
-                    form.querySelector(".preview--target").innerHTML = "";
-                  `}"
-                  class="button--outline edit"
-                  style="display: none;"
-                >
-                  Edit
-                </button>
-                <!-- TODO: What happens if the content includes a form? -->
-              </p>
-            </form>
+            <form method="post">$${textEditor("Post")}</form>
           `
         )
       );
@@ -1701,16 +1788,12 @@ export default async function courselore(
     }
   );
 
-  // TODO: Render the outline of a post
   app.post<{}, HTML, { content: string }, {}, {}>(
     "/preview",
     ...isAuthenticated(true),
     expressValidator.body("content").exists(),
     (req, res) => {
-      // FIXME: Remove this delay that I introduced to test the preview feature.
-      setTimeout(() => {
-        res.send(app.get("text processor")(req.body.content));
-      }, 5000);
+      res.send(app.get("text processor")(req.body.content));
     }
   );
 
@@ -1860,7 +1943,7 @@ if (require.main === module)
       
                         app.listen(new URL(app.get("url")).port, () => {
                           console.log(
-                            \`Demonstration/Development web server started at \${app.get("url")}\`
+                            ${'`Demonstration/Development web server started at ${app.get("url")}`'}
                           );
                         });
                       };

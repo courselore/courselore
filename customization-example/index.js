@@ -2,6 +2,7 @@ module.exports = (require) => {
   const path = require("path");
   const express = require("express");
   const html = require("@leafac/html").default;
+  const css = require("tagged-template-noop");
   const markdown = require("tagged-template-noop");
 
   const exports = middleware;
@@ -73,7 +74,11 @@ module.exports = (require) => {
             </style>
           `,
           html`
-            <header style="text-align: center;">
+            <header
+              style="${css`
+                text-align: center;
+              `}"
+            >
               <div>
                 $${art({ size: 600, order: 6, strokeWidth: 1 }).replace(
                   "</svg>",
@@ -92,7 +97,7 @@ module.exports = (require) => {
                           width="500"
                           height="100"
                           rx="10"
-                          fill="#83769C"
+                          fill="#83769c"
                         />
                         <text font-size="5em">CourseLore</text>
                       </g>
@@ -103,7 +108,7 @@ module.exports = (require) => {
                           width="420"
                           height="50"
                           rx="10"
-                          fill="#FF77A8"
+                          fill="#ff77a8"
                         />
                         <text font-size="1.5em"
                           >The Open-Source Student Forum</text
@@ -116,7 +121,7 @@ module.exports = (require) => {
                           width="280"
                           height="30"
                           rx="10"
-                          fill="#29ADFF"
+                          fill="#29adff"
                         />
                         <text font-size="0.8em" letter-spacing="3">
                           COMING SEPTEMBER 2021!
@@ -292,8 +297,8 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
       >
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#83769C" />
-            <stop offset="100%" stop-color="#FF77A8" />
+            <stop offset="0%" stop-color="#83769c" />
+            <stop offset="100%" stop-color="#ff77a8" />
           </linearGradient>
         </defs>
         <polyline
