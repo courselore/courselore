@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import console from "console";
 import process from "process";
 import path from "path";
 import crypto from "crypto";
@@ -486,6 +487,17 @@ export default async function courselore(
               sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
             )!;
 
+      const enrollment = database.get<{ role: Role }>(
+        sql`
+          SELECT "enrollments"."role" AS "role"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference} AND
+                "users"."email" = ${req.session!.email}
+        `
+      );
+
       return app.get("layout base")(
         head,
         html`
@@ -557,9 +569,6 @@ export default async function courselore(
                       margin-left: 0.3em;
                       transition: color 0.2s;
                     `}"
-                    style:hover="${css`
-                      color: #6e6382;
-                    `}"
                     class="REMOVE-ME--logo"
                     >CourseLore</span
                   >
@@ -606,19 +615,9 @@ export default async function courselore(
                       href="${app.get("url")}/${req.params.courseReference}"
                       class="undecorated"
                     >
-                      ${course.name}
-                      (${database.get<{ role: Role }>(
-                        sql`
-                      SELECT "enrollments"."role" AS "role"
-                      FROM "enrollments"
-                      JOIN "users" ON "enrollments"."user" = "users"."id"
-                      JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                      WHERE "courses"."reference" = ${
-                        req.params.courseReference
-                      } AND
-                            "users"."email" = ${req.session!.email}
-                    `
-                      )!.role})
+                      ${course.name}${enrollment === undefined
+                        ? html``
+                        : html` (${enrollment.role})`}
                     </a>
                   </h1>
                 `}
@@ -1297,6 +1296,7 @@ export default async function courselore(
             <form method="post">
               <p>
                 as
+                <!-- TODO: Style this: https://moderncss.dev/custom-select-styles-with-pure-css/ https://www.filamentgroup.com/lab/select-css.html -->
                 <select name="role" required>
                   <option value="student">student</option>
                   <option value="assistant">assistant</option>
@@ -1854,11 +1854,10 @@ if (require.main === module)
   (async () => {
     console.log(`CourseLore/${VERSION}`);
 
-    await (
-      await loadConfiguration(
-        process.argv[2] ?? path.join(process.cwd(), "configuration.js")
-      )
-    )(require);
+    const configuration = await loadConfiguration(
+      process.argv[2] ?? path.join(process.cwd(), "configuration.js")
+    );
+    await configuration(require);
 
     async function loadConfiguration(
       configurationFile: string
