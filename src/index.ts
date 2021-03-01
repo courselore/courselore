@@ -421,6 +421,18 @@ export default async function courselore(
       // https://rahulnpadalkar.medium.com/css-parser-in-javascript-578eba0977e5
       // https://github.com/rahulnpadalkar/CSSParser
       // http://glazman.org/JSCSSP/
+
+      // https://github.com/postcss/postcss-scss
+      // https://github.com/postcss/postcss-js
+      // https://github.com/jonathantneal/precss
+      // https://github.com/postcss/postcss-nested (more installations than the one below)
+      // https://github.com/jonathantneal/postcss-nesting (closer to the standard and more stars than the one above)
+
+      // https://github.com/jsdom/cssstyle
+      // https://github.com/reworkcss/css
+      // https://github.com/css/csso
+      // https://github.com/csstree/csstree
+      // https://github.com/brettstimmerman/mensch
       const dom = new JSDOM(rawHTML);
       const document = dom.window.document;
       const inlineStyles: CSS[] = [];
