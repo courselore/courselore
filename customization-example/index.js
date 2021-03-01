@@ -132,29 +132,31 @@ module.exports = (require) => {
                   `
                 )}
                 <script>
-                  const ANIMATION_SPEED = 0.001;
-                  const ANIMATION_AMOUNT = 3;
-                  const polyline = document.currentScript.previousElementSibling.querySelector(
-                    "polyline"
-                  );
-                  const points = polyline
-                    .getAttribute("points")
-                    .split(" ")
-                    .map(Number);
-                  (function animateBackground(time) {
-                    polyline.setAttribute(
-                      "points",
-                      points
-                        .map(
-                          (coordinate, index) =>
-                            coordinate +
-                            Math.sin(time * ANIMATION_SPEED + index) *
-                              ANIMATION_AMOUNT
-                        )
-                        .join(" ")
+                  (() => {
+                    const ANIMATION_SPEED = 0.001;
+                    const ANIMATION_AMOUNT = 3;
+                    const polyline = document.currentScript.previousElementSibling.querySelector(
+                      "polyline"
                     );
-                    window.requestAnimationFrame(animateBackground);
-                  })(0);
+                    const points = polyline
+                      .getAttribute("points")
+                      .split(" ")
+                      .map(Number);
+                    (function animateBackground(time) {
+                      polyline.setAttribute(
+                        "points",
+                        points
+                          .map(
+                            (coordinate, index) =>
+                              coordinate +
+                              Math.sin(time * ANIMATION_SPEED + index) *
+                                ANIMATION_AMOUNT
+                          )
+                          .join(" ")
+                      );
+                      window.requestAnimationFrame(animateBackground);
+                    })(0);
+                  })();
                 </script>
                 <nav>
                   <a href="https://github.com/courselore"

@@ -215,7 +215,6 @@ export default async function courselore(
               textarea {
                 box-sizing: border-box;
                 width: 100%;
-                padding: 1em;
                 resize: vertical;
               }
 
@@ -242,12 +241,19 @@ export default async function courselore(
                 color: #ff77a8;
               }
 
-              .undecorated,
-              .button,
-              .button--outline,
+              a.undecorated,
+              a.button,
+              a.button--outline,
               nav a,
               nav .a {
                 text-decoration: none;
+              }
+
+              button.undecorated {
+                color: inherit;
+                background-color: inherit;
+                padding: 0;
+                border: 0;
               }
 
               button,
@@ -261,7 +267,7 @@ export default async function courselore(
                 display: inline-block;
               }
 
-              button:not(.a):not(.avatar),
+              button:not(.undecorated):not(.a):not(.avatar),
               .button,
               .button--outline {
                 color: white;
@@ -274,28 +280,28 @@ export default async function courselore(
                 transition-duration: 0.2s;
               }
 
-              .button--outline:not(.a):not(.avatar) {
+              .button--outline:not(.undecorated):not(.a):not(.avatar) {
                 color: #83769c;
                 background-color: white;
               }
 
-              button:not(.a):not(.avatar):hover,
+              button:not(.undecorated):not(.a):not(.avatar):hover,
               .button:hover,
-              .button--outline:not(.a):not(.avatar):hover {
+              .button--outline:not(.undecorated):not(.a):not(.avatar):hover {
                 color: white;
                 background-color: #6e6382;
               }
 
-              button:not(.a):not(.avatar):active,
+              button:not(.undecorated):not(.a):not(.avatar):active,
               .button:active,
-              .button--outline:not(.a):not(.avatar):active {
+              .button--outline:not(.undecorated):not(.a):not(.avatar):active {
                 color: white;
                 background-color: #584f69;
               }
 
-              button:not(.a):not(.avatar):disabled,
+              button:not(.undecorated):not(.a):not(.avatar):disabled,
               .button.disabled,
-              .button--outline:not(.a):not(.avatar).disabled {
+              .button--outline:not(.undecorated):not(.a):not(.avatar).disabled {
                 color: dimgray;
                 background-color: whitesmoke;
                 border-color: dimgray;
@@ -325,44 +331,46 @@ export default async function courselore(
           <body>
             $${body}
             <script>
-              // TODO: Extract this into a library?
-              const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
-                numeric: "auto",
-              });
-              const MINUTES = 60 * 1000;
-              const HOURS = 60 * MINUTES;
-              const DAYS = 24 * HOURS;
-              const WEEKS = 7 * DAYS;
-              const MONTHS = 30 * DAYS;
-              const YEARS = 365 * DAYS;
-              (function relativeTimes() {
-                for (const element of document.querySelectorAll(
-                  "time.relative"
-                )) {
-                  const difference =
-                    new Date(element.getAttribute("datetime")) - new Date();
-                  const absoluteDifference = Math.abs(difference);
-                  const [value, unit] =
-                    absoluteDifference < MINUTES
-                      ? [0, "seconds"]
-                      : absoluteDifference < HOURS
-                      ? [difference / MINUTES, "minutes"]
-                      : absoluteDifference < DAYS
-                      ? [difference / HOURS, "hours"]
-                      : absoluteDifference < WEEKS
-                      ? [difference / DAYS, "days"]
-                      : absoluteDifference < MONTHS
-                      ? [difference / WEEKS, "weeks"]
-                      : absoluteDifference < YEARS
-                      ? [difference / MONTHS, "months"]
-                      : [difference / YEARS, "years"];
-                  element.innerText = RELATIVE_TIME_FORMAT.format(
-                    // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
-                    Math.round(value),
-                    unit
-                  );
-                }
-                window.setTimeout(relativeTimes, 60 * 1000);
+              (() => {
+                // TODO: Extract this into a library?
+                const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
+                  numeric: "auto",
+                });
+                const MINUTES = 60 * 1000;
+                const HOURS = 60 * MINUTES;
+                const DAYS = 24 * HOURS;
+                const WEEKS = 7 * DAYS;
+                const MONTHS = 30 * DAYS;
+                const YEARS = 365 * DAYS;
+                (function relativeTimes() {
+                  for (const element of document.querySelectorAll(
+                    "time.relative"
+                  )) {
+                    const difference =
+                      new Date(element.getAttribute("datetime")) - new Date();
+                    const absoluteDifference = Math.abs(difference);
+                    const [value, unit] =
+                      absoluteDifference < MINUTES
+                        ? [0, "seconds"]
+                        : absoluteDifference < HOURS
+                        ? [difference / MINUTES, "minutes"]
+                        : absoluteDifference < DAYS
+                        ? [difference / HOURS, "hours"]
+                        : absoluteDifference < WEEKS
+                        ? [difference / DAYS, "days"]
+                        : absoluteDifference < MONTHS
+                        ? [difference / WEEKS, "weeks"]
+                        : absoluteDifference < YEARS
+                        ? [difference / MONTHS, "months"]
+                        : [difference / YEARS, "years"];
+                    element.innerText = RELATIVE_TIME_FORMAT.format(
+                      // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                      Math.round(value),
+                      unit
+                    );
+                  }
+                  window.setTimeout(relativeTimes, 60 * 1000);
+                })();
               })();
 
               document.body.addEventListener(
@@ -380,7 +388,6 @@ export default async function courselore(
                 },
                 true
               );
-
               function enableButton(element) {
                 window.setTimeout(() => {
                   if (element.tagName === "BUTTON") element.disabled = false;
@@ -451,7 +458,7 @@ export default async function courselore(
         "beforeend",
         html`
           <style>
-            ${inlineStyles}
+            $${inlineStyles}
           </style>
         `
       );
@@ -529,34 +536,36 @@ export default async function courselore(
                 >
                   $${logo}
                   <script>
-                    const ANIMATION_SPEED = 0.0005;
-                    const ANIMATION_AMOUNT = 1;
-                    const polyline = document.currentScript.previousElementSibling.querySelector(
-                      "polyline"
-                    );
-                    const points = polyline
-                      .getAttribute("points")
-                      .split(" ")
-                      .map(Number);
-                    let stopLogoAnimation = true;
-                    let logoAnimationTimeOffset = 0;
-                    let lastLogoAnimationStop = 0;
-                    function animateLogo(time) {
-                      if (stopLogoAnimation) return;
-                      time -= logoAnimationTimeOffset;
-                      polyline.setAttribute(
-                        "points",
-                        points
-                          .map(
-                            (coordinate, index) =>
-                              coordinate +
-                              Math.sin(time * ANIMATION_SPEED * (index % 7)) *
-                                ANIMATION_AMOUNT
-                          )
-                          .join(" ")
+                    (() => {
+                      const ANIMATION_SPEED = 0.0005;
+                      const ANIMATION_AMOUNT = 1;
+                      const polyline = document.currentScript.previousElementSibling.querySelector(
+                        "polyline"
                       );
-                      window.requestAnimationFrame(animateLogo);
-                    }
+                      const points = polyline
+                        .getAttribute("points")
+                        .split(" ")
+                        .map(Number);
+                      let stopLogoAnimation = true;
+                      let logoAnimationTimeOffset = 0;
+                      let lastLogoAnimationStop = 0;
+                      function animateLogo(time) {
+                        if (stopLogoAnimation) return;
+                        time -= logoAnimationTimeOffset;
+                        polyline.setAttribute(
+                          "points",
+                          points
+                            .map(
+                              (coordinate, index) =>
+                                coordinate +
+                                Math.sin(time * ANIMATION_SPEED * (index % 7)) *
+                                  ANIMATION_AMOUNT
+                            )
+                            .join(" ")
+                        );
+                        window.requestAnimationFrame(animateLogo);
+                      }
+                    })();
                   </script>
                   <span
                     style="${css`
@@ -595,7 +604,7 @@ export default async function courselore(
                         onclick="${javascript`
                           const target = document.querySelector("#signed-in-menu");
                           target.hidden = !target.hidden;
-                          enableButton(event.target);
+                          enableButton(this);
                         `}"
                       >
                         ${user.name[0]}
@@ -1455,7 +1464,14 @@ export default async function courselore(
                   required
                 />
               </p>
-              $${textEditor("Create thread")}
+              $${textEditor()}
+              <p
+                style="${css`
+                  text-align: right;
+                `}"
+              >
+                <button>Create thread</button>
+              </p>
             </form>
           `
         )
@@ -1465,18 +1481,78 @@ export default async function courselore(
 
   // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
   // FIXME: Don’t require whole form to be valid, just the text editor itself.
-  function textEditor(submit: string): HTML {
+  function textEditor(): HTML {
     return html`
-      <div class="edit--target">
-        <textarea name="content" required></textarea>
+      <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
+      <!-- TODO: What happens if the content includes a form? -->
+      <div class="text-editor">
         <p
           style="${css`
-            text-align: right;
             color: dimgray;
-            margin-top: -0.5em;
+            margin-bottom: 0em;
+
+            & button {
+              margin-right: 0.5em;
+              transition-duration: 0.2s;
+              transition-property: font-weight, color;
+
+              &:disabled {
+                font-weight: 700;
+                color: black;
+              }
+            }
           `}"
         >
-          <small>
+          <button
+            type="button"
+            class="write undecorated"
+            disabled
+            onclick="${javascript`
+              const form = this.closest("form");
+              enableButton(form.querySelector(".preview"));
+              form.querySelector(".write--target").hidden = false;
+              form.querySelector(".preview--target").hidden = true;
+            `}"
+          >
+            Write
+          </button>
+          <button
+            type="button"
+            class="preview undecorated"
+            onclick="${javascript`
+              (async () => {
+                const form = this.closest("form");
+                if (!form.reportValidity()) {
+                  enableButton(this);
+                  return;
+                }
+                enableButton(form.querySelector(".write"));
+                const previewTarget = form.querySelector(".preview--target");
+                previewTarget.innerHTML = await (
+                  await fetch("${app.get("url")}/preview", {
+                    method: "POST",
+                    body: new URLSearchParams(new FormData(form)),
+                  })
+                ).text();
+                previewTarget.hidden = false;
+                form.querySelector(".write--target").hidden = true;
+              })();
+            `}"
+          >
+            Preview
+          </button>
+        </p>
+
+        <div class="write--target">
+          <textarea name="content" required></textarea>
+          <p
+            style="${css`
+              text-align: right;
+              font-size: smaller;
+              color: dimgray;
+              margin-top: -0.3em;
+            `}"
+          >
             <a
               href="https://guides.github.com/features/mastering-markdown/"
               class="undecorated"
@@ -1487,75 +1563,55 @@ export default async function courselore(
               >LaTeX</a
             >
             are supported
-          </small>
-        </p>
-      </div>
-      <div
-        class="preview--target box"
-        style="${css`
-          background-color: whitesmoke;
-        `}"
-        hidden
-      ></div>
-      <p
-        style="${css`
-          display: flex;
-          flex-direction: row-reverse;
-        `}"
-      >
-        <!-- TODO: When the CSS inline extractor is ready, pull this margin into children selector on the parent. -->
-        <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
-        <button
+          </p>
+        </div>
+
+        <div
+          class="preview--loading"
           style="${css`
-            margin-left: 0.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           `}"
         >
-          ${submit}
-        </button>
-        <button
-          type="button"
-          onclick="${javascript`
-            (async () => {
-              const form = event.target.closest("form");
-              if (!form.reportValidity()) {
-                enableButton(event.target);
-                return;
-              }
-              const previewTarget = form.querySelector(".preview--target");
-              previewTarget.innerHTML = await (
-                await fetch("${app.get("url")}/preview", {
-                  method: "POST",
-                  body: new URLSearchParams(new FormData(form)),
-                })
-              ).text();
-              previewTarget.hidden = false;
-              form.querySelector(".edit--target").hidden = true;
-              event.target.hidden = true;
-              enableButton(event.target);
-              form.querySelector(".edit").hidden = false;
+          $${logo}
+          <script>
+            (() => {
+              const ANIMATION_SPEED = 0.005;
+              const ANIMATION_AMOUNT = 1;
+              const polyline = document.currentScript.previousElementSibling.querySelector(
+                "polyline"
+              );
+              const points = polyline
+                .getAttribute("points")
+                .split(" ")
+                .map(Number);
+              (function animateBackground(time) {
+                polyline.setAttribute(
+                  "points",
+                  points
+                    .map(
+                      (coordinate, index) =>
+                        coordinate +
+                        Math.sin(time * ANIMATION_SPEED + index) *
+                          ANIMATION_AMOUNT
+                    )
+                    .join(" ")
+                );
+                window.requestAnimationFrame(animateBackground);
+              })(0);
             })();
-          `}"
-          class="preview button--outline"
-        >
-          Preview
-        </button>
-        <button
-          type="button"
-          onclick="${javascript`
-            const form = event.target.closest("form");
-            form.querySelector(".edit--target").hidden = false;
-            form.querySelector(".preview--target").hidden = true;
-            event.target.hidden = true;
-            enableButton(event.target);
-            form.querySelector(".preview").hidden = false;
-          `}"
-          class="edit button--outline"
-          hidden
-        >
-          Edit
-        </button>
-        <!-- TODO: What happens if the content includes a form? -->
-      </p>
+          </script>
+          <strong
+            style="${css`
+              margin-left: 0.3em;
+            `}"
+            >Loading…</strong
+          >
+        </div>
+
+        <div class="preview--target" hidden></div>
+      </div>
     `;
   }
 
@@ -1745,7 +1801,16 @@ export default async function courselore(
               )}
 
             <!-- TODO: Add keyboard shortcuts for posting. Here and in the create thread form as well. -->
-            <form method="post">$${textEditor("Post")}</form>
+            <form method="post">
+              $${textEditor()}
+              <p
+                style="${css`
+                  text-align: right;
+                `}"
+              >
+                <button>Post</button>
+              </p>
+            </form>
           `
         )
       );
