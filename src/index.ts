@@ -30,6 +30,9 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 
+import postcss from "postcss";
+import postcssNested from "postcss-nested";
+
 import { JSDOM } from "jsdom";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
@@ -316,18 +319,6 @@ export default async function courselore(
               [hidden] {
                 display: none;
               }
-
-              .REMOVE-ME--logo:hover {
-                color: #6e6382;
-              }
-
-              .REMOVE-ME--signed-in-menu--button:hover {
-                background-color: #e66c98;
-              }
-
-              .REMOVE-ME--signed-in-menu--button:active {
-                background-color: #cc6088;
-              }
             </style>
             $${head}
           </head>
@@ -440,16 +431,21 @@ export default async function courselore(
       for (const element of document.querySelectorAll("[style]")) {
         const styles = element.getAttribute("style")!;
         element.removeAttribute("style");
-        const className = `_${crypto
+        const className = `style--${crypto
           .createHash("sha256")
           .update(styles)
           .digest("hex")}`;
         element.classList.add(className);
-        inlineStyles.push(css`
-          .${className} {
-            ${styles}
-          }
-        `);
+        inlineStyles.push(
+          cssProcessor.process(
+            css`
+              .${className} {
+                ${styles}
+              }
+            `,
+            { from: undefined }
+          ).css
+        );
       }
       document.head.insertAdjacentHTML(
         "beforeend",
@@ -462,6 +458,7 @@ export default async function courselore(
       return dom.serialize();
     }
   );
+  const cssProcessor = postcss([postcssNested]);
 
   app.set(
     "layout",
@@ -568,8 +565,11 @@ export default async function courselore(
                       color: #83769c;
                       margin-left: 0.3em;
                       transition: color 0.2s;
+
+                      &:hover {
+                        color: #6e6382;
+                      }
                     `}"
-                    class="REMOVE-ME--logo"
                     >CourseLore</span
                   >
                 </a>
@@ -580,9 +580,17 @@ export default async function courselore(
                     <nav>
                       <button
                         type="button"
-                        class="avatar REMOVE-ME--signed-in-menu--button"
+                        class="avatar"
                         style="${css`
                           transition: background-color 0.2s;
+
+                          &:hover {
+                            background-color: #e66c98;
+                          }
+
+                          &:active {
+                            background-color: #cc6088;
+                          }
                         `}"
                         onclick="${javascript`
                           const target = document.querySelector("#signed-in-menu");

@@ -42,6 +42,8 @@
     "hast-util-sanitize": "^3.0.2",
     "inquirer": "^7.3.3",
     "jsdom": "^16.4.0",
+    "postcss": "^8.2.6",
+    "postcss-nested": "^5.0.4",
     "prettier": "^2.2.1",
     "rehype-katex": "^4.0.0",
     "rehype-raw": "^5.0.0",
