@@ -521,22 +521,26 @@ export default async function courselore(
                 <a
                   href="${app.get("url")}"
                   style="${css`
+                    color: #83769c;
                     display: flex;
                     align-items: center;
+
+                    &:hover {
+                      color: #6e6382;
+                    }
                   `}"
                   onmouseover="${javascript`
-                    logoAnimationStop = false;
                     logoAnimationTimeOffset += performance.now() - logoAnimationLastStop;
-                    window.requestAnimationFrame(logoAnimation);
+                    logoAnimationFrame = window.requestAnimationFrame(logoAnimation);
                   `}"
                   onmouseout="${javascript`
-                    logoAnimationStop = true;
                     logoAnimationLastStop = performance.now();
+                    window.cancelAnimationFrame(logoAnimationFrame);
                   `}"
                 >
                   $${logo}
                   <script>
-                    let logoAnimationStop = true;
+                    let logoAnimationFrame;
                     let logoAnimationTimeOffset = 0;
                     let logoAnimationLastStop = 0;
                     const logoAnimationPolyline = document.currentScript.previousElementSibling.querySelector(
@@ -547,7 +551,6 @@ export default async function courselore(
                       .split(" ")
                       .map(Number);
                     function logoAnimation(time) {
-                      if (logoAnimationStop) return;
                       time -= logoAnimationTimeOffset;
                       logoAnimationPolyline.setAttribute(
                         "points",
@@ -558,20 +561,16 @@ export default async function courselore(
                           )
                           .join(" ")
                       );
-                      window.requestAnimationFrame(logoAnimation);
+                      logoAnimationFrame = window.requestAnimationFrame(
+                        logoAnimation
+                      );
                     }
                   </script>
                   <span
                     style="${css`
                       font-size: 1.5em;
                       font-weight: 800;
-                      color: #83769c;
                       margin-left: 0.3em;
-                      transition: color 0.2s;
-
-                      &:hover {
-                        color: #6e6382;
-                      }
                     `}"
                     >CourseLore</span
                   >
