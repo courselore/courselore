@@ -641,6 +641,57 @@ export default async function courselore(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
   );
+  const loading = ((counter) => {
+    return () => {
+      counter++;
+      const id = `loading-gradient-${counter}`;
+      return html`
+        <div
+          class="loading"
+          hidden
+          style="${css`
+            margin: 3em 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}"
+        >
+          $${logo
+            .replace(`id="gradient"`, `id="${id}"`)
+            .replace(`#gradient`, `#${id}`)}
+          <script>
+            (() => {
+              const loading = document.currentScript.closest("div.loading");
+              const polyline = loading.querySelector("polyline");
+              const points = polyline
+                .getAttribute("points")
+                .split(" ")
+                .map(Number);
+              (function loadingAnimation(time) {
+                if (loading.hidden == false)
+                  polyline.setAttribute(
+                    "points",
+                    points
+                      .map(
+                        (coordinate, index) =>
+                          coordinate + Math.sin(time * 0.005 + index)
+                      )
+                      .join(" ")
+                  );
+                window.requestAnimationFrame(loadingAnimation);
+              })(0);
+            })();
+          </script>
+          <strong
+            style="${css`
+              margin-left: 0.3em;
+            `}"
+            >Loading…</strong
+          >
+        </div>
+      `;
+    };
+  })(0);
 
   app.set(
     "text processor",
@@ -1566,48 +1617,7 @@ export default async function courselore(
           </p>
         </div>
 
-        <div
-          class="loading"
-          hidden
-          style="${css`
-            margin: 3em 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          `}"
-        >
-          $${logo}
-          <script>
-            // TODO: Only run this animation when the loading div is showing.
-            (() => {
-              const loading = document.currentScript.closest("div.loading");
-              const polyline = loading.querySelector("polyline");
-              const points = polyline
-                .getAttribute("points")
-                .split(" ")
-                .map(Number);
-              (function loadingAnimation(time) {
-                if (loading.hidden == false)
-                  polyline.setAttribute(
-                    "points",
-                    points
-                      .map(
-                        (coordinate, index) =>
-                          coordinate + Math.sin(time * 0.005 + index)
-                      )
-                      .join(" ")
-                  );
-                window.requestAnimationFrame(loadingAnimation);
-              })(0);
-            })();
-          </script>
-          <strong
-            style="${css`
-              margin-left: 0.3em;
-            `}"
-            >Loading…</strong
-          >
-        </div>
+        $${loading()}
 
         <div class="preview" hidden></div>
       </div>
