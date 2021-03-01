@@ -323,7 +323,7 @@ export default async function courselore(
               }
 
               [hidden] {
-                display: none;
+                display: none !important;
               }
             </style>
             $${head}
@@ -525,47 +525,41 @@ export default async function courselore(
                     align-items: center;
                   `}"
                   onmouseover="${javascript`
-                    stopLogoAnimation = false;
-                    logoAnimationTimeOffset += performance.now() - lastLogoAnimationStop;
-                    window.requestAnimationFrame(animateLogo);
+                    logoAnimationStop = false;
+                    logoAnimationTimeOffset += performance.now() - logoAnimationLastStop;
+                    window.requestAnimationFrame(logoAnimation);
                   `}"
                   onmouseout="${javascript`
-                    stopLogoAnimation = true;
-                    lastLogoAnimationStop = performance.now();
+                    logoAnimationStop = true;
+                    logoAnimationLastStop = performance.now();
                   `}"
                 >
                   $${logo}
                   <script>
-                    (() => {
-                      const ANIMATION_SPEED = 0.0005;
-                      const ANIMATION_AMOUNT = 1;
-                      const polyline = document.currentScript.previousElementSibling.querySelector(
-                        "polyline"
+                    let logoAnimationStop = true;
+                    let logoAnimationTimeOffset = 0;
+                    let logoAnimationLastStop = 0;
+                    const logoAnimationPolyline = document.currentScript.previousElementSibling.querySelector(
+                      "polyline"
+                    );
+                    const logoAnimationPoints = logoAnimationPolyline
+                      .getAttribute("points")
+                      .split(" ")
+                      .map(Number);
+                    function logoAnimation(time) {
+                      if (logoAnimationStop) return;
+                      time -= logoAnimationTimeOffset;
+                      logoAnimationPolyline.setAttribute(
+                        "points",
+                        logoAnimationPoints
+                          .map(
+                            (coordinate, index) =>
+                              coordinate + Math.sin(time * 0.0005 * (index % 7))
+                          )
+                          .join(" ")
                       );
-                      const points = polyline
-                        .getAttribute("points")
-                        .split(" ")
-                        .map(Number);
-                      let stopLogoAnimation = true;
-                      let logoAnimationTimeOffset = 0;
-                      let lastLogoAnimationStop = 0;
-                      function animateLogo(time) {
-                        if (stopLogoAnimation) return;
-                        time -= logoAnimationTimeOffset;
-                        polyline.setAttribute(
-                          "points",
-                          points
-                            .map(
-                              (coordinate, index) =>
-                                coordinate +
-                                Math.sin(time * ANIMATION_SPEED * (index % 7)) *
-                                  ANIMATION_AMOUNT
-                            )
-                            .join(" ")
-                        );
-                        window.requestAnimationFrame(animateLogo);
-                      }
-                    })();
+                      window.requestAnimationFrame(logoAnimation);
+                    }
                   </script>
                   <span
                     style="${css`
@@ -775,6 +769,10 @@ export default async function courselore(
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+
+  app.use((req, res, next) => {
+    setTimeout(next, 2000);
+  });
 
   // FIXME:
   // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
@@ -1508,10 +1506,10 @@ export default async function courselore(
             class="write undecorated"
             disabled
             onclick="${javascript`
-              const form = this.closest("form");
-              enableButton(form.querySelector(".preview"));
-              form.querySelector(".write--target").hidden = false;
-              form.querySelector(".preview--target").hidden = true;
+              const textEditor = this.closest("div.text-editor");
+              textEditor.querySelector("div.preview").hidden = true;
+              textEditor.querySelector("div.write").hidden = false;
+              enableButton(textEditor.querySelector("button.preview"));
             `}"
           >
             Write
@@ -1521,21 +1519,25 @@ export default async function courselore(
             class="preview undecorated"
             onclick="${javascript`
               (async () => {
-                const form = this.closest("form");
-                if (!form.reportValidity()) {
+                const textEditor = this.closest("div.text-editor");
+                const textarea = textEditor.querySelector("textarea");
+                if (!textarea.reportValidity()) {
                   enableButton(this);
                   return;
                 }
-                enableButton(form.querySelector(".write"));
-                const previewTarget = form.querySelector(".preview--target");
-                previewTarget.innerHTML = await (
+                const loading = textEditor.querySelector("div.loading");
+                textEditor.querySelector("div.write").hidden = true;
+                loading.hidden = false;
+                const preview = textEditor.querySelector("div.preview");
+                preview.innerHTML = await (
                   await fetch("${app.get("url")}/preview", {
                     method: "POST",
-                    body: new URLSearchParams(new FormData(form)),
+                    body: new URLSearchParams({ content: textarea.value }),
                   })
                 ).text();
-                previewTarget.hidden = false;
-                form.querySelector(".write--target").hidden = true;
+                loading.hidden = true;
+                preview.hidden = false;
+                enableButton(textEditor.querySelector("button.write"));
               })();
             `}"
           >
@@ -1543,8 +1545,8 @@ export default async function courselore(
           </button>
         </p>
 
-        <div class="write--target">
-          <textarea name="content" required></textarea>
+        <div class="write">
+          <textarea name="content" required rows="5"></textarea>
           <p
             style="${css`
               text-align: right;
@@ -1567,8 +1569,10 @@ export default async function courselore(
         </div>
 
         <div
-          class="preview--loading"
+          class="loading"
+          hidden
           style="${css`
+            margin: 3em 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1576,29 +1580,26 @@ export default async function courselore(
         >
           $${logo}
           <script>
+            // TODO: Only run this animation when the loading div is showing.
             (() => {
-              const ANIMATION_SPEED = 0.005;
-              const ANIMATION_AMOUNT = 1;
-              const polyline = document.currentScript.previousElementSibling.querySelector(
-                "polyline"
-              );
+              const loading = document.currentScript.closest("div.loading");
+              const polyline = loading.querySelector("polyline");
               const points = polyline
                 .getAttribute("points")
                 .split(" ")
                 .map(Number);
-              (function animateBackground(time) {
-                polyline.setAttribute(
-                  "points",
-                  points
-                    .map(
-                      (coordinate, index) =>
-                        coordinate +
-                        Math.sin(time * ANIMATION_SPEED + index) *
-                          ANIMATION_AMOUNT
-                    )
-                    .join(" ")
-                );
-                window.requestAnimationFrame(animateBackground);
+              (function loadingAnimation(time) {
+                if (loading.hidden == false)
+                  polyline.setAttribute(
+                    "points",
+                    points
+                      .map(
+                        (coordinate, index) =>
+                          coordinate + Math.sin(time * 0.005 + index)
+                      )
+                      .join(" ")
+                  );
+                window.requestAnimationFrame(loadingAnimation);
               })(0);
             })();
           </script>
@@ -1610,7 +1611,7 @@ export default async function courselore(
           >
         </div>
 
-        <div class="preview--target" hidden></div>
+        <div class="preview" hidden></div>
       </div>
     `;
   }
