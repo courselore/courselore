@@ -530,11 +530,11 @@ export default async function courselore(
                     }
                   `}"
                   onmouseover="${javascript`
-                    logoAnimationTimeOffset += performance.now() - logoAnimationLastStop;
+                    logoAnimationTimeOffset += performance.now();
                     logoAnimationFrame = window.requestAnimationFrame(logoAnimation);
                   `}"
                   onmouseout="${javascript`
-                    logoAnimationLastStop = performance.now();
+                  logoAnimationTimeOffset -= performance.now();
                     window.cancelAnimationFrame(logoAnimationFrame);
                   `}"
                 >
@@ -542,7 +542,6 @@ export default async function courselore(
                   <script>
                     let logoAnimationFrame;
                     let logoAnimationTimeOffset = 0;
-                    let logoAnimationLastStop = 0;
                     const logoAnimationPolyline = document.currentScript.previousElementSibling.querySelector(
                       "polyline"
                     );
