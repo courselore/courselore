@@ -338,9 +338,9 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 
 - For background tasks, such as sending email.
 - Consider follow the **bad practice** of using a database (SQLite, in this case) as a queue.
-    - http://sqlite.1065341.n5.nabble.com/SQLite-is-perfect-for-FILE-based-MESSAGE-QUEUE-td57343.html
-    - https://rdrr.io/cran/liteq/man/liteq.html
-    - https://github.com/kd0kfo/smq/wiki/About-SMQ
+  - http://sqlite.1065341.n5.nabble.com/SQLite-is-perfect-for-FILE-based-MESSAGE-QUEUE-td57343.html
+  - https://rdrr.io/cran/liteq/man/liteq.html
+  - https://github.com/kd0kfo/smq/wiki/About-SMQ
 
 #### Error Pages
 
@@ -567,6 +567,48 @@ Besides the [releases](https://github.com/courselore/courselore/releases), you m
 </details>
 
 ### Meetings
+
+<details>
+<summary>2021-02-27</summary>
+
+- Threads are working.
+- Worked on styles & the small details:
+  - Text editor.
+  - Relative time (for example, `3 hours ago`).
+  - Logo animation.
+  - Buttons go into a ‘loading’ state to prevent double-submission.
+  - Links change color.
+- Started an utility to process CSS.
+- Multiplatform testing & development setup.
+- What should I work on next?
+  - Options:
+    - More forum-related features:
+      - Notifications on updates
+      - Anonymity.
+      - Tags.
+      - Instructor endorsed answers.
+    - More onboarding features:
+      - Invitations.
+  - Answers:
+    - For next week:
+      - Threads list on a column on the left.
+      - Tab on the text editor.
+      - Make entries more lightweight.
+      - Why isn’t the home two column?
+      - Onboarding is broken.
+    - Long-term:
+      - Anonymity.
+      - Search.
+      - Filtering.
+        - Only show my posts.
+      - Nested posts.
+      - Chat.
+        - Integrated with the forum, not as two modalities.
+        - A chat could be just another thread.
+      - Groups.
+      - Pin conversations.
+
+</details>
 
 <details>
 <summary>2021-02-20</summary>
