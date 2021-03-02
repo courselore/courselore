@@ -113,9 +113,7 @@ export default async function courselore(
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
-                max-width: 600px;
-                padding: 0 1em;
-                margin: 1em auto;
+                margin: 0;
               }
 
               code {
@@ -143,7 +141,7 @@ export default async function courselore(
               /* TODO: Do something about other styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
               pre,
               div.math-display {
-                overflow: scroll;
+                overflow: auto;
               }
 
               pre {
@@ -465,21 +463,31 @@ export default async function courselore(
       return app.get("layout base")(
         head,
         html`
-          <header>
+          <div
+            style="${css`
+              width: 100vw;
+              height: 100vh;
+              display: grid;
+              grid-template-columns: 400px auto;
+            `}"
+          >
             <div
               style="${css`
-                display: flex;
-                justify-content: space-${user === undefined ? "around" : "between"};
-                align-items: center;
+                border-right: 1px solid silver;
+                overflow: auto;
+                display: grid;
+                grid-template-rows: min-content auto;
               `}"
             >
-              <nav
+              <header
                 style="${css`
-                  display: flex;
+                  border-bottom: 1px solid silver;
+                  padding: 1em;
                 `}"
               >
                 <a
                   href="${app.get("url")}"
+                  class="undecorated"
                   style="${css`
                     color: #83769c;
                     display: flex;
@@ -490,13 +498,13 @@ export default async function courselore(
                     }
                   `}"
                   onmouseover="${javascript`
-                    logoAnimationTimeOffset += performance.now();
-                    logoAnimationFrame = window.requestAnimationFrame(logoAnimation);
-                  `}"
+                logoAnimationTimeOffset += performance.now();
+                logoAnimationFrame = window.requestAnimationFrame(logoAnimation);
+              `}"
                   onmouseout="${javascript`
-                  logoAnimationTimeOffset -= performance.now();
-                    window.cancelAnimationFrame(logoAnimationFrame);
-                  `}"
+              logoAnimationTimeOffset -= performance.now();
+                window.cancelAnimationFrame(logoAnimationFrame);
+              `}"
                 >
                   $${logo}
                   <script>
@@ -534,64 +542,154 @@ export default async function courselore(
                     >CourseLore</span
                   >
                 </a>
-              </nav>
-              $${user === undefined
-                ? html``
-                : html`
-                    <nav>
-                      <button
-                        type="button"
-                        style="${css`
-                          transition: background-color 0.2s;
+              </header>
+              <div
+                style="${css`
+                  overflow: auto;
+                  padding: 1em;
+                `}"
+              >
+                Section: Eiusmod magna elit nulla incididunt pariatur. Eu duis esse excepteur aliquip in velit ea. Cupidatat laborum nostrud incididunt commodo reprehenderit ad quis cillum non aute.
 
-                          &:hover {
-                            background-color: #e66c98;
-                          }
+Veniam fugiat laboris labore culpa culpa do pariatur officia enim do eiusmod. Ea veniam tempor duis mollit et duis ex minim aliqua nostrud proident duis. Voluptate aute aute cupidatat et mollit eu sit. Lorem ut consequat ad eu tempor est cupidatat aliquip eiusmod. Cillum consectetur mollit labore occaecat proident sint ea excepteur ex laborum Lorem voluptate.
 
-                          &:active {
-                            background-color: #cc6088;
-                          }
-                        `}"
-                        onclick="${javascript`
-                          const target = document.querySelector("#signed-in-menu");
-                          target.hidden = !target.hidden;
-                          enableButton(this);
-                        `}"
-                      >
-                        ${user.name[0]}
-                      </button>
-                    </nav>
-                  `}
+Dolor proident sit veniam cillum culpa aliqua anim laboris enim est mollit officia deserunt culpa. Commodo excepteur nostrud ut ullamco ullamco sit id occaecat. Cupidatat dolor laboris non esse cupidatat labore commodo esse ipsum.
+
+Occaecat voluptate nisi ut ullamco sit consectetur aute sit sint excepteur quis proident. Eu aliqua qui et sunt ad laborum cupidatat dolore tempor. Magna consequat nulla esse occaecat do veniam consequat mollit anim. Duis ullamco sunt excepteur anim amet adipisicing sit qui dolore officia. Esse sunt dolor exercitation sint fugiat reprehenderit. Id commodo commodo elit sint velit Lorem. Quis et magna Lorem nostrud.
+
+Eiusmod proident voluptate aute excepteur eu duis. Id Lorem deserunt sint deserunt laborum veniam labore deserunt sunt qui magna fugiat sint cillum. Voluptate sint amet voluptate id fugiat id occaecat aliquip tempor voluptate sint nulla.
+
+Incididunt consequat est anim amet elit ad proident eu sint ex laboris. Adipisicing est dolor ex Lorem cupidatat aliquip ullamco cillum consectetur minim nulla tempor. Velit laboris anim culpa dolore nisi irure eiusmod veniam et dolore. Incididunt eu aute proident mollit tempor. Lorem ea laboris ullamco est dolore irure dolore ex elit velit. Dolor fugiat aliqua sit reprehenderit non deserunt id dolore amet.
+
+Consectetur velit excepteur pariatur adipisicing eiusmod sit incididunt cupidatat. Culpa consectetur aliqua dolore occaecat duis aliqua magna quis in exercitation laboris irure nulla amet. Magna ullamco nisi sint sit aliqua anim tempor esse et laborum eu aliqua proident. Id est anim et labore non minim ea sit exercitation tempor. Ut reprehenderit pariatur consequat sunt. Dolore amet mollit adipisicing nulla excepteur qui.
+
+Esse nostrud excepteur anim tempor. Veniam voluptate est esse incididunt eu aliquip anim. Commodo officia esse proident Lorem amet excepteur exercitation enim culpa et labore adipisicing. Ex elit nisi est officia laboris commodo dolor nostrud anim sit tempor elit aliquip ullamco. Proident dolore anim tempor dolore anim eiusmod occaecat dolor quis magna reprehenderit nisi ea sit.
+
+Occaecat labore ad mollit culpa excepteur est ea id pariatur cillum elit enim. Excepteur id qui ut duis amet eiusmod. Fugiat eu reprehenderit do excepteur nostrud duis magna nostrud aliquip laborum. Ullamco in Lorem ad proident ad sunt. Nulla ut aliqua officia eu culpa ut. Sit ad nostrud proident sit enim velit culpa pariatur sint est aliqua culpa. Ea adipisicing nisi id ipsum.
+
+Officia esse nulla excepteur laborum. Tempor adipisicing occaecat non minim velit esse mollit aliquip. Tempor in enim dolore id est cillum Lorem eu nostrud do elit Lorem culpa voluptate. Est irure pariatur aliquip sint reprehenderit dolor nostrud. Laborum irure laboris reprehenderit ad cillum fugiat eu. Magna pariatur minim aliqua exercitation sunt enim reprehenderit aliqua qui consectetur. Enim commodo incididunt consequat labore.
+              </div>
             </div>
-            $${user === undefined
-              ? html``
-              : html`
-                  <div id="signed-in-menu" hidden>
-                    <nav>
-                      <p>${user.name} ${`<${req.session!.email}>`}</p>
-                      <form method="post" action="${app.get("url")}/sign-out">
-                        <p><button class="a">Sign out</button></p>
-                      </form>
-                    </nav>
-                  </div>
-                `}
-            $${course === undefined
-              ? html``
-              : html`
-                  <h1>
-                    <a
-                      href="${app.get("url")}/${req.params.courseReference}"
-                      class="undecorated"
-                    >
-                      ${course.name}${enrollment === undefined
-                        ? html``
-                        : html` (${enrollment.role})`}
-                    </a>
-                  </h1>
-                `}
-          </header>
-          <main>$${body}</main>
-          <footer><!-- TODO: Put stuff here --></footer>
+            <main
+              style="${css`
+                overflow: auto;
+                padding: 1em;
+              `}"
+            >
+              Main: Nulla est sint voluptate reprehenderit reprehenderit elit
+              laborum irure amet enim nostrud ex eu. Tempor laboris nulla Lorem
+              excepteur dolore fugiat culpa sit irure quis ullamco. Ut eu
+              eiusmod dolore ex dolore do excepteur. Ad mollit veniam ad Lorem
+              pariatur veniam et esse ad dolor. Et consectetur est ut ipsum sit
+              magna occaecat. Nulla nulla ut duis quis ullamco sint irure aliqua
+              cupidatat nostrud veniam esse ullamco nisi. Dolore irure
+              consectetur tempor eiusmod sit irure ut voluptate. Fugiat esse
+              reprehenderit aute minim voluptate duis minim voluptate. Dolore
+              excepteur consequat magna laboris in sint id cillum. Dolor ipsum
+              nostrud id sint labore in mollit quis adipisicing amet enim
+              laboris consectetur. Aliqua ullamco qui reprehenderit cillum
+              veniam id mollit velit aliquip deserunt labore non et. Cupidatat
+              veniam commodo pariatur occaecat magna minim laboris ex laborum in
+              enim. Ullamco ut duis deserunt irure nostrud commodo culpa quis.
+              Nisi dolor minim eu est id quis. Incididunt voluptate commodo ut
+              exercitation ut velit irure. Velit ea aliqua quis deserunt in
+              labore est incididunt mollit incididunt do. Mollit mollit sit
+              pariatur et consectetur nostrud sunt et consectetur qui. Deserunt
+              culpa adipisicing anim velit officia ullamco fugiat laborum sunt
+              eiusmod labore minim Lorem. Deserunt aute eiusmod consectetur
+              reprehenderit ex laborum ullamco mollit nostrud amet. Exercitation
+              incididunt labore ea duis cillum nostrud mollit irure
+              reprehenderit veniam magna sint et est. Do anim ipsum exercitation
+              duis nostrud laborum pariatur cupidatat culpa sit nulla dolore est
+              laboris. Culpa do laborum ex exercitation pariatur aliquip
+              consequat minim reprehenderit eu occaecat aute exercitation.
+              Mollit officia aute tempor sunt ullamco adipisicing. In commodo
+              officia voluptate voluptate duis magna ex. Nisi et laborum eu
+              aliqua enim dolor nostrud cillum consequat. Dolore consectetur
+              cupidatat exercitation incididunt elit sunt proident id nisi.
+              Labore mollit tempor id quis et aliquip tempor. Veniam esse
+              reprehenderit voluptate dolor nulla dolore voluptate. Elit non
+              cillum cillum quis sint cillum deserunt Lorem consequat. Eiusmod
+              cupidatat esse fugiat ex aliqua. Incididunt irure non adipisicing
+              do laborum irure ullamco commodo officia. Eu adipisicing anim
+              reprehenderit consectetur non sunt Lorem adipisicing duis quis
+              anim fugiat. Ex ea commodo cupidatat in culpa. Ipsum eu est quis
+              deserunt consequat eiusmod enim ullamco sunt dolore in.
+              Consectetur dolor cupidatat aliqua culpa ea ea dolor voluptate in
+              commodo in aliqua. Cillum in velit ex duis veniam fugiat et sit eu
+              aliqua do dolore. Adipisicing nostrud dolor nostrud fugiat tempor
+              esse magna voluptate Lorem. Labore qui ea dolore dolore cupidatat.
+              Incididunt id occaecat id laboris est minim voluptate cillum.
+              Aliqua minim eu magna aliqua id cillum dolor pariatur deserunt
+              consectetur occaecat id Lorem culpa. Excepteur veniam id labore
+              magna nisi fugiat sit eiusmod tempor exercitation. Ipsum culpa
+              esse id dolor in laboris exercitation elit commodo. Enim est
+              officia aute adipisicing nostrud esse ipsum. Aliquip magna laboris
+              irure do elit. Ex dolor veniam laboris ullamco elit laboris.
+              Voluptate ipsum et id pariatur deserunt consectetur labore irure
+              Lorem cupidatat tempor reprehenderit fugiat. Dolor deserunt nulla
+              proident sint ipsum officia non id. Consequat adipisicing
+              consectetur minim minim non in duis reprehenderit eu nisi. Ad in
+              pariatur excepteur velit veniam consectetur incididunt adipisicing
+              aliqua officia eiusmod eiusmod. Culpa voluptate ea incididunt
+              laboris non duis minim incididunt quis et consequat dolor aute
+              quis. Cupidatat do veniam sunt id eu commodo non velit fugiat
+              dolor ipsum. Ut amet sint exercitation in. Ex sunt elit mollit
+              enim est voluptate ex non adipisicing Lorem. Dolor do anim aliqua
+              quis aliqua minim sint non do veniam. Nisi eu commodo fugiat
+              mollit anim. Ullamco amet quis et excepteur consequat laboris
+              consectetur enim ut do. Cupidatat eiusmod cillum veniam ut dolor
+              et culpa magna in. Exercitation fugiat incididunt eu sunt aute.
+              Amet ullamco id sunt id enim. Ea magna nisi id laboris. Amet non
+              commodo nostrud ad ullamco occaecat consectetur eu. Sunt consequat
+              velit dolore officia ea. Ipsum fugiat esse non anim enim eu
+              laboris et ullamco ullamco culpa aliquip. Consectetur laborum anim
+              esse dolor labore tempor nisi nulla sint. Incididunt reprehenderit
+              veniam elit sint minim voluptate minim eiusmod duis minim labore.
+              Nulla aliqua ex sunt deserunt duis anim sint sit eiusmod aliqua
+              pariatur elit irure et. Nulla Lorem ad cillum culpa exercitation.
+              Pariatur veniam cupidatat ullamco minim in ad dolor culpa labore
+              reprehenderit cillum. Occaecat consequat dolore Lorem ullamco
+              dolore ut in. Ullamco consectetur aliquip labore reprehenderit
+              amet laborum irure Lorem cupidatat dolor dolor et consequat. Eu
+              sit exercitation exercitation dolor. Nisi eu duis qui labore est
+              fugiat ex minim ut pariatur esse. Esse Lorem labore anim laboris.
+              Aliquip aliquip reprehenderit eu ad mollit laborum cillum duis
+              reprehenderit sunt. Nostrud elit esse et tempor exercitation
+              consequat enim et ad irure. Dolor occaecat sunt ipsum labore
+              fugiat deserunt consectetur nisi adipisicing. Mollit dolor aute
+              pariatur adipisicing quis enim excepteur. Et velit eu minim eu
+              aliqua amet occaecat laborum nisi irure culpa tempor. Exercitation
+              aliqua et cupidatat nisi cillum eu. Anim nisi id nulla culpa esse
+              Lorem elit anim ad officia. Labore Lorem sint est sint minim
+              occaecat consectetur mollit proident et deserunt eu nostrud. Enim
+              veniam fugiat laborum aliquip quis dolor deserunt. Est irure aute
+              ad cupidatat id dolor esse aute sint. Ex id ad deserunt et
+              cupidatat fugiat deserunt. Fugiat consequat est esse cupidatat
+              adipisicing irure cillum id aliqua cillum. Consectetur
+              reprehenderit velit reprehenderit minim Lorem pariatur. Laboris
+              cillum nulla irure exercitation magna exercitation labore elit
+              duis sit nulla occaecat non est. Fugiat proident ex duis ad sunt
+              nulla dolor in id laboris aute laboris. Minim pariatur est est
+              dolore laboris adipisicing sunt anim esse quis nostrud. Quis
+              dolore id minim mollit pariatur in irure ad et cupidatat
+              adipisicing laboris sit ut. Ut veniam nulla qui non labore do
+              reprehenderit fugiat commodo. Pariatur qui quis minim Lorem
+              nostrud fugiat sint occaecat ex reprehenderit id consectetur
+              cillum. Lorem eiusmod nisi nulla officia officia et cupidatat in
+              cillum est qui sunt quis. Incididunt esse Lorem quis irure fugiat
+              excepteur minim id adipisicing consequat aliquip in. Magna cillum
+              irure elit aute enim ad. Officia ea excepteur magna pariatur
+              tempor duis. Occaecat mollit elit incididunt excepteur anim. Quis
+              et laborum ea occaecat officia do pariatur aute exercitation
+              dolore. Ipsum ut labore pariatur eu sint. Occaecat sit duis non eu
+              culpa. Commodo veniam reprehenderit sunt amet exercitation minim
+              eu proident. Duis elit ipsum nisi consectetur aliqua minim
+              adipisicing tempor magna aute officia ullamco. Ea occaecat
+              reprehenderit do id sit sunt dolore ea. Officia excepteur do magna
+              ea in Lorem.
+            </main>
+          </div>
         `
       );
     }
