@@ -353,10 +353,9 @@ export default async function courselore(
               );
               function enableButton(element) {
                 window.setTimeout(() => {
-                  if (event.target.matches("button"))
-                    event.target.disabled = false;
-                  else if (event.target.matches("a.button"))
-                    event.target.classList.remove("disabled");
+                  if (element.matches("button")) element.disabled = false;
+                  else if (element.matches("a.button"))
+                    element.classList.remove("disabled");
                 }, 0);
               }
             </script>
