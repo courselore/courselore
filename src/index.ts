@@ -108,10 +108,8 @@ export default async function courselore(
                 #29adff
               */
 
-              /* TODO: Do something about styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
-
               body {
-                font-size: 14px;
+                font-size: small;
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
@@ -137,25 +135,23 @@ export default async function courselore(
 
               h1 {
                 line-height: 1.2;
-                font-size: 1.5em;
+                font-size: large;
                 font-weight: 800;
                 margin-top: 1.5em;
               }
 
+              /* TODO: Do something about other styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
               pre,
-              .math-display {
+              div.math-display {
                 overflow: scroll;
               }
 
               pre {
-                font-size: 0.857em;
                 line-height: 1.3;
-                background-color: transparent !important;
               }
 
-              .box,
-              .demonstration,
-              .TODO,
+              div.demonstration,
+              div.TODO,
               input,
               textarea {
                 border: 1px solid darkgray;
@@ -163,31 +159,23 @@ export default async function courselore(
                 box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
               }
 
-              .box,
-              .demonstration,
-              .TODO {
+              div.demonstration,
+              div.TODO {
+                background-color: whitesmoke;
                 box-sizing: border-box;
                 padding: 0 1em;
-                margin-bottom: 1em;
               }
 
-              .demonstration,
-              .TODO {
-                background-color: whitesmoke;
-              }
-
-              .TODO::before {
+              div.TODO::before {
                 content: "TODO";
-                font-weight: 700;
+                font-weight: bold;
                 display: block;
                 margin-top: 0.5em;
               }
 
               input,
               textarea,
-              button,
-              .button,
-              .button--outline {
+              button {
                 font-family: "Public Sans", sans-serif;
                 font-size: 1em;
                 line-height: 1.5;
@@ -197,7 +185,6 @@ export default async function courselore(
 
               input,
               textarea {
-                background-color: transparent;
                 padding: 0.2em 1em;
                 transition: border-color 0.2s;
               }
@@ -223,12 +210,12 @@ export default async function courselore(
               }
 
               a,
-              .a {
+              button.a {
                 color: inherit;
                 transition: color 0.2s;
               }
 
-              .a {
+              button.a {
                 text-decoration: underline;
                 background-color: inherit;
                 display: inline;
@@ -237,15 +224,14 @@ export default async function courselore(
               }
 
               a:hover,
-              .a:hover {
+              button.a:hover {
                 color: #ff77a8;
               }
 
               a.undecorated,
               a.button,
-              a.button--outline,
               nav a,
-              nav .a {
+              nav button.a {
                 text-decoration: none;
               }
 
@@ -256,20 +242,16 @@ export default async function courselore(
                 border: 0;
               }
 
-              button,
-              .button,
-              .button--outline {
+              button {
                 cursor: pointer;
               }
 
-              .button,
-              .button--outline {
+              a.button {
                 display: inline-block;
               }
 
-              button:not(.undecorated):not(.a):not(.avatar),
-              .button,
-              .button--outline {
+              button:not(.undecorated):not(.a),
+              a.button {
                 color: white;
                 background-color: #83769c;
                 padding: 0.2em 1em;
@@ -280,46 +262,30 @@ export default async function courselore(
                 transition-duration: 0.2s;
               }
 
-              .button--outline:not(.undecorated):not(.a):not(.avatar) {
+              button:not(.undecorated):not(.a).outline,
+              a.button.outline {
                 color: #83769c;
                 background-color: white;
               }
 
-              button:not(.undecorated):not(.a):not(.avatar):hover,
-              .button:hover,
-              .button--outline:not(.undecorated):not(.a):not(.avatar):hover {
+              button:not(.undecorated):not(.a):hover,
+              a.button:hover {
                 color: white;
                 background-color: #6e6382;
               }
 
-              button:not(.undecorated):not(.a):not(.avatar):active,
-              .button:active,
-              .button--outline:not(.undecorated):not(.a):not(.avatar):active {
+              button:not(.undecorated):not(.a):active,
+              a.button:active {
                 color: white;
                 background-color: #584f69;
               }
 
-              button:not(.undecorated):not(.a):not(.avatar):disabled,
-              .button.disabled,
-              .button--outline:not(.undecorated):not(.a):not(.avatar).disabled {
+              button:not(.undecorated):not(.a):disabled,
+              a.button.disabled {
                 color: dimgray;
                 background-color: whitesmoke;
                 border-color: dimgray;
                 cursor: wait;
-              }
-
-              .avatar {
-                font-weight: 700;
-                text-align: center;
-                color: white;
-                background-color: #ff77a8;
-                display: inline-block;
-                width: 30px;
-                line-height: 30px;
-                padding: 0;
-                border: 1px solid #ff77a8;
-                border-radius: 50%;
-                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
               }
 
               [hidden] {
@@ -377,12 +343,9 @@ export default async function courselore(
                 "click",
                 (event) => {
                   window.setTimeout(() => {
-                    if (event.target.tagName === "BUTTON")
+                    if (event.target.matches("button"))
                       event.target.disabled = true;
-                    else if (
-                      event.target.classList.contains("button") ||
-                      event.target.classList.contains("button--outline")
-                    )
+                    else if (event.target.matches("a.button"))
                       event.target.classList.add("disabled");
                   }, 0);
                 },
@@ -390,12 +353,10 @@ export default async function courselore(
               );
               function enableButton(element) {
                 window.setTimeout(() => {
-                  if (element.tagName === "BUTTON") element.disabled = false;
-                  else if (
-                    element.classList.contains("button") ||
-                    element.classList.contains("button--outline")
-                  )
-                    element.classList.remove("disabled");
+                  if (event.target.matches("button"))
+                    event.target.disabled = false;
+                  else if (event.target.matches("a.button"))
+                    event.target.classList.remove("disabled");
                 }, 0);
               }
             </script>
@@ -567,7 +528,7 @@ export default async function courselore(
                   </script>
                   <span
                     style="${css`
-                      font-size: 1.5em;
+                      font-size: large;
                       font-weight: 800;
                       margin-left: 0.3em;
                     `}"
@@ -581,7 +542,6 @@ export default async function courselore(
                     <nav>
                       <button
                         type="button"
-                        class="avatar"
                         style="${css`
                           transition: background-color 0.2s;
 
@@ -641,7 +601,8 @@ export default async function courselore(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
   );
-  const loading = ((counter) => {
+  const loading = (() => {
+    let counter = 0;
     return () => {
       counter++;
       const id = `loading-gradient-${counter}`;
@@ -691,7 +652,7 @@ export default async function courselore(
         </div>
       `;
     };
-  })(0);
+  })();
 
   app.set(
     "text processor",
@@ -884,7 +845,7 @@ export default async function courselore(
           `,
           html`
             <p>
-              <a href="${app.get("url")}/sign-in" class="button--outline"
+              <a href="${app.get("url")}/sign-in" class="button outline"
                 >Sign in</a
               >
               <a href="${app.get("url")}/sign-up" class="button">Sign up</a>
@@ -1544,7 +1505,7 @@ export default async function courselore(
               transition-property: font-weight, color;
 
               &:disabled {
-                font-weight: 700;
+                font-weight: bold;
                 color: black;
               }
             }
@@ -1599,21 +1560,24 @@ export default async function courselore(
           <p
             style="${css`
               text-align: right;
-              font-size: smaller;
               color: dimgray;
               margin-top: -0.3em;
             `}"
           >
-            <a
-              href="https://guides.github.com/features/mastering-markdown/"
-              class="undecorated"
-              >Markdown</a
-            >
-            &
-            <a href="https://katex.org/docs/supported.html" class="undecorated"
-              >LaTeX</a
-            >
-            are supported
+            <small>
+              <a
+                href="https://guides.github.com/features/mastering-markdown/"
+                class="undecorated"
+                >Markdown</a
+              >
+              &
+              <a
+                href="https://katex.org/docs/supported.html"
+                class="undecorated"
+                >LaTeX</a
+              >
+              are supported
+            </small>
           </p>
         </div>
 
@@ -1728,8 +1692,7 @@ export default async function courselore(
               ${thread.title}
               <small
                 style="${css`
-                  font-size: 0.75em;
-                  font-weight: 400;
+                  font-weight: normal;
                   color: gray;
                 `}"
               >
@@ -1771,15 +1734,8 @@ export default async function courselore(
                   authorName,
                   content,
                 }) => html`
-                  <section id="${postReference}" class="box">
+                  <section id="${postReference}">
                     <p>
-                      <span
-                        class="avatar"
-                        style="${css`
-                          margin-right: 0.5em;
-                        `}"
-                        >${authorName?.[0] ?? "G"}</span
-                      >
                       <strong>${authorName ?? "Ghost"}</strong>
                       <span
                         style="${css`
