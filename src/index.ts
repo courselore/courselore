@@ -228,8 +228,7 @@ export default async function courselore(
 
               a.undecorated,
               a.button,
-              nav a,
-              nav button.a {
+              button.a.undecorated {
                 text-decoration: none;
               }
 
@@ -460,7 +459,12 @@ export default async function courselore(
         `
       );
 
-      if (course === undefined || enrollment === undefined) return html`FIXME`;
+      if (
+        user === undefined ||
+        course === undefined ||
+        enrollment === undefined
+      )
+        return html`FIXME`;
 
       return app.get("layout base")(
         head,
@@ -487,7 +491,13 @@ export default async function courselore(
                   padding: 0 1em;
                 `}"
               >
-                <p>
+                <p
+                  style="${css`
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  `}"
+                >
                   <a
                     href="${app.get("url")}"
                     class="undecorated"
@@ -546,6 +556,17 @@ export default async function courselore(
                       >CourseLore</span
                     >
                   </a>
+                  <button
+                    type="button"
+                    class="a undecorated"
+                    onclick="${javascript`
+                      const target = document.querySelector("#signed-in-menu");
+                      target.hidden = !target.hidden;
+                      enableButton(this);
+                    `}"
+                  >
+                    ☰
+                  </button>
                 </p>
                 <p>
                   <strong>
@@ -557,6 +578,12 @@ export default async function courselore(
                     </a></strong
                   >
                 </p>
+                <div id="signed-in-menu" hidden>
+                  <p>${user.name} ${`<${req.session!.email}>`}</p>
+                  <form method="post" action="${app.get("url")}/sign-out">
+                    <p><button class="a undecorated">Sign out</button></p>
+                  </form>
+                </div>
               </header>
               <div
                 style="${css`
@@ -582,10 +609,10 @@ export default async function courselore(
                   }>(
                     sql`
                       SELECT "threads"."createdAt" AS "createdAt",
-                            "threads"."updatedAt" AS "updatedAt",
-                            "threads"."reference" AS "reference",
-                            "author"."name" AS "authorName",
-                            "threads"."title" AS "title"
+                             "threads"."updatedAt" AS "updatedAt",
+                             "threads"."reference" AS "reference",
+                             "author"."name" AS "authorName",
+                             "threads"."title" AS "title"
                       FROM "threads"
                       JOIN "courses" ON "threads"."course" = "courses"."id"
                       LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
