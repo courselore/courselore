@@ -779,10 +779,6 @@ export default async function courselore(
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
 
-  app.use((req, res, next) => {
-    setTimeout(next, 2000);
-  });
-
   // FIXME:
   // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
   // https://www.npmjs.com/package/cookie-session
