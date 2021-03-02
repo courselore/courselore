@@ -460,6 +460,8 @@ export default async function courselore(
         `
       );
 
+      if (course === undefined || enrollment === undefined) return html`FIXME`;
+
       return app.get("layout base")(
         head,
         html`
@@ -485,10 +487,7 @@ export default async function courselore(
                   padding: 0 1em;
                 `}"
               >
-                <p
-                  style="${css`
-                  `}"
-                >
+                <p>
                   <a
                     href="${app.get("url")}"
                     class="undecorated"
@@ -502,13 +501,13 @@ export default async function courselore(
                       }
                     `}"
                     onmouseover="${javascript`
-                logoAnimationTimeOffset += performance.now();
-                logoAnimationFrame = window.requestAnimationFrame(logoAnimation);
-              `}"
+                      logoAnimationTimeOffset += performance.now();
+                      logoAnimationFrame = window.requestAnimationFrame(logoAnimation);
+                    `}"
                     onmouseout="${javascript`
-              logoAnimationTimeOffset -= performance.now();
-                window.cancelAnimationFrame(logoAnimationFrame);
-              `}"
+                      logoAnimationTimeOffset -= performance.now();
+                      window.cancelAnimationFrame(logoAnimationFrame);
+                    `}"
                   >
                     $${logo}
                     <script>
@@ -548,23 +547,16 @@ export default async function courselore(
                     >
                   </a>
                 </p>
-                $${course === undefined
-                  ? html``
-                  : html`
-                      <p>
-                        <strong>
-                          <a
-                            href="${app.get("url")}/${req.params
-                              .courseReference}"
-                            class="undecorated"
-                          >
-                            ${course.name}${enrollment === undefined
-                              ? html``
-                              : html` (${enrollment.role})`}
-                          </a></strong
-                        >
-                      </p>
-                    `}
+                <p>
+                  <strong>
+                    <a
+                      href="${app.get("url")}/${req.params.courseReference}"
+                      class="undecorated"
+                    >
+                      ${course.name} (${enrollment.role})
+                    </a></strong
+                  >
+                </p>
               </header>
               <div
                 style="${css`
@@ -572,63 +564,69 @@ export default async function courselore(
                   padding: 0 1em;
                 `}"
               >
-                Section: Eiusmod magna elit nulla incididunt pariatur. Eu duis
-                esse excepteur aliquip in velit ea. Cupidatat laborum nostrud
-                incididunt commodo reprehenderit ad quis cillum non aute. Veniam
-                fugiat laboris labore culpa culpa do pariatur officia enim do
-                eiusmod. Ea veniam tempor duis mollit et duis ex minim aliqua
-                nostrud proident duis. Voluptate aute aute cupidatat et mollit
-                eu sit. Lorem ut consequat ad eu tempor est cupidatat aliquip
-                eiusmod. Cillum consectetur mollit labore occaecat proident sint
-                ea excepteur ex laborum Lorem voluptate. Dolor proident sit
-                veniam cillum culpa aliqua anim laboris enim est mollit officia
-                deserunt culpa. Commodo excepteur nostrud ut ullamco ullamco sit
-                id occaecat. Cupidatat dolor laboris non esse cupidatat labore
-                commodo esse ipsum. Occaecat voluptate nisi ut ullamco sit
-                consectetur aute sit sint excepteur quis proident. Eu aliqua qui
-                et sunt ad laborum cupidatat dolore tempor. Magna consequat
-                nulla esse occaecat do veniam consequat mollit anim. Duis
-                ullamco sunt excepteur anim amet adipisicing sit qui dolore
-                officia. Esse sunt dolor exercitation sint fugiat reprehenderit.
-                Id commodo commodo elit sint velit Lorem. Quis et magna Lorem
-                nostrud. Eiusmod proident voluptate aute excepteur eu duis. Id
-                Lorem deserunt sint deserunt laborum veniam labore deserunt sunt
-                qui magna fugiat sint cillum. Voluptate sint amet voluptate id
-                fugiat id occaecat aliquip tempor voluptate sint nulla.
-                Incididunt consequat est anim amet elit ad proident eu sint ex
-                laboris. Adipisicing est dolor ex Lorem cupidatat aliquip
-                ullamco cillum consectetur minim nulla tempor. Velit laboris
-                anim culpa dolore nisi irure eiusmod veniam et dolore.
-                Incididunt eu aute proident mollit tempor. Lorem ea laboris
-                ullamco est dolore irure dolore ex elit velit. Dolor fugiat
-                aliqua sit reprehenderit non deserunt id dolore amet.
-                Consectetur velit excepteur pariatur adipisicing eiusmod sit
-                incididunt cupidatat. Culpa consectetur aliqua dolore occaecat
-                duis aliqua magna quis in exercitation laboris irure nulla amet.
-                Magna ullamco nisi sint sit aliqua anim tempor esse et laborum
-                eu aliqua proident. Id est anim et labore non minim ea sit
-                exercitation tempor. Ut reprehenderit pariatur consequat sunt.
-                Dolore amet mollit adipisicing nulla excepteur qui. Esse nostrud
-                excepteur anim tempor. Veniam voluptate est esse incididunt eu
-                aliquip anim. Commodo officia esse proident Lorem amet excepteur
-                exercitation enim culpa et labore adipisicing. Ex elit nisi est
-                officia laboris commodo dolor nostrud anim sit tempor elit
-                aliquip ullamco. Proident dolore anim tempor dolore anim eiusmod
-                occaecat dolor quis magna reprehenderit nisi ea sit. Occaecat
-                labore ad mollit culpa excepteur est ea id pariatur cillum elit
-                enim. Excepteur id qui ut duis amet eiusmod. Fugiat eu
-                reprehenderit do excepteur nostrud duis magna nostrud aliquip
-                laborum. Ullamco in Lorem ad proident ad sunt. Nulla ut aliqua
-                officia eu culpa ut. Sit ad nostrud proident sit enim velit
-                culpa pariatur sint est aliqua culpa. Ea adipisicing nisi id
-                ipsum. Officia esse nulla excepteur laborum. Tempor adipisicing
-                occaecat non minim velit esse mollit aliquip. Tempor in enim
-                dolore id est cillum Lorem eu nostrud do elit Lorem culpa
-                voluptate. Est irure pariatur aliquip sint reprehenderit dolor
-                nostrud. Laborum irure laboris reprehenderit ad cillum fugiat
-                eu. Magna pariatur minim aliqua exercitation sunt enim
-                reprehenderit aliqua qui consectetur. Enim commodo incididunt
-                consequat labore.
+                <p>
+                  <a
+                    href="${app.get("url")}/${req.params
+                      .courseReference}/threads/new"
+                    class="button"
+                    >New thread</a
+                  >
+                </p>
+                $${database
+                  .all<{
+                    createdAt: string;
+                    updatedAt: string;
+                    reference: string;
+                    authorName: string | undefined;
+                    title: string;
+                  }>(
+                    sql`
+                      SELECT "threads"."createdAt" AS "createdAt",
+                            "threads"."updatedAt" AS "updatedAt",
+                            "threads"."reference" AS "reference",
+                            "author"."name" AS "authorName",
+                            "threads"."title" AS "title"
+                      FROM "threads"
+                      JOIN "courses" ON "threads"."course" = "courses"."id"
+                      LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
+                      LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
+                      WHERE "courses"."reference" = ${req.params.courseReference}
+                      ORDER BY "threads"."reference" DESC
+                    `
+                  )
+                  .map(
+                    ({ createdAt, updatedAt, reference, authorName, title }) =>
+                      html`
+                        <p
+                          style="${css`
+                            line-height: 1.2;
+                          `}"
+                        >
+                          <a
+                            href="${app.get("url")}/${req.params
+                              .courseReference}/threads/${reference}"
+                            class="undecorated"
+                            style="${css`
+                              display: block;
+                            `}"
+                          >
+                            <strong>${title}</strong><br />
+                            <small
+                              style="${css`
+                                color: dimgray;
+                              `}"
+                            >
+                              #${reference} created $${relativeTime(createdAt)}
+                              ${updatedAt !== createdAt
+                                ? html` (and last updated
+                                  $${relativeTime(updatedAt)})`
+                                : html``}
+                              by ${authorName ?? "Ghost"}
+                            </small>
+                          </a>
+                        </p>
+                      `
+                  )}
               </div>
             </div>
             <main
