@@ -591,7 +591,11 @@ export default async function courselore(
                   padding: 0 1em;
                 `}"
               >
-                <p>
+                <p
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
                   <a
                     href="${app.get("url")}/${req.params
                       .courseReference}/threads/new"
