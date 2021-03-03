@@ -23,21 +23,53 @@ jobs:
           name: ${{ matrix.output }}
           path: ${{ matrix.output }}
 
-  # test:
-  #   strategy:
-  #     matrix:
-  #       os:
-  #         - windows
-  #         - macos
-  #         - ubuntu
-  #   runs-on: ${{ matrix.os }}-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 15
-  #     - run: npm install-ci-test
+  test:
+    strategy:
+      matrix:
+        os: [windows, macos, ubuntu]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 15
+      - run: npm install-ci-test
 
+  deploy:
+    if: github.ref == 'refs/heads/master'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 15
+      - run: npm ci --production
+      - run: |
+          cat >> ~/.ssh/known_hosts << "EOF"
+          courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWOjzHPP1v+6gEeRAVzEB7l/RH+mt31heowjiUVNjgTnpT1FDL/T4yqmztwPrzhXUdBAy7M16H+88Padxm+/rJ5qfbw2dH7KtOA4RALYy9ruBl6HFdCf59eh01A97Py/AmxlpXysGAVcdcVjLsr0PvfoEGOqMlohc0sBjCjhoFcqkP9P57Q4Q3gcqgwjNYaZ1BSbI2G6J6kihjN7+b8pFCHCw8fqs7xo+7pDUv/rvqfBTUAFV7sovwQU0bZK6Z8gWXYFGG0NpKVojsKOHCrZpM8pBBDmleisrJhXmnKQ+Lj/JvYuaEM6cHZh6+RH7ua6S9eqlL8EErXf7GZ4SPuTo1ghNJ5H9cR3k8Px4Op5bDIIdPP767jwGHabZJ5Z8l9QnQajq85gcE7E3vZ1yT2BDKQsIDJeNpg1etTgw6hSUlBQsKx8TNaI9nROSnKwKbSI+sGmZlwrx11XimEkvaMaFmSZfpN+ne/2kmjc81Pr0WKb82sIPf3X2KzmWeChkZus8=
+          courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOIhUnh2H/733XnnD4mvaEqKbxbEc9ov3UhlbG7gkQS7vM5TaSSuknZLOGUIx2VWB681y4jn4vG3Wsja9JYPCB0=
+          courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBCGyIA9/oiJt/qrQNeNoIRNKA8CFc/ppPMnrtw2NW+7
+          EOF
+
+          npm prune --production
+          npm dedupe
+          cp $(which node) $(npm bin)
+
+          ssh root@courselore.org "mkdir -p courselore/app/"
+          rsync -a --delete ./ root@courselore.org:courselore/app/
+
+          rsync -a deployment-example/courselore.service root@courselore.org:/etc/systemd/system/
+
+          ssh root@courselore.org << "EOF"
+          systemctl daemon-reload
+          systemctl enable courselore
+          systemctl restart courselore
+          EOF
+        if: github.ref == 'refs/heads/master'
 
   # npm-publish:
   #   needs: test
@@ -53,74 +85,39 @@ jobs:
   #       env:
   #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-
-
   # test:
   #   runs-on: ubuntu-latest
   #   outputs:
   #     upload_url: ${{ steps.create-release.outputs.upload_url }}
   #     tag: ${{ steps.tag.outputs.tag }}
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: webfactory/ssh-agent@v0.4.1
-  #       if: github.ref == 'refs/heads/master'
-  #       with:
-  #         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #     - uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 15
-  #         registry-url: https://registry.npmjs.org/
-  #     - run: npm install-ci-test
-  #     - run: |
-  #         cat >> ~/.ssh/known_hosts << "EOF"
-  #         courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWOjzHPP1v+6gEeRAVzEB7l/RH+mt31heowjiUVNjgTnpT1FDL/T4yqmztwPrzhXUdBAy7M16H+88Padxm+/rJ5qfbw2dH7KtOA4RALYy9ruBl6HFdCf59eh01A97Py/AmxlpXysGAVcdcVjLsr0PvfoEGOqMlohc0sBjCjhoFcqkP9P57Q4Q3gcqgwjNYaZ1BSbI2G6J6kihjN7+b8pFCHCw8fqs7xo+7pDUv/rvqfBTUAFV7sovwQU0bZK6Z8gWXYFGG0NpKVojsKOHCrZpM8pBBDmleisrJhXmnKQ+Lj/JvYuaEM6cHZh6+RH7ua6S9eqlL8EErXf7GZ4SPuTo1ghNJ5H9cR3k8Px4Op5bDIIdPP767jwGHabZJ5Z8l9QnQajq85gcE7E3vZ1yT2BDKQsIDJeNpg1etTgw6hSUlBQsKx8TNaI9nROSnKwKbSI+sGmZlwrx11XimEkvaMaFmSZfpN+ne/2kmjc81Pr0WKb82sIPf3X2KzmWeChkZus8=
-  #         courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOIhUnh2H/733XnnD4mvaEqKbxbEc9ov3UhlbG7gkQS7vM5TaSSuknZLOGUIx2VWB681y4jn4vG3Wsja9JYPCB0=
-  #         courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBCGyIA9/oiJt/qrQNeNoIRNKA8CFc/ppPMnrtw2NW+7
-  #         EOF
-
-  #         npm prune --production
-  #         npm dedupe
-  #         cp $(which node) $(npm bin)
-
-  #         ssh root@courselore.org "mkdir -p courselore/app/"
-  #         rsync -a --delete ./ root@courselore.org:courselore/app/
-
-  #         rsync -a deployment-example/courselore.service root@courselore.org:/etc/systemd/system/
-
-  #         ssh root@courselore.org << "EOF"
-  #         systemctl daemon-reload
-  #         systemctl enable courselore
-  #         systemctl restart courselore
-  #         EOF
-  #       if: github.ref == 'refs/heads/master'
-      # - run: npm publish
-      #   if: startsWith(github.ref, 'refs/tags/v')
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     path: ${{ steps.build.outputs.package }}
-      #     name: courselore-linux-${{ github.sha }}.zip
-      # - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
-      #   if: startsWith(github.ref, 'refs/tags/v')
-      #   id: tag
-      # - uses: actions/create-release@v1
-      #   if: startsWith(github.ref, 'refs/tags/v')
-      #   id: create-release
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ steps.tag.outputs.tag }}
-      #     release_name: Release ${{ steps.tag.outputs.tag }}
-      # - uses: actions/upload-release-asset@v1
-      #   if: startsWith(github.ref, 'refs/tags/v')
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create-release.outputs.upload_url }}
-      #     asset_path: ${{ steps.build.outputs.package }}
-      #     asset_name: courselore-linux-${{ steps.tag.outputs.tag }}.zip
-      #     asset_content_type: application/zip
+  # - run: npm publish
+  #   if: startsWith(github.ref, 'refs/tags/v')
+  #   env:
+  #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  # - uses: actions/upload-artifact@v2
+  #   with:
+  #     path: ${{ steps.build.outputs.package }}
+  #     name: courselore-linux-${{ github.sha }}.zip
+  # - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+  #   if: startsWith(github.ref, 'refs/tags/v')
+  #   id: tag
+  # - uses: actions/create-release@v1
+  #   if: startsWith(github.ref, 'refs/tags/v')
+  #   id: create-release
+  #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   with:
+  #     tag_name: ${{ steps.tag.outputs.tag }}
+  #     release_name: Release ${{ steps.tag.outputs.tag }}
+  # - uses: actions/upload-release-asset@v1
+  #   if: startsWith(github.ref, 'refs/tags/v')
+  #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   with:
+  #     upload_url: ${{ steps.create-release.outputs.upload_url }}
+  #     asset_path: ${{ steps.build.outputs.package }}
+  #     asset_name: courselore-linux-${{ steps.tag.outputs.tag }}.zip
+  #     asset_content_type: application/zip
   # other-operating-systems:
   #   needs: main
   #   strategy:
