@@ -6,9 +6,9 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            output: CourseLore--windows.exe
+            output: courselore--windows.exe
           - os: macos
-            output: CourseLore--macos.app
+            output: courselore--macos
           - os: ubuntu
             output: courselore--linux
     runs-on: ${{ matrix.os }}-latest
