@@ -122,9 +122,9 @@ $ npm version <major|minor|patch>
 $ git push --tags
 ```
 
-### Insider Builds
+### Insiders Builds
 
-Insider Builds are generated on every push. They’re useful for development and testing, and are **not** recommended for regular users. Insider Builds are available as [GitHub Action Artifacts](https://github.com/courselore/courselore/actions) (you must be logged into GitHub to download an Artifact).
+Insiders Builds are generated on every push. They’re useful for development and testing, and are **not** recommended for regular users. Insiders Builds are available as [GitHub Action Artifacts](https://github.com/courselore/courselore/actions) (you must be logged into GitHub to download an Artifact).
 
 ### Roadmap
 

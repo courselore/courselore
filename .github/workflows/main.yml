@@ -1,16 +1,16 @@
 on: push
 jobs:
-  insider-build:
+  insiders-build:
     strategy:
       matrix:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            output: CourseLore.exe
+            output: CourseLore--windows.exe
           - os: macos
-            output: CourseLore.app
+            output: CourseLore--macos.app
           - os: ubuntu
-            output: courselore
+            output: courselore--linux
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
