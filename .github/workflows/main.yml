@@ -9,19 +9,19 @@ jobs:
             caxa:
               output: CourseLore.exe
             upload-artifact:
-              name: CourseLore--windows.exe
+              name: CourseLore--windows--${{ github.sha }}.exe
               path: CourseLore.exe
           - os: macos
             caxa:
               output: CourseLore.app
             upload-artifact:
-              name: CourseLore--macos.app.tgz
+              name: CourseLore--macos--${{ github.sha }}.app.tgz
               path: CourseLore.app.tgz
           - os: ubuntu
             caxa:
               output: courselore
             upload-artifact:
-              name: courselore--linux.tgz
+              name: courselore--linux--${{ github.sha }}.tgz
               path: courselore.tgz
     runs-on: ${{ matrix.os }}-latest
     steps:
@@ -61,9 +61,9 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - uses: actions/download-artifact@v2
         with:
-          name: courselore--linux.tgz
+          name: courselore--linux--${{ github.sha }}.tgz
       - run: |
-          tar -xzf courselore--linux.tgz
+          tar -xzf courselore--linux--${{ github.sha }}.tgz
 
           cat >> ~/.ssh/known_hosts << "EOF"
           courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWOjzHPP1v+6gEeRAVzEB7l/RH+mt31heowjiUVNjgTnpT1FDL/T4yqmztwPrzhXUdBAy7M16H+88Padxm+/rJ5qfbw2dH7KtOA4RALYy9ruBl6HFdCf59eh01A97Py/AmxlpXysGAVcdcVjLsr0PvfoEGOqMlohc0sBjCjhoFcqkP9P57Q4Q3gcqgwjNYaZ1BSbI2G6J6kihjN7+b8pFCHCw8fqs7xo+7pDUv/rvqfBTUAFV7sovwQU0bZK6Z8gWXYFGG0NpKVojsKOHCrZpM8pBBDmleisrJhXmnKQ+Lj/JvYuaEM6cHZh6+RH7ua6S9eqlL8EErXf7GZ4SPuTo1ghNJ5H9cR3k8Px4Op5bDIIdPP767jwGHabZJ5Z8l9QnQajq85gcE7E3vZ1yT2BDKQsIDJeNpg1etTgw6hSUlBQsKx8TNaI9nROSnKwKbSI+sGmZlwrx11XimEkvaMaFmSZfpN+ne/2kmjc81Pr0WKb82sIPf3X2KzmWeChkZus8=
@@ -81,80 +81,64 @@ jobs:
           systemctl restart courselore
           EOF
 
-  # npm-publish:
-  #   needs: test
-  #   if: startsWith(github.ref, 'refs/tags/v')
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 15
-  #         registry-url: https://registry.npmjs.org/
-  #     - run: npm install && npm publish
-  #       env:
-  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  npm-publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 15
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  # test:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     upload_url: ${{ steps.create-release.outputs.upload_url }}
-  #     tag: ${{ steps.tag.outputs.tag }}
-  # - run: npm publish
-  #   if: startsWith(github.ref, 'refs/tags/v')
-  #   env:
-  #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-  # - uses: actions/upload-artifact@v2
-  #   with:
-  #     path: ${{ steps.build.outputs.package }}
-  #     name: courselore-linux-${{ github.sha }}.zip
-  # - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
-  #   if: startsWith(github.ref, 'refs/tags/v')
-  #   id: tag
-  # - uses: actions/create-release@v1
-  #   if: startsWith(github.ref, 'refs/tags/v')
-  #   id: create-release
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #   with:
-  #     tag_name: ${{ steps.tag.outputs.tag }}
-  #     release_name: Release ${{ steps.tag.outputs.tag }}
-  # - uses: actions/upload-release-asset@v1
-  #   if: startsWith(github.ref, 'refs/tags/v')
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #   with:
-  #     upload_url: ${{ steps.create-release.outputs.upload_url }}
-  #     asset_path: ${{ steps.build.outputs.package }}
-  #     asset_name: courselore-linux-${{ steps.tag.outputs.tag }}.zip
-  #     asset_content_type: application/zip
-  # other-operating-systems:
-  #   needs: main
-  #   strategy:
-  #     matrix:
-  #       operating-system:
-  #         - macos
-  #         - windows
-  #   runs-on: ${{ matrix.operating-system }}-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 15
-  #     - run: |
-  #         npm install-ci-test
-  #         node build.js
-  #       id: build
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         path: ${{ steps.build.outputs.package }}
-  #         name: courselore-${{ matrix.operating-system }}-${{ github.sha }}.zip
-  #     - uses: actions/upload-release-asset@v1
-  #       if: startsWith(github.ref, 'refs/tags/v')
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         upload_url: ${{ needs.main.outputs.upload_url }}
-  #         asset_path: ${{ steps.build.outputs.package }}
-  #         asset_name: courselore-${{ matrix.operating-system }}-${{ needs.main.outputs.tag }}.zip
-  #         asset_content_type: application/zip
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [insiders-build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+        id: tag
+      - uses: actions/create-release@v1
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: CourseLore--windows--${{ github.sha }}.exe
+      - uses: actions/download-artifact@v2
+        with:
+          name: CourseLore--macos--${{ github.sha }}.app.tgz
+      - uses: actions/download-artifact@v2
+        with:
+          name: courselore--linux--${{ github.sha }}.tgz
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: CourseLore--windows--${{ github.sha }}.exe
+          asset_name: CourseLore--windows--${{ steps.tag.outputs.tag }}.exe
+          asset_content_type: application/vnd.microsoft.portable-executable
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: CourseLore--macos--${{ github.sha }}.app.tgz
+          asset_name: CourseLore--macos--${{ steps.tag.outputs.tag }}.app.tgz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: courselore--linux--${{ github.sha }}.tgz
+          asset_name: courselore--linux--${{ steps.tag.outputs.tag }}.tgz
+          asset_content_type: application/gzip
