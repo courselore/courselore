@@ -122,9 +122,9 @@ $ npm version <major|minor|patch>
 $ git push --tags
 ```
 
-### Nightly Builds
+### Insider Builds
 
-Besides the [releases](https://github.com/courselore/courselore/releases), you may also download binaries for every commit as [GitHub Action Artifacts](https://github.com/courselore/courselore/actions) (you must be logged into GitHub). These so-called nightly builds are useful to test the bleeding edge before a release, but aren’t recommended for regular users.
+Insider Builds are generated on every push. They’re useful for development and testing, and are **not** recommended for regular users. Insider Builds are available as [GitHub Action Artifacts](https://github.com/courselore/courselore/actions) (you must be logged into GitHub to download an Artifact).
 
 ### Roadmap
 
