@@ -566,6 +566,11 @@ export default async function courselore(
                   <button
                     type="button"
                     class="a undecorated"
+                    style="${css`
+                      button& {
+                        color: dimgray;
+                      }
+                    `}"
                     onclick="${javascript`
                       const target = document.querySelector("#signed-in-menu");
                       target.hidden = !target.hidden;
