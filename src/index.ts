@@ -562,7 +562,7 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  $${logo()}
+                  $${logo(`${app.get("url")}/${req.params.courseReference}`)}
                   <button
                     type="button"
                     class="a undecorated"
@@ -575,16 +575,7 @@ export default async function courselore(
                     ☰
                   </button>
                 </p>
-                <p>
-                  <strong>
-                    <a
-                      href="${app.get("url")}/${req.params.courseReference}"
-                      class="undecorated"
-                    >
-                      ${course.name} (${enrollment.role})
-                    </a></strong
-                  >
-                </p>
+                <p><strong>${course.name}</strong> (${enrollment.role})</p>
                 <div id="signed-in-menu" hidden>
                   <p>
                     <strong>${user.name}</strong> ${`<${req.session!.email}>`}
@@ -693,10 +684,10 @@ export default async function courselore(
     "utf-8"
   );
 
-  function logo(): HTML {
+  function logo(href: string = app.get("url")): HTML {
     return html`
       <a
-        href="${app.get("url")}"
+        href="${href}"
         class="undecorated"
         style="${css`
           color: #83769c;
