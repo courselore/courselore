@@ -722,24 +722,31 @@ export default async function courselore(
           <script>
             (() => {
               const loading = document.currentScript.parentElement;
+              let animationFrame;
+              new MutationObserver(() => {
+                if (loading.hidden) window.cancelAnimationFrame(animationFrame);
+                else animationFrame = window.requestAnimationFrame(animate);
+              }).observe(loading, {
+                attributes: true,
+                attributeFilter: ["hidden"],
+              });
               const polyline = loading.querySelector("polyline");
               const points = polyline
                 .getAttribute("points")
                 .split(" ")
                 .map(Number);
-              window.requestAnimationFrame(function animate(time) {
-                if (!loading.hidden)
-                  polyline.setAttribute(
-                    "points",
-                    points
-                      .map(
-                        (coordinate, index) =>
-                          coordinate + Math.sin(time * 0.005 + index)
-                      )
-                      .join(" ")
-                  );
-                window.requestAnimationFrame(animate);
-              });
+              function animate(time) {
+                polyline.setAttribute(
+                  "points",
+                  points
+                    .map(
+                      (coordinate, index) =>
+                        coordinate + Math.sin(time * 0.005 + index)
+                    )
+                    .join(" ")
+                );
+                animationFrame = window.requestAnimationFrame(animate);
+              }
             })();
           </script>
           <strong
