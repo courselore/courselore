@@ -84,6 +84,7 @@ curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash -
 sudo apt install git build-essential nodejs
 sudo snap install code --classic
 ```
+- Echo brew shellenv & nvm to bashrc as well
 
 - macOS setup:
 

@@ -5,7 +5,7 @@ module.exports = async (require) => {
   const cookieSession = require("cookie-session");
   const { sql } = require("@leafac/sqlite");
   const courselore = require(".").default;
-  const customization = require(path.join(__dirname, "index"))(require);
+  const customization = require(__dirname)(require);
 
   await fs.writeFile(
     path.join(__dirname, "../public/avatar.svg"),
