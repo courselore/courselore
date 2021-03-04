@@ -515,12 +515,9 @@ export default async function courselore(
           `
         );
 
-      const course =
-        req.params.courseReference === undefined
-          ? undefined
-          : database.get<{ name: string }>(
-              sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-            )!;
+      const course = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
 
       const enrollment = database.get<{ role: Role }>(
         sql`
@@ -531,20 +528,7 @@ export default async function courselore(
           WHERE "courses"."reference" = ${req.params.courseReference} AND
                 "users"."email" = ${req.session!.email}
         `
-      );
-
-      if (
-        user === undefined ||
-        course === undefined ||
-        enrollment === undefined
-      )
-        return html`
-          $${logo()}
-          <br />
-          $${loading()}
-          <br />
-          $${loading()}
-        `;
+      )!;
 
       return app.get("layout base")(
         head,
@@ -602,7 +586,14 @@ export default async function courselore(
                   >
                 </p>
                 <div id="signed-in-menu" hidden>
-                  <p>${user.name} ${`<${req.session!.email}>`}</p>
+                  <p>
+                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
+                  </p>
+                  <p>
+                    <a href="${app.get("url")}/courses/new" class="undecorated"
+                      >New course</a
+                    >
+                  </p>
                   <form method="post" action="${app.get("url")}/sign-out">
                     <p><button class="a undecorated">Sign out</button></p>
                   </form>
@@ -701,6 +692,7 @@ export default async function courselore(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
   );
+
   function logo(): HTML {
     return html`
       <a
@@ -761,6 +753,7 @@ export default async function courselore(
       </a>
     `;
   }
+
   const loading = (() => {
     let counter = 0;
     return (): HTML => {
