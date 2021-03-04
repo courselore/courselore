@@ -1003,18 +1003,39 @@ export default async function courselore(
               `}"
             >
               <h1>Sign ${preposition}</h1>
-              <form method="post">
+              <form
+                method="post"
+                style="${css`
+                  max-width: 300px;
+                  margin: 0 auto;
+                  text-align: left;
+
+                  & input {
+                    box-sizing: border-box;
+                    width: 100%;
+                  }
+                `}"
+              >
                 <p>
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="me@university.edu"
-                    required
-                    autofocus
-                    size="30"
-                  />
+                  <label>
+                    <strong>Email</strong><br />
+                    <input
+                      name="email"
+                      type="email"
+                      placeholder="me@university.edu"
+                      required
+                      autofocus
+                      size="30"
+                    />
+                  </label>
                 </p>
-                <p><button>Continue</button></p>
+                <p
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  <button>Continue</button>
+                </p>
               </form>
               <p>
                 <small>
@@ -1074,20 +1095,26 @@ export default async function courselore(
           res,
           html`<title>Sign ${pretendPreposition} · CourseLore</title>`,
           html`
-            <p>
-              To continue with sign ${pretendPreposition}, check
-              ${req.body.email} and click on the magic
-              sign-${pretendPreposition} link.
-            </p>
-            <form method="post">
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
               <p>
-                <input type="hidden" name="email" value="${req.body.email}" />
-                <small>
-                  Didn’t receive the email? Already checked the spam folder?
-                  <button class="a">Resend</button>.
-                </small>
+                To continue with sign ${pretendPreposition}, check
+                ${req.body.email} and click on the magic
+                sign-${pretendPreposition} link.
               </p>
-            </form>
+              <form method="post">
+                <p>
+                  <input type="hidden" name="email" value="${req.body.email}" />
+                  <small>
+                    Didn’t receive the email? Already checked the spam folder?
+                    <button class="a">Resend</button>.
+                  </small>
+                </p>
+              </form>
+            </div>
             $${sentEmail}
           `
         )
@@ -1152,28 +1179,59 @@ export default async function courselore(
             res,
             html`<title>Sign up · CourseLore</title>`,
             html`
-              <h1>Welcome to CourseLore!</h1>
-              <form method="post" action="${app.get("url")}/users">
-                <p>
+              <div
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                <h1>Welcome to CourseLore!</h1>
+                <form
+                  method="post"
+                  action="${app.get("url")}/users"
+                  style="${css`
+                    max-width: 300px;
+                    margin: 0 auto;
+                    text-align: left;
+
+                    & input {
+                      box-sizing: border-box;
+                      width: 100%;
+                    }
+                  `}"
+                >
                   <input type="hidden" name="token" value="${newToken}" />
-                  <input
-                    type="text"
-                    value="${authenticationToken.email}"
-                    disabled
-                  />
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Your name…"
-                    required
-                    autofocus
-                  />
-                  <button>Create account</button>
-                </p>
-                <div class="TODO">
-                  <p>Ask for more user information here. What information?</p>
-                </div>
-              </form>
+                  <p>
+                    <label>
+                      <strong>Email</strong><br />
+                      <input
+                        type="text"
+                        value="${authenticationToken.email}"
+                        disabled
+                      />
+                    </label>
+                  </p>
+                  <p>
+                    <label
+                      style="${css`
+                        text-align: left;
+                      `}"
+                    >
+                      <strong>Name</strong><br />
+                      <input type="text" name="name" required autofocus />
+                    </label>
+                  </p>
+                  <p
+                    style="${css`
+                      text-align: center;
+                    `}"
+                  >
+                    <button>Create account</button>
+                  </p>
+                </form>
+              </div>
+              <div class="TODO">
+                <p>Ask for more user information here. What information?</p>
+              </div>
             `
           )
         );
