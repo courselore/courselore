@@ -722,7 +722,14 @@ export default async function courselore(
                 padding: 0 1em;
               `}"
             >
-              $${body}
+              <div
+                style="${css`
+                  max-width: 800px;
+                  margin: 0 auto;
+                `}"
+              >
+                $${body}
+              </div>
             </main>
           </div>
         `
