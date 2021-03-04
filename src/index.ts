@@ -208,9 +208,14 @@ export default async function courselore(
               }
 
               a,
+              button.a,
+              summary {
+                transition: color 0.2s;
+              }
+
+              a,
               button.a {
                 color: inherit;
-                transition: color 0.2s;
               }
 
               button.a {
@@ -222,7 +227,8 @@ export default async function courselore(
               }
 
               a:hover,
-              button.a:hover {
+              button.a:hover,
+              summary:hover {
                 color: #ff77a8;
               }
 
@@ -288,6 +294,10 @@ export default async function courselore(
 
               [hidden] {
                 display: none !important;
+              }
+
+              summary {
+                cursor: pointer;
               }
             </style>
             $${head}
@@ -593,6 +603,19 @@ export default async function courselore(
                     ☰
                   </button>
                 </p>
+                <div id="signed-in-menu" hidden>
+                  <p>
+                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
+                  </p>
+                  <p>
+                    <a href="${app.get("url")}/courses/new" class="undecorated"
+                      >New course</a
+                    >
+                  </p>
+                  <form method="post" action="${app.get("url")}/sign-out">
+                    <p><button class="a undecorated">Sign out</button></p>
+                  </form>
+                </div>
                 $${otherCourses.length === 0
                   ? html`
                       <p><strong>${course.name}</strong> (${course.role})</p>
@@ -617,19 +640,6 @@ export default async function courselore(
                         )}
                       </details>
                     `}
-                <div id="signed-in-menu" hidden>
-                  <p>
-                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
-                  </p>
-                  <p>
-                    <a href="${app.get("url")}/courses/new" class="undecorated"
-                      >New course</a
-                    >
-                  </p>
-                  <form method="post" action="${app.get("url")}/sign-out">
-                    <p><button class="a undecorated">Sign out</button></p>
-                  </form>
-                </div>
               </header>
               <div
                 style="${css`
