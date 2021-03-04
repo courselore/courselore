@@ -109,7 +109,7 @@ export default async function courselore(
               */
 
               body {
-                font-size: small;
+                font-size: 14px;
                 line-height: 1.5;
                 font-family: "Public Sans", sans-serif;
                 -webkit-text-size-adjust: 100%;
@@ -341,7 +341,11 @@ export default async function courselore(
                 "click",
                 (event) => {
                   window.setTimeout(() => {
-                    if (event.target.matches("button"))
+                    if (
+                      event.target.matches("button") &&
+                      (event.target.getAttribute("type") === "button" ||
+                        event.target.closest("form").checkValidity())
+                    )
                       event.target.disabled = true;
                     else if (event.target.matches("a.button"))
                       event.target.classList.add("disabled");
@@ -426,18 +430,6 @@ export default async function courselore(
   const cssProcessor = postcss([postcssNested]);
 
   app.set(
-    "layout unauthorized",
-    (
-      req: express.Request,
-      res: express.Response,
-      head: HTML,
-      body: HTML
-    ): HTML => {
-      return html``;
-    }
-  );
-
-  app.set(
     "layout",
     (
       req: express.Request,
@@ -445,14 +437,50 @@ export default async function courselore(
       head: HTML,
       body: HTML
     ): HTML => {
-      const user =
-        req.session!.email === undefined
-          ? undefined
-          : database.get<{ name: string }>(
-              sql`SELECT "name" FROM "users" WHERE "email" = ${
-                req.session!.email
-              }`
-            )!;
+      if (req.session!.email === undefined)
+        return app.get("layout base")(
+          head,
+          html`
+            <div
+              style="${css`
+                max-width: 600px;
+                margin: 0 auto;
+              `}"
+            >
+              <header>
+                <p
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  $${logo()}
+                </p>
+              </header>
+              <main>$${body}</main>
+            </div>
+          `
+        );
+
+      const user = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
+
+      if (req.params.courseReference === undefined)
+        return app.get("layout base")(
+          head,
+          html`
+            <header>
+              <p
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                $${logo()}
+              </p>
+            </header>
+            <main>$${body}</main>
+          `
+        );
 
       const course =
         req.params.courseReference === undefined
@@ -647,7 +675,7 @@ export default async function courselore(
         class="undecorated"
         style="${css`
           color: #83769c;
-          display: flex;
+          display: inline-flex;
           align-items: center;
 
           &:hover {
@@ -937,21 +965,20 @@ export default async function courselore(
         app.get("layout")(
           req,
           res,
+          html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
-            <title>CourseLore · The Open-Source Student Forum</title>
-            <style>
-              main {
+            <div
+              style="${css`
                 text-align: center;
-              }
-            </style>
-          `,
-          html`
-            <p>
-              <a href="${app.get("url")}/sign-in" class="button outline"
-                >Sign in</a
-              >
-              <a href="${app.get("url")}/sign-up" class="button">Sign up</a>
-            </p>
+              `}"
+            >
+              <p>
+                <a href="${app.get("url")}/sign-in" class="button outline"
+                  >Sign in</a
+                >
+                <a href="${app.get("url")}/sign-up" class="button">Sign up</a>
+              </p>
+            </div>
           `
         )
       );
@@ -968,39 +995,38 @@ export default async function courselore(
         app.get("layout")(
           req,
           res,
+          html`<title>Sign ${preposition} · CourseLore</title>`,
           html`
-            <title>Sign ${preposition} · CourseLore</title>
-            <style>
-              main {
+            <div
+              style="${css`
                 text-align: center;
-              }
-            </style>
-          `,
-          html`
-            <h1>Sign ${preposition} to CourseLore</h1>
-            <form method="post">
+              `}"
+            >
+              <h1>Sign ${preposition}</h1>
+              <form method="post">
+                <p>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="me@university.edu"
+                    required
+                    autofocus
+                    size="30"
+                  />
+                </p>
+                <p><button>Continue</button></p>
+              </form>
               <p>
-                <input
-                  name="email"
-                  type="email"
-                  placeholder="me@university.edu"
-                  required
-                  autofocus
-                  size="30"
-                />
+                <small>
+                  ${preposition === "up"
+                    ? "Already have an account?"
+                    : "Don’t have an account yet?"}
+                  <a href="${app.get("url")}/sign-${alternativePreposition}"
+                    >Sign ${alternativePreposition}</a
+                  >.
+                </small>
               </p>
-              <p><button>Continue</button></p>
-            </form>
-            <p>
-              <small>
-                ${preposition === "up"
-                  ? "Already have an account?"
-                  : "Don’t have an account yet?"}
-                <a href="${app.get("url")}/sign-${alternativePreposition}"
-                  >Sign ${alternativePreposition}</a
-                >.
-              </small>
-            </p>
+            </div>
           `
         )
       );
@@ -1097,19 +1123,19 @@ export default async function courselore(
           app.get("layout")(
             req,
             res,
+            html`<title>Sign ${preposition} · CourseLore</title>`,
             html`
-              <title>Sign ${preposition} · CourseLore</title>
-              <style>
-                main {
+              <div
+                style="${css`
                   text-align: center;
-                }
-              </style>
-            `,
-            html`
-              <p>
-                This magic sign-${preposition} link is invalid or has expired.
-                <a href="${app.get("url")}/sign-${preposition}">Start over</a>.
-              </p>
+                `}"
+              >
+                <p>
+                  This magic sign-${preposition} link is invalid or has expired.
+                  <a href="${app.get("url")}/sign-${preposition}">Start over</a
+                  >.
+                </p>
+              </div>
             `
           )
         );
