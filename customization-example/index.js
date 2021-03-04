@@ -139,8 +139,8 @@ module.exports = (require) => {
                 )}
                 <script>
                   (() => {
-                    const ANIMATION_SPEED = 0.001;
-                    const ANIMATION_AMOUNT = 3;
+                    const SPEED = 0.001;
+                    const AMOUNT = 3;
                     const polyline = document.currentScript.previousElementSibling.querySelector(
                       "polyline"
                     );
@@ -148,21 +148,18 @@ module.exports = (require) => {
                       .getAttribute("points")
                       .split(" ")
                       .map(Number);
-                    window.requestAnimationFrame(function animateBackground(
-                      time
-                    ) {
+                    window.requestAnimationFrame(function animate(time) {
                       polyline.setAttribute(
                         "points",
                         points
                           .map(
                             (coordinate, index) =>
                               coordinate +
-                              Math.sin(time * ANIMATION_SPEED + index) *
-                                ANIMATION_AMOUNT
+                              Math.sin(time * SPEED + index) * AMOUNT
                           )
                           .join(" ")
                       );
-                      window.requestAnimationFrame(animateBackground);
+                      window.requestAnimationFrame(animate);
                     });
                   })();
                 </script>

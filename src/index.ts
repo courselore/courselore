@@ -296,6 +296,7 @@ export default async function courselore(
             <script>
               (() => {
                 // TODO: Extract this into a library?
+                // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
                 const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
                   numeric: "auto",
                 });
@@ -425,6 +426,18 @@ export default async function courselore(
   const cssProcessor = postcss([postcssNested]);
 
   app.set(
+    "layout unauthorized",
+    (
+      req: express.Request,
+      res: express.Response,
+      head: HTML,
+      body: HTML
+    ): HTML => {
+      return html``;
+    }
+  );
+
+  app.set(
     "layout",
     (
       req: express.Request,
@@ -464,7 +477,13 @@ export default async function courselore(
         course === undefined ||
         enrollment === undefined
       )
-        return html`FIXME`;
+        return html`
+          $${logo()}
+          <br />
+          $${loading()}
+          <br />
+          $${loading()}
+        `;
 
       return app.get("layout base")(
         head,
@@ -498,64 +517,7 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  <a
-                    href="${app.get("url")}"
-                    class="undecorated"
-                    style="${css`
-                      color: #83769c;
-                      display: flex;
-                      align-items: center;
-
-                      &:hover {
-                        color: #6e6382;
-                      }
-                    `}"
-                    onmouseover="${javascript`
-                      logoAnimationTimeOffset += performance.now();
-                      logoAnimationFrame = window.requestAnimationFrame(logoAnimation);
-                    `}"
-                    onmouseout="${javascript`
-                      logoAnimationTimeOffset -= performance.now();
-                      window.cancelAnimationFrame(logoAnimationFrame);
-                    `}"
-                  >
-                    $${logo}
-                    <script>
-                      let logoAnimationFrame;
-                      let logoAnimationTimeOffset = 0;
-                      const logoAnimationPolyline = document.currentScript.previousElementSibling.querySelector(
-                        "polyline"
-                      );
-                      const logoAnimationPoints = logoAnimationPolyline
-                        .getAttribute("points")
-                        .split(" ")
-                        .map(Number);
-                      function logoAnimation(time) {
-                        time -= logoAnimationTimeOffset;
-                        logoAnimationPolyline.setAttribute(
-                          "points",
-                          logoAnimationPoints
-                            .map(
-                              (coordinate, index) =>
-                                coordinate +
-                                Math.sin(time * 0.0005 * (index % 7))
-                            )
-                            .join(" ")
-                        );
-                        logoAnimationFrame = window.requestAnimationFrame(
-                          logoAnimation
-                        );
-                      }
-                    </script>
-                    <span
-                      style="${css`
-                        font-size: large;
-                        font-weight: 800;
-                        margin-left: 0.3em;
-                      `}"
-                      >CourseLore</span
-                    >
-                  </a>
+                  $${logo()}
                   <button
                     type="button"
                     class="a undecorated"
@@ -673,13 +635,74 @@ export default async function courselore(
       );
     }
   );
-  const logo = await fs.readFile(
+
+  const logoSVG = await fs.readFile(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
   );
+  function logo(): HTML {
+    return html`
+      <a
+        href="${app.get("url")}"
+        class="undecorated"
+        style="${css`
+          color: #83769c;
+          display: flex;
+          align-items: center;
+
+          &:hover {
+            color: #6e6382;
+          }
+        `}"
+      >
+        $${logoSVG}
+        <script>
+          (() => {
+            const logo = document.currentScript.parentElement;
+            let animationFrame;
+            let timeOffset = 0;
+            logo.addEventListener("mouseover", () => {
+              timeOffset += performance.now();
+              animationFrame = window.requestAnimationFrame(animate);
+            });
+            logo.addEventListener("mouseout", () => {
+              timeOffset -= performance.now();
+              window.cancelAnimationFrame(animationFrame);
+            });
+            const polyline = logo.querySelector("polyline");
+            const points = polyline
+              .getAttribute("points")
+              .split(" ")
+              .map(Number);
+            function animate(time) {
+              time -= timeOffset;
+              polyline.setAttribute(
+                "points",
+                points
+                  .map(
+                    (coordinate, index) =>
+                      coordinate + Math.sin(time * 0.0005 * (index % 7))
+                  )
+                  .join(" ")
+              );
+              animationFrame = window.requestAnimationFrame(animate);
+            }
+          })();
+        </script>
+        <span
+          style="${css`
+            font-size: large;
+            font-weight: 800;
+            margin-left: 0.3em;
+          `}"
+          >CourseLore</span
+        >
+      </a>
+    `;
+  }
   const loading = (() => {
     let counter = 0;
-    return () => {
+    return (): HTML => {
       counter++;
       const id = `loading-gradient-${counter}`;
       return html`
@@ -693,19 +716,19 @@ export default async function courselore(
             align-items: center;
           `}"
         >
-          $${logo
+          $${logoSVG
             .replace(`id="gradient"`, `id="${id}"`)
             .replace(`#gradient`, `#${id}`)}
           <script>
             (() => {
-              const loading = document.currentScript.closest("div.loading");
+              const loading = document.currentScript.parentElement;
               const polyline = loading.querySelector("polyline");
               const points = polyline
                 .getAttribute("points")
                 .split(" ")
                 .map(Number);
-              (function loadingAnimation(time) {
-                if (loading.hidden == false)
+              window.requestAnimationFrame(function animate(time) {
+                if (!loading.hidden)
                   polyline.setAttribute(
                     "points",
                     points
@@ -715,8 +738,8 @@ export default async function courselore(
                       )
                       .join(" ")
                   );
-                window.requestAnimationFrame(loadingAnimation);
-              })(0);
+                window.requestAnimationFrame(animate);
+              });
             })();
           </script>
           <strong
