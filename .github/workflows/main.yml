@@ -55,10 +55,10 @@ jobs:
     needs: [insiders-build, test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: webfactory/ssh-agent@v0.5.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
           name: courselore--linux--${{ github.sha }}.tgz
@@ -100,15 +100,6 @@ jobs:
     needs: [insiders-build, test]
     runs-on: ubuntu-latest
     steps:
-      - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
-        id: tag
-      - uses: actions/create-release@v1
-        id: create-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
       - uses: actions/download-artifact@v2
         with:
           name: CourseLore--windows--${{ github.sha }}.exe
@@ -118,6 +109,15 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: courselore--linux--${{ github.sha }}.tgz
+      - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+        id: tag
+      - uses: actions/create-release@v1
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{ steps.tag.outputs.tag }}
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
