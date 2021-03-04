@@ -469,16 +469,49 @@ export default async function courselore(
         return app.get("layout base")(
           head,
           html`
-            <header>
-              <p
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                $${logo()}
-              </p>
-            </header>
-            <main>$${body}</main>
+            <div
+              style="${css`
+                max-width: 600px;
+                margin: 0 auto;
+              `}"
+            >
+              <header>
+                <p
+                  style="${css`
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  `}"
+                >
+                  $${logo()}
+                  <button
+                    type="button"
+                    class="a undecorated"
+                    onclick="${javascript`
+                      const target = document.querySelector("#signed-in-menu");
+                      target.hidden = !target.hidden;
+                      enableButton(this);
+                    `}"
+                  >
+                    ☰
+                  </button>
+                </p>
+                <div id="signed-in-menu" hidden>
+                  <p>
+                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
+                  </p>
+                  <p>
+                    <a href="${app.get("url")}/courses/new" class="undecorated"
+                      >New course</a
+                    >
+                  </p>
+                  <form method="post" action="${app.get("url")}/sign-out">
+                    <p><button class="a undecorated">Sign out</button></p>
+                  </form>
+                </div>
+              </header>
+              <main>$${body}</main>
+            </div>
           `
         );
 
@@ -1293,6 +1326,48 @@ export default async function courselore(
         WHERE "users"."email" = ${req.session!.email}
       `
     )!.enrollmentsCount;
+    if (enrollmentsCount == 0) {
+      const user = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
+      return res.send(
+        app.get("layout")(
+          req,
+          res,
+          html`<title>CourseLore</title>`,
+          html`
+            <h1>Hi ${user.name},</h1>
+            <p>
+              <strong>Welcome to CourseLore!</strong> What would you like to do?
+            </p>
+            <p>
+              <a href="${app.get("url")}/courses/new" class="button"
+                >Create a new course</a
+              >
+            </p>
+            <p>
+              Or, to <strong>enroll on an existing course</strong>, you either
+              have to be invited or go to the course URL (it looks something
+              like
+              <code
+                >${app.get("url")}/${cryptoRandomString({
+                  length: 10,
+                  type: "numeric",
+                })}</code
+              >).
+            </p>
+            <div class="TODO">
+              <p>
+                The enrollment process should change to introduce the notion of
+                <strong>invitations</strong>. Change the language above
+                accordingly.
+              </p>
+            </div>
+          `
+        )
+      );
+    }
+
     if (enrollmentsCount == 1)
       return res.redirect(
         `${app.get("url")}/${
@@ -1323,7 +1398,7 @@ export default async function courselore(
           </h1>
           $${enrollmentsCount === 0
             ? html`
-                <p>It looks like you’re new here. What would you like to do?</p>
+                <p>Welcome to CourseLore! What would you like to do?</p>
                 <p>
                   <a href="${app.get("url")}/courses/new" class="button"
                     >Create a new course</a
@@ -1395,24 +1470,28 @@ export default async function courselore(
             <h1>Create a new course</h1>
             <form method="post" action="${app.get("url")}/courses">
               <p>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Course name…"
-                  autocomplete="off"
-                  required
-                  autofocus
-                />
+                <label>
+                  <strong>Name</strong><br />
+                  <input
+                    type="text"
+                    name="name"
+                    autocomplete="off"
+                    required
+                    autofocus
+                  />
+                </label>
+              </p>
+              <p>
                 <button>Create course</button>
               </p>
-              <div class="TODO">
-                <p>
-                  Ask more questions here, for example, what’s the person’s role
-                  in the course, how they’d like for other people to enroll
-                  (either by invitation or via a link), and so forth…
-                </p>
-              </div>
             </form>
+            <div class="TODO">
+              <p>
+                Ask more questions here, for example, what’s the person’s role
+                in the course, how they’d like for other people to enroll
+                (either by invitation or via a link), and so forth…
+              </p>
+            </div>
           `
         )
       );
