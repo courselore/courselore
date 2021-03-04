@@ -407,7 +407,7 @@ export default async function courselore(
       // https://github.com/brettstimmerman/mensch
       const dom = new JSDOM(rawHTML);
       const document = dom.window.document;
-      const inlineStyles: CSS[] = [];
+      const inlineStyles = new Set<CSS>();
       for (const element of document.querySelectorAll("[style]")) {
         const styles = element.getAttribute("style")!;
         element.removeAttribute("style");
@@ -416,7 +416,7 @@ export default async function courselore(
           .update(styles)
           .digest("hex")}`;
         element.classList.add(className);
-        inlineStyles.push(
+        inlineStyles.add(
           cssProcessor.process(
             css`
               .${className} {
@@ -431,7 +431,7 @@ export default async function courselore(
         "beforeend",
         html`
           <style>
-            $${inlineStyles}
+            $${[...inlineStyles]}
           </style>
         `
       );
