@@ -239,7 +239,8 @@ export default async function courselore(
                 border: 0;
               }
 
-              button {
+              button,
+              summary {
                 cursor: pointer;
               }
 
@@ -515,20 +516,32 @@ export default async function courselore(
           `
         );
 
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-
-      const enrollment = database.get<{ role: Role }>(
+      const course = database.get<{ name: string; role: Role }>(
         sql`
-          SELECT "enrollments"."role" AS "role"
-          FROM "enrollments"
+          SELECT "courses"."name" AS "name", "enrollments"."role" AS "role"
+          FROM "courses"
+          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
           JOIN "users" ON "enrollments"."user" = "users"."id"
-          JOIN "courses" ON "enrollments"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference} AND
                 "users"."email" = ${req.session!.email}
         `
       )!;
+
+      const otherCourses = database.all<{
+        reference: string;
+        name: string;
+        role: Role;
+      }>(
+        sql`
+          SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
+          FROM "courses"
+          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "courses"."reference" <> ${req.params.courseReference} AND
+                "users"."email" = ${req.session!.email}
+          ORDER BY "enrollments"."createdAt" DESC
+        `
+      );
 
       return app.get("layout base")(
         head,
@@ -580,7 +593,30 @@ export default async function courselore(
                     ☰
                   </button>
                 </p>
-                <p><strong>${course.name}</strong> (${enrollment.role})</p>
+                $${otherCourses.length === 0
+                  ? html`
+                      <p><strong>${course.name}</strong> (${course.role})</p>
+                    `
+                  : html`
+                      <details>
+                        <summary
+                          style="${css`
+                            margin: 1em 0;
+                          `}"
+                        >
+                          <strong>${course.name}</strong> (${course.role})
+                        </summary>
+                        $${otherCourses.map(
+                          (course) => html`
+                            <p>
+                              <a href="${app.get("url")}/${course.reference}"
+                                >${course.name} (${course.role})</a
+                              >
+                            </p>
+                          `
+                        )}
+                      </details>
+                    `}
                 <div id="signed-in-menu" hidden>
                   <p>
                     <strong>${user.name}</strong> ${`<${req.session!.email}>`}
