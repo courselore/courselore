@@ -680,6 +680,10 @@ export default async function courselore(
                 style="${css`
                   max-width: 800px;
                   margin: 0 auto;
+
+                  & > h1:first-child {
+                    margin-top: 1em;
+                  }
                 `}"
               >
                 $${body}
@@ -1597,26 +1601,57 @@ export default async function courselore(
     "/:courseReference",
     ...isEnrolledInCourse(true),
     (req, res) => {
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
+      const thread = database.get<{
+        reference: string;
+      }>(
+        sql`
+          SELECT "threads"."reference" AS "reference"
+          FROM "threads"
+          JOIN "courses" ON "threads"."course" = "courses"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference}
+          ORDER BY "threads"."reference" DESC
+        `
+      );
 
-      res.send(
-        app.get("layout course")(
-          req,
-          res,
-          html`<title>${course.name} · CourseLore</title>`,
-          html`
-            <p
-              style="${css`
-                color: gray;
-                text-align: center;
-              `}"
-            >
-              No thread selected
-            </p>
-          `
-        )
+      if (thread === undefined) {
+        const course = database.get<{ name: string }>(
+          sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+        )!;
+
+        return res.send(
+          app.get("layout authenticated")(
+            req,
+            res,
+            html`<title>${course.name} · CourseLore</title>`,
+            html`
+              <div
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                <h1>Welcome to ${course.name}!</h1>
+                <p>
+                  <a
+                    href="${app.get("url")}/${req.params
+                      .courseReference}/threads/new"
+                    class="button"
+                    >Create the first thread</a
+                  >
+                </p>
+              </div>
+
+              <div class="TODO">
+                <p>Help instructors invite people to the their course.</p>
+              </div>
+            `
+          )
+        );
+      }
+
+      res.redirect(
+        `${app.get("url")}/${req.params.courseReference}/threads/${
+          thread.reference
+        }`
       );
     }
   );
