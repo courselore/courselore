@@ -175,6 +175,13 @@ export default async function courselore(
                   margin-top: 0.5em;
                 }
 
+                label small.hint {
+                  color: gray;
+                  display: inline-block;
+                  line-height: 1.3;
+                  margin-top: 0.5em;
+                }
+
                 input,
                 textarea,
                 button {
@@ -585,7 +592,9 @@ export default async function courselore(
                         $${otherCourses.map(
                           (course) => html`
                             <p>
-                              <a href="${app.get("url")}/${course.reference}"
+                              <a
+                                href="${app.get("url")}/${course.reference}"
+                                class="undecorated"
                                 >${course.name} (${course.role})</a
                               >
                             </p>
@@ -1055,11 +1064,7 @@ export default async function courselore(
                       autofocus
                       size="30"
                     /><br />
-                    <small
-                      style="${css`
-                        color: gray;
-                      `}"
-                    >
+                    <small class="hint">
                       We suggest using the email address you use at your
                       educational institution.
                     </small>
