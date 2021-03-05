@@ -527,7 +527,7 @@ export default async function courselore(
       const threads = database.all<{
         createdAt: string;
         updatedAt: string;
-        reference: string;
+        reference: number;
         authorName: string | undefined;
         title: string;
       }>(
@@ -652,6 +652,7 @@ export default async function courselore(
                       <p
                         style="${css`
                           line-height: 1.3;
+                          margin: 0;
                         `}"
                       >
                         <a
@@ -659,13 +660,15 @@ export default async function courselore(
                             .courseReference}/threads/${thread.reference}"
                           class="undecorated"
                           style="${css`
-                            display: block;
-                            border-radius: 10px;
-                            ${thread.reference === req.params.threadReference
+                            ${thread.reference ===
+                            Number(req.params.threadReference)
                               ? css`
                                   background-color: whitesmoke;
                                 `
                               : css``}
+                            display: block;
+                            padding: 1em;
+                            margin: 0 -1em;
                           `}"
                         >
                           <strong>${thread.title}</strong><br />
@@ -1751,6 +1754,15 @@ export default async function courselore(
     `;
   }
 
+  app.post<{}, HTML, { content: string }, {}, {}>(
+    "/preview",
+    ...isAuthenticated(true),
+    expressValidator.body("content").exists(),
+    (req, res) => {
+      res.send(app.get("text processor")(req.body.content));
+    }
+  );
+
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
     ...isEnrolledInCourse(true),
@@ -1906,6 +1918,7 @@ export default async function courselore(
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
+
       const thread = database.get<{ id: number; title: string }>(
         sql`
           SELECT "threads"."id" AS "id", "threads"."title" AS "title"
@@ -1915,6 +1928,28 @@ export default async function courselore(
                 "courses"."reference" = ${req.params.courseReference}
         `
       )!;
+
+      const posts = database.all<{
+        createdAt: string;
+        updatedAt: string;
+        postReference: number;
+        authorName: string | undefined;
+        content: string;
+      }>(
+        sql`
+        SELECT "posts"."createdAt" AS "createdAt",
+               "posts"."updatedAt" AS "updatedAt",
+               "posts"."reference" AS "postReference",
+               "author"."name" AS "authorName",
+               "posts"."content" AS "content"
+        FROM "posts"
+        LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
+        LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
+        WHERE "posts"."thread" = ${thread.id}
+        ORDER BY "posts"."createdAt" ASC
+      `
+      );
+
       res.send(
         app.get("layout thread")(
           req,
@@ -1938,65 +1973,46 @@ export default async function courselore(
               </small>
             </h1>
 
-            $${database
-              .all<{
-                createdAt: string;
-                updatedAt: string;
-                postReference: number;
-                authorName: string | undefined;
-                content: string;
-              }>(
-                sql`
-                SELECT "posts"."createdAt" AS "createdAt",
-                       "posts"."updatedAt" AS "updatedAt",
-                       "posts"."reference" AS "postReference",
-                       "author"."name" AS "authorName",
-                       "posts"."content" AS "content"
-                FROM "posts"
-                LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
-                LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
-                WHERE "posts"."thread" = ${thread.id}
-                ORDER BY "posts"."createdAt" ASC
-              `
-              )
-              .map(
-                ({
-                  createdAt,
-                  updatedAt,
-                  postReference,
-                  authorName,
-                  content,
-                }) => html`
-                  <section id="${postReference}">
-                    <p>
-                      <strong>${authorName ?? "Ghost"}</strong>
-                      <span
+            $${posts.map(
+              (post) => html`
+                <section
+                  id="${post.postReference}"
+                  style="${css`
+                    border-bottom: 1px solid silver;
+                  `}"
+                >
+                  <p>
+                    <strong>${post.authorName ?? "Ghost"}</strong>
+                    <span
+                      style="${css`
+                        color: gray;
+                      `}"
+                      >said
+                      $${relativeTime(post.createdAt)}${post.updatedAt !==
+                      post.createdAt
+                        ? html` and last updated
+                          $${relativeTime(post.updatedAt)}`
+                        : html``}
+                      <small
                         style="${css`
                           color: gray;
                         `}"
-                        >said
-                        $${relativeTime(createdAt)}${updatedAt !== createdAt
-                          ? html` and last updated $${relativeTime(updatedAt)}`
-                          : html``}
-                        <small
-                          style="${css`
-                            color: gray;
-                          `}"
+                      >
+                        <a
+                          href="${app.get("url")}/${req.params
+                            .courseReference}/threads/${req.params
+                            .threadReference}#${post.postReference}"
+                          class="undecorated"
+                          >#${req.params
+                            .threadReference}/${post.postReference}</a
                         >
-                          <a
-                            href="${app.get("url")}/${req.params
-                              .courseReference}/threads/${req.params
-                              .threadReference}#${postReference}"
-                            class="undecorated"
-                            >#${req.params.threadReference}/${postReference}</a
-                          >
-                        </small>
-                      </span>
-                    </p>
-                    $${app.get("text processor")(content)}
-                  </section>
-                `
-              )}
+                      </small>
+                    </span>
+                  </p>
+                  $${app.get("text processor")(post.content)}
+                </section>
+              `
+            )}
 
             <!-- TODO: Add keyboard shortcuts for posting. Here and in the create thread form as well. -->
             <form method="post">
@@ -2057,15 +2073,6 @@ export default async function courselore(
           req.params.threadReference
         }#${newPostReference}`
       );
-    }
-  );
-
-  app.post<{}, HTML, { content: string }, {}, {}>(
-    "/preview",
-    ...isAuthenticated(true),
-    expressValidator.body("content").exists(),
-    (req, res) => {
-      res.send(app.get("text processor")(req.body.content));
     }
   );
 
