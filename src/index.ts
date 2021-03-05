@@ -1057,11 +1057,16 @@ export default async function courselore(
                       required
                       autofocus
                       size="30"
-                    /><br />
-                    <small class="hint">
-                      We suggest using the email address you use at your
-                      educational institution.
-                    </small>
+                    />
+                    $${preposition === "up"
+                      ? html`
+                          <br />
+                          <small class="hint">
+                            We suggest using the email address you use at your
+                            educational institution.
+                          </small>
+                        `
+                      : html``}
                   </label>
                 </p>
                 <p
@@ -1321,80 +1326,126 @@ export default async function courselore(
   );
 
   app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(true), (req, res) => {
-    const enrollmentsCount = database.get<{ enrollmentsCount: number }>(
-      sql`
-        SELECT COUNT(*) AS "enrollmentsCount"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "users"."email" = ${req.session!.email}
-      `
-    )!.enrollmentsCount;
-    if (enrollmentsCount == 0) {
-      const user = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
-      return res.send(
-        app.get("layout authenticated")(
-          req,
-          res,
-          html`<title>CourseLore</title>`,
-          html`
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
-              <h1>Hi ${user.name},</h1>
-              <p>
-                <strong>Welcome to CourseLore!</strong>
-              </p>
-              <p>
-                To <strong>enroll on an existing course</strong>, you either
-                have to be invited or go to the course URL (it looks something
-                like
-                <code
-                  >${app.get("url")}/${cryptoRandomString({
-                    length: 10,
-                    type: "numeric",
-                  })}</code
-                >).
-              </p>
-              <p>
-                Or you may
-                <strong>
-                  <a href="${app.get("url")}/courses/new"
-                    >create a new course</a
-                  ></strong
-                >.
-              </p>
-            </div>
-            <div class="TODO">
-              <p>
-                The enrollment process should change to introduce the notion of
-                <strong>invitations</strong>. Change the language above
-                accordingly.
-              </p>
-            </div>
-          `
-        )
-      );
-    }
+    const user = database.get<{ name: string }>(
+      sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+    )!;
 
-    if (enrollmentsCount == 1)
-      return res.redirect(
-        `${app.get("url")}/${
-          database.get<{ reference: string }>(
-            sql`
-              SELECT "courses"."reference" AS "reference"
-              FROM "courses"
-              JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-              JOIN "users" ON "enrollments"."user" = "users"."id"
-              WHERE "users"."email" = ${req.session!.email}
+    switch (
+      database.get<{ enrollmentsCount: number }>(
+        sql`
+          SELECT COUNT(*) AS "enrollmentsCount"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "users"."email" = ${req.session!.email}
+        `
+      )!.enrollmentsCount
+    ) {
+      case 0:
+        return res.send(
+          app.get("layout authenticated")(
+            req,
+            res,
+            html`<title>CourseLore</title>`,
+            html`
+              <div
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                <h1>Hi ${user.name},</h1>
+                <p>
+                  <strong>Welcome to CourseLore!</strong>
+                </p>
+                <p>
+                  To <strong>enroll on an existing course</strong>, you either
+                  have to be invited or go to the course URL (it looks something
+                  like
+                  <code
+                    >${app.get("url")}/${cryptoRandomString({
+                      length: 10,
+                      type: "numeric",
+                    })}</code
+                  >).
+                </p>
+                <p>
+                  Or you may
+                  <strong>
+                    <a href="${app.get("url")}/courses/new"
+                      >create a new course</a
+                    ></strong
+                  >.
+                </p>
+                <div class="TODO">
+                  <p>
+                    The enrollment process should change to introduce the notion
+                    of
+                    <strong>invitations</strong>. Change the language above
+                    accordingly.
+                  </p>
+                </div>
+              </div>
             `
-          )!.reference
-        }`
-      );
-    res.send("TODO: Redirect the person to the most recently visited course.");
+          )
+        );
+
+      case 1:
+        return res.redirect(
+          `${app.get("url")}/${
+            database.get<{ reference: string }>(
+              sql`
+                SELECT "courses"."reference" AS "reference"
+                FROM "courses"
+                JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                WHERE "users"."email" = ${req.session!.email}
+              `
+            )!.reference
+          }`
+        );
+
+      default:
+        return res.send(
+          app.get("layout authenticated")(
+            req,
+            res,
+            html`<title>CourseLore</title>`,
+            html`
+              <div>
+                <h1>Hi ${user.name},</h1>
+                <p>Here’s what’s going on with your courses:</p>
+                $${database
+                  .all<{ reference: string; name: string; role: Role }>(
+                    sql`
+                      SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
+                      FROM "courses"
+                      JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                      WHERE "users"."email" = ${req.session!.email}
+                      ORDER BY "enrollments"."createdAt" DESC
+                    `
+                  )
+                  .map(
+                    ({ reference, name, role }) =>
+                      html`
+                        <p>
+                          <a href="${app.get("url")}/${reference}"
+                            >${name} (${role})</a
+                          >
+                        </p>
+                      `
+                  )}
+                <div class="TODO">
+                  <p>
+                    At this point we’re just showing a list of courses in which
+                    the person in enrolled. In the future we’d probably like to
+                    show a news feed with relevant updates from all courses.
+                  </p>
+                </div>
+              </div>
+            `
+          )
+        );
+    }
   });
 
   app.get<{}, HTML, {}, {}, {}>(
