@@ -678,12 +678,12 @@ export default async function courselore(
                             `}"
                           >
                             #${thread.reference} created
-                            $${relativeTime(thread.createdAt)}
+                            $${relativeTime(thread.createdAt)} by
+                            ${thread.authorName ?? "Ghost"}
                             ${thread.updatedAt !== thread.createdAt
                               ? html` and last updated
                                 $${relativeTime(thread.updatedAt)}`
                               : html``}
-                            by ${thread.authorName ?? "Ghost"}
                           </small>
                         </a>
                       </p>
