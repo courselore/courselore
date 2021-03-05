@@ -22,6 +22,8 @@ module.exports = (require) => {
     router.get("/", (req, res, next) => {
       res.send(
         app.get("layout base")(
+          req,
+          res,
           html`
             <title>CourseLore · The Open-Source Student Forum</title>
             <style>

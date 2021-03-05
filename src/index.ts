@@ -51,7 +51,12 @@ export default async function courselore(
   // TODO: Use more inline styles in the templates and in the customization.
   app.set(
     "layout base",
-    (head: HTML, body: HTML): HTML =>
+    (
+      req: express.Request,
+      res: express.Response,
+      head: HTML,
+      body: HTML
+    ): HTML =>
       cssProcess(html`
         <!DOCTYPE html>
         <html lang="en">
@@ -378,6 +383,8 @@ export default async function courselore(
       body: HTML
     ): HTML =>
       app.get("layout base")(
+        req,
+        res,
         head,
         html`
           <div
@@ -402,7 +409,7 @@ export default async function courselore(
   );
 
   app.set(
-    "layout",
+    "layout authenticated",
     (
       req: express.Request,
       res: express.Response,
@@ -413,55 +420,70 @@ export default async function courselore(
         sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
       )!;
 
-      if (req.params.courseReference === undefined)
-        return app.get("layout base")(
-          head,
-          html`
-            <div
-              style="${css`
-                max-width: 600px;
-                margin: 0 auto;
-              `}"
-            >
-              <header>
-                <p
-                  style="${css`
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                  `}"
-                >
-                  $${logo()}
-                  <button
-                    type="button"
-                    class="a undecorated"
-                    onclick="${javascript`
+      return app.get("layout base")(
+        req,
+        res,
+        head,
+        html`
+          <div
+            style="${css`
+              max-width: 600px;
+              margin: 0 auto;
+            `}"
+          >
+            <header>
+              <h1
+                style="${css`
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                `}"
+              >
+                $${logo()}
+                <button
+                  type="button"
+                  class="a undecorated"
+                  onclick="${javascript`
                       const target = document.querySelector("#signed-in-menu");
                       target.hidden = !target.hidden;
                       enableButton(this);
                     `}"
-                  >
-                    ☰
-                  </button>
+                >
+                  ☰
+                </button>
+              </h1>
+              <div id="signed-in-menu" hidden>
+                <p>
+                  <strong>${user.name}</strong> ${`<${req.session!.email}>`}
                 </p>
-                <div id="signed-in-menu" hidden>
-                  <p>
-                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
-                  </p>
-                  <p>
-                    <a href="${app.get("url")}/courses/new" class="undecorated"
-                      >New course</a
-                    >
-                  </p>
-                  <form method="post" action="${app.get("url")}/sign-out">
-                    <p><button class="a undecorated">Sign out</button></p>
-                  </form>
-                </div>
-              </header>
-              <main>$${body}</main>
-            </div>
-          `
-        );
+                <p>
+                  <a href="${app.get("url")}/courses/new" class="undecorated"
+                    >New course</a
+                  >
+                </p>
+                <form method="post" action="${app.get("url")}/sign-out">
+                  <p><button class="a undecorated">Sign out</button></p>
+                </form>
+              </div>
+            </header>
+            <main>$${body}</main>
+          </div>
+        `
+      );
+    }
+  );
+
+  app.set(
+    "layout",
+    (
+      req: express.Request,
+      res: express.Response,
+      head: HTML,
+      body: HTML
+    ): HTML => {
+      const user = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
 
       const course = database.get<{ name: string; role: Role }>(
         sql`
@@ -491,6 +513,8 @@ export default async function courselore(
       );
 
       return app.get("layout base")(
+        req,
+        res,
         head,
         html`
           <div
@@ -1034,11 +1058,19 @@ export default async function courselore(
                     <input
                       name="email"
                       type="email"
-                      placeholder="me@university.edu"
+                      placeholder="name@educational-email.edu"
                       required
                       autofocus
                       size="30"
-                    />
+                    /><br />
+                    <small
+                      style="${css`
+                        color: gray;
+                      `}"
+                    >
+                      We suggest using the email address you use at your
+                      educational institution.
+                    </small>
                   </label>
                 </p>
                 <p
@@ -1310,31 +1342,40 @@ export default async function courselore(
         sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
       )!;
       return res.send(
-        app.get("layout")(
+        app.get("layout authenticated")(
           req,
           res,
           html`<title>CourseLore</title>`,
           html`
-            <h1>Hi ${user.name},</h1>
-            <p>
-              <strong>Welcome to CourseLore!</strong> What would you like to do?
-            </p>
-            <p>
-              <a href="${app.get("url")}/courses/new" class="button"
-                >Create a new course</a
-              >
-            </p>
-            <p>
-              Or, to <strong>enroll on an existing course</strong>, you either
-              have to be invited or go to the course URL (it looks something
-              like
-              <code
-                >${app.get("url")}/${cryptoRandomString({
-                  length: 10,
-                  type: "numeric",
-                })}</code
-              >).
-            </p>
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              <h1>Hi ${user.name},</h1>
+              <p>
+                <strong>Welcome to CourseLore!</strong>
+              </p>
+              <p>
+                To <strong>enroll on an existing course</strong>, you either
+                have to be invited or go to the course URL (it looks something
+                like
+                <code
+                  >${app.get("url")}/${cryptoRandomString({
+                    length: 10,
+                    type: "numeric",
+                  })}</code
+                >).
+              </p>
+              <p>
+                Or you may
+                <strong>
+                  <a href="${app.get("url")}/courses/new"
+                    >create a new course</a
+                  ></strong
+                >.
+              </p>
+            </div>
             <div class="TODO">
               <p>
                 The enrollment process should change to introduce the notion of
@@ -1362,7 +1403,7 @@ export default async function courselore(
         }`
       );
     res.send(
-      app.get("layout")(
+      app.get("layout authenticated")(
         req,
         res,
         html`<title>CourseLore</title>`,
@@ -1441,7 +1482,7 @@ export default async function courselore(
     ...isAuthenticated(true),
     (req, res) => {
       res.send(
-        app.get("layout")(
+        app.get("layout authenticated")(
           req,
           res,
           html`<title>Create a new course · CourseLore</title>`,
@@ -1556,7 +1597,7 @@ export default async function courselore(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
       res.send(
-        app.get("layout")(
+        app.get("layout authenticated")(
           req,
           res,
           html`<title>${course.name} · CourseLore</title>`,
@@ -2081,7 +2122,7 @@ export default async function courselore(
 
   app.use<{}, HTML, {}, {}, {}>((req, res) => {
     res.send(
-      app.get("layout")(
+      app.get("layout unauthenticated")(
         req,
         res,
         html`<title>404 · CourseLore</title>`,
