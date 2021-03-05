@@ -1330,16 +1330,22 @@ export default async function courselore(
       sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
     )!;
 
-    switch (
-      database.get<{ enrollmentsCount: number }>(
-        sql`
-          SELECT COUNT(*) AS "enrollmentsCount"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "users"."email" = ${req.session!.email}
-        `
-      )!.enrollmentsCount
-    ) {
+    const courses = database.all<{
+      reference: string;
+      name: string;
+      role: Role;
+    }>(
+      sql`
+        SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
+        FROM "courses"
+        JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        WHERE "users"."email" = ${req.session!.email}
+        ORDER BY "enrollments"."createdAt" DESC
+      `
+    );
+
+    switch (courses.length) {
       case 0:
         return res.send(
           app.get("layout authenticated")(
@@ -1389,19 +1395,7 @@ export default async function courselore(
         );
 
       case 1:
-        return res.redirect(
-          `${app.get("url")}/${
-            database.get<{ reference: string }>(
-              sql`
-                SELECT "courses"."reference" AS "reference"
-                FROM "courses"
-                JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                WHERE "users"."email" = ${req.session!.email}
-              `
-            )!.reference
-          }`
-        );
+        return res.redirect(`${app.get("url")}/${courses[0].reference}`);
 
       default:
         return res.send(
@@ -1412,28 +1406,19 @@ export default async function courselore(
             html`
               <div>
                 <h1>Hi ${user.name},</h1>
-                <p>Here’s what’s going on with your courses:</p>
-                $${database
-                  .all<{ reference: string; name: string; role: Role }>(
-                    sql`
-                      SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
-                      FROM "courses"
-                      JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-                      JOIN "users" ON "enrollments"."user" = "users"."id"
-                      WHERE "users"."email" = ${req.session!.email}
-                      ORDER BY "enrollments"."createdAt" DESC
+                <p>Go to one of your courses:</p>
+                $${courses.map(
+                  (course) =>
+                    html`
+                      <p>
+                        <a
+                          href="${app.get("url")}/${course.reference}"
+                          class="undecorated"
+                          >${course.name} (${course.role})</a
+                        >
+                      </p>
                     `
-                  )
-                  .map(
-                    ({ reference, name, role }) =>
-                      html`
-                        <p>
-                          <a href="${app.get("url")}/${reference}"
-                            >${name} (${role})</a
-                          >
-                        </p>
-                      `
-                  )}
+                )}
                 <div class="TODO">
                   <p>
                     At this point we’re just showing a list of courses in which
