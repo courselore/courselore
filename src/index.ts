@@ -370,6 +370,38 @@ export default async function courselore(
   );
 
   app.set(
+    "layout unauthenticated",
+    (
+      req: express.Request,
+      res: express.Response,
+      head: HTML,
+      body: HTML
+    ): HTML =>
+      app.get("layout base")(
+        head,
+        html`
+          <div
+            style="${css`
+              max-width: 600px;
+              margin: 0 auto;
+            `}"
+          >
+            <header>
+              <h1
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                $${logo()}
+              </h1>
+            </header>
+            <main>$${body}</main>
+          </div>
+        `
+      )
+  );
+
+  app.set(
     "layout",
     (
       req: express.Request,
@@ -377,30 +409,6 @@ export default async function courselore(
       head: HTML,
       body: HTML
     ): HTML => {
-      if (req.session!.email === undefined)
-        return app.get("layout base")(
-          head,
-          html`
-            <div
-              style="${css`
-                max-width: 600px;
-                margin: 0 auto;
-              `}"
-            >
-              <header>
-                <p
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  $${logo()}
-                </p>
-              </header>
-              <main>$${body}</main>
-            </div>
-          `
-        );
-
       const user = database.get<{ name: string }>(
         sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
       )!;
@@ -966,7 +974,7 @@ export default async function courselore(
     ...isAuthenticated(false),
     (req, res) => {
       res.send(
-        app.get("layout")(
+        app.get("layout unauthenticated")(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
@@ -996,7 +1004,7 @@ export default async function courselore(
       const preposition = req.path === "/sign-up" ? "up" : "in";
       const alternativePreposition = preposition === "up" ? "in" : "up";
       res.send(
-        app.get("layout")(
+        app.get("layout unauthenticated")(
           req,
           res,
           html`<title>Sign ${preposition} · CourseLore</title>`,
@@ -1093,8 +1101,8 @@ export default async function courselore(
       });
 
       const pretendPreposition = req.path === "/sign-up" ? "up" : "in";
-      return res.send(
-        app.get("layout")(
+      res.send(
+        app.get("layout unauthenticated")(
           req,
           res,
           html`<title>Sign ${pretendPreposition} · CourseLore</title>`,
@@ -1151,7 +1159,7 @@ export default async function courselore(
       if (authenticationToken === undefined) {
         const preposition = req.path.startsWith("/sign-up") ? "up" : "in";
         return res.send(
-          app.get("layout")(
+          app.get("layout unauthenticated")(
             req,
             res,
             html`<title>Sign ${preposition} · CourseLore</title>`,
@@ -1178,7 +1186,7 @@ export default async function courselore(
       ) {
         const newToken = createAuthenticationToken(authenticationToken.email);
         return res.send(
-          app.get("layout")(
+          app.get("layout unauthenticated")(
             req,
             res,
             html`<title>Sign up · CourseLore</title>`,
@@ -1259,7 +1267,7 @@ export default async function courselore(
         )!.exists === 1
       )
         return res.send(
-          app.get("layout")(
+          app.get("layout unauthenticated")(
             req,
             res,
             html`<title>Sign up · CourseLore</title>`,
