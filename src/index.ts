@@ -1021,7 +1021,7 @@ export default async function courselore(
                   style="${css`
                     color: gray;
                     float: right;
-                    margin-top: -40px;
+                    margin-top: -45px;
 
                     &::-webkit-details-marker {
                       display: none;
@@ -1033,14 +1033,14 @@ export default async function courselore(
                 <p>
                   <strong>${user.name}</strong> ${`<${req.session!.email}>`}
                 </p>
+                <form method="post" action="${app.get("url")}/sign-out">
+                  <p><button class="a undecorated">Sign out</button></p>
+                </form>
                 <p>
                   <a href="${app.get("url")}/courses/new" class="undecorated"
                     >New course</a
                   >
                 </p>
-                <form method="post" action="${app.get("url")}/sign-out">
-                  <p><button class="a undecorated">Sign out</button></p>
-                </form>
               </details>
             </header>
             <main>$${body}</main>
@@ -1687,7 +1687,7 @@ export default async function courselore(
                     style="${css`
                       color: gray;
                       float: right;
-                      margin-top: -40px;
+                      margin-top: -45px;
 
                       &::-webkit-details-marker {
                         display: none;
@@ -1699,14 +1699,14 @@ export default async function courselore(
                   <p>
                     <strong>${user.name}</strong> ${`<${req.session!.email}>`}
                   </p>
+                  <form method="post" action="${app.get("url")}/sign-out">
+                    <p><button class="a undecorated">Sign out</button></p>
+                  </form>
                   <p>
                     <a href="${app.get("url")}/courses/new" class="undecorated"
                       >New course</a
                     >
                   </p>
-                  <form method="post" action="${app.get("url")}/sign-out">
-                    <p><button class="a undecorated">Sign out</button></p>
-                  </form>
                 </details>
                 $${otherCourses.length === 0
                   ? html`
