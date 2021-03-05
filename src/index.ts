@@ -1174,6 +1174,7 @@ export default async function courselore(
       return authenticationToken;
   }
 
+  // TODO: What should happen if the person clicks on a magic link but they’re already authenticated?
   app.get<{ token: string }, HTML, {}, {}, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
     ...isAuthenticated(false),
@@ -1393,79 +1394,7 @@ export default async function courselore(
           )!.reference
         }`
       );
-    res.send(
-      app.get("layout authenticated")(
-        req,
-        res,
-        html`<title>CourseLore</title>`,
-        html`
-          <h1>
-            Hi
-            ${database.get<{ name: string }>(
-              sql`SELECT "name" FROM "users" WHERE "email" = ${
-                req.session!.email
-              }`
-            )!.name},
-          </h1>
-          $${enrollmentsCount === 0
-            ? html`
-                <p>Welcome to CourseLore! What would you like to do?</p>
-                <p>
-                  <a href="${app.get("url")}/courses/new" class="button"
-                    >Create a new course</a
-                  >
-                </p>
-                <p>
-                  Or, to <strong>enroll on an existing course</strong>, you
-                  either have to be invited or go to the course URL (it looks
-                  something like
-                  <code
-                    >${app.get("url")}/${cryptoRandomString({
-                      length: 10,
-                      type: "numeric",
-                    })}</code
-                  >).
-                </p>
-              `
-            : html`
-                <p>
-                  <a href="${app.get("url")}/courses/new" class="button"
-                    >New course</a
-                  >
-                </p>
-                <p>Here’s what’s going on with your courses:</p>
-                $${database
-                  .all<{ reference: string; name: string; role: Role }>(
-                    sql`
-                        SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
-                        FROM "courses"
-                        JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-                        JOIN "users" ON "enrollments"."user" = "users"."id"
-                        WHERE "users"."email" = ${req.session!.email}
-                        ORDER BY "enrollments"."createdAt" DESC
-                      `
-                  )
-                  .map(
-                    ({ reference, name, role }) =>
-                      html`
-                        <p>
-                          <a href="${app.get("url")}/${reference}"
-                            >${name} (${role})</a
-                          >
-                        </p>
-                      `
-                  )}
-                <div class="TODO">
-                  <p>
-                    At this point we’re just showing a list of courses in which
-                    the person in enrolled. In the future we’d probably like to
-                    show a news feed with relevant updates from all courses.
-                  </p>
-                </div>
-              `}
-        `
-      )
-    );
+    res.send("TODO: Redirect the person to the most recently visited course.");
   });
 
   app.get<{}, HTML, {}, {}, {}>(
@@ -2111,6 +2040,7 @@ export default async function courselore(
     }
   );
 
+  // TODO: Create a special 404 page for people who are logged out mentioning that they may have to login to see the page.
   app.use<{}, HTML, {}, {}, {}>((req, res) => {
     res.send(
       app.get("layout unauthenticated")(
