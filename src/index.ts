@@ -99,20 +99,22 @@ export default async function courselore(
           </head>
           <body
             style="${css`
-              /*
-                https://pico-8.fandom.com/wiki/Palette
-                #83769c / darker #6e6382 #584f69
-                #ff77a8 / darker #e66c98 #cc6088
-                #29adff
-              */
-
-              font-size: 14px;
-              line-height: 1.5;
-              font-family: "Public Sans", sans-serif;
-              -webkit-text-size-adjust: 100%;
-              margin: 0;
-
               @at-root {
+                /*
+                  https://pico-8.fandom.com/wiki/Palette
+                  #83769c / darker #6e6382 #584f69
+                  #ff77a8 / darker #e66c98 #cc6088
+                  #29adff
+                */
+
+                body {
+                  font-size: 14px;
+                  line-height: 1.5;
+                  font-family: "Public Sans", sans-serif;
+                  -webkit-text-size-adjust: 100%;
+                  margin: 0;
+                }
+
                 code {
                   font-family: "Roboto Mono", monospace;
                 }
@@ -182,11 +184,10 @@ export default async function courselore(
                 textarea {
                   padding: 0.2em 1em;
                   transition: border-color 0.2s;
-                }
 
-                input:focus,
-                textarea:focus {
-                  border-color: #ff77a8;
+                  &:focus {
+                    border-color: #ff77a8;
+                  }
                 }
 
                 input[type="text"],
@@ -208,6 +209,10 @@ export default async function courselore(
                 button.a,
                 summary {
                   transition: color 0.2s;
+
+                  &:hover {
+                    color: #ff77a8;
+                  }
                 }
 
                 a,
@@ -221,12 +226,6 @@ export default async function courselore(
                   display: inline;
                   padding: 0;
                   border: none;
-                }
-
-                a:hover,
-                button.a:hover,
-                summary:hover {
-                  color: #ff77a8;
                 }
 
                 a.undecorated,
@@ -261,32 +260,29 @@ export default async function courselore(
                   box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
                   transition-property: color, background-color, border-color;
                   transition-duration: 0.2s;
-                }
 
-                button:not(.undecorated):not(.a).outline,
-                a.button.outline {
-                  color: #83769c;
-                  background-color: white;
-                }
+                  &.outline {
+                    color: #83769c;
+                    background-color: white;
+                  }
 
-                button:not(.undecorated):not(.a):hover,
-                a.button:hover {
-                  color: white;
-                  background-color: #6e6382;
-                }
+                  &:hover {
+                    color: white;
+                    background-color: #6e6382;
+                  }
 
-                button:not(.undecorated):not(.a):active,
-                a.button:active {
-                  color: white;
-                  background-color: #584f69;
-                }
+                  &:active {
+                    color: white;
+                    background-color: #584f69;
+                  }
 
-                button:not(.undecorated):not(.a):disabled,
-                a.button.disabled {
-                  color: dimgray;
-                  background-color: whitesmoke;
-                  border-color: dimgray;
-                  cursor: wait;
+                  &:disabled,
+                  &.disabled {
+                    color: dimgray;
+                    background-color: whitesmoke;
+                    border-color: dimgray;
+                    cursor: wait;
+                  }
                 }
 
                 [hidden] {
