@@ -52,8 +52,8 @@ export default async function courselore(
   app.set(
     "layout base",
     (
-      req: express.Request,
-      res: express.Response,
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
       head: HTML,
       body: HTML
     ): HTML =>
@@ -136,7 +136,7 @@ export default async function courselore(
                 }
 
                 h1 {
-                  line-height: 1.2;
+                  line-height: 1.3;
                   font-size: large;
                   font-weight: 800;
                   margin-top: 1.5em;
@@ -388,8 +388,8 @@ export default async function courselore(
   app.set(
     "layout unauthenticated",
     (
-      req: express.Request,
-      res: express.Response,
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
       head: HTML,
       body: HTML
     ): HTML =>
@@ -422,8 +422,8 @@ export default async function courselore(
   app.set(
     "layout authenticated",
     (
-      req: express.Request,
-      res: express.Response,
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
       head: HTML,
       body: HTML
     ): HTML => {
@@ -480,10 +480,16 @@ export default async function courselore(
   );
 
   app.set(
-    "layout course",
+    "layout thread",
     (
-      req: express.Request,
-      res: express.Response,
+      req: express.Request<
+        { courseReference: string; threadReference?: string },
+        any,
+        {},
+        {},
+        {}
+      >,
+      res: express.Response<any, {}>,
       head: HTML,
       body: HTML
     ): HTML => {
@@ -515,6 +521,28 @@ export default async function courselore(
           WHERE "courses"."reference" <> ${req.params.courseReference} AND
                 "users"."email" = ${req.session!.email}
           ORDER BY "enrollments"."createdAt" DESC
+        `
+      );
+
+      const threads = database.all<{
+        createdAt: string;
+        updatedAt: string;
+        reference: string;
+        authorName: string | undefined;
+        title: string;
+      }>(
+        sql`
+          SELECT "threads"."createdAt" AS "createdAt",
+                 "threads"."updatedAt" AS "updatedAt",
+                 "threads"."reference" AS "reference",
+                 "author"."name" AS "authorName",
+                 "threads"."title" AS "title"
+          FROM "threads"
+          JOIN "courses" ON "threads"."course" = "courses"."id"
+          LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
+          LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference}
+          ORDER BY "threads"."reference" DESC
         `
       );
 
@@ -618,61 +646,46 @@ export default async function courselore(
                     >New thread</a
                   >
                 </p>
-                $${database
-                  .all<{
-                    createdAt: string;
-                    updatedAt: string;
-                    reference: string;
-                    authorName: string | undefined;
-                    title: string;
-                  }>(
-                    sql`
-                      SELECT "threads"."createdAt" AS "createdAt",
-                             "threads"."updatedAt" AS "updatedAt",
-                             "threads"."reference" AS "reference",
-                             "author"."name" AS "authorName",
-                             "threads"."title" AS "title"
-                      FROM "threads"
-                      JOIN "courses" ON "threads"."course" = "courses"."id"
-                      LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
-                      LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
-                      WHERE "courses"."reference" = ${req.params.courseReference}
-                      ORDER BY "threads"."reference" DESC
-                    `
-                  )
-                  .map(
-                    ({ createdAt, updatedAt, reference, authorName, title }) =>
-                      html`
-                        <p
+                $${threads.map(
+                  (thread) =>
+                    html`
+                      <p
+                        style="${css`
+                          line-height: 1.3;
+                        `}"
+                      >
+                        <a
+                          href="${app.get("url")}/${req.params
+                            .courseReference}/threads/${thread.reference}"
+                          class="undecorated"
                           style="${css`
-                            line-height: 1.2;
+                            display: block;
+                            border-radius: 10px;
+                            ${thread.reference === req.params.threadReference
+                              ? css`
+                                  background-color: whitesmoke;
+                                `
+                              : css``}
                           `}"
                         >
-                          <a
-                            href="${app.get("url")}/${req.params
-                              .courseReference}/threads/${reference}"
-                            class="undecorated"
+                          <strong>${thread.title}</strong><br />
+                          <small
                             style="${css`
-                              display: block;
+                              color: gray;
                             `}"
                           >
-                            <strong>${title}</strong><br />
-                            <small
-                              style="${css`
-                                color: gray;
-                              `}"
-                            >
-                              #${reference} created $${relativeTime(createdAt)}
-                              ${updatedAt !== createdAt
-                                ? html` (and last updated
-                                  $${relativeTime(updatedAt)})`
-                                : html``}
-                              by ${authorName ?? "Ghost"}
-                            </small>
-                          </a>
-                        </p>
-                      `
-                  )}
+                            #${thread.reference} created
+                            $${relativeTime(thread.createdAt)}
+                            ${thread.updatedAt !== thread.createdAt
+                              ? html` and last updated
+                                $${relativeTime(thread.updatedAt)}`
+                              : html``}
+                            by ${thread.authorName ?? "Ghost"}
+                          </small>
+                        </a>
+                      </p>
+                    `
+                )}
               </div>
             </div>
             <main
@@ -1637,6 +1650,7 @@ export default async function courselore(
       <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
       <!-- TODO: What happens if the content includes a form? -->
       <div class="text-editor">
+        <!-- FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too. -->
         <p
           style="${css`
             color: gray;
@@ -1794,7 +1808,7 @@ export default async function courselore(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
       res.send(
-        app.get("layout course")(
+        app.get("layout thread")(
           req,
           res,
           html`<title>${course.name} · CourseLore</title>`,
@@ -1902,7 +1916,7 @@ export default async function courselore(
         `
       )!;
       res.send(
-        app.get("layout course")(
+        app.get("layout thread")(
           req,
           res,
           html`<title>${thread.title} · ${course.name} · CourseLore</title>`,
@@ -1962,7 +1976,7 @@ export default async function courselore(
                         `}"
                         >said
                         $${relativeTime(createdAt)}${updatedAt !== createdAt
-                          ? html` (and last updated $${relativeTime(updatedAt)})`
+                          ? html` and last updated $${relativeTime(updatedAt)}`
                           : html``}
                         <small
                           style="${css`
@@ -2013,6 +2027,7 @@ export default async function courselore(
     expressValidator.body("content").exists(),
     (req, res) => {
       // FIXME: Maybe we can do this whole series of queries in one…
+      // FIXME: Update the ‘updatedAt’ field of the thread.
       const thread = database.get<{ id: number; title: string }>(sql`
         SELECT "threads"."id" AS "id"
         FROM "threads"
