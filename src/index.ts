@@ -1321,6 +1321,272 @@ export default async function courselore(
     }
   );
 
+  function newThreadForm(courseReference: string): HTML {
+    return html`
+      <form method="post" action="${app.get("url")}/${courseReference}/threads">
+        <p>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title…"
+            autocomplete="off"
+            style="${css`
+              box-sizing: border-box;
+              width: 100%;
+            `}"
+            required
+          />
+        </p>
+        $${textEditor()}
+        <p
+          style="${css`
+            text-align: right;
+          `}"
+        >
+          <button>Create thread</button>
+        </p>
+      </form>
+    `;
+  }
+
+  // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
+  // FIXME: Don’t require whole form to be valid, just the text editor itself.
+  function textEditor(): HTML {
+    return html`
+      <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
+      <!-- TODO: What happens if the content includes a form? -->
+      <div class="text-editor">
+        <!-- FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too. -->
+        <p
+          style="${css`
+            color: gray;
+            margin-bottom: 0em;
+
+            & button {
+              margin-right: 0.5em;
+              transition-duration: 0.2s;
+              transition-property: font-weight, color;
+
+              &:hover {
+                color: #ff77a8;
+              }
+
+              &:disabled {
+                font-weight: bold;
+                color: black;
+              }
+            }
+          `}"
+        >
+          <button
+            type="button"
+            class="write undecorated"
+            disabled
+            onclick="${javascript`
+              const textEditor = this.closest("div.text-editor");
+              textEditor.querySelector("div.preview").hidden = true;
+              textEditor.querySelector("div.write").hidden = false;
+              enableButton(textEditor.querySelector("button.preview"));
+            `}"
+          >
+            Write
+          </button>
+          <button
+            type="button"
+            class="preview undecorated"
+            onclick="${javascript`
+              (async () => {
+                const textEditor = this.closest("div.text-editor");
+                const textarea = textEditor.querySelector("textarea");
+                if (!textarea.reportValidity()) {
+                  enableButton(this);
+                  return;
+                }
+                const loading = textEditor.querySelector("div.loading");
+                textEditor.querySelector("div.write").hidden = true;
+                loading.hidden = false;
+                const preview = textEditor.querySelector("div.preview");
+                preview.innerHTML = await (
+                  await fetch("${app.get("url")}/preview", {
+                    method: "POST",
+                    body: new URLSearchParams({ content: textarea.value }),
+                  })
+                ).text();
+                loading.hidden = true;
+                preview.hidden = false;
+                enableButton(textEditor.querySelector("button.write"));
+              })();
+            `}"
+          >
+            Preview
+          </button>
+        </p>
+
+        <div class="write">
+          <textarea name="content" required rows="5"></textarea>
+          <p
+            style="${css`
+              text-align: right;
+              color: gray;
+              margin-top: -0.3em;
+            `}"
+          >
+            <small>
+              <a
+                href="https://guides.github.com/features/mastering-markdown/"
+                target="_blank"
+                class="undecorated"
+                >Markdown</a
+              >
+              &
+              <a
+                href="https://katex.org/docs/supported.html"
+                target="_blank"
+                class="undecorated"
+                >LaTeX</a
+              >
+              are supported
+            </small>
+          </p>
+        </div>
+
+        $${loading()}
+
+        <div class="preview" hidden></div>
+      </div>
+    `;
+  }
+
+  app.post<{}, HTML, { content: string }, {}, {}>(
+    "/preview",
+    ...isAuthenticated(true),
+    expressValidator.body("content").exists(),
+    (req, res) => {
+      res.send(app.get("text processor")(req.body.content));
+    }
+  );
+
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/:courseReference",
+    ...isEnrolledInCourse(true),
+    (req, res) => {
+      const thread = database.get<{
+        reference: string;
+      }>(
+        sql`
+          SELECT "threads"."reference" AS "reference"
+          FROM "threads"
+          JOIN "courses" ON "threads"."course" = "courses"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference}
+          ORDER BY "threads"."reference" DESC
+        `
+      );
+
+      if (thread === undefined) {
+        const course = database.get<{ name: string }>(
+          sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+        )!;
+
+        return res.send(
+          app.get("layout authenticated")(
+            req,
+            res,
+            html`<title>${course.name} · CourseLore</title>`,
+            html`
+              <h1>Welcome to ${course.name}!</h1>
+              <p>
+                <strong>Create the first thread</strong>
+              </p>
+              $${newThreadForm(req.params.courseReference)}
+
+              <div class="TODO">
+                <p>Help instructors invite people to the their course.</p>
+              </div>
+            `
+          )
+        );
+      }
+
+      res.redirect(
+        `${app.get("url")}/${req.params.courseReference}/threads/${
+          thread.reference
+        }`
+      );
+    }
+  );
+
+  app.post<
+    { courseReference: string },
+    HTML,
+    { title: string; content: string },
+    {},
+    {}
+  >(
+    "/:courseReference/threads",
+    ...isEnrolledInCourse(true),
+    expressValidator.body("title").exists(),
+    expressValidator.body("content").exists(),
+    (req, res) => {
+      const course = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+      const newThreadReference =
+        database.get<{ newThreadReference: number }>(sql`
+          SELECT MAX("threads"."reference") + 1 AS "newThreadReference"
+          FROM "threads"
+          WHERE "threads"."course" = ${course.id}
+        `)?.newThreadReference ?? 1;
+      const author = database.get<{ id: number }>(sql`
+        SELECT "enrollments"."id" AS "id"
+        FROM "enrollments"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        JOIN "courses" ON "enrollments"."course" = "courses"."id"
+        WHERE "users"."email" = ${req.session!.email} AND
+              "courses"."id" = ${course.id}
+      `)!;
+      const threadId = database.run(sql`
+        INSERT INTO "threads" ("course", "reference", "author", "title")
+        VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
+      `).lastInsertRowid;
+      database.run(sql`
+        INSERT INTO "posts" ("thread", "reference", "author", "content")
+        VALUES (${threadId}, ${1}, ${author.id}, ${req.body.content})
+      `);
+      res.redirect(
+        `${app.get("url")}/${
+          req.params.courseReference
+        }/threads/${newThreadReference}`
+      );
+    }
+  );
+
+  const threadAccessible: express.RequestHandler<
+    { courseReference: string; threadReference: string },
+    any,
+    {},
+    {},
+    {}
+  >[] = [
+    ...isEnrolledInCourse(true),
+    (req, res, next) => {
+      if (
+        database.get<{ exists: number }>(
+          sql`
+            SELECT EXISTS(
+              SELECT 1
+              FROM "threads"
+              JOIN "courses" ON "threads"."course" = "courses"."id"
+              WHERE "threads"."reference" = ${req.params.threadReference} AND
+                    "courses"."reference" = ${req.params.courseReference}
+            ) AS "exists"
+          `
+        )!.exists === 1
+      )
+        return next();
+      next("route");
+    },
+  ];
+
   app.set(
     "layout thread",
     (
@@ -1558,293 +1824,6 @@ export default async function courselore(
     }
   );
 
-  function newThreadForm(courseReference: string): HTML {
-    return html`
-      <form method="post" action="${app.get("url")}/${courseReference}/threads">
-        <p>
-          <input
-            type="text"
-            name="title"
-            placeholder="Title…"
-            autocomplete="off"
-            style="${css`
-              box-sizing: border-box;
-              width: 100%;
-            `}"
-            required
-          />
-        </p>
-        $${textEditor()}
-        <p
-          style="${css`
-            text-align: right;
-          `}"
-        >
-          <button>Create thread</button>
-        </p>
-      </form>
-    `;
-  }
-
-  // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
-  // FIXME: Don’t require whole form to be valid, just the text editor itself.
-  function textEditor(): HTML {
-    return html`
-      <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
-      <!-- TODO: What happens if the content includes a form? -->
-      <div class="text-editor">
-        <!-- FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too. -->
-        <p
-          style="${css`
-            color: gray;
-            margin-bottom: 0em;
-
-            & button {
-              margin-right: 0.5em;
-              transition-duration: 0.2s;
-              transition-property: font-weight, color;
-
-              &:hover {
-                color: #ff77a8;
-              }
-
-              &:disabled {
-                font-weight: bold;
-                color: black;
-              }
-            }
-          `}"
-        >
-          <button
-            type="button"
-            class="write undecorated"
-            disabled
-            onclick="${javascript`
-              const textEditor = this.closest("div.text-editor");
-              textEditor.querySelector("div.preview").hidden = true;
-              textEditor.querySelector("div.write").hidden = false;
-              enableButton(textEditor.querySelector("button.preview"));
-            `}"
-          >
-            Write
-          </button>
-          <button
-            type="button"
-            class="preview undecorated"
-            onclick="${javascript`
-              (async () => {
-                const textEditor = this.closest("div.text-editor");
-                const textarea = textEditor.querySelector("textarea");
-                if (!textarea.reportValidity()) {
-                  enableButton(this);
-                  return;
-                }
-                const loading = textEditor.querySelector("div.loading");
-                textEditor.querySelector("div.write").hidden = true;
-                loading.hidden = false;
-                const preview = textEditor.querySelector("div.preview");
-                preview.innerHTML = await (
-                  await fetch("${app.get("url")}/preview", {
-                    method: "POST",
-                    body: new URLSearchParams({ content: textarea.value }),
-                  })
-                ).text();
-                loading.hidden = true;
-                preview.hidden = false;
-                enableButton(textEditor.querySelector("button.write"));
-              })();
-            `}"
-          >
-            Preview
-          </button>
-        </p>
-
-        <div class="write">
-          <textarea name="content" required rows="5"></textarea>
-          <p
-            style="${css`
-              text-align: right;
-              color: gray;
-              margin-top: -0.3em;
-            `}"
-          >
-            <small>
-              <a
-                href="https://guides.github.com/features/mastering-markdown/"
-                target="_blank"
-                class="undecorated"
-                >Markdown</a
-              >
-              &
-              <a
-                href="https://katex.org/docs/supported.html"
-                target="_blank"
-                class="undecorated"
-                >LaTeX</a
-              >
-              are supported
-            </small>
-          </p>
-        </div>
-
-        $${loading()}
-
-        <div class="preview" hidden></div>
-      </div>
-    `;
-  }
-
-  app.post<{}, HTML, { content: string }, {}, {}>(
-    "/preview",
-    ...isAuthenticated(true),
-    expressValidator.body("content").exists(),
-    (req, res) => {
-      res.send(app.get("text processor")(req.body.content));
-    }
-  );
-
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/:courseReference",
-    ...isEnrolledInCourse(true),
-    (req, res) => {
-      const thread = database.get<{
-        reference: string;
-      }>(
-        sql`
-          SELECT "threads"."reference" AS "reference"
-          FROM "threads"
-          JOIN "courses" ON "threads"."course" = "courses"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY "threads"."reference" DESC
-        `
-      );
-
-      if (thread === undefined) {
-        const course = database.get<{ name: string }>(
-          sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-        )!;
-
-        return res.send(
-          app.get("layout authenticated")(
-            req,
-            res,
-            html`<title>${course.name} · CourseLore</title>`,
-            html`
-              <h1>Welcome to ${course.name}!</h1>
-              <p>
-                <strong>Create the first thread</strong>
-              </p>
-              $${newThreadForm(req.params.courseReference)}
-
-              <div class="TODO">
-                <p>Help instructors invite people to the their course.</p>
-              </div>
-            `
-          )
-        );
-      }
-
-      res.redirect(
-        `${app.get("url")}/${req.params.courseReference}/threads/${
-          thread.reference
-        }`
-      );
-    }
-  );
-
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/:courseReference/threads/new",
-    ...isEnrolledInCourse(true),
-    (req, res) => {
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-      res.send(
-        app.get("layout thread")(
-          req,
-          res,
-          html`<title>${course.name} · CourseLore</title>`,
-          html`
-            <h1>Create a new thread</h1>
-            $${newThreadForm(req.params.courseReference)}
-          `
-        )
-      );
-    }
-  );
-
-  app.post<
-    { courseReference: string },
-    HTML,
-    { title: string; content: string },
-    {},
-    {}
-  >(
-    "/:courseReference/threads",
-    ...isEnrolledInCourse(true),
-    expressValidator.body("title").exists(),
-    expressValidator.body("content").exists(),
-    (req, res) => {
-      const course = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-      const newThreadReference =
-        database.get<{ newThreadReference: number }>(sql`
-          SELECT MAX("threads"."reference") + 1 AS "newThreadReference"
-          FROM "threads"
-          WHERE "threads"."course" = ${course.id}
-        `)?.newThreadReference ?? 1;
-      const author = database.get<{ id: number }>(sql`
-        SELECT "enrollments"."id" AS "id"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        JOIN "courses" ON "enrollments"."course" = "courses"."id"
-        WHERE "users"."email" = ${req.session!.email} AND
-              "courses"."id" = ${course.id}
-      `)!;
-      const threadId = database.run(sql`
-        INSERT INTO "threads" ("course", "reference", "author", "title")
-        VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
-      `).lastInsertRowid;
-      database.run(sql`
-        INSERT INTO "posts" ("thread", "reference", "author", "content")
-        VALUES (${threadId}, ${1}, ${author.id}, ${req.body.content})
-      `);
-      res.redirect(
-        `${app.get("url")}/${
-          req.params.courseReference
-        }/threads/${newThreadReference}`
-      );
-    }
-  );
-
-  const threadAccessible: express.RequestHandler<
-    { courseReference: string; threadReference: string },
-    any,
-    {},
-    {},
-    {}
-  >[] = [
-    ...isEnrolledInCourse(true),
-    (req, res, next) => {
-      if (
-        database.get<{ exists: number }>(
-          sql`
-            SELECT EXISTS(
-              SELECT 1
-              FROM "threads"
-              JOIN "courses" ON "threads"."course" = "courses"."id"
-              WHERE "threads"."reference" = ${req.params.threadReference} AND
-                    "courses"."reference" = ${req.params.courseReference}
-            ) AS "exists"
-          `
-        )!.exists === 1
-      )
-        return next();
-      next("route");
-    },
-  ];
-
   app.get<
     { courseReference: string; threadReference: string },
     HTML,
@@ -2012,6 +1991,27 @@ export default async function courselore(
         `${app.get("url")}/${req.params.courseReference}/threads/${
           req.params.threadReference
         }#${newPostReference}`
+      );
+    }
+  );
+
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/:courseReference/threads/new",
+    ...isEnrolledInCourse(true),
+    (req, res) => {
+      const course = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+      res.send(
+        app.get("layout thread")(
+          req,
+          res,
+          html`<title>${course.name} · CourseLore</title>`,
+          html`
+            <h1>Create a new thread</h1>
+            $${newThreadForm(req.params.courseReference)}
+          `
+        )
       );
     }
   );
