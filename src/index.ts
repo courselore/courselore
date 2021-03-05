@@ -1710,12 +1710,14 @@ export default async function courselore(
             <small>
               <a
                 href="https://guides.github.com/features/mastering-markdown/"
+                target="_blank"
                 class="undecorated"
                 >Markdown</a
               >
               &
               <a
                 href="https://katex.org/docs/supported.html"
+                target="_blank"
                 class="undecorated"
                 >LaTeX</a
               >
@@ -1899,7 +1901,7 @@ export default async function courselore(
         app.get("layout course")(
           req,
           res,
-          html`<title>${thread.title} · CourseLore</title>`,
+          html`<title>${thread.title} · ${course.name} · CourseLore</title>`,
           html`
             <h1>
               ${thread.title}
