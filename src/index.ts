@@ -385,337 +385,6 @@ export default async function courselore(
       `)
   );
 
-  app.set(
-    "layout unauthenticated",
-    (
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
-      head: HTML,
-      body: HTML
-    ): HTML =>
-      app.get("layout base")(
-        req,
-        res,
-        head,
-        html`
-          <div
-            style="${css`
-              max-width: 600px;
-              margin: 0 auto;
-            `}"
-          >
-            <header>
-              <h1
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                $${logo()}
-              </h1>
-            </header>
-            <main>$${body}</main>
-          </div>
-        `
-      )
-  );
-
-  app.set(
-    "layout authenticated",
-    (
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
-      head: HTML,
-      body: HTML
-    ): HTML => {
-      const user = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
-
-      return app.get("layout base")(
-        req,
-        res,
-        head,
-        html`
-          <div
-            style="${css`
-              max-width: 600px;
-              margin: 0 auto;
-            `}"
-          >
-            <header>
-              <h1>$${logo()}</h1>
-              <!-- TODO: The button is jumping around when clicked. -->
-              <details>
-                <summary
-                  style="${css`
-                    color: gray;
-                    float: right;
-                    margin-top: -40px;
-
-                    &::-webkit-details-marker {
-                      display: none;
-                    }
-                  `}"
-                >
-                  ☰
-                </summary>
-                <p>
-                  <strong>${user.name}</strong> ${`<${req.session!.email}>`}
-                </p>
-                <p>
-                  <a href="${app.get("url")}/courses/new" class="undecorated"
-                    >New course</a
-                  >
-                </p>
-                <form method="post" action="${app.get("url")}/sign-out">
-                  <p><button class="a undecorated">Sign out</button></p>
-                </form>
-              </details>
-            </header>
-            <main>$${body}</main>
-          </div>
-        `
-      );
-    }
-  );
-
-  app.set(
-    "layout thread",
-    (
-      req: express.Request<
-        { courseReference: string; threadReference?: string },
-        any,
-        {},
-        {},
-        {}
-      >,
-      res: express.Response<any, {}>,
-      head: HTML,
-      body: HTML
-    ): HTML => {
-      const user = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
-
-      const course = database.get<{ name: string; role: Role }>(
-        sql`
-          SELECT "courses"."name" AS "name", "enrollments"."role" AS "role"
-          FROM "courses"
-          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference} AND
-                "users"."email" = ${req.session!.email}
-        `
-      )!;
-
-      const otherCourses = database.all<{
-        reference: string;
-        name: string;
-        role: Role;
-      }>(
-        sql`
-          SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
-          FROM "courses"
-          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "courses"."reference" <> ${req.params.courseReference} AND
-                "users"."email" = ${req.session!.email}
-          ORDER BY "enrollments"."createdAt" DESC
-        `
-      );
-
-      const threads = database.all<{
-        createdAt: string;
-        updatedAt: string;
-        reference: number;
-        authorName: string | undefined;
-        title: string;
-      }>(
-        sql`
-          SELECT "threads"."createdAt" AS "createdAt",
-                 "threads"."updatedAt" AS "updatedAt",
-                 "threads"."reference" AS "reference",
-                 "author"."name" AS "authorName",
-                 "threads"."title" AS "title"
-          FROM "threads"
-          JOIN "courses" ON "threads"."course" = "courses"."id"
-          LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
-          LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY "threads"."reference" DESC
-        `
-      );
-
-      return app.get("layout base")(
-        req,
-        res,
-        head,
-        html`
-          <div
-            style="${css`
-              width: 100vw;
-              height: 100vh;
-              display: grid;
-              grid-template-columns: 400px auto;
-            `}"
-          >
-            <div
-              style="${css`
-                border-right: 1px solid silver;
-                overflow: auto;
-                display: grid;
-                grid-template-rows: min-content auto;
-              `}"
-            >
-              <header
-                style="${css`
-                  border-bottom: 1px solid silver;
-                  padding: 0 1em;
-                  overflow: auto;
-                `}"
-              >
-                <p>$${logo()}</p>
-                <details>
-                  <summary
-                    style="${css`
-                      color: gray;
-                      float: right;
-                      margin-top: -40px;
-
-                      &::-webkit-details-marker {
-                        display: none;
-                      }
-                    `}"
-                  >
-                    ☰
-                  </summary>
-                  <p>
-                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
-                  </p>
-                  <p>
-                    <a href="${app.get("url")}/courses/new" class="undecorated"
-                      >New course</a
-                    >
-                  </p>
-                  <form method="post" action="${app.get("url")}/sign-out">
-                    <p><button class="a undecorated">Sign out</button></p>
-                  </form>
-                </details>
-                $${otherCourses.length === 0
-                  ? html`
-                      <p><strong>${course.name}</strong> (${course.role})</p>
-                    `
-                  : html`
-                      <details>
-                        <summary
-                          style="${css`
-                            margin: 1em 0;
-                          `}"
-                        >
-                          <strong>${course.name}</strong> (${course.role})
-                        </summary>
-                        $${otherCourses.map(
-                          (course) => html`
-                            <p>
-                              <a
-                                href="${app.get("url")}/${course.reference}"
-                                class="undecorated"
-                                >${course.name} (${course.role})</a
-                              >
-                            </p>
-                          `
-                        )}
-                      </details>
-                    `}
-              </header>
-              <div
-                style="${css`
-                  overflow: auto;
-                  padding: 0 1em;
-                `}"
-              >
-                <p
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <a
-                    href="${app.get("url")}/${req.params
-                      .courseReference}/threads/new"
-                    class="button"
-                    >New thread</a
-                  >
-                </p>
-                $${threads.map(
-                  (thread) =>
-                    html`
-                      <p
-                        style="${css`
-                          line-height: 1.3;
-                          margin: 0;
-                        `}"
-                      >
-                        <a
-                          href="${app.get("url")}/${req.params
-                            .courseReference}/threads/${thread.reference}"
-                          class="undecorated"
-                          style="${css`
-                            ${thread.reference ===
-                            Number(req.params.threadReference)
-                              ? css`
-                                  background-color: whitesmoke;
-                                `
-                              : css``}
-                            display: block;
-                            padding: 1em;
-                            margin: 0 -1em;
-                          `}"
-                        >
-                          <strong>${thread.title}</strong><br />
-                          <small
-                            style="${css`
-                              color: gray;
-                            `}"
-                          >
-                            #${thread.reference} created
-                            $${relativeTime(thread.createdAt)} by
-                            ${thread.authorName ?? "Ghost"}
-                            ${thread.updatedAt !== thread.createdAt
-                              ? html` and last updated
-                                $${relativeTime(thread.updatedAt)}`
-                              : html``}
-                          </small>
-                        </a>
-                      </p>
-                    `
-                )}
-              </div>
-            </div>
-            <main
-              style="${css`
-                overflow: auto;
-                padding: 0 1em;
-              `}"
-            >
-              <div
-                style="${css`
-                  max-width: 800px;
-                  margin: 0 auto;
-
-                  & > h1:first-child {
-                    margin-top: 1em;
-                  }
-                `}"
-              >
-                $${body}
-              </div>
-            </main>
-          </div>
-        `
-      );
-    }
-  );
-
   const logoSVG = await fs.readFile(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
@@ -781,66 +450,6 @@ export default async function courselore(
       </a>
     `;
   }
-
-  const loading = (() => {
-    let counter = 0;
-    return (): HTML => {
-      counter++;
-      const id = `loading-gradient-${counter}`;
-      return html`
-        <div
-          class="loading"
-          hidden
-          style="${css`
-            margin: 3em 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          `}"
-        >
-          $${logoSVG
-            .replace(`id="gradient"`, `id="${id}"`)
-            .replace(`#gradient`, `#${id}`)}
-          <script>
-            (() => {
-              const loading = document.currentScript.parentElement;
-              let animationFrame;
-              new MutationObserver(() => {
-                if (loading.hidden) window.cancelAnimationFrame(animationFrame);
-                else animationFrame = window.requestAnimationFrame(animate);
-              }).observe(loading, {
-                attributes: true,
-                attributeFilter: ["hidden"],
-              });
-              const polyline = loading.querySelector("polyline");
-              const points = polyline
-                .getAttribute("points")
-                .split(" ")
-                .map(Number);
-              function animate(time) {
-                polyline.setAttribute(
-                  "points",
-                  points
-                    .map(
-                      (coordinate, index) =>
-                        coordinate + Math.sin(time * 0.005 + index)
-                    )
-                    .join(" ")
-                );
-                animationFrame = window.requestAnimationFrame(animate);
-              }
-            })();
-          </script>
-          <strong
-            style="${css`
-              margin-left: 0.3em;
-            `}"
-            >Loading…</strong
-          >
-        </div>
-      `;
-    };
-  })();
 
   app.set(
     "text processor",
@@ -1010,6 +619,40 @@ export default async function courselore(
       next();
     },
   ];
+
+  app.set(
+    "layout unauthenticated",
+    (
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
+      head: HTML,
+      body: HTML
+    ): HTML =>
+      app.get("layout base")(
+        req,
+        res,
+        head,
+        html`
+          <div
+            style="${css`
+              max-width: 600px;
+              margin: 0 auto;
+            `}"
+          >
+            <header>
+              <h1
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                $${logo()}
+              </h1>
+            </header>
+            <main>$${body}</main>
+          </div>
+        `
+      )
+  );
 
   app.get<{}, HTML, {}, {}, {}>(
     ["/", "/authenticate"],
@@ -1348,6 +991,66 @@ export default async function courselore(
     }
   );
 
+  app.set(
+    "layout authenticated",
+    (
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
+      head: HTML,
+      body: HTML
+    ): HTML => {
+      const user = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
+
+      return app.get("layout base")(
+        req,
+        res,
+        head,
+        html`
+          <div
+            style="${css`
+              max-width: 600px;
+              margin: 0 auto;
+            `}"
+          >
+            <header>
+              <h1>$${logo()}</h1>
+              <!-- TODO: The button is jumping around when clicked. -->
+              <details>
+                <summary
+                  style="${css`
+                    color: gray;
+                    float: right;
+                    margin-top: -40px;
+
+                    &::-webkit-details-marker {
+                      display: none;
+                    }
+                  `}"
+                >
+                  ☰
+                </summary>
+                <p>
+                  <strong>${user.name}</strong> ${`<${req.session!.email}>`}
+                </p>
+                <p>
+                  <a href="${app.get("url")}/courses/new" class="undecorated"
+                    >New course</a
+                  >
+                </p>
+                <form method="post" action="${app.get("url")}/sign-out">
+                  <p><button class="a undecorated">Sign out</button></p>
+                </form>
+              </details>
+            </header>
+            <main>$${body}</main>
+          </div>
+        `
+      );
+    }
+  );
+
   app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(true), (req, res) => {
     const user = database.get<{ name: string }>(
       sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
@@ -1615,6 +1318,243 @@ export default async function courselore(
         sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${user.id}, ${course.id}, ${req.body.role})`
       );
       res.redirect(`${app.get("url")}/${req.params.courseReference}`);
+    }
+  );
+
+  app.set(
+    "layout thread",
+    (
+      req: express.Request<
+        { courseReference: string; threadReference?: string },
+        any,
+        {},
+        {},
+        {}
+      >,
+      res: express.Response<any, {}>,
+      head: HTML,
+      body: HTML
+    ): HTML => {
+      const user = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
+
+      const course = database.get<{ name: string; role: Role }>(
+        sql`
+          SELECT "courses"."name" AS "name", "enrollments"."role" AS "role"
+          FROM "courses"
+          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference} AND
+                "users"."email" = ${req.session!.email}
+        `
+      )!;
+
+      const otherCourses = database.all<{
+        reference: string;
+        name: string;
+        role: Role;
+      }>(
+        sql`
+          SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
+          FROM "courses"
+          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "courses"."reference" <> ${req.params.courseReference} AND
+                "users"."email" = ${req.session!.email}
+          ORDER BY "enrollments"."createdAt" DESC
+        `
+      );
+
+      const threads = database.all<{
+        createdAt: string;
+        updatedAt: string;
+        reference: number;
+        authorName: string | undefined;
+        title: string;
+      }>(
+        sql`
+          SELECT "threads"."createdAt" AS "createdAt",
+                 "threads"."updatedAt" AS "updatedAt",
+                 "threads"."reference" AS "reference",
+                 "author"."name" AS "authorName",
+                 "threads"."title" AS "title"
+          FROM "threads"
+          JOIN "courses" ON "threads"."course" = "courses"."id"
+          LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
+          LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference}
+          ORDER BY "threads"."reference" DESC
+        `
+      );
+
+      return app.get("layout base")(
+        req,
+        res,
+        head,
+        html`
+          <div
+            style="${css`
+              width: 100vw;
+              height: 100vh;
+              display: grid;
+              grid-template-columns: 400px auto;
+            `}"
+          >
+            <div
+              style="${css`
+                border-right: 1px solid silver;
+                overflow: auto;
+                display: grid;
+                grid-template-rows: min-content auto;
+              `}"
+            >
+              <header
+                style="${css`
+                  border-bottom: 1px solid silver;
+                  padding: 0 1em;
+                  overflow: auto;
+                `}"
+              >
+                <p>$${logo()}</p>
+                <details>
+                  <summary
+                    style="${css`
+                      color: gray;
+                      float: right;
+                      margin-top: -40px;
+
+                      &::-webkit-details-marker {
+                        display: none;
+                      }
+                    `}"
+                  >
+                    ☰
+                  </summary>
+                  <p>
+                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
+                  </p>
+                  <p>
+                    <a href="${app.get("url")}/courses/new" class="undecorated"
+                      >New course</a
+                    >
+                  </p>
+                  <form method="post" action="${app.get("url")}/sign-out">
+                    <p><button class="a undecorated">Sign out</button></p>
+                  </form>
+                </details>
+                $${otherCourses.length === 0
+                  ? html`
+                      <p><strong>${course.name}</strong> (${course.role})</p>
+                    `
+                  : html`
+                      <details>
+                        <summary
+                          style="${css`
+                            margin: 1em 0;
+                          `}"
+                        >
+                          <strong>${course.name}</strong> (${course.role})
+                        </summary>
+                        $${otherCourses.map(
+                          (course) => html`
+                            <p>
+                              <a
+                                href="${app.get("url")}/${course.reference}"
+                                class="undecorated"
+                                >${course.name} (${course.role})</a
+                              >
+                            </p>
+                          `
+                        )}
+                      </details>
+                    `}
+              </header>
+              <div
+                style="${css`
+                  overflow: auto;
+                  padding: 0 1em;
+                `}"
+              >
+                <p
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  <a
+                    href="${app.get("url")}/${req.params
+                      .courseReference}/threads/new"
+                    class="button"
+                    >New thread</a
+                  >
+                </p>
+                $${threads.map(
+                  (thread) =>
+                    html`
+                      <p
+                        style="${css`
+                          line-height: 1.3;
+                          margin: 0;
+                        `}"
+                      >
+                        <a
+                          href="${app.get("url")}/${req.params
+                            .courseReference}/threads/${thread.reference}"
+                          class="undecorated"
+                          style="${css`
+                            ${thread.reference ===
+                            Number(req.params.threadReference)
+                              ? css`
+                                  background-color: whitesmoke;
+                                `
+                              : css``}
+                            display: block;
+                            padding: 1em;
+                            margin: 0 -1em;
+                          `}"
+                        >
+                          <strong>${thread.title}</strong><br />
+                          <small
+                            style="${css`
+                              color: gray;
+                            `}"
+                          >
+                            #${thread.reference} created
+                            $${relativeTime(thread.createdAt)} by
+                            ${thread.authorName ?? "Ghost"}
+                            ${thread.updatedAt !== thread.createdAt
+                              ? html` and last updated
+                                $${relativeTime(thread.updatedAt)}`
+                              : html``}
+                          </small>
+                        </a>
+                      </p>
+                    `
+                )}
+              </div>
+            </div>
+            <main
+              style="${css`
+                overflow: auto;
+                padding: 0 1em;
+              `}"
+            >
+              <div
+                style="${css`
+                  max-width: 800px;
+                  margin: 0 auto;
+
+                  & > h1:first-child {
+                    margin-top: 1em;
+                  }
+                `}"
+              >
+                $${body}
+              </div>
+            </main>
+          </div>
+        `
+      );
     }
   );
 
@@ -2116,6 +2056,66 @@ export default async function courselore(
     );
     return html``;
   }
+
+  const loading = (() => {
+    let counter = 0;
+    return (): HTML => {
+      counter++;
+      const id = `loading-gradient-${counter}`;
+      return html`
+        <div
+          class="loading"
+          hidden
+          style="${css`
+            margin: 3em 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}"
+        >
+          $${logoSVG
+            .replace(`id="gradient"`, `id="${id}"`)
+            .replace(`#gradient`, `#${id}`)}
+          <script>
+            (() => {
+              const loading = document.currentScript.parentElement;
+              let animationFrame;
+              new MutationObserver(() => {
+                if (loading.hidden) window.cancelAnimationFrame(animationFrame);
+                else animationFrame = window.requestAnimationFrame(animate);
+              }).observe(loading, {
+                attributes: true,
+                attributeFilter: ["hidden"],
+              });
+              const polyline = loading.querySelector("polyline");
+              const points = polyline
+                .getAttribute("points")
+                .split(" ")
+                .map(Number);
+              function animate(time) {
+                polyline.setAttribute(
+                  "points",
+                  points
+                    .map(
+                      (coordinate, index) =>
+                        coordinate + Math.sin(time * 0.005 + index)
+                    )
+                    .join(" ")
+                );
+                animationFrame = window.requestAnimationFrame(animate);
+              }
+            })();
+          </script>
+          <strong
+            style="${css`
+              margin-left: 0.3em;
+            `}"
+            >Loading…</strong
+          >
+        </div>
+      `;
+    };
+  })();
 
   function relativeTime(time: string): HTML {
     const timeString = new Date(time).toISOString();
