@@ -194,12 +194,15 @@ export default async function courselore(
 
                 input,
                 textarea {
-                  padding: 0.2em 1em;
                   transition: border-color 0.2s;
 
                   &:focus {
                     border-color: #ff77a8;
                   }
+                }
+
+                input {
+                  padding: 0.2em 1em;
                 }
 
                 input[type="text"],
@@ -208,6 +211,7 @@ export default async function courselore(
                 }
 
                 textarea {
+                  padding: 0.5em 1em;
                   box-sizing: border-box;
                   width: 100%;
                   resize: vertical;
@@ -440,6 +444,7 @@ export default async function courselore(
           >
             <header>
               <h1>$${logo()}</h1>
+              <!-- TODO: The button is jumping around when clicked. -->
               <details>
                 <summary
                   style="${css`
@@ -1597,110 +1602,33 @@ export default async function courselore(
     }
   );
 
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/:courseReference",
-    ...isEnrolledInCourse(true),
-    (req, res) => {
-      const thread = database.get<{
-        reference: string;
-      }>(
-        sql`
-          SELECT "threads"."reference" AS "reference"
-          FROM "threads"
-          JOIN "courses" ON "threads"."course" = "courses"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY "threads"."reference" DESC
-        `
-      );
-
-      if (thread === undefined) {
-        const course = database.get<{ name: string }>(
-          sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-        )!;
-
-        return res.send(
-          app.get("layout authenticated")(
-            req,
-            res,
-            html`<title>${course.name} · CourseLore</title>`,
-            html`
-              <div
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                <h1>Welcome to ${course.name}!</h1>
-                <p>
-                  <a
-                    href="${app.get("url")}/${req.params
-                      .courseReference}/threads/new"
-                    class="button"
-                    >Create the first thread</a
-                  >
-                </p>
-              </div>
-
-              <div class="TODO">
-                <p>Help instructors invite people to the their course.</p>
-              </div>
-            `
-          )
-        );
-      }
-
-      res.redirect(
-        `${app.get("url")}/${req.params.courseReference}/threads/${
-          thread.reference
-        }`
-      );
-    }
-  );
-
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/:courseReference/threads/new",
-    ...isEnrolledInCourse(true),
-    (req, res) => {
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-      res.send(
-        app.get("layout course")(
-          req,
-          res,
-          html`<title>${course.name} · CourseLore</title>`,
-          html`
-            <h1>Create a new thread</h1>
-            <form
-              method="post"
-              action="${app.get("url")}/${req.params.courseReference}/threads"
-            >
-              <p>
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="Title…"
-                  autocomplete="off"
-                  style="${css`
-                    box-sizing: border-box;
-                    width: 100%;
-                  `}"
-                  required
-                />
-              </p>
-              $${textEditor()}
-              <p
-                style="${css`
-                  text-align: right;
-                `}"
-              >
-                <button>Create thread</button>
-              </p>
-            </form>
-          `
-        )
-      );
-    }
-  );
+  function newThreadForm(courseReference: string): HTML {
+    return html`
+      <form method="post" action="${app.get("url")}/${courseReference}/threads">
+        <p>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title…"
+            autocomplete="off"
+            style="${css`
+              box-sizing: border-box;
+              width: 100%;
+            `}"
+            required
+          />
+        </p>
+        $${textEditor()}
+        <p
+          style="${css`
+            text-align: right;
+          `}"
+        >
+          <button>Create thread</button>
+        </p>
+      </form>
+    `;
+  }
 
   // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
   // FIXME: Don’t require whole form to be valid, just the text editor itself.
@@ -1802,6 +1730,76 @@ export default async function courselore(
       </div>
     `;
   }
+
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/:courseReference",
+    ...isEnrolledInCourse(true),
+    (req, res) => {
+      const thread = database.get<{
+        reference: string;
+      }>(
+        sql`
+          SELECT "threads"."reference" AS "reference"
+          FROM "threads"
+          JOIN "courses" ON "threads"."course" = "courses"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference}
+          ORDER BY "threads"."reference" DESC
+        `
+      );
+
+      if (thread === undefined) {
+        const course = database.get<{ name: string }>(
+          sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+        )!;
+
+        return res.send(
+          app.get("layout authenticated")(
+            req,
+            res,
+            html`<title>${course.name} · CourseLore</title>`,
+            html`
+              <h1>Welcome to ${course.name}!</h1>
+              <p>
+                <strong>Create the first thread</strong>
+              </p>
+              $${newThreadForm(req.params.courseReference)}
+
+              <div class="TODO">
+                <p>Help instructors invite people to the their course.</p>
+              </div>
+            `
+          )
+        );
+      }
+
+      res.redirect(
+        `${app.get("url")}/${req.params.courseReference}/threads/${
+          thread.reference
+        }`
+      );
+    }
+  );
+
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/:courseReference/threads/new",
+    ...isEnrolledInCourse(true),
+    (req, res) => {
+      const course = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+      res.send(
+        app.get("layout course")(
+          req,
+          res,
+          html`<title>${course.name} · CourseLore</title>`,
+          html`
+            <h1>Create a new thread</h1>
+            $${newThreadForm(req.params.courseReference)}
+          `
+        )
+      );
+    }
+  );
 
   app.post<
     { courseReference: string },
