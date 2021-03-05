@@ -640,13 +640,13 @@ export default async function courselore(
             `}"
           >
             <header>
-              <h1
+              <p
                 style="${css`
                   text-align: center;
                 `}"
               >
                 $${logo()}
-              </h1>
+              </p>
             </header>
             <main>$${body}</main>
           </div>
@@ -1015,8 +1015,7 @@ export default async function courselore(
             `}"
           >
             <header>
-              <h1>$${logo()}</h1>
-              <!-- TODO: The button is jumping around when clicked. -->
+              <p>$${logo()}</p>
               <details>
                 <summary
                   style="${css`
