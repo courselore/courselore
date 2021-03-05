@@ -1787,9 +1787,9 @@ export default async function courselore(
                             #${thread.reference} created
                             $${relativeTime(thread.createdAt)} by
                             ${thread.authorName ?? "Ghost"}
-                            ${thread.updatedAt !== thread.createdAt
-                              ? html` and last updated
-                                $${relativeTime(thread.updatedAt)}`
+                            $${thread.updatedAt !== thread.createdAt
+                              ? html`<br />and last updated
+                                  $${relativeTime(thread.updatedAt)}`
                               : html``}
                           </small>
                         </a>
@@ -1906,10 +1906,10 @@ export default async function courselore(
                         color: gray;
                       `}"
                       >said
-                      $${relativeTime(post.createdAt)}${post.updatedAt !==
+                      $${relativeTime(post.createdAt)}$${post.updatedAt !==
                       post.createdAt
-                        ? html` and last updated
-                          $${relativeTime(post.updatedAt)}`
+                        ? html` (and last edited
+                          $${relativeTime(post.updatedAt)})`
                         : html``}
                       <small
                         style="${css`
@@ -1969,11 +1969,13 @@ export default async function courselore(
         WHERE "threads"."reference" = ${req.params.threadReference} AND
               "courses"."reference" = ${req.params.courseReference}
       `)!;
+
       const newPostReference = database.get<{ newPostReference: number }>(sql`
         SELECT MAX("posts"."reference") + 1 AS "newPostReference"
         FROM "posts"
         WHERE "posts"."thread" = ${thread.id}
       `)!.newPostReference;
+
       const author = database.get<{ id: number }>(sql`
         SELECT "enrollments"."id" AS "id"
         FROM "enrollments"
@@ -1982,10 +1984,19 @@ export default async function courselore(
         WHERE "users"."email" = ${req.session!.email} AND
               "courses"."reference" = ${req.params.courseReference}
       `)!;
+
       database.run(sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
         VALUES (${thread.id}, ${newPostReference}, ${author.id}, ${req.body.content})
       `);
+
+      // FIXME: Use a trigger instead of this update.
+      database.run(sql`
+        UPDATE "threads"
+        SET "updatedAt" = ${new Date().toISOString()}
+        WHERE "reference" = ${req.params.threadReference}
+      `);
+
       res.redirect(
         `${app.get("url")}/${req.params.courseReference}/threads/${
           req.params.threadReference
