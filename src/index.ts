@@ -1647,6 +1647,10 @@ export default async function courselore(
               transition-duration: 0.2s;
               transition-property: font-weight, color;
 
+              &:hover {
+                color: #ff77a8;
+              }
+
               &:disabled {
                 font-weight: bold;
                 color: black;
