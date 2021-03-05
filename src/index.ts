@@ -246,8 +246,7 @@ export default async function courselore(
                   border: 0;
                 }
 
-                button,
-                summary {
+                button {
                   cursor: pointer;
                 }
 
@@ -296,6 +295,7 @@ export default async function courselore(
 
                 summary {
                   cursor: pointer;
+                  outline: none;
                 }
               }
             `}"
@@ -432,27 +432,21 @@ export default async function courselore(
             `}"
           >
             <header>
-              <h1
-                style="${css`
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                `}"
-              >
-                $${logo()}
-                <button
-                  type="button"
-                  class="a undecorated"
-                  onclick="${javascript`
-                      const target = document.querySelector("#signed-in-menu");
-                      target.hidden = !target.hidden;
-                      enableButton(this);
-                    `}"
+              <h1>$${logo()}</h1>
+              <details>
+                <summary
+                  style="${css`
+                    color: dimgray;
+                    float: right;
+                    margin-top: -40px;
+
+                    &::-webkit-details-marker {
+                      display: none;
+                    }
+                  `}"
                 >
                   ☰
-                </button>
-              </h1>
-              <div id="signed-in-menu" hidden>
+                </summary>
                 <p>
                   <strong>${user.name}</strong> ${`<${req.session!.email}>`}
                 </p>
@@ -464,7 +458,7 @@ export default async function courselore(
                 <form method="post" action="${app.get("url")}/sign-out">
                   <p><button class="a undecorated">Sign out</button></p>
                 </form>
-              </div>
+              </details>
             </header>
             <main>$${body}</main>
           </div>
@@ -533,6 +527,7 @@ export default async function courselore(
                 grid-template-rows: min-content auto;
               `}"
             >
+              <!-- TODO: What happens if the header overflows? -->
               <header
                 style="${css`
                   border-bottom: 1px solid silver;
@@ -547,24 +542,21 @@ export default async function courselore(
                   `}"
                 >
                   $${logo(`${app.get("url")}/${req.params.courseReference}`)}
-                  <button
-                    type="button"
-                    class="a undecorated"
+                </p>
+                <details>
+                  <summary
                     style="${css`
-                      button& {
-                        color: dimgray;
+                      color: dimgray;
+                      float: right;
+                      margin-top: -40px;
+
+                      &::-webkit-details-marker {
+                        display: none;
                       }
-                    `}"
-                    onclick="${javascript`
-                      const target = document.querySelector("#signed-in-menu");
-                      target.hidden = !target.hidden;
-                      enableButton(this);
                     `}"
                   >
                     ☰
-                  </button>
-                </p>
-                <div id="signed-in-menu" hidden>
+                  </summary>
                   <p>
                     <strong>${user.name}</strong> ${`<${req.session!.email}>`}
                   </p>
@@ -576,7 +568,7 @@ export default async function courselore(
                   <form method="post" action="${app.get("url")}/sign-out">
                     <p><button class="a undecorated">Sign out</button></p>
                   </form>
-                </div>
+                </details>
                 $${otherCourses.length === 0
                   ? html`
                       <p><strong>${course.name}</strong> (${course.role})</p>
