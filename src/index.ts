@@ -474,7 +474,7 @@ export default async function courselore(
   );
 
   app.set(
-    "layout",
+    "layout course",
     (
       req: express.Request,
       res: express.Response,
@@ -1647,7 +1647,7 @@ export default async function courselore(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
       res.send(
-        app.get("layout")(
+        app.get("layout course")(
           req,
           res,
           html`<title>${course.name} · CourseLore</title>`,
@@ -1734,7 +1734,7 @@ export default async function courselore(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
       res.send(
-        app.get("layout")(
+        app.get("layout course")(
           req,
           res,
           html`<title>${course.name} · CourseLore</title>`,
@@ -1968,7 +1968,7 @@ export default async function courselore(
         `
       )!;
       res.send(
-        app.get("layout")(
+        app.get("layout course")(
           req,
           res,
           html`<title>${thread.title} · CourseLore</title>`,
