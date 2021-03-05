@@ -289,9 +289,9 @@ export default async function courselore(
 
                   &:disabled,
                   &.disabled {
-                    color: dimgray;
+                    color: gray;
                     background-color: whitesmoke;
-                    border-color: dimgray;
+                    border-color: gray;
                     cursor: wait;
                   }
                 }
@@ -443,7 +443,7 @@ export default async function courselore(
               <details>
                 <summary
                   style="${css`
-                    color: dimgray;
+                    color: gray;
                     float: right;
                     margin-top: -40px;
 
@@ -541,13 +541,11 @@ export default async function courselore(
                   overflow: auto;
                 `}"
               >
-                <p>
-                  $${logo(`${app.get("url")}/${req.params.courseReference}`)}
-                </p>
+                <p>$${logo()}</p>
                 <details>
                   <summary
                     style="${css`
-                      color: dimgray;
+                      color: gray;
                       float: right;
                       margin-top: -40px;
 
@@ -656,7 +654,7 @@ export default async function courselore(
                             <strong>${title}</strong><br />
                             <small
                               style="${css`
-                                color: dimgray;
+                                color: gray;
                               `}"
                             >
                               #${reference} created $${relativeTime(createdAt)}
@@ -698,10 +696,10 @@ export default async function courselore(
     "utf-8"
   );
 
-  function logo(href: string = app.get("url")): HTML {
+  function logo(): HTML {
     return html`
       <a
-        href="${href}"
+        href="${app.get("url")}/"
         class="undecorated"
         style="${css`
           color: #83769c;
@@ -1414,7 +1412,7 @@ export default async function courselore(
                         <a
                           href="${app.get("url")}/${course.reference}"
                           class="undecorated"
-                          >${course.name} (${course.role})</a
+                          ><strong>${course.name}</strong> (${course.role})</a
                         >
                       </p>
                     `
@@ -1602,80 +1600,21 @@ export default async function courselore(
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
+
       res.send(
         app.get("layout course")(
           req,
           res,
           html`<title>${course.name} · CourseLore</title>`,
           html`
-            <p>
-              <a
-                href="${app.get("url")}/${req.params
-                  .courseReference}/threads/new"
-                class="button"
-                >New thread</a
-              >
+            <p
+              style="${css`
+                color: gray;
+                text-align: center;
+              `}"
+            >
+              No thread selected
             </p>
-            $${database
-              .all<{
-                createdAt: string;
-                updatedAt: string;
-                reference: string;
-                authorName: string | undefined;
-                title: string;
-              }>(
-                sql`
-                  SELECT "threads"."createdAt" AS "createdAt",
-                         "threads"."updatedAt" AS "updatedAt",
-                         "threads"."reference" AS "reference",
-                         "author"."name" AS "authorName",
-                         "threads"."title" AS "title"
-                  FROM "threads"
-                  JOIN "courses" ON "threads"."course" = "courses"."id"
-                  LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
-                  LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
-                  WHERE "courses"."reference" = ${req.params.courseReference}
-                  ORDER BY "threads"."reference" DESC
-                `
-              )
-              .map(
-                ({ createdAt, updatedAt, reference, authorName, title }) =>
-                  html`
-                    <p
-                      style="${css`
-                        line-height: 1.2;
-                      `}"
-                    >
-                      <a
-                        href="${app.get("url")}/${req.params
-                          .courseReference}/threads/${reference}"
-                        class="undecorated"
-                        style="${css`
-                          display: block;
-                        `}"
-                      >
-                        <strong>${title}</strong><br />
-                        <small
-                          style="${css`
-                            color: dimgray;
-                          `}"
-                        >
-                          #${reference} created $${relativeTime(createdAt)}
-                          ${updatedAt !== createdAt
-                            ? html` (and last updated
-                              $${relativeTime(updatedAt)})`
-                            : html``}
-                          by ${authorName ?? "Ghost"}
-                        </small>
-                      </a>
-                    </p>
-                  `
-              )}
-            <div class="TODO">
-              <ul>
-                <li>Help instructor invite other users.</li>
-              </ul>
-            </div>
           `
         )
       );
@@ -1737,7 +1676,7 @@ export default async function courselore(
       <div class="text-editor">
         <p
           style="${css`
-            color: dimgray;
+            color: gray;
             margin-bottom: 0em;
 
             & button {
@@ -1801,7 +1740,7 @@ export default async function courselore(
           <p
             style="${css`
               text-align: right;
-              color: dimgray;
+              color: gray;
               margin-top: -0.3em;
             `}"
           >
@@ -1980,7 +1919,7 @@ export default async function courselore(
                       <strong>${authorName ?? "Ghost"}</strong>
                       <span
                         style="${css`
-                          color: dimgray;
+                          color: gray;
                         `}"
                         >said
                         $${relativeTime(createdAt)}${updatedAt !== createdAt
