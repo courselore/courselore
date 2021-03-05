@@ -534,20 +534,14 @@ export default async function courselore(
                 grid-template-rows: min-content auto;
               `}"
             >
-              <!-- TODO: What happens if the header overflows? -->
               <header
                 style="${css`
                   border-bottom: 1px solid silver;
                   padding: 0 1em;
+                  overflow: auto;
                 `}"
               >
-                <p
-                  style="${css`
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                  `}"
-                >
+                <p>
                   $${logo(`${app.get("url")}/${req.params.courseReference}`)}
                 </p>
                 <details>
