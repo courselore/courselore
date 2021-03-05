@@ -3,7 +3,6 @@
 import console from "console";
 import process from "process";
 import path from "path";
-import crypto from "crypto";
 
 import express from "express";
 import cookieSession from "cookie-session";
@@ -13,7 +12,7 @@ import { Database, sql } from "@leafac/sqlite";
 import databaseMigrate from "@leafac/sqlite-migration";
 
 import html from "@leafac/html";
-import css from "tagged-template-noop";
+import { css, process as cssProcess } from "@leafac/css";
 import javascript from "tagged-template-noop";
 
 import unified from "unified";
@@ -30,10 +29,6 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 
-import postcss from "postcss";
-import postcssNested from "postcss-nested";
-
-import { JSDOM } from "jsdom";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import inquirer from "inquirer";
@@ -47,17 +42,17 @@ export default async function courselore(
   const app = express();
 
   type HTML = string;
-  type CSS = string;
 
   app.set("url", "http://localhost:4000");
   app.set("administrator email", "demonstration-development@courselore.org");
 
   app.enable("demonstration");
 
+  // TODO: Use more inline styles in the templates and in the customization.
   app.set(
     "layout base",
-    (head: HTML, body: HTML): HTML => {
-      const rawHTML = html`
+    (head: HTML, body: HTML): HTML =>
+      cssProcess(html`
         <!DOCTYPE html>
         <html lang="en">
           <head>
@@ -100,7 +95,10 @@ export default async function courselore(
               rel="stylesheet"
               href="${app.get("url")}/node_modules/katex/dist/katex.min.css"
             />
-            <style>
+            $${head}
+          </head>
+          <body
+            style="${css`
               /*
                 https://pico-8.fandom.com/wiki/Palette
                 #83769c / darker #6e6382 #584f69
@@ -108,201 +106,199 @@ export default async function courselore(
                 #29adff
               */
 
-              body {
-                font-size: 14px;
-                line-height: 1.5;
-                font-family: "Public Sans", sans-serif;
-                -webkit-text-size-adjust: 100%;
-                margin: 0;
-              }
+              font-size: 14px;
+              line-height: 1.5;
+              font-family: "Public Sans", sans-serif;
+              -webkit-text-size-adjust: 100%;
+              margin: 0;
 
-              code {
-                font-family: "Roboto Mono", monospace;
-              }
+              @at-root {
+                code {
+                  font-family: "Roboto Mono", monospace;
+                }
 
-              ::selection {
-                color: white;
-                background-color: #ff77a8;
-              }
+                ::selection {
+                  color: white;
+                  background-color: #ff77a8;
+                }
 
-              img,
-              svg {
-                max-width: 100%;
-                height: auto;
-              }
+                img,
+                svg {
+                  max-width: 100%;
+                  height: auto;
+                }
 
-              h1 {
-                line-height: 1.2;
-                font-size: large;
-                font-weight: 800;
-                margin-top: 1.5em;
-              }
+                h1 {
+                  line-height: 1.2;
+                  font-size: large;
+                  font-weight: 800;
+                  margin-top: 1.5em;
+                }
 
-              /* TODO: Do something about other styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
-              pre,
-              div.math-display {
-                overflow: auto;
-              }
+                /* TODO: Do something about other styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
+                pre,
+                div.math-display {
+                  overflow: auto;
+                }
 
-              pre {
-                line-height: 1.3;
-              }
+                pre {
+                  line-height: 1.3;
+                }
 
-              div.demonstration,
-              div.TODO,
-              input,
-              textarea {
-                border: 1px solid darkgray;
-                border-radius: 10px;
-                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
-              }
+                div.demonstration,
+                div.TODO,
+                input,
+                textarea {
+                  border: 1px solid darkgray;
+                  border-radius: 10px;
+                  box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+                }
 
-              div.demonstration,
-              div.TODO {
-                background-color: whitesmoke;
-                box-sizing: border-box;
-                padding: 0 1em;
-              }
+                div.demonstration,
+                div.TODO {
+                  background-color: whitesmoke;
+                  box-sizing: border-box;
+                  padding: 0 1em;
+                }
 
-              div.TODO::before {
-                content: "TODO";
-                font-weight: bold;
-                display: block;
-                margin-top: 0.5em;
-              }
+                div.TODO::before {
+                  content: "TODO";
+                  font-weight: bold;
+                  display: block;
+                  margin-top: 0.5em;
+                }
 
-              input,
-              textarea,
-              button {
-                font-family: "Public Sans", sans-serif;
-                font-size: 1em;
-                line-height: 1.5;
-                margin: 0;
-                outline: none;
-              }
+                input,
+                textarea,
+                button {
+                  font-family: "Public Sans", sans-serif;
+                  font-size: 1em;
+                  line-height: 1.5;
+                  margin: 0;
+                  outline: none;
+                }
 
-              input,
-              textarea {
-                padding: 0.2em 1em;
-                transition: border-color 0.2s;
-              }
+                input,
+                textarea {
+                  padding: 0.2em 1em;
+                  transition: border-color 0.2s;
+                }
 
-              input:focus,
-              textarea:focus {
-                border-color: #ff77a8;
-              }
+                input:focus,
+                textarea:focus {
+                  border-color: #ff77a8;
+                }
 
-              input[type="text"],
-              input[type="email"] {
-                -webkit-appearance: none;
-              }
+                input[type="text"],
+                input[type="email"] {
+                  -webkit-appearance: none;
+                }
 
-              textarea {
-                box-sizing: border-box;
-                width: 100%;
-                resize: vertical;
-              }
+                textarea {
+                  box-sizing: border-box;
+                  width: 100%;
+                  resize: vertical;
+                }
 
-              ::-webkit-resizer {
-                display: none;
-              }
+                ::-webkit-resizer {
+                  display: none;
+                }
 
-              a,
-              button.a,
-              summary {
-                transition: color 0.2s;
-              }
+                a,
+                button.a,
+                summary {
+                  transition: color 0.2s;
+                }
 
-              a,
-              button.a {
-                color: inherit;
-              }
+                a,
+                button.a {
+                  color: inherit;
+                }
 
-              button.a {
-                text-decoration: underline;
-                background-color: inherit;
-                display: inline;
-                padding: 0;
-                border: none;
-              }
+                button.a {
+                  text-decoration: underline;
+                  background-color: inherit;
+                  display: inline;
+                  padding: 0;
+                  border: none;
+                }
 
-              a:hover,
-              button.a:hover,
-              summary:hover {
-                color: #ff77a8;
-              }
+                a:hover,
+                button.a:hover,
+                summary:hover {
+                  color: #ff77a8;
+                }
 
-              a.undecorated,
-              a.button,
-              button.a.undecorated {
-                text-decoration: none;
-              }
+                a.undecorated,
+                a.button,
+                button.a.undecorated {
+                  text-decoration: none;
+                }
 
-              button.undecorated {
-                color: inherit;
-                background-color: inherit;
-                padding: 0;
-                border: 0;
-              }
+                button.undecorated {
+                  color: inherit;
+                  background-color: inherit;
+                  padding: 0;
+                  border: 0;
+                }
 
-              button,
-              summary {
-                cursor: pointer;
-              }
+                button,
+                summary {
+                  cursor: pointer;
+                }
 
-              a.button {
-                display: inline-block;
-              }
+                a.button {
+                  display: inline-block;
+                }
 
-              button:not(.undecorated):not(.a),
-              a.button {
-                color: white;
-                background-color: #83769c;
-                padding: 0.2em 1em;
-                border: 1px solid #83769c;
-                border-radius: 10px;
-                box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
-                transition-property: color, background-color, border-color;
-                transition-duration: 0.2s;
-              }
+                button:not(.undecorated):not(.a),
+                a.button {
+                  color: white;
+                  background-color: #83769c;
+                  padding: 0.2em 1em;
+                  border: 1px solid #83769c;
+                  border-radius: 10px;
+                  box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+                  transition-property: color, background-color, border-color;
+                  transition-duration: 0.2s;
+                }
 
-              button:not(.undecorated):not(.a).outline,
-              a.button.outline {
-                color: #83769c;
-                background-color: white;
-              }
+                button:not(.undecorated):not(.a).outline,
+                a.button.outline {
+                  color: #83769c;
+                  background-color: white;
+                }
 
-              button:not(.undecorated):not(.a):hover,
-              a.button:hover {
-                color: white;
-                background-color: #6e6382;
-              }
+                button:not(.undecorated):not(.a):hover,
+                a.button:hover {
+                  color: white;
+                  background-color: #6e6382;
+                }
 
-              button:not(.undecorated):not(.a):active,
-              a.button:active {
-                color: white;
-                background-color: #584f69;
-              }
+                button:not(.undecorated):not(.a):active,
+                a.button:active {
+                  color: white;
+                  background-color: #584f69;
+                }
 
-              button:not(.undecorated):not(.a):disabled,
-              a.button.disabled {
-                color: dimgray;
-                background-color: whitesmoke;
-                border-color: dimgray;
-                cursor: wait;
-              }
+                button:not(.undecorated):not(.a):disabled,
+                a.button.disabled {
+                  color: dimgray;
+                  background-color: whitesmoke;
+                  border-color: dimgray;
+                  cursor: wait;
+                }
 
-              [hidden] {
-                display: none !important;
-              }
+                [hidden] {
+                  display: none !important;
+                }
 
-              summary {
-                cursor: pointer;
+                summary {
+                  cursor: pointer;
+                }
               }
-            </style>
-            $${head}
-          </head>
-          <body>
+            `}"
+          >
             $${body}
             <script>
               (() => {
@@ -374,71 +370,8 @@ export default async function courselore(
             </script>
           </body>
         </html>
-      `;
-
-      // TODO: Make this possibly faster by using Rehype instead of JSDOM (though we have to benchmark to be sure…)
-      // TODO: Extract this into a package. Or at least into its own function outside the definition of the template.
-      // TODO: Use more inline styles in the templates and in the customization.
-      // TODO: Add support for all pseudo-classes, pseudo-elements, and media queries.
-      //       https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes
-      //         https://www.npmjs.com/package/pseudo-classes
-      //       https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements
-      //       https://github.com/postcss/postcss
-      //       https://github.com/brettstimmerman/mensch
-      // https://stackoverflow.com/questions/10963997/css-parser-for-javascript
-      // https://github.com/CSSLint/parser-lib
-      // https://github.com/NV/CSSOM
-      // https://github.com/reworkcss/css
-      // https://www.npmjs.com/package/cssparser
-      // https://rahulnpadalkar.medium.com/css-parser-in-javascript-578eba0977e5
-      // https://github.com/rahulnpadalkar/CSSParser
-      // http://glazman.org/JSCSSP/
-
-      // https://github.com/postcss/postcss-scss
-      // https://github.com/postcss/postcss-js
-      // https://github.com/jonathantneal/precss
-      // https://github.com/postcss/postcss-nested (more installations than the one below)
-      // https://github.com/jonathantneal/postcss-nesting (closer to the standard and more stars than the one above)
-
-      // https://github.com/jsdom/cssstyle
-      // https://github.com/reworkcss/css
-      // https://github.com/css/csso
-      // https://github.com/csstree/csstree
-      // https://github.com/brettstimmerman/mensch
-      const dom = new JSDOM(rawHTML);
-      const document = dom.window.document;
-      const inlineStyles = new Set<CSS>();
-      for (const element of document.querySelectorAll("[style]")) {
-        const styles = element.getAttribute("style")!;
-        element.removeAttribute("style");
-        const className = `style--${crypto
-          .createHash("sha256")
-          .update(styles)
-          .digest("hex")}`;
-        element.classList.add(className);
-        inlineStyles.add(
-          cssProcessor.process(
-            css`
-              .${className} {
-                ${styles}
-              }
-            `,
-            { from: undefined }
-          ).css
-        );
-      }
-      document.head.insertAdjacentHTML(
-        "beforeend",
-        html`
-          <style>
-            $${[...inlineStyles]}
-          </style>
-        `
-      );
-      return dom.serialize();
-    }
+      `)
   );
-  const cssProcessor = postcss([postcssNested]);
 
   app.set(
     "layout",
