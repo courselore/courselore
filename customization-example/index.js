@@ -28,7 +28,7 @@ module.exports = (require) => {
           html`
             <div
               style="${css`
-                @media (max-width: 1279px) {
+                @media (max-width: 1279px), (max-height: 699px) {
                   max-width: 600px;
                   padding: 0 1em;
                   margin: 1em auto;
