@@ -1441,7 +1441,18 @@ export default async function courselore(
         </p>
 
         <div class="write">
-          <textarea name="content" required rows="5"></textarea>
+          <textarea
+            name="content"
+            required
+            rows="5"
+            onkeypress="${javascript`
+              if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+                event.preventDefault();
+                const form = this.closest("form");
+                if (form.reportValidity()) form.submit();
+              }
+            `}"
+          ></textarea>
           <p
             style="${css`
               text-align: right;
