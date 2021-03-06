@@ -35,125 +35,130 @@ module.exports = (require) => {
                 }
 
                 @media (min-width: 1280px) and (min-height: 700px) {
-                  header {
-                    position: fixed;
-                    right: 50%;
-                    max-width: 600px;
-                    height: 100vh;
-                    padding-right: 20px;
-                    display: flex;
-                    align-items: center;
-                  }
-
-                  main {
-                    position: absolute;
-                    left: 50%;
-                    max-width: 600px;
-                    padding-left: 20px;
-                  }
+                  display: grid;
+                  grid-template-columns: 600px 600px;
+                  column-gap: 40px;
+                  justify-content: center;
                 }
               `}"
             >
               <header>
-                $${art({ size: 600, order: 6, strokeWidth: 1 }).replace(
-                  "</svg>",
-                  html`
-                    <g
-                      font-weight="900"
-                      fill="white"
-                      text-anchor="middle"
-                      alignment-baseline="middle"
-                      transform="translate(300, 250) rotate(-2)"
-                    >
-                      <g>
-                        <rect
-                          x="-250"
-                          y="-78"
-                          width="500"
-                          height="100"
-                          rx="10"
-                          fill="#83769c"
-                        />
-                        <text font-size="5em">CourseLore</text>
-                      </g>
-                      <g transform="translate(0, 100)">
-                        <rect
-                          x="-210"
-                          y="-33"
-                          width="420"
-                          height="50"
-                          rx="10"
-                          fill="#ff77a8"
-                        />
-                        <text font-size="1.5em"
-                          >The Open-Source Student Forum</text
-                        >
-                      </g>
-                      <g transform="translate(0, 300)">
-                        <rect
-                          x="-140"
-                          y="-20"
-                          width="280"
-                          height="30"
-                          rx="10"
-                          fill="#29adff"
-                        />
-                        <text font-size="0.8em" letter-spacing="3">
-                          COMING SEPTEMBER 2021!
-                        </text>
-                      </g>
-                    </g>
-                    $&
-                  `
-                )}
-                <script>
-                  (() => {
-                    const SPEED = 0.001;
-                    const AMOUNT = 3;
-                    const polyline = document.currentScript.previousElementSibling.querySelector(
-                      "polyline"
-                    );
-                    const points = polyline
-                      .getAttribute("points")
-                      .split(" ")
-                      .map(Number);
-                    window.requestAnimationFrame(function animate(time) {
-                      polyline.setAttribute(
-                        "points",
-                        points
-                          .map(
-                            (coordinate, index) =>
-                              coordinate +
-                              Math.sin(time * SPEED + index) * AMOUNT
-                          )
-                          .join(" ")
-                      );
-                      window.requestAnimationFrame(animate);
-                    });
-                  })();
-                </script>
-                <nav
+                <div
                   style="${css`
-                    text-align: center;
-                    a {
-                      text-decoration: none;
+                    @media (min-width: 1280px) and (min-height: 700px) {
+                      position: fixed;
+                      height: 100vh;
+                      display: flex;
+                      align-items: center;
                     }
                   `}"
                 >
-                  <a href="https://github.com/courselore"
-                    ><strong>GitHub</strong></a
-                  > ·
-                  <a
-                    href="https://www.youtube.com/channel/UCIUTEUo5RiGdtaJOJQGTwqw"
-                    ><strong>YouTube</strong></a
-                  > ·
-                  <a href="https://twitter.com/courselore"
-                    ><strong>Twitter</strong></a
-                  > ·
-                  <a href="mailto:contact@courselore.org"
-                    ><strong>Email</strong></a
-                  >
-                </nav>
+                  <div>
+                    $${art({ size: 600, order: 6, strokeWidth: 1 }).replace(
+                      "</svg>",
+                      html`
+                        <g
+                          font-weight="900"
+                          fill="white"
+                          text-anchor="middle"
+                          alignment-baseline="middle"
+                          transform="translate(300, 250) rotate(-2)"
+                        >
+                          <g>
+                            <rect
+                              x="-250"
+                              y="-78"
+                              width="500"
+                              height="100"
+                              rx="10"
+                              fill="#83769c"
+                            />
+                            <text font-size="5em">CourseLore</text>
+                          </g>
+                          <g transform="translate(0, 100)">
+                            <rect
+                              x="-210"
+                              y="-33"
+                              width="420"
+                              height="50"
+                              rx="10"
+                              fill="#ff77a8"
+                            />
+                            <text font-size="1.5em"
+                              >The Open-Source Student Forum</text
+                            >
+                          </g>
+                          <g transform="translate(0, 300)">
+                            <rect
+                              x="-140"
+                              y="-20"
+                              width="280"
+                              height="30"
+                              rx="10"
+                              fill="#29adff"
+                            />
+                            <text font-size="0.8em" letter-spacing="3">
+                              COMING SEPTEMBER 2021!
+                            </text>
+                          </g>
+                        </g>
+                        $&
+                      `
+                    )}
+                    <script>
+                      (() => {
+                        const SPEED = 0.001;
+                        const AMOUNT = 3;
+                        const polyline = document.currentScript.previousElementSibling.querySelector(
+                          "polyline"
+                        );
+                        const points = polyline
+                          .getAttribute("points")
+                          .split(" ")
+                          .map(Number);
+                        window.requestAnimationFrame(function animate(time) {
+                          polyline.setAttribute(
+                            "points",
+                            points
+                              .map(
+                                (coordinate, index) =>
+                                  coordinate +
+                                  Math.sin(time * SPEED + index) * AMOUNT
+                              )
+                              .join(" ")
+                          );
+                          window.requestAnimationFrame(animate);
+                        });
+                      })();
+                    </script>
+                    <nav
+                      style="${css`
+                        text-align: center;
+                      `}"
+                    >
+                      <a
+                        href="https://github.com/courselore"
+                        class="undecorated"
+                        ><strong>GitHub</strong></a
+                      > ·
+                      <a
+                        href="https://www.youtube.com/channel/UCIUTEUo5RiGdtaJOJQGTwqw"
+                        class="undecorated"
+                        ><strong>YouTube</strong></a
+                      > ·
+                      <a
+                        href="https://twitter.com/courselore"
+                        class="undecorated"
+                        ><strong>Twitter</strong></a
+                      > ·
+                      <a
+                        href="mailto:contact@courselore.org"
+                        class="undecorated"
+                        ><strong>Email</strong></a
+                      >
+                    </nav>
+                  </div>
+                </div>
               </header>
 
               <main
