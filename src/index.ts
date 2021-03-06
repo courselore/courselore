@@ -11,7 +11,7 @@ import * as expressValidator from "express-validator";
 import { Database, sql } from "@leafac/sqlite";
 import databaseMigrate from "@leafac/sqlite-migration";
 
-import html from "@leafac/html";
+import { html, HTML } from "@leafac/html";
 import { css, process as cssProcess } from "@leafac/css";
 import javascript from "tagged-template-noop";
 
@@ -40,8 +40,6 @@ export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
   const app = express();
-
-  type HTML = string;
 
   app.set("url", "http://localhost:4000");
   app.set("administrator email", "demonstration-development@courselore.org");
