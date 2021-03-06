@@ -572,10 +572,18 @@ Insiders Builds are generated on every push. They’re useful for development an
 <details>
 <summary>2021-03-06</summary>
 
-- Things to work on next:
-  - Mobile layout.
-  - Update threads when other people post.
+- Developed a two-column layout for the course pages and fleshed out the styles across the application.
+- Developed @leafac/css.
+- Released caxa@1.0.0.
+- Released a video about the background animation on the homepage.
+- For next week:
+  - Change background color
+    - Pick a random one at course creation.
+    - Let people change but have a default for the course.
+    - Default palette.
+  - Dark mode.
   - Course enrollment invitations.
+  - Update threads when other people post.
   - Editing posts. (And threads, and your profile, and so forth.)
 
 </details>

@@ -2125,6 +2125,17 @@ export default async function courselore(
     };
   })();
 
+  // TODO: Extract this into its own library?
+  // TODO: Bring this and the client-side JavaScript that makes relative times work closer together.
+  // https://github.com/catamphetamine/javascript-time-ago
+  // https://github.com/azer/relative-date
+  // https://benborgers.com/posts/js-relative-date
+  // https://github.com/digplan/time-ago
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+  //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
+  // https://day.js.org
+  // http://timeago.yarp.com
+  // https://sugarjs.com
   function relativeTime(time: string): HTML {
     const timeString = new Date(time).toISOString();
     return html`<time
