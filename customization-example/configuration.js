@@ -28,15 +28,7 @@ module.exports = async (require) => {
 
   const reverseProxy = express();
 
-  reverseProxy.use(
-    cookieSession({
-      secret: app
-        .get("runtime database")
-        .get(
-          sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
-        ).value,
-    })
-  );
+  reverseProxy.use(cookieSession({ secret: app.get("cookie secret") }));
   reverseProxy.use(customization(app));
   reverseProxy.use(app);
 

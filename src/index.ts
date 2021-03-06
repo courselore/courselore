@@ -581,16 +581,24 @@ export default async function courselore(
   // https://github.com/expressjs/express/blob/master/examples/cookie-sessions/index.js
   // https://www.npmjs.com/package/express-session
   // https://github.com/expressjs/express/blob/master/examples/session/index.js
-  let cookieSecret = runtimeDatabase.get<{ value: string }>(
-    sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
-  )?.value;
-  if (cookieSecret === undefined) {
-    cookieSecret = cryptoRandomString({ length: 60, type: "alphanumeric" });
+  app.set(
+    "cookie secret",
+    runtimeDatabase.get<{ value: string }>(
+      sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
+    )?.value
+  );
+  if (app.get("cookie secret") === undefined) {
+    app.set(
+      "cookie secret",
+      cryptoRandomString({ length: 60, type: "alphanumeric" })
+    );
     runtimeDatabase.run(
-      sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookieSecret"}, ${cookieSecret})`
+      sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookieSecret"}, ${app.get(
+        "cookie secret"
+      )})`
     );
   }
-  app.use(cookieSession({ secret: cookieSecret }));
+  app.use(cookieSession({ secret: app.get("cookie secret") }));
 
   const isAuthenticated: (
     isAuthenticated: boolean
@@ -1132,14 +1140,15 @@ export default async function courselore(
                     ></strong
                   >.
                 </p>
-                <div class="TODO">
-                  <p>
-                    The enrollment process should change to introduce the notion
-                    of
-                    <strong>invitations</strong>. Change the language above
-                    accordingly.
-                  </p>
-                </div>
+              </div>
+
+              <div class="TODO">
+                <p>
+                  The enrollment process should change to introduce the notion
+                  of
+                  <strong>invitations</strong>. Change the language above
+                  accordingly.
+                </p>
               </div>
             `
           )
