@@ -161,6 +161,7 @@ export default async function courselore(
 
                 div.demonstration,
                 div.TODO {
+                  color: black;
                   background-color: whitesmoke;
                   box-sizing: border-box;
                   padding: 0 1em;
@@ -192,6 +193,8 @@ export default async function courselore(
 
                 input,
                 textarea {
+                  color: inherit;
+                  background-color: transparent;
                   transition: border-color 0.2s;
 
                   &:focus {
@@ -305,6 +308,13 @@ export default async function courselore(
                 summary {
                   cursor: pointer;
                   outline: none;
+                }
+
+                @media (prefers-color-scheme: dark) {
+                  body {
+                    color: white;
+                    background-color: #181818;
+                  }
                 }
               }
             `}"
@@ -1401,6 +1411,10 @@ export default async function courselore(
               &:disabled {
                 font-weight: bold;
                 color: black;
+
+                @media (prefers-color-scheme: dark) {
+                  color: white;
+                }
               }
             }
           `}"
