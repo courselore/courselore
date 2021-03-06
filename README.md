@@ -570,6 +570,17 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-03-06</summary>
+
+- Things to work on next:
+  - Mobile layout.
+  - Update threads when other people post.
+  - Course enrollment invitations.
+  - Editing posts. (And threads, and your profile, and so forth.)
+
+</details>
+
+<details>
 <summary>2021-02-27</summary>
 
 - Threads are working.
