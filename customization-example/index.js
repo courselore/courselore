@@ -24,70 +24,37 @@ module.exports = (require) => {
         app.get("layout base")(
           req,
           res,
+          html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
-            <title>CourseLore · The Open-Source Student Forum</title>
-            <style>
-              .TODO {
-                max-width: 600px;
-                padding: 0 1em;
-                margin: 1em auto;
-              }
-
-              @media (min-width: 1280px) and (min-height: 700px) {
-                body {
-                  margin: 0;
-                }
-
-                header {
-                  position: fixed;
-                  right: 50%;
-                  max-width: 600px;
-                  height: 100vh;
-                  padding-right: 20px;
-                  display: flex;
-                  align-items: center;
-                }
-
-                main {
-                  position: absolute;
-                  left: 50%;
-                  max-width: 600px;
-                  padding-left: 20px;
-                }
-              }
-
-              #user-content-people > div > p:first-of-type {
-                text-align: center;
-                line-height: 1.3;
-              }
-
-              #user-content-people > div > p:first-of-type a {
-                text-decoration: none;
-              }
-
-              @media (max-width: 599px) {
-                #user-content-people > div:not(:first-of-type) {
-                  margin-top: 3em;
-                }
-              }
-
-              @media (min-width: 600px) {
-                #user-content-people > div {
-                  display: grid;
-                  align-items: center;
-                  grid-template-columns: 200px 1fr;
-                  column-gap: 40px;
-                }
-              }
-            </style>
-          `,
-          html`
-            <header
+            <div
               style="${css`
-                text-align: center;
+                @media (max-width: 1279px) {
+                  max-width: 600px;
+                  padding: 0 1em;
+                  margin: 1em auto;
+                }
+
+                @media (min-width: 1280px) and (min-height: 700px) {
+                  header {
+                    position: fixed;
+                    right: 50%;
+                    max-width: 600px;
+                    height: 100vh;
+                    padding-right: 20px;
+                    display: flex;
+                    align-items: center;
+                  }
+
+                  main {
+                    position: absolute;
+                    left: 50%;
+                    max-width: 600px;
+                    padding-left: 20px;
+                  }
+                }
               `}"
             >
-              <div>
+              <header>
                 $${art({ size: 600, order: 6, strokeWidth: 1 }).replace(
                   "</svg>",
                   html`
@@ -165,7 +132,14 @@ module.exports = (require) => {
                     });
                   })();
                 </script>
-                <nav>
+                <nav
+                  style="${css`
+                    text-align: center;
+                    a {
+                      text-decoration: none;
+                    }
+                  `}"
+                >
                   <a href="https://github.com/courselore"
                     ><strong>GitHub</strong></a
                   > ·
@@ -180,13 +154,38 @@ module.exports = (require) => {
                     ><strong>Email</strong></a
                   >
                 </nav>
-              </div>
-            </header>
+              </header>
 
-            <main>
-              $${app.get("text processor")(
-                // prettier-ignore
-                markdown`
+              <main
+                style="${css`
+                  #user-content-people > div > p:first-of-type {
+                    text-align: center;
+                    line-height: 1.3;
+                  }
+
+                  #user-content-people > div > p:first-of-type a {
+                    text-decoration: none;
+                  }
+
+                  @media (max-width: 599px) {
+                    #user-content-people > div:not(:first-of-type) {
+                      margin-top: 3em;
+                    }
+                  }
+
+                  @media (min-width: 600px) {
+                    #user-content-people > div {
+                      display: grid;
+                      grid-template-columns: 200px 1fr;
+                      column-gap: 40px;
+                      align-items: center;
+                    }
+                  }
+                `}"
+              >
+                $${app.get("text processor")(
+                  // prettier-ignore
+                  markdown`
 # What Will CourseLore Be?
 
 **A forum for educators & students.**
@@ -258,8 +257,9 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
 
 **Developers & Designers:** Contribute on [GitHub](https://github.com/courselore).
 `
-              )}
-            </main>
+                )}
+              </main>
+            </div>
           `
         )
       );
