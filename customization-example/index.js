@@ -163,23 +163,23 @@ module.exports = (require) => {
 
               <main
                 style="${css`
-                  #user-content-people > div > p:first-of-type {
-                    text-align: center;
-                    line-height: 1.3;
-                  }
+                  #user-content-people > div {
+                    & > p:first-of-type {
+                      text-align: center;
+                      line-height: 1.3;
 
-                  #user-content-people > div > p:first-of-type a {
-                    text-decoration: none;
-                  }
-
-                  @media (max-width: 599px) {
-                    #user-content-people > div:not(:first-of-type) {
-                      margin-top: 3em;
+                      a {
+                        text-decoration: none;
+                      }
                     }
-                  }
 
-                  @media (min-width: 600px) {
-                    #user-content-people > div {
+                    @media (max-width: 599px) {
+                      &:not(:first-of-type) {
+                        margin-top: 3em;
+                      }
+                    }
+
+                    @media (min-width: 600px) {
                       display: grid;
                       grid-template-columns: 200px 1fr;
                       column-gap: 40px;
