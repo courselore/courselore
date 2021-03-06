@@ -1014,32 +1014,7 @@ export default async function courselore(
           >
             <header>
               <p>$${logo()}</p>
-              <details>
-                <summary
-                  style="${css`
-                    color: gray;
-                    float: right;
-                    margin-top: -45px;
-
-                    &::-webkit-details-marker {
-                      display: none;
-                    }
-                  `}"
-                >
-                  ☰
-                </summary>
-                <p>
-                  <strong>${user.name}</strong> ${`<${req.session!.email}>`}
-                </p>
-                <form method="post" action="${app.get("url")}/sign-out">
-                  <p><button class="a undecorated">Sign out</button></p>
-                </form>
-                <p>
-                  <a href="${app.get("url")}/courses/new" class="undecorated"
-                    >New course</a
-                  >
-                </p>
-              </details>
+              $${authenticatedMenu(req, res)}
             </header>
             <main>$${body}</main>
           </div>
@@ -1047,6 +1022,59 @@ export default async function courselore(
       );
     }
   );
+
+  function authenticatedMenu(
+    req: express.Request<{}, HTML, {}, {}, {}>,
+    res: express.Response<HTML, {}>,
+    extraMenuOptions?: HTML
+  ): HTML {
+    const user = database.get<{ name: string }>(
+      sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+    )!;
+
+    return html`
+      <details>
+        <summary
+          style="${css`
+            color: gray;
+            float: right;
+            margin-top: -45px;
+
+            &::-webkit-details-marker {
+              display: none;
+            }
+
+            & * {
+              transition: stroke 0.2s;
+            }
+
+            &:hover *,
+            details[open] & * {
+              stroke: #ff77a8;
+            }
+          `}"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20">
+            <g stroke="gray" stroke-width="2" stroke-linecap="round">
+              <line x1="3" y1="5" x2="17" y2="5" />
+              <line x1="3" y1="10" x2="17" y2="10" />
+              <line x1="3" y1="15" x2="17" y2="15" />
+            </g>
+          </svg>
+        </summary>
+        <p><strong>${user.name}</strong> ${`<${req.session!.email}>`}</p>
+        <form method="post" action="${app.get("url")}/sign-out">
+          <p><button class="a undecorated">Sign out</button></p>
+        </form>
+        $${extraMenuOptions ?? html``}
+        <p>
+          <a href="${app.get("url")}/courses/new" class="undecorated"
+            >New course</a
+          >
+        </p>
+      </details>
+    `;
+  }
 
   app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(true), (req, res) => {
     const user = database.get<{ name: string }>(
@@ -1142,13 +1170,6 @@ export default async function courselore(
                       </p>
                     `
                 )}
-                <div class="TODO">
-                  <p>
-                    At this point we’re just showing a list of courses in which
-                    the person in enrolled. In the future we’d probably like to
-                    show a news feed with relevant updates from all courses.
-                  </p>
-                </div>
               </div>
             `
           )
@@ -1680,32 +1701,7 @@ export default async function courselore(
                 `}"
               >
                 <p>$${logo()}</p>
-                <details>
-                  <summary
-                    style="${css`
-                      color: gray;
-                      float: right;
-                      margin-top: -45px;
-
-                      &::-webkit-details-marker {
-                        display: none;
-                      }
-                    `}"
-                  >
-                    ☰
-                  </summary>
-                  <p>
-                    <strong>${user.name}</strong> ${`<${req.session!.email}>`}
-                  </p>
-                  <form method="post" action="${app.get("url")}/sign-out">
-                    <p><button class="a undecorated">Sign out</button></p>
-                  </form>
-                  <p>
-                    <a href="${app.get("url")}/courses/new" class="undecorated"
-                      >New course</a
-                    >
-                  </p>
-                </details>
+                $${authenticatedMenu(req, res)}
                 $${otherCourses.length === 0
                   ? html`
                       <p><strong>${course.name}</strong> (${course.role})</p>
