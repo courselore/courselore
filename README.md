@@ -581,6 +581,7 @@ Insiders Builds are generated on every push. They’re useful for development an
     - Pick a random one at course creation.
     - Let people change but have a default for the course.
     - Default palette.
+    - https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock
   - Dark mode.
   - Course enrollment invitations.
   - Update threads when other people post.
