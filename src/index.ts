@@ -161,10 +161,13 @@ export default async function courselore(
 
                 div.demonstration,
                 div.TODO {
-                  color: black;
                   background-color: whitesmoke;
                   box-sizing: border-box;
                   padding: 0 1em;
+
+                  @media (prefers-color-scheme: dark) {
+                    background-color: dimgray;
+                  }
                 }
 
                 div.TODO::before {
@@ -277,9 +280,14 @@ export default async function courselore(
                   transition-property: color, background-color, border-color;
                   transition-duration: 0.2s;
 
+                  @media (prefers-color-scheme: dark) {
+                    background-color: #584f69;
+                    border-color: #584f69;
+                  }
+
                   &.outline {
                     color: #83769c;
-                    background-color: white;
+                    background-color: transparent;
                   }
 
                   &:hover {
@@ -1755,7 +1763,8 @@ export default async function courselore(
                               <a
                                 href="${app.get("url")}/${course.reference}"
                                 class="undecorated"
-                                >${course.name} (${course.role})</a
+                                ><strong>${course.name}</strong>
+                                (${course.role})</a
                               >
                             </p>
                           `
@@ -1799,6 +1808,10 @@ export default async function courselore(
                             Number(req.params.threadReference)
                               ? css`
                                   background-color: whitesmoke;
+
+                                  @media (prefers-color-scheme: dark) {
+                                    background-color: #444444;
+                                  }
                                 `
                               : css``}
                             display: block;
