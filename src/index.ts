@@ -519,7 +519,6 @@ export default async function courselore(
   await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
   app.set("database", database);
-  // FIXME: Maybe ‘reference’s should be TEXT, because of private threads. But does TEXT sort the right way?
   databaseMigrate(database, [
     sql`
       CREATE TABLE "users" (
@@ -550,20 +549,18 @@ export default async function courselore(
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TEXT DEFAULT CURRENT_TIMESTAMP,
         "course" INTEGER NOT NULL REFERENCES "courses",
-        "reference" INTEGER NULL,
+        "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "title" TEXT NOT NULL,
         UNIQUE ("course", "reference")
       );
-    `,
 
-    sql`
       CREATE TABLE "posts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TEXT DEFAULT CURRENT_TIMESTAMP,
         "thread" INTEGER NOT NULL REFERENCES "threads",
-        "reference" INTEGER NOT NULL,
+        "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "content" TEXT NOT NULL,
         UNIQUE ("thread", "reference")
@@ -1552,7 +1549,7 @@ export default async function courselore(
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY "threads"."reference" DESC
+          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
         `
       );
 
@@ -1606,7 +1603,7 @@ export default async function courselore(
       )!;
       const newThreadReference =
         database.get<{ newThreadReference: number }>(sql`
-          SELECT MAX("threads"."reference") + 1 AS "newThreadReference"
+          SELECT MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS "newThreadReference"
           FROM "threads"
           WHERE "threads"."course" = ${course.id}
         `)?.newThreadReference ?? 1;
@@ -1709,7 +1706,7 @@ export default async function courselore(
       const threads = database.all<{
         createdAt: string;
         updatedAt: string;
-        reference: number;
+        reference: string;
         authorName: string | undefined;
         title: string;
       }>(
@@ -1724,7 +1721,7 @@ export default async function courselore(
           LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
           LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
           WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY "threads"."reference" DESC
+          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
         `
       );
 
@@ -1818,8 +1815,7 @@ export default async function courselore(
                             .courseReference}/threads/${thread.reference}"
                           class="undecorated"
                           style="${css`
-                            ${thread.reference ===
-                            Number(req.params.threadReference)
+                            ${thread.reference === req.params.threadReference
                               ? css`
                                   background-color: whitesmoke;
 
@@ -1905,7 +1901,7 @@ export default async function courselore(
       const posts = database.all<{
         createdAt: string;
         updatedAt: string;
-        postReference: number;
+        postReference: string;
         authorName: string | undefined;
         content: string;
       }>(
@@ -2026,7 +2022,7 @@ export default async function courselore(
       `)!;
 
       const newPostReference = database.get<{ newPostReference: number }>(sql`
-        SELECT MAX("posts"."reference") + 1 AS "newPostReference"
+        SELECT MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS "newPostReference"
         FROM "posts"
         WHERE "posts"."thread" = ${thread.id}
       `)!.newPostReference;
