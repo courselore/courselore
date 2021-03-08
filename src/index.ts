@@ -164,7 +164,7 @@ export default async function courselore(
                   padding: 0 1em;
 
                   @media (prefers-color-scheme: dark) {
-                    background-color: dimgray;
+                    background-color: #444444;
                   }
                 }
 
@@ -205,6 +205,10 @@ export default async function courselore(
 
                 input {
                   padding: 0.2em 1em;
+
+                  &:disabled {
+                    cursor: not-allowed;
+                  }
                 }
 
                 input[type="text"],
@@ -540,7 +544,7 @@ export default async function courselore(
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
         "user" INTEGER NOT NULL REFERENCES "users",
         "course" INTEGER NOT NULL REFERENCES "courses",
-        "role" TEXT NOT NULL,
+        "role" TEXT NOT NULL CHECK("role" IN ('instructor', 'assistant', 'student')),
         UNIQUE ("user", "course")
       );
 
@@ -1549,7 +1553,7 @@ export default async function courselore(
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
+          ORDER BY "threads"."createdAt" DESC
         `
       );
 
@@ -1602,11 +1606,11 @@ export default async function courselore(
         sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
       const newThreadReference =
-        database.get<{ newThreadReference: number }>(sql`
-          SELECT MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS "newThreadReference"
+        database.get<{ newThreadReference: string }>(sql`
+          SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
           FROM "threads"
           WHERE "threads"."course" = ${course.id}
-        `)?.newThreadReference ?? 1;
+        `)?.newThreadReference ?? "1";
       const author = database.get<{ id: number }>(sql`
         SELECT "enrollments"."id" AS "id"
         FROM "enrollments"
@@ -1621,7 +1625,7 @@ export default async function courselore(
       `).lastInsertRowid;
       database.run(sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
-        VALUES (${threadId}, ${1}, ${author.id}, ${req.body.content})
+        VALUES (${threadId}, ${"1"}, ${author.id}, ${req.body.content})
       `);
       res.redirect(
         `${app.get("url")}/${
@@ -1721,7 +1725,7 @@ export default async function courselore(
           LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
           LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
           WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
+          ORDER BY "threads"."createdAt" DESC
         `
       );
 
@@ -2021,8 +2025,8 @@ export default async function courselore(
               "courses"."reference" = ${req.params.courseReference}
       `)!;
 
-      const newPostReference = database.get<{ newPostReference: number }>(sql`
-        SELECT MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS "newPostReference"
+      const newPostReference = database.get<{ newPostReference: string }>(sql`
+        SELECT CAST(MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS TEXT) AS "newPostReference"
         FROM "posts"
         WHERE "posts"."thread" = ${thread.id}
       `)!.newPostReference;
