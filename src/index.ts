@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-import console from "console";
-import process from "process";
 import path from "path";
 
 import express from "express";
@@ -12,7 +10,7 @@ import { Database, sql } from "@leafac/sqlite";
 import databaseMigrate from "@leafac/sqlite-migration";
 
 import { html, HTML } from "@leafac/html";
-import { css, process as cssProcess } from "@leafac/css";
+import { css, process as processCSS } from "@leafac/css";
 import javascript from "tagged-template-noop";
 
 import unified from "unified";
@@ -55,7 +53,7 @@ export default async function courselore(
       head: HTML,
       body: HTML
     ): HTML =>
-      cssProcess(html`
+      processCSS(html`
         <!DOCTYPE html>
         <html lang="en">
           <head>
@@ -281,6 +279,7 @@ export default async function courselore(
                   transition-duration: 0.2s;
 
                   @media (prefers-color-scheme: dark) {
+                    color: lightgray;
                     background-color: #584f69;
                     border-color: #584f69;
                   }
@@ -320,8 +319,20 @@ export default async function courselore(
 
                 @media (prefers-color-scheme: dark) {
                   body {
-                    color: white;
-                    background-color: #181818;
+                    color: lightgray;
+                    background-color: #1e1e1e;
+                  }
+                }
+
+                @media (prefers-color-scheme: light) {
+                  .dark {
+                    display: none;
+                  }
+                }
+
+                @media (prefers-color-scheme: dark) {
+                  .light {
+                    display: none;
                   }
                 }
               }
@@ -493,7 +504,10 @@ export default async function courselore(
       )
     )
     .use(rehypeShiki, {
-      highlighter: await shiki.getHighlighter({ theme: "light-plus" }),
+      highlighter: {
+        light: await shiki.getHighlighter({ theme: "light-plus" }),
+        dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+      },
     })
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
@@ -1421,7 +1435,7 @@ export default async function courselore(
                 color: black;
 
                 @media (prefers-color-scheme: dark) {
-                  color: white;
+                  color: lightgray;
                 }
               }
             }
