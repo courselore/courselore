@@ -197,6 +197,8 @@ export default async function courselore(
                 textarea {
                   color: inherit;
                   background-color: transparent;
+                  box-sizing: border-box;
+                  width: 100%;
                   transition: border-color 0.2s;
 
                   &:focus {
@@ -219,8 +221,6 @@ export default async function courselore(
 
                 textarea {
                   padding: 0.5em 1em;
-                  box-sizing: border-box;
-                  width: 100%;
                   resize: vertical;
                 }
 
@@ -760,11 +760,6 @@ export default async function courselore(
                   max-width: 300px;
                   margin: 0 auto;
                   text-align: left;
-
-                  & input {
-                    box-sizing: border-box;
-                    width: 100%;
-                  }
                 `}"
               >
                 <p>
@@ -776,7 +771,6 @@ export default async function courselore(
                       placeholder="name@educational-email.edu"
                       required
                       autofocus
-                      size="30"
                     />
                     $${preposition === "up"
                       ? html`
@@ -953,11 +947,6 @@ export default async function courselore(
                     max-width: 300px;
                     margin: 0 auto;
                     text-align: left;
-
-                    & input {
-                      box-sizing: border-box;
-                      width: 100%;
-                    }
                   `}"
                 >
                   <input type="hidden" name="token" value="${newToken}" />
@@ -1406,10 +1395,6 @@ export default async function courselore(
               type="text"
               name="title"
               autocomplete="off"
-              style="${css`
-                box-sizing: border-box;
-                width: 100%;
-              `}"
               required
             />
           </label>
