@@ -519,6 +519,20 @@ export default async function courselore(
   const ROLES = ["instructor", "assistant", "student"] as const;
   type Role = typeof ROLES[number];
 
+  const ACCENT_COLORS = [
+    "#83769c",
+    "#ff77a8",
+    "#29adff",
+    "#ffa300",
+    "#1d2b53",
+    "#7e2553",
+    "#008751",
+    "#ab5236",
+    "#ff004d",
+    "#5f574f",
+  ] as const;
+  type AccentColor = typeof ACCENT_COLORS[number];
+
   // FIXME: Open the databases using more appropriate configuration, for example, WAL and PRAGMA foreign keys.
   await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
@@ -545,6 +559,7 @@ export default async function courselore(
         "user" INTEGER NOT NULL REFERENCES "users",
         "course" INTEGER NOT NULL REFERENCES "courses",
         "role" TEXT NOT NULL CHECK("role" IN ('instructor', 'assistant', 'student')),
+        "accentColor" TEXT NOT NULL CHECK("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#1d2b53', '#7e2553', '#008751', '#ab5236', '#ff004d', '#5f574f')),
         UNIQUE ("user", "course")
       );
 
