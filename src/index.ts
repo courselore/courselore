@@ -1385,17 +1385,19 @@ export default async function courselore(
     return html`
       <form method="post" action="${app.get("url")}/${courseReference}/threads">
         <p>
-          <input
-            type="text"
-            name="title"
-            placeholder="Title…"
-            autocomplete="off"
-            style="${css`
-              box-sizing: border-box;
-              width: 100%;
-            `}"
-            required
-          />
+          <label>
+            <strong>Title</strong><br />
+            <input
+              type="text"
+              name="title"
+              autocomplete="off"
+              style="${css`
+                box-sizing: border-box;
+                width: 100%;
+              `}"
+              required
+            />
+          </label>
         </p>
         $${textEditor()}
         <p
