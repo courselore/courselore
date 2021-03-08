@@ -109,6 +109,7 @@ export default async function courselore(
                 */
 
                 body {
+                  color: #000000d4;
                   font-size: 14px;
                   line-height: 1.5;
                   font-family: "Public Sans", sans-serif;
@@ -121,7 +122,7 @@ export default async function courselore(
                 }
 
                 ::selection {
-                  color: white;
+                  color: #ffffffd4;
                   background-color: #ff77a8;
                 }
 
@@ -273,7 +274,7 @@ export default async function courselore(
 
                 button:not(.undecorated):not(.a),
                 a.button {
-                  color: white;
+                  color: #ffffffd4;
                   background-color: #83769c;
                   padding: 0.2em 1em;
                   border: 1px solid #83769c;
@@ -283,7 +284,6 @@ export default async function courselore(
                   transition-duration: 0.2s;
 
                   @media (prefers-color-scheme: dark) {
-                    color: lightgray;
                     background-color: #584f69;
                     border-color: #584f69;
                   }
@@ -294,12 +294,12 @@ export default async function courselore(
                   }
 
                   &:hover {
-                    color: white;
+                    color: #ffffffd4;
                     background-color: #6e6382;
                   }
 
                   &:active {
-                    color: white;
+                    color: #ffffffd4;
                     background-color: #584f69;
                   }
 
@@ -323,7 +323,7 @@ export default async function courselore(
 
                 @media (prefers-color-scheme: dark) {
                   body {
-                    color: lightgray;
+                    color: #ffffffd4;
                     background-color: #1e1e1e;
                   }
                 }
@@ -1421,7 +1421,6 @@ export default async function courselore(
         <!-- FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too. -->
         <p
           style="${css`
-            color: gray;
             margin-bottom: 0em;
 
             & button {
@@ -1429,24 +1428,19 @@ export default async function courselore(
               transition-duration: 0.2s;
               transition-property: font-weight, color;
 
-              &:hover {
-                color: #ff77a8;
-              }
-
               &:disabled {
                 font-weight: bold;
-                color: black;
+              }
 
-                @media (prefers-color-scheme: dark) {
-                  color: lightgray;
-                }
+              &:not(:disabled):not(:hover) {
+                color: gray;
               }
             }
           `}"
         >
           <button
             type="button"
-            class="write undecorated"
+            class="write a undecorated"
             disabled
             onclick="${javascript`
               const textEditor = this.closest("div.text-editor");
@@ -1459,7 +1453,7 @@ export default async function courselore(
           </button>
           <button
             type="button"
-            class="preview undecorated"
+            class="preview a undecorated"
             onclick="${javascript`
               (async () => {
                 const textEditor = this.closest("div.text-editor");

@@ -59,7 +59,7 @@ module.exports = (require) => {
                       html`
                         <g
                           font-weight="900"
-                          fill="white"
+                          fill="#ffffffd3"
                           text-anchor="middle"
                           alignment-baseline="middle"
                           transform="translate(300, 250) rotate(-2)"
