@@ -151,7 +151,8 @@ export default async function courselore(
 
                 div.demonstration,
                 div.TODO,
-                input,
+                input[type="text"],
+                input[type="email"],
                 textarea {
                   border: 1px solid darkgray;
                   border-radius: 10px;
@@ -183,7 +184,8 @@ export default async function courselore(
                   margin-top: 0.5em;
                 }
 
-                input,
+                input[type="text"],
+                input[type="email"],
                 textarea,
                 button {
                   font-family: "Public Sans", sans-serif;
@@ -193,7 +195,8 @@ export default async function courselore(
                   outline: none;
                 }
 
-                input,
+                input[type="text"],
+                input[type="email"],
                 textarea {
                   color: inherit;
                   background-color: transparent;
@@ -206,17 +209,14 @@ export default async function courselore(
                   }
                 }
 
-                input {
+                input[type="text"],
+                input[type="email"] {
                   padding: 0.2em 1em;
+                  -webkit-appearance: none;
 
                   &:disabled {
                     cursor: not-allowed;
                   }
-                }
-
-                input[type="text"],
-                input[type="email"] {
-                  -webkit-appearance: none;
                 }
 
                 textarea {
@@ -1248,6 +1248,36 @@ export default async function courselore(
                 </label>
               </p>
               <p>
+                <strong>Accent color</strong><br />
+                $${ACCENT_COLORS.map(
+                  (accentColor, index) =>
+                    html`
+                      <label
+                        style="${css`
+                          display: inline-block;
+                          margin-right: 10px;
+                        `}"
+                      >
+                        <input
+                          type="radio"
+                          name="accentColor"
+                          value="${accentColor}"
+                          required
+                          ${index === 0 ? "checked" : ""}
+                          hidden
+                        />
+                        <span
+                          style="${css`
+                            color: ${accentColor};
+                            cursor: pointer;
+                          `}"
+                          >⬤</span
+                        >
+                      </label>
+                    `
+                )}
+              </p>
+              <p>
                 <button>Create course</button>
               </p>
             </form>
@@ -1391,12 +1421,7 @@ export default async function courselore(
         <p>
           <label>
             <strong>Title</strong><br />
-            <input
-              type="text"
-              name="title"
-              autocomplete="off"
-              required
-            />
+            <input type="text" name="title" autocomplete="off" required />
           </label>
         </p>
         $${textEditor()}
