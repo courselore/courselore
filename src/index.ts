@@ -44,7 +44,6 @@ export default async function courselore(
 
   app.enable("demonstration");
 
-  // TODO: Use more inline styles in the templates and in the customization.
   app.set(
     "layout base",
     (
@@ -109,7 +108,6 @@ export default async function courselore(
                 */
 
                 body {
-                  color: #000000d4;
                   font-size: 14px;
                   line-height: 1.5;
                   font-family: "Public Sans", sans-serif;
@@ -179,8 +177,8 @@ export default async function courselore(
 
                 label small.hint {
                   color: gray;
-                  display: inline-block;
                   line-height: 1.3;
+                  display: block;
                   margin-top: 0.5em;
                 }
 
@@ -236,6 +234,10 @@ export default async function courselore(
                   &:hover {
                     color: #ff77a8;
                   }
+                }
+
+                details[open] summary {
+                  color: #ff77a8;
                 }
 
                 a,
@@ -321,20 +323,22 @@ export default async function courselore(
                   outline: none;
                 }
 
-                @media (prefers-color-scheme: dark) {
-                  body {
-                    color: #ffffffd4;
-                    background-color: #1e1e1e;
-                  }
-                }
-
                 @media (prefers-color-scheme: light) {
+                  body {
+                    color: #000000d4;
+                  }
+
                   .dark {
                     display: none;
                   }
                 }
 
                 @media (prefers-color-scheme: dark) {
+                  body {
+                    color: #ffffffd4;
+                    background-color: #1e1e1e;
+                  }
+
                   .light {
                     display: none;
                   }
@@ -416,24 +420,16 @@ export default async function courselore(
       `)
   );
 
-  const logoSVG = await fs.readFile(
-    path.join(__dirname, "../public/logo.svg"),
-    "utf-8"
-  );
-
   function logo(): HTML {
     return html`
       <a
         href="${app.get("url")}/"
         class="undecorated"
         style="${css`
-          color: #83769c;
-          display: inline-flex;
+          display: inline-grid;
+          grid-template-columns: max-content max-content;
+          column-gap: 0.5em;
           align-items: center;
-
-          &:hover {
-            color: #6e6382;
-          }
         `}"
       >
         $${logoSVG}
@@ -474,13 +470,17 @@ export default async function courselore(
           style="${css`
             font-size: large;
             font-weight: 800;
-            margin-left: 0.3em;
           `}"
           >CourseLore</span
         >
       </a>
     `;
   }
+
+  const logoSVG = await fs.readFile(
+    path.join(__dirname, "../public/logo.svg"),
+    "utf-8"
+  );
 
   app.set(
     "text processor",
@@ -588,11 +588,11 @@ export default async function courselore(
   ]);
 
   await fs.ensureDir(path.join(rootDirectory, "var"));
-  const runtimeDatabase = new Database(
+  const databaseRuntime = new Database(
     path.join(rootDirectory, "var/courselore-runtime.db")
   );
-  app.set("runtime database", runtimeDatabase);
-  databaseMigrate(runtimeDatabase, [
+  app.set("database runtime", databaseRuntime);
+  databaseMigrate(databaseRuntime, [
     sql`
       CREATE TABLE "settings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -615,7 +615,7 @@ export default async function courselore(
         "to" TEXT NOT NULL,
         "subject" TEXT NOT NULL,
         "body" TEXT NOT NULL,
-        "tryAt" TEXT DEFAULT CURRENT_TIMESTAMP
+        "tryAfter" TEXT DEFAULT CURRENT_TIMESTAMP
       );
     `,
   ]);
@@ -631,7 +631,7 @@ export default async function courselore(
   // https://github.com/expressjs/express/blob/master/examples/session/index.js
   app.set(
     "cookie secret",
-    runtimeDatabase.get<{ value: string }>(
+    databaseRuntime.get<{ value: string }>(
       sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
     )?.value
   );
@@ -640,7 +640,7 @@ export default async function courselore(
       "cookie secret",
       cryptoRandomString({ length: 60, type: "alphanumeric" })
     );
-    runtimeDatabase.run(
+    databaseRuntime.run(
       sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookieSecret"}, ${app.get(
         "cookie secret"
       )})`
@@ -809,11 +809,11 @@ export default async function courselore(
   );
 
   function createAuthenticationToken(email: string): string {
-    runtimeDatabase.run(
+    databaseRuntime.run(
       sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
     );
     const newToken = cryptoRandomString({ length: 40, type: "numeric" });
-    runtimeDatabase.run(
+    databaseRuntime.run(
       sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${email})`
     );
     return newToken;
@@ -860,8 +860,8 @@ export default async function courselore(
                 sign-${pretendPreposition} link.
               </p>
               <form method="post">
+                <input type="hidden" name="email" value="${req.body.email}" />
                 <p>
-                  <input type="hidden" name="email" value="${req.body.email}" />
                   <small>
                     Didn’t receive the email? Already checked the spam folder?
                     <button class="a">Resend</button>.
@@ -879,18 +879,15 @@ export default async function courselore(
   function getAuthenticationToken(
     token: string
   ): { email: string } | undefined {
-    const authenticationToken = runtimeDatabase.get<{
+    const authenticationToken = databaseRuntime.get<{
       email: string;
-      expiresAt: string;
     }>(
-      sql`SELECT "email", "expiresAt" FROM "authenticationTokens" WHERE "token" = ${token}`
+      sql`SELECT "email" FROM "authenticationTokens" WHERE "token" = ${token} AND date('now') < "expiresAt"`
     );
-    if (authenticationToken === undefined) return;
-    runtimeDatabase.run(
+    databaseRuntime.run(
       sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
     );
-    if (new Date() < new Date(authenticationToken.expiresAt))
-      return authenticationToken;
+    return authenticationToken;
   }
 
   // TODO: What should happen if the person clicks on a magic link but they’re already authenticated?
@@ -954,18 +951,14 @@ export default async function courselore(
                     <label>
                       <strong>Email</strong><br />
                       <input
-                        type="text"
+                        type="email"
                         value="${authenticationToken.email}"
                         disabled
                       />
                     </label>
                   </p>
                   <p>
-                    <label
-                      style="${css`
-                        text-align: left;
-                      `}"
-                    >
+                    <label>
                       <strong>Name</strong><br />
                       <input type="text" name="name" required autofocus />
                     </label>
@@ -979,6 +972,7 @@ export default async function courselore(
                   </p>
                 </form>
               </div>
+
               <div class="TODO">
                 <p>Ask for more user information here. What information?</p>
               </div>
@@ -1093,8 +1087,8 @@ export default async function courselore(
               transition: stroke 0.2s;
             }
 
-            &:hover *,
-            details[open] & * {
+            &:hover line,
+            details[open] & line {
               stroke: #ff77a8;
             }
           `}"
@@ -1132,7 +1126,7 @@ export default async function courselore(
       role: Role;
     }>(
       sql`
-        SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
+        SELECT "courses"."reference", "courses"."name", "enrollments"."role"
         FROM "courses"
         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
         JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -1160,8 +1154,8 @@ export default async function courselore(
                 </p>
                 <p>
                   To <strong>enroll on an existing course</strong>, you either
-                  have to be invited or go to the course URL (it looks something
-                  like
+                  have to be invited or go to the course invitation URL (it
+                  looks something like
                   <code
                     >${app.get("url")}/${cryptoRandomString({
                       length: 10,
@@ -1255,7 +1249,10 @@ export default async function courselore(
                       <label
                         style="${css`
                           display: inline-block;
-                          margin-right: 10px;
+                          width: 1.5em;
+                          height: 1.5em;
+                          margin-right: 1em;
+                          cursor: pointer;
                         `}"
                       >
                         <input
@@ -1268,11 +1265,33 @@ export default async function courselore(
                         />
                         <span
                           style="${css`
-                            color: ${accentColor};
-                            cursor: pointer;
+                            display: inline-block;
+                            width: 100%;
+                            height: 100%;
+                            border: 5px solid transparent;
+                            border-radius: 50%;
+                            transition: border-color 0.2s;
+
+                            :checked + & {
+                              border-color: #000000d4;
+
+                              @media (prefers-color-scheme: dark) {
+                                border-color: #ffffffd4;
+                              }
+                            }
                           `}"
-                          >⬤</span
-                        >
+                          ><span
+                            style="${css`
+                              background-color: ${accentColor};
+                              display: inline-block;
+                              width: 110%;
+                              height: 110%;
+                              margin-left: -5%;
+                              margin-top: -5%;
+                              border-radius: 50%;
+                            `}"
+                          ></span
+                        ></span>
                       </label>
                     `
                 )}
@@ -1287,6 +1306,10 @@ export default async function courselore(
                 in the course, how they’d like for other people to enroll
                 (either by invitation or via a link), and so forth…
               </p>
+              <p>
+                Change the accent color on this page (mostly the “Create course”
+                button).
+              </p>
             </div>
           `
         )
@@ -1294,10 +1317,11 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, any, { name: string }, {}, {}>(
+  app.post<{}, any, { name: string; accentColor: string }, {}, {}>(
     "/courses",
     ...isAuthenticated(true),
     expressValidator.body("name").exists(),
+    expressValidator.body("accentColor").isIn(ACCENT_COLORS as any),
     (req, res) => {
       const newReference = cryptoRandomString({ length: 10, type: "numeric" });
       const newCourseId = database.run(
@@ -1307,44 +1331,28 @@ export default async function courselore(
         sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
       )!;
       database.run(
-        sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${
-          user.id
-        }, ${newCourseId}, ${"instructor"})`
+        sql`
+          INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+          VALUES (
+            ${user.id},
+            ${newCourseId},
+            ${"instructor"},
+            ${req.body.accentColor}
+        )`
       );
       res.redirect(`${app.get("url")}/${newReference}`);
     }
   );
 
-  const courseExists: express.RequestHandler<
+  // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
+  const isEnrolledInCourse: express.RequestHandler<
     { courseReference: string },
     any,
     {},
     {},
     {}
   >[] = [
-    (req, res, next) => {
-      if (
-        database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "courses" WHERE "reference" = ${req.params.courseReference}) AS "exists"`
-        )!.exists === 0
-      )
-        return next("route");
-      next();
-    },
-  ];
-
-  // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
-  const isEnrolledInCourse: (
-    isEnrolledInCourse: boolean
-  ) => express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    {}
-  >[] = (isEnrolledInCourse) => [
     ...isAuthenticated(true),
-    ...courseExists,
     (req, res, next) => {
       if (
         database.get<{ exists: number }>(
@@ -1358,62 +1366,12 @@ export default async function courselore(
                     "courses"."reference" = ${req.params.courseReference}
             ) AS "exists"
           `
-        )!.exists !== (isEnrolledInCourse ? 1 : 0)
+        )!.exists === 0
       )
         return next("route");
       next();
     },
   ];
-
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/:courseReference",
-    ...isEnrolledInCourse(false),
-    (req, res) => {
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-      res.send(
-        app.get("layout authenticated")(
-          req,
-          res,
-          html`<title>${course.name} · CourseLore</title>`,
-          html`
-            <h1>Enroll on ${course.name}</h1>
-            <form method="post">
-              <p>
-                as
-                <!-- TODO: Style this: https://moderncss.dev/custom-select-styles-with-pure-css/ https://www.filamentgroup.com/lab/select-css.html -->
-                <select name="role" required>
-                  <option value="student">student</option>
-                  <option value="assistant">assistant</option>
-                  <option value="instructor">instructor</option>
-                </select>
-                <button>Enroll</button>
-              </p>
-            </form>
-          `
-        )
-      );
-    }
-  );
-
-  app.post<{ courseReference: string }, any, { role: Role }, {}, {}>(
-    "/:courseReference",
-    ...isEnrolledInCourse(false),
-    expressValidator.body("role").isIn(ROLES as any),
-    (req, res) => {
-      const user = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
-      const course = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-      database.run(
-        sql`INSERT INTO "enrollments" ("user", "course", "role") VALUES (${user.id}, ${course.id}, ${req.body.role})`
-      );
-      res.redirect(`${app.get("url")}/${req.params.courseReference}`);
-    }
-  );
 
   function newThreadForm(courseReference: string): HTML {
     return html`
@@ -1436,12 +1394,10 @@ export default async function courselore(
     `;
   }
 
-  // FIXME: This should return the parts of the text editor (more specifically, the textarea and the buttons), instead of the whole thing. Then we wouldn’t need to pass ‘submit’ as argument, and it’d be more reusable.
-  // FIXME: Don’t require whole form to be valid, just the text editor itself.
   function textEditor(): HTML {
     return html`
-      <!-- TODO: Make it so that buttons aren’t enabled until the form is valid. -->
-      <!-- TODO: What happens if the content includes a form? -->
+      <!-- TODO: Make it so that (in general, not just in this form) buttons aren’t enabled until the form is valid. -->
+      <!-- TODO: What happens if the user fills in content includes a form? Does the sanitization take care of it? I think it should, but if it doesn’t then ‘preview’ may break. -->
       <div class="text-editor">
         <!-- FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too. -->
         <p
@@ -1455,6 +1411,7 @@ export default async function courselore(
 
               &:disabled {
                 font-weight: bold;
+                color: inherit;
               }
 
               &:not(:disabled):not(:hover) {
@@ -1564,13 +1521,13 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference",
-    ...isEnrolledInCourse(true),
+    ...isEnrolledInCourse,
     (req, res) => {
       const thread = database.get<{
         reference: string;
       }>(
         sql`
-          SELECT "threads"."reference" AS "reference"
+          SELECT "threads"."reference"
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference}
@@ -1619,7 +1576,7 @@ export default async function courselore(
     {}
   >(
     "/:courseReference/threads",
-    ...isEnrolledInCourse(true),
+    ...isEnrolledInCourse,
     expressValidator.body("title").exists(),
     expressValidator.body("content").exists(),
     (req, res) => {
@@ -1633,7 +1590,7 @@ export default async function courselore(
           WHERE "threads"."course" = ${course.id}
         `)?.newThreadReference ?? "1";
       const author = database.get<{ id: number }>(sql`
-        SELECT "enrollments"."id" AS "id"
+        SELECT "enrollments"."id"
         FROM "enrollments"
         JOIN "users" ON "enrollments"."user" = "users"."id"
         JOIN "courses" ON "enrollments"."course" = "courses"."id"
@@ -1663,7 +1620,7 @@ export default async function courselore(
     {},
     {}
   >[] = [
-    ...isEnrolledInCourse(true),
+    ...isEnrolledInCourse,
     (req, res, next) => {
       if (
         database.get<{ exists: number }>(
@@ -1703,7 +1660,7 @@ export default async function courselore(
 
       const course = database.get<{ name: string; role: Role }>(
         sql`
-          SELECT "courses"."name" AS "name", "enrollments"."role" AS "role"
+          SELECT "courses"."name", "enrollments"."role"
           FROM "courses"
           JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -1718,7 +1675,7 @@ export default async function courselore(
         role: Role;
       }>(
         sql`
-          SELECT "courses"."reference" AS "reference", "courses"."name" AS "name", "enrollments"."role" AS "role"
+          SELECT "courses"."reference", "courses"."name", "enrollments"."role"
           FROM "courses"
           JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -1736,11 +1693,11 @@ export default async function courselore(
         title: string;
       }>(
         sql`
-          SELECT "threads"."createdAt" AS "createdAt",
-                 "threads"."updatedAt" AS "updatedAt",
-                 "threads"."reference" AS "reference",
+          SELECT "threads"."createdAt",
+                 "threads"."updatedAt",
+                 "threads"."reference",
                  "author"."name" AS "authorName",
-                 "threads"."title" AS "title"
+                 "threads"."title"
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
           LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
@@ -1768,7 +1725,7 @@ export default async function courselore(
                 border-right: 1px solid silver;
                 overflow: auto;
                 display: grid;
-                grid-template-rows: min-content auto;
+                grid-template-rows: max-content auto;
               `}"
             >
               <header
@@ -1915,7 +1872,7 @@ export default async function courselore(
 
       const thread = database.get<{ id: number; title: string }>(
         sql`
-          SELECT "threads"."id" AS "id", "threads"."title" AS "title"
+          SELECT "threads"."id", "threads"."title"
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
           WHERE "threads"."reference" = ${req.params.threadReference} AND
@@ -1926,16 +1883,16 @@ export default async function courselore(
       const posts = database.all<{
         createdAt: string;
         updatedAt: string;
-        postReference: string;
+        reference: string;
         authorName: string | undefined;
         content: string;
       }>(
         sql`
-        SELECT "posts"."createdAt" AS "createdAt",
-               "posts"."updatedAt" AS "updatedAt",
-               "posts"."reference" AS "postReference",
+        SELECT "posts"."createdAt",
+               "posts"."updatedAt",
+               "posts"."reference",
                "author"."name" AS "authorName",
-               "posts"."content" AS "content"
+               "posts"."content"
         FROM "posts"
         LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
         LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
@@ -1970,7 +1927,7 @@ export default async function courselore(
             $${posts.map(
               (post) => html`
                 <section
-                  id="${post.postReference}"
+                  id="${post.reference}"
                   style="${css`
                     border-bottom: 1px solid silver;
                   `}"
@@ -1995,10 +1952,9 @@ export default async function courselore(
                         <a
                           href="${app.get("url")}/${req.params
                             .courseReference}/threads/${req.params
-                            .threadReference}#${post.postReference}"
+                            .threadReference}#${post.reference}"
                           class="undecorated"
-                          >#${req.params
-                            .threadReference}/${post.postReference}</a
+                          >#${req.params.threadReference}/${post.reference}</a
                         >
                       </small>
                     </span>
@@ -2039,7 +1995,7 @@ export default async function courselore(
       // FIXME: Maybe we can do this whole series of queries in one…
       // FIXME: Update the ‘updatedAt’ field of the thread.
       const thread = database.get<{ id: number; title: string }>(sql`
-        SELECT "threads"."id" AS "id"
+        SELECT "threads"."id"
         FROM "threads"
         JOIN "courses" ON "threads"."course" = "courses"."id"
         WHERE "threads"."reference" = ${req.params.threadReference} AND
@@ -2053,7 +2009,7 @@ export default async function courselore(
       `)!.newPostReference;
 
       const author = database.get<{ id: number }>(sql`
-        SELECT "enrollments"."id" AS "id"
+        SELECT "enrollments"."id"
         FROM "enrollments"
         JOIN "users" ON "enrollments"."user" = "users"."id"
         JOIN "courses" ON "enrollments"."course" = "courses"."id"
@@ -2083,7 +2039,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/:courseReference/threads/new",
-    ...isEnrolledInCourse(true),
+    ...isEnrolledInCourse,
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -2137,7 +2093,7 @@ export default async function courselore(
           $${body}
         </div>
       `;
-    runtimeDatabase.run(
+    databaseRuntime.run(
       sql`INSERT INTO "emailQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
     );
     return html``;
