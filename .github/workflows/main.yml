@@ -6,23 +6,18 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            caxa:
-              output: CourseLore.exe
-            upload-artifact:
-              name: CourseLore--windows--${{ github.sha }}.exe
-              path: CourseLore.exe
+            build: npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "CourseLore--windows--${{ github.sha }}.exe"
+            artifact: CourseLore--windows--${{ github.sha }}.exe
           - os: macos
-            caxa:
-              output: CourseLore.app
-            upload-artifact:
-              name: CourseLore--macos--${{ github.sha }}.app.tgz
-              path: CourseLore.app.tgz
+            build: |
+              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "CourseLore.app"
+              tar -czf "CourseLore--macos--${{ github.sha }}.app.tgz" "CourseLore.app"
+            artifact: CourseLore--macos--${{ github.sha }}.app.tgz
           - os: ubuntu
-            caxa:
-              output: courselore
-            upload-artifact:
-              name: courselore--linux--${{ github.sha }}.tgz
-              path: courselore.tgz
+            build: |
+              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "courselore"
+              tar -czf "courselore--linux--${{ github.sha }}.tgz" "courselore"
+            artifact: courselore--linux--${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,12 +26,11 @@ jobs:
           node-version: 15
       - run: |
           npm ci
-          npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "${{ matrix.caxa.output }}"
-          tar -czf "${{ matrix.caxa.output }}.tgz" "${{ matrix.caxa.output }}"
+          ${{ matrix.build }}
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.upload-artifact.name }}
-          path: ${{ matrix.upload-artifact.path }}
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
 
   test:
     strategy:
