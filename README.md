@@ -420,6 +420,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - TailwindCSS: The hot new option.
 - <https://github.com/wclr/ts-node-dev/issues/243>: Stop using `--pool` when calling `ts-node-dev`.
 - Call Prettier to check contents of `public/` folders.
+- Use `Cache-control: no-store`.
 
 #### Deployment
 
