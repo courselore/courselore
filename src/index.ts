@@ -628,12 +628,6 @@ export default async function courselore(
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
 
-  // FIXME:
-  // https://expressjs.com/en/advanced/best-practice-security.html#use-cookies-securely
-  // https://www.npmjs.com/package/cookie-session
-  // https://github.com/expressjs/express/blob/master/examples/cookie-sessions/index.js
-  // https://www.npmjs.com/package/express-session
-  // https://github.com/expressjs/express/blob/master/examples/session/index.js
   app.set(
     "cookie secret",
     databaseRuntime.get<{ value: string }>(
@@ -651,7 +645,12 @@ export default async function courselore(
       )})`
     );
   }
-  app.use(cookieSession({ secret: app.get("cookie secret") }));
+  app.use(
+    cookieSession({
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+      secret: app.get("cookie secret"),
+    })
+  );
 
   const isAuthenticated: (
     isAuthenticated: boolean
