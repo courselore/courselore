@@ -142,6 +142,7 @@ export default async function courselore(
 
                 pre,
                 div.math-display {
+                  overflow-wrap: normal;
                   overflow: auto;
                 }
 
