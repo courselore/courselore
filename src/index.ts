@@ -1550,9 +1550,7 @@ export default async function courselore(
             html`<title>${course.name} · CourseLore</title>`,
             html`
               <h1>Welcome to ${course.name}!</h1>
-              <p>
-                <strong>Create the first thread</strong>
-              </p>
+              <p><strong>Create the first thread</strong></p>
               $${newThreadForm(req.params.courseReference)}
 
               <div class="TODO">
@@ -1586,12 +1584,14 @@ export default async function courselore(
       const course = database.get<{ id: number }>(
         sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
+
       const newThreadReference =
         database.get<{ newThreadReference: string }>(sql`
           SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
           FROM "threads"
           WHERE "threads"."course" = ${course.id}
         `)?.newThreadReference ?? "1";
+
       const author = database.get<{ id: number }>(sql`
         SELECT "enrollments"."id"
         FROM "enrollments"
@@ -1600,6 +1600,7 @@ export default async function courselore(
         WHERE "users"."email" = ${req.session!.email} AND
               "courses"."id" = ${course.id}
       `)!;
+
       const threadId = database.run(sql`
         INSERT INTO "threads" ("course", "reference", "author", "title")
         VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
@@ -1608,6 +1609,7 @@ export default async function courselore(
         INSERT INTO "posts" ("thread", "reference", "author", "content")
         VALUES (${threadId}, ${"1"}, ${author.id}, ${req.body.content})
       `);
+
       res.redirect(
         `${app.get("url")}/${
           req.params.courseReference
@@ -1636,10 +1638,10 @@ export default async function courselore(
                     "courses"."reference" = ${req.params.courseReference}
             ) AS "exists"
           `
-        )!.exists === 1
+        )!.exists === 0
       )
-        return next();
-      next("route");
+        return next("route");
+      next();
     },
   ];
 
@@ -1729,6 +1731,10 @@ export default async function courselore(
                 overflow: auto;
                 display: grid;
                 grid-template-rows: max-content auto;
+
+                @media (prefers-color-scheme: dark) {
+                  border-color: black;
+                }
               `}"
             >
               <header
@@ -1736,6 +1742,10 @@ export default async function courselore(
                   border-bottom: 1px solid silver;
                   padding: 0 1em;
                   overflow: auto;
+
+                  @media (prefers-color-scheme: dark) {
+                    border-color: black;
+                  }
                 `}"
               >
                 <p>$${logo()}</p>
@@ -1770,8 +1780,8 @@ export default async function courselore(
               </header>
               <div
                 style="${css`
-                  overflow: auto;
                   padding: 0 1em;
+                  overflow: auto;
                 `}"
               >
                 <p
@@ -1836,8 +1846,8 @@ export default async function courselore(
             </div>
             <main
               style="${css`
-                overflow: auto;
                 padding: 0 1em;
+                overflow: auto;
               `}"
             >
               <div
@@ -1869,18 +1879,12 @@ export default async function courselore(
     "/:courseReference/threads/:threadReference",
     ...threadAccessible,
     (req, res) => {
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      const course = database.get<{ id: number; name: string }>(
+        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
 
       const thread = database.get<{ id: number; title: string }>(
-        sql`
-          SELECT "threads"."id", "threads"."title"
-          FROM "threads"
-          JOIN "courses" ON "threads"."course" = "courses"."id"
-          WHERE "threads"."reference" = ${req.params.threadReference} AND
-                "courses"."reference" = ${req.params.courseReference}
-        `
+        sql`SELECT "id", "title" FROM "threads" WHERE "course" = ${course.id} AND "reference" = ${req.params.threadReference}`
       )!;
 
       const posts = database.all<{
@@ -1933,6 +1937,10 @@ export default async function courselore(
                   id="${post.reference}"
                   style="${css`
                     border-bottom: 1px solid silver;
+
+                    @media (prefers-color-scheme: dark) {
+                      border-color: black;
+                    }
                   `}"
                 >
                   <p>
@@ -1967,7 +1975,6 @@ export default async function courselore(
               `
             )}
 
-            <!-- TODO: Add keyboard shortcuts for posting. Here and in the create thread form as well. -->
             <form method="post">
               $${textEditor()}
               <p
@@ -1995,15 +2002,13 @@ export default async function courselore(
     ...threadAccessible,
     expressValidator.body("content").exists(),
     (req, res) => {
-      // FIXME: Maybe we can do this whole series of queries in one…
-      // FIXME: Update the ‘updatedAt’ field of the thread.
-      const thread = database.get<{ id: number; title: string }>(sql`
-        SELECT "threads"."id"
-        FROM "threads"
-        JOIN "courses" ON "threads"."course" = "courses"."id"
-        WHERE "threads"."reference" = ${req.params.threadReference} AND
-              "courses"."reference" = ${req.params.courseReference}
-      `)!;
+      const course = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+
+      const thread = database.get<{ id: number; title: string }>(
+        sql`SELECT "id" FROM "threads" WHERE "course" = ${course.id} AND "reference" = ${req.params.threadReference}`
+      )!;
 
       const newPostReference = database.get<{ newPostReference: string }>(sql`
         SELECT CAST(MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS TEXT) AS "newPostReference"
@@ -2015,16 +2020,14 @@ export default async function courselore(
         SELECT "enrollments"."id"
         FROM "enrollments"
         JOIN "users" ON "enrollments"."user" = "users"."id"
-        JOIN "courses" ON "enrollments"."course" = "courses"."id"
-        WHERE "users"."email" = ${req.session!.email} AND
-              "courses"."reference" = ${req.params.courseReference}
+        WHERE "enrollments"."course" = ${course.id} AND
+              "users"."email" = ${req.session!.email}
       `)!;
 
       database.run(sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
         VALUES (${thread.id}, ${newPostReference}, ${author.id}, ${req.body.content})
       `);
-
       // FIXME: Use a trigger instead of this update.
       database.run(sql`
         UPDATE "threads"
@@ -2047,6 +2050,7 @@ export default async function courselore(
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
+
       res.send(
         app.get("layout thread")(
           req,
@@ -2113,14 +2117,16 @@ export default async function courselore(
           hidden
           style="${css`
             margin: 3em 0;
-            display: flex;
+            display: grid;
+            grid-template-columns: max-content max-content;
+            column-gap: 0.5em;
             justify-content: center;
             align-items: center;
           `}"
         >
           $${logoSVG
             .replace(`id="gradient"`, `id="${id}"`)
-            .replace(`#gradient`, `#${id}`)}
+            .replace("#gradient", `#${id}`)}
           <script>
             (() => {
               const loading = document.currentScript.parentElement;
@@ -2151,12 +2157,7 @@ export default async function courselore(
               }
             })();
           </script>
-          <strong
-            style="${css`
-              margin-left: 0.3em;
-            `}"
-            >Loading…</strong
-          >
+          <strong>Loading…</strong>
         </div>
       `;
     };
