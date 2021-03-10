@@ -1407,7 +1407,7 @@ export default async function courselore(
           style="${css`
             margin-bottom: 0em;
 
-            & button {
+            & > button {
               margin-right: 0.5em;
               transition-duration: 0.2s;
               transition-property: font-weight, color;
