@@ -429,10 +429,12 @@ export default async function courselore(
         href="${app.get("url")}/"
         class="undecorated"
         style="${css`
-          display: inline-grid;
-          grid-template-columns: max-content max-content;
-          column-gap: 0.5em;
+          display: inline-flex;
           align-items: center;
+
+          & > * + * {
+            margin-left: 0.5em;
+          }
         `}"
       >
         $${logoSVG}
@@ -1407,8 +1409,11 @@ export default async function courselore(
           style="${css`
             margin-bottom: 0em;
 
+            & > * + * {
+              margin-left: 0.5em;
+            }
+
             & > button {
-              margin-right: 0.5em;
               transition-duration: 0.2s;
               transition-property: font-weight, color;
 
@@ -2117,11 +2122,13 @@ export default async function courselore(
           hidden
           style="${css`
             margin: 3em 0;
-            display: grid;
-            grid-template-columns: max-content max-content;
-            column-gap: 0.5em;
+            display: flex;
             justify-content: center;
             align-items: center;
+
+            & > * + * {
+              margin-left: 0.5em;
+            }
           `}"
         >
           $${logoSVG
