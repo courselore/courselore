@@ -238,10 +238,6 @@ export default async function courselore(
                   }
                 }
 
-                details[open] summary {
-                  color: #ff77a8;
-                }
-
                 a,
                 button.a {
                   color: inherit;
@@ -281,7 +277,6 @@ export default async function courselore(
                   color: #ffffffd4;
                   background-color: #83769c;
                   padding: 0.2em 1em;
-                  /* TODO: This whole box-shadow section may be DRYed. */
                   border: 1px solid #83769c;
                   border-radius: 10px;
                   box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
@@ -317,13 +312,17 @@ export default async function courselore(
                   }
                 }
 
-                [hidden] {
-                  display: none !important;
-                }
-
                 summary {
                   cursor: pointer;
                   outline: none;
+
+                  details[open] & {
+                    color: #ff77a8;
+                  }
+                }
+
+                [hidden] {
+                  display: none !important;
                 }
 
                 @media (prefers-color-scheme: light) {
