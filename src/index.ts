@@ -1726,16 +1726,15 @@ export default async function courselore(
             style="${css`
               width: 100vw;
               height: 100vh;
-              display: grid;
-              grid-template-columns: 400px auto;
+              display: flex;
             `}"
           >
             <div
               style="${css`
+                width: 400px;
                 border-right: 1px solid silver;
-                overflow: auto;
-                display: grid;
-                grid-template-rows: max-content auto;
+                display: flex;
+                flex-direction: column;
 
                 @media (prefers-color-scheme: dark) {
                   border-color: black;
@@ -1785,6 +1784,7 @@ export default async function courselore(
               </header>
               <div
                 style="${css`
+                  flex: 1;
                   padding: 0 1em;
                   overflow: auto;
                 `}"
@@ -1851,13 +1851,14 @@ export default async function courselore(
             </div>
             <main
               style="${css`
-                padding: 0 1em;
+                flex: 1;
                 overflow: auto;
               `}"
             >
               <div
                 style="${css`
                   max-width: 800px;
+                  padding: 0 1em;
                   margin: 0 auto;
 
                   & > h1:first-child {
