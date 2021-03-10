@@ -1663,19 +1663,14 @@ export default async function courselore(
       head: HTML,
       body: HTML
     ): HTML => {
-      const user = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      const user = database.get<{ id: number; name: string }>(
+        sql`
+          SELECT "id", "name" FROM "users" WHERE "email" = ${req.session!.email}
+        `
       )!;
 
-      const course = database.get<{ name: string; role: Role }>(
-        sql`
-          SELECT "courses"."name", "enrollments"."role"
-          FROM "courses"
-          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference} AND
-                "users"."email" = ${req.session!.email}
-        `
+      const course = database.get<{ id: number; name: string }>(
+        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
 
       const otherCourses = database.all<{
@@ -1693,6 +1688,10 @@ export default async function courselore(
           ORDER BY "enrollments"."createdAt" DESC
         `
       );
+
+      const enrollment = database.get<{ role: Role; accentColor: string }>(
+        sql`SELECT "role", "accentColor" FROM "enrollments" WHERE "user" = ${user.id} AND "course" = ${course.id}`
+      )!;
 
       const threads = database.all<{
         createdAt: string;
@@ -1723,8 +1722,10 @@ export default async function courselore(
         html`
           <div
             style="${css`
+              box-sizing: border-box;
               width: 100vw;
               height: 100vh;
+              border-top: 10px solid ${enrollment.accentColor};
               display: flex;
             `}"
           >
@@ -1755,7 +1756,9 @@ export default async function courselore(
                 $${authenticatedMenu(req, res)}
                 $${otherCourses.length === 0
                   ? html`
-                      <p><strong>${course.name}</strong> (${course.role})</p>
+                      <p>
+                        <strong>${course.name}</strong> (${enrollment.role})
+                      </p>
                     `
                   : html`
                       <details>
@@ -1764,7 +1767,7 @@ export default async function courselore(
                             margin: 1em 0;
                           `}"
                         >
-                          <strong>${course.name}</strong> (${course.role})
+                          <strong>${course.name}</strong> (${enrollment.role})
                         </summary>
                         $${otherCourses.map(
                           (course) => html`
