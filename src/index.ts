@@ -34,6 +34,8 @@ import prettier from "prettier";
 
 const VERSION = require("../package.json").version;
 
+// TODO: Use ‘maxlength’ in forms.
+
 export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
@@ -279,6 +281,7 @@ export default async function courselore(
                   color: #ffffffd4;
                   background-color: #83769c;
                   padding: 0.2em 1em;
+                  /* TODO: This whole box-shadow section may be DRYed. */
                   border: 1px solid #83769c;
                   border-radius: 10px;
                   box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
