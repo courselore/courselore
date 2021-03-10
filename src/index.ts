@@ -115,6 +115,7 @@ export default async function courselore(
                   font-family: "Public Sans", sans-serif;
                   -webkit-text-size-adjust: 100%;
                   margin: 0;
+                  overflow-wrap: break-word;
                 }
 
                 code {
@@ -139,7 +140,6 @@ export default async function courselore(
                   margin-top: 1.5em;
                 }
 
-                /* TODO: Do something about other styling attacks in which the user just gives us input that’s too long and causes horizontal scrolls. */
                 pre,
                 div.math-display {
                   overflow: auto;
