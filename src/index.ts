@@ -538,7 +538,6 @@ export default async function courselore(
   ] as const;
   type AccentColor = typeof ACCENT_COLORS[number];
 
-  // FIXME: Open the databases using more appropriate configuration, for example, WAL and PRAGMA foreign keys.
   await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
   app.set("database", database);
