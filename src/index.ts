@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "path";
+import crypto from "crypto";
 
 import express from "express";
 import cookieSession from "cookie-session";
@@ -1128,9 +1129,10 @@ export default async function courselore(
       reference: string;
       name: string;
       role: Role;
+      accentColor: AccentColor;
     }>(
       sql`
-        SELECT "courses"."reference", "courses"."name", "enrollments"."role"
+        SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
         FROM "courses"
         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
         JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -1209,7 +1211,16 @@ export default async function courselore(
                         <a
                           href="${app.get("url")}/${course.reference}"
                           class="undecorated"
-                          ><strong>${course.name}</strong> (${course.role})</a
+                          ><span
+                            style="${css`
+                              display: inline-block;
+                              width: 0.8em;
+                              height: 0.8em;
+                              background-color: ${course.accentColor};
+                              border-radius: 50%;
+                            `}"
+                          ></span>
+                          <strong>${course.name}</strong> (${course.role})</a
                         >
                       </p>
                     `
@@ -1225,6 +1236,23 @@ export default async function courselore(
     "/courses/new",
     ...isAuthenticated(true),
     (req, res) => {
+      const accentColorsAlreadyInUse = database
+        .all<{ accentColor: AccentColor }>(
+          sql`
+          SELECT DISTINCT "enrollments"."accentColor"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "users"."email" = ${req.session!.email}
+        `
+        )
+        .map((enrollment) => enrollment.accentColor);
+      const preselectedAccentColorIndex =
+        accentColorsAlreadyInUse.length < ACCENT_COLORS.length
+          ? ACCENT_COLORS.findIndex(
+              (accentColor) => !accentColorsAlreadyInUse.includes(accentColor)
+            )
+          : crypto.randomInt(ACCENT_COLORS.length);
+
       res.send(
         app.get("layout authenticated")(
           req,
@@ -1264,7 +1292,9 @@ export default async function courselore(
                           name="accentColor"
                           value="${accentColor}"
                           required
-                          ${index === 0 ? "checked" : ""}
+                          ${index === preselectedAccentColorIndex
+                            ? "checked"
+                            : ""}
                           hidden
                         />
                         <span
@@ -1299,6 +1329,12 @@ export default async function courselore(
                       </label>
                     `
                 )}
+                <label>
+                  <small class="hint">
+                    A bar with this color will appear on the top of the course
+                    screen to help you tell courses apart.
+                  </small>
+                </label>
               </p>
               <p>
                 <button>Create course</button>
@@ -1310,10 +1346,6 @@ export default async function courselore(
                 in the course, how they’d like for other people to enroll
                 (either by invitation or via a link), and so forth…
               </p>
-              <p>
-                Change the accent color on this page (mostly the “Create course”
-                button).
-              </p>
             </div>
           `
         )
@@ -1321,7 +1353,7 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, any, { name: string; accentColor: string }, {}, {}>(
+  app.post<{}, any, { name: string; accentColor: AccentColor }, {}, {}>(
     "/courses",
     ...isAuthenticated(true),
     expressValidator.body("name").exists(),
@@ -1677,9 +1709,10 @@ export default async function courselore(
         reference: string;
         name: string;
         role: Role;
+        accentColor: AccentColor;
       }>(
         sql`
-          SELECT "courses"."reference", "courses"."name", "enrollments"."role"
+          SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
           FROM "courses"
           JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -1689,7 +1722,7 @@ export default async function courselore(
         `
       );
 
-      const enrollment = database.get<{ role: Role; accentColor: string }>(
+      const enrollment = database.get<{ role: Role; accentColor: AccentColor }>(
         sql`SELECT "role", "accentColor" FROM "enrollments" WHERE "user" = ${user.id} AND "course" = ${course.id}`
       )!;
 
@@ -1775,7 +1808,16 @@ export default async function courselore(
                               <a
                                 href="${app.get("url")}/${course.reference}"
                                 class="undecorated"
-                                ><strong>${course.name}</strong>
+                                ><span
+                                  style="${css`
+                                    display: inline-block;
+                                    width: 0.8em;
+                                    height: 0.8em;
+                                    background-color: ${course.accentColor};
+                                    border-radius: 50%;
+                                  `}"
+                                ></span>
+                                <strong>${course.name}</strong>
                                 (${course.role})</a
                               >
                             </p>
