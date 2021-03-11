@@ -1545,7 +1545,7 @@ export default async function courselore(
         <div class="write">
           <p
             style="${css`
-              margin-top: -1em;
+              margin-top: -0.8em;
             `}"
           >
             <textarea
