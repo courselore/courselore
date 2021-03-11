@@ -2174,20 +2174,44 @@ export default async function courselore(
     }
   );
 
-  // TODO: Create a special 404 page for people who are logged out mentioning that they may have to login to see the page.
+  app.use(isAuthenticated(true));
+
   app.use<{}, HTML, {}, {}, {}>((req, res) => {
     res.send(
-      app.get("layout unauthenticated")(
+      app.get(
+        req.session!.email === undefined
+          ? "layout unauthenticated"
+          : "layout authenticated"
+      )(
         req,
         res,
         html`<title>Not found · CourseLore</title>`,
         html`
-          <h1>Not found</h1>
-          <p>
-            If you think there should be something here, please contact the
-            course instructor or the
-            <a href="${app.get("administrator")}">system administrator</a>.
-          </p>
+          <div
+            style="${css`
+              text-align: center;
+            `}"
+          >
+            <h1>Not found</h1>
+            $${req.session!.email === undefined
+              ? html`
+                  <p>
+                    You may have to
+                    <a href="${app.get("url")}/sign-in">sign in</a> or
+                    <a href="${app.get("url")}/sign-up">sign up</a> to access
+                    this page.
+                  </p>
+                `
+              : html`
+                  <p>
+                    If you think there should be something here, please contact
+                    the course instructor or the
+                    <a href="${app.get("administrator")}"
+                      >system administrator</a
+                    >.
+                  </p>
+                `}
+          </div>
         `
       )
     );
@@ -2198,7 +2222,11 @@ export default async function courselore(
   app.use(((err, req, res, next) => {
     const type = err instanceof ValidationError ? "Validation" : "Server";
     res.status(type === "Validation" ? 422 : 500).send(
-      app.get("layout unauthenticated")(
+      app.get(
+        req.session!.email === undefined
+          ? "layout unauthenticated"
+          : "layout authenticated"
+      )(
         req,
         res,
         html`<title>${type} error · CourseLore</title>`,
