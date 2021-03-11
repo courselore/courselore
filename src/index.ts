@@ -1185,7 +1185,7 @@ export default async function courselore(
           <p>
             <label>
               <strong>Invite by email</strong>
-              <textarea></textarea>
+              <textarea name="invite-by-email"></textarea>
               <small class="hint">
                 People who don’t have a CourseLore account will be invited to
                 create one.
@@ -1388,6 +1388,10 @@ export default async function courselore(
     }
   );
 
+  // TODO: Process invite-by-email
+  // https://www.npmjs.com/package/email-addresses
+  // https://www.npmjs.com/package/addressparser
+  // https://www.npmjs.com/package/emailjs-mime-codec
   app.post<
     {},
     any,
