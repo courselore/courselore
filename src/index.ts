@@ -320,9 +320,22 @@ export default async function courselore(
                   outline: none;
                   cursor: pointer;
 
-                  details[open] & {
+                  details[open] > & {
                     color: #ff77a8;
                   }
+                }
+
+                hr {
+                  border: none;
+                  border-top: 1px solid silver;
+
+                  @media (prefers-color-scheme: dark) {
+                    border-color: black;
+                  }
+                }
+
+                .dim {
+                  color: gray;
                 }
 
                 [hidden] {
@@ -1083,7 +1096,6 @@ export default async function courselore(
       <details>
         <summary
           style="${css`
-            color: gray;
             float: right;
             margin-top: -45px;
 
@@ -1096,7 +1108,7 @@ export default async function courselore(
             }
 
             &:hover line,
-            details[open] & line {
+            details[open] > & line {
               stroke: #ff77a8;
             }
           `}"
@@ -1113,12 +1125,19 @@ export default async function courselore(
         <form method="post" action="${app.get("url")}/sign-out">
           <p><button class="a undecorated">Sign out</button></p>
         </form>
-        $${extraMenuOptions ?? html``}
+        <hr />
+        $${extraMenuOptions === undefined
+          ? html``
+          : html`
+              $${extraMenuOptions}
+              <hr />
+            `}
         <p>
           <a href="${app.get("url")}/courses/new" class="undecorated"
             >New course</a
           >
         </p>
+        <hr />
       </details>
     `;
   }
@@ -1157,6 +1176,24 @@ export default async function courselore(
             />
           </label>
         </p>
+        <hr />
+        <details>
+          <summary>
+            <strong>Invitations</strong>
+            <span class="dim">(You may decide this later)</span>
+          </summary>
+          <p>
+            <label>
+              <strong>Invite by email</strong>
+              <textarea></textarea>
+              <small class="hint">
+                People who don’t have a CourseLore account will be invited to
+                create one.
+              </small>
+            </label>
+          </p>
+        </details>
+        <hr />
         <p>
           <strong>Accent color</strong><br />
           $${Object.keys(AccentColor).map(
@@ -1442,8 +1479,6 @@ export default async function courselore(
         <!-- FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too. -->
         <p
           style="${css`
-            margin-bottom: 0em;
-
             & > * + * {
               margin-left: 0.5em;
             }
@@ -1508,26 +1543,31 @@ export default async function courselore(
         </p>
 
         <div class="write">
-          <textarea
-            name="content"
-            required
-            rows="5"
-            onkeypress="${javascript`
+          <p
+            style="${css`
+              margin-top: -1em;
+            `}"
+          >
+            <textarea
+              name="content"
+              required
+              rows="5"
+              onkeypress="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
                 const form = this.closest("form");
                 if (form.reportValidity()) form.submit();
               }
             `}"
-          ></textarea>
-          <p
-            style="${css`
-              text-align: right;
-              color: gray;
-              margin-top: -0.3em;
-            `}"
-          >
-            <small>
+            ></textarea>
+            <br />
+            <small
+              class="dim"
+              style="${css`
+                display: block;
+                text-align: right;
+              `}"
+            >
               <a
                 href="https://guides.github.com/features/mastering-markdown/"
                 target="_blank"
@@ -1877,11 +1917,7 @@ export default async function courselore(
                           `}"
                         >
                           <strong>${thread.title}</strong><br />
-                          <small
-                            style="${css`
-                              color: gray;
-                            `}"
-                          >
+                          <small class="dim">
                             #${thread.reference} created
                             $${relativeTime(thread.createdAt)} by
                             ${thread.authorName ?? "Ghost"}
@@ -1970,9 +2006,9 @@ export default async function courselore(
             <h1>
               ${thread.title}
               <small
+                class="dim"
                 style="${css`
                   font-weight: normal;
-                  color: gray;
                 `}"
               >
                 <a
@@ -1998,21 +2034,14 @@ export default async function courselore(
                 >
                   <p>
                     <strong>${post.authorName ?? "Ghost"}</strong>
-                    <span
-                      style="${css`
-                        color: gray;
-                      `}"
-                      >said
+                    <span class="dim">
+                      said
                       $${relativeTime(post.createdAt)}$${post.updatedAt !==
                       post.createdAt
                         ? html` (and last edited
                           $${relativeTime(post.updatedAt)})`
                         : html``}
-                      <small
-                        style="${css`
-                          color: gray;
-                        `}"
-                      >
+                      <small>
                         <a
                           href="${app.get("url")}/${req.params
                             .courseReference}/threads/${req.params

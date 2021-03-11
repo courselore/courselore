@@ -571,6 +571,13 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-03-13</summary>
+
+- Should we allow course assistants to create courses?
+
+</details>
+
+<details>
 <summary>2021-03-06</summary>
 
 - Developed a two-column layout for the course pages and fleshed out the styles across the application.
