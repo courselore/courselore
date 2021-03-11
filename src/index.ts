@@ -42,7 +42,7 @@ export default async function courselore(
   const app = express();
 
   app.set("url", "http://localhost:4000");
-  app.set("administrator email", "demonstration-development@courselore.org");
+  app.set("administrator", "mailto:demonstration-development@courselore.org");
 
   app.enable("demonstration");
 
@@ -2180,8 +2180,15 @@ export default async function courselore(
       app.get("layout unauthenticated")(
         req,
         res,
-        html`<title>404 · CourseLore</title>`,
-        html`<h1>404</h1>`
+        html`<title>Not found · CourseLore</title>`,
+        html`
+          <h1>Not found</h1>
+          <p>
+            If you think there should be something here, please contact the
+            course instructor or the
+            <a href="${app.get("administrator")}">system administrator</a>.
+          </p>
+        `
       )
     );
   });

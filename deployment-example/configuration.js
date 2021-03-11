@@ -10,7 +10,7 @@ module.exports = async (require) => {
   const app = await courselore(__dirname);
 
   app.set("url", "https://courselore.org");
-  app.set("administrator email", "administrator@courselore.org");
+  app.set("administrator", "mailto:administrator@courselore.org");
 
   const reverseProxy = express();
 
