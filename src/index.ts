@@ -523,22 +523,24 @@ export default async function courselore(
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
 
-  const ROLES = ["instructor", "assistant", "student"] as const;
-  type Role = typeof ROLES[number];
+  enum Role {
+    "instructor" = "instructor",
+    "assistant" = "assistant",
+    "student" = "student",
+  }
 
-  const ACCENT_COLORS = [
-    "#83769c",
-    "#ff77a8",
-    "#29adff",
-    "#ffa300",
-    "#1d2b53",
-    "#7e2553",
-    "#008751",
-    "#ab5236",
-    "#ff004d",
-    "#5f574f",
-  ] as const;
-  type AccentColor = typeof ACCENT_COLORS[number];
+  enum AccentColor {
+    "#83769c" = "#83769c",
+    "#ff77a8" = "#ff77a8",
+    "#29adff" = "#29adff",
+    "#ffa300" = "#ffa300",
+    "#1d2b53" = "#1d2b53",
+    "#7e2553" = "#7e2553",
+    "#008751" = "#008751",
+    "#ab5236" = "#ab5236",
+    "#ff004d" = "#ff004d",
+    "#5f574f" = "#5f574f",
+  }
 
   await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
@@ -1128,8 +1130,8 @@ export default async function courselore(
     const courses = database.all<{
       reference: string;
       name: string;
-      role: Role;
-      accentColor: AccentColor;
+      role: keyof typeof Role;
+      accentColor: keyof typeof AccentColor;
     }>(
       sql`
         SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
@@ -1237,7 +1239,7 @@ export default async function courselore(
     ...isAuthenticated(true),
     (req, res) => {
       const accentColorsInUse = database
-        .all<{ accentColor: AccentColor }>(
+        .all<{ accentColor: keyof typeof AccentColor }>(
           sql`
             SELECT DISTINCT "enrollments"."accentColor"
             FROM "enrollments"
@@ -1247,14 +1249,12 @@ export default async function courselore(
           `
         )
         .map((enrollment) => enrollment.accentColor);
-      const accentColorsAvailable = [...ACCENT_COLORS];
+      const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
       for (const accentColorInUse of accentColorsInUse) {
-        accentColorsAvailable.splice(
-          accentColorsAvailable.indexOf(accentColorInUse),
-          1
-        );
-        if (accentColorsAvailable.length === 1) break;
+        accentColorsAvailable.delete(accentColorInUse);
+        if (accentColorsAvailable.size === 1) break;
       }
+      const accentColorPreselected = [...accentColorsAvailable][0];
 
       res.send(
         app.get("layout authenticated")(
@@ -1278,7 +1278,7 @@ export default async function courselore(
               </p>
               <p>
                 <strong>Accent color</strong><br />
-                $${ACCENT_COLORS.map(
+                $${Object.keys(AccentColor).map(
                   (accentColor) =>
                     html`
                       <label
@@ -1295,7 +1295,7 @@ export default async function courselore(
                           name="accentColor"
                           value="${accentColor}"
                           required
-                          ${accentColor === accentColorsAvailable[0]
+                          ${accentColor === accentColorPreselected
                             ? "checked"
                             : ""}
                           hidden
@@ -1356,11 +1356,17 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, any, { name: string; accentColor: AccentColor }, {}, {}>(
+  app.post<
+    {},
+    any,
+    { name: string; accentColor: keyof typeof AccentColor },
+    {},
+    {}
+  >(
     "/courses",
     ...isAuthenticated(true),
     expressValidator.body("name").exists(),
-    expressValidator.body("accentColor").isIn(ACCENT_COLORS as any),
+    expressValidator.body("accentColor").isIn(Object.keys(AccentColor)),
     (req, res) => {
       const newReference = cryptoRandomString({ length: 10, type: "numeric" });
       const newCourseId = database.run(
@@ -1711,8 +1717,8 @@ export default async function courselore(
       const otherCourses = database.all<{
         reference: string;
         name: string;
-        role: Role;
-        accentColor: AccentColor;
+        role: keyof typeof Role;
+        accentColor: keyof typeof AccentColor;
       }>(
         sql`
           SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
@@ -1725,7 +1731,10 @@ export default async function courselore(
         `
       );
 
-      const enrollment = database.get<{ role: Role; accentColor: AccentColor }>(
+      const enrollment = database.get<{
+        role: keyof typeof Role;
+        accentColor: keyof typeof AccentColor;
+      }>(
         sql`SELECT "role", "accentColor" FROM "enrollments" WHERE "user" = ${user.id} AND "course" = ${course.id}`
       )!;
 
