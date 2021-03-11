@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import path from "path";
-import crypto from "crypto";
 
 import express from "express";
 import cookieSession from "cookie-session";
