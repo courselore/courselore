@@ -547,11 +547,11 @@ export default async function courselore(
     "#ff77a8" = "#ff77a8",
     "#29adff" = "#29adff",
     "#ffa300" = "#ffa300",
-    "#1d2b53" = "#1d2b53",
+    "#ff004d" = "#ff004d",
     "#7e2553" = "#7e2553",
     "#008751" = "#008751",
     "#ab5236" = "#ab5236",
-    "#ff004d" = "#ff004d",
+    "#1d2b53" = "#1d2b53",
     "#5f574f" = "#5f574f",
   }
 
@@ -580,7 +580,7 @@ export default async function courselore(
         "user" INTEGER NOT NULL REFERENCES "users",
         "course" INTEGER NOT NULL REFERENCES "courses",
         "role" TEXT NOT NULL CHECK("role" IN ('instructor', 'assistant', 'student')),
-        "accentColor" TEXT NOT NULL CHECK("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#1d2b53', '#7e2553', '#008751', '#ab5236', '#ff004d', '#5f574f')),
+        "accentColor" TEXT NOT NULL CHECK("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
         UNIQUE ("user", "course")
       );
 
