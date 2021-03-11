@@ -60,11 +60,12 @@ export default async function courselore(
         <html lang="en">
           <head>
             <meta charset="UTF-8" />
-            <meta name="generator" content="CourseLore/${VERSION}" />
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1.0"
             />
+            <meta name="generator" content="CourseLore/${VERSION}" />
+            <meta name="description" content="The Open-Source Student Forum" />
             <link
               rel="icon"
               type="image/png"
@@ -1245,6 +1246,7 @@ export default async function courselore(
         `
         )
         .map((enrollment) => enrollment.accentColor);
+      // FIXME: Don’t use a random color, but the least recently used.
       const preselectedAccentColorIndex =
         accentColorsAlreadyInUse.length < ACCENT_COLORS.length
           ? ACCENT_COLORS.findIndex(
