@@ -756,7 +756,7 @@ export default async function courselore(
     }
   );
 
-  app.get<{}, HTML, {}, {}, {}>(
+  app.get<{}, HTML, {}, { redirect?: string }, {}>(
     ["/sign-up", "/sign-in"],
     ...isAuthenticated(false),
     (req, res) => {
@@ -816,7 +816,13 @@ export default async function courselore(
                   ${preposition === "up"
                     ? "Already have an account?"
                     : "Don’t have an account yet?"}
-                  <a href="${app.get("url")}/sign-${alternativePreposition}"
+                  <a
+                    href="${app.get(
+                      "url"
+                    )}/sign-${alternativePreposition}${new URL(
+                      req.originalUrl,
+                      app.get("url")
+                    ).search}"
                     >Sign ${alternativePreposition}</a
                   >.
                 </small>
@@ -839,7 +845,7 @@ export default async function courselore(
     return newToken;
   }
 
-  app.post<{}, HTML, { email?: string }, {}, {}>(
+  app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
     ["/sign-up", "/sign-in"],
     ...isAuthenticated(false),
     (req, res) => {
@@ -856,7 +862,9 @@ export default async function courselore(
         )!.exists === 0
           ? "up"
           : "in";
-      const magicLink = `${app.get("url")}/sign-${realPreposition}/${newToken}`;
+      const magicLink = `${app.get("url")}/sign-${realPreposition}/${newToken}${
+        new URL(req.originalUrl, app.get("url")).search
+      }`;
       const sentEmail = sendEmail({
         to: req.body.email,
         subject: `Magic sign-${realPreposition} link`,
@@ -915,10 +923,11 @@ export default async function courselore(
   }
 
   // TODO: What should happen if the person clicks on a magic link but they’re already authenticated?
-  app.get<{ token: string }, HTML, {}, {}, {}>(
+  app.get<{ token: string }, HTML, {}, { redirect?: string }, {}>(
     ["/sign-up/:token", "/sign-in/:token"],
     ...isAuthenticated(false),
     (req, res) => {
+      const search = new URL(req.originalUrl, app.get("url")).search;
       const authenticationToken = getAuthenticationToken(req.params.token);
       if (authenticationToken === undefined) {
         const preposition = req.path.startsWith("/sign-up") ? "up" : "in";
@@ -935,7 +944,8 @@ export default async function courselore(
               >
                 <p>
                   This magic sign-${preposition} link is invalid or has expired.
-                  <a href="${app.get("url")}/sign-${preposition}">Start over</a
+                  <a href="${app.get("url")}/sign-${preposition}${search}"
+                    >Start over</a
                   >.
                 </p>
               </div>
@@ -963,7 +973,7 @@ export default async function courselore(
                 <h1>Welcome to CourseLore!</h1>
                 <form
                   method="post"
-                  action="${app.get("url")}/users"
+                  action="${app.get("url")}/users${search}"
                   style="${css`
                     max-width: 300px;
                     margin: 0 auto;
@@ -1005,49 +1015,57 @@ export default async function courselore(
         );
       }
       req.session!.email = authenticationToken.email;
-      res.redirect(`${app.get("url")}/`);
+      res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
     }
   );
 
-  app.post<{}, HTML, { token?: string; name?: string }, {}, {}>(
-    "/users",
-    ...isAuthenticated(false),
-    (req, res) => {
-      if (
-        typeof req.body.token !== "string" ||
-        req.body.token.trim() === "" ||
-        typeof req.body.name !== "string" ||
-        req.body.name.trim() === ""
-      )
-        throw new ValidationError();
+  app.post<
+    {},
+    HTML,
+    { token?: string; name?: string },
+    { redirect?: string },
+    {}
+  >("/users", ...isAuthenticated(false), (req, res) => {
+    if (
+      typeof req.body.token !== "string" ||
+      req.body.token.trim() === "" ||
+      typeof req.body.name !== "string" ||
+      req.body.name.trim() === ""
+    )
+      throw new ValidationError();
 
-      const authenticationToken = getAuthenticationToken(req.body.token);
-      if (
-        authenticationToken === undefined ||
-        database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
-        )!.exists === 1
-      )
-        return res.send(
-          app.get("layout unauthenticated")(
-            req,
-            res,
-            html`<title>Sign up · CourseLore</title>`,
-            html`
-              <p>
-                Something went wrong in your sign up.
-                <a href="${app.get("url")}/sign-up">Start over</a>.
-              </p>
-            `
-          )
-        );
-      database.run(
-        sql`INSERT INTO "users" ("email", "name") VALUES (${authenticationToken.email}, ${req.body.name})`
+    const authenticationToken = getAuthenticationToken(req.body.token);
+    if (
+      authenticationToken === undefined ||
+      database.get<{ exists: number }>(
+        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
+      )!.exists === 1
+    )
+      return res.send(
+        app.get("layout unauthenticated")(
+          req,
+          res,
+          html`<title>Sign up · CourseLore</title>`,
+          html`
+            <p>
+              Something went wrong in your sign up.
+              <a
+                href="${app.get("url")}/sign-up${new URL(
+                  req.originalUrl,
+                  app.get("url")
+                ).search}"
+                >Start over</a
+              >.
+            </p>
+          `
+        )
       );
-      req.session!.email = authenticationToken.email;
-      res.redirect(`${app.get("url")}/`);
-    }
-  );
+    database.run(
+      sql`INSERT INTO "users" ("email", "name") VALUES (${authenticationToken.email}, ${req.body.name})`
+    );
+    req.session!.email = authenticationToken.email;
+    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
+  });
 
   app.post<{}, any, {}, {}, {}>(
     "/sign-out",
@@ -2197,9 +2215,20 @@ export default async function courselore(
               ? html`
                   <p>
                     You may have to
-                    <a href="${app.get("url")}/sign-in">sign in</a> or
-                    <a href="${app.get("url")}/sign-up">sign up</a> to access
-                    this page.
+                    <a
+                      href="${app.get(
+                        "url"
+                      )}/sign-in?redirect=${req.originalUrl}"
+                      >sign in</a
+                    >
+                    or
+                    <a
+                      href="${app.get(
+                        "url"
+                      )}/sign-up?redirect=${req.originalUrl}"
+                      >sign up</a
+                    >
+                    to access this page.
                   </p>
                 `
               : html`
@@ -2220,6 +2249,7 @@ export default async function courselore(
   class ValidationError extends Error {}
 
   app.use(((err, req, res, next) => {
+    console.error(err);
     const type = err instanceof ValidationError ? "Validation" : "Server";
     res.status(type === "Validation" ? 422 : 500).send(
       app.get(
