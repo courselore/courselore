@@ -4,7 +4,7 @@ import path from "path";
 
 import express from "express";
 import cookieSession from "cookie-session";
-import * as expressValidator from "express-validator";
+import validator from "validator";
 
 import { Database, sql } from "@leafac/sqlite";
 import databaseMigrate from "@leafac/sqlite-migration";
@@ -839,12 +839,16 @@ export default async function courselore(
     return newToken;
   }
 
-  // TODO: Make more sophisticated use of expressValidator.
-  app.post<{}, HTML, { email: string }, {}, {}>(
+  app.post<{}, HTML, { email?: string }, {}, {}>(
     ["/sign-up", "/sign-in"],
     ...isAuthenticated(false),
-    expressValidator.body("email").isEmail(),
     (req, res) => {
+      if (
+        typeof req.body.email !== "string" ||
+        !validator.isEmail(req.body.email)
+      )
+        throw new ValidationError();
+
       const newToken = createAuthenticationToken(req.body.email);
       const realPreposition =
         database.get<{ exists: number }>(
@@ -1005,12 +1009,18 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, HTML, { token: string; name: string }, {}, {}>(
+  app.post<{}, HTML, { token?: string; name?: string }, {}, {}>(
     "/users",
     ...isAuthenticated(false),
-    expressValidator.body("token").exists(),
-    expressValidator.body("name").exists(),
     (req, res) => {
+      if (
+        typeof req.body.token !== "string" ||
+        req.body.token.trim() === "" ||
+        typeof req.body.name !== "string" ||
+        req.body.name.trim() === ""
+      )
+        throw new ValidationError();
+
       const authenticationToken = getAuthenticationToken(req.body.token);
       if (
         authenticationToken === undefined ||
@@ -1394,24 +1404,27 @@ export default async function courselore(
   app.post<
     {},
     any,
-    { name: string; accentColor: keyof typeof AccentColor },
+    { name?: string; accentColor?: keyof typeof AccentColor },
     {},
     {}
-  >(
-    "/courses",
-    ...isAuthenticated(true),
-    expressValidator.body("name").exists(),
-    expressValidator.body("accentColor").isIn(Object.keys(AccentColor)),
-    (req, res) => {
-      const newReference = cryptoRandomString({ length: 10, type: "numeric" });
-      const newCourseId = database.run(
-        sql`INSERT INTO "courses" ("reference", "name") VALUES (${newReference}, ${req.body.name})`
-      ).lastInsertRowid;
-      const user = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
-      database.run(
-        sql`
+  >("/courses", ...isAuthenticated(true), (req, res) => {
+    if (
+      typeof req.body.name !== "string" ||
+      req.body.name.trim() === "" ||
+      typeof req.body.accentColor !== "string" ||
+      AccentColor[req.body.accentColor] === undefined
+    )
+      throw new ValidationError();
+
+    const newReference = cryptoRandomString({ length: 10, type: "numeric" });
+    const newCourseId = database.run(
+      sql`INSERT INTO "courses" ("reference", "name") VALUES (${newReference}, ${req.body.name})`
+    ).lastInsertRowid;
+    const user = database.get<{ id: number }>(
+      sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
+    )!;
+    database.run(
+      sql`
           INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
           VALUES (
             ${user.id},
@@ -1419,10 +1432,9 @@ export default async function courselore(
             ${"instructor"},
             ${req.body.accentColor}
         )`
-      );
-      res.redirect(`${app.get("url")}/${newReference}`);
-    }
-  );
+    );
+    res.redirect(`${app.get("url")}/${newReference}`);
+  });
 
   // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
   const isEnrolledInCourse: express.RequestHandler<
@@ -1596,11 +1608,16 @@ export default async function courselore(
     `;
   }
 
-  app.post<{}, HTML, { content: string }, {}, {}>(
+  app.post<{}, HTML, { content?: string }, {}, {}>(
     "/preview",
     ...isAuthenticated(true),
-    expressValidator.body("content").exists(),
     (req, res) => {
+      if (
+        typeof req.body.content !== "string" ||
+        req.body.content.trim() === ""
+      )
+        throw new ValidationError();
+
       res.send(app.get("text processor")(req.body.content));
     }
   );
@@ -1655,27 +1672,30 @@ export default async function courselore(
   app.post<
     { courseReference: string },
     HTML,
-    { title: string; content: string },
+    { title?: string; content?: string },
     {},
     {}
-  >(
-    "/:courseReference/threads",
-    ...isEnrolledInCourse,
-    expressValidator.body("title").exists(),
-    expressValidator.body("content").exists(),
-    (req, res) => {
-      const course = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
+  >("/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
+    if (
+      typeof req.body.title !== "string" ||
+      req.body.title.trim() === "" ||
+      typeof req.body.content !== "string" ||
+      req.body.content.trim() === ""
+    )
+      throw new ValidationError();
 
-      const newThreadReference =
-        database.get<{ newThreadReference: string }>(sql`
+    const course = database.get<{ id: number }>(
+      sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+    )!;
+
+    const newThreadReference =
+      database.get<{ newThreadReference: string }>(sql`
           SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
           FROM "threads"
           WHERE "threads"."course" = ${course.id}
         `)?.newThreadReference ?? "1";
 
-      const author = database.get<{ id: number }>(sql`
+    const author = database.get<{ id: number }>(sql`
         SELECT "enrollments"."id"
         FROM "enrollments"
         JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -1684,22 +1704,21 @@ export default async function courselore(
               "courses"."id" = ${course.id}
       `)!;
 
-      const threadId = database.run(sql`
+    const threadId = database.run(sql`
         INSERT INTO "threads" ("course", "reference", "author", "title")
         VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
       `).lastInsertRowid;
-      database.run(sql`
+    database.run(sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
         VALUES (${threadId}, ${"1"}, ${author.id}, ${req.body.content})
       `);
 
-      res.redirect(
-        `${app.get("url")}/${
-          req.params.courseReference
-        }/threads/${newThreadReference}`
-      );
-    }
-  );
+    res.redirect(
+      `${app.get("url")}/${
+        req.params.courseReference
+      }/threads/${newThreadReference}`
+    );
+  });
 
   const threadAccessible: express.RequestHandler<
     { courseReference: string; threadReference: string },
@@ -2079,14 +2098,19 @@ export default async function courselore(
   app.post<
     { courseReference: string; threadReference: string },
     HTML,
-    { content: string },
+    { content?: string },
     {},
     {}
   >(
     "/:courseReference/threads/:threadReference",
     ...threadAccessible,
-    expressValidator.body("content").exists(),
     (req, res) => {
+      if (
+        typeof req.body.content !== "string" ||
+        req.body.content.trim() === ""
+      )
+        throw new ValidationError();
+
       const course = database.get<{ id: number }>(
         sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
       )!;
@@ -2161,6 +2185,30 @@ export default async function courselore(
       )
     );
   });
+
+  class ValidationError extends Error {}
+
+  app.use(((err, req, res, next) => {
+    if (!(err instanceof ValidationError)) throw err;
+
+    res.status(422).send(
+      app.get("layout unauthenticated")(
+        req,
+        res,
+        html`<title>Validation error · CourseLore</title>`,
+        html`
+          <h1>Validation error</h1>
+          <p>
+            There was a validation error in your request. This is a bug in
+            CourseLore; please report to
+            <a href="mailto:bug-report@courselore.org"
+              >bug-report@courselore.org</a
+            >.
+          </p>
+        `
+      )
+    );
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
   function sendEmail({
     to,
