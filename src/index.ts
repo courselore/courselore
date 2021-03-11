@@ -1241,11 +1241,12 @@ export default async function courselore(
       const accentColorsInUse = database
         .all<{ accentColor: keyof typeof AccentColor }>(
           sql`
-            SELECT DISTINCT "enrollments"."accentColor"
+            SELECT "enrollments"."accentColor"
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id"
             WHERE "users"."email" = ${req.session!.email}
-            ORDER BY "enrollments"."createdAt" DESC
+            GROUP BY "enrollments"."accentColor"
+            ORDER BY MAX("enrollments"."createdAt") DESC
           `
         )
         .map((enrollment) => enrollment.accentColor);
