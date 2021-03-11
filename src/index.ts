@@ -2189,18 +2189,16 @@ export default async function courselore(
   class ValidationError extends Error {}
 
   app.use(((err, req, res, next) => {
-    if (!(err instanceof ValidationError)) throw err;
-
-    res.status(422).send(
+    const type = err instanceof ValidationError ? "Validation" : "Server";
+    res.status(type === "Validation" ? 422 : 500).send(
       app.get("layout unauthenticated")(
         req,
         res,
-        html`<title>Validation error · CourseLore</title>`,
+        html`<title>${type} error · CourseLore</title>`,
         html`
-          <h1>Validation error</h1>
+          <h1>${type} error</h1>
           <p>
-            There was a validation error in your request. This is a bug in
-            CourseLore; please report to
+            This is a bug in CourseLore; please report to
             <a href="mailto:bug-report@courselore.org"
               >bug-report@courselore.org</a
             >.
