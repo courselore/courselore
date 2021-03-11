@@ -2196,13 +2196,19 @@ export default async function courselore(
         res,
         html`<title>${type} error · CourseLore</title>`,
         html`
-          <h1>${type} error</h1>
-          <p>
-            This is a bug in CourseLore; please report to
-            <a href="mailto:bug-report@courselore.org"
-              >bug-report@courselore.org</a
-            >.
-          </p>
+          <div
+            style="${css`
+              text-align: center;
+            `}"
+          >
+            <h1>${type} error</h1>
+            <p>
+              This is a bug in CourseLore; please report to
+              <a href="mailto:bug-report@courselore.org"
+                >bug-report@courselore.org</a
+              >.
+            </p>
+          </div>
         `
       )
     );
