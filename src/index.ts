@@ -1236,23 +1236,25 @@ export default async function courselore(
     "/courses/new",
     ...isAuthenticated(true),
     (req, res) => {
-      const accentColorsAlreadyInUse = database
+      const accentColorsInUse = database
         .all<{ accentColor: AccentColor }>(
           sql`
-          SELECT DISTINCT "enrollments"."accentColor"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "users"."email" = ${req.session!.email}
-        `
+            SELECT DISTINCT "enrollments"."accentColor"
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id"
+            WHERE "users"."email" = ${req.session!.email}
+            ORDER BY "enrollments"."createdAt" DESC
+          `
         )
         .map((enrollment) => enrollment.accentColor);
-      // FIXME: Don’t use a random color, but the least recently used.
-      const preselectedAccentColorIndex =
-        accentColorsAlreadyInUse.length < ACCENT_COLORS.length
-          ? ACCENT_COLORS.findIndex(
-              (accentColor) => !accentColorsAlreadyInUse.includes(accentColor)
-            )
-          : crypto.randomInt(ACCENT_COLORS.length);
+      const accentColorsAvailable = [...ACCENT_COLORS];
+      for (const accentColorInUse of accentColorsInUse) {
+        accentColorsAvailable.splice(
+          accentColorsAvailable.indexOf(accentColorInUse),
+          1
+        );
+        if (accentColorsAvailable.length === 1) break;
+      }
 
       res.send(
         app.get("layout authenticated")(
@@ -1277,7 +1279,7 @@ export default async function courselore(
               <p>
                 <strong>Accent color</strong><br />
                 $${ACCENT_COLORS.map(
-                  (accentColor, index) =>
+                  (accentColor) =>
                     html`
                       <label
                         style="${css`
@@ -1293,7 +1295,7 @@ export default async function courselore(
                           name="accentColor"
                           value="${accentColor}"
                           required
-                          ${index === preselectedAccentColorIndex
+                          ${accentColor === accentColorsAvailable[0]
                             ? "checked"
                             : ""}
                           hidden
