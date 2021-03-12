@@ -1226,109 +1226,6 @@ export default async function courselore(
     `;
   }
 
-  function newCourseForm(req: Express.Request, res: Express.Response): HTML {
-    const accentColorsInUse = database
-      .all<{ accentColor: keyof typeof AccentColor }>(
-        sql`
-          SELECT "enrollments"."accentColor"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "users"."email" = ${req.session!.email}
-          GROUP BY "enrollments"."accentColor"
-          ORDER BY MAX("enrollments"."createdAt") DESC
-        `
-      )
-      .map((enrollment) => enrollment.accentColor);
-    const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
-    for (const accentColorInUse of accentColorsInUse) {
-      accentColorsAvailable.delete(accentColorInUse);
-      if (accentColorsAvailable.size === 1) break;
-    }
-    const accentColorPreselected = [...accentColorsAvailable][0];
-
-    return html`
-      <form method="post" action="${app.get("url")}/courses">
-        <p>
-          <label>
-            <strong>Name</strong><br />
-            <input
-              type="text"
-              name="name"
-              autocomplete="off"
-              required
-              autofocus
-            />
-          </label>
-        </p>
-        <p>
-          <strong>Accent color</strong><br />
-          $${Object.keys(AccentColor).map(
-            (accentColor) =>
-              html`
-                <label
-                  style="${css`
-                    display: inline-block;
-                    width: 1.5em;
-                    height: 1.5em;
-                    margin-right: 1em;
-                    cursor: pointer;
-                  `}"
-                >
-                  <input
-                    type="radio"
-                    name="accentColor"
-                    value="${accentColor}"
-                    required
-                    ${accentColor === accentColorPreselected ? "checked" : ""}
-                    hidden
-                  />
-                  <span
-                    style="${css`
-                      display: inline-block;
-                      width: 100%;
-                      height: 100%;
-                      border: 5px solid transparent;
-                      border-radius: 50%;
-                      transition: border-color 0.2s;
-
-                      :checked + & {
-                        border-color: #000000d4;
-
-                        @media (prefers-color-scheme: dark) {
-                          border-color: #ffffffd4;
-                        }
-                      }
-                    `}"
-                    ><span
-                      style="${css`
-                        background-color: ${accentColor};
-                        display: inline-block;
-                        width: 110%;
-                        height: 110%;
-                        margin-left: -5%;
-                        margin-top: -5%;
-                        border-radius: 50%;
-                      `}"
-                    ></span
-                  ></span>
-                </label>
-              `
-          )}
-          <label>
-            <small class="hint">
-              A bar of this color will appear at the top of your course screen
-              to help you tell courses apart.<br />
-              Everyone gets a different color of their choosing.
-            </small>
-          </label>
-        </p>
-        <p>
-          <button>Create course</button>
-        </p>
-      </form>
-    `;
-  }
-
   app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(true), (req, res) => {
     const user = database.get<{ name: string }>(
       sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
@@ -1360,31 +1257,19 @@ export default async function courselore(
             html`
               <h1>Hi ${user.name},</h1>
               <p><strong>Welcome to CourseLore!</strong></p>
-
-              <details>
-                <summary><strong>Enroll on an existing course</strong></summary>
-                <p>There are two ways to enroll on an existing course:</p>
-                <ol>
-                  <li>
-                    You’re invited to the course via email by the course staff.
-                  </li>
-                  <li>
-                    You go to the course invitation URL given by the course
-                    staff (it looks something like
-                    <code
-                      >${app.get("url")}/invitations/${cryptoRandomString({
-                        length: 20,
-                        type: "numeric",
-                      })}</code
-                    >).
-                  </li>
-                </ol>
-              </details>
-
-              <details>
-                <summary><strong>Create a new course</strong></summary>
-                $${newCourseForm(req, res)}
-              </details>
+              <p>
+                To <strong>enroll on an existing course</strong> you either have
+                to be invited via email or follow an invitation link. Contact
+                your course staff for more information.
+              </p>
+              <p>
+                Or you may
+                <strong
+                  ><a href="${app.get("url")}/courses/new"
+                    >create a new course</a
+                  ></strong
+                >.
+              </p>
             `
           )
         );
@@ -1436,6 +1321,25 @@ export default async function courselore(
     "/courses/new",
     ...isAuthenticated(true),
     (req, res) => {
+      const accentColorsInUse = database
+        .all<{ accentColor: keyof typeof AccentColor }>(
+          sql`
+          SELECT "enrollments"."accentColor"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "users"."email" = ${req.session!.email}
+          GROUP BY "enrollments"."accentColor"
+          ORDER BY MAX("enrollments"."createdAt") DESC
+        `
+        )
+        .map((enrollment) => enrollment.accentColor);
+      const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
+      for (const accentColorInUse of accentColorsInUse) {
+        accentColorsAvailable.delete(accentColorInUse);
+        if (accentColorsAvailable.size === 1) break;
+      }
+      const accentColorPreselected = [...accentColorsAvailable][0];
+
       res.send(
         app.get("layout authenticated")(
           req,
@@ -1443,7 +1347,87 @@ export default async function courselore(
           html`<title>Create a new course · CourseLore</title>`,
           html`
             <h1>Create a new course</h1>
-            $${newCourseForm(req, res)}
+            <form method="post" action="${app.get("url")}/courses">
+              <p>
+                <label>
+                  <strong>Name</strong><br />
+                  <input
+                    type="text"
+                    name="name"
+                    autocomplete="off"
+                    required
+                    autofocus
+                  />
+                </label>
+              </p>
+              <p>
+                <strong>Accent color</strong><br />
+                $${Object.keys(AccentColor).map(
+                  (accentColor) =>
+                    html`
+                      <label
+                        style="${css`
+                          display: inline-block;
+                          width: 1.5em;
+                          height: 1.5em;
+                          margin-right: 1em;
+                          cursor: pointer;
+                        `}"
+                      >
+                        <input
+                          type="radio"
+                          name="accentColor"
+                          value="${accentColor}"
+                          required
+                          ${accentColor === accentColorPreselected
+                            ? "checked"
+                            : ""}
+                          hidden
+                        />
+                        <span
+                          style="${css`
+                            display: inline-block;
+                            width: 100%;
+                            height: 100%;
+                            border: 5px solid transparent;
+                            border-radius: 50%;
+                            transition: border-color 0.2s;
+
+                            :checked + & {
+                              border-color: #000000d4;
+
+                              @media (prefers-color-scheme: dark) {
+                                border-color: #ffffffd4;
+                              }
+                            }
+                          `}"
+                          ><span
+                            style="${css`
+                              background-color: ${accentColor};
+                              display: inline-block;
+                              width: 110%;
+                              height: 110%;
+                              margin-left: -5%;
+                              margin-top: -5%;
+                              border-radius: 50%;
+                            `}"
+                          ></span
+                        ></span>
+                      </label>
+                    `
+                )}
+                <label>
+                  <small class="hint">
+                    A bar of this color will appear at the top of your course
+                    screen to help you tell courses apart.<br />
+                    Everyone gets a different color of their choosing.
+                  </small>
+                </label>
+              </p>
+              <p>
+                <button>Create course</button>
+              </p>
+            </form>
           `
         )
       );
@@ -1520,30 +1504,6 @@ export default async function courselore(
       next();
     },
   ];
-
-  function newThreadForm(courseReference: string): HTML {
-    return html`
-      <form
-        method="post"
-        action="${app.get("url")}/courses/${courseReference}/threads"
-      >
-        <p>
-          <label>
-            <strong>Title</strong><br />
-            <input type="text" name="title" autocomplete="off" required />
-          </label>
-        </p>
-        $${textEditor()}
-        <p
-          style="${css`
-            text-align: right;
-          `}"
-        >
-          <button>Create thread</button>
-        </p>
-      </form>
-    `;
-  }
 
   function textEditor(): HTML {
     return html`
@@ -1796,8 +1756,6 @@ export default async function courselore(
                 </label>
               </p>
             </details>
-            <p><strong>Create the first thread</strong></p>
-            $${newThreadForm(req.params.courseReference)}
           `
         )
       );
@@ -2314,7 +2272,26 @@ export default async function courselore(
           `,
           html`
             <h1>Create a new thread</h1>
-            $${newThreadForm(req.params.courseReference)}
+            <form
+              method="post"
+              action="${app.get("url")}/courses/${req.params
+                .courseReference}/threads"
+            >
+              <p>
+                <label>
+                  <strong>Title</strong><br />
+                  <input type="text" name="title" autocomplete="off" required />
+                </label>
+              </p>
+              $${textEditor()}
+              <p
+                style="${css`
+                  text-align: right;
+                `}"
+              >
+                <button>Create thread</button>
+              </p>
+            </form>
           `
         )
       );
