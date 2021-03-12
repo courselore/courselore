@@ -560,6 +560,9 @@ export default async function courselore(
   database.function("newRandomReference", (): string =>
     cryptoRandomString({ length: 10, type: "numeric" })
   );
+  database.function("newRandomToken", (): string =>
+    cryptoRandomString({ length: 40, type: "numeric" })
+  );
   app.set("database", database);
   databaseMigrate(database, [
     sql`
