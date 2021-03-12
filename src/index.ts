@@ -681,9 +681,10 @@ export default async function courselore(
       cryptoRandomString({ length: 60, type: "alphanumeric" })
     );
     database.run(
-      sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookieSecret"}, ${app.get(
-        "cookie secret"
-      )})`
+      sql`
+        INSERT INTO "settings" ("key", "value")
+        VALUES (${"cookieSecret"}, ${app.get("cookie secret")})
+      `
     );
   }
   app.use(
@@ -863,11 +864,12 @@ export default async function courselore(
     database.run(
       sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
     );
-    const newToken = cryptoRandomString({ length: 40, type: "numeric" });
-    database.run(
-      sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${email})`
-    );
-    return newToken;
+    const authenticationTokenId = database.run(
+      sql`INSERT INTO "authenticationTokens" ("email") VALUES (${email})`
+    ).lastInsertRowid;
+    return database.get<{ token: string }>(
+      sql`SELECT "token" FROM "authenticationTokens" WHERE "id" = ${authenticationTokenId}`
+    )!.token;
   }
 
   app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
@@ -939,7 +941,7 @@ export default async function courselore(
     const authenticationToken = database.get<{
       email: string;
     }>(
-      sql`SELECT "email" FROM "authenticationTokens" WHERE "token" = ${token} AND date('now') < "expiresAt"`
+      sql`SELECT "email" FROM "authenticationTokens" WHERE "token" = ${token} AND CURRENT_TIMESTAMP < "expiresAt"`
     );
     database.run(
       sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
@@ -1198,13 +1200,13 @@ export default async function courselore(
     const accentColorsInUse = database
       .all<{ accentColor: keyof typeof AccentColor }>(
         sql`
-        SELECT "enrollments"."accentColor"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "users"."email" = ${req.session!.email}
-        GROUP BY "enrollments"."accentColor"
-        ORDER BY MAX("enrollments"."createdAt") DESC
-      `
+          SELECT "enrollments"."accentColor"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "users"."email" = ${req.session!.email}
+          GROUP BY "enrollments"."accentColor"
+          ORDER BY MAX("enrollments"."createdAt") DESC
+        `
       )
       .map((enrollment) => enrollment.accentColor);
     const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
@@ -1459,24 +1461,27 @@ export default async function courselore(
     )
       throw new ValidationError();
 
-    const newReference = cryptoRandomString({ length: 10, type: "numeric" });
-    const newCourseId = database.run(
-      sql`INSERT INTO "courses" ("reference", "name") VALUES (${newReference}, ${req.body.name})`
-    ).lastInsertRowid;
     const user = database.get<{ id: number }>(
       sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
     )!;
+    const newCourseId = database.run(
+      sql`INSERT INTO "courses" ("name") VALUES (${req.body.name})`
+    ).lastInsertRowid;
+    const course = database.get<{ reference: string }>(
+      sql`SELECT "reference" FROM "courses" WHERE "id" = ${newCourseId}`
+    )!;
     database.run(
       sql`
-          INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
-          VALUES (
-            ${user.id},
-            ${newCourseId},
-            ${"instructor"},
-            ${req.body.accentColor}
-        )`
+        INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+        VALUES (
+          ${user.id},
+          ${newCourseId},
+          ${"instructor"},
+          ${req.body.accentColor}
+        )
+      `
     );
-    res.redirect(`${app.get("url")}/${newReference}`);
+    res.redirect(`${app.get("url")}/${course.reference}`);
   });
 
   // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
@@ -1732,29 +1737,37 @@ export default async function courselore(
     )!;
 
     const newThreadReference =
-      database.get<{ newThreadReference: string }>(sql`
+      database.get<{ newThreadReference: string }>(
+        sql`
           SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
           FROM "threads"
           WHERE "threads"."course" = ${course.id}
-        `)?.newThreadReference ?? "1";
+        `
+      )?.newThreadReference ?? "1";
 
-    const author = database.get<{ id: number }>(sql`
+    const author = database.get<{ id: number }>(
+      sql`
         SELECT "enrollments"."id"
         FROM "enrollments"
         JOIN "users" ON "enrollments"."user" = "users"."id"
         JOIN "courses" ON "enrollments"."course" = "courses"."id"
         WHERE "users"."email" = ${req.session!.email} AND
               "courses"."id" = ${course.id}
-      `)!;
+      `
+    )!;
 
-    const threadId = database.run(sql`
+    const threadId = database.run(
+      sql`
         INSERT INTO "threads" ("course", "reference", "author", "title")
         VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
-      `).lastInsertRowid;
-    database.run(sql`
+      `
+    ).lastInsertRowid;
+    database.run(
+      sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
         VALUES (${threadId}, ${"1"}, ${author.id}, ${req.body.content})
-      `);
+      `
+    );
 
     res.redirect(
       `${app.get("url")}/${
@@ -2049,17 +2062,17 @@ export default async function courselore(
         content: string;
       }>(
         sql`
-        SELECT "posts"."createdAt",
-               "posts"."updatedAt",
-               "posts"."reference",
-               "author"."name" AS "authorName",
-               "posts"."content"
-        FROM "posts"
-        LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
-        LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
-        WHERE "posts"."thread" = ${thread.id}
-        ORDER BY "posts"."createdAt" ASC
-      `
+          SELECT "posts"."createdAt",
+                "posts"."updatedAt",
+                "posts"."reference",
+                "author"."name" AS "authorName",
+                "posts"."content"
+          FROM "posts"
+          LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
+          LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
+          WHERE "posts"."thread" = ${thread.id}
+          ORDER BY "posts"."createdAt" ASC
+        `
       );
 
       res.send(
@@ -2162,30 +2175,30 @@ export default async function courselore(
         sql`SELECT "id" FROM "threads" WHERE "course" = ${course.id} AND "reference" = ${req.params.threadReference}`
       )!;
 
-      const newPostReference = database.get<{ newPostReference: string }>(sql`
-        SELECT CAST(MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS TEXT) AS "newPostReference"
-        FROM "posts"
-        WHERE "posts"."thread" = ${thread.id}
-      `)!.newPostReference;
+      const newPostReference = database.get<{ newPostReference: string }>(
+        sql`
+          SELECT CAST(MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS TEXT) AS "newPostReference"
+          FROM "posts"
+          WHERE "posts"."thread" = ${thread.id}
+        `
+      )!.newPostReference;
 
-      const author = database.get<{ id: number }>(sql`
-        SELECT "enrollments"."id"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "enrollments"."course" = ${course.id} AND
-              "users"."email" = ${req.session!.email}
-      `)!;
+      const author = database.get<{ id: number }>(
+        sql`
+          SELECT "enrollments"."id"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "enrollments"."course" = ${course.id} AND
+                "users"."email" = ${req.session!.email}
+        `
+      )!;
 
-      database.run(sql`
-        INSERT INTO "posts" ("thread", "reference", "author", "content")
-        VALUES (${thread.id}, ${newPostReference}, ${author.id}, ${req.body.content})
-      `);
-      // FIXME: Use a trigger instead of this update.
-      database.run(sql`
-        UPDATE "threads"
-        SET "updatedAt" = ${new Date().toISOString()}
-        WHERE "reference" = ${req.params.threadReference}
-      `);
+      database.run(
+        sql`
+          INSERT INTO "posts" ("thread", "reference", "author", "content")
+          VALUES (${thread.id}, ${newPostReference}, ${author.id}, ${req.body.content})
+        `
+      );
 
       res.redirect(
         `${app.get("url")}/${req.params.courseReference}/threads/${
