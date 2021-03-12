@@ -1321,25 +1321,6 @@ export default async function courselore(
     "/courses/new",
     ...isAuthenticated(true),
     (req, res) => {
-      const accentColorsInUse = database
-        .all<{ accentColor: keyof typeof AccentColor }>(
-          sql`
-          SELECT "enrollments"."accentColor"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "users"."email" = ${req.session!.email}
-          GROUP BY "enrollments"."accentColor"
-          ORDER BY MAX("enrollments"."createdAt") DESC
-        `
-        )
-        .map((enrollment) => enrollment.accentColor);
-      const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
-      for (const accentColorInUse of accentColorsInUse) {
-        accentColorsAvailable.delete(accentColorInUse);
-        if (accentColorsAvailable.size === 1) break;
-      }
-      const accentColorPreselected = [...accentColorsAvailable][0];
-
       res.send(
         app.get("layout authenticated")(
           req,
@@ -1361,70 +1342,6 @@ export default async function courselore(
                 </label>
               </p>
               <p>
-                <strong>Accent color</strong><br />
-                $${Object.keys(AccentColor).map(
-                  (accentColor) =>
-                    html`
-                      <label
-                        style="${css`
-                          display: inline-block;
-                          width: 1.5em;
-                          height: 1.5em;
-                          margin-right: 1em;
-                          cursor: pointer;
-                        `}"
-                      >
-                        <input
-                          type="radio"
-                          name="accentColor"
-                          value="${accentColor}"
-                          required
-                          ${accentColor === accentColorPreselected
-                            ? "checked"
-                            : ""}
-                          hidden
-                        />
-                        <span
-                          style="${css`
-                            display: inline-block;
-                            width: 100%;
-                            height: 100%;
-                            border: 5px solid transparent;
-                            border-radius: 50%;
-                            transition: border-color 0.2s;
-
-                            :checked + & {
-                              border-color: #000000d4;
-
-                              @media (prefers-color-scheme: dark) {
-                                border-color: #ffffffd4;
-                              }
-                            }
-                          `}"
-                          ><span
-                            style="${css`
-                              background-color: ${accentColor};
-                              display: inline-block;
-                              width: 110%;
-                              height: 110%;
-                              margin-left: -5%;
-                              margin-top: -5%;
-                              border-radius: 50%;
-                            `}"
-                          ></span
-                        ></span>
-                      </label>
-                    `
-                )}
-                <label>
-                  <small class="hint">
-                    A bar of this color will appear at the top of your course
-                    screen to help you tell courses apart.<br />
-                    Everyone gets a different color of their choosing.
-                  </small>
-                </label>
-              </p>
-              <p>
                 <button>Create course</button>
               </p>
             </form>
@@ -1434,47 +1351,55 @@ export default async function courselore(
     }
   );
 
-  // TODO: Process invite-by-email
-  // https://www.npmjs.com/package/email-addresses
-  // https://www.npmjs.com/package/addressparser
-  // https://www.npmjs.com/package/emailjs-mime-codec
-  app.post<
-    {},
-    any,
-    { name?: string; accentColor?: keyof typeof AccentColor },
-    {},
-    {}
-  >("/courses", ...isAuthenticated(true), (req, res) => {
-    if (
-      typeof req.body.name !== "string" ||
-      req.body.name.trim() === "" ||
-      typeof req.body.accentColor !== "string" ||
-      AccentColor[req.body.accentColor] === undefined
-    )
-      throw new ValidationError();
+  app.post<{}, any, { name?: string }, {}, {}>(
+    "/courses",
+    ...isAuthenticated(true),
+    (req, res) => {
+      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+        throw new ValidationError();
 
-    const user = database.get<{ id: number }>(
-      sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-    )!;
-    const newCourseId = database.run(
-      sql`INSERT INTO "courses" ("name") VALUES (${req.body.name})`
-    ).lastInsertRowid;
-    const course = database.get<{ reference: string }>(
-      sql`SELECT "reference" FROM "courses" WHERE "id" = ${newCourseId}`
-    )!;
-    database.run(
-      sql`
-        INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
-        VALUES (
-          ${user.id},
-          ${newCourseId},
-          ${"instructor"},
-          ${req.body.accentColor}
-        )
+      const accentColorsInUse = database
+        .all<{ accentColor: keyof typeof AccentColor }>(
+          sql`
+        SELECT "enrollments"."accentColor"
+        FROM "enrollments"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        WHERE "users"."email" = ${req.session!.email}
+        GROUP BY "enrollments"."accentColor"
+        ORDER BY MAX("enrollments"."createdAt") DESC
       `
-    );
-    res.redirect(`${app.get("url")}/courses/${course.reference}`);
-  });
+        )
+        .map((enrollment) => enrollment.accentColor);
+      const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
+      for (const accentColorInUse of accentColorsInUse) {
+        accentColorsAvailable.delete(accentColorInUse);
+        if (accentColorsAvailable.size === 1) break;
+      }
+      const accentColor = [...accentColorsAvailable][0];
+
+      const user = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
+      const newCourseId = database.run(
+        sql`INSERT INTO "courses" ("name") VALUES (${req.body.name})`
+      ).lastInsertRowid;
+      const course = database.get<{ reference: string }>(
+        sql`SELECT "reference" FROM "courses" WHERE "id" = ${newCourseId}`
+      )!;
+      database.run(
+        sql`
+          INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+          VALUES (
+            ${user.id},
+            ${newCourseId},
+            ${"instructor"},
+            ${accentColor}
+          )
+        `
+      );
+      res.redirect(`${app.get("url")}/courses/${course.reference}`);
+    }
+  );
 
   // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
   const isCourseEnrolled: express.RequestHandler<
@@ -1716,6 +1641,10 @@ export default async function courselore(
     },
   ];
 
+  // TODO: Process email addresses
+  // https://www.npmjs.com/package/email-addresses
+  // https://www.npmjs.com/package/addressparser
+  // https://www.npmjs.com/package/emailjs-mime-codec
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/courses/:courseReference/settings",
     ...hasCourseRole(Role.instructor),
@@ -1761,6 +1690,73 @@ export default async function courselore(
       );
     }
   );
+
+  /*
+                <p>
+                <strong>Accent color</strong><br />
+                $${Object.keys(AccentColor).map(
+                  (accentColor) =>
+                    html`
+                      <label
+                        style="${css`
+                          display: inline-block;
+                          width: 1.5em;
+                          height: 1.5em;
+                          margin-right: 1em;
+                          cursor: pointer;
+                        `}"
+                      >
+                        <input
+                          type="radio"
+                          name="accentColor"
+                          value="${accentColor}"
+                          required
+                          ${accentColor === accentColorPreselected
+                            ? "checked"
+                            : ""}
+                          hidden
+                        />
+                        <span
+                          style="${css`
+                            display: inline-block;
+                            width: 100%;
+                            height: 100%;
+                            border: 5px solid transparent;
+                            border-radius: 50%;
+                            transition: border-color 0.2s;
+
+                            :checked + & {
+                              border-color: #000000d4;
+
+                              @media (prefers-color-scheme: dark) {
+                                border-color: #ffffffd4;
+                              }
+                            }
+                          `}"
+                          ><span
+                            style="${css`
+                              background-color: ${accentColor};
+                              display: inline-block;
+                              width: 110%;
+                              height: 110%;
+                              margin-left: -5%;
+                              margin-top: -5%;
+                              border-radius: 50%;
+                            `}"
+                          ></span
+                        ></span>
+                      </label>
+                    `
+                )}
+                <label>
+                  <small class="hint">
+                    A bar of this color will appear at the top of your course
+                    screen to help you tell courses apart.<br />
+                    Everyone gets a different color of their choosing.
+                  </small>
+                </label>
+              </p>
+*/
 
   app.post<
     { courseReference: string },
