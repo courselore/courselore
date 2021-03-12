@@ -557,37 +557,40 @@ export default async function courselore(
 
   await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
+  database.function("newRandomReference", (): string =>
+    cryptoRandomString({ length: 10, type: "numeric" })
+  );
   app.set("database", database);
   databaseMigrate(database, [
     sql`
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "email" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL
       );
 
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
-        "reference" TEXT NOT NULL UNIQUE,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "reference" TEXT NOT NULL UNIQUE DEFAULT (newRandomReference()),
         "name" TEXT NOT NULL
       );
 
       CREATE TABLE "enrollments" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "user" INTEGER NOT NULL REFERENCES "users",
         "course" INTEGER NOT NULL REFERENCES "courses",
-        "role" TEXT NOT NULL CHECK("role" IN ('instructor', 'assistant', 'student')),
-        "accentColor" TEXT NOT NULL CHECK("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
+        "role" TEXT NOT NULL CHECK ("role" IN ('instructor', 'assistant', 'student')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
         UNIQUE ("user", "course")
       );
 
       CREATE TABLE "threads" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
-        "updatedAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "course" INTEGER NOT NULL REFERENCES "courses",
         "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
@@ -597,8 +600,8 @@ export default async function courselore(
 
       CREATE TABLE "posts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
-        "updatedAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "thread" INTEGER NOT NULL REFERENCES "threads",
         "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
@@ -608,26 +611,27 @@ export default async function courselore(
 
       CREATE TABLE "settings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "key" TEXT NOT NULL UNIQUE,
         "value" TEXT NOT NULL
       );
 
       CREATE TABLE "authenticationTokens" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
-        "token" TEXT NOT NULL UNIQUE,
-        "email" TEXT NOT NULL UNIQUE,
-        "expiresAt" TEXT DEFAULT (datetime('now', '+10 minutes'))
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+10 minutes')),
+        "token" TEXT NOT NULL UNIQUE DEFAULT (newRandomToken()),
+        "email" TEXT NOT NULL UNIQUE
       );
 
       CREATE TABLE "emailQueue" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "tryAfter" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "attempts" INTEGER NOT NULL DEFAULT 0,
         "to" TEXT NOT NULL,
         "subject" TEXT NOT NULL,
-        "body" TEXT NOT NULL,
-        "tryAfter" TEXT DEFAULT CURRENT_TIMESTAMP
+        "body" TEXT NOT NULL
       );
     `,
   ]);
