@@ -1038,7 +1038,7 @@ export default async function courselore(
               </div>
 
               <div class="TODO">
-                <p>Ask for more user information here. What information?</p>
+                <p>Ask for more user information here. But what?</p>
               </div>
             `
           )
@@ -1233,24 +1233,6 @@ export default async function courselore(
             />
           </label>
         </p>
-        <hr />
-        <details>
-          <summary>
-            <strong>Invitations</strong>
-            <span class="dim">(You may decide this later)</span>
-          </summary>
-          <p>
-            <label>
-              <strong>Invite by email</strong>
-              <textarea name="invite-by-email"></textarea>
-              <small class="hint">
-                People who don’t have a CourseLore account will be invited to
-                create one.
-              </small>
-            </label>
-          </p>
-        </details>
-        <hr />
         <p>
           <strong>Accent color</strong><br />
           $${Object.keys(AccentColor).map(
@@ -1307,8 +1289,9 @@ export default async function courselore(
           )}
           <label>
             <small class="hint">
-              A bar of this color will appear on the top of the course screen to
-              help you tell courses apart.
+              A bar of this color will appear at the top of your course screen
+              to help you tell courses apart.<br />
+              Everyone gets a different color of their choosing.
             </small>
           </label>
         </p>
@@ -1316,13 +1299,6 @@ export default async function courselore(
           <button>Create course</button>
         </p>
       </form>
-      <div class="TODO">
-        <p>
-          Ask more questions here, for example, what’s the person’s role in the
-          course, how they’d like for other people to enroll (either by
-          invitation or via a link), and so forth…
-        </p>
-      </div>
     `;
   }
 
@@ -1706,12 +1682,33 @@ export default async function courselore(
             html`<title>${course.name} · CourseLore</title>`,
             html`
               <h1>Welcome to ${course.name}!</h1>
+              <details>
+                <summary>
+                  <strong>Invitations</strong>
+                  <span class="dim">(You may decide this later)</span>
+                </summary>
+                <p>
+                  <label>
+                    <strong>Invite with link</strong>
+                    <small class="hint">
+                      People who don’t have a CourseLore account will be invited
+                      to create one.
+                    </small>
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    <strong>Invite by email</strong>
+                    <textarea name="invite-by-email"></textarea>
+                    <small class="hint">
+                      People who don’t have a CourseLore account will be invited
+                      to create one.
+                    </small>
+                  </label>
+                </p>
+              </details>
               <p><strong>Create the first thread</strong></p>
               $${newThreadForm(req.params.courseReference)}
-
-              <div class="TODO">
-                <p>Help instructors invite people to the their course.</p>
-              </div>
             `
           )
         );
