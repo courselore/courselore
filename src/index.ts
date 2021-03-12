@@ -1141,13 +1141,19 @@ export default async function courselore(
   );
 
   function authenticatedMenu(
-    req: express.Request<{}, HTML, {}, {}, {}>,
-    res: express.Response<HTML, {}>,
-    extraMenuOptions?: HTML
+    req: express.Request<{ courseReference?: string }, HTML, {}, {}, {}>,
+    res: express.Response<HTML, {}>
   ): HTML {
     const user = database.get<{ name: string }>(
       sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
     )!;
+
+    const course =
+      req.params.courseReference === undefined
+        ? undefined
+        : database.get<{ name: string }>(
+            sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+          );
 
     return html`
       <details>
@@ -1182,19 +1188,23 @@ export default async function courselore(
         <form method="post" action="${app.get("url")}/sign-out">
           <p><button class="a undecorated">Sign out</button></p>
         </form>
-        <hr />
-        $${extraMenuOptions === undefined
+        $${course === undefined
           ? html``
           : html`
-              $${extraMenuOptions}
-              <hr />
+              <p>
+                <a
+                  href="${app.get("url")}/courses/${req.params
+                    .courseReference}/settings"
+                  class="undecorated"
+                  >${course.name} course settings</a
+                >
+              </p>
             `}
         <p>
           <a href="${app.get("url")}/courses/new" class="undecorated"
             >New course</a
           >
         </p>
-        <hr />
       </details>
     `;
   }
@@ -1720,6 +1730,12 @@ export default async function courselore(
         }`
       );
     }
+  );
+
+  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
+    "/courses/:courseReference/settings",
+    ...isEnrolledInCourse,
+    (req, res) => {}
   );
 
   app.post<
