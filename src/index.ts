@@ -1689,47 +1689,27 @@ export default async function courselore(
       );
 
       if (thread === undefined) {
-        const course = database.get<{ name: string }>(
-          sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+        const enrollment = database.get<{ role: keyof typeof Role }>(
+          sql`
+            SELECT "role"
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id"
+            JOIN "courses" ON "enrollments"."course" = "courses"."id"
+            WHERE "users"."email" = ${req.session!.email} AND
+                  "courses"."reference" = ${req.params.courseReference}
+          `
         )!;
 
-        return res.send(
-          app.get("layout authenticated")(
-            req,
-            res,
-            html`<title>${course.name} · CourseLore</title>`,
-            html`
-              <h1>Welcome to ${course.name}!</h1>
-              <details>
-                <summary>
-                  <strong>Invitations</strong>
-                  <span class="dim">(You may decide this later)</span>
-                </summary>
-                <p>
-                  <label>
-                    <strong>Invite with link</strong>
-                    <small class="hint">
-                      People who don’t have a CourseLore account will be invited
-                      to create one.
-                    </small>
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    <strong>Invite by email</strong>
-                    <textarea name="invite-by-email"></textarea>
-                    <small class="hint">
-                      People who don’t have a CourseLore account will be invited
-                      to create one.
-                    </small>
-                  </label>
-                </p>
-              </details>
-              <p><strong>Create the first thread</strong></p>
-              $${newThreadForm(req.params.courseReference)}
-            `
-          )
-        );
+        if (enrollment.role === Role.instructor)
+          return res.redirect(
+            `${app.get("url")}/courses/${req.params.courseReference}/settings`
+          );
+        else
+          return res.redirect(
+            `${app.get("url")}/courses/${
+              req.params.courseReference
+            }/threads/new`
+          );
       }
 
       res.redirect(
@@ -1740,11 +1720,79 @@ export default async function courselore(
     }
   );
 
+  const hasCourseRole: (
+    ...roles: (keyof typeof Role)[]
+  ) => express.RequestHandler<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    {}
+  >[] = (...roles) => [
+    ...isCourseEnrolled,
+    (req, res, next) => {
+      const enrollment = database.get<{ role: keyof typeof Role }>(
+        sql`
+          SELECT "role"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          WHERE "users"."email" = ${req.session!.email} AND
+                "courses"."reference" = ${req.params.courseReference}
+        `
+      )!;
+
+      if (!roles.includes(enrollment.role)) return next("route");
+      next();
+    },
+  ];
+
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/courses/:courseReference/settings",
-    // FIXME: Check whether you’re allowed to change settings.
-    ...isCourseEnrolled,
-    (req, res) => {}
+    ...hasCourseRole(Role.instructor),
+    (req, res) => {
+      const course = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+
+      return res.send(
+        app.get("layout authenticated")(
+          req,
+          res,
+          html`<title>${course.name} · CourseLore</title>`,
+          html`
+            <h1>Welcome to ${course.name}!</h1>
+            <details>
+              <summary>
+                <strong>Invitations</strong>
+                <span class="dim">(You may decide this later)</span>
+              </summary>
+              <p>
+                <label>
+                  <strong>Invite with link</strong>
+                  <small class="hint">
+                    People who don’t have a CourseLore account will be invited
+                    to create one.
+                  </small>
+                </label>
+              </p>
+              <p>
+                <label>
+                  <strong>Invite by email</strong>
+                  <textarea name="invite-by-email"></textarea>
+                  <small class="hint">
+                    People who don’t have a CourseLore account will be invited
+                    to create one.
+                  </small>
+                </label>
+              </p>
+            </details>
+            <p><strong>Create the first thread</strong></p>
+            $${newThreadForm(req.params.courseReference)}
+          `
+        )
+      );
+    }
   );
 
   app.post<
