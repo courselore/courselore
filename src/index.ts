@@ -1604,27 +1604,58 @@ export default async function courselore(
       );
 
       if (thread === undefined) {
+        const course = database.get<{ id: number; name: string }>(
+          sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+        )!;
+
         const enrollment = database.get<{ role: keyof typeof Role }>(
           sql`
             SELECT "role"
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id"
-            JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "users"."email" = ${req.session!.email} AND
-                  "courses"."reference" = ${req.params.courseReference}
+                  "enrollments"."course" = ${course.id}
           `
         )!;
 
-        if (enrollment.role === Role.instructor)
-          return res.redirect(
-            `${app.get("url")}/courses/${req.params.courseReference}/settings`
-          );
-        else
-          return res.redirect(
-            `${app.get("url")}/courses/${
-              req.params.courseReference
-            }/threads/new`
-          );
+        return res.send(
+          app.get("layout authenticated")(
+            req,
+            res,
+            html`<title>${course.name} · CourseLore</title>`,
+            html`
+              <h1>Welcome to ${course.name}!</h1>
+              $${enrollment.role === Role.instructor
+                ? html`
+                    <p>
+                      <a
+                        href="${app.get("url")}/courses/${req.params
+                          .courseReference}/settings"
+                        ><strong>Invite other people to the course</strong></a
+                      >.
+                    </p>
+                    <p>
+                      Or
+                      <a
+                        href="${app.get("url")}/courses/${req.params
+                          .courseReference}/threads/new"
+                        ><strong>create the first thread</strong></a
+                      >.
+                    </p>
+                  `
+                : html`
+                    <p>
+                      This is a new course.
+                      <a
+                        href="${app.get("url")}/courses/${req.params
+                          .courseReference}/threads/new"
+                        ><strong>Create the first thread</strong></a
+                      >.
+                    </p>
+                  `}
+            `
+          )
+        );
       }
 
       res.redirect(
