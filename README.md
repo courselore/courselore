@@ -574,6 +574,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 <summary>2021-03-13</summary>
 
 - Should we allow course assistants to create courses?
+- Do we want to keep a trace of what happened? (Edits, deletions, and so forth?)
 
 </details>
 
