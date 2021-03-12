@@ -599,7 +599,7 @@ export default async function courselore(
       );
 
       CREATE TRIGGER "threadsUpdatedAt"
-      AFTER UPDATE OF ("title") ON "threads"
+      AFTER UPDATE OF "title" ON "threads"
       BEGIN
         UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id";
       END;
@@ -616,7 +616,7 @@ export default async function courselore(
       );
 
       CREATE TRIGGER "postsUpdatedAt"
-      AFTER UPDATE OF ("content") ON "posts"
+      AFTER UPDATE OF "content" ON "posts"
       BEGIN
         UPDATE "posts" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id";
       END;
