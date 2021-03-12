@@ -1117,14 +1117,29 @@ export default async function courselore(
   app.set(
     "layout authenticated",
     (
-      req: express.Request<{}, any, {}, {}, {}>,
+      req: express.Request<{ courseReference?: string }, any, {}, {}, {}>,
       res: express.Response<any, {}>,
       head: HTML,
       body: HTML
     ): HTML => {
-      const user = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      const user = database.get<{ id: number; name: string }>(
+        sql`SELECT "id", "name" FROM "users" WHERE "email" = ${
+          req.session!.email
+        }`
       )!;
+
+      const enrollment =
+        req.params.courseReference === undefined
+          ? undefined
+          : database.get<{ accentColor: keyof typeof AccentColor }>(
+              sql`
+                SELECT "enrollments"."accentColor"
+                FROM "enrollments"
+                JOIN "courses" ON "enrollments"."course" = "courses"."id"
+                WHERE "enrollments"."user" = ${user.id} AND
+                      "courses"."reference" = ${req.params.courseReference}
+              `
+            )!;
 
       return app.get("layout base")(
         req,
@@ -1133,15 +1148,25 @@ export default async function courselore(
         html`
           <div
             style="${css`
-              max-width: 600px;
-              margin: 0 auto;
+              ${enrollment === undefined
+                ? css``
+                : css`
+                    border-top: 10px solid ${enrollment.accentColor};
+                  `}
             `}"
           >
-            <header>
-              <p>$${logo()}</p>
-              $${menuAuthenticated(req, res)}
-            </header>
-            <main>$${body}</main>
+            <div
+              style="${css`
+                max-width: 600px;
+                margin: 0 auto;
+              `}"
+            >
+              <header>
+                <p>$${logo()}</p>
+                $${menuAuthenticated(req, res)}
+              </header>
+              <main>$${body}</main>
+            </div>
           </div>
         `
       );
@@ -1205,8 +1230,7 @@ export default async function courselore(
         </form>
         $${course === undefined
           ? html``
-          : enrollment!.role === Role.instructor
-          ? html`
+          : html`
               <p>
                 <a
                   href="${app.get("url")}/courses/${req.params
@@ -1215,8 +1239,7 @@ export default async function courselore(
                   >${course.name} course settings</a
                 >
               </p>
-            `
-          : html``}
+            `}
         <p>
           <a href="${app.get("url")}/courses/new" class="undecorated"
             >New course</a
@@ -1688,6 +1711,8 @@ export default async function courselore(
       );
     }
   );
+
+  // TODO: Student settings: Accent color (and notifications and so forth in the future.)
 
   /*
                 <p>
