@@ -1236,7 +1236,7 @@ export default async function courselore(
                   href="${app.get("url")}/courses/${req.params
                     .courseReference}/settings"
                   class="undecorated"
-                  >${course.name} course settings</a
+                  >Course settings (${course.name})</a
                 >
               </p>
             `}
@@ -1699,118 +1699,132 @@ export default async function courselore(
   // https://www.npmjs.com/package/emailjs-mime-codec
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/courses/:courseReference/settings",
-    ...hasCourseRole(Role.instructor),
+    ...isCourseEnrolled,
     (req, res) => {
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      const course = database.get<{ id: number; name: string }>(
+        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+
+      const enrollment = database.get<{
+        role: keyof typeof Role;
+        accentColor: keyof typeof AccentColor;
+      }>(
+        sql`
+          SELECT "role", "accentColor"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "users"."email" = ${req.session!.email} AND
+                "enrollments"."course" = ${course.id}
+        `
       )!;
 
       return res.send(
         app.get("layout authenticated")(
           req,
           res,
-          html`<title>Settings · ${course.name} · CourseLore</title>`,
+          html`<title>Course settings · ${course.name} · CourseLore</title>`,
           html`
-            <h1>Welcome to ${course.name}!</h1>
-            <details>
-              <summary>
-                <strong>Invitations</strong>
-                <span class="dim">(You may decide this later)</span>
-              </summary>
-              <p>
-                <label>
-                  <strong>Invite with link</strong>
-                  <small class="hint">
-                    People who don’t have a CourseLore account will be invited
-                    to create one.
-                  </small>
-                </label>
-              </p>
-              <p>
-                <label>
-                  <strong>Invite by email</strong>
-                  <textarea name="invite-by-email"></textarea>
-                  <small class="hint">
-                    People who don’t have a CourseLore account will be invited
-                    to create one.
-                  </small>
-                </label>
-              </p>
-            </details>
+            <h1>Course settings · ${course.name}</h1>
+
+            <div class="TODO">
+              <p>Things in this page aren’t working yet! 🤷‍♂️</p>
+            </div>
+
+            $${enrollment.role !== Role.instructor
+              ? html``
+              : html`
+                  <p><strong>Invitations</strong></p>
+                  <p>
+                    <label>
+                      <strong>Invite with link</strong>
+                      <small class="hint">
+                        People who don’t have a CourseLore account will be
+                        invited to create one.
+                      </small>
+                    </label>
+                  </p>
+                  <p>
+                    <label>
+                      <strong>Invite by email</strong>
+                      <textarea name="invite-by-email"></textarea>
+                      <small class="hint">
+                        People who don’t have a CourseLore account will be
+                        invited to create one.
+                      </small>
+                    </label>
+                  </p>
+                  <hr />
+                `}
+
+            <p>
+              <strong>Accent color</strong><br />
+              $${Object.keys(AccentColor).map(
+                (accentColor) =>
+                  html`
+                    <label
+                      style="${css`
+                        display: inline-block;
+                        width: 1.5em;
+                        height: 1.5em;
+                        margin-right: 1em;
+                        cursor: pointer;
+                      `}"
+                    >
+                      <input
+                        type="radio"
+                        name="accentColor"
+                        value="${accentColor}"
+                        required
+                        ${accentColor === enrollment.accentColor
+                          ? "checked"
+                          : ""}
+                        hidden
+                      />
+                      <span
+                        style="${css`
+                          display: inline-block;
+                          width: 100%;
+                          height: 100%;
+                          border: 5px solid transparent;
+                          border-radius: 50%;
+                          transition: border-color 0.2s;
+
+                          :checked + & {
+                            border-color: #000000d4;
+
+                            @media (prefers-color-scheme: dark) {
+                              border-color: #ffffffd4;
+                            }
+                          }
+                        `}"
+                        ><span
+                          style="${css`
+                            background-color: ${accentColor};
+                            display: inline-block;
+                            width: 110%;
+                            height: 110%;
+                            margin-left: -5%;
+                            margin-top: -5%;
+                            border-radius: 50%;
+                          `}"
+                        ></span
+                      ></span>
+                    </label>
+                  `
+              )}
+              <label>
+                <small class="hint">
+                  A bar of this color will appear at the top of your screen to
+                  help you tell courses apart.<br />
+                  Everyone gets a different color of their choosing.
+                </small>
+              </label>
+            </p>
           `
         )
       );
     }
   );
-
-  // TODO: Student settings: Accent color (and notifications and so forth in the future.)
-
-  /*
-                <p>
-                <strong>Accent color</strong><br />
-                $${Object.keys(AccentColor).map(
-                  (accentColor) =>
-                    html`
-                      <label
-                        style="${css`
-                          display: inline-block;
-                          width: 1.5em;
-                          height: 1.5em;
-                          margin-right: 1em;
-                          cursor: pointer;
-                        `}"
-                      >
-                        <input
-                          type="radio"
-                          name="accentColor"
-                          value="${accentColor}"
-                          required
-                          ${accentColor === accentColorPreselected
-                            ? "checked"
-                            : ""}
-                          hidden
-                        />
-                        <span
-                          style="${css`
-                            display: inline-block;
-                            width: 100%;
-                            height: 100%;
-                            border: 5px solid transparent;
-                            border-radius: 50%;
-                            transition: border-color 0.2s;
-
-                            :checked + & {
-                              border-color: #000000d4;
-
-                              @media (prefers-color-scheme: dark) {
-                                border-color: #ffffffd4;
-                              }
-                            }
-                          `}"
-                          ><span
-                            style="${css`
-                              background-color: ${accentColor};
-                              display: inline-block;
-                              width: 110%;
-                              height: 110%;
-                              margin-left: -5%;
-                              margin-top: -5%;
-                              border-radius: 50%;
-                            `}"
-                          ></span
-                        ></span>
-                      </label>
-                    `
-                )}
-                <label>
-                  <small class="hint">
-                    A bar of this color will appear at the top of your course
-                    screen to help you tell courses apart.<br />
-                    Everyone gets a different color of their choosing.
-                  </small>
-                </label>
-              </p>
-*/
 
   app.post<
     { courseReference: string },
