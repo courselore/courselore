@@ -601,7 +601,7 @@ export default async function courselore(
       CREATE TRIGGER "threadsUpdatedAt"
       AFTER UPDATE OF ("title") ON "threads"
       BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id"
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id";
       END;
 
       CREATE TABLE "posts" (
@@ -618,25 +618,25 @@ export default async function courselore(
       CREATE TRIGGER "postsUpdatedAt"
       AFTER UPDATE OF ("content") ON "posts"
       BEGIN
-        UPDATE "posts" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id"
+        UPDATE "posts" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id";
       END;
 
       CREATE TRIGGER "postsInsertImpliesThreadsUpdatedAt"
       AFTER INSERT ON "posts"
       BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread"
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread";
       END;
 
       CREATE TRIGGER "postsUpdateImpliesThreadsUpdatedAt"
       AFTER UPDATE ON "posts"
       BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread"
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread";
       END;
 
       CREATE TRIGGER "postsDeleteImpliesThreadsUpdatedAt"
       AFTER DELETE ON "posts"
       BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread"
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread";
       END;
 
       CREATE TABLE "settings" (
