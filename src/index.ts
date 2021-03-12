@@ -605,16 +605,7 @@ export default async function courselore(
         "content" TEXT NOT NULL,
         UNIQUE ("thread", "reference")
       );
-    `,
-  ]);
 
-  await fs.ensureDir(path.join(rootDirectory, "var"));
-  const databaseRuntime = new Database(
-    path.join(rootDirectory, "var/courselore-runtime.db")
-  );
-  app.set("database runtime", databaseRuntime);
-  databaseMigrate(databaseRuntime, [
-    sql`
       CREATE TABLE "settings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -646,7 +637,7 @@ export default async function courselore(
 
   app.set(
     "cookie secret",
-    databaseRuntime.get<{ value: string }>(
+    database.get<{ value: string }>(
       sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
     )?.value
   );
@@ -655,7 +646,7 @@ export default async function courselore(
       "cookie secret",
       cryptoRandomString({ length: 60, type: "alphanumeric" })
     );
-    databaseRuntime.run(
+    database.run(
       sql`INSERT INTO "settings" ("key", "value") VALUES (${"cookieSecret"}, ${app.get(
         "cookie secret"
       )})`
@@ -835,11 +826,11 @@ export default async function courselore(
   );
 
   function createAuthenticationToken(email: string): string {
-    databaseRuntime.run(
+    database.run(
       sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
     );
     const newToken = cryptoRandomString({ length: 40, type: "numeric" });
-    databaseRuntime.run(
+    database.run(
       sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${newToken}, ${email})`
     );
     return newToken;
@@ -911,12 +902,12 @@ export default async function courselore(
   function getAuthenticationToken(
     token: string
   ): { email: string } | undefined {
-    const authenticationToken = databaseRuntime.get<{
+    const authenticationToken = database.get<{
       email: string;
     }>(
       sql`SELECT "email" FROM "authenticationTokens" WHERE "token" = ${token} AND date('now') < "expiresAt"`
     );
-    databaseRuntime.run(
+    database.run(
       sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
     );
     return authenticationToken;
@@ -2302,7 +2293,7 @@ export default async function courselore(
           $${body}
         </div>
       `;
-    databaseRuntime.run(
+    database.run(
       sql`INSERT INTO "emailQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
     );
     return html``;

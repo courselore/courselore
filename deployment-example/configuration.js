@@ -32,7 +32,7 @@ module.exports = async (require) => {
           "courselore.com",
           "www.courselore.com",
         ],
-        settingsPath: path.join(__dirname, "var/keys/tls"),
+        settingsPath: path.join(__dirname, "data/keys/tls"),
       },
       reverseProxy
     )
