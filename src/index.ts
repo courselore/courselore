@@ -598,6 +598,12 @@ export default async function courselore(
         UNIQUE ("course", "reference")
       );
 
+      CREATE TRIGGER "threadsUpdatedAt"
+      AFTER UPDATE OF ("title") ON "threads"
+      BEGIN
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id"
+      END;
+
       CREATE TABLE "posts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -608,6 +614,30 @@ export default async function courselore(
         "content" TEXT NOT NULL,
         UNIQUE ("thread", "reference")
       );
+
+      CREATE TRIGGER "postsUpdatedAt"
+      AFTER UPDATE OF ("content") ON "posts"
+      BEGIN
+        UPDATE "posts" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id"
+      END;
+
+      CREATE TRIGGER "postsInsertImpliesThreadsUpdatedAt"
+      AFTER INSERT ON "posts"
+      BEGIN
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread"
+      END;
+
+      CREATE TRIGGER "postsUpdateImpliesThreadsUpdatedAt"
+      AFTER UPDATE ON "posts"
+      BEGIN
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread"
+      END;
+
+      CREATE TRIGGER "postsDeleteImpliesThreadsUpdatedAt"
+      AFTER DELETE ON "posts"
+      BEGIN
+        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread"
+      END;
 
       CREATE TABLE "settings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
