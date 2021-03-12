@@ -863,7 +863,7 @@ export default async function courselore(
     }
   );
 
-  function createAuthenticationToken(email: string): string {
+  function authenticationTokenNew(email: string): string {
     database.run(
       sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
     );
@@ -885,7 +885,7 @@ export default async function courselore(
       )
         throw new ValidationError();
 
-      const newToken = createAuthenticationToken(req.body.email);
+      const newToken = authenticationTokenNew(req.body.email);
       const realPreposition =
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${req.body.email}) AS "exists"`
@@ -938,7 +938,7 @@ export default async function courselore(
     }
   );
 
-  function getAuthenticationToken(
+  function authenticationTokenGet(
     token: string
   ): { email: string } | undefined {
     const authenticationToken = database.get<{
@@ -958,7 +958,7 @@ export default async function courselore(
     ...isAuthenticated(false),
     (req, res) => {
       const search = new URL(req.originalUrl, app.get("url")).search;
-      const authenticationToken = getAuthenticationToken(req.params.token);
+      const authenticationToken = authenticationTokenGet(req.params.token);
       if (authenticationToken === undefined) {
         const preposition = req.path.startsWith("/sign-up") ? "up" : "in";
         return res.send(
@@ -988,7 +988,7 @@ export default async function courselore(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
         )!.exists === 0
       ) {
-        const newToken = createAuthenticationToken(authenticationToken.email);
+        const newToken = authenticationTokenNew(authenticationToken.email);
         return res.send(
           app.get("layout unauthenticated")(
             req,
@@ -1064,7 +1064,7 @@ export default async function courselore(
     )
       throw new ValidationError();
 
-    const authenticationToken = getAuthenticationToken(req.body.token);
+    const authenticationToken = authenticationTokenGet(req.body.token);
     if (
       authenticationToken === undefined ||
       database.get<{ exists: number }>(
@@ -1131,7 +1131,7 @@ export default async function courselore(
           >
             <header>
               <p>$${logo()}</p>
-              $${authenticatedMenu(req, res)}
+              $${partialMenuAuthenticated(req, res)}
             </header>
             <main>$${body}</main>
           </div>
@@ -1140,7 +1140,7 @@ export default async function courselore(
     }
   );
 
-  function authenticatedMenu(
+  function partialMenuAuthenticated(
     req: express.Request<{ courseReference?: string }, HTML, {}, {}, {}>,
     res: express.Response<HTML, {}>
   ): HTML {
@@ -1209,7 +1209,7 @@ export default async function courselore(
     `;
   }
 
-  function newCourseForm(req: Express.Request, res: Express.Response): HTML {
+  function formCourseNew(req: Express.Request, res: Express.Response): HTML {
     const accentColorsInUse = database
       .all<{ accentColor: keyof typeof AccentColor }>(
         sql`
@@ -1366,7 +1366,7 @@ export default async function courselore(
 
               <details>
                 <summary><strong>Create a new course</strong></summary>
-                $${newCourseForm(req, res)}
+                $${formCourseNew(req, res)}
               </details>
             `
           )
@@ -1426,7 +1426,7 @@ export default async function courselore(
           html`<title>Create a new course · CourseLore</title>`,
           html`
             <h1>Create a new course</h1>
-            $${newCourseForm(req, res)}
+            $${formCourseNew(req, res)}
           `
         )
       );
@@ -1476,7 +1476,7 @@ export default async function courselore(
   });
 
   // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
-  const isEnrolledInCourse: express.RequestHandler<
+  const isCourseEnrolled: express.RequestHandler<
     { courseReference: string },
     any,
     {},
@@ -1666,7 +1666,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/courses/:courseReference",
-    ...isEnrolledInCourse,
+    ...isCourseEnrolled,
     (req, res) => {
       const thread = database.get<{
         reference: string;
@@ -1734,7 +1734,8 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/courses/:courseReference/settings",
-    ...isEnrolledInCourse,
+    // FIXME: Check whether you’re allowed to change settings.
+    ...isCourseEnrolled,
     (req, res) => {}
   );
 
@@ -1744,7 +1745,7 @@ export default async function courselore(
     { title?: string; content?: string },
     {},
     {}
-  >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
+  >("/courses/:courseReference/threads", ...isCourseEnrolled, (req, res) => {
     if (
       typeof req.body.title !== "string" ||
       req.body.title.trim() === "" ||
@@ -1804,7 +1805,7 @@ export default async function courselore(
     {},
     {}
   >[] = [
-    ...isEnrolledInCourse,
+    ...isCourseEnrolled,
     (req, res, next) => {
       if (
         database.get<{ exists: number }>(
@@ -1932,7 +1933,7 @@ export default async function courselore(
                 `}"
               >
                 <p>$${logo()}</p>
-                $${authenticatedMenu(req, res)}
+                $${partialMenuAuthenticated(req, res)}
                 $${otherCourses.length === 0
                   ? html`
                       <p>
@@ -2233,7 +2234,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/courses/:courseReference/threads/new",
-    ...isEnrolledInCourse,
+    ...isCourseEnrolled,
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
