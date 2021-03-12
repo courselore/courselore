@@ -1387,7 +1387,9 @@ export default async function courselore(
         );
 
       case 1:
-        return res.redirect(`${app.get("url")}/${courses[0].reference}`);
+        return res.redirect(
+          `${app.get("url")}/courses/${courses[0].reference}`
+        );
 
       default:
         return res.send(
@@ -1404,7 +1406,7 @@ export default async function courselore(
                     html`
                       <p>
                         <a
-                          href="${app.get("url")}/${course.reference}"
+                          href="${app.get("url")}/courses/${course.reference}"
                           class="undecorated"
                           ><span
                             style="${css`
@@ -1484,7 +1486,7 @@ export default async function courselore(
         )
       `
     );
-    res.redirect(`${app.get("url")}/${course.reference}`);
+    res.redirect(`${app.get("url")}/courses/${course.reference}`);
   });
 
   // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
@@ -1518,7 +1520,10 @@ export default async function courselore(
 
   function newThreadForm(courseReference: string): HTML {
     return html`
-      <form method="post" action="${app.get("url")}/${courseReference}/threads">
+      <form
+        method="post"
+        action="${app.get("url")}/courses/${courseReference}/threads"
+      >
         <p>
           <label>
             <strong>Title</strong><br />
@@ -1674,7 +1679,7 @@ export default async function courselore(
   );
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/:courseReference",
+    "/courses/:courseReference",
     ...isEnrolledInCourse,
     (req, res) => {
       const thread = database.get<{
@@ -1713,7 +1718,7 @@ export default async function courselore(
       }
 
       res.redirect(
-        `${app.get("url")}/${req.params.courseReference}/threads/${
+        `${app.get("url")}/courses/${req.params.courseReference}/threads/${
           thread.reference
         }`
       );
@@ -1726,7 +1731,7 @@ export default async function courselore(
     { title?: string; content?: string },
     {},
     {}
-  >("/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
+  >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
     if (
       typeof req.body.title !== "string" ||
       req.body.title.trim() === "" ||
@@ -1773,7 +1778,7 @@ export default async function courselore(
     );
 
     res.redirect(
-      `${app.get("url")}/${
+      `${app.get("url")}/courses/${
         req.params.courseReference
       }/threads/${newThreadReference}`
     );
@@ -1930,7 +1935,9 @@ export default async function courselore(
                           (course) => html`
                             <p>
                               <a
-                                href="${app.get("url")}/${course.reference}"
+                                href="${app.get(
+                                  "url"
+                                )}/courses/${course.reference}"
                                 class="undecorated"
                                 ><span
                                   style="${css`
@@ -1963,7 +1970,7 @@ export default async function courselore(
                   `}"
                 >
                   <a
-                    href="${app.get("url")}/${req.params
+                    href="${app.get("url")}/courses/${req.params
                       .courseReference}/threads/new"
                     class="button"
                     >New thread</a
@@ -1979,7 +1986,7 @@ export default async function courselore(
                         `}"
                       >
                         <a
-                          href="${app.get("url")}/${req.params
+                          href="${app.get("url")}/courses/${req.params
                             .courseReference}/threads/${thread.reference}"
                           class="undecorated"
                           style="${css`
@@ -2046,7 +2053,7 @@ export default async function courselore(
     {},
     {}
   >(
-    "/:courseReference/threads/:threadReference",
+    "/courses/:courseReference/threads/:threadReference",
     ...threadAccessible,
     (req, res) => {
       const course = database.get<{ id: number; name: string }>(
@@ -2093,7 +2100,7 @@ export default async function courselore(
                 `}"
               >
                 <a
-                  href="${app.get("url")}/${req.params
+                  href="${app.get("url")}/courses/${req.params
                     .courseReference}/threads/${req.params.threadReference}"
                   class="undecorated"
                   >#${req.params.threadReference}</a
@@ -2124,7 +2131,7 @@ export default async function courselore(
                         : html``}
                       <small>
                         <a
-                          href="${app.get("url")}/${req.params
+                          href="${app.get("url")}/courses/${req.params
                             .courseReference}/threads/${req.params
                             .threadReference}#${post.reference}"
                           class="undecorated"
@@ -2161,7 +2168,7 @@ export default async function courselore(
     {},
     {}
   >(
-    "/:courseReference/threads/:threadReference",
+    "/courses/:courseReference/threads/:threadReference",
     ...threadAccessible,
     (req, res) => {
       if (
@@ -2204,7 +2211,7 @@ export default async function courselore(
       );
 
       res.redirect(
-        `${app.get("url")}/${req.params.courseReference}/threads/${
+        `${app.get("url")}/courses/${req.params.courseReference}/threads/${
           req.params.threadReference
         }#${newPostReference}`
       );
@@ -2212,7 +2219,7 @@ export default async function courselore(
   );
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/:courseReference/threads/new",
+    "/courses/:courseReference/threads/new",
     ...isEnrolledInCourse,
     (req, res) => {
       const course = database.get<{ name: string }>(
