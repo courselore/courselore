@@ -1159,9 +1159,16 @@ export default async function courselore(
     const course =
       req.params.courseReference === undefined
         ? undefined
-        : database.get<{ name: string }>(
-            sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-          );
+        : database.get<{ id: number; name: string }>(
+            sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+          )!;
+
+    const enrollment =
+      course === undefined
+        ? undefined
+        : database.get<{ role: keyof typeof Role }>(
+            sql`SELECT "role" FROM "enrollments" WHERE "course" = ${course.id}`
+          )!;
 
     return html`
       <details>
@@ -1198,7 +1205,8 @@ export default async function courselore(
         </form>
         $${course === undefined
           ? html``
-          : html`
+          : enrollment!.role === Role.instructor
+          ? html`
               <p>
                 <a
                   href="${app.get("url")}/courses/${req.params
@@ -1207,7 +1215,8 @@ export default async function courselore(
                   >${course.name} course settings</a
                 >
               </p>
-            `}
+            `
+          : html``}
         <p>
           <a href="${app.get("url")}/courses/new" class="undecorated"
             >New course</a
@@ -1759,7 +1768,7 @@ export default async function courselore(
         app.get("layout authenticated")(
           req,
           res,
-          html`<title>${course.name} · CourseLore</title>`,
+          html`<title>Settings · ${course.name} · CourseLore</title>`,
           html`
             <h1>Welcome to ${course.name}!</h1>
             <details>
@@ -2300,7 +2309,9 @@ export default async function courselore(
         app.get("layout thread")(
           req,
           res,
-          html`<title>${course.name} · CourseLore</title>`,
+          html`
+            <title>Create a new thread · ${course.name} · CourseLore</title>
+          `,
           html`
             <h1>Create a new thread</h1>
             $${newThreadForm(req.params.courseReference)}
