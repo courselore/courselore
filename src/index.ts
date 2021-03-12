@@ -1358,25 +1358,6 @@ export default async function courselore(
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         throw new ValidationError();
 
-      const accentColorsInUse = database
-        .all<{ accentColor: keyof typeof AccentColor }>(
-          sql`
-        SELECT "enrollments"."accentColor"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "users"."email" = ${req.session!.email}
-        GROUP BY "enrollments"."accentColor"
-        ORDER BY MAX("enrollments"."createdAt") DESC
-      `
-        )
-        .map((enrollment) => enrollment.accentColor);
-      const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
-      for (const accentColorInUse of accentColorsInUse) {
-        accentColorsAvailable.delete(accentColorInUse);
-        if (accentColorsAvailable.size === 1) break;
-      }
-      const accentColor = [...accentColorsAvailable][0];
-
       const user = database.get<{ id: number }>(
         sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
       )!;
@@ -1386,6 +1367,23 @@ export default async function courselore(
       const course = database.get<{ reference: string }>(
         sql`SELECT "reference" FROM "courses" WHERE "id" = ${newCourseId}`
       )!;
+      const accentColorsInUse = database
+        .all<{ accentColor: keyof typeof AccentColor }>(
+          sql`
+            SELECT "accentColor"
+            FROM "enrollments"
+            WHERE "user" = ${user.id}
+            GROUP BY "accentColor"
+            ORDER BY MAX("createdAt") DESC
+          `
+        )
+        .map((enrollment) => enrollment.accentColor);
+      const accentColorsAvailable = new Set([...Object.keys(AccentColor)]);
+      for (const accentColorInUse of accentColorsInUse) {
+        accentColorsAvailable.delete(accentColorInUse);
+        if (accentColorsAvailable.size === 1) break;
+      }
+      const accentColor = [...accentColorsAvailable][0];
       database.run(
         sql`
           INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
