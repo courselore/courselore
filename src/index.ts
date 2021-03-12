@@ -863,7 +863,7 @@ export default async function courselore(
     }
   );
 
-  function authenticationTokenNew(email: string): string {
+  function newAuthenticationToken(email: string): { token: string } {
     database.run(
       sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
     );
@@ -872,7 +872,7 @@ export default async function courselore(
     ).lastInsertRowid;
     return database.get<{ token: string }>(
       sql`SELECT "token" FROM "authenticationTokens" WHERE "id" = ${authenticationTokenId}`
-    )!.token;
+    )!;
   }
 
   app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
@@ -885,16 +885,16 @@ export default async function courselore(
       )
         throw new ValidationError();
 
-      const newToken = authenticationTokenNew(req.body.email);
+      const authenticationToken = newAuthenticationToken(req.body.email);
       const realPreposition =
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${req.body.email}) AS "exists"`
         )!.exists === 0
           ? "up"
           : "in";
-      const magicLink = `${app.get("url")}/sign-${realPreposition}/${newToken}${
-        new URL(req.originalUrl, app.get("url")).search
-      }`;
+      const magicLink = `${app.get("url")}/sign-${realPreposition}/${
+        authenticationToken.token
+      }${new URL(req.originalUrl, app.get("url")).search}`;
       const sentEmail = sendEmail({
         to: req.body.email,
         subject: `Magic sign-${realPreposition} link`,
@@ -938,7 +938,7 @@ export default async function courselore(
     }
   );
 
-  function authenticationTokenGet(
+  function getAuthenticationToken(
     token: string
   ): { email: string } | undefined {
     const authenticationToken = database.get<{
@@ -958,8 +958,10 @@ export default async function courselore(
     ...isAuthenticated(false),
     (req, res) => {
       const search = new URL(req.originalUrl, app.get("url")).search;
-      const authenticationToken = authenticationTokenGet(req.params.token);
-      if (authenticationToken === undefined) {
+      const originalAuthenticationToken = getAuthenticationToken(
+        req.params.token
+      );
+      if (originalAuthenticationToken === undefined) {
         const preposition = req.path.startsWith("/sign-up") ? "up" : "in";
         return res.send(
           app.get("layout unauthenticated")(
@@ -985,10 +987,12 @@ export default async function courselore(
       }
       if (
         database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
+          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${originalAuthenticationToken.email}) AS "exists"`
         )!.exists === 0
       ) {
-        const newToken = authenticationTokenNew(authenticationToken.email);
+        const aNewAuthenticationToken = newAuthenticationToken(
+          originalAuthenticationToken.email
+        );
         return res.send(
           app.get("layout unauthenticated")(
             req,
@@ -1010,13 +1014,17 @@ export default async function courselore(
                     text-align: left;
                   `}"
                 >
-                  <input type="hidden" name="token" value="${newToken}" />
+                  <input
+                    type="hidden"
+                    name="token"
+                    value="${aNewAuthenticationToken.token}"
+                  />
                   <p>
                     <label>
                       <strong>Email</strong><br />
                       <input
                         type="email"
-                        value="${authenticationToken.email}"
+                        value="${originalAuthenticationToken.email}"
                         disabled
                       />
                     </label>
@@ -1044,7 +1052,7 @@ export default async function courselore(
           )
         );
       }
-      req.session!.email = authenticationToken.email;
+      req.session!.email = originalAuthenticationToken.email;
       res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
     }
   );
@@ -1064,7 +1072,7 @@ export default async function courselore(
     )
       throw new ValidationError();
 
-    const authenticationToken = authenticationTokenGet(req.body.token);
+    const authenticationToken = getAuthenticationToken(req.body.token);
     if (
       authenticationToken === undefined ||
       database.get<{ exists: number }>(
@@ -1131,7 +1139,7 @@ export default async function courselore(
           >
             <header>
               <p>$${logo()}</p>
-              $${partialMenuAuthenticated(req, res)}
+              $${menuAuthenticated(req, res)}
             </header>
             <main>$${body}</main>
           </div>
@@ -1140,7 +1148,7 @@ export default async function courselore(
     }
   );
 
-  function partialMenuAuthenticated(
+  function menuAuthenticated(
     req: express.Request<{ courseReference?: string }, HTML, {}, {}, {}>,
     res: express.Response<HTML, {}>
   ): HTML {
@@ -1209,7 +1217,7 @@ export default async function courselore(
     `;
   }
 
-  function formCourseNew(req: Express.Request, res: Express.Response): HTML {
+  function newCourseForm(req: Express.Request, res: Express.Response): HTML {
     const accentColorsInUse = database
       .all<{ accentColor: keyof typeof AccentColor }>(
         sql`
@@ -1366,7 +1374,7 @@ export default async function courselore(
 
               <details>
                 <summary><strong>Create a new course</strong></summary>
-                $${formCourseNew(req, res)}
+                $${newCourseForm(req, res)}
               </details>
             `
           )
@@ -1426,7 +1434,7 @@ export default async function courselore(
           html`<title>Create a new course · CourseLore</title>`,
           html`
             <h1>Create a new course</h1>
-            $${formCourseNew(req, res)}
+            $${newCourseForm(req, res)}
           `
         )
       );
@@ -1798,7 +1806,7 @@ export default async function courselore(
     );
   });
 
-  const threadAccessible: express.RequestHandler<
+  const isThreadAccessible: express.RequestHandler<
     { courseReference: string; threadReference: string },
     any,
     {},
@@ -1933,7 +1941,7 @@ export default async function courselore(
                 `}"
               >
                 <p>$${logo()}</p>
-                $${partialMenuAuthenticated(req, res)}
+                $${menuAuthenticated(req, res)}
                 $${otherCourses.length === 0
                   ? html`
                       <p>
@@ -2068,7 +2076,7 @@ export default async function courselore(
     {}
   >(
     "/courses/:courseReference/threads/:threadReference",
-    ...threadAccessible,
+    ...isThreadAccessible,
     (req, res) => {
       const course = database.get<{ id: number; name: string }>(
         sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
@@ -2183,7 +2191,7 @@ export default async function courselore(
     {}
   >(
     "/courses/:courseReference/threads/:threadReference",
-    ...threadAccessible,
+    ...isThreadAccessible,
     (req, res) => {
       if (
         typeof req.body.content !== "string" ||
