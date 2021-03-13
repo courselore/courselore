@@ -1725,68 +1725,78 @@ export default async function courselore(
                  -->
             </div>
 
-            <p>
-              <strong>Accent color</strong><br />
-              $${Object.keys(AccentColor).map(
-                (accentColor) =>
-                  html`
-                    <form
-                      method="POST"
-                      action="${app.get("url")}/courses/${req.params
-                        .courseReference}/settings?_method=PATCH"
+            <p
+              style="${css`
+                margin-bottom: 0;
+              `}"
+            >
+              <strong>Accent color</strong>
+            </p>
+            $${Object.keys(AccentColor).map(
+              (accentColor) =>
+                html`
+                  <form
+                    method="POST"
+                    action="${app.get("url")}/courses/${req.params
+                      .courseReference}/settings?_method=PATCH"
+                    style="${css`
+                      display: inline-block;
+                    `}"
+                  >
+                    <input
+                      type="hidden"
+                      name="accentColor"
+                      value="${accentColor}"
+                    />
+                    <button
+                      class="undecorated ${accentColor ===
+                      enrollment.accentColor
+                        ? "checked"
+                        : ""}"
                       style="${css`
-                        display: inline-block;
+                        width: 2em;
+                        height: 2em;
+                        cursor: pointer;
                       `}"
                     >
-                      <input
-                        type="hidden"
-                        name="accentColor"
-                        value="${accentColor}"
-                      />
-                      <button
-                        class="undecorated ${accentColor ===
-                        enrollment.accentColor
-                          ? "checked"
-                          : ""}"
+                      <span
                         style="${css`
-                          width: 3em;
-                          height: 3em;
-                          cursor: pointer;
-                        `}"
-                      >
-                        <span
-                          style="${css`
-                            display: inline-block;
-                            width: 50%;
-                            height: 50%;
-                            border: 5px solid transparent;
-                            border-radius: 50%;
-                            transition: border-color 0.2s;
+                          display: inline-block;
+                          width: 65%;
+                          height: 65%;
+                          border: 5px solid transparent;
+                          border-radius: 50%;
+                          transition: border-color 0.2s;
 
-                            .checked > & {
-                              border-color: #000000d4;
+                          .checked > & {
+                            border-color: #000000d4;
 
-                              @media (prefers-color-scheme: dark) {
-                                border-color: #ffffffd4;
-                              }
+                            @media (prefers-color-scheme: dark) {
+                              border-color: #ffffffd4;
                             }
+                          }
+                        `}"
+                        ><span
+                          style="${css`
+                            background-color: ${accentColor};
+                            display: inline-block;
+                            width: 110%;
+                            height: 110%;
+                            margin-left: -5%;
+                            margin-top: -5%;
+                            border-radius: 50%;
                           `}"
-                          ><span
-                            style="${css`
-                              background-color: ${accentColor};
-                              display: inline-block;
-                              width: 110%;
-                              height: 110%;
-                              margin-left: -5%;
-                              margin-top: -5%;
-                              border-radius: 50%;
-                            `}"
-                          ></span
-                        ></span>
-                      </button>
-                    </form>
-                  `
-              )}
+                        ></span
+                      ></span>
+                    </button>
+                  </form>
+                `
+            )}
+            <p
+              style="${css`
+                margin-top: -0.5em;
+              `}"
+            >
               <label>
                 <small class="hint">
                   A bar of this color appears at the top of your screen to help
