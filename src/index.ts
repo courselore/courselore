@@ -3,6 +3,7 @@
 import path from "path";
 
 import express from "express";
+import methodOverride from "method-override";
 import cookieSession from "cookie-session";
 import validator from "validator";
 
@@ -634,6 +635,7 @@ export default async function courselore(
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
+  app.use(methodOverride("_method"));
 
   app.set(
     "cookie secret",
@@ -767,7 +769,7 @@ export default async function courselore(
             >
               <h1>Sign ${preposition}</h1>
               <form
-                method="post"
+                method="POST"
                 style="${css`
                   max-width: 300px;
                   margin: 0 auto;
@@ -883,7 +885,7 @@ export default async function courselore(
                 ${req.body.email} and click on the magic
                 sign-${pretendPreposition} link.
               </p>
-              <form method="post">
+              <form method="POST">
                 <input type="hidden" name="email" value="${req.body.email}" />
                 <p>
                   <small>
@@ -968,7 +970,7 @@ export default async function courselore(
               >
                 <h1>Welcome to CourseLore!</h1>
                 <form
-                  method="post"
+                  method="POST"
                   action="${app.get("url")}/users${search}"
                   style="${css`
                     max-width: 300px;
@@ -1187,7 +1189,7 @@ export default async function courselore(
           </svg>
         </summary>
         <p><strong>${user.name}</strong> ${`<${req.session!.email}>`}</p>
-        <form method="post" action="${app.get("url")}/sign-out">
+        <form method="POST" action="${app.get("url")}/sign-out">
           <p><button class="a undecorated">Sign out</button></p>
         </form>
         $${course === undefined
@@ -1313,7 +1315,7 @@ export default async function courselore(
           html`<title>Create a new course · CourseLore</title>`,
           html`
             <h1>Create a new course</h1>
-            <form method="post" action="${app.get("url")}/courses">
+            <form method="POST" action="${app.get("url")}/courses">
               <p>
                 <label>
                   <strong>Name</strong><br />
@@ -1692,96 +1694,103 @@ export default async function courselore(
             <h1>Course settings · ${course.name}</h1>
 
             <div class="TODO">
-              <p>Things in this page aren’t working yet! 🤷‍♂️</p>
+              <p>A section to deal with invitations if you’re an instructor.</p>
+              <p>Also, the accent color selector below isn’t working.</p>
+              <!-- 
+                $${enrollment.role !== Role.instructor
+                ? html``
+                : html`
+                    <p><strong>Invitations</strong></p>
+                    <p>
+                      <label>
+                        <strong>Invite with link</strong>
+                        <small class="hint">
+                          People who don’t have a CourseLore account will be
+                          invited to create one.
+                        </small>
+                      </label>
+                    </p>
+                    <p>
+                      <label>
+                        <strong>Invite by email</strong>
+                        <textarea name="invite-by-email"></textarea>
+                        <small class="hint">
+                          People who don’t have a CourseLore account will be
+                          invited to create one.
+                        </small>
+                      </label>
+                    </p>
+                    <hr />
+                  `}
+                 -->
             </div>
-
-            $${enrollment.role !== Role.instructor
-              ? html``
-              : html`
-                  <p><strong>Invitations</strong></p>
-                  <p>
-                    <label>
-                      <strong>Invite with link</strong>
-                      <small class="hint">
-                        People who don’t have a CourseLore account will be
-                        invited to create one.
-                      </small>
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <strong>Invite by email</strong>
-                      <textarea name="invite-by-email"></textarea>
-                      <small class="hint">
-                        People who don’t have a CourseLore account will be
-                        invited to create one.
-                      </small>
-                    </label>
-                  </p>
-                  <hr />
-                `}
 
             <p>
               <strong>Accent color</strong><br />
               $${Object.keys(AccentColor).map(
                 (accentColor) =>
                   html`
-                    <label
+                    <form
+                      method="POST"
+                      action="${app.get("url")}/courses/${req.params
+                        .courseReference}/settings?_method=PATCH"
                       style="${css`
                         display: inline-block;
-                        width: 1.5em;
-                        height: 1.5em;
-                        margin-right: 1em;
-                        cursor: pointer;
                       `}"
                     >
                       <input
-                        type="radio"
+                        type="hidden"
                         name="accentColor"
                         value="${accentColor}"
-                        required
-                        ${accentColor === enrollment.accentColor
-                          ? "checked"
-                          : ""}
-                        hidden
                       />
-                      <span
+                      <button
+                        class="undecorated ${accentColor ===
+                        enrollment.accentColor
+                          ? "checked"
+                          : ""}"
                         style="${css`
-                          display: inline-block;
-                          width: 100%;
-                          height: 100%;
-                          border: 5px solid transparent;
-                          border-radius: 50%;
-                          transition: border-color 0.2s;
-
-                          :checked + & {
-                            border-color: #000000d4;
-
-                            @media (prefers-color-scheme: dark) {
-                              border-color: #ffffffd4;
-                            }
-                          }
+                          width: 3em;
+                          height: 3em;
+                          cursor: pointer;
                         `}"
-                        ><span
+                      >
+                        <span
                           style="${css`
-                            background-color: ${accentColor};
                             display: inline-block;
-                            width: 110%;
-                            height: 110%;
-                            margin-left: -5%;
-                            margin-top: -5%;
+                            width: 50%;
+                            height: 50%;
+                            border: 5px solid transparent;
                             border-radius: 50%;
+                            transition: border-color 0.2s;
+
+                            .checked > & {
+                              border-color: #000000d4;
+
+                              @media (prefers-color-scheme: dark) {
+                                border-color: #ffffffd4;
+                              }
+                            }
                           `}"
-                        ></span
-                      ></span>
-                    </label>
+                          ><span
+                            style="${css`
+                              background-color: ${accentColor};
+                              display: inline-block;
+                              width: 110%;
+                              height: 110%;
+                              margin-left: -5%;
+                              margin-top: -5%;
+                              border-radius: 50%;
+                            `}"
+                          ></span
+                        ></span>
+                      </button>
+                    </form>
                   `
               )}
               <label>
                 <small class="hint">
-                  A bar of this color will appear at the top of your screen to
-                  help you tell courses apart.<br />
-                  Everyone gets a different color of their choosing.
+                  A bar of this color appears at the top of your screen to help
+                  you tell courses apart.
                 </small>
               </label>
             </p>
@@ -2213,7 +2222,7 @@ export default async function courselore(
               `
             )}
 
-            <form method="post">
+            <form method="POST">
               $${textEditor()}
               <p
                 style="${css`
@@ -2304,7 +2313,7 @@ export default async function courselore(
           html`
             <h1>Create a new thread</h1>
             <form
-              method="post"
+              method="POST"
               action="${app.get("url")}/courses/${req.params
                 .courseReference}/threads"
             >
