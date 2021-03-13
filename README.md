@@ -359,6 +359,10 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 #### Translate to Other Languages
 
+#### Design
+
+- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting.
+
 #### Metrics
 
 - For courses in which participation is graded.
@@ -573,8 +577,34 @@ Insiders Builds are generated on every push. They’re useful for development an
 <details>
 <summary>2021-03-13</summary>
 
-- Should we allow course assistants to create courses and handle invitations?
-- Do we want to keep a trace of what happened? (Edits, deletions, and so forth?)
+- Progress:
+  - Dark mode.
+    - Syntax highlighter.
+  - Small details
+    - Cmd+enter to post.
+    - Prevent long lines from breaking the interface.
+  - Many quality-of-life improvements in the code base.
+    - Best way to open SQLite database.
+    - Manage cookies correctly so that session remains after browser is closed.
+    - Form validation errors.
+    - 404 page.
+  - Work-in-progress:
+    - Accent color switcher.
+    - Invitations.
+- Questions:
+  - Should we allow course assistants to create courses and handle invitations?
+    - Staff / student.
+  - Do we want to keep a trace of what happened? (Edits, deletions, and so forth?)
+    - We don’t need it now.
+    - Only staff should be able to see it.
+- At some point: Add a toggle to the dark mode support.
+- For next week:
+  - Finish accent colors.
+  - Finish invitations.
+  - Change roles to staff/student.
+  - Editing posts. (And threads, and your profile, and so forth.)
+  - Update threads when other people post.
+  - Focus on forum features like tags, upvotes & notifications.
 
 </details>
 
