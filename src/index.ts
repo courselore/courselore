@@ -557,12 +557,6 @@ export default async function courselore(
 
   await fs.ensureDir(path.join(rootDirectory, "data"));
   const database = new Database(path.join(rootDirectory, "data/courselore.db"));
-  database.function("newRandomReference", (): string =>
-    cryptoRandomString({ length: 10, type: "numeric" })
-  );
-  database.function("newRandomToken", (): string =>
-    cryptoRandomString({ length: 40, type: "numeric" })
-  );
   app.set("database", database);
   databaseMigrate(database, [
     sql`
@@ -576,7 +570,7 @@ export default async function courselore(
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "reference" TEXT NOT NULL UNIQUE DEFAULT (newRandomReference()),
+        "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL
       );
 
@@ -592,20 +586,12 @@ export default async function courselore(
 
       CREATE TABLE "threads" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "updatedAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "course" INTEGER NOT NULL REFERENCES "courses",
         "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "title" TEXT NOT NULL,
         UNIQUE ("course", "reference")
       );
-
-      CREATE TRIGGER "threadsUpdatedAt"
-      AFTER UPDATE OF "title" ON "threads"
-      BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id";
-      END;
 
       CREATE TABLE "posts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -618,30 +604,6 @@ export default async function courselore(
         UNIQUE ("thread", "reference")
       );
 
-      CREATE TRIGGER "postsUpdatedAt"
-      AFTER UPDATE OF "content" ON "posts"
-      BEGIN
-        UPDATE "posts" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."id";
-      END;
-
-      CREATE TRIGGER "postsInsertImpliesThreadsUpdatedAt"
-      AFTER INSERT ON "posts"
-      BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread";
-      END;
-
-      CREATE TRIGGER "postsUpdateImpliesThreadsUpdatedAt"
-      AFTER UPDATE ON "posts"
-      BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread";
-      END;
-
-      CREATE TRIGGER "postsDeleteImpliesThreadsUpdatedAt"
-      AFTER DELETE ON "posts"
-      BEGIN
-        UPDATE "threads" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = "NEW"."thread";
-      END;
-
       CREATE TABLE "settings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -653,13 +615,14 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+10 minutes')),
-        "token" TEXT NOT NULL UNIQUE DEFAULT (newRandomToken()),
+        "token" TEXT NOT NULL UNIQUE,
         "email" TEXT NOT NULL UNIQUE
       );
 
       CREATE TABLE "emailQueue" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "attemptedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("attemptedAt")),
         "tryAfter" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "attempts" INTEGER NOT NULL DEFAULT 0,
         "to" TEXT NOT NULL,
@@ -867,12 +830,11 @@ export default async function courselore(
     database.run(
       sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
     );
-    const authenticationTokenId = database.run(
-      sql`INSERT INTO "authenticationTokens" ("email") VALUES (${email})`
-    ).lastInsertRowid;
-    return database.get<{ token: string }>(
-      sql`SELECT "token" FROM "authenticationTokens" WHERE "id" = ${authenticationTokenId}`
-    )!;
+    const token = cryptoRandomString({ length: 40, type: "numeric" });
+    database.run(
+      sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
+    );
+    return { token };
   }
 
   app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
@@ -1381,14 +1343,16 @@ export default async function courselore(
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         throw new ValidationError();
 
+      const courseReference = cryptoRandomString({
+        length: 10,
+        type: "numeric",
+      });
+      const newCourseId = database.run(
+        sql`INSERT INTO "courses" ("reference", "name") VALUES (${courseReference}, ${req.body.name})`
+      ).lastInsertRowid;
+      // TODO: Extract this into an auxiliary function to be used by the student enrollment routine as well.
       const user = database.get<{ id: number }>(
         sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
-      const newCourseId = database.run(
-        sql`INSERT INTO "courses" ("name") VALUES (${req.body.name})`
-      ).lastInsertRowid;
-      const course = database.get<{ reference: string }>(
-        sql`SELECT "reference" FROM "courses" WHERE "id" = ${newCourseId}`
       )!;
       const accentColorsInUse = database
         .all<{ accentColor: keyof typeof AccentColor }>(
@@ -1418,7 +1382,7 @@ export default async function courselore(
           )
         `
       );
-      res.redirect(`${app.get("url")}/courses/${course.reference}`);
+      res.redirect(`${app.get("url")}/courses/${courseReference}`);
     }
   );
 
@@ -1599,7 +1563,8 @@ export default async function courselore(
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY "threads"."createdAt" DESC
+          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
+          LIMIT 1
         `
       );
 
@@ -1968,17 +1933,19 @@ export default async function courselore(
         title: string;
       }>(
         sql`
-          SELECT "threads"."createdAt",
-                 "threads"."updatedAt",
-                 "threads"."reference",
+          SELECT "threads"."reference",
                  "author"."name" AS "authorName",
-                 "threads"."title"
+                 "threads"."title",
+                 MIN("posts"."createdAt") AS "createdAt",
+                 MAX("posts"."updatedAt") AS "updatedAt"
           FROM "threads"
           JOIN "courses" ON "threads"."course" = "courses"."id"
+          JOIN "posts" ON "threads"."id" = "posts"."thread"
           LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
           LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
           WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY "threads"."createdAt" DESC
+          GROUP BY "posts"."thread"
+          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
         `
       );
 
@@ -2174,10 +2141,10 @@ export default async function courselore(
       }>(
         sql`
           SELECT "posts"."createdAt",
-                "posts"."updatedAt",
-                "posts"."reference",
-                "author"."name" AS "authorName",
-                "posts"."content"
+                 "posts"."updatedAt",
+                 "posts"."reference",
+                 "author"."name" AS "authorName",
+                 "posts"."content"
           FROM "posts"
           LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
           LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
