@@ -1371,7 +1371,7 @@ export default async function courselore(
           VALUES (
             ${user.id},
             ${newCourseId},
-            ${"instructor"},
+            ${"staff"},
             ${accentColor}
           )
         `
@@ -1696,7 +1696,9 @@ export default async function courselore(
                 `}
 
             <div class="TODO">
-              <p>A section to deal with invitations if you’re an instructor.</p>
+              <p>
+                A section to deal with invitations if you’re an staff member.
+              </p>
               <p>Also, the accent color selector below isn’t working.</p>
               <!-- 
                 $${enrollment.role !== "staff"
@@ -2429,7 +2431,7 @@ export default async function courselore(
               : html`
                   <p>
                     If you think there should be something here, please contact
-                    the course instructor or the
+                    the course staff or the
                     <a href="${app.get("administrator")}"
                       >system administrator</a
                     >.
