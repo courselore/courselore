@@ -1213,7 +1213,6 @@ export default async function courselore(
       role: Role;
       accentColor: AccentColor;
     }>(
-      // TODO: Similarly to below, order stuff using ids instead of createdAt, because you can create two entries at the same time (think of tests)
       sql`
         SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
         FROM "courses"
@@ -1353,7 +1352,7 @@ export default async function courselore(
             FROM "enrollments"
             WHERE "user" = ${user.id}
             GROUP BY "accentColor"
-            ORDER BY MAX("createdAt") DESC
+            ORDER BY MAX("id") DESC
           `
         )
         .map((enrollment) => enrollment.accentColor);
@@ -1974,7 +1973,7 @@ export default async function courselore(
           JOIN "users" ON "enrollments"."user" = "users"."id"
           WHERE "courses"."reference" <> ${req.params.courseReference} AND
                 "users"."email" = ${req.session!.email}
-          ORDER BY "enrollments"."createdAt" DESC
+          ORDER BY "enrollments"."id" DESC
         `
       );
 
@@ -2209,7 +2208,7 @@ export default async function courselore(
           LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
           LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
           WHERE "posts"."thread" = ${thread.id}
-          ORDER BY "posts"."createdAt" ASC
+          ORDER BY "posts"."id" ASC
         `
       );
 
