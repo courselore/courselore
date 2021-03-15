@@ -3,7 +3,6 @@ module.exports = async (require) => {
   const fs = require("fs/promises");
   const express = require("express");
   const cookieSession = require("cookie-session");
-  const { sql } = require("@leafac/sqlite");
   const courselore = require(".").default;
   const customization = require(__dirname)(require);
 
@@ -16,7 +15,7 @@ module.exports = async (require) => {
     customization.art({ size: 30, order: 3, strokeWidth: 1 })
   );
 
-  const app = await courselore(path.join(__dirname, ".."));
+  const app = await courselore(path.join(__dirname, "../data"));
 
   try {
     await require(path.join(__dirname, "./configuration.local.js"))(require)(

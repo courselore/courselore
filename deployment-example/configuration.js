@@ -2,12 +2,11 @@ module.exports = async (require) => {
   const path = require("path");
   const express = require("express");
   const cookieSession = require("cookie-session");
-  const { sql } = require("@leafac/sqlite");
   const AutoEncrypt = require("@small-tech/auto-encrypt");
   const courselore = require(".").default;
   const customization = require(path.join(__dirname, "customization"))(require);
 
-  const app = await courselore(__dirname);
+  const app = await courselore(path.join(__dirname, "data"));
 
   app.set("url", "https://courselore.org");
   app.set("administrator", "mailto:administrator@courselore.org");

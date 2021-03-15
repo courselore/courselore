@@ -400,7 +400,7 @@ export default async function courselore(
                         : absoluteDifference < YEARS
                         ? [difference / MONTHS, "months"]
                         : [difference / YEARS, "years"];
-                    element.innerText = RELATIVE_TIME_FORMAT.format(
+                    element.textContent = RELATIVE_TIME_FORMAT.format(
                       // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
                       Math.round(value),
                       unit
@@ -556,8 +556,8 @@ export default async function courselore(
     "#5f574f" = "#5f574f",
   }
 
-  await fs.ensureDir(path.join(rootDirectory, "data"));
-  const database = new Database(path.join(rootDirectory, "data/courselore.db"));
+  await fs.ensureDir(rootDirectory);
+  const database = new Database(path.join(rootDirectory, "courselore.db"));
   app.set("database", database);
   databaseMigrate(database, [
     sql`
@@ -1224,13 +1224,14 @@ export default async function courselore(
       role: keyof typeof Role;
       accentColor: keyof typeof AccentColor;
     }>(
+      // TODO: Similarly to below, order stuff using ids instead of createdAt, because you can create two entries at the same time (think of tests)
       sql`
         SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
         FROM "courses"
         JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
         JOIN "users" ON "enrollments"."user" = "users"."id"
         WHERE "users"."email" = ${req.session!.email}
-        ORDER BY "enrollments"."createdAt" DESC
+        ORDER BY "enrollments"."id" DESC
       `
     );
 
@@ -2627,9 +2628,10 @@ if (require.main === module)
                   prettier.format(
                     javascript`
                       module.exports = async (require) => {
+                        const path = require("path");
                         const courselore = require(".").default;
                       
-                        const app = await courselore(__dirname);
+                        const app = await courselore(path.join(__dirname, "data"));
                       
                         ${
                           url === undefined
