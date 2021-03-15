@@ -1766,41 +1766,61 @@ export default async function courselore(
                       <button>Rename</button>
                     </p>
                   </form>
-                `}
 
-            <div class="TODO">
-              <p>
-                A section to deal with invitations if you’re an staff member.
-              </p>
-              <p>Also, the accent color selector below isn’t working.</p>
-              <!-- 
-                $${enrollment.role !== "staff"
-                ? html``
-                : html`
-                    <p><strong>Invitations</strong></p>
-                    <p>
+                  <hr />
+
+                  <p>
+                    <strong>Invitation links</strong><br />
+                    <small class="dim">
+                      With invitation links people may enroll on the course by
+                      themselves.
+                    </small>
+                  </p>
+                  <form
+                    style="${css`
+                      display: flex;
+                      align-items: flex-end;
+
+                      & > * + * {
+                        margin-left: 1em;
+                      }
+                    `}"
+                  >
+                    <p
+                      style="${css`
+                        flex: 1;
+                      `}"
+                    >
+                    <!-- WIP: https://github.com/jcgertig/date-input-polyfill https://github.com/Pikaday/Pikaday -->
                       <label>
-                        <strong>Invite with link</strong>
-                        <small class="hint">
-                          People who don’t have a CourseLore account will be
-                          invited to create one.
-                        </small>
+                        <strong>Expires at</strong><br />
+                        <input
+                          type="date"
+                          name="expiresAt[date]"
+                          required
+                          value="${new Date().toISOString()}"
+                        />
                       </label>
                     </p>
-                    <p>
-                      <label>
-                        <strong>Invite by email</strong>
-                        <textarea name="invite-by-email"></textarea>
-                        <small class="hint">
-                          People who don’t have a CourseLore account will be
-                          invited to create one.
-                        </small>
-                      </label>
-                    </p>
-                    <hr />
-                  `}
-                 -->
-            </div>
+                    <p><button>Create invitation link for students</button></p>
+                  </form>
+
+                  <form>
+                    <p><button>Create invitation link for staff</button></p>
+                  </form>
+                  <p>
+                    <label>
+                      <strong>Invite by email</strong>
+                      <textarea name="invite-by-email"></textarea>
+                      <small class="hint">
+                        People who don’t have a CourseLore account will be
+                        invited to create one.
+                      </small>
+                    </label>
+                  </p>
+
+                  <hr />
+                `}
 
             <p
               style="${css`
