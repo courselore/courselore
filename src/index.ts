@@ -1161,6 +1161,7 @@ export default async function courselore(
       <details>
         <summary
           style="${css`
+            list-style: none;
             float: right;
             margin-top: -45px;
 
