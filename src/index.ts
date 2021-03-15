@@ -1804,7 +1804,7 @@ export default async function courselore(
             )}
             <p
               style="${css`
-                margin-top: -0.8em;
+                margin-top: -0.3em;
               `}"
             >
               <label>
