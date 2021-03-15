@@ -1632,33 +1632,6 @@ export default async function courselore(
     }
   );
 
-  const hasCourseRole: (
-    ...roles: (keyof typeof Role)[]
-  ) => express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    {}
-  >[] = (...roles) => [
-    ...isCourseEnrolled,
-    (req, res, next) => {
-      const enrollment = database.get<{ role: keyof typeof Role }>(
-        sql`
-          SELECT "role"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          JOIN "courses" ON "enrollments"."course" = "courses"."id"
-          WHERE "users"."email" = ${req.session!.email} AND
-                "courses"."reference" = ${req.params.courseReference}
-        `
-      )!;
-
-      if (!roles.includes(enrollment.role)) return next("route");
-      next();
-    },
-  ];
-
   // TODO: Process email addresses
   // https://www.npmjs.com/package/email-addresses
   // https://www.npmjs.com/package/addressparser
@@ -1805,6 +1778,60 @@ export default async function courselore(
             </p>
           `
         )
+      );
+    }
+  );
+
+  const hasCourseRole: (
+    ...roles: (keyof typeof Role)[]
+  ) => express.RequestHandler<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    {}
+  >[] = (...roles) => [
+    ...isCourseEnrolled,
+    (req, res, next) => {
+      const enrollment = database.get<{ role: keyof typeof Role }>(
+        sql`
+          SELECT "role"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          WHERE "users"."email" = ${req.session!.email} AND
+                "courses"."reference" = ${req.params.courseReference}
+        `
+      )!;
+
+      if (!roles.includes(enrollment.role)) return next("route");
+      next();
+    },
+  ];
+
+  app.patch<{ courseReference: string }, any, { accentColor?: string }, {}, {}>(
+    "/courses/:courseReference/settings",
+    ...isCourseEnrolled,
+    (req, res) => {
+      const enrollment = database.get<{ id: number }>(
+        sql`
+          SELECT "enrollments"."id"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          WHERE "users"."email" = ${req.session!.email} AND
+                "courses"."reference" = ${req.params.courseReference}
+        `
+      )!;
+      if (typeof req.body.accentColor === "string") {
+        if (!Object.keys(AccentColor).includes(req.body.accentColor))
+          throw new ValidationError();
+        database.run(
+          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${enrollment.id}`
+        );
+      }
+      res.redirect(
+        `${app.get("url")}/courses/${req.params.courseReference}/settings`
       );
     }
   );
