@@ -1178,9 +1178,6 @@ export default async function courselore(
           </svg>
         </summary>
         <p><strong>${user.name}</strong> ${`<${req.session!.email}>`}</p>
-        <form method="POST" action="${app.get("url")}/sign-out">
-          <p><button class="a undecorated">Sign out</button></p>
-        </form>
         $${course === undefined
           ? html``
           : html`
@@ -1189,7 +1186,7 @@ export default async function courselore(
                   href="${app.get("url")}/courses/${req.params
                     .courseReference}/settings"
                   class="undecorated"
-                  >Course settings (${course.name})</a
+                  >Course settings · ${course.name}</a
                 >
               </p>
             `}
@@ -1198,6 +1195,12 @@ export default async function courselore(
             >New course</a
           >
         </p>
+        <p>
+          <a href="${app.get("url")}/settings" class="undecorated">Settings</a>
+        </p>
+        <form method="POST" action="${app.get("url")}/sign-out">
+          <p><button class="a undecorated">Sign out</button></p>
+        </form>
       </details>
     `;
   }
