@@ -322,7 +322,12 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Try to make animation consume less resources. (Currently it’s making the “this tab is consuming too much energy” warning pop up in Safari.)
   - Maybe it has to do with computing the sine of large numbers? Clamp the values between 0–2π to see if that helps…
 
-#### Textarea Niceties
+#### Forms Niceties
+
+- Use `maxlength`.
+- Keep the buttons disabled while the form isn’t in a valid state.
+
+#### Text Editor Niceties
 
 - GitHub-style, not Trix-style.
   - https://typora.io

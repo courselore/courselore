@@ -35,8 +35,6 @@ import prettier from "prettier";
 
 const VERSION = require("../package.json").version;
 
-// TODO: Use ‘maxlength’ in forms.
-
 export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
@@ -1420,7 +1418,6 @@ export default async function courselore(
 
   function textEditor(): HTML {
     return html`
-      <!-- TODO: Make it so that (in general, not just in this form) buttons aren’t enabled until the form is valid. -->
       <!-- TODO: What happens if the user fills in content includes a form? Does the sanitization take care of it? I think it should, but if it doesn’t then ‘preview’ may break. -->
       <div class="text-editor">
         <!-- FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too. -->
