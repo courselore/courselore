@@ -1665,6 +1665,44 @@ export default async function courselore(
           html`
             <h1>Course settings · ${course.name}</h1>
 
+            $${enrollment.role !== Role.instructor
+              ? html``
+              : html`
+                  <form
+                    method="POST"
+                    action="${app.get("url")}/courses/${req.params
+                      .courseReference}/settings?_method=PATCH"
+                    style="${css`
+                      display: flex;
+                      align-items: flex-end;
+
+                      & > * + * {
+                        margin-left: 1em;
+                      }
+                    `}"
+                  >
+                    <p
+                      style="${css`
+                        flex: 1;
+                      `}"
+                    >
+                      <label>
+                        <strong>Name</strong><br />
+                        <input
+                          type="text"
+                          name="name"
+                          autocomplete="off"
+                          required
+                          value="${course.name}"
+                        />
+                      </label>
+                    </p>
+                    <p>
+                      <button>Rename</button>
+                    </p>
+                  </form>
+                `}
+
             <div class="TODO">
               <p>A section to deal with invitations if you’re an instructor.</p>
               <p>Also, the accent color selector below isn’t working.</p>
@@ -1766,7 +1804,7 @@ export default async function courselore(
             )}
             <p
               style="${css`
-                margin-top: -0.5em;
+                margin-top: -0.8em;
               `}"
             >
               <label>
@@ -1809,32 +1847,45 @@ export default async function courselore(
     },
   ];
 
-  app.patch<{ courseReference: string }, any, { accentColor?: string }, {}, {}>(
-    "/courses/:courseReference/settings",
-    ...isCourseEnrolled,
-    (req, res) => {
-      const enrollment = database.get<{ id: number }>(
-        sql`
-          SELECT "enrollments"."id"
+  app.patch<
+    { courseReference: string },
+    any,
+    { name?: string; accentColor?: string },
+    {},
+    {}
+  >("/courses/:courseReference/settings", ...isCourseEnrolled, (req, res) => {
+    const enrollment = database.get<{ id: number; role: keyof typeof Role }>(
+      sql`
+          SELECT "enrollments"."id", "enrollments"."role"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id"
           JOIN "courses" ON "enrollments"."course" = "courses"."id"
           WHERE "users"."email" = ${req.session!.email} AND
                 "courses"."reference" = ${req.params.courseReference}
         `
-      )!;
-      if (typeof req.body.accentColor === "string") {
-        if (!Object.keys(AccentColor).includes(req.body.accentColor))
-          throw new ValidationError();
-        database.run(
-          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${enrollment.id}`
-        );
-      }
-      res.redirect(
-        `${app.get("url")}/courses/${req.params.courseReference}/settings`
+    )!;
+
+    if (
+      typeof req.body.name === "string" &&
+      enrollment.role === Role.instructor
+    ) {
+      if (req.body.name.trim() === "") throw new ValidationError();
+      database.run(
+        sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "reference" = ${req.params.courseReference}`
       );
     }
-  );
+
+    if (typeof req.body.accentColor === "string") {
+      if (!Object.keys(AccentColor).includes(req.body.accentColor))
+        throw new ValidationError();
+      database.run(
+        sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${enrollment.id}`
+      );
+    }
+    res.redirect(
+      `${app.get("url")}/courses/${req.params.courseReference}/settings`
+    );
+  });
 
   app.post<
     { courseReference: string },
