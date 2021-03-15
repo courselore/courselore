@@ -1297,6 +1297,77 @@ export default async function courselore(
   });
 
   app.get<{}, HTML, {}, {}, {}>(
+    "/settings",
+    ...isAuthenticated(true),
+    (req, res) => {
+      const user = database.get<{ name: string }>(
+        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+      )!;
+
+      res.send(
+        app.get("layout authenticated")(
+          req,
+          res,
+          html`<title>Settings · CourseLore</title>`,
+          html`
+            <h1>Settings</h1>
+
+            <form
+              method="POST"
+              action="${app.get("url")}/settings?_method=PATCH"
+              style="${css`
+                display: flex;
+                align-items: flex-end;
+
+                & > * + * {
+                  margin-left: 1em;
+                }
+              `}"
+            >
+              <p
+                style="${css`
+                  flex: 1;
+                `}"
+              >
+                <label>
+                  <strong>Name</strong><br />
+                  <input
+                    type="text"
+                    name="name"
+                    autocomplete="off"
+                    required
+                    value="${user.name}"
+                  />
+                </label>
+              </p>
+              <p>
+                <button>Change name</button>
+              </p>
+            </form>
+          `
+        )
+      );
+    }
+  );
+
+  app.patch<{}, any, { name?: string }, {}, {}>(
+    "/settings",
+    ...isAuthenticated(true),
+    (req, res) => {
+      if (typeof req.body.name === "string") {
+        if (req.body.name.trim() === "") throw new ValidationError();
+        database.run(
+          sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "email" = ${
+            req.session!.email
+          }`
+        );
+      }
+
+      res.redirect(`${app.get("url")}/settings`);
+    }
+  );
+
+  app.get<{}, HTML, {}, {}, {}>(
     "/courses/new",
     ...isAuthenticated(true),
     (req, res) => {
