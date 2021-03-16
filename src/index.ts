@@ -154,7 +154,8 @@ export default async function courselore(
                 div.TODO,
                 input[type="text"],
                 input[type="email"],
-                textarea {
+                textarea,
+                select {
                   border: 1px solid darkgray;
                   border-radius: 10px;
                   box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
@@ -188,6 +189,7 @@ export default async function courselore(
                 input[type="text"],
                 input[type="email"],
                 textarea,
+                select,
                 button {
                   font-family: "Public Sans", sans-serif;
                   font-size: 1em;
@@ -198,7 +200,8 @@ export default async function courselore(
 
                 input[type="text"],
                 input[type="email"],
-                textarea {
+                textarea,
+                select {
                   color: inherit;
                   background-color: transparent;
                   box-sizing: border-box;
@@ -211,7 +214,8 @@ export default async function courselore(
                 }
 
                 input[type="text"],
-                input[type="email"] {
+                input[type="email"],
+                select {
                   padding: 0.2em 1em;
                   -webkit-appearance: none;
 
@@ -227,6 +231,17 @@ export default async function courselore(
 
                 ::-webkit-resizer {
                   display: none;
+                }
+
+                select {
+                  text-align-last: center;
+                  padding-right: 2em;
+                }
+
+                .select-wrapper::after {
+                  content: "▾";
+                  position: absolute;
+                  transform: translate(-1.5em, 4px);
                 }
 
                 a,
@@ -265,6 +280,7 @@ export default async function courselore(
                   border: 0;
                 }
 
+                select,
                 button {
                   cursor: pointer;
                 }
@@ -1852,54 +1868,61 @@ export default async function courselore(
                   <hr />
 
                   <p id="invitations">
-                    <strong>Invitation links</strong><br />
+                    <strong>Invite with a link</strong><br />
                     <small class="dim">
-                      With invitation links people may enroll on the course by
-                      themselves.
+                      Anyone with an invitation link may enroll on the course.
                     </small>
                   </p>
-                  <form
-                    style="${css`
-                      display: flex;
-                      align-items: flex-end;
-
-                      & > * + * {
-                        margin-left: 1em;
-                      }
-                    `}"
-                  >
-                    <p
-                      style="${css`
-                        flex: 1;
-                      `}"
-                    >
+                  <form>
+                    <p>
                       <!-- WIP: https://github.com/jcgertig/date-input-polyfill https://github.com/Pikaday/Pikaday -->
                       <label>
-                        <strong>Expires at</strong><br />
-                        <input
-                          type="date"
-                          name="expiresAt[date]"
-                          required
-                          value="${new Date().toISOString()}"
-                        />
+                        For
+                        <span class="select-wrapper">
+                          <select
+                            style="${css`
+                              width: auto;
+                            `}"
+                          >
+                            <option>students</option>
+                            <option>staff</option>
+                          </select>
+                        </span>
                       </label>
                     </p>
-                    <p><button>Create invitation link for students</button></p>
-                  </form>
-
-                  <form>
-                    <p><button>Create invitation link for staff</button></p>
+                    <p><button>Create</button></p>
                   </form>
                   <p>
-                    <label>
-                      <strong>Invite by email</strong>
-                      <textarea name="invite-by-email"></textarea>
-                      <small class="hint">
-                        People who don’t have a CourseLore account will be
-                        invited to create one.
-                      </small>
-                    </label>
+                    <strong>Invite via email</strong><br />
+                    <small class="dim">
+                      Only the people you invite may enroll on the course.
+                    </small>
                   </p>
+                  <form>
+                    <p>
+                      <textarea name="invite-by-email"></textarea>
+                    </p>
+                    <p
+                      style="${css`
+                        text-align: right;
+                      `}"
+                    >
+                      <label>
+                        As
+                        <span class="select-wrapper">
+                          <select
+                            style="${css`
+                              width: auto;
+                            `}"
+                          >
+                            <option>students</option>
+                            <option>staff</option>
+                          </select>
+                        </span>
+                      </label>
+                      <button>Invite</button>
+                    </p>
+                  </form>
 
                   <hr />
                 `}
