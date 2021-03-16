@@ -1162,7 +1162,7 @@ export default async function courselore(
                 display: none;
               }
 
-              & * {
+              & line {
                 transition: stroke 0.2s;
               }
 
@@ -2222,40 +2222,139 @@ export default async function courselore(
                 `}"
               >
                 $${logoAndMenu(req, res)}
+                <p
+                  style="${css`
+                    margin-top: -1em;
+                  `}"
+                >
+                  <a
+                    href="${app.get("url")}/courses/${req.params
+                      .courseReference}"
+                    class="undecorated"
+                    ><strong>${course.name}</strong> (${enrollment.role})</a
+                  >
+                </p>
                 $${otherCourses.length === 0
-                  ? html`
-                      <p>
-                        <strong>${course.name}</strong> (${enrollment.role})
-                      </p>
-                    `
+                  ? html``
                   : html`
-                      <details>
-                        <summary>
-                          <strong>${course.name}</strong> (${enrollment.role})
+                      <details
+                        style="${css`
+                          margin-top: -1em;
+                        `}"
+                      >
+                        <summary
+                          class="dim"
+                          style="${css`
+                            list-style: none;
+
+                            &::-webkit-details-marker {
+                              display: none;
+                            }
+
+                            & path {
+                              transition: fill 0.2s;
+                            }
+
+                            &:hover path,
+                            details[open] > & path {
+                              fill: #ff77a8;
+                            }
+
+                            details[open] > &::before {
+                              content: "";
+                              display: block;
+                              position: absolute;
+                              top: 0;
+                              left: 0;
+                              width: 100vw;
+                              height: 100vw;
+                            }
+                          `}"
+                        >
+                          <p
+                            style="${css`
+                              display: flex;
+
+                              & > * + * {
+                                margin-left: 0.3em;
+                              }
+                            `}"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                              <path
+                                fill="gray"
+                                d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
+                              ></path>
+                            </svg>
+                            <small>Switch to another course</small>
+                          </p>
                         </summary>
-                        $${otherCourses.map(
-                          (course) => html`
-                            <p>
-                              <a
-                                href="${app.get(
-                                  "url"
-                                )}/courses/${course.reference}"
-                                class="undecorated"
-                                ><span
-                                  style="${css`
-                                    display: inline-block;
-                                    width: 0.8em;
-                                    height: 0.8em;
-                                    background-color: ${course.accentColor};
-                                    border-radius: 50%;
-                                  `}"
-                                ></span>
-                                <strong>${course.name}</strong>
-                                (${course.role})</a
-                              >
-                            </p>
-                          `
-                        )}
+                        <div
+                          style="${css`
+                            background-color: whitesmoke;
+                            max-width: 300px;
+                            padding: 0.5em 1em;
+                            border: 1px solid darkgray;
+                            border-radius: 10px;
+                            box-shadow: inset 0px 1px #ffffff22,
+                              0px 1px #00000022;
+                            position: absolute;
+                            transform: translate(0, -10px);
+
+                            @media (prefers-color-scheme: dark) {
+                              background-color: #444444;
+                            }
+
+                            &::before {
+                              content: "";
+                              background-color: whitesmoke;
+                              display: block;
+                              width: 10px;
+                              height: 10px;
+                              position: absolute;
+                              left: 19px;
+                              top: -6px;
+                              transform: rotate(45deg);
+                              border: 1px solid darkgray;
+                              border-right: none;
+                              border-bottom: none;
+                              border-top-left-radius: 5px;
+                              box-shadow: inset 1px 1px #ffffff22;
+
+                              @media (prefers-color-scheme: dark) {
+                                background-color: #444444;
+                              }
+                            }
+
+                            p {
+                              margin: 0;
+                            }
+                          `}"
+                        >
+                          $${otherCourses.map(
+                            (course) => html`
+                              <p>
+                                <a
+                                  href="${app.get(
+                                    "url"
+                                  )}/courses/${course.reference}"
+                                  class="undecorated"
+                                  ><span
+                                    style="${css`
+                                      display: inline-block;
+                                      width: 0.8em;
+                                      height: 0.8em;
+                                      background-color: ${course.accentColor};
+                                      border-radius: 50%;
+                                    `}"
+                                  ></span>
+                                  <strong>${course.name}</strong>
+                                  (${course.role})</a
+                                >
+                              </p>
+                            `
+                          )}
+                        </div>
                       </details>
                     `}
               </header>
