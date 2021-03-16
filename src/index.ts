@@ -1186,7 +1186,7 @@ export default async function courselore(
                   href="${app.get("url")}/courses/${req.params
                     .courseReference}/settings"
                   class="undecorated"
-                  >Course settings · ${course.name}</a
+                  >Course settings · ${course.name}</a
                 >
               </p>
             `}
@@ -1238,7 +1238,7 @@ export default async function courselore(
               <p><strong>Welcome to CourseLore!</strong></p>
               <p>
                 To <strong>enroll on an existing course</strong> you either have
-                to be invited via email or follow an invitation link. Contact
+                to follow an invitation link or be invited via email. Contact
                 your course staff for more information.
               </p>
               <p>
@@ -1655,13 +1655,20 @@ export default async function courselore(
             res,
             html`<title>${course.name} · CourseLore</title>`,
             html`
-              <h1>Welcome to ${course.name}!</h1>
+              <h1>
+                Welcome to
+                <a
+                  href="${app.get("url")}/courses/${req.params.courseReference}"
+                  class="undecorated"
+                  >${course.name}</a
+                >!
+              </h1>
               $${enrollment.role === "staff"
                 ? html`
                     <p>
                       <a
                         href="${app.get("url")}/courses/${req.params
-                          .courseReference}/settings"
+                          .courseReference}/settings#invitations"
                         ><strong>Invite other people to the course</strong></a
                       >.
                     </p>
@@ -1728,7 +1735,14 @@ export default async function courselore(
           res,
           html`<title>Course settings · ${course.name} · CourseLore</title>`,
           html`
-            <h1>Course settings · ${course.name}</h1>
+            <h1>
+              Course settings ·
+              <a
+                href="${app.get("url")}/courses/${req.params.courseReference}"
+                class="undecorated"
+                >${course.name}</a
+              >
+            </h1>
 
             $${enrollment.role !== "staff"
               ? html``
@@ -1769,7 +1783,7 @@ export default async function courselore(
 
                   <hr />
 
-                  <p>
+                  <p id="invitations">
                     <strong>Invitation links</strong><br />
                     <small class="dim">
                       With invitation links people may enroll on the course by
@@ -1791,7 +1805,7 @@ export default async function courselore(
                         flex: 1;
                       `}"
                     >
-                    <!-- WIP: https://github.com/jcgertig/date-input-polyfill https://github.com/Pikaday/Pikaday -->
+                      <!-- WIP: https://github.com/jcgertig/date-input-polyfill https://github.com/Pikaday/Pikaday -->
                       <label>
                         <strong>Expires at</strong><br />
                         <input
