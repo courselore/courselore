@@ -1120,10 +1120,7 @@ export default async function courselore(
                 margin: 0 auto;
               `}"
             >
-              <header>
-                <p>$${logo()}</p>
-                $${menuAuthenticated(req, res)}
-              </header>
+              <header>$${logoAndMenu(req, res)}</header>
               <main>$${body}</main>
             </div>
           </div>
@@ -1132,7 +1129,7 @@ export default async function courselore(
     }
   );
 
-  function menuAuthenticated(
+  function logoAndMenu(
     req: express.Request<{ courseReference?: string }, HTML, {}, {}, {}>,
     res: express.Response<HTML, {}>
   ): HTML {
@@ -1148,122 +1145,131 @@ export default async function courselore(
           )!;
 
     return html`
-      <details>
-        <summary
-          style="${css`
-            list-style: none;
+      <div
+        style="${css`
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        `}"
+      >
+        <p>$${logo()}</p>
+        <details>
+          <summary
+            style="${css`
+              list-style: none;
 
-            &::-webkit-details-marker {
-              display: none;
-            }
+              &::-webkit-details-marker {
+                display: none;
+              }
 
-            & * {
-              transition: stroke 0.2s;
-            }
+              & * {
+                transition: stroke 0.2s;
+              }
 
-            &:hover line,
-            details[open] > & line {
-              stroke: #ff77a8;
-            }
+              &:hover line,
+              details[open] > & line {
+                stroke: #ff77a8;
+              }
 
-            details[open] > &::before {
-              content: "";
-              display: block;
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100vw;
-              height: 100vw;
-            }
-          `}"
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20">
-            <g stroke="gray" stroke-width="2" stroke-linecap="round">
-              <line x1="3" y1="5" x2="17" y2="5" />
-              <line x1="3" y1="10" x2="17" y2="10" />
-              <line x1="3" y1="15" x2="17" y2="15" />
-            </g>
-          </svg>
-        </summary>
-        <div
-          style="${css`
-            background-color: whitesmoke;
-            max-width: 300px;
-            padding: 0.5em 1em;
-            border: 1px solid darkgray;
-            border-radius: 10px;
-            box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
-            position: absolute;
-            transform: translate(calc(-100% + 35px), -15px);
-
-            @media (prefers-color-scheme: dark) {
-              background-color: #444444;
-            }
-
-            &::before {
-              content: "";
+              details[open] > &::before {
+                content: "";
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vw;
+              }
+            `}"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20">
+              <g stroke="gray" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="5" x2="17" y2="5" />
+                <line x1="3" y1="10" x2="17" y2="10" />
+                <line x1="3" y1="15" x2="17" y2="15" />
+              </g>
+            </svg>
+          </summary>
+          <div
+            style="${css`
               background-color: whitesmoke;
-              display: block;
-              width: 10px;
-              height: 10px;
-              position: absolute;
-              right: 19px;
-              top: -6px;
-              transform: rotate(45deg);
+              max-width: 300px;
+              padding: 0.5em 1em;
               border: 1px solid darkgray;
-              border-right: none;
-              border-bottom: none;
-              border-top-left-radius: 5px;
-              box-shadow: inset 1px 1px #ffffff22;
+              border-radius: 10px;
+              box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+              position: absolute;
+              transform: translate(calc(-100% + 35px), -15px);
 
               @media (prefers-color-scheme: dark) {
                 background-color: #444444;
               }
-            }
 
-            p {
-              margin: 0;
-            }
-          `}"
-        >
-          <p
-            style="${css`
-              line-height: 1;
+              &::before {
+                content: "";
+                background-color: whitesmoke;
+                display: block;
+                width: 10px;
+                height: 10px;
+                position: absolute;
+                right: 19px;
+                top: -6px;
+                transform: rotate(45deg);
+                border: 1px solid darkgray;
+                border-right: none;
+                border-bottom: none;
+                border-top-left-radius: 5px;
+                box-shadow: inset 1px 1px #ffffff22;
+
+                @media (prefers-color-scheme: dark) {
+                  background-color: #444444;
+                }
+              }
+
+              p {
+                margin: 0;
+              }
             `}"
           >
-            <strong>${user.name}</strong><br />
-            <small class="dim">${req.session!.email}</small>
-          </p>
-          <hr />
-          $${course === undefined
-            ? html``
-            : html`
-                <p>
-                  <a
-                    href="${app.get("url")}/courses/${req.params
-                      .courseReference}/settings"
-                    class="undecorated"
-                    >Course settings</a
-                  >
-                </p>
-                <hr />
-              `}
-          <p>
-            <a href="${app.get("url")}/courses/new" class="undecorated"
-              >New course</a
+            <p
+              style="${css`
+                line-height: 1;
+              `}"
             >
-          </p>
-          <hr />
-          <form method="POST" action="${app.get("url")}/sign-out">
-            <p>
-              <a href="${app.get("url")}/settings" class="undecorated"
-                >Settings</a
-              ><br />
-              <button class="a undecorated">Sign out</button>
+              <strong>${user.name}</strong><br />
+              <small class="dim">${req.session!.email}</small>
             </p>
-          </form>
-        </div>
-      </details>
+            <hr />
+            $${course === undefined
+              ? html``
+              : html`
+                  <p>
+                    <a
+                      href="${app.get("url")}/courses/${req.params
+                        .courseReference}/settings"
+                      class="undecorated"
+                      >Course settings</a
+                    >
+                  </p>
+                  <hr />
+                `}
+            <p>
+              <a href="${app.get("url")}/courses/new" class="undecorated"
+                >New course</a
+              >
+            </p>
+            <hr />
+            <form method="POST" action="${app.get("url")}/sign-out">
+              <p>
+                <a href="${app.get("url")}/settings" class="undecorated"
+                  >Settings</a
+                ><br />
+                <button class="a undecorated">Sign out</button>
+              </p>
+            </form>
+          </div>
+        </details>
+      </div>
     `;
   }
 
@@ -2215,16 +2221,7 @@ export default async function courselore(
                   }
                 `}"
               >
-                <div
-                  style="${css`
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  `}"
-                >
-                  <p>$${logo()}</p>
-                  $${menuAuthenticated(req, res)}
-                </div>
+                $${logoAndMenu(req, res)}
                 $${otherCourses.length === 0
                   ? html`
                       <p>
