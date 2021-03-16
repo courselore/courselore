@@ -1152,8 +1152,6 @@ export default async function courselore(
         <summary
           style="${css`
             list-style: none;
-            float: right;
-            margin-top: -45px;
 
             &::-webkit-details-marker {
               display: none;
@@ -1167,6 +1165,16 @@ export default async function courselore(
             details[open] > & line {
               stroke: #ff77a8;
             }
+
+            details[open] > &::before {
+              content: "";
+              display: block;
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100vw;
+              height: 100vw;
+            }
           `}"
         >
           <svg width="20" height="20" viewBox="0 0 20 20">
@@ -1177,30 +1185,84 @@ export default async function courselore(
             </g>
           </svg>
         </summary>
-        <p><strong>${user.name}</strong> ${`<${req.session!.email}>`}</p>
-        $${course === undefined
-          ? html``
-          : html`
-              <p>
-                <a
-                  href="${app.get("url")}/courses/${req.params
-                    .courseReference}/settings"
-                  class="undecorated"
-                  >Course settings · ${course.name}</a
-                >
-              </p>
-            `}
-        <p>
-          <a href="${app.get("url")}/courses/new" class="undecorated"
-            >New course</a
+        <div
+          style="${css`
+            background-color: whitesmoke;
+            max-width: 300px;
+            padding: 0.5em 1em;
+            border: 1px solid darkgray;
+            border-radius: 10px;
+            box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
+            position: absolute;
+            transform: translate(calc(-100% + 35px), -15px);
+
+            @media (prefers-color-scheme: dark) {
+              background-color: #444444;
+            }
+
+            &::before {
+              content: "";
+              background-color: whitesmoke;
+              display: block;
+              width: 10px;
+              height: 10px;
+              position: absolute;
+              right: 19px;
+              top: -6px;
+              transform: rotate(45deg);
+              border: 1px solid darkgray;
+              border-right: none;
+              border-bottom: none;
+              border-top-left-radius: 5px;
+              box-shadow: inset 1px 1px #ffffff22;
+
+              @media (prefers-color-scheme: dark) {
+                background-color: #444444;
+              }
+            }
+
+            p {
+              margin: 0;
+            }
+          `}"
+        >
+          <p
+            style="${css`
+              line-height: 1;
+            `}"
           >
-        </p>
-        <p>
-          <a href="${app.get("url")}/settings" class="undecorated">Settings</a>
-        </p>
-        <form method="POST" action="${app.get("url")}/sign-out">
-          <p><button class="a undecorated">Sign out</button></p>
-        </form>
+            <strong>${user.name}</strong><br />
+            <small class="dim">${req.session!.email}</small>
+          </p>
+          <hr />
+          $${course === undefined
+            ? html``
+            : html`
+                <p>
+                  <a
+                    href="${app.get("url")}/courses/${req.params
+                      .courseReference}/settings"
+                    class="undecorated"
+                    >Course settings</a
+                  >
+                </p>
+                <hr />
+              `}
+          <p>
+            <a href="${app.get("url")}/courses/new" class="undecorated"
+              >New course</a
+            >
+          </p>
+          <hr />
+          <form method="POST" action="${app.get("url")}/sign-out">
+            <p>
+              <a href="${app.get("url")}/settings" class="undecorated"
+                >Settings</a
+              ><br />
+              <button class="a undecorated">Sign out</button>
+            </p>
+          </form>
+        </div>
       </details>
     `;
   }
@@ -2153,8 +2215,16 @@ export default async function courselore(
                   }
                 `}"
               >
-                <p>$${logo()}</p>
-                $${menuAuthenticated(req, res)}
+                <div
+                  style="${css`
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                  `}"
+                >
+                  <p>$${logo()}</p>
+                  $${menuAuthenticated(req, res)}
+                </div>
                 $${otherCourses.length === 0
                   ? html`
                       <p>
