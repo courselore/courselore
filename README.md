@@ -430,6 +430,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - <https://github.com/wclr/ts-node-dev/issues/243>: Stop using `--pool` when calling `ts-node-dev`.
 - Call Prettier to check contents of `public/` folders.
 - Use `Cache-control: no-store`.
+- Use database indices where necessary.
 
 #### Deployment
 
@@ -486,6 +487,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Use the spdy package (seems abandoned, and people said it doesn’t work with recent versions of node: https://github.com/spdy-http2/node-spdy/issues/380)
   - Try express 5.
   - <https://gist.github.com/studentIvan/6c78886c140067936ff379031fd12e14>
+  - <https://www.npmjs.com/package/http2-express-bridge>
   - Frameworks that seem to support it out of the box:
     - koa
     - Hapi
