@@ -2,6 +2,7 @@
   "dependencies": {
     "katex": "^0.12.0",
     "typeface-public-sans": "^1.1.13",
-    "typeface-roboto-mono": "^1.1.13"
+    "typeface-roboto-mono": "^1.1.13",
+    "validator": "^13.5.2"
   }
 }

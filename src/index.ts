@@ -447,6 +447,26 @@ export default async function courselore(
                     element.classList.remove("disabled");
                 }, 0);
               }
+
+              document.body.addEventListener(
+                "submit",
+                (event) => {
+                  for (const input of event.target.querySelectorAll(
+                    "[data-validation]"
+                  )) {
+                    const validation = new Function(
+                      input.dataset.validation
+                    ).bind(input);
+                    const validationResult = validation();
+                    if (validationResult === false)
+                      input.setCustomValidity("This field is invalid");
+                    if (typeof validationResult === "string")
+                      input.setCustomValidity(validationResult);
+                  }
+                  if (!event.target.reportValidity()) event.preventDefault();
+                },
+                true
+              );
             </script>
           </body>
         </html>
@@ -791,10 +811,11 @@ export default async function courselore(
                   <label>
                     <strong>Email</strong><br />
                     <input
-                      name="email"
                       type="email"
+                      name="email"
                       placeholder="name@educational-email.edu"
                       required
+                      data-validation="${javascript``}"
                       autofocus
                     />
                     $${preposition === "up"
