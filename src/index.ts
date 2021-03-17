@@ -451,22 +451,22 @@ export default async function courselore(
                 }, 0);
               }
 
-              function validate(element) {
+              function isValid(element) {
                 if (element.matches("form")) {
-                  for (const child of element.querySelectorAll("*"))
-                    validate(child);
-                  return;
+                  let isDescendantsValid = true;
+                  for (const descendant of element.querySelectorAll("*"))
+                    isDescendantsValid &&= isValid(descendant);
+                  return isDescendantsValid;
                 }
 
-                let reset = false;
-
+                let shouldResetCustomValidity = false;
                 if (
                   element.matches("[required]") &&
                   validator.isEmpty(element.value, {
                     ignore_whitespace: true,
                   })
                 ) {
-                  reset = true;
+                  shouldResetCustomValidity = true;
                   element.setCustomValidity("Fill out this field");
                 }
 
@@ -474,7 +474,7 @@ export default async function courselore(
                   element.matches('[type="email"]') &&
                   !validator.isEmail(element.value)
                 ) {
-                  reset = true;
+                  shouldResetCustomValidity = true;
                   element.setCustomValidity("Enter an email address");
                 }
 
@@ -482,12 +482,12 @@ export default async function courselore(
                   element.matches("[data-validator]") &&
                   !validator[element.dataset.validator](element.value)
                 ) {
-                  reset = true;
+                  shouldResetCustomValidity = true;
                   element.setCustomValidity("This field is invalid");
                 }
 
                 if (element.matches("[data-validator-custom]")) {
-                  reset = true;
+                  shouldResetCustomValidity = true;
                   const validationResult = new Function(
                     element.dataset.validatorCustom
                   ).bind(element)();
@@ -497,7 +497,7 @@ export default async function courselore(
                     element.setCustomValidity(validationResult);
                 }
 
-                if (reset)
+                if (shouldResetCustomValidity)
                   element.addEventListener(
                     "input",
                     () => {
@@ -505,12 +505,15 @@ export default async function courselore(
                     },
                     { once: true }
                   );
+
+                return typeof element.reportValidity === "function"
+                  ? element.reportValidity()
+                  : true;
               }
               document.body.addEventListener(
                 "submit",
                 (event) => {
-                  validate(event.target);
-                  if (!event.target.reportValidity()) event.preventDefault();
+                  if (!isValid(event.target)) event.preventDefault();
                 },
                 true
               );
@@ -1682,8 +1685,7 @@ export default async function courselore(
               (async () => {
                 const textEditor = this.closest("div.text-editor");
                 const textarea = textEditor.querySelector("textarea");
-                validate(textarea);
-                if (!textarea.reportValidity()) {
+                if (!isValid(textarea)) {
                   enableButton(this);
                   return;
                 }
@@ -1721,8 +1723,7 @@ export default async function courselore(
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
                 const form = this.closest("form");
-                validate(form);
-                if (form.reportValidity()) form.submit();
+                if (isValid(form)) form.submit();
               }
             `}"
             ></textarea>
