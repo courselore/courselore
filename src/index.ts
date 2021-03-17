@@ -2098,7 +2098,7 @@ export default async function courselore(
         `
     )!;
 
-    if (enrollment.role === "staff" && typeof req.body.name === "string") {
+    if (typeof req.body.name === "string" && enrollment.role === "staff") {
       if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
         throw new ValidationError();
       database.run(
