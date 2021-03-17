@@ -320,8 +320,7 @@ export default async function courselore(
                     background-color: #584f69;
                   }
 
-                  &:disabled,
-                  &.disabled {
+                  &:disabled {
                     color: gray;
                     background-color: whitesmoke;
                     border-color: gray;
@@ -488,33 +487,14 @@ export default async function courselore(
               }
 
               document.body.addEventListener(
-                "click",
-                (event) => {
-                  window.setTimeout(() => {
-                    if (
-                      event.target.matches("button") &&
-                      (event.target.getAttribute("type") === "button" ||
-                        isValid(event.target.closest("form")))
-                    )
-                      event.target.disabled = true;
-                    else if (event.target.matches("a.button"))
-                      event.target.classList.add("disabled");
-                  }, 0);
-                },
-                true
-              );
-              function enableButton(element) {
-                window.setTimeout(() => {
-                  if (element.matches("button")) element.disabled = false;
-                  else if (element.matches("a.button"))
-                    element.classList.remove("disabled");
-                }, 0);
-              }
-
-              document.body.addEventListener(
                 "submit",
                 (event) => {
-                  if (!isValid(event.target)) event.preventDefault();
+                  if (isValid(event.target))
+                    for (const button of event.target.querySelectorAll(
+                      'button:not([type="button"])'
+                    ))
+                      button.disabled = true;
+                  else event.preventDefault();
                 },
                 true
               );
@@ -1674,7 +1654,8 @@ export default async function courselore(
               const textEditor = this.closest("div.text-editor");
               textEditor.querySelector("div.preview").hidden = true;
               textEditor.querySelector("div.write").hidden = false;
-              enableButton(textEditor.querySelector("button.preview"));
+              this.disabled = true;
+              textEditor.querySelector("button.preview").disabled = false;
             `}"
           >
             Write
@@ -1686,10 +1667,8 @@ export default async function courselore(
               (async () => {
                 const textEditor = this.closest("div.text-editor");
                 const textarea = textEditor.querySelector("textarea");
-                if (!isValid(textarea)) {
-                  enableButton(this);
-                  return;
-                }
+                if (!isValid(textarea)) return;
+                this.disabled = true;
                 const loading = textEditor.querySelector("div.loading");
                 textEditor.querySelector("div.write").hidden = true;
                 loading.hidden = false;
@@ -1702,7 +1681,7 @@ export default async function courselore(
                 ).text();
                 loading.hidden = true;
                 preview.hidden = false;
-                enableButton(textEditor.querySelector("button.write"));
+                textEditor.querySelector("button.write").disabled = false;
               })();
             `}"
           >
