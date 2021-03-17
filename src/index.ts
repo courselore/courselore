@@ -380,6 +380,9 @@ export default async function courselore(
             `}"
           >
             $${body}
+            <script src="${app.get(
+                "url"
+              )}/node_modules/validator/validator.min.js"></script>
             <script>
               (() => {
                 // TODO: Extract this into a library?
@@ -451,18 +454,53 @@ export default async function courselore(
               document.body.addEventListener(
                 "submit",
                 (event) => {
+                  const inputsToReset = [];
                   for (const input of event.target.querySelectorAll(
-                    "[data-validation]"
+                    "[required]"
                   )) {
-                    const validation = new Function(
-                      input.dataset.validation
+                    inputsToReset.push(input);
+                    if (
+                      validator.isEmpty(input.value, {
+                        ignore_whitespace: true,
+                      })
+                    )
+                      input.setCustomValidity("Fill out this field");
+                  }
+                  for (const input of event.target.querySelectorAll(
+                    '[type="email"]'
+                  )) {
+                    inputsToReset.push(input);
+                    if (!validator.isEmail(input.value))
+                      input.setCustomValidity("Enter an email address");
+                  }
+                  for (const input of event.target.querySelectorAll(
+                    "[data-validator]"
+                  )) {
+                    inputsToReset.push(input);
+                    if (!validator[input.dataset.validator](input.value))
+                      input.setCustomValidity("This field is invalid");
+                  }
+                  for (const input of event.target.querySelectorAll(
+                    "[data-validator-custom]"
+                  )) {
+                    inputsToReset.push(input);
+                    const validatorCustom = new Function(
+                      input.dataset.validatorCustom
                     ).bind(input);
-                    const validationResult = validation();
+                    const validationResult = validatorCustom();
                     if (validationResult === false)
                       input.setCustomValidity("This field is invalid");
                     if (typeof validationResult === "string")
                       input.setCustomValidity(validationResult);
                   }
+                  for (const inputToReset of inputsToReset)
+                    inputToReset.addEventListener(
+                      "input",
+                      () => {
+                        inputToReset.setCustomValidity("");
+                      },
+                      { once: true }
+                    );
                   if (!event.target.reportValidity()) event.preventDefault();
                 },
                 true
@@ -815,7 +853,6 @@ export default async function courselore(
                       name="email"
                       placeholder="name@educational-email.edu"
                       required
-                      data-validation="${javascript``}"
                       autofocus
                     />
                     $${preposition === "up"
