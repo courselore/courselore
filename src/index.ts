@@ -1047,18 +1047,18 @@ export default async function courselore(
                   />
                   <p>
                     <label>
+                      <strong>Name</strong><br />
+                      <input type="text" name="name" required autofocus />
+                    </label>
+                  </p>
+                  <p>
+                    <label>
                       <strong>Email</strong><br />
                       <input
                         type="email"
                         value="${originalAuthenticationToken.email}"
                         disabled
                       />
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <strong>Name</strong><br />
-                      <input type="text" name="name" required autofocus />
                     </label>
                   </p>
                   <p
@@ -1479,6 +1479,21 @@ export default async function courselore(
                 <button>Change name</button>
               </p>
             </form>
+
+            <p>
+              <label>
+                <strong>Email</strong><br />
+                <input
+                  type="email"
+                  value="${req.session!.email}"
+                  disabled
+                /><br />
+                <small class="hint">
+                  Your email is your identity in CourseLore and it can’t be
+                  changed.
+                </small>
+              </label>
+            </p>
           `
         )
       );
