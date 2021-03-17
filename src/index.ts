@@ -454,50 +454,52 @@ export default async function courselore(
               document.body.addEventListener(
                 "submit",
                 (event) => {
-                  const inputsToReset = [];
-                  for (const input of event.target.querySelectorAll(
+                  const validablesToReset = [];
+                  for (const validable of event.target.querySelectorAll(
                     "[required]"
                   )) {
-                    inputsToReset.push(input);
+                    validablesToReset.push(validable);
                     if (
-                      validator.isEmpty(input.value, {
+                      validator.isEmpty(validable.value, {
                         ignore_whitespace: true,
                       })
                     )
-                      input.setCustomValidity("Fill out this field");
+                      validable.setCustomValidity("Fill out this field");
                   }
-                  for (const input of event.target.querySelectorAll(
+                  for (const validable of event.target.querySelectorAll(
                     '[type="email"]'
                   )) {
-                    inputsToReset.push(input);
-                    if (!validator.isEmail(input.value))
-                      input.setCustomValidity("Enter an email address");
+                    validablesToReset.push(validable);
+                    if (!validator.isEmail(validable.value))
+                      validable.setCustomValidity("Enter an email address");
                   }
-                  for (const input of event.target.querySelectorAll(
+                  for (const validable of event.target.querySelectorAll(
                     "[data-validator]"
                   )) {
-                    inputsToReset.push(input);
-                    if (!validator[input.dataset.validator](input.value))
-                      input.setCustomValidity("This field is invalid");
+                    validablesToReset.push(validable);
+                    if (
+                      !validator[validable.dataset.validator](validable.value)
+                    )
+                      validable.setCustomValidity("This field is invalid");
                   }
-                  for (const input of event.target.querySelectorAll(
+                  for (const validable of event.target.querySelectorAll(
                     "[data-validator-custom]"
                   )) {
-                    inputsToReset.push(input);
+                    validablesToReset.push(validable);
                     const validatorCustom = new Function(
-                      input.dataset.validatorCustom
-                    ).bind(input);
+                      validable.dataset.validatorCustom
+                    ).bind(validable);
                     const validationResult = validatorCustom();
                     if (validationResult === false)
-                      input.setCustomValidity("This field is invalid");
+                      validable.setCustomValidity("This field is invalid");
                     if (typeof validationResult === "string")
-                      input.setCustomValidity(validationResult);
+                      validable.setCustomValidity(validationResult);
                   }
-                  for (const inputToReset of inputsToReset)
-                    inputToReset.addEventListener(
+                  for (const validableToReset of validablesToReset)
+                    validableToReset.addEventListener(
                       "input",
                       () => {
-                        inputToReset.setCustomValidity("");
+                        validableToReset.setCustomValidity("");
                       },
                       { once: true }
                     );
