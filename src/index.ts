@@ -427,30 +427,6 @@ export default async function courselore(
                 })();
               })();
 
-              document.body.addEventListener(
-                "click",
-                (event) => {
-                  window.setTimeout(() => {
-                    if (
-                      event.target.matches("button") &&
-                      (event.target.getAttribute("type") === "button" ||
-                        event.target.closest("form").checkValidity())
-                    )
-                      event.target.disabled = true;
-                    else if (event.target.matches("a.button"))
-                      event.target.classList.add("disabled");
-                  }, 0);
-                },
-                true
-              );
-              function enableButton(element) {
-                window.setTimeout(() => {
-                  if (element.matches("button")) element.disabled = false;
-                  else if (element.matches("a.button"))
-                    element.classList.remove("disabled");
-                }, 0);
-              }
-
               function isValid(element) {
                 if (element.matches("form")) {
                   let isDescendantsValid = true;
@@ -510,6 +486,31 @@ export default async function courselore(
                   ? element.reportValidity()
                   : true;
               }
+
+              document.body.addEventListener(
+                "click",
+                (event) => {
+                  window.setTimeout(() => {
+                    if (
+                      event.target.matches("button") &&
+                      (event.target.getAttribute("type") === "button" ||
+                        isValid(event.target.closest("form")))
+                    )
+                      event.target.disabled = true;
+                    else if (event.target.matches("a.button"))
+                      event.target.classList.add("disabled");
+                  }, 0);
+                },
+                true
+              );
+              function enableButton(element) {
+                window.setTimeout(() => {
+                  if (element.matches("button")) element.disabled = false;
+                  else if (element.matches("a.button"))
+                    element.classList.remove("disabled");
+                }, 0);
+              }
+
               document.body.addEventListener(
                 "submit",
                 (event) => {
