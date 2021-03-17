@@ -1099,9 +1099,9 @@ export default async function courselore(
   >("/users", ...isAuthenticated(false), (req, res) => {
     if (
       typeof req.body.token !== "string" ||
-      req.body.token.trim() === "" ||
+      validator.isEmpty(req.body.token, { ignore_whitespace: true }) ||
       typeof req.body.name !== "string" ||
-      req.body.name.trim() === ""
+      validator.isEmpty(req.body.name, { ignore_whitespace: true })
     )
       throw new ValidationError();
 
@@ -1497,7 +1497,8 @@ export default async function courselore(
     ...isAuthenticated(true),
     (req, res) => {
       if (typeof req.body.name === "string") {
-        if (req.body.name.trim() === "") throw new ValidationError();
+        if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
+          throw new ValidationError();
         database.run(
           sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "email" = ${
             req.session!.email
@@ -1547,7 +1548,10 @@ export default async function courselore(
     "/courses",
     ...isAuthenticated(true),
     (req, res) => {
-      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+      if (
+        typeof req.body.name !== "string" ||
+        validator.isEmpty(req.body.name, { ignore_whitespace: true })
+      )
         throw new ValidationError();
 
       const courseReference = cryptoRandomString({
@@ -1750,7 +1754,7 @@ export default async function courselore(
     (req, res) => {
       if (
         typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
+        validator.isEmpty(req.body.content, { ignore_whitespace: true })
       )
         throw new ValidationError();
 
@@ -2087,8 +2091,9 @@ export default async function courselore(
         `
     )!;
 
-    if (typeof req.body.name === "string" && enrollment.role === "staff") {
-      if (req.body.name.trim() === "") throw new ValidationError();
+    if (enrollment.role === "staff" && typeof req.body.name === "string") {
+      if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
+        throw new ValidationError();
       database.run(
         sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "reference" = ${req.params.courseReference}`
       );
@@ -2115,9 +2120,9 @@ export default async function courselore(
   >("/courses/:courseReference/threads", ...isCourseEnrolled, (req, res) => {
     if (
       typeof req.body.title !== "string" ||
-      req.body.title.trim() === "" ||
+      validator.isEmpty(req.body.title, { ignore_whitespace: true }) ||
       typeof req.body.content !== "string" ||
-      req.body.content.trim() === ""
+      validator.isEmpty(req.body.content, { ignore_whitespace: true })
     )
       throw new ValidationError();
 
@@ -2654,7 +2659,7 @@ export default async function courselore(
     (req, res) => {
       if (
         typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
+        validator.isEmpty(req.body.content, { ignore_whitespace: true })
       )
         throw new ValidationError();
 
