@@ -451,58 +451,65 @@ export default async function courselore(
                 }, 0);
               }
 
+              function validate(element) {
+                if (element.matches("form")) {
+                  for (const child of element.querySelectorAll("*"))
+                    validate(child);
+                  return;
+                }
+
+                let reset = false;
+
+                if (
+                  element.matches("[required]") &&
+                  validator.isEmpty(element.value, {
+                    ignore_whitespace: true,
+                  })
+                ) {
+                  reset = true;
+                  element.setCustomValidity("Fill out this field");
+                }
+
+                if (
+                  element.matches('[type="email"]') &&
+                  !validator.isEmail(element.value)
+                ) {
+                  reset = true;
+                  element.setCustomValidity("Enter an email address");
+                }
+
+                if (
+                  element.matches("[data-validator]") &&
+                  !validator[element.dataset.validator](element.value)
+                ) {
+                  reset = true;
+                  element.setCustomValidity("This field is invalid");
+                }
+
+                if (element.matches("[data-validator-custom]")) {
+                  reset = true;
+                  const validationResult = new Function(
+                    element.dataset.validatorCustom
+                  ).bind(element)();
+                  if (validationResult === false)
+                    element.setCustomValidity("This field is invalid");
+                  if (typeof validationResult === "string")
+                    element.setCustomValidity(validationResult);
+                }
+
+                if (reset)
+                  element.addEventListener(
+                    "input",
+                    () => {
+                      element.setCustomValidity("");
+                    },
+                    { once: true }
+                  );
+              }
               document.body.addEventListener(
                 "submit",
                 (event) => {
-                  const validablesToReset = [];
-                  for (const validable of event.target.querySelectorAll(
-                    "[required]"
-                  )) {
-                    validablesToReset.push(validable);
-                    if (
-                      validator.isEmpty(validable.value, {
-                        ignore_whitespace: true,
-                      })
-                    )
-                      validable.setCustomValidity("Fill out this field");
-                  }
-                  for (const validable of event.target.querySelectorAll(
-                    '[type="email"]'
-                  )) {
-                    validablesToReset.push(validable);
-                    if (!validator.isEmail(validable.value))
-                      validable.setCustomValidity("Enter an email address");
-                  }
-                  for (const validable of event.target.querySelectorAll(
-                    "[data-validator]"
-                  )) {
-                    validablesToReset.push(validable);
-                    if (
-                      !validator[validable.dataset.validator](validable.value)
-                    )
-                      validable.setCustomValidity("This field is invalid");
-                  }
-                  for (const validable of event.target.querySelectorAll(
-                    "[data-validator-custom]"
-                  )) {
-                    validablesToReset.push(validable);
-                    const validatorCustom = new Function(
-                      validable.dataset.validatorCustom
-                    ).bind(validable);
-                    const validationResult = validatorCustom();
-                    if (validationResult === false)
-                      validable.setCustomValidity("This field is invalid");
-                    if (typeof validationResult === "string")
-                      validable.setCustomValidity(validationResult);
-                  }
-                  for (const validableToReset of validablesToReset)
-                    validableToReset.addEventListener(
-                      "input",
-                      () => {
-                        validableToReset.setCustomValidity("");
-                      },
-                      { once: true }
-                    );
+                  validate(event.target);
                   if (!event.target.reportValidity()) event.preventDefault();
                 },
                 true
@@ -1675,6 +1682,7 @@ export default async function courselore(
               (async () => {
                 const textEditor = this.closest("div.text-editor");
                 const textarea = textEditor.querySelector("textarea");
+                validate(textarea);
                 if (!textarea.reportValidity()) {
                   enableButton(this);
                   return;
@@ -1713,6 +1721,7 @@ export default async function courselore(
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
                 const form = this.closest("form");
+                validate(form);
                 if (form.reportValidity()) form.submit();
               }
             `}"
