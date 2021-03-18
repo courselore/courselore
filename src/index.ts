@@ -370,7 +370,7 @@ export default async function courselore(
 
                   & > summary + * {
                     background-color: whitesmoke;
-                    padding: 0.5rem 1rem;
+                    padding: 0 1rem;
                     border: 1px solid darkgray;
                     border-radius: 10px;
                     box-shadow: inset 0px 1px 1px #ffffff10,
