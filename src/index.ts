@@ -253,13 +253,25 @@ export default async function courselore(
                     color: #29adff;
                   }
 
-                  h1 & {
+                  h1 &,
+                  nav & {
                     text-decoration: none;
                   }
                 }
 
-                label strong:first-child {
-                  display: block;
+                label {
+                  text-align: left;
+
+                  strong:first-child {
+                    display: block;
+                  }
+
+                  small:last-child {
+                    line-height: 1.3;
+                    color: gray;
+                    display: block;
+                    margin-top: 0.4rem;
+                  }
                 }
 
                 input[type="text"],
@@ -276,6 +288,10 @@ export default async function courselore(
 
                   @media (prefers-color-scheme: dark) {
                     border-color: dimgray;
+                  }
+
+                  &:disabled {
+                    cursor: not-allowed;
                   }
                 }
 
@@ -295,6 +311,8 @@ export default async function courselore(
 
                 button {
                   font-size: 0.75rem;
+                  text-align: center;
+                  background-color: white;
                   border-width: 0.1px;
 
                   @media (prefers-color-scheme: dark) {
@@ -308,19 +326,11 @@ export default async function courselore(
                   }
                 }
 
-                .hint {
+                p.hint {
                   font-size: 0.75rem;
                   line-height: 1.3;
                   color: gray;
-
-                  p& {
-                    margin-top: -0.7rem;
-                  }
-
-                  span& {
-                    display: block;
-                    margin-top: 0.4rem;
-                  }
+                  margin-top: -0.7rem;
                 }
 
                 .full-width {
@@ -329,6 +339,7 @@ export default async function courselore(
                 }
 
                 div.demonstration {
+                  text-align: left;
                   padding-left: 0.5rem;
                   border-left: 1rem solid #83769c;
                   margin-left: -1.5rem;
@@ -343,6 +354,64 @@ export default async function courselore(
                     position: absolute;
                     transform: translate(calc(-50% - 1rem)) rotate(-90deg)
                       translate(-50%);
+                  }
+                }
+
+                details.popup {
+                  &[open] > summary::before {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vw;
+                  }
+
+                  & > summary + * {
+                    background-color: whitesmoke;
+                    padding: 0.5rem 1rem;
+                    border: 1px solid darkgray;
+                    border-radius: 10px;
+                    box-shadow: inset 0px 1px 1px #ffffff10,
+                      0px 1px 3px #00000010;
+                    position: absolute;
+
+                    @media (prefers-color-scheme: dark) {
+                      background-color: #444444;
+                    }
+
+                    &::before {
+                      content: "";
+                      background-color: whitesmoke;
+                      display: block;
+                      width: 10px;
+                      height: 10px;
+                      position: absolute;
+                      top: -6px;
+                      transform: rotate(45deg);
+                      border: 1px solid darkgray;
+                      border-right: none;
+                      border-bottom: none;
+                      border-top-left-radius: 5px;
+                      box-shadow: inset 1px 1px 1px #ffffff10;
+
+                      @media (prefers-color-scheme: dark) {
+                        background-color: #444444;
+                      }
+                    }
+                  }
+                }
+
+                summary {
+                  outline: none;
+
+                  &.no-marker {
+                    list-style: none;
+
+                    &::-webkit-details-marker {
+                      display: none;
+                    }
                   }
                 }
 
@@ -577,8 +646,93 @@ export default async function courselore(
             `}"
           >
             $${body}
-            $${app.get("demonstration")
-              ? html`<p
+          </body>
+        </html>
+      `)
+  );
+
+  function logo(): HTML {
+    return html`
+      <h1>
+        <a
+          href="${app.get("url")}/"
+          style="${css`
+            display: inline-flex;
+            align-items: center;
+
+            & > * + * {
+              margin-left: 0.5rem;
+            }
+          `}"
+        >
+          $${logoSVG}
+          <script>
+            (() => {
+              const logo = document.currentScript.parentElement;
+              let animationFrame;
+              let timeOffset = 0;
+              logo.addEventListener("mouseover", () => {
+                timeOffset += performance.now();
+                animationFrame = window.requestAnimationFrame(animate);
+              });
+              logo.addEventListener("mouseout", () => {
+                timeOffset -= performance.now();
+                window.cancelAnimationFrame(animationFrame);
+              });
+              const polyline = logo.querySelector("polyline");
+              const points = polyline
+                .getAttribute("points")
+                .split(" ")
+                .map(Number);
+              function animate(time) {
+                time -= timeOffset;
+                polyline.setAttribute(
+                  "points",
+                  points
+                    .map(
+                      (coordinate, index) =>
+                        coordinate + Math.sin(time * 0.0005 * (index % 7))
+                    )
+                    .join(" ")
+                );
+                animationFrame = window.requestAnimationFrame(animate);
+              }
+            })();
+          </script>
+          <span
+            style="${css`
+              font-size: 1.3rem;
+              font-weight: 800;
+            `}"
+            >CourseLore</span
+          >
+        </a>
+      </h1>
+    `;
+  }
+
+  const logoSVG = await fs.readFile(
+    path.join(__dirname, "../public/logo.svg"),
+    "utf-8"
+  );
+
+  app.set(
+    "layout application",
+    (
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
+      head: HTML,
+      body: HTML
+    ): HTML =>
+      app.get("layout base")(
+        req,
+        res,
+        head,
+        html`
+          $${body}
+          $${app.get("demonstration")
+            ? html`
+                <p
                   style="${css`
                     font-size: 0.3rem;
                     font-weight: bold;
@@ -595,195 +749,133 @@ export default async function courselore(
                   `}"
                 >
                   Demonstration
-                </p>`
-              : html``}
-            <script src="${app.get(
-                "url"
-              )}/node_modules/validator/validator.min.js"></script>
-            <script>
-              (() => {
-                // TODO: Extract this into a library?
-                // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
-                const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
-                  numeric: "auto",
-                });
-                const MINUTES = 60 * 1000;
-                const HOURS = 60 * MINUTES;
-                const DAYS = 24 * HOURS;
-                const WEEKS = 7 * DAYS;
-                const MONTHS = 30 * DAYS;
-                const YEARS = 365 * DAYS;
-                (function relativeTimes() {
-                  for (const element of document.querySelectorAll(
-                    "time.relative"
-                  )) {
-                    const difference =
-                      new Date(element.getAttribute("datetime")) - new Date();
-                    const absoluteDifference = Math.abs(difference);
-                    const [value, unit] =
-                      absoluteDifference < MINUTES
-                        ? [0, "seconds"]
-                        : absoluteDifference < HOURS
-                        ? [difference / MINUTES, "minutes"]
-                        : absoluteDifference < DAYS
-                        ? [difference / HOURS, "hours"]
-                        : absoluteDifference < WEEKS
-                        ? [difference / DAYS, "days"]
-                        : absoluteDifference < MONTHS
-                        ? [difference / WEEKS, "weeks"]
-                        : absoluteDifference < YEARS
-                        ? [difference / MONTHS, "months"]
-                        : [difference / YEARS, "years"];
-                    element.textContent = RELATIVE_TIME_FORMAT.format(
-                      // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
-                      Math.round(value),
-                      unit
-                    );
-                  }
-                  window.setTimeout(relativeTimes, 60 * 1000);
-                })();
-              })();
+                </p>
+              `
+            : html``}
 
-              function isValid(element) {
-                if (element.matches("form")) {
-                  let isDescendantsValid = true;
-                  for (const descendant of element.querySelectorAll("*"))
-                    isDescendantsValid &&= isValid(descendant);
-                  return isDescendantsValid;
-                }
+          <script src="${app.get(
+              "url"
+            )}/node_modules/validator/validator.min.js"></script>
 
-                let shouldResetCustomValidity = false;
-                if (
-                  element.matches("[required]") &&
-                  validator.isEmpty(element.value, {
-                    ignore_whitespace: true,
-                  })
-                ) {
-                  shouldResetCustomValidity = true;
-                  element.setCustomValidity("Fill out this field");
-                }
-
-                if (
-                  element.matches('[type="email"]') &&
-                  !validator.isEmail(element.value)
-                ) {
-                  shouldResetCustomValidity = true;
-                  element.setCustomValidity("Enter an email address");
-                }
-
-                if (
-                  element.matches("[data-validator]") &&
-                  !validator[element.dataset.validator](element.value)
-                ) {
-                  shouldResetCustomValidity = true;
-                  element.setCustomValidity("This field is invalid");
-                }
-
-                if (element.matches("[data-validator-custom]")) {
-                  shouldResetCustomValidity = true;
-                  const validationResult = new Function(
-                    element.dataset.validatorCustom
-                  ).bind(element)();
-                  if (validationResult === false)
-                    element.setCustomValidity("This field is invalid");
-                  if (typeof validationResult === "string")
-                    element.setCustomValidity(validationResult);
-                }
-
-                if (shouldResetCustomValidity)
-                  element.addEventListener(
-                    "input",
-                    () => {
-                      element.setCustomValidity("");
-                    },
-                    { once: true }
+          <script>
+            (() => {
+              // TODO: Extract this into a library?
+              // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
+              const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
+                numeric: "auto",
+              });
+              const MINUTES = 60 * 1000;
+              const HOURS = 60 * MINUTES;
+              const DAYS = 24 * HOURS;
+              const WEEKS = 7 * DAYS;
+              const MONTHS = 30 * DAYS;
+              const YEARS = 365 * DAYS;
+              (function relativeTimes() {
+                for (const element of document.querySelectorAll(
+                  "time.relative"
+                )) {
+                  const difference =
+                    new Date(element.getAttribute("datetime")) - new Date();
+                  const absoluteDifference = Math.abs(difference);
+                  const [value, unit] =
+                    absoluteDifference < MINUTES
+                      ? [0, "seconds"]
+                      : absoluteDifference < HOURS
+                      ? [difference / MINUTES, "minutes"]
+                      : absoluteDifference < DAYS
+                      ? [difference / HOURS, "hours"]
+                      : absoluteDifference < WEEKS
+                      ? [difference / DAYS, "days"]
+                      : absoluteDifference < MONTHS
+                      ? [difference / WEEKS, "weeks"]
+                      : absoluteDifference < YEARS
+                      ? [difference / MONTHS, "months"]
+                      : [difference / YEARS, "years"];
+                  element.textContent = RELATIVE_TIME_FORMAT.format(
+                    // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                    Math.round(value),
+                    unit
                   );
+                }
+                window.setTimeout(relativeTimes, 60 * 1000);
+              })();
+            })();
 
-                return typeof element.reportValidity === "function"
-                  ? element.reportValidity()
-                  : true;
+            function isValid(element) {
+              if (element.matches("form")) {
+                let isDescendantsValid = true;
+                for (const descendant of element.querySelectorAll("*"))
+                  isDescendantsValid &&= isValid(descendant);
+                return isDescendantsValid;
               }
 
-              document.body.addEventListener(
-                "submit",
-                (event) => {
-                  if (isValid(event.target))
-                    for (const button of event.target.querySelectorAll(
-                      'button:not([type="button"])'
-                    ))
-                      button.disabled = true;
-                  else event.preventDefault();
-                },
-                true
-              );
-            </script>
-          </body>
-        </html>
-      `)
-  );
+              let shouldResetCustomValidity = false;
+              if (
+                element.matches("[required]") &&
+                validator.isEmpty(element.value, {
+                  ignore_whitespace: true,
+                })
+              ) {
+                shouldResetCustomValidity = true;
+                element.setCustomValidity("Fill out this field");
+              }
 
-  function logo(): HTML {
-    return html`
-      <a
-        href="${app.get("url")}/"
-        class="undecorated"
-        style="${css`
-          display: inline-flex;
-          align-items: center;
+              if (
+                element.matches('[type="email"]') &&
+                !validator.isEmail(element.value)
+              ) {
+                shouldResetCustomValidity = true;
+                element.setCustomValidity("Enter an email address");
+              }
 
-          & > * + * {
-            margin-left: 0.5rem;
-          }
-        `}"
-      >
-        $${logoSVG}
-        <script>
-          (() => {
-            const logo = document.currentScript.parentElement;
-            let animationFrame;
-            let timeOffset = 0;
-            logo.addEventListener("mouseover", () => {
-              timeOffset += performance.now();
-              animationFrame = window.requestAnimationFrame(animate);
-            });
-            logo.addEventListener("mouseout", () => {
-              timeOffset -= performance.now();
-              window.cancelAnimationFrame(animationFrame);
-            });
-            const polyline = logo.querySelector("polyline");
-            const points = polyline
-              .getAttribute("points")
-              .split(" ")
-              .map(Number);
-            function animate(time) {
-              time -= timeOffset;
-              polyline.setAttribute(
-                "points",
-                points
-                  .map(
-                    (coordinate, index) =>
-                      coordinate + Math.sin(time * 0.0005 * (index % 7))
-                  )
-                  .join(" ")
-              );
-              animationFrame = window.requestAnimationFrame(animate);
+              if (
+                element.matches("[data-validator]") &&
+                !validator[element.dataset.validator](element.value)
+              ) {
+                shouldResetCustomValidity = true;
+                element.setCustomValidity("This field is invalid");
+              }
+
+              if (element.matches("[data-validator-custom]")) {
+                shouldResetCustomValidity = true;
+                const validationResult = new Function(
+                  element.dataset.validatorCustom
+                ).bind(element)();
+                if (validationResult === false)
+                  element.setCustomValidity("This field is invalid");
+                if (typeof validationResult === "string")
+                  element.setCustomValidity(validationResult);
+              }
+
+              if (shouldResetCustomValidity)
+                element.addEventListener(
+                  "input",
+                  () => {
+                    element.setCustomValidity("");
+                  },
+                  { once: true }
+                );
+
+              return typeof element.reportValidity === "function"
+                ? element.reportValidity()
+                : true;
             }
-          })();
-        </script>
-        <span
-          style="${css`
-            font-size: 1.3rem;
-            font-weight: 800;
-          `}"
-          >CourseLore</span
-        >
-      </a>
-    `;
-  }
 
-  const logoSVG = await fs.readFile(
-    path.join(__dirname, "../public/logo.svg"),
-    "utf-8"
+            document.body.addEventListener(
+              "submit",
+              (event) => {
+                if (isValid(event.target))
+                  for (const button of event.target.querySelectorAll(
+                    'button:not([type="button"])'
+                  ))
+                    button.disabled = true;
+                else event.preventDefault();
+              },
+              true
+            );
+          </script>
+        `
+      )
   );
 
   app.set(
@@ -883,24 +975,19 @@ export default async function courselore(
       head: HTML,
       body: HTML
     ): HTML =>
-      app.get("layout base")(
+      app.get("layout application")(
         req,
         res,
         head,
         html`
           <div
             style="${css`
+              text-align: center;
               max-width: 600px;
               margin: 0 auto;
             `}"
           >
-            <header
-              style="${css`
-                text-align: center;
-              `}"
-            >
-              <h1>$${logo()}</h1>
-            </header>
+            <header>$${logo()}</header>
             <main>$${body}</main>
           </div>
         `
@@ -925,9 +1012,8 @@ export default async function courselore(
               style="${css`
                 display: flex;
 
-                & > form {
+                & > * {
                   flex: 1;
-                  text-align: center;
                 }
 
                 & > * + * {
@@ -940,7 +1026,7 @@ export default async function courselore(
                 <p class="hint">Returning user</p>
                 <p
                   style="${css`
-                    height: 6rem;
+                    height: 5rem;
                   `}"
                 >
                   <label>
@@ -964,7 +1050,7 @@ export default async function courselore(
                 <p class="hint">New user</p>
                 <p
                   style="${css`
-                    height: 6rem;
+                    height: 5rem;
                   `}"
                 >
                   <label>
@@ -975,10 +1061,10 @@ export default async function courselore(
                       placeholder="name@educational-email.edu"
                       required
                     />
-                    <span class="hint">
+                    <small>
                       We suggest using the email address you use at your
                       educational institution.
-                    </span>
+                    </small>
                   </label>
                 </p>
                 <p>
@@ -1014,14 +1100,16 @@ export default async function courselore(
         throw new ValidationError();
 
       const authenticationToken = newAuthenticationToken(req.body.email);
-      const magicLink = `${app.get("url")}/authenticate/${
+      const magicAuthenticationLink = `${app.get("url")}/authenticate/${
         authenticationToken.token
       }${new URL(req.originalUrl, app.get("url")).search}`;
       const sentEmail = sendEmail({
         to: req.body.email,
-        subject: `Magic authentication link`,
+        subject: "Magic authentication link",
         body: html`
-          <p><a href="${magicLink}">${magicLink}</a></p>
+          <p>
+            <a href="${magicAuthenticationLink}">${magicAuthenticationLink}</a>
+          </p>
           <p><small>Expires in 10 minutes and may only be used once.</small></p>
         `,
       });
@@ -1032,23 +1120,18 @@ export default async function courselore(
           res,
           html`<title>Authenticate · CourseLore</title>`,
           html`
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
+            <p>
+              To continue, check ${req.body.email} and click on the magic
+              authentication link.
+            </p>
+            <form method="POST">
+              <input type="hidden" name="email" value="${req.body.email}" />
               <p>
-                To continue, check ${req.body.email} and click on the magic
-                link.
+                Didn’t receive the email? Already checked the spam folder?
+                <button>Resend</button>
               </p>
-              <form method="POST">
-                <input type="hidden" name="email" value="${req.body.email}" />
-                <p>
-                  Didn’t receive the email? Already checked the spam folder?<br />
-                  <button>Resend</button>
-                </p>
-              </form>
-            </div>
+            </form>
+
             $${sentEmail}
           `
         )
@@ -1072,37 +1155,28 @@ export default async function courselore(
 
   // TODO: What should happen if the person clicks on a magic link but they’re already authenticated?
   app.get<{ token: string }, HTML, {}, { redirect?: string }, {}>(
-    ["/sign-up/:token", "/sign-in/:token"],
+    "/authenticate/:token",
     ...isAuthenticated(false),
     (req, res) => {
       const search = new URL(req.originalUrl, app.get("url")).search;
       const originalAuthenticationToken = getAuthenticationToken(
         req.params.token
       );
-      if (originalAuthenticationToken === undefined) {
-        const preposition = req.path.startsWith("/sign-up") ? "up" : "in";
+      if (originalAuthenticationToken === undefined)
         return res.send(
           app.get("layout unauthenticated")(
             req,
             res,
-            html`<title>Sign ${preposition} · CourseLore</title>`,
+            html`<title>Authenticate · CourseLore</title>`,
             html`
-              <div
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                <p>
-                  This magic sign-${preposition} link is invalid or has expired.
-                  <a href="${app.get("url")}/sign-${preposition}${search}"
-                    >Start over</a
-                  >.
-                </p>
-              </div>
+              <p>
+                This magic authentication link is invalid or has expired.
+                <a href="${app.get("url")}/authenticate${search}">Start over</a
+                >.
+              </p>
             `
           )
         );
-      }
       if (
         database.get<{ exists: number }>(
           sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${originalAuthenticationToken.email}) AS "exists"`
@@ -1117,55 +1191,40 @@ export default async function courselore(
             res,
             html`<title>Sign up · CourseLore</title>`,
             html`
-              <div
+              <h1>Welcome to CourseLore!</h1>
+              <form
+                method="POST"
+                action="${app.get("url")}/users${search}"
                 style="${css`
-                  text-align: center;
+                  max-width: 300px;
+                  margin: 0 auto;
                 `}"
               >
-                <h1>Welcome to CourseLore!</h1>
-                <form
-                  method="POST"
-                  action="${app.get("url")}/users${search}"
-                  style="${css`
-                    max-width: 300px;
-                    margin: 0 auto;
-                    text-align: left;
-                  `}"
-                >
-                  <input
-                    type="hidden"
-                    name="token"
-                    value="${aNewAuthenticationToken.token}"
-                  />
-                  <p>
-                    <label>
-                      <strong>Name</strong>
-                      <input type="text" name="name" required autofocus />
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <strong>Email</strong>
-                      <input
-                        type="email"
-                        value="${originalAuthenticationToken.email}"
-                        disabled
-                      />
-                    </label>
-                  </p>
-                  <p
-                    style="${css`
-                      text-align: center;
-                    `}"
-                  >
-                    <button>Create account</button>
-                  </p>
-                </form>
-              </div>
-
-              <div class="TODO">
-                <p>Ask for more user information here. But what?</p>
-              </div>
+                <input
+                  type="hidden"
+                  name="token"
+                  value="${aNewAuthenticationToken.token}"
+                />
+                <p>
+                  <label>
+                    <strong>Name</strong>
+                    <input type="text" name="name" required autofocus />
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    <strong>Email</strong>
+                    <input
+                      type="email"
+                      value="${originalAuthenticationToken.email}"
+                      disabled
+                    />
+                  </label>
+                </p>
+                <p>
+                  <button class="full-width">Create Account</button>
+                </p>
+              </form>
             `
           )
         );
@@ -1259,7 +1318,7 @@ export default async function courselore(
               `
             )!;
 
-      return app.get("layout base")(
+      return app.get("layout application")(
         req,
         res,
         head,
@@ -1307,98 +1366,56 @@ export default async function courselore(
       <div
         style="${css`
           display: flex;
-          align-items: center;
+          align-items: baseline;
           justify-content: space-between;
         `}"
       >
-        <p>$${logo()}</p>
-        <details>
+        $${logo()}
+        <details class="popup">
           <summary
+            class="no-marker"
             style="${css`
-              list-style: none;
-
-              &::-webkit-details-marker {
-                display: none;
-              }
-
               & line {
                 transition: stroke 0.2s;
               }
 
               &:hover line,
               details[open] > & line {
-                stroke: #ff77a8;
-              }
-
-              details[open] > &::before {
-                content: "";
-                display: block;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vw;
+                stroke: #29adff;
               }
             `}"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20">
+            <svg width="30" height="30" viewBox="0 0 30 30">
               <g stroke="gray" stroke-width="2" stroke-linecap="round">
-                <line x1="3" y1="5" x2="17" y2="5" />
-                <line x1="3" y1="10" x2="17" y2="10" />
-                <line x1="3" y1="15" x2="17" y2="15" />
+                <line x1="8" y1="10" x2="22" y2="10" />
+                <line x1="8" y1="15" x2="22" y2="15" />
+                <line x1="8" y1="20" x2="22" y2="20" />
               </g>
             </svg>
           </summary>
-          <div
+          <nav
             style="${css`
-              background-color: whitesmoke;
               max-width: 300px;
-              padding: 0.5rem 1rem;
-              border: 1px solid darkgray;
-              border-radius: 10px;
-              box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
-              position: absolute;
-              transform: translate(calc(-100% + 35px), -15px);
-
-              @media (prefers-color-scheme: dark) {
-                background-color: #444444;
-              }
+              transform: translate(calc(-100% + 2rem));
 
               &::before {
-                content: "";
-                background-color: whitesmoke;
-                display: block;
-                width: 10px;
-                height: 10px;
-                position: absolute;
-                right: 19px;
-                top: -6px;
-                transform: rotate(45deg);
-                border: 1px solid darkgray;
-                border-right: none;
-                border-bottom: none;
-                border-top-left-radius: 5px;
-                box-shadow: inset 1px 1px #ffffff22;
-
-                @media (prefers-color-scheme: dark) {
-                  background-color: #444444;
-                }
-              }
-
-              p {
-                margin: 0;
+                right: 1rem;
               }
             `}"
           >
-            <p
-              style="${css`
-                line-height: 1;
-              `}"
-            >
+            <p>
               <strong>${user.name}</strong><br />
               <small class="dim">${req.session!.email}</small>
             </p>
-            <hr />
+            <form
+              method="POST"
+              action="${app.get("url")}/authenticate?_method=DELETE"
+            >
+              <p>
+                <button>Sign out</button>
+              </p>
+            </form>
+            <p><a href="${app.get("url")}/settings">Settings</a></p>
             $${course === undefined
               ? html``
               : html`
@@ -1406,27 +1423,14 @@ export default async function courselore(
                     <a
                       href="${app.get("url")}/courses/${req.params
                         .courseReference}/settings"
-                      class="undecorated"
                       >Course settings</a
                     >
                   </p>
-                  <hr />
                 `}
             <p>
-              <a href="${app.get("url")}/courses/new" class="undecorated"
-                >New course</a
-              >
+              <a href="${app.get("url")}/courses/new">New course</a>
             </p>
-            <hr />
-            <form method="POST" action="${app.get("url")}/sign-out">
-              <p>
-                <a href="${app.get("url")}/settings" class="undecorated"
-                  >Settings</a
-                ><br />
-                <button class="a undecorated">Sign out</button>
-              </p>
-            </form>
-          </div>
+          </nav>
         </details>
       </div>
     `;
@@ -1499,9 +1503,7 @@ export default async function courselore(
                   (course) =>
                     html`
                       <p>
-                        <a
-                          href="${app.get("url")}/courses/${course.reference}"
-                          class="undecorated"
+                        <a href="${app.get("url")}/courses/${course.reference}"
                           ><span
                             style="${css`
                               display: inline-block;
@@ -1575,11 +1577,7 @@ export default async function courselore(
             <p>
               <label>
                 <strong>Email</strong>
-                <input
-                  type="email"
-                  value="${req.session!.email}"
-                  disabled
-                /><br />
+                <input type="email" value="${req.session!.email}" disabled />
                 <small class="hint">
                   Your email is your identity in CourseLore and it can’t be
                   changed.
@@ -1755,7 +1753,7 @@ export default async function courselore(
         >
           <button
             type="button"
-            class="write a undecorated"
+            class="write"
             disabled
             onclick="${javascript`
               const textEditor = this.closest("div.text-editor");
@@ -1769,7 +1767,7 @@ export default async function courselore(
           </button>
           <button
             type="button"
-            class="preview a undecorated"
+            class="preview"
             onclick="${javascript`
               (async () => {
                 const textEditor = this.closest("div.text-editor");
@@ -1825,14 +1823,10 @@ export default async function courselore(
               <a
                 href="https://guides.github.com/features/mastering-markdown/"
                 target="_blank"
-                class="undecorated"
                 >Markdown</a
               >
               &
-              <a
-                href="https://katex.org/docs/supported.html"
-                target="_blank"
-                class="undecorated"
+              <a href="https://katex.org/docs/supported.html" target="_blank"
                 >LaTeX</a
               >
               are supported
@@ -1903,7 +1897,6 @@ export default async function courselore(
                 Welcome to
                 <a
                   href="${app.get("url")}/courses/${req.params.courseReference}"
-                  class="undecorated"
                   >${course.name}</a
                 >!
               </h1>
@@ -1981,9 +1974,7 @@ export default async function courselore(
           html`
             <h1>
               Course settings ·
-              <a
-                href="${app.get("url")}/courses/${req.params.courseReference}"
-                class="undecorated"
+              <a href="${app.get("url")}/courses/${req.params.courseReference}"
                 >${course.name}</a
               >
             </h1>
@@ -2111,14 +2102,12 @@ export default async function courselore(
                       value="${accentColor}"
                     />
                     <button
-                      class="undecorated ${accentColor ===
-                      enrollment.accentColor
+                      class="${accentColor === enrollment.accentColor
                         ? "checked"
                         : ""}"
                       style="${css`
                         width: 2rem;
                         height: 2rem;
-                        cursor: pointer;
                       `}"
                     >
                       <span
@@ -2154,17 +2143,9 @@ export default async function courselore(
                   </form>
                 `
             )}
-            <p
-              style="${css`
-                margin-top: -0.3rem;
-              `}"
-            >
-              <label>
-                <small class="hint">
-                  A bar of this color appears at the top of your screen to help
-                  you tell courses apart.
-                </small>
-              </label>
+            <p class="hint">
+              A bar of this color appears at the top of your screen to help you
+              tell courses apart.
             </p>
           `
         )
@@ -2368,7 +2349,7 @@ export default async function courselore(
         `
       );
 
-      return app.get("layout base")(
+      return app.get("layout application")(
         req,
         res,
         head,
@@ -2414,7 +2395,6 @@ export default async function courselore(
                   <a
                     href="${app.get("url")}/courses/${req.params
                       .courseReference}"
-                    class="undecorated"
                     ><strong>${course.name}</strong> (${enrollment.role})</a
                   >
                 </p>
@@ -2480,8 +2460,8 @@ export default async function courselore(
                             padding: 0.5rem 1rem;
                             border: 1px solid darkgray;
                             border-radius: 10px;
-                            box-shadow: inset 0px 1px #ffffff22,
-                              0px 1px #00000022;
+                            box-shadow: inset 0px 1px 1px #ffffff10,
+                              0px 1px 3px #00000010;
                             position: absolute;
                             transform: translate(0, -10px);
 
@@ -2503,7 +2483,7 @@ export default async function courselore(
                               border-right: none;
                               border-bottom: none;
                               border-top-left-radius: 5px;
-                              box-shadow: inset 1px 1px #ffffff22;
+                              box-shadow: inset 1px 1px 1px #ffffff10;
 
                               @media (prefers-color-scheme: dark) {
                                 background-color: #444444;
@@ -2522,7 +2502,6 @@ export default async function courselore(
                                   href="${app.get(
                                     "url"
                                   )}/courses/${course.reference}"
-                                  class="undecorated"
                                   ><span
                                     style="${css`
                                       display: inline-block;
@@ -2557,7 +2536,6 @@ export default async function courselore(
                   <a
                     href="${app.get("url")}/courses/${req.params
                       .courseReference}/threads/new"
-                    class="button"
                     >New thread</a
                   >
                 </p>
@@ -2573,7 +2551,6 @@ export default async function courselore(
                         <a
                           href="${app.get("url")}/courses/${req.params
                             .courseReference}/threads/${thread.reference}"
-                          class="undecorated"
                           style="${css`
                             ${thread.reference === req.params.threadReference
                               ? css`
@@ -2687,7 +2664,6 @@ export default async function courselore(
                 <a
                   href="${app.get("url")}/courses/${req.params
                     .courseReference}/threads/${req.params.threadReference}"
-                  class="undecorated"
                   >#${req.params.threadReference}</a
                 >
               </small>
@@ -2719,7 +2695,6 @@ export default async function courselore(
                           href="${app.get("url")}/courses/${req.params
                             .courseReference}/threads/${req.params
                             .threadReference}#${post.reference}"
-                          class="undecorated"
                           >#${req.params.threadReference}/${post.reference}</a
                         >
                       </small>
@@ -2849,52 +2824,24 @@ export default async function courselore(
   app.use(isAuthenticated(true));
 
   app.use<{}, HTML, {}, {}, {}>((req, res) => {
+    if (req.session!.email === undefined)
+      return res.redirect(
+        `${app.get("url")}/authenticate?redirect=${req.originalUrl}`
+      );
+
     res.send(
-      app.get(
-        req.session!.email === undefined
-          ? "layout unauthenticated"
-          : "layout authenticated"
-      )(
+      app.get("layout authenticated")(
         req,
         res,
         html`<title>Not found · CourseLore</title>`,
         html`
-          <div
-            style="${css`
-              text-align: center;
-            `}"
-          >
-            <h1>Not found</h1>
-            $${req.session!.email === undefined
-              ? html`
-                  <p>
-                    You may have to
-                    <a
-                      href="${app.get(
-                        "url"
-                      )}/sign-in?redirect=${req.originalUrl}"
-                      >sign in</a
-                    >
-                    or
-                    <a
-                      href="${app.get(
-                        "url"
-                      )}/sign-up?redirect=${req.originalUrl}"
-                      >sign up</a
-                    >
-                    to access this page.
-                  </p>
-                `
-              : html`
-                  <p>
-                    If you think there should be something here, please contact
-                    the course staff or the
-                    <a href="${app.get("administrator")}"
-                      >system administrator</a
-                    >.
-                  </p>
-                `}
-          </div>
+          <h1>Not found</h1>
+
+          <p>
+            If you think there should be something here, please contact the
+            course staff or the
+            <a href="${app.get("administrator")}">system administrator</a>.
+          </p>
         `
       )
     );
@@ -2915,19 +2862,13 @@ export default async function courselore(
         res,
         html`<title>${type} error · CourseLore</title>`,
         html`
-          <div
-            style="${css`
-              text-align: center;
-            `}"
-          >
-            <h1>${type} error</h1>
-            <p>
-              This is a bug in CourseLore; please report to
-              <a href="mailto:bug-report@courselore.org"
-                >bug-report@courselore.org</a
-              >.
-            </p>
-          </div>
+          <h1>${type} error</h1>
+          <p>
+            This is a bug in CourseLore; please report to
+            <a href="mailto:bug-report@courselore.org"
+              >bug-report@courselore.org</a
+            >.
+          </p>
         `
       )
     );
