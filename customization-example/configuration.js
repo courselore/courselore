@@ -17,14 +17,6 @@ module.exports = async (require) => {
 
   const app = await courselore(path.join(__dirname, "../data"));
 
-  try {
-    await require(path.join(__dirname, "./configuration.local.js"))(require)(
-      app
-    );
-  } catch (error) {
-    if (error.code !== "MODULE_NOT_FOUND") throw error;
-  }
-
   const reverseProxy = express();
 
   reverseProxy.use(cookieSession({ secret: app.get("cookie secret") }));
@@ -32,8 +24,6 @@ module.exports = async (require) => {
   reverseProxy.use(app);
 
   reverseProxy.listen(new URL(app.get("url")).port, () => {
-    console.log(
-      `Demonstration/Development web server started at ${app.get("url")}`
-    );
+    console.log(`Server started at ${app.get("url")}`);
   });
 };

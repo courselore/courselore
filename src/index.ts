@@ -30,8 +30,6 @@ import rehypeStringify from "rehype-stringify";
 
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
-import inquirer from "inquirer";
-import prettier from "prettier";
 
 const VERSION = require("../package.json").version;
 
@@ -2956,127 +2954,15 @@ export default async function courselore(
 if (require.main === module)
   (async () => {
     console.log(`CourseLore/${VERSION}`);
-
-    const configuration = await loadConfiguration(
-      process.argv[2] ?? path.join(process.cwd(), "configuration.js")
-    );
-    await configuration(require);
-
-    async function loadConfiguration(
-      configurationFile: string
-    ): Promise<(require: NodeRequire) => Promise<void>> {
-      configurationFile = path.resolve(configurationFile);
-      try {
-        const configuration = require(configurationFile);
-        console.log(`Configuration loaded from ‘${configurationFile}’`);
-        return configuration;
-      } catch (error) {
-        if (error.code !== "MODULE_NOT_FOUND") {
-          console.error(
-            `Failed to load configuration from ‘${configurationFile}’ (probably there’s a problem with your configuration): ${error.message}`
-          );
-          process.exit(1);
-        }
-        switch (
-          (
-            await inquirer.prompt({
-              type: "list",
-              message: `There’s no configuration file at ‘${configurationFile}’. What would you like to do?`,
-              choices: [
-                `Create a configuration file at ‘${configurationFile}’`,
-                "Load or create a configuration file at a different place",
-                "Exit",
-              ],
-              name: "answer",
-            })
-          ).answer
-        ) {
-          case `Create a configuration file at ‘${configurationFile}’`:
-            switch (
-              (
-                await inquirer.prompt({
-                  type: "list",
-                  message:
-                    "What kind of configuration file would you like to create?",
-                  choices: ["Demonstration/Development", "Production"],
-                  name: "answer",
-                })
-              ).answer
-            ) {
-              case "Demonstration/Development":
-                let url: string | undefined;
-                if (
-                  (
-                    await inquirer.prompt({
-                      type: "list",
-                      name: "answer",
-                      message:
-                        "From where would you like to access this CourseLore demonstration?",
-                      choices: [
-                        "Only from this machine on which I’m running CourseLore",
-                        "From other devices as well (for example, my phone)",
-                      ],
-                    })
-                  ).answer ===
-                  "From other devices as well (for example, my phone)"
-                )
-                  url = (
-                    await inquirer.prompt({
-                      type: "input",
-                      name: "answer",
-                      message: `With what URL can other devices access this machine (for example, ‘http://<your-machine-name>.local:4000’)?`,
-                    })
-                  ).answer;
-                await fs.ensureDir(path.dirname(configurationFile));
-                await fs.writeFile(
-                  configurationFile,
-                  prettier.format(
-                    javascript`
-                      module.exports = async (require) => {
-                        const path = require("path");
-                        const courselore = require(".").default;
-                      
-                        const app = await courselore(path.join(__dirname, "data"));
-                      
-                        ${
-                          url === undefined
-                            ? javascript``
-                            : javascript`app.set("url", "${url}");`
-                        }
-      
-                        app.listen(new URL(app.get("url")).port, () => {
-                          console.log(
-                            ${'`Demonstration/Development web server started at ${app.get("url")}`'}
-                          );
-                        });
-                      };
-                    `,
-                    { parser: "babel" }
-                  )
-                );
-                console.log(
-                  `Created configuration file at ‘${configurationFile}’`
-                );
-                break;
-              case "Production":
-                console.error("TODO");
-                // app.disable("demonstration");
-                process.exit(1);
-            }
-            break;
-          case "Load or create a configuration file at a different place":
-            configurationFile = (
-              await inquirer.prompt({
-                type: "input",
-                message: "Where?",
-                name: "answer",
-              })
-            ).answer;
-            break;
-          case "Exit":
-            process.exit();
-        }
-        return await loadConfiguration(configurationFile);
-      }
+    const configurationFile =
+      process.argv[2] === undefined ? undefined : path.resolve(process.argv[2]);
+    if (configurationFile === undefined) {
+      const app = await courselore(path.join(process.cwd(), "data"));
+      app.listen(new URL(app.get("url")).port, () => {
+        console.log(`Server started at ${app.get("url")}`);
+      });
+    } else {
+      await require(configurationFile)(require);
+      console.log(`Configuration loaded from ‘${configurationFile}’.`);
     }
   })();
