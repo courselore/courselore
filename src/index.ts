@@ -40,7 +40,6 @@ export default async function courselore(
 
   app.set("url", "http://localhost:4000");
   app.set("administrator", "mailto:demonstration-development@courselore.org");
-
   app.enable("demonstration");
 
   const ROLES = ["staff", "student"] as const;
