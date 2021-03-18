@@ -229,7 +229,7 @@ export default async function courselore(
                 }
 
                 h1 {
-                  font-size: 1.3rem;;
+                  font-size: 1.3rem;
                   line-height: 1.3;
                   font-weight: 800;
                   margin-top: 1.5rem;
@@ -1139,13 +1139,13 @@ export default async function courselore(
                   />
                   <p>
                     <label>
-                      <strong>Name</strong><br />
+                      <strong>Name</strong>
                       <input type="text" name="name" required autofocus />
                     </label>
                   </p>
                   <p>
                     <label>
-                      <strong>Email</strong><br />
+                      <strong>Email</strong>
                       <input
                         type="email"
                         value="${originalAuthenticationToken.email}"
@@ -1557,7 +1557,7 @@ export default async function courselore(
                 `}"
               >
                 <label>
-                  <strong>Name</strong><br />
+                  <strong>Name</strong>
                   <input
                     type="text"
                     name="name"
@@ -1574,7 +1574,7 @@ export default async function courselore(
 
             <p>
               <label>
-                <strong>Email</strong><br />
+                <strong>Email</strong>
                 <input
                   type="email"
                   value="${req.session!.email}"
@@ -1624,7 +1624,7 @@ export default async function courselore(
             <form method="POST" action="${app.get("url")}/courses">
               <p>
                 <label>
-                  <strong>Name</strong><br />
+                  <strong>Name</strong>
                   <input
                     type="text"
                     name="name"
@@ -2010,7 +2010,7 @@ export default async function courselore(
                       `}"
                     >
                       <label>
-                        <strong>Name</strong><br />
+                        <strong>Name</strong>
                         <input
                           type="text"
                           name="name"
@@ -2827,7 +2827,7 @@ export default async function courselore(
             >
               <p>
                 <label>
-                  <strong>Title</strong><br />
+                  <strong>Title</strong>
                   <input type="text" name="title" autocomplete="off" required />
                 </label>
               </p>
