@@ -280,7 +280,6 @@ export default async function courselore(
                 select,
                 button {
                   all: unset;
-                  padding: 0.1rem 1rem;
                   border-style: solid;
                   border-color: gainsboro;
                   border-radius: 5px;
@@ -301,6 +300,7 @@ export default async function courselore(
                 select {
                   box-sizing: border-box;
                   width: 100%;
+                  padding: 0.1rem 1rem;
                   border-width: 1px;
                   transition: border-color 0.2s;
 
@@ -313,6 +313,7 @@ export default async function courselore(
                   font-size: 0.75rem;
                   text-align: center;
                   background-color: white;
+                  padding: 0.2rem 1rem;
                   border-width: 0.1px;
 
                   @media (prefers-color-scheme: dark) {
