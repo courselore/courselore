@@ -200,7 +200,7 @@ export default async function courselore(
                 */
 
                 body {
-                  font-size: 14px;
+                  font-size: 0.875rem;
                   line-height: 1.5;
                   font-family: "Public Sans", sans-serif;
                   -webkit-text-size-adjust: 100%;
@@ -223,23 +223,130 @@ export default async function courselore(
                   height: auto;
                 }
 
+                img {
+                  border-radius: 10px;
+                  background-color: white;
+                }
+
                 h1 {
+                  font-size: 1.3rem;;
                   line-height: 1.3;
-                  font-size: large;
                   font-weight: 800;
-                  margin-top: 1.5em;
+                  margin-top: 1.5rem;
                 }
 
                 pre,
                 div.math-display {
-                  overflow-wrap: normal;
                   overflow: auto;
+                  overflow-wrap: normal;
                 }
 
                 pre {
                   line-height: 1.3;
                 }
 
+                a {
+                  color: inherit;
+                  transition: color 0.2s;
+
+                  &:hover {
+                    color: #29adff;
+                  }
+
+                  h1 & {
+                    text-decoration: none;
+                  }
+                }
+
+                label strong:first-child {
+                  display: block;
+                }
+
+                input[type="text"],
+                input[type="email"],
+                textarea,
+                select,
+                button {
+                  all: unset;
+                  padding: 0.1rem 1rem;
+                  border-style: solid;
+                  border-color: gainsboro;
+                  border-radius: 5px;
+                  box-shadow: inset 0px 1px 1px #ffffff10, 0px 1px 3px #00000010;
+
+                  @media (prefers-color-scheme: dark) {
+                    border-color: dimgray;
+                  }
+                }
+
+                input[type="text"],
+                input[type="email"],
+                textarea,
+                select {
+                  box-sizing: border-box;
+                  width: 100%;
+                  border-width: 1px;
+                  transition: border-color 0.2s;
+
+                  &:focus {
+                    border-color: #29adff;
+                  }
+                }
+
+                button {
+                  font-size: 0.75rem;
+                  border-width: 0.1px;
+
+                  @media (prefers-color-scheme: dark) {
+                    background-color: #5a5a5a;
+                  }
+
+                  &:active {
+                    color: white;
+                    background-color: #29adff;
+                    border-color: #29adff;
+                  }
+                }
+
+                .hint {
+                  font-size: 0.75rem;
+                  line-height: 1.3;
+                  color: gray;
+
+                  p& {
+                    margin-top: -0.7rem;
+                  }
+
+                  span& {
+                    display: block;
+                    margin-top: 0.4rem;
+                  }
+                }
+
+                .full-width {
+                  box-sizing: border-box;
+                  width: 100%;
+                }
+
+                div.demonstration {
+                  padding-left: 0.5rem;
+                  border-left: 1rem solid #83769c;
+                  margin-left: -1.5rem;
+
+                  &::before {
+                    content: "Demonstration";
+                    font-size: 0.3rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    color: white;
+                    position: absolute;
+                    transform: translate(calc(-50% - 1rem)) rotate(-90deg)
+                      translate(-50%);
+                  }
+                }
+
+                /*
                 div.demonstration,
                 div.TODO,
                 input[type="text"],
@@ -255,7 +362,7 @@ export default async function courselore(
                 div.TODO {
                   background-color: whitesmoke;
                   box-sizing: border-box;
-                  padding: 0 1em;
+                  padding: 0 1rem;
 
                   @media (prefers-color-scheme: dark) {
                     background-color: #444444;
@@ -266,14 +373,14 @@ export default async function courselore(
                   content: "TODO";
                   font-weight: bold;
                   display: block;
-                  margin-top: 0.5em;
+                  margin-top: 0.5rem;
                 }
 
                 label small.hint {
                   color: gray;
                   line-height: 1.3;
                   display: block;
-                  margin-top: 0.5em;
+                  margin-top: 0.5rem;
                 }
 
                 input[type="text"],
@@ -282,7 +389,7 @@ export default async function courselore(
                 select,
                 button {
                   font-family: "Public Sans", sans-serif;
-                  font-size: 1em;
+                  font-size: 1rem;
                   line-height: 1.5;
                   margin: 0;
                   outline: none;
@@ -306,7 +413,7 @@ export default async function courselore(
                 input[type="text"],
                 input[type="email"],
                 select {
-                  padding: 0.2em 1em;
+                  padding: 0.2rem 1rem;
                   -webkit-appearance: none;
 
                   &:disabled {
@@ -315,7 +422,7 @@ export default async function courselore(
                 }
 
                 textarea {
-                  padding: 0.5em 1em;
+                  padding: 0.5rem 1rem;
                   resize: vertical;
                 }
 
@@ -325,13 +432,13 @@ export default async function courselore(
 
                 select {
                   text-align-last: center;
-                  padding-right: 2em;
+                  padding-right: 2rem;
                 }
 
                 .select-wrapper::after {
                   content: "▾";
                   position: absolute;
-                  transform: translate(-1.5em, 4px);
+                  transform: translate(-1.5rem, 4px);
                 }
 
                 a,
@@ -383,7 +490,7 @@ export default async function courselore(
                 a.button {
                   color: #ffffffd4;
                   background-color: #83769c;
-                  padding: 0.2em 1em;
+                  padding: 0.2rem 1rem;
                   border: 1px solid #83769c;
                   border-radius: 10px;
                   box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
@@ -419,7 +526,7 @@ export default async function courselore(
                 }
 
                 summary {
-                  margin: 1em 0;
+                  margin: 1rem 0;
                   outline: none;
                   cursor: pointer;
 
@@ -440,6 +547,7 @@ export default async function courselore(
                 .dim {
                   color: gray;
                 }
+                */
 
                 [hidden] {
                   display: none !important;
@@ -469,6 +577,26 @@ export default async function courselore(
             `}"
           >
             $${body}
+            $${app.get("demonstration")
+              ? html`<p
+                  style="${css`
+                    font-size: 0.3rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    color: white;
+                    background-color: #83769c;
+                    padding: 0.1rem 1rem;
+                    border-top-left-radius: 5px;
+                    margin: 0;
+                    position: fixed;
+                    right: 0;
+                    bottom: 0;
+                  `}"
+                >
+                  Demonstration
+                </p>`
+              : html``}
             <script src="${app.get(
                 "url"
               )}/node_modules/validator/validator.min.js"></script>
@@ -604,7 +732,7 @@ export default async function courselore(
           align-items: center;
 
           & > * + * {
-            margin-left: 0.5em;
+            margin-left: 0.5rem;
           }
         `}"
       >
@@ -644,7 +772,7 @@ export default async function courselore(
         </script>
         <span
           style="${css`
-            font-size: large;
+            font-size: 1.3rem;
             font-weight: 800;
           `}"
           >CourseLore</span
@@ -766,14 +894,12 @@ export default async function courselore(
               margin: 0 auto;
             `}"
           >
-            <header>
-              <p
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                $${logo()}
-              </p>
+            <header
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              <h1>$${logo()}</h1>
             </header>
             <main>$${body}</main>
           </div>
@@ -781,8 +907,12 @@ export default async function courselore(
       )
   );
 
+  app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(false), (req, res) => {
+    res.redirect(`${app.get("url")}/authenticate`);
+  });
+
   app.get<{}, HTML, {}, {}, {}>(
-    ["/", "/authenticate"],
+    "/authenticate",
     ...isAuthenticated(false),
     (req, res) => {
       res.send(
@@ -793,51 +923,28 @@ export default async function courselore(
           html`
             <div
               style="${css`
-                text-align: center;
-              `}"
-            >
-              <p>
-                <a href="${app.get("url")}/sign-in" class="button outline"
-                  >Sign in</a
-                >
-                <a href="${app.get("url")}/sign-up" class="button">Sign up</a>
-              </p>
-            </div>
-          `
-        )
-      );
-    }
-  );
+                display: flex;
 
-  app.get<{}, HTML, {}, { redirect?: string }, {}>(
-    ["/sign-up", "/sign-in"],
-    ...isAuthenticated(false),
-    (req, res) => {
-      const preposition = req.path === "/sign-up" ? "up" : "in";
-      const alternativePreposition = preposition === "up" ? "in" : "up";
-      res.send(
-        app.get("layout unauthenticated")(
-          req,
-          res,
-          html`<title>Sign ${preposition} · CourseLore</title>`,
-          html`
-            <div
-              style="${css`
-                text-align: center;
+                & > form {
+                  flex: 1;
+                  text-align: center;
+                }
+
+                & > * + * {
+                  margin-left: 3rem;
+                }
               `}"
             >
-              <h1>Sign ${preposition}</h1>
-              <form
-                method="POST"
-                style="${css`
-                  max-width: 300px;
-                  margin: 0 auto;
-                  text-align: left;
-                `}"
-              >
-                <p>
+              <form method="POST">
+                <h1>Sign in</h1>
+                <p class="hint">Returning user</p>
+                <p
+                  style="${css`
+                    height: 6rem;
+                  `}"
+                >
                   <label>
-                    <strong>Email</strong><br />
+                    <strong>Email</strong>
                     <input
                       type="email"
                       name="email"
@@ -845,41 +952,39 @@ export default async function courselore(
                       required
                       autofocus
                     />
-                    $${preposition === "up"
-                      ? html`
-                          <br />
-                          <small class="hint">
-                            We suggest using the email address you use at your
-                            educational institution.
-                          </small>
-                        `
-                      : html``}
                   </label>
                 </p>
-                <p
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <button>Continue</button>
+                <p>
+                  <button class="full-width">Continue</button>
                 </p>
               </form>
-              <p>
-                <small>
-                  ${preposition === "up"
-                    ? "Already have an account?"
-                    : "Don’t have an account yet?"}
-                  <a
-                    href="${app.get(
-                      "url"
-                    )}/sign-${alternativePreposition}${new URL(
-                      req.originalUrl,
-                      app.get("url")
-                    ).search}"
-                    >Sign ${alternativePreposition}</a
-                  >.
-                </small>
-              </p>
+
+              <form method="POST">
+                <h1>Sign up</h1>
+                <p class="hint">New user</p>
+                <p
+                  style="${css`
+                    height: 6rem;
+                  `}"
+                >
+                  <label>
+                    <strong>Email</strong>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="name@educational-email.edu"
+                      required
+                    />
+                    <span class="hint">
+                      We suggest using the email address you use at your
+                      educational institution.
+                    </span>
+                  </label>
+                </p>
+                <p>
+                  <button class="full-width">Continue</button>
+                </p>
+              </form>
             </div>
           `
         )
@@ -899,7 +1004,7 @@ export default async function courselore(
   }
 
   app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
-    ["/sign-up", "/sign-in"],
+    "/authenticate",
     ...isAuthenticated(false),
     (req, res) => {
       if (
@@ -909,30 +1014,23 @@ export default async function courselore(
         throw new ValidationError();
 
       const authenticationToken = newAuthenticationToken(req.body.email);
-      const realPreposition =
-        database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${req.body.email}) AS "exists"`
-        )!.exists === 0
-          ? "up"
-          : "in";
-      const magicLink = `${app.get("url")}/sign-${realPreposition}/${
+      const magicLink = `${app.get("url")}/authenticate/${
         authenticationToken.token
       }${new URL(req.originalUrl, app.get("url")).search}`;
       const sentEmail = sendEmail({
         to: req.body.email,
-        subject: `Magic sign-${realPreposition} link`,
+        subject: `Magic authentication link`,
         body: html`
           <p><a href="${magicLink}">${magicLink}</a></p>
           <p><small>Expires in 10 minutes and may only be used once.</small></p>
         `,
       });
 
-      const pretendPreposition = req.path === "/sign-up" ? "up" : "in";
       res.send(
         app.get("layout unauthenticated")(
           req,
           res,
-          html`<title>Sign ${pretendPreposition} · CourseLore</title>`,
+          html`<title>Authenticate · CourseLore</title>`,
           html`
             <div
               style="${css`
@@ -940,17 +1038,14 @@ export default async function courselore(
               `}"
             >
               <p>
-                To continue with sign ${pretendPreposition}, check
-                ${req.body.email} and click on the magic
-                sign-${pretendPreposition} link.
+                To continue, check ${req.body.email} and click on the magic
+                link.
               </p>
               <form method="POST">
                 <input type="hidden" name="email" value="${req.body.email}" />
                 <p>
-                  <small>
-                    Didn’t receive the email? Already checked the spam folder?
-                    <button class="a">Resend</button>.
-                  </small>
+                  Didn’t receive the email? Already checked the spam folder?<br />
+                  <button>Resend</button>
                 </p>
               </form>
             </div>
@@ -1258,7 +1353,7 @@ export default async function courselore(
             style="${css`
               background-color: whitesmoke;
               max-width: 300px;
-              padding: 0.5em 1em;
+              padding: 0.5rem 1rem;
               border: 1px solid darkgray;
               border-radius: 10px;
               box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
@@ -1410,8 +1505,8 @@ export default async function courselore(
                           ><span
                             style="${css`
                               display: inline-block;
-                              width: 0.8em;
-                              height: 0.8em;
+                              width: 0.8rem;
+                              height: 0.8rem;
                               background-color: ${course.accentColor};
                               border-radius: 50%;
                             `}"
@@ -1452,7 +1547,7 @@ export default async function courselore(
                 align-items: flex-end;
 
                 & > * + * {
-                  margin-left: 1em;
+                  margin-left: 1rem;
                 }
               `}"
             >
@@ -1640,7 +1735,7 @@ export default async function courselore(
         <p
           style="${css`
             & > * + * {
-              margin-left: 0.5em;
+              margin-left: 0.5rem;
             }
 
             & > button {
@@ -1704,7 +1799,7 @@ export default async function courselore(
         <div class="write">
           <p
             style="${css`
-              margin-top: -0.8em;
+              margin-top: -0.8rem;
             `}"
           >
             <textarea
@@ -1905,7 +2000,7 @@ export default async function courselore(
                       align-items: flex-end;
 
                       & > * + * {
-                        margin-left: 1em;
+                        margin-left: 1rem;
                       }
                     `}"
                   >
@@ -2021,8 +2116,8 @@ export default async function courselore(
                         ? "checked"
                         : ""}"
                       style="${css`
-                        width: 2em;
-                        height: 2em;
+                        width: 2rem;
+                        height: 2rem;
                         cursor: pointer;
                       `}"
                     >
@@ -2061,7 +2156,7 @@ export default async function courselore(
             )}
             <p
               style="${css`
-                margin-top: -0.3em;
+                margin-top: -0.3rem;
               `}"
             >
               <label>
@@ -2302,7 +2397,7 @@ export default async function courselore(
               <header
                 style="${css`
                   border-bottom: 1px solid silver;
-                  padding: 0 1em;
+                  padding: 0 1rem;
                   overflow: auto;
 
                   @media (prefers-color-scheme: dark) {
@@ -2313,7 +2408,7 @@ export default async function courselore(
                 $${logoAndMenu(req, res)}
                 <p
                   style="${css`
-                    margin-top: -1em;
+                    margin-top: -1rem;
                   `}"
                 >
                   <a
@@ -2328,7 +2423,7 @@ export default async function courselore(
                   : html`
                       <details
                         style="${css`
-                          margin-top: -1em;
+                          margin-top: -1rem;
                         `}"
                       >
                         <summary
@@ -2365,7 +2460,7 @@ export default async function courselore(
                               display: flex;
 
                               & > * + * {
-                                margin-left: 0.3em;
+                                margin-left: 0.3rem;
                               }
                             `}"
                           >
@@ -2382,7 +2477,7 @@ export default async function courselore(
                           style="${css`
                             background-color: whitesmoke;
                             max-width: 300px;
-                            padding: 0.5em 1em;
+                            padding: 0.5rem 1rem;
                             border: 1px solid darkgray;
                             border-radius: 10px;
                             box-shadow: inset 0px 1px #ffffff22,
@@ -2431,8 +2526,8 @@ export default async function courselore(
                                   ><span
                                     style="${css`
                                       display: inline-block;
-                                      width: 0.8em;
-                                      height: 0.8em;
+                                      width: 0.8rem;
+                                      height: 0.8rem;
                                       background-color: ${course.accentColor};
                                       border-radius: 50%;
                                     `}"
@@ -2450,7 +2545,7 @@ export default async function courselore(
               <div
                 style="${css`
                   flex: 1;
-                  padding: 0 1em;
+                  padding: 0 1rem;
                   overflow: auto;
                 `}"
               >
@@ -2490,8 +2585,8 @@ export default async function courselore(
                                 `
                               : css``}
                             display: block;
-                            padding: 1em;
-                            margin: 0 -1em;
+                            padding: 1rem;
+                            margin: 0 -1rem;
                           `}"
                         >
                           <strong>${thread.title}</strong><br />
@@ -2519,11 +2614,11 @@ export default async function courselore(
               <div
                 style="${css`
                   max-width: 800px;
-                  padding: 0 1em;
+                  padding: 0 1rem;
                   margin: 0 auto;
 
                   & > h1:first-child {
-                    margin-top: 1em;
+                    margin-top: 1rem;
                   }
                 `}"
               >
@@ -2851,8 +2946,8 @@ export default async function courselore(
       return html`
         <div class="demonstration">
           <p>
-            CourseLore is running in demonstration mode, so it doesn’t send
-            emails. Here’s what would have been sent:
+            CourseLore doesn’t send emails in demonstration mode. Here’s what
+            would have been sent:
           </p>
           <p><strong>From:</strong> CourseLore</p>
           <p><strong>To:</strong> ${to}</p>
@@ -2877,13 +2972,13 @@ export default async function courselore(
           class="loading"
           hidden
           style="${css`
-            margin: 3em 0;
+            margin: 3rem 0;
             display: flex;
             justify-content: center;
             align-items: center;
 
             & > * + * {
-              margin-left: 0.5em;
+              margin-left: 0.5rem;
             }
           `}"
         >
