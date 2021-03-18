@@ -330,7 +330,7 @@ export default async function courselore(
                   font-size: 0.75rem;
                   line-height: 1.3;
                   color: gray;
-                  margin-top: -0.7rem;
+                  margin-top: -1rem;
                 }
 
                 .full-width {
@@ -1282,8 +1282,8 @@ export default async function courselore(
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
 
-  app.post<{}, any, {}, {}, {}>(
-    "/sign-out",
+  app.delete<{}, any, {}, {}, {}>(
+    "/authenticate",
     ...isAuthenticated(true),
     (req, res) => {
       delete req.session!.email;
@@ -1396,26 +1396,24 @@ export default async function courselore(
           <nav
             style="${css`
               max-width: 300px;
-              transform: translate(calc(-100% + 2rem));
+              transform: translate(calc(-100% + 2.3rem), -0.5rem);
 
               &::before {
                 right: 1rem;
               }
             `}"
           >
-            <p>
-              <strong>${user.name}</strong><br />
-              <small class="dim">${req.session!.email}</small>
-            </p>
+            <p><strong>${user.name}</strong></p>
+            <p class="hint">${req.session!.email}</p>
             <form
               method="POST"
               action="${app.get("url")}/authenticate?_method=DELETE"
             >
               <p>
-                <button>Sign out</button>
+                <button>Sign Out</button>
               </p>
             </form>
-            <p><a href="${app.get("url")}/settings">Settings</a></p>
+            <p><a href="${app.get("url")}/settings">User settings</a></p>
             $${course === undefined
               ? html``
               : html`
@@ -1427,9 +1425,7 @@ export default async function courselore(
                     >
                   </p>
                 `}
-            <p>
-              <a href="${app.get("url")}/courses/new">New course</a>
-            </p>
+            <p><a href="${app.get("url")}/courses/new">New course</a></p>
           </nav>
         </details>
       </div>
@@ -1537,9 +1533,9 @@ export default async function courselore(
         app.get("layout authenticated")(
           req,
           res,
-          html`<title>Settings · CourseLore</title>`,
+          html`<title>User settings · CourseLore</title>`,
           html`
-            <h1>Settings</h1>
+            <h1>User settings</h1>
 
             <form
               method="POST"
@@ -1570,7 +1566,7 @@ export default async function courselore(
                 </label>
               </p>
               <p>
-                <button>Change name</button>
+                <button>Change Name</button>
               </p>
             </form>
 
@@ -1633,7 +1629,7 @@ export default async function courselore(
                 </label>
               </p>
               <p>
-                <button>Create course</button>
+                <button>Create Course</button>
               </p>
             </form>
           `
@@ -2812,7 +2808,7 @@ export default async function courselore(
                   text-align: right;
                 `}"
               >
-                <button>Create thread</button>
+                <button>Create Thread</button>
               </p>
             </form>
           `
