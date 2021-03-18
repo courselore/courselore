@@ -43,6 +43,99 @@ export default async function courselore(
 
   app.enable("demonstration");
 
+  const ROLES = ["staff", "student"] as const;
+  type Role = typeof ROLES[number];
+  const ACCENT_COLORS = [
+    "#83769c",
+    "#ff77a8",
+    "#29adff",
+    "#ffa300",
+    "#ff004d",
+    "#7e2553",
+    "#008751",
+    "#ab5236",
+    "#1d2b53",
+    "#5f574f",
+  ] as const;
+  type AccentColor = typeof ACCENT_COLORS[number];
+
+  await fs.ensureDir(rootDirectory);
+  const database = new Database(path.join(rootDirectory, "courselore.db"));
+  app.set("database", database);
+  databaseMigrate(database, [
+    sql`
+      CREATE TABLE "users" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "email" TEXT NOT NULL UNIQUE,
+        "name" TEXT NOT NULL
+      );
+
+      CREATE TABLE "courses" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "reference" TEXT NOT NULL UNIQUE,
+        "name" TEXT NOT NULL
+      );
+
+      CREATE TABLE "enrollments" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "user" INTEGER NOT NULL REFERENCES "users",
+        "course" INTEGER NOT NULL REFERENCES "courses",
+        "role" TEXT NOT NULL CHECK ("role" IN ('staff', 'student')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
+        UNIQUE ("user", "course")
+      );
+
+      CREATE TABLE "threads" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "course" INTEGER NOT NULL REFERENCES "courses",
+        "reference" TEXT NOT NULL,
+        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        "title" TEXT NOT NULL,
+        UNIQUE ("course", "reference")
+      );
+
+      CREATE TABLE "posts" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "thread" INTEGER NOT NULL REFERENCES "threads",
+        "reference" TEXT NOT NULL,
+        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        "content" TEXT NOT NULL,
+        UNIQUE ("thread", "reference")
+      );
+
+      CREATE TABLE "settings" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "key" TEXT NOT NULL UNIQUE,
+        "value" TEXT NOT NULL
+      );
+
+      CREATE TABLE "authenticationTokens" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+10 minutes')),
+        "token" TEXT NOT NULL UNIQUE,
+        "email" TEXT NOT NULL UNIQUE
+      );
+
+      CREATE TABLE "emailQueue" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "attemptedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("attemptedAt")),
+        "tryAfter" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "attempts" INTEGER NOT NULL DEFAULT 0,
+        "to" TEXT NOT NULL,
+        "subject" TEXT NOT NULL,
+        "body" TEXT NOT NULL
+      );
+    `,
+  ]);
+
   app.set(
     "layout base",
     (
@@ -599,99 +692,6 @@ export default async function courselore(
     })
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
-
-  const ROLES = ["staff", "student"] as const;
-  type Role = typeof ROLES[number];
-  const ACCENT_COLORS = [
-    "#83769c",
-    "#ff77a8",
-    "#29adff",
-    "#ffa300",
-    "#ff004d",
-    "#7e2553",
-    "#008751",
-    "#ab5236",
-    "#1d2b53",
-    "#5f574f",
-  ] as const;
-  type AccentColor = typeof ACCENT_COLORS[number];
-
-  await fs.ensureDir(rootDirectory);
-  const database = new Database(path.join(rootDirectory, "courselore.db"));
-  app.set("database", database);
-  databaseMigrate(database, [
-    sql`
-      CREATE TABLE "users" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "email" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL
-      );
-
-      CREATE TABLE "courses" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "reference" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL
-      );
-
-      CREATE TABLE "enrollments" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "user" INTEGER NOT NULL REFERENCES "users",
-        "course" INTEGER NOT NULL REFERENCES "courses",
-        "role" TEXT NOT NULL CHECK ("role" IN ('staff', 'student')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
-        UNIQUE ("user", "course")
-      );
-
-      CREATE TABLE "threads" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "course" INTEGER NOT NULL REFERENCES "courses",
-        "reference" TEXT NOT NULL,
-        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "title" TEXT NOT NULL,
-        UNIQUE ("course", "reference")
-      );
-
-      CREATE TABLE "posts" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "updatedAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "thread" INTEGER NOT NULL REFERENCES "threads",
-        "reference" TEXT NOT NULL,
-        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "content" TEXT NOT NULL,
-        UNIQUE ("thread", "reference")
-      );
-
-      CREATE TABLE "settings" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "key" TEXT NOT NULL UNIQUE,
-        "value" TEXT NOT NULL
-      );
-
-      CREATE TABLE "authenticationTokens" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+10 minutes')),
-        "token" TEXT NOT NULL UNIQUE,
-        "email" TEXT NOT NULL UNIQUE
-      );
-
-      CREATE TABLE "emailQueue" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "attemptedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("attemptedAt")),
-        "tryAfter" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "attempts" INTEGER NOT NULL DEFAULT 0,
-        "to" TEXT NOT NULL,
-        "subject" TEXT NOT NULL,
-        "body" TEXT NOT NULL
-      );
-    `,
-  ]);
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(express.urlencoded({ extended: true }));
