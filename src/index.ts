@@ -162,7 +162,7 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+1 year')),
         "token" TEXT NOT NULL UNIQUE,
-        "users" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
       );
 
       CREATE TABLE "emailQueue" (
@@ -334,9 +334,14 @@ export default async function courselore(
                   border: 1px solid gainsboro;
                   border-radius: 5px;
                   box-shadow: inset 0px 1px 1px #ffffff10, 0px 1px 3px #00000010;
+                  transition: border-color 0.2s;
 
                   @media (prefers-color-scheme: dark) {
                     border-color: dimgray;
+                  }
+
+                  &:focus {
+                    border-color: #29adff;
                   }
 
                   &:disabled {
@@ -357,11 +362,6 @@ export default async function courselore(
                 select {
                   box-sizing: border-box;
                   width: 100%;
-                  transition: border-color 0.2s;
-
-                  &:focus {
-                    border-color: #29adff;
-                  }
                 }
 
                 button {
@@ -824,28 +824,9 @@ export default async function courselore(
     })
   );
 
-  const isAuthenticated: (
-    isAuthenticated: boolean
-  ) => express.RequestHandler<{}, any, {}, {}, {}>[] = (isAuthenticated) => [
+  const isUnauthenticated: express.RequestHandler<{}, any, {}, {}, {}>[] = [
     (req, res, next) => {
-      switch (isAuthenticated) {
-        case false:
-          if (req.session!.email !== undefined) return next("route");
-          break;
-        case true:
-          if (req.session!.email === undefined) return next("route");
-          if (
-            database.get<{ exists: number }>(
-              sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${
-                req.session!.email
-              }) AS "exists"`
-            )!.exists === 0
-          ) {
-            delete req.session!.email;
-            return next("route");
-          }
-          break;
-      }
+      if (req.session!.token !== undefined) return next("route");
       next();
     },
   ];
@@ -877,13 +858,13 @@ export default async function courselore(
       )
   );
 
-  app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(false), (req, res) => {
+  app.get<{}, HTML, {}, {}, {}>("/", ...isUnauthenticated, (req, res) => {
     res.redirect(`${app.get("url")}/authenticate`);
   });
 
   app.get<{}, HTML, {}, {}, {}>(
     "/authenticate",
-    ...isAuthenticated(false),
+    ...isUnauthenticated,
     (req, res) => {
       res.send(
         app.get("layout unauthenticated")(
@@ -923,9 +904,7 @@ export default async function courselore(
                     />
                   </label>
                 </p>
-                <p>
-                  <button class="full-width">Continue</button>
-                </p>
+                <p><button class="full-width">Continue</button></p>
               </form>
 
               <form method="POST">
@@ -950,9 +929,7 @@ export default async function courselore(
                     </small>
                   </label>
                 </p>
-                <p>
-                  <button class="full-width">Continue</button>
-                </p>
+                <p><button class="full-width">Continue</button></p>
               </form>
             </div>
           `
@@ -974,7 +951,7 @@ export default async function courselore(
 
   app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
     "/authenticate",
-    ...isAuthenticated(false),
+    ...isUnauthenticated,
     (req, res) => {
       if (
         typeof req.body.email !== "string" ||
@@ -1036,10 +1013,18 @@ export default async function courselore(
     return authenticationToken;
   }
 
+  function newSession(userId: number): string {
+    const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
+    database.run(
+      sql`INSERT INTO "sessions" ("token", "user") VALUES (${token}, ${userId})`
+    );
+    return token;
+  }
+
   // TODO: What should happen if the person clicks on a magic link but they’re already authenticated?
   app.get<{ token: string }, HTML, {}, { redirect?: string }, {}>(
     "/authenticate/:token",
-    ...isAuthenticated(false),
+    ...isUnauthenticated,
     (req, res) => {
       const search = new URL(req.originalUrl, app.get("url")).search;
       const originalAuthenticationToken = getAuthenticationToken(
@@ -1060,11 +1045,10 @@ export default async function courselore(
             `
           )
         );
-      if (
-        database.get<{ exists: number }>(
-          sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${originalAuthenticationToken.email}) AS "exists"`
-        )!.exists === 0
-      ) {
+      const user = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "users" WHERE "email" = ${originalAuthenticationToken.email}`
+      );
+      if (user === undefined) {
         const aNewAuthenticationToken = newAuthenticationToken(
           originalAuthenticationToken.email
         );
@@ -1112,7 +1096,7 @@ export default async function courselore(
           )
         );
       }
-      req.session!.email = originalAuthenticationToken.email;
+      req.session!.token = newSession(user.id);
       res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
     }
   );
@@ -1123,7 +1107,7 @@ export default async function courselore(
     { token?: string; name?: string },
     { redirect?: string },
     {}
-  >("/users", ...isAuthenticated(false), (req, res) => {
+  >("/users", ...isUnauthenticated, (req, res) => {
     if (
       typeof req.body.token !== "string" ||
       validator.isEmpty(req.body.token, { ignore_whitespace: true }) ||
@@ -1158,26 +1142,58 @@ export default async function courselore(
           `
         )
       );
-    database.run(
+    const userId = database.run(
       sql`INSERT INTO "users" ("email", "name") VALUES (${authenticationToken.email}, ${req.body.name})`
-    );
-    req.session!.email = authenticationToken.email;
+    ).lastInsertRowid as number;
+    req.session!.token = newSession(userId);
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
 
-  app.delete<{}, any, {}, {}, {}>(
+  const isAuthenticated: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    { user: User }
+  >[] = [
+    (req, res, next) => {
+      if (req.session!.token === undefined) return next("route");
+      const user = database.get<User>(sql`
+        SELECT "users"."id", "users"."email", "users"."name"
+        FROM "users"
+        JOIN "sessions" ON "users"."id" = "sessions"."user"
+        WHERE "sessions"."token" = ${req.session!.token} AND
+              CURRENT_TIMESTAMP < "sessions"."expiresAt"
+      `);
+      if (user === undefined) {
+        delete req.session!.token;
+        return next("route");
+      }
+      res.locals.user = user;
+      next();
+    },
+  ];
+
+  app.delete<{}, any, {}, {}, { user: User }>(
     "/authenticate",
-    ...isAuthenticated(true),
+    ...isAuthenticated,
     (req, res) => {
-      delete req.session!.email;
+      delete req.session!.token;
       res.redirect(`${app.get("url")}/`);
     }
   );
 
+  /*
   app.set(
     "layout authenticated",
     (
-      req: express.Request<{ courseReference?: string }, any, {}, {}, {}>,
+      req: express.Request<
+        { courseReference?: string },
+        any,
+        {},
+        {},
+        { user: User }
+      >,
       res: express.Response<any, {}>,
       head: HTML,
       body: HTML
@@ -1315,7 +1331,7 @@ export default async function courselore(
     `;
   }
 
-  app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated(true), (req, res) => {
+  app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated, (req, res) => {
     const user = database.get<{ name: string }>(
       sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
     )!;
@@ -1404,74 +1420,70 @@ export default async function courselore(
     }
   });
 
-  app.get<{}, HTML, {}, {}, {}>(
-    "/settings",
-    ...isAuthenticated(true),
-    (req, res) => {
-      const user = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
+  app.get<{}, HTML, {}, {}, {}>("/settings", ...isAuthenticated, (req, res) => {
+    const user = database.get<{ name: string }>(
+      sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
+    )!;
 
-      res.send(
-        app.get("layout authenticated")(
-          req,
-          res,
-          html`<title>User settings · CourseLore</title>`,
-          html`
-            <h1>User settings</h1>
+    res.send(
+      app.get("layout authenticated")(
+        req,
+        res,
+        html`<title>User settings · CourseLore</title>`,
+        html`
+          <h1>User settings</h1>
 
-            <form
-              method="POST"
-              action="${app.get("url")}/settings?_method=PATCH"
+          <form
+            method="POST"
+            action="${app.get("url")}/settings?_method=PATCH"
+            style="${css`
+              display: flex;
+              align-items: flex-end;
+
+              & > * + * {
+                margin-left: 1rem;
+              }
+            `}"
+          >
+            <p
               style="${css`
-                display: flex;
-                align-items: flex-end;
-
-                & > * + * {
-                  margin-left: 1rem;
-                }
+                flex: 1;
               `}"
             >
-              <p
-                style="${css`
-                  flex: 1;
-                `}"
-              >
-                <label>
-                  <strong>Name</strong>
-                  <input
-                    type="text"
-                    name="name"
-                    autocomplete="off"
-                    required
-                    value="${user.name}"
-                  />
-                </label>
-              </p>
-              <p>
-                <button>Change Name</button>
-              </p>
-            </form>
-
-            <p>
               <label>
-                <strong>Email</strong>
-                <input type="email" value="${req.session!.email}" disabled />
-                <small class="hint">
-                  Your email is your identity in CourseLore and it can’t be
-                  changed.
-                </small>
+                <strong>Name</strong>
+                <input
+                  type="text"
+                  name="name"
+                  autocomplete="off"
+                  required
+                  value="${user.name}"
+                />
               </label>
             </p>
-          `
-        )
-      );
-    }
-  );
+            <p>
+              <button>Change Name</button>
+            </p>
+          </form>
+
+          <p>
+            <label>
+              <strong>Email</strong>
+              <input type="email" value="${req.session!.email}" disabled />
+              <small class="hint">
+                Your email is your identity in CourseLore and it can’t be
+                changed.
+              </small>
+            </label>
+          </p>
+        `
+      )
+    );
+  });
 
   app.patch<{}, any, { name?: string }, {}, {}>(
     "/settings",
-    ...isAuthenticated(true),
+    ...isAuthenticated,
     (req, res) => {
       if (typeof req.body.name === "string") {
         if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
@@ -1489,7 +1501,7 @@ export default async function courselore(
 
   app.get<{}, HTML, {}, {}, {}>(
     "/courses/new",
-    ...isAuthenticated(true),
+    ...isAuthenticated,
     (req, res) => {
       res.send(
         app.get("layout authenticated")(
@@ -1523,7 +1535,7 @@ export default async function courselore(
 
   app.post<{}, any, { name?: string }, {}, {}>(
     "/courses",
-    ...isAuthenticated(true),
+    ...isAuthenticated,
     (req, res) => {
       if (
         typeof req.body.name !== "string" ||
@@ -1584,7 +1596,7 @@ export default async function courselore(
     {},
     {}
   >[] = [
-    ...isAuthenticated(true),
+    ...isAuthenticated,
     (req, res, next) => {
       if (
         database.get<{ exists: number }>(
@@ -1721,7 +1733,7 @@ export default async function courselore(
 
   app.post<{}, HTML, { content?: string }, {}, {}>(
     "/preview",
-    ...isAuthenticated(true),
+    ...isAuthenticated,
     (req, res) => {
       if (
         typeof req.body.content !== "string" ||
@@ -2697,7 +2709,7 @@ export default async function courselore(
     }
   );
 
-  app.use(isAuthenticated(true));
+  app.use(isAuthenticated);
 
   app.use<{}, HTML, {}, {}, {}>((req, res) => {
     if (req.session!.email === undefined)
@@ -2722,6 +2734,7 @@ export default async function courselore(
       )
     );
   });
+  */
 
   class ValidationError extends Error {}
 
