@@ -425,6 +425,7 @@ export default async function courselore(
 
                   & > summary + * {
                     background-color: whitesmoke;
+                    max-width: 300px;
                     padding: 0 1rem;
                     border: 1px solid darkgray;
                     border-radius: 10px;
@@ -832,10 +833,16 @@ export default async function courselore(
   ];
 
   app.set(
-    "layout unauthenticated",
+    "layout main",
     (
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        { user?: User; enrollment?: Enrollment }
+      >,
+      res: express.Response<any, { user?: User; enrollment?: Enrollment }>,
       head: HTML,
       body: HTML
     ): HTML =>
@@ -846,17 +853,103 @@ export default async function courselore(
         html`
           <div
             style="${css`
-              text-align: center;
               max-width: 600px;
               margin: 0 auto;
+
+              ${res.locals.user !== undefined
+                ? css``
+                : css`
+                    text-align: center;
+                  `}
+
+              ${res.locals.enrollment === undefined
+                ? css``
+                : css`
+                    border-top: 10px solid ${res.locals.enrollment.accentColor};
+                  `}
             `}"
           >
-            <header>$${logo()}</header>
+            <header>
+              $${res.locals.user === undefined
+                ? logo()
+                : logoAndMenu(req as any, res as any)}
+            </header>
             <main>$${body}</main>
           </div>
         `
       )
   );
+
+  function logoAndMenu(
+    req: express.Request<{}, HTML, {}, {}, { user: User; course?: Course }>,
+    res: express.Response<HTML, { user: User; course?: Course }>
+  ): HTML {
+    return html`
+      <div
+        style="${css`
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+        `}"
+      >
+        $${logo()}
+        <details class="popup">
+          <summary
+            class="no-marker"
+            style="${css`
+              & line {
+                transition: stroke 0.2s;
+              }
+
+              &:hover line,
+              details[open] > & line {
+                stroke: #29adff;
+              }
+            `}"
+          >
+            <svg width="30" height="30" viewBox="0 0 30 30">
+              <g stroke="gray" stroke-width="2" stroke-linecap="round">
+                <line x1="8" y1="10" x2="22" y2="10" />
+                <line x1="8" y1="15" x2="22" y2="15" />
+                <line x1="8" y1="20" x2="22" y2="20" />
+              </g>
+            </svg>
+          </summary>
+          <nav
+            style="${css`
+              transform: translate(calc(-100% + 2.3rem), -0.5rem);
+
+              &::before {
+                right: 1rem;
+              }
+            `}"
+          >
+            <p><strong>${res.locals.user.name}</strong></p>
+            <p class="hint">${res.locals.user.email}</p>
+            <form
+              method="POST"
+              action="${app.get("url")}/authenticate?_method=DELETE"
+            >
+              <p><button>Sign Out</button></p>
+            </form>
+            <p><a href="${app.get("url")}/settings">User settings</a></p>
+            $${res.locals.course === undefined
+              ? html``
+              : html`
+                  <p>
+                    <a
+                      href="${app.get("url")}/courses/${res.locals.course
+                        .reference}/settings"
+                      >Course settings</a
+                    >
+                  </p>
+                `}
+            <p><a href="${app.get("url")}/courses/new">New course</a></p>
+          </nav>
+        </details>
+      </div>
+    `;
+  }
 
   app.get<{}, HTML, {}, {}, {}>("/", ...isUnauthenticated, (req, res) => {
     res.redirect(`${app.get("url")}/authenticate`);
@@ -867,7 +960,7 @@ export default async function courselore(
     ...isUnauthenticated,
     (req, res) => {
       res.send(
-        app.get("layout unauthenticated")(
+        app.get("layout main")(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
@@ -975,7 +1068,7 @@ export default async function courselore(
       });
 
       res.send(
-        app.get("layout unauthenticated")(
+        app.get("layout main")(
           req,
           res,
           html`<title>Authenticate · CourseLore</title>`,
@@ -1021,7 +1114,6 @@ export default async function courselore(
     return token;
   }
 
-  // TODO: What should happen if the person clicks on a magic link but they’re already authenticated?
   app.get<{ token: string }, HTML, {}, { redirect?: string }, {}>(
     "/authenticate/:token",
     ...isUnauthenticated,
@@ -1032,7 +1124,7 @@ export default async function courselore(
       );
       if (originalAuthenticationToken === undefined)
         return res.send(
-          app.get("layout unauthenticated")(
+          app.get("layout main")(
             req,
             res,
             html`<title>Authenticate · CourseLore</title>`,
@@ -1053,7 +1145,7 @@ export default async function courselore(
           originalAuthenticationToken.email
         );
         return res.send(
-          app.get("layout unauthenticated")(
+          app.get("layout main")(
             req,
             res,
             html`<title>Sign up · CourseLore</title>`,
@@ -1124,7 +1216,7 @@ export default async function courselore(
       )!.exists === 1
     )
       return res.send(
-        app.get("layout unauthenticated")(
+        app.get("layout main")(
           req,
           res,
           html`<title>Sign up · CourseLore</title>`,
@@ -1183,250 +1275,103 @@ export default async function courselore(
     }
   );
 
-  /*
-  app.set(
-    "layout authenticated",
-    (
-      req: express.Request<
-        { courseReference?: string },
-        any,
-        {},
-        {},
-        { user: User }
-      >,
-      res: express.Response<any, {}>,
-      head: HTML,
-      body: HTML
-    ): HTML => {
-      const user = database.get<{ id: number; name: string }>(
-        sql`SELECT "id", "name" FROM "users" WHERE "email" = ${
-          req.session!.email
-        }`
-      )!;
-
-      const enrollment =
-        req.params.courseReference === undefined
-          ? undefined
-          : database.get<{ accentColor: AccentColor }>(
-              sql`
-                SELECT "enrollments"."accentColor"
-                FROM "enrollments"
-                JOIN "courses" ON "enrollments"."course" = "courses"."id"
-                WHERE "enrollments"."user" = ${user.id} AND
-                      "courses"."reference" = ${req.params.courseReference}
-              `
-            )!;
-
-      return app.get("layout application")(
-        req,
-        res,
-        head,
-        html`
-          <div
-            style="${css`
-              ${enrollment === undefined
-                ? css``
-                : css`
-                    border-top: 10px solid ${enrollment.accentColor};
-                  `}
-            `}"
-          >
-            <div
-              style="${css`
-                max-width: 600px;
-                margin: 0 auto;
-              `}"
-            >
-              <header>$${logoAndMenu(req, res)}</header>
-              <main>$${body}</main>
-            </div>
-          </div>
+  app.get<{}, HTML, {}, {}, { user: User }>(
+    "/",
+    ...isAuthenticated,
+    (req, res) => {
+      const courses = database.all<{
+        reference: string;
+        name: string;
+        role: Role;
+        accentColor: AccentColor;
+      }>(
+        sql`
+          SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
+          FROM "courses"
+          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+          WHERE "enrollments"."user" = ${res.locals.user.id}
+          ORDER BY "enrollments"."id" DESC
         `
       );
+
+      switch (courses.length) {
+        case 0:
+          return res.send(
+            app.get("layout main")(
+              req,
+              res,
+              html`<title>CourseLore</title>`,
+              html`
+                <h1>Hi ${res.locals.user.name},</h1>
+                <p><strong>Welcome to CourseLore!</strong></p>
+                <p>
+                  To <strong>enroll on an existing course</strong> you either
+                  have to follow an invitation link or be invited via email.
+                  Contact your course staff for more information.
+                </p>
+                <p>
+                  Or
+                  <strong
+                    ><a href="${app.get("url")}/courses/new"
+                      >create a new course</a
+                    ></strong
+                  >.
+                </p>
+              `
+            )
+          );
+
+        case 1:
+          return res.redirect(
+            `${app.get("url")}/courses/${courses[0].reference}`
+          );
+
+        default:
+          return res.send(
+            app.get("layout main")(
+              req,
+              res,
+              html`<title>CourseLore</title>`,
+              html`
+                <div>
+                  <h1>Hi ${res.locals.user.name},</h1>
+                  <p>Go to one of your courses:</p>
+                  $${courses.map(
+                    (course) =>
+                      html`
+                        <p>
+                          <a
+                            href="${app.get("url")}/courses/${course.reference}"
+                            ><span
+                              style="${css`
+                                display: inline-block;
+                                width: 0.8rem;
+                                height: 0.8rem;
+                                background-color: ${course.accentColor};
+                                border-radius: 50%;
+                              `}"
+                            ></span>
+                            <strong>${course.name}</strong> (${course.role})</a
+                          >
+                        </p>
+                      `
+                  )}
+                </div>
+              `
+            )
+          );
+      }
     }
   );
 
-  function logoAndMenu(
-    req: express.Request<{ courseReference?: string }, HTML, {}, {}, {}>,
-    res: express.Response<HTML, {}>
-  ): HTML {
-    const user = database.get<{ name: string }>(
-      sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
-    )!;
-
-    const course =
-      req.params.courseReference === undefined
-        ? undefined
-        : database.get<{ id: number; name: string }>(
-            sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-          )!;
-
-    return html`
-      <div
-        style="${css`
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-        `}"
-      >
-        $${logo()}
-        <details class="popup">
-          <summary
-            class="no-marker"
-            style="${css`
-              & line {
-                transition: stroke 0.2s;
-              }
-
-              &:hover line,
-              details[open] > & line {
-                stroke: #29adff;
-              }
-            `}"
-          >
-            <svg width="30" height="30" viewBox="0 0 30 30">
-              <g stroke="gray" stroke-width="2" stroke-linecap="round">
-                <line x1="8" y1="10" x2="22" y2="10" />
-                <line x1="8" y1="15" x2="22" y2="15" />
-                <line x1="8" y1="20" x2="22" y2="20" />
-              </g>
-            </svg>
-          </summary>
-          <nav
-            style="${css`
-              max-width: 300px;
-              transform: translate(calc(-100% + 2.3rem), -0.5rem);
-
-              &::before {
-                right: 1rem;
-              }
-            `}"
-          >
-            <p><strong>${user.name}</strong></p>
-            <p class="hint">${req.session!.email}</p>
-            <form
-              method="POST"
-              action="${app.get("url")}/authenticate?_method=DELETE"
-            >
-              <p>
-                <button>Sign Out</button>
-              </p>
-            </form>
-            <p><a href="${app.get("url")}/settings">User settings</a></p>
-            $${course === undefined
-              ? html``
-              : html`
-                  <p>
-                    <a
-                      href="${app.get("url")}/courses/${req.params
-                        .courseReference}/settings"
-                      >Course settings</a
-                    >
-                  </p>
-                `}
-            <p><a href="${app.get("url")}/courses/new">New course</a></p>
-          </nav>
-        </details>
-      </div>
-    `;
-  }
-
-  app.get<{}, HTML, {}, {}, {}>("/", ...isAuthenticated, (req, res) => {
-    const user = database.get<{ name: string }>(
-      sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
-    )!;
-
-    const courses = database.all<{
-      reference: string;
-      name: string;
-      role: Role;
-      accentColor: AccentColor;
-    }>(
-      sql`
-        SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
-        FROM "courses"
-        JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "users"."email" = ${req.session!.email}
-        ORDER BY "enrollments"."id" DESC
-      `
-    );
-
-    switch (courses.length) {
-      case 0:
-        return res.send(
-          app.get("layout authenticated")(
-            req,
-            res,
-            html`<title>CourseLore</title>`,
-            html`
-              <h1>Hi ${user.name},</h1>
-              <p><strong>Welcome to CourseLore!</strong></p>
-              <p>
-                To <strong>enroll on an existing course</strong> you either have
-                to follow an invitation link or be invited via email. Contact
-                your course staff for more information.
-              </p>
-              <p>
-                Or you may
-                <strong
-                  ><a href="${app.get("url")}/courses/new"
-                    >create a new course</a
-                  ></strong
-                >.
-              </p>
-            `
-          )
-        );
-
-      case 1:
-        return res.redirect(
-          `${app.get("url")}/courses/${courses[0].reference}`
-        );
-
-      default:
-        return res.send(
-          app.get("layout authenticated")(
-            req,
-            res,
-            html`<title>CourseLore</title>`,
-            html`
-              <div>
-                <h1>Hi ${user.name},</h1>
-                <p>Go to one of your courses:</p>
-                $${courses.map(
-                  (course) =>
-                    html`
-                      <p>
-                        <a href="${app.get("url")}/courses/${course.reference}"
-                          ><span
-                            style="${css`
-                              display: inline-block;
-                              width: 0.8rem;
-                              height: 0.8rem;
-                              background-color: ${course.accentColor};
-                              border-radius: 50%;
-                            `}"
-                          ></span>
-                          <strong>${course.name}</strong> (${course.role})</a
-                        >
-                      </p>
-                    `
-                )}
-              </div>
-            `
-          )
-        );
-    }
-  });
-
+  /*
   app.get<{}, HTML, {}, {}, {}>("/settings", ...isAuthenticated, (req, res) => {
     const user = database.get<{ name: string }>(
       sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
     )!;
 
     res.send(
-      app.get("layout authenticated")(
+      app.get("layout main")(
         req,
         res,
         html`<title>User settings · CourseLore</title>`,
@@ -1504,7 +1449,7 @@ export default async function courselore(
     ...isAuthenticated,
     (req, res) => {
       res.send(
-        app.get("layout authenticated")(
+        app.get("layout main")(
           req,
           res,
           html`<title>Create a new course · CourseLore</title>`,
@@ -1778,7 +1723,7 @@ export default async function courselore(
         )!;
 
         return res.send(
-          app.get("layout authenticated")(
+          app.get("layout main")(
             req,
             res,
             html`<title>${course.name} · CourseLore</title>`,
@@ -1857,7 +1802,7 @@ export default async function courselore(
       )!;
 
       return res.send(
-        app.get("layout authenticated")(
+        app.get("layout main")(
           req,
           res,
           html`<title>Course settings · ${course.name} · CourseLore</title>`,
@@ -2718,7 +2663,7 @@ export default async function courselore(
       );
 
     res.send(
-      app.get("layout authenticated")(
+      app.get("layout main")(
         req,
         res,
         html`<title>Not found · CourseLore</title>`,
@@ -2742,11 +2687,7 @@ export default async function courselore(
     console.error(err);
     const type = err instanceof ValidationError ? "Validation" : "Server";
     res.status(type === "Validation" ? 422 : 500).send(
-      app.get(
-        req.session!.email === undefined
-          ? "layout unauthenticated"
-          : "layout authenticated"
-      )(
+      app.get(req.session!.email === undefined ? "layout main" : "layout main")(
         req,
         res,
         html`<title>${type} error · CourseLore</title>`,
