@@ -1139,83 +1139,90 @@ export default async function courselore(
     return token;
   }
 
+  const authenticate: express.RequestHandler<
+    { token: string },
+    HTML,
+    {},
+    { redirect?: string },
+    {}
+  > = (req, res) => {
+    const search = new URL(req.originalUrl, app.get("url")).search;
+    const originalAuthenticationToken = getAuthenticationToken(
+      req.params.token
+    );
+    if (originalAuthenticationToken === undefined)
+      return res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>Authenticate · CourseLore</title>`,
+          html`
+            <p>
+              This magic authentication link is invalid or has expired.
+              <a href="${app.get("url")}/authenticate${search}">Start over</a>.
+            </p>
+          `
+        )
+      );
+    const user = database.get<{ id: number }>(
+      sql`SELECT "id" FROM "users" WHERE "email" = ${originalAuthenticationToken.email}`
+    );
+    if (user === undefined) {
+      const aNewAuthenticationToken = newAuthenticationToken(
+        originalAuthenticationToken.email
+      );
+      return res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>Sign up · CourseLore</title>`,
+          html`
+            <h1>Welcome to CourseLore!</h1>
+            <form
+              method="POST"
+              action="${app.get("url")}/users${search}"
+              style="${css`
+                max-width: 300px;
+                margin: 0 auto;
+              `}"
+            >
+              <input
+                type="hidden"
+                name="token"
+                value="${aNewAuthenticationToken.token}"
+              />
+              <p>
+                <label>
+                  <strong>Name</strong>
+                  <input type="text" name="name" required autofocus />
+                </label>
+              </p>
+              <p>
+                <label>
+                  <strong>Email</strong>
+                  <input
+                    type="email"
+                    value="${originalAuthenticationToken.email}"
+                    disabled
+                  />
+                </label>
+              </p>
+              <p>
+                <button class="full-width">Create Account</button>
+              </p>
+            </form>
+          `
+        )
+      );
+    }
+    req.session!.token = newSession(user.id);
+    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
+  };
+
   app.get<{ token: string }, HTML, {}, { redirect?: string }, {}>(
     "/authenticate/:token",
     ...isUnauthenticated,
-    (req, res) => {
-      const search = new URL(req.originalUrl, app.get("url")).search;
-      const originalAuthenticationToken = getAuthenticationToken(
-        req.params.token
-      );
-      if (originalAuthenticationToken === undefined)
-        return res.send(
-          app.get("layout main")(
-            req,
-            res,
-            html`<title>Authenticate · CourseLore</title>`,
-            html`
-              <p>
-                This magic authentication link is invalid or has expired.
-                <a href="${app.get("url")}/authenticate${search}">Start over</a
-                >.
-              </p>
-            `
-          )
-        );
-      const user = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "users" WHERE "email" = ${originalAuthenticationToken.email}`
-      );
-      if (user === undefined) {
-        const aNewAuthenticationToken = newAuthenticationToken(
-          originalAuthenticationToken.email
-        );
-        return res.send(
-          app.get("layout main")(
-            req,
-            res,
-            html`<title>Sign up · CourseLore</title>`,
-            html`
-              <h1>Welcome to CourseLore!</h1>
-              <form
-                method="POST"
-                action="${app.get("url")}/users${search}"
-                style="${css`
-                  max-width: 300px;
-                  margin: 0 auto;
-                `}"
-              >
-                <input
-                  type="hidden"
-                  name="token"
-                  value="${aNewAuthenticationToken.token}"
-                />
-                <p>
-                  <label>
-                    <strong>Name</strong>
-                    <input type="text" name="name" required autofocus />
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    <strong>Email</strong>
-                    <input
-                      type="email"
-                      value="${originalAuthenticationToken.email}"
-                      disabled
-                    />
-                  </label>
-                </p>
-                <p>
-                  <button class="full-width">Create Account</button>
-                </p>
-              </form>
-            `
-          )
-        );
-      }
-      req.session!.token = newSession(user.id);
-      res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
-    }
+    authenticate
   );
 
   app.post<
@@ -1338,17 +1345,10 @@ export default async function courselore(
               : html`
                   <form
                     method="POST"
-                    action="${otherUser === undefined
-                      ? `${app.get("url")}/users/new${search}`
-                      : `${app.get(
-                          "url"
-                        )}/authenticate?_method=PATCH${search.slice(1)}`}"
+                    action="${app.get(
+                      "url"
+                    )}/authenticate/${aNewAuthenticationToken!.token}${search}"
                   >
-                    <input
-                      type="hidden"
-                      name="token"
-                      value="${aNewAuthenticationToken!.token}"
-                    />
                     <p>
                       <button>
                         Sign Out as $${currentUserHTML} and Sign
@@ -1376,6 +1376,17 @@ export default async function courselore(
         )
       );
     }
+  );
+
+  app.post<{ token: string }, HTML, {}, { redirect?: string }, { user: User }>(
+    "/authenticate/:token",
+    ...isAuthenticated,
+    (req, res, next) => {
+      delete req.session!.token;
+      delete (res.locals as any).user;
+      next();
+    },
+    authenticate
   );
 
   app.get<{}, HTML, {}, {}, { user: User }>(
