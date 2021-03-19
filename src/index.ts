@@ -832,6 +832,31 @@ export default async function courselore(
     },
   ];
 
+  const isAuthenticated: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    { user: User }
+  >[] = [
+    (req, res, next) => {
+      if (req.session!.token === undefined) return next("route");
+      const user = database.get<User>(sql`
+      SELECT "users"."id", "users"."email", "users"."name"
+      FROM "users"
+      JOIN "sessions" ON "users"."id" = "sessions"."user"
+      WHERE "sessions"."token" = ${req.session!.token} AND
+            CURRENT_TIMESTAMP < "sessions"."expiresAt"
+    `);
+      if (user === undefined) {
+        delete req.session!.token;
+        return next("route");
+      }
+      res.locals.user = user;
+      next();
+    },
+  ];
+
   app.set(
     "layout main",
     (
@@ -932,7 +957,7 @@ export default async function courselore(
             >
               <p><button>Sign Out</button></p>
             </form>
-            <p><a href="${app.get("url")}/settings">User settings</a></p>
+            <p><a href="${app.get("url")}/settings">User Settings</a></p>
             $${res.locals.course === undefined
               ? html``
               : html`
@@ -940,11 +965,11 @@ export default async function courselore(
                     <a
                       href="${app.get("url")}/courses/${res.locals.course
                         .reference}/settings"
-                      >Course settings</a
+                      >Course Settings</a
                     >
                   </p>
                 `}
-            <p><a href="${app.get("url")}/courses/new">New course</a></p>
+            <p><a href="${app.get("url")}/courses/new">New Course</a></p>
           </nav>
         </details>
       </div>
@@ -1193,6 +1218,109 @@ export default async function courselore(
     }
   );
 
+  app.get<{ token: string }, HTML, {}, { redirect?: string }, { user: User }>(
+    "/authenticate/:token",
+    ...isAuthenticated,
+    (req, res) => {
+      const search = new URL(req.originalUrl, app.get("url")).search;
+      const redirect = `${app.get("url")}${req.query.redirect ?? "/"}`;
+      const originalAuthenticationToken = getAuthenticationToken(
+        req.params.token
+      );
+      const isSelf =
+        originalAuthenticationToken?.email === res.locals.user.email;
+      const otherUser =
+        originalAuthenticationToken === undefined || isSelf
+          ? undefined
+          : database.get<{ name: string }>(
+              sql`SELECT "name" FROM "users" WHERE "email" = ${originalAuthenticationToken.email}`
+            );
+      const aNewAuthenticationToken =
+        originalAuthenticationToken === undefined || isSelf
+          ? undefined
+          : newAuthenticationToken(originalAuthenticationToken.email);
+      const currentUserHTML = html`<strong
+        >${res.locals.user.name} ${`<${res.locals.user.email}>`}</strong
+      >`;
+      const otherUserHTML =
+        originalAuthenticationToken === undefined
+          ? undefined
+          : isSelf
+          ? html`yourself`
+          : otherUser === undefined
+          ? html`<strong>${originalAuthenticationToken.email}</strong>`
+          : html`<strong
+              >${otherUser.name}
+              ${`<${originalAuthenticationToken.email}>`}</strong
+            >`;
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>Magic Authentication Link · CourseLore</title>`,
+          html`
+            <h1>Magic Authentication Link</h1>
+
+            <p>
+              You’re already signed in as $${currentUserHTML} and you tried to
+              use
+              $${otherUserHTML === undefined
+                ? html`an invalid or expired magic authentication link`
+                : html`a magic authentication link for $${otherUserHTML}`}.
+            </p>
+
+            $${originalAuthenticationToken === undefined || isSelf
+              ? html`
+                  <form
+                    method="POST"
+                    action="${app.get("url")}/authenticate?_method=DELETE"
+                  >
+                    <p><button>Sign Out</button></p>
+                  </form>
+                `
+              : html`
+                  <form
+                    method="POST"
+                    action="${otherUser === undefined
+                      ? `${app.get("url")}/users/new${search}`
+                      : `${app.get(
+                          "url"
+                        )}/authenticate?_method=PATCH${search.slice(1)}`}"
+                  >
+                    <input
+                      type="hidden"
+                      name="token"
+                      value="${aNewAuthenticationToken!.token}"
+                    />
+                    <p>
+                      <button>
+                        Sign Out as $${currentUserHTML} and Sign
+                        ${otherUser === undefined ? "up" : "in"} as
+                        $${otherUserHTML}
+                      </button>
+                    </p>
+                  </form>
+                `}
+            $${req.query.redirect === undefined
+              ? html``
+              : html`
+                  <p>
+                    <a href="${redirect}"
+                      >Visit the page to which the magic authentication link
+                      would have redirected you
+                      (${redirect})$${originalAuthenticationToken ===
+                        undefined || isSelf
+                        ? html``
+                        : html` as $${currentUserHTML}`}</a
+                    >
+                  </p>
+                `}
+          `
+        )
+      );
+    }
+  );
+
   app.post<
     {},
     HTML,
@@ -1240,31 +1368,6 @@ export default async function courselore(
     req.session!.token = newSession(userId);
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
-
-  const isAuthenticated: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    { user: User }
-  >[] = [
-    (req, res, next) => {
-      if (req.session!.token === undefined) return next("route");
-      const user = database.get<User>(sql`
-        SELECT "users"."id", "users"."email", "users"."name"
-        FROM "users"
-        JOIN "sessions" ON "users"."id" = "sessions"."user"
-        WHERE "sessions"."token" = ${req.session!.token} AND
-              CURRENT_TIMESTAMP < "sessions"."expiresAt"
-      `);
-      if (user === undefined) {
-        delete req.session!.token;
-        return next("route");
-      }
-      res.locals.user = user;
-      next();
-    },
-  ];
 
   app.delete<{}, any, {}, {}, { user: User }>(
     "/authenticate",
@@ -1374,9 +1477,9 @@ export default async function courselore(
       app.get("layout main")(
         req,
         res,
-        html`<title>User settings · CourseLore</title>`,
+        html`<title>User Settings · CourseLore</title>`,
         html`
-          <h1>User settings</h1>
+          <h1>User Settings</h1>
 
           <form
             method="POST"
@@ -1452,9 +1555,9 @@ export default async function courselore(
         app.get("layout main")(
           req,
           res,
-          html`<title>Create a new course · CourseLore</title>`,
+          html`<title>Create a New Course · CourseLore</title>`,
           html`
-            <h1>Create a new course</h1>
+            <h1>Create a New Course</h1>
             <form method="POST" action="${app.get("url")}/courses">
               <p>
                 <label>
@@ -1805,10 +1908,10 @@ export default async function courselore(
         app.get("layout main")(
           req,
           res,
-          html`<title>Course settings · ${course.name} · CourseLore</title>`,
+          html`<title>Course Settings · ${course.name} · CourseLore</title>`,
           html`
             <h1>
-              Course settings ·
+              Course Settings ·
               <a href="${app.get("url")}/courses/${req.params.courseReference}"
                 >${course.name}</a
               >
@@ -2624,10 +2727,10 @@ export default async function courselore(
           req,
           res,
           html`
-            <title>Create a new thread · ${course.name} · CourseLore</title>
+            <title>Create a New Thread · ${course.name} · CourseLore</title>
           `,
           html`
-            <h1>Create a new thread</h1>
+            <h1>Create a New Thread</h1>
             <form
               method="POST"
               action="${app.get("url")}/courses/${req.params
@@ -2666,9 +2769,9 @@ export default async function courselore(
       app.get("layout main")(
         req,
         res,
-        html`<title>Not found · CourseLore</title>`,
+        html`<title>Not Found · CourseLore</title>`,
         html`
-          <h1>Not found</h1>
+          <h1>404 · Not Found</h1>
 
           <p>
             If you think there should be something here, please contact the
@@ -2687,12 +2790,12 @@ export default async function courselore(
     console.error(err);
     const type = err instanceof ValidationError ? "Validation" : "Server";
     res.status(type === "Validation" ? 422 : 500).send(
-      app.get(req.session!.email === undefined ? "layout main" : "layout main")(
+      app.get("layout main")(
         req,
         res,
-        html`<title>${type} error · CourseLore</title>`,
+        html`<title>${type} Error · CourseLore</title>`,
         html`
-          <h1>${type} error</h1>
+          <h1>${type} Error</h1>
           <p>
             This is a bug in CourseLore; please report to
             <a href="mailto:bug-report@courselore.org"
