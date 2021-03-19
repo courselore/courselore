@@ -832,31 +832,6 @@ export default async function courselore(
     },
   ];
 
-  const isAuthenticated: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    { user: User }
-  >[] = [
-    (req, res, next) => {
-      if (req.session!.token === undefined) return next("route");
-      const user = database.get<User>(sql`
-      SELECT "users"."id", "users"."email", "users"."name"
-      FROM "users"
-      JOIN "sessions" ON "users"."id" = "sessions"."user"
-      WHERE "sessions"."token" = ${req.session!.token} AND
-            CURRENT_TIMESTAMP < "sessions"."expiresAt"
-    `);
-      if (user === undefined) {
-        delete req.session!.token;
-        return next("route");
-      }
-      res.locals.user = user;
-      next();
-    },
-  ];
-
   app.set(
     "layout main",
     (
@@ -976,12 +951,8 @@ export default async function courselore(
     `;
   }
 
-  app.get<{}, HTML, {}, {}, {}>("/", ...isUnauthenticated, (req, res) => {
-    res.redirect(`${app.get("url")}/authenticate`);
-  });
-
   app.get<{}, HTML, {}, {}, {}>(
-    "/authenticate",
+    ["/", "/authenticate"],
     ...isUnauthenticated,
     (req, res) => {
       res.send(
@@ -1272,6 +1243,31 @@ export default async function courselore(
     req.session!.token = newSession(userId);
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
+
+  const isAuthenticated: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    { user: User }
+  >[] = [
+    (req, res, next) => {
+      if (req.session!.token === undefined) return next("route");
+      const user = database.get<User>(sql`
+    SELECT "users"."id", "users"."email", "users"."name"
+    FROM "users"
+    JOIN "sessions" ON "users"."id" = "sessions"."user"
+    WHERE "sessions"."token" = ${req.session!.token} AND
+          CURRENT_TIMESTAMP < "sessions"."expiresAt"
+  `);
+      if (user === undefined) {
+        delete req.session!.token;
+        return next("route");
+      }
+      res.locals.user = user;
+      next();
+    },
+  ];
 
   app.delete<{}, any, {}, {}, { user: User }>(
     "/authenticate",
