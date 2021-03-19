@@ -1218,6 +1218,63 @@ export default async function courselore(
     }
   );
 
+  app.post<
+    {},
+    HTML,
+    { token?: string; name?: string },
+    { redirect?: string },
+    {}
+  >("/users", ...isUnauthenticated, (req, res) => {
+    if (
+      typeof req.body.token !== "string" ||
+      validator.isEmpty(req.body.token, { ignore_whitespace: true }) ||
+      typeof req.body.name !== "string" ||
+      validator.isEmpty(req.body.name, { ignore_whitespace: true })
+    )
+      throw new ValidationError();
+
+    const authenticationToken = getAuthenticationToken(req.body.token);
+    if (
+      authenticationToken === undefined ||
+      database.get<{ exists: number }>(
+        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
+      )!.exists === 1
+    )
+      return res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>Sign up · CourseLore</title>`,
+          html`
+            <p>
+              Something went wrong in your sign up.
+              <a
+                href="${app.get("url")}/sign-up${new URL(
+                  req.originalUrl,
+                  app.get("url")
+                ).search}"
+                >Start over</a
+              >.
+            </p>
+          `
+        )
+      );
+    const userId = database.run(
+      sql`INSERT INTO "users" ("email", "name") VALUES (${authenticationToken.email}, ${req.body.name})`
+    ).lastInsertRowid as number;
+    req.session!.token = newSession(userId);
+    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
+  });
+
+  app.delete<{}, any, {}, {}, { user: User }>(
+    "/authenticate",
+    ...isAuthenticated,
+    (req, res) => {
+      delete req.session!.token;
+      res.redirect(`${app.get("url")}/`);
+    }
+  );
+
   app.get<{ token: string }, HTML, {}, { redirect?: string }, { user: User }>(
     "/authenticate/:token",
     ...isAuthenticated,
@@ -1318,63 +1375,6 @@ export default async function courselore(
           `
         )
       );
-    }
-  );
-
-  app.post<
-    {},
-    HTML,
-    { token?: string; name?: string },
-    { redirect?: string },
-    {}
-  >("/users", ...isUnauthenticated, (req, res) => {
-    if (
-      typeof req.body.token !== "string" ||
-      validator.isEmpty(req.body.token, { ignore_whitespace: true }) ||
-      typeof req.body.name !== "string" ||
-      validator.isEmpty(req.body.name, { ignore_whitespace: true })
-    )
-      throw new ValidationError();
-
-    const authenticationToken = getAuthenticationToken(req.body.token);
-    if (
-      authenticationToken === undefined ||
-      database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
-      )!.exists === 1
-    )
-      return res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>Sign up · CourseLore</title>`,
-          html`
-            <p>
-              Something went wrong in your sign up.
-              <a
-                href="${app.get("url")}/sign-up${new URL(
-                  req.originalUrl,
-                  app.get("url")
-                ).search}"
-                >Start over</a
-              >.
-            </p>
-          `
-        )
-      );
-    const userId = database.run(
-      sql`INSERT INTO "users" ("email", "name") VALUES (${authenticationToken.email}, ${req.body.name})`
-    ).lastInsertRowid as number;
-    req.session!.token = newSession(userId);
-    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
-  });
-
-  app.delete<{}, any, {}, {}, { user: User }>(
-    "/authenticate",
-    ...isAuthenticated,
-    (req, res) => {
-      delete req.session!.token;
-      res.redirect(`${app.get("url")}/`);
     }
   );
 
