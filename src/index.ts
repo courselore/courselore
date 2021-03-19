@@ -42,6 +42,41 @@ export default async function courselore(
   app.set("administrator", "mailto:demonstration-development@courselore.org");
   app.enable("demonstration");
 
+  interface User {
+    id: number;
+    email: string;
+    name: string;
+  }
+
+  interface Course {
+    id: number;
+    reference: string;
+    name: string;
+  }
+
+  interface Enrollment {
+    id: number;
+    user: User;
+    role: Role;
+    accentColor: AccentColor;
+  }
+
+  interface Thread {
+    id: number;
+    reference: string;
+    author: Enrollment;
+    title: string;
+  }
+
+  interface Post {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    reference: string;
+    author: Enrollment;
+    content: string;
+  }
+
   const ROLES = ["staff", "student"] as const;
   type Role = typeof ROLES[number];
   const ACCENT_COLORS = [
@@ -120,6 +155,14 @@ export default async function courselore(
         "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+10 minutes')),
         "token" TEXT NOT NULL UNIQUE,
         "email" TEXT NOT NULL UNIQUE
+      );
+
+      CREATE TABLE "sessions" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+1 year')),
+        "token" TEXT NOT NULL UNIQUE,
+        "users" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
       );
 
       CREATE TABLE "emailQueue" (
@@ -297,7 +340,14 @@ export default async function courselore(
                   }
 
                   &:disabled {
+                    color: gray;
+                    background-color: whitesmoke;
                     cursor: not-allowed;
+
+                    @media (prefers-color-scheme: dark) {
+                      color: #cccccc;
+                      background-color: #333333;
+                    }
                   }
                 }
 
