@@ -6,13 +6,13 @@ jobs:
         os: [windows, macos, ubuntu]
         include:
           - os: windows
-            build: npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "CourseLore--windows--${{ github.sha }}.exe"
-            artifact: CourseLore--windows--${{ github.sha }}.exe
+            build: npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "courselore--windows--${{ github.sha }}.exe"
+            artifact: courselore--windows--${{ github.sha }}.exe
           - os: macos
             build: |
-              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "CourseLore.app"
-              tar -czf "CourseLore--macos--${{ github.sha }}.app.tgz" "CourseLore.app"
-            artifact: CourseLore--macos--${{ github.sha }}.app.tgz
+              npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "courselore"
+              tar -czf "courselore--macos--${{ github.sha }}.tgz" "courselore"
+            artifact: courselore--macos--${{ github.sha }}.tgz
           - os: ubuntu
             build: |
               npx caxa --directory . --command "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js" --output "courselore"
@@ -98,10 +98,10 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: CourseLore--windows--${{ github.sha }}.exe
+          name: courselore--windows--${{ github.sha }}.exe
       - uses: actions/download-artifact@v2
         with:
-          name: CourseLore--macos--${{ github.sha }}.app.tgz
+          name: courselore--macos--${{ github.sha }}.tgz
       - uses: actions/download-artifact@v2
         with:
           name: courselore--linux--${{ github.sha }}.tgz
@@ -119,16 +119,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: CourseLore--windows--${{ github.sha }}.exe
-          asset_name: CourseLore--windows--${{ steps.tag.outputs.tag }}.exe
+          asset_path: courselore--windows--${{ github.sha }}.exe
+          asset_name: courselore--windows--${{ steps.tag.outputs.tag }}.exe
           asset_content_type: application/vnd.microsoft.portable-executable
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: CourseLore--macos--${{ github.sha }}.app.tgz
-          asset_name: CourseLore--macos--${{ steps.tag.outputs.tag }}.app.tgz
+          asset_path: courselore--macos--${{ github.sha }}.tgz
+          asset_name: courselore--macos--${{ steps.tag.outputs.tag }}.tgz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:

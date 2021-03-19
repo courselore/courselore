@@ -201,11 +201,18 @@ export default async function courselore(
 
                 body {
                   font-size: 0.875rem;
+                  -webkit-text-size-adjust: 100%;
                   line-height: 1.5;
                   font-family: "Public Sans", sans-serif;
-                  -webkit-text-size-adjust: 100%;
+                  color: #000000d4;
+                  background-color: white;
                   margin: 0;
                   overflow-wrap: break-word;
+
+                  @media (prefers-color-scheme: dark) {
+                    color: #ffffffd4;
+                    background-color: #1e1e1e;
+                  }
                 }
 
                 code {
@@ -280,8 +287,8 @@ export default async function courselore(
                 select,
                 button {
                   all: unset;
-                  border-style: solid;
-                  border-color: gainsboro;
+                  padding: 0.1rem 1rem;
+                  border: 1px solid gainsboro;
                   border-radius: 5px;
                   box-shadow: inset 0px 1px 1px #ffffff10, 0px 1px 3px #00000010;
 
@@ -300,8 +307,6 @@ export default async function courselore(
                 select {
                   box-sizing: border-box;
                   width: 100%;
-                  padding: 0.1rem 1rem;
-                  border-width: 1px;
                   transition: border-color 0.2s;
 
                   &:focus {
@@ -310,11 +315,8 @@ export default async function courselore(
                 }
 
                 button {
-                  font-size: 0.75rem;
                   text-align: center;
                   background-color: white;
-                  padding: 0.2rem 1rem;
-                  border-width: 0.1px;
 
                   @media (prefers-color-scheme: dark) {
                     background-color: #5a5a5a;
