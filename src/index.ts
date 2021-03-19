@@ -393,8 +393,10 @@ export default async function courselore(
 
                 div.demonstration {
                   text-align: left;
+                  min-height: 7.5rem;
                   padding-left: 0.5rem;
                   border-left: 1rem solid #83769c;
+                  border-radius: 10px;
                   margin-left: -1.5rem;
 
                   &::before {
@@ -469,79 +471,6 @@ export default async function courselore(
                 }
 
                 /*
-                div.demonstration,
-                div.TODO,
-                input[type="text"],
-                input[type="email"],
-                textarea,
-                select {
-                  border: 1px solid darkgray;
-                  border-radius: 10px;
-                  box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
-                }
-
-                div.demonstration,
-                div.TODO {
-                  background-color: whitesmoke;
-                  box-sizing: border-box;
-                  padding: 0 1rem;
-
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #444444;
-                  }
-                }
-
-                div.TODO::before {
-                  content: "TODO";
-                  font-weight: bold;
-                  display: block;
-                  margin-top: 0.5rem;
-                }
-
-                label small.hint {
-                  color: gray;
-                  line-height: 1.3;
-                  display: block;
-                  margin-top: 0.5rem;
-                }
-
-                input[type="text"],
-                input[type="email"],
-                textarea,
-                select,
-                button {
-                  font-family: "Public Sans", sans-serif;
-                  font-size: 1rem;
-                  line-height: 1.5;
-                  margin: 0;
-                  outline: none;
-                }
-
-                input[type="text"],
-                input[type="email"],
-                textarea,
-                select {
-                  color: inherit;
-                  background-color: transparent;
-                  box-sizing: border-box;
-                  width: 100%;
-                  transition: border-color 0.2s;
-
-                  &:focus {
-                    border-color: #ff77a8;
-                  }
-                }
-
-                input[type="text"],
-                input[type="email"],
-                select {
-                  padding: 0.2rem 1rem;
-                  -webkit-appearance: none;
-
-                  &:disabled {
-                    cursor: not-allowed;
-                  }
-                }
 
                 textarea {
                   padding: 0.5rem 1rem;
@@ -563,90 +492,6 @@ export default async function courselore(
                   transform: translate(-1.5rem, 4px);
                 }
 
-                a,
-                button.a,
-                summary {
-                  transition: color 0.2s;
-
-                  &:hover {
-                    color: #ff77a8;
-                  }
-                }
-
-                a,
-                button.a {
-                  color: inherit;
-                }
-
-                button.a {
-                  text-decoration: underline;
-                  background-color: inherit;
-                  display: inline;
-                  padding: 0;
-                  border: none;
-                }
-
-                a.undecorated,
-                a.button,
-                button.a.undecorated {
-                  text-decoration: none;
-                }
-
-                button.undecorated {
-                  color: inherit;
-                  background-color: inherit;
-                  padding: 0;
-                  border: 0;
-                }
-
-                select,
-                button {
-                  cursor: pointer;
-                }
-
-                a.button {
-                  display: inline-block;
-                }
-
-                button:not(.undecorated):not(.a),
-                a.button {
-                  color: #ffffffd4;
-                  background-color: #83769c;
-                  padding: 0.2rem 1rem;
-                  border: 1px solid #83769c;
-                  border-radius: 10px;
-                  box-shadow: inset 0px 1px #ffffff22, 0px 1px #00000022;
-                  transition-property: color, background-color, border-color;
-                  transition-duration: 0.2s;
-
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #584f69;
-                    border-color: #584f69;
-                  }
-
-                  &.outline {
-                    color: #83769c;
-                    background-color: transparent;
-                  }
-
-                  &:hover {
-                    color: #ffffffd4;
-                    background-color: #6e6382;
-                  }
-
-                  &:active {
-                    color: #ffffffd4;
-                    background-color: #584f69;
-                  }
-
-                  &:disabled {
-                    color: gray;
-                    background-color: whitesmoke;
-                    border-color: gray;
-                    cursor: wait;
-                  }
-                }
-
                 summary {
                   margin: 1rem 0;
                   outline: none;
@@ -665,10 +510,6 @@ export default async function courselore(
                     border-color: black;
                   }
                 }
-
-                .dim {
-                  color: gray;
-                }
                 */
 
                 [hidden] {
@@ -676,21 +517,12 @@ export default async function courselore(
                 }
 
                 @media (prefers-color-scheme: light) {
-                  body {
-                    color: #000000d4;
-                  }
-
                   .dark {
                     display: none;
                   }
                 }
 
                 @media (prefers-color-scheme: dark) {
-                  body {
-                    color: #ffffffd4;
-                    background-color: #1e1e1e;
-                  }
-
                   .light {
                     display: none;
                   }
@@ -865,9 +697,7 @@ export default async function courselore(
               let shouldResetCustomValidity = false;
               if (
                 element.matches("[required]") &&
-                validator.isEmpty(element.value, {
-                  ignore_whitespace: true,
-                })
+                validator.isEmpty(element.value, { ignore_whitespace: true })
               ) {
                 shouldResetCustomValidity = true;
                 element.setCustomValidity("Fill out this field");
@@ -1863,7 +1693,6 @@ export default async function courselore(
             ></textarea>
             <br />
             <small
-              class="dim"
               style="${css`
                 display: block;
                 text-align: right;
@@ -2069,7 +1898,7 @@ export default async function courselore(
 
                   <p id="invitations">
                     <strong>Invite with a link</strong><br />
-                    <small class="dim">
+                    <small>
                       Anyone with an invitation link may enroll on the course.
                     </small>
                   </p>
@@ -2094,7 +1923,7 @@ export default async function courselore(
                   </form>
                   <p>
                     <strong>Invite via email</strong><br />
-                    <small class="dim">
+                    <small>
                       Only the people you invite may enroll on the course.
                     </small>
                   </p>
@@ -2456,7 +2285,6 @@ export default async function courselore(
                         `}"
                       >
                         <summary
-                          class="dim"
                           style="${css`
                             list-style: none;
 
@@ -2616,7 +2444,7 @@ export default async function courselore(
                           `}"
                         >
                           <strong>${thread.title}</strong><br />
-                          <small class="dim">
+                          <small>
                             #${thread.reference} created
                             $${relativeTime(thread.createdAt)} by
                             ${thread.authorName ?? "Ghost"}
@@ -2705,7 +2533,6 @@ export default async function courselore(
             <h1>
               ${thread.title}
               <small
-                class="dim"
                 style="${css`
                   font-weight: normal;
                 `}"
@@ -2732,7 +2559,7 @@ export default async function courselore(
                 >
                   <p>
                     <strong>${post.authorName ?? "Ghost"}</strong>
-                    <span class="dim">
+                    <span>
                       said
                       $${relativeTime(post.createdAt)}$${post.updatedAt !==
                       post.createdAt
