@@ -787,8 +787,8 @@ export default async function courselore(
     .use(rehypeStringify);
 
   app.use(express.static(path.join(__dirname, "../public")));
-  app.use(express.urlencoded({ extended: true }));
   app.use(methodOverride("_method"));
+  app.use(express.urlencoded({ extended: true }));
 
   const cookieOptions = (): express.CookieOptions => ({
     domain: new URL(app.get("url")).hostname,
@@ -2801,33 +2801,36 @@ export default async function courselore(
       );
     }
   );
+  */
 
-  app.use(isAuthenticated);
-
-  app.use<{}, HTML, {}, {}, {}>((req, res) => {
-    if (req.session!.email === undefined)
-      return res.redirect(
-        `${app.get("url")}/authenticate?redirect=${req.originalUrl}`
-      );
-
-    res.send(
-      app.get("layout main")(
-        req,
-        res,
-        html`<title>Not Found · CourseLore</title>`,
-        html`
-          <h1>404 · Not Found</h1>
-
-          <p>
-            If you think there should be something here, please contact the
-            course staff or the
-            <a href="${app.get("administrator")}">system administrator</a>.
-          </p>
-        `
-      )
+  app.all<{}, HTML, {}, {}, {}>("*", ...isUnauthenticated, (req, res) => {
+    return res.redirect(
+      `${app.get("url")}/authenticate?redirect=${req.originalUrl}`
     );
   });
-  */
+
+  app.all<{}, HTML, {}, {}, { user: User }>(
+    "*",
+    ...isAuthenticated,
+    (req, res) => {
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>Not Found · CourseLore</title>`,
+          html`
+            <h1>404 · Not Found</h1>
+
+            <p>
+              If you think there should be something here, please contact the
+              course staff or the
+              <a href="${app.get("administrator")}">system administrator</a>.
+            </p>
+          `
+        )
+      );
+    }
+  );
 
   class ValidationError extends Error {}
 
