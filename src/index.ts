@@ -926,7 +926,7 @@ export default async function courselore(
           SELECT "courses"."id", "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
           FROM "courses"
           JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-          WHERE "enrollments"."user" = ${res.locals.user.id}
+          WHERE "enrollments"."user" = ${user.id}
           ORDER BY "enrollments"."id" DESC
         `
       );
