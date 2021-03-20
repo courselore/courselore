@@ -4,7 +4,7 @@ import path from "path";
 
 import express from "express";
 import methodOverride from "method-override";
-import cookieSession from "cookie-session";
+import cookieParser from "cookie-parser";
 import validator from "validator";
 
 import { Database, sql } from "@leafac/sqlite";
@@ -115,8 +115,8 @@ export default async function courselore(
       CREATE TABLE "enrollments" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "user" INTEGER NOT NULL REFERENCES "users",
-        "course" INTEGER NOT NULL REFERENCES "courses",
+        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "role" TEXT NOT NULL CHECK ("role" IN ('staff', 'student')),
         "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
         UNIQUE ("user", "course")
@@ -124,7 +124,7 @@ export default async function courselore(
 
       CREATE TABLE "threads" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "course" INTEGER NOT NULL REFERENCES "courses",
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "title" TEXT NOT NULL,
@@ -135,42 +135,34 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "thread" INTEGER NOT NULL REFERENCES "threads",
+        "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "content" TEXT NOT NULL,
         UNIQUE ("thread", "reference")
       );
 
-      CREATE TABLE "settings" (
+      CREATE TABLE "authenticationNonces" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "key" TEXT NOT NULL UNIQUE,
-        "value" TEXT NOT NULL
-      );
-
-      CREATE TABLE "authenticationTokens" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+10 minutes')),
-        "token" TEXT NOT NULL UNIQUE,
+        "expiresAt" TEXT NOT NULL,
+        "nonce" TEXT NOT NULL UNIQUE,
         "email" TEXT NOT NULL UNIQUE
       );
 
       CREATE TABLE "sessions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "expiresAt" TEXT NOT NULL DEFAULT (datetime('now', '+1 year')),
+        "expiresAt" TEXT NOT NULL,
         "token" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
       );
 
-      CREATE TABLE "emailQueue" (
+      CREATE TABLE "emailsQueue" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "attemptedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("attemptedAt")),
         "tryAfter" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "attempts" INTEGER NOT NULL DEFAULT 0,
+        "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
         "to" TEXT NOT NULL,
         "subject" TEXT NOT NULL,
         "body" TEXT NOT NULL
@@ -345,12 +337,10 @@ export default async function courselore(
                   }
 
                   &:disabled {
-                    color: gray;
                     background-color: whitesmoke;
                     cursor: not-allowed;
 
                     @media (prefers-color-scheme: dark) {
-                      color: #cccccc;
                       background-color: #333333;
                     }
                   }
@@ -800,37 +790,133 @@ export default async function courselore(
   app.use(express.urlencoded({ extended: true }));
   app.use(methodOverride("_method"));
 
-  app.set(
-    "cookie secret",
-    database.get<{ value: string }>(
-      sql`SELECT "value" FROM "settings" WHERE "key" = ${"cookieSecret"}`
-    )?.value
-  );
-  if (app.get("cookie secret") === undefined) {
-    app.set(
-      "cookie secret",
-      cryptoRandomString({ length: 60, type: "alphanumeric" })
+  const cookieOptions = (): express.CookieOptions => ({
+    domain: new URL(app.get("url")).hostname,
+    httpOnly: true,
+    path: new URL(app.get("url")).pathname,
+    secure: new URL(app.get("url")).protocol === "https",
+    sameSite: true,
+  });
+
+  function newAuthenticationNonce(email: string): string {
+    database.run(
+      sql`DELETE FROM "authenticationNonces" WHERE "email" = ${email}`
     );
+    const nonce = cryptoRandomString({ length: 40, type: "numeric" });
     database.run(
       sql`
-        INSERT INTO "settings" ("key", "value")
-        VALUES (${"cookieSecret"}, ${app.get("cookie secret")})
+        INSERT INTO "authenticationNonces" ("expiresAt", "nonce", "email")
+        VALUES (datetime('now', '+10 minutes'), ${nonce}, ${email})
       `
     );
+    return nonce;
   }
-  app.use(
-    cookieSession({
-      maxAge: 365 * 24 * 60 * 60 * 1000,
-      secret: app.get("cookie secret"),
-    })
-  );
+
+  function verifyAuthenticationNonce(nonce: string): string | undefined {
+    const authenticationNonce = database.get<{
+      email: string;
+    }>(
+      sql`SELECT "email" FROM "authenticationNonces" WHERE "nonce" = ${nonce} AND CURRENT_TIMESTAMP < "expiresAt"`
+    );
+    database.run(
+      sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
+    );
+    return authenticationNonce?.email;
+  }
+
+  function openSession(
+    req: express.Request<{}, any, {}, {}, {}>,
+    res: express.Response<any, {}>,
+    userId: number
+  ): void {
+    const expiresAt = new Date();
+    expiresAt.setMonth(expiresAt.getMonth() + 2);
+    const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
+    database.run(
+      sql`
+        INSERT INTO "sessions" ("expiresAt", "token", "user")
+        VALUES (${expiresAt.toISOString()}, ${token}, ${userId})
+      `
+    );
+    res.cookie("session", token, { ...cookieOptions(), expires: expiresAt });
+  }
+
+  function touchSession(
+    req: express.Request<{}, any, {}, {}, {}>,
+    res: express.Response<any, {}>
+  ): void {
+    const sessionExpiringSoon = database.get<{ userId: number }>(sql`
+      SELECT "user" AS "userId"
+      FROM "sessions"
+      WHERE "token" = ${req.cookies.session} AND
+            CURRENT_TIMESTAMP < "expiresAt" AND
+            "expiresAt" < datetime('now', '+1 month')
+    `);
+    if (sessionExpiringSoon === undefined) return;
+    closeSession(req, res);
+    openSession(req, res, sessionExpiringSoon.userId);
+  }
+
+  function closeSession(
+    req: express.Request<{}, any, {}, {}, {}>,
+    res: express.Response<any, {}>
+  ): void {
+    database.run(
+      sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
+    );
+    res.clearCookie("session", cookieOptions());
+  }
 
   const isUnauthenticated: express.RequestHandler<{}, any, {}, {}, {}>[] = [
+    cookieParser(),
     (req, res, next) => {
-      if (req.session!.token !== undefined) return next("route");
+      if (req.cookies.session === undefined) return next();
+      if (
+        database.get<{ exists: number }>(
+          sql`
+            SELECT (
+              SELECT 1
+              FROM "sessions"
+              WHERE "token" = ${req.cookies.session} AND
+                    CURRENT_TIMESTAMP < "expiresAt"
+            ) AS "exists"`
+        )!.exists === 0
+      ) {
+        closeSession(req, res);
+        return next();
+      }
+      return next("route");
+    },
+  ];
+  app.set("handler isUnauthenticated", isUnauthenticated);
+
+  const isAuthenticated: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    { user: User }
+  >[] = [
+    cookieParser(),
+    (req, res, next) => {
+      if (req.cookies.session === undefined) return next("route");
+      const user = database.get<User>(sql`
+        SELECT "users"."id", "users"."email", "users"."name"
+        FROM "users"
+        JOIN "sessions" ON "users"."id" = "sessions"."user"
+        WHERE "sessions"."token" = ${req.cookies.session} AND
+              CURRENT_TIMESTAMP < "sessions"."expiresAt"
+      `);
+      if (user === undefined) {
+        closeSession(req, res);
+        return next("route");
+      }
+      touchSession(req, res);
+      res.locals.user = user;
       next();
     },
   ];
+  app.set("handler isAuthenticated", isAuthenticated);
 
   app.set(
     "layout main",
@@ -840,9 +926,12 @@ export default async function courselore(
         any,
         {},
         {},
-        { user?: User; enrollment?: Enrollment }
+        { user?: User; course?: Course; enrollment?: Enrollment }
       >,
-      res: express.Response<any, { user?: User; enrollment?: Enrollment }>,
+      res: express.Response<
+        any,
+        { user?: User; course?: Course; enrollment?: Enrollment }
+      >,
       head: HTML,
       body: HTML
     ): HTML =>
@@ -951,7 +1040,7 @@ export default async function courselore(
     `;
   }
 
-  app.get<{}, HTML, {}, {}, {}>(
+  app.get<{}, HTML, {}, { redirect?: string }, {}>(
     ["/", "/authenticate"],
     ...isUnauthenticated,
     (req, res) => {
@@ -974,7 +1063,13 @@ export default async function courselore(
                 }
               `}"
             >
-              <form method="POST">
+              <form
+                method="POST"
+                action="${app.get("url")}/authenticate${req.query.redirect ===
+                undefined
+                  ? ""
+                  : `?redirect=${req.query.redirect}`}"
+              >
                 <h1>Sign in</h1>
                 <p class="hint">Returning user</p>
                 <p
@@ -996,7 +1091,13 @@ export default async function courselore(
                 <p><button class="full-width">Continue</button></p>
               </form>
 
-              <form method="POST">
+              <form
+                method="POST"
+                action="${app.get("url")}/authenticate${req.query.redirect ===
+                undefined
+                  ? ""
+                  : `?redirect=${req.query.redirect}`}"
+              >
                 <h1>Sign up</h1>
                 <p class="hint">New user</p>
                 <p
@@ -1027,17 +1128,6 @@ export default async function courselore(
     }
   );
 
-  function newAuthenticationToken(email: string): { token: string } {
-    database.run(
-      sql`DELETE FROM "authenticationTokens" WHERE "email" = ${email}`
-    );
-    const token = cryptoRandomString({ length: 40, type: "numeric" });
-    database.run(
-      sql`INSERT INTO "authenticationTokens" ("token", "email") VALUES (${token}, ${email})`
-    );
-    return { token };
-  }
-
   app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
     "/authenticate",
     ...isUnauthenticated,
@@ -1048,13 +1138,16 @@ export default async function courselore(
       )
         throw new ValidationError();
 
-      const authenticationToken = newAuthenticationToken(req.body.email);
-      const magicAuthenticationLink = `${app.get("url")}/authenticate/${
-        authenticationToken.token
-      }${new URL(req.originalUrl, app.get("url")).search}`;
+      const magicAuthenticationLink = `${app.get(
+        "url"
+      )}/authenticate/${newAuthenticationNonce(req.body.email)}${
+        req.query.redirect === undefined
+          ? ""
+          : `?redirect=${req.query.redirect}`
+      }`;
       const sentEmail = sendEmail({
         to: req.body.email,
-        subject: "Magic authentication link",
+        subject: "Magic Authentication Link",
         body: html`
           <p>
             <a href="${magicAuthenticationLink}">${magicAuthenticationLink}</a>
@@ -1088,40 +1181,15 @@ export default async function courselore(
     }
   );
 
-  function getAuthenticationToken(
-    token: string
-  ): { email: string } | undefined {
-    const authenticationToken = database.get<{
-      email: string;
-    }>(
-      sql`SELECT "email" FROM "authenticationTokens" WHERE "token" = ${token} AND CURRENT_TIMESTAMP < "expiresAt"`
-    );
-    database.run(
-      sql`DELETE FROM "authenticationTokens" WHERE "token" = ${token}`
-    );
-    return authenticationToken;
-  }
-
-  function newSession(userId: number): string {
-    const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
-    database.run(
-      sql`INSERT INTO "sessions" ("token", "user") VALUES (${token}, ${userId})`
-    );
-    return token;
-  }
-
   const authenticate: express.RequestHandler<
-    { token: string },
+    { nonce: string },
     HTML,
     {},
     { redirect?: string },
     {}
   > = (req, res) => {
-    const search = new URL(req.originalUrl, app.get("url")).search;
-    const originalAuthenticationToken = getAuthenticationToken(
-      req.params.token
-    );
-    if (originalAuthenticationToken === undefined)
+    const email = verifyAuthenticationNonce(req.params.nonce);
+    if (email === undefined)
       return res.send(
         app.get("layout main")(
           req,
@@ -1130,18 +1198,21 @@ export default async function courselore(
           html`
             <p>
               This magic authentication link is invalid or has expired.
-              <a href="${app.get("url")}/authenticate${search}">Start over</a>.
+              <a
+                href="${app.get("url")}/authenticate${req.query.redirect ===
+                undefined
+                  ? ""
+                  : `?redirect=${req.query.redirect}`}"
+                >Start over</a
+              >.
             </p>
           `
         )
       );
     const user = database.get<{ id: number }>(
-      sql`SELECT "id" FROM "users" WHERE "email" = ${originalAuthenticationToken.email}`
+      sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
     );
-    if (user === undefined) {
-      const aNewAuthenticationToken = newAuthenticationToken(
-        originalAuthenticationToken.email
-      );
+    if (user === undefined)
       return res.send(
         app.get("layout main")(
           req,
@@ -1149,9 +1220,12 @@ export default async function courselore(
           html`<title>Sign up · CourseLore</title>`,
           html`
             <h1>Welcome to CourseLore!</h1>
+
             <form
               method="POST"
-              action="${app.get("url")}/users${search}"
+              action="${app.get("url")}/users${req.query.redirect === undefined
+                ? ""
+                : `?redirect=${req.query.redirect}`}"
               style="${css`
                 max-width: 300px;
                 margin: 0 auto;
@@ -1159,8 +1233,8 @@ export default async function courselore(
             >
               <input
                 type="hidden"
-                name="token"
-                value="${aNewAuthenticationToken.token}"
+                name="nonce"
+                value="${newAuthenticationNonce(email)}"
               />
               <p>
                 <label>
@@ -1171,11 +1245,7 @@ export default async function courselore(
               <p>
                 <label>
                   <strong>Email</strong>
-                  <input
-                    type="email"
-                    value="${originalAuthenticationToken.email}"
-                    disabled
-                  />
+                  <input type="email" value="${email}" disabled />
                 </label>
               </p>
               <p>
@@ -1185,13 +1255,12 @@ export default async function courselore(
           `
         )
       );
-    }
-    req.session!.token = newSession(user.id);
+    openSession(req, res, user.id);
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   };
 
-  app.get<{ token: string }, HTML, {}, { redirect?: string }, {}>(
-    "/authenticate/:token",
+  app.get<{ nonce: string }, HTML, {}, { redirect?: string }, {}>(
+    "/authenticate/:nonce",
     ...isUnauthenticated,
     authenticate
   );
@@ -1199,23 +1268,23 @@ export default async function courselore(
   app.post<
     {},
     HTML,
-    { token?: string; name?: string },
+    { nonce?: string; name?: string },
     { redirect?: string },
     {}
   >("/users", ...isUnauthenticated, (req, res) => {
     if (
-      typeof req.body.token !== "string" ||
-      validator.isEmpty(req.body.token, { ignore_whitespace: true }) ||
+      typeof req.body.nonce !== "string" ||
+      validator.isEmpty(req.body.nonce, { ignore_whitespace: true }) ||
       typeof req.body.name !== "string" ||
       validator.isEmpty(req.body.name, { ignore_whitespace: true })
     )
       throw new ValidationError();
 
-    const authenticationToken = getAuthenticationToken(req.body.token);
+    const email = verifyAuthenticationNonce(req.body.nonce);
     if (
-      authenticationToken === undefined ||
+      email === undefined ||
       database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${authenticationToken.email}) AS "exists"`
+        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
       )!.exists === 1
     )
       return res.send(
@@ -1227,10 +1296,10 @@ export default async function courselore(
             <p>
               Something went wrong in your sign up.
               <a
-                href="${app.get("url")}/sign-up${new URL(
-                  req.originalUrl,
-                  app.get("url")
-                ).search}"
+                href="${app.get("url")}/sign-up${req.query.redirect ===
+                undefined
+                  ? ""
+                  : `?redirect=${req.query.redirect}`}"
                 >Start over</a
               >.
             </p>
@@ -1238,81 +1307,45 @@ export default async function courselore(
         )
       );
     const userId = database.run(
-      sql`INSERT INTO "users" ("email", "name") VALUES (${authenticationToken.email}, ${req.body.name})`
+      sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${req.body.name})`
     ).lastInsertRowid as number;
-    req.session!.token = newSession(userId);
+    openSession(req, res, userId);
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
-
-  const isAuthenticated: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    { user: User }
-  >[] = [
-    (req, res, next) => {
-      if (req.session!.token === undefined) return next("route");
-      const user = database.get<User>(sql`
-    SELECT "users"."id", "users"."email", "users"."name"
-    FROM "users"
-    JOIN "sessions" ON "users"."id" = "sessions"."user"
-    WHERE "sessions"."token" = ${req.session!.token} AND
-          CURRENT_TIMESTAMP < "sessions"."expiresAt"
-  `);
-      if (user === undefined) {
-        delete req.session!.token;
-        return next("route");
-      }
-      res.locals.user = user;
-      next();
-    },
-  ];
 
   app.delete<{}, any, {}, {}, { user: User }>(
     "/authenticate",
     ...isAuthenticated,
     (req, res) => {
-      delete req.session!.token;
+      closeSession(req, res);
       res.redirect(`${app.get("url")}/`);
     }
   );
 
-  app.get<{ token: string }, HTML, {}, { redirect?: string }, { user: User }>(
-    "/authenticate/:token",
+  app.get<{ nonce: string }, HTML, {}, { redirect?: string }, { user: User }>(
+    "/authenticate/:nonce",
     ...isAuthenticated,
     (req, res) => {
-      const search = new URL(req.originalUrl, app.get("url")).search;
       const redirect = `${app.get("url")}${req.query.redirect ?? "/"}`;
-      const originalAuthenticationToken = getAuthenticationToken(
-        req.params.token
-      );
-      const isSelf =
-        originalAuthenticationToken?.email === res.locals.user.email;
+      const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
+      const isSelf = otherUserEmail === res.locals.user.email;
       const otherUser =
-        originalAuthenticationToken === undefined || isSelf
+        otherUserEmail === undefined || isSelf
           ? undefined
           : database.get<{ name: string }>(
-              sql`SELECT "name" FROM "users" WHERE "email" = ${originalAuthenticationToken.email}`
+              sql`SELECT "name" FROM "users" WHERE "email" = ${otherUserEmail}`
             );
-      const aNewAuthenticationToken =
-        originalAuthenticationToken === undefined || isSelf
-          ? undefined
-          : newAuthenticationToken(originalAuthenticationToken.email);
       const currentUserHTML = html`<strong
         >${res.locals.user.name} ${`<${res.locals.user.email}>`}</strong
       >`;
       const otherUserHTML =
-        originalAuthenticationToken === undefined
+        otherUserEmail === undefined
           ? undefined
           : isSelf
           ? html`yourself`
           : otherUser === undefined
-          ? html`<strong>${originalAuthenticationToken.email}</strong>`
-          : html`<strong
-              >${otherUser.name}
-              ${`<${originalAuthenticationToken.email}>`}</strong
-            >`;
+          ? html`<strong>${otherUserEmail}</strong>`
+          : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
       res.send(
         app.get("layout main")(
           req,
@@ -1324,12 +1357,12 @@ export default async function courselore(
             <p>
               You’re already signed in as $${currentUserHTML} and you tried to
               use
-              $${otherUserHTML === undefined
+              $${otherUserEmail === undefined
                 ? html`an invalid or expired magic authentication link`
                 : html`a magic authentication link for $${otherUserHTML}`}.
             </p>
 
-            $${originalAuthenticationToken === undefined || isSelf
+            $${otherUserEmail === undefined || isSelf
               ? html`
                   <form
                     method="POST"
@@ -1343,14 +1376,17 @@ export default async function courselore(
                     method="POST"
                     action="${app.get(
                       "url"
-                    )}/authenticate/${aNewAuthenticationToken!.token}${search}"
+                    )}/authenticate/${newAuthenticationNonce(
+                      otherUserEmail
+                    )}?_method=PUT${req.query.redirect === undefined
+                      ? ""
+                      : `&redirect=${req.query.redirect}`}"
                   >
                     <p>
-                      <button>
-                        Sign Out as $${currentUserHTML} and Sign
-                        ${otherUser === undefined ? "up" : "in"} as
-                        $${otherUserHTML}
-                      </button>
+                      Sign out as $${currentUserHTML} and sign
+                      ${otherUser === undefined ? "up" : "in"} as
+                      $${otherUserHTML}:<br />
+                      <button>Switch Users</button>
                     </p>
                   </form>
                 `}
@@ -1358,14 +1394,12 @@ export default async function courselore(
               ? html``
               : html`
                   <p>
-                    <a href="${redirect}"
-                      >Visit the page to which the magic authentication link
-                      would have redirected you
-                      (${redirect})$${originalAuthenticationToken ===
-                        undefined || isSelf
-                        ? html``
-                        : html` as $${currentUserHTML}`}</a
-                    >
+                    $${otherUserEmail === undefined || isSelf
+                      ? html`Visit`
+                      : html` Continue as $${currentUserHTML} and visit`}
+                    the page to which the magic authentication link would have
+                    redirected you:<br />
+                    <a href="${redirect}">${redirect}</a>
                   </p>
                 `}
           `
@@ -1374,15 +1408,14 @@ export default async function courselore(
     }
   );
 
-  app.post<{ token: string }, HTML, {}, { redirect?: string }, { user: User }>(
-    "/authenticate/:token",
+  app.put<{ nonce: string }, HTML, {}, { redirect?: string }, { user: User }>(
+    "/authenticate/:nonce",
     ...isAuthenticated,
     (req, res, next) => {
-      delete req.session!.token;
-      delete (res.locals as any).user;
-      next();
-    },
-    authenticate
+      closeSession(req, res);
+      delete (res.locals as { user?: User }).user;
+      authenticate(req, res, next);
+    }
   );
 
   app.get<{}, HTML, {}, {}, { user: User }>(
@@ -1413,6 +1446,7 @@ export default async function courselore(
               html`<title>CourseLore</title>`,
               html`
                 <h1>Hi ${res.locals.user.name},</h1>
+
                 <p><strong>Welcome to CourseLore!</strong></p>
                 <p>
                   To <strong>enroll on an existing course</strong> you either
@@ -1445,6 +1479,7 @@ export default async function courselore(
               html`
                 <div>
                   <h1>Hi ${res.locals.user.name},</h1>
+
                   <p>Go to one of your courses:</p>
                   $${courses.map(
                     (course) =>
@@ -1565,6 +1600,7 @@ export default async function courselore(
           html`<title>Create a New Course · CourseLore</title>`,
           html`
             <h1>Create a New Course</h1>
+
             <form method="POST" action="${app.get("url")}/courses">
               <p>
                 <label>
@@ -1845,6 +1881,7 @@ export default async function courselore(
                   >${course.name}</a
                 >!
               </h1>
+
               $${enrollment.role === "staff"
                 ? html`
                     <p>
@@ -2738,6 +2775,7 @@ export default async function courselore(
           `,
           html`
             <h1>Create a New Thread</h1>
+
             <form
               method="POST"
               action="${app.get("url")}/courses/${req.params
@@ -2803,6 +2841,7 @@ export default async function courselore(
         html`<title>${type} Error · CourseLore</title>`,
         html`
           <h1>${type} Error</h1>
+
           <p>
             This is a bug in CourseLore; please report to
             <a href="mailto:bug-report@courselore.org"
@@ -2838,7 +2877,7 @@ export default async function courselore(
         </div>
       `;
     database.run(
-      sql`INSERT INTO "emailQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
+      sql`INSERT INTO "emailsQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
     );
     return html``;
   }

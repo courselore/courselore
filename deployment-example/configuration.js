@@ -1,7 +1,6 @@
 module.exports = async (require) => {
   const path = require("path");
   const express = require("express");
-  const cookieSession = require("cookie-session");
   const AutoEncrypt = require("@small-tech/auto-encrypt");
   const courselore = require(".").default;
   const customization = require(path.join(__dirname, "customization"))(require);
@@ -18,7 +17,6 @@ module.exports = async (require) => {
       return res.redirect(`${app.get("url")}${req.originalUrl}`);
     next();
   });
-  reverseProxy.use(cookieSession({ secret: app.get("cookie secret") }));
   reverseProxy.use(customization(app));
   reverseProxy.use(app);
 

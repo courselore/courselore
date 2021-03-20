@@ -12,13 +12,10 @@ module.exports = (require) => {
   function middleware(app) {
     const router = express.Router();
 
-    router.use((req, res, next) => {
-      if (req.session.email !== undefined) return next("router");
-      next();
+    router.all("*", ...app.get("handler isAuthenticated"), (req, res, next) => {
+      next("router");
     });
-
     router.use(express.static(path.join(__dirname, "public")));
-
     router.get("/", (req, res, next) => {
       res.send(
         app.get("layout base")(

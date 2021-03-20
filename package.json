@@ -34,7 +34,7 @@
     "@leafac/sqlite": "^1.1.2",
     "@leafac/sqlite-migration": "^1.0.3",
     "@small-tech/auto-encrypt": "^2.0.5",
-    "cookie-session": "^1.4.0",
+    "cookie-parser": "^1.4.5",
     "crypto-random-string": "^3.3.1",
     "deepmerge": "^4.2.2",
     "express": "^4.17.1",
@@ -55,7 +55,7 @@
     "validator": "^13.5.2"
   },
   "devDependencies": {
-    "@types/cookie-session": "^2.0.42",
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.11",
     "@types/fs-extra": "^9.0.7",
     "@types/inquirer": "^7.3.1",

@@ -2,7 +2,6 @@ module.exports = async (require) => {
   const path = require("path");
   const fs = require("fs/promises");
   const express = require("express");
-  const cookieSession = require("cookie-session");
   const courselore = require(".").default;
   const customization = require(__dirname)(require);
 
@@ -19,7 +18,6 @@ module.exports = async (require) => {
 
   const reverseProxy = express();
 
-  reverseProxy.use(cookieSession({ secret: app.get("cookie secret") }));
   reverseProxy.use(customization(app));
   reverseProxy.use(app);
 
