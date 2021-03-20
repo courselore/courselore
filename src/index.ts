@@ -54,6 +54,7 @@ export default async function courselore(
     name: string;
   }
 
+  // TODO: Maybe fold the next two data types into one, called just ‘Enrollment’
   interface Enrollment {
     id: number;
     user: User;
@@ -943,12 +944,9 @@ export default async function courselore(
         any,
         {},
         {},
-        { user?: User; course?: Course; enrollment?: Enrollment }
+        { user?: User; course?: CourseAndEnrollment }
       >,
-      res: express.Response<
-        any,
-        { user?: User; course?: Course; enrollment?: Enrollment }
-      >,
+      res: express.Response<any, { user?: User; course?: CourseAndEnrollment }>,
       head: HTML,
       body: HTML
     ): HTML =>
@@ -959,36 +957,46 @@ export default async function courselore(
         html`
           <div
             style="${css`
-              max-width: 600px;
-              margin: 0 auto;
-
-              ${res.locals.user !== undefined
+              ${res.locals.course === undefined
                 ? css``
                 : css`
-                    text-align: center;
-                  `}
-
-              ${res.locals.enrollment === undefined
-                ? css``
-                : css`
-                    border-top: 10px solid ${res.locals.enrollment.accentColor};
+                    border-top: 10px solid ${res.locals.course.accentColor};
                   `}
             `}"
           >
-            <header>
-              $${res.locals.user === undefined
-                ? logo()
-                : logoAndMenu(req as any, res as any)}
-            </header>
-            <main>$${body}</main>
+            <div
+              style="${css`
+                max-width: 600px;
+                margin: 0 auto;
+
+                ${res.locals.user !== undefined
+                  ? css``
+                  : css`
+                      text-align: center;
+                    `}
+              `}"
+            >
+              <header>
+                $${res.locals.user === undefined
+                  ? logo()
+                  : logoAndMenu(req as any, res as any)}
+              </header>
+              <main>$${body}</main>
+            </div>
           </div>
         `
       )
   );
 
   function logoAndMenu(
-    req: express.Request<{}, HTML, {}, {}, { user: User; course?: Course }>,
-    res: express.Response<HTML, { user: User; course?: Course }>
+    req: express.Request<
+      {},
+      HTML,
+      {},
+      {},
+      { user: User; course?: CourseAndEnrollment }
+    >,
+    res: express.Response<HTML, { user: User; course?: CourseAndEnrollment }>
   ): HTML {
     return html`
       <div
@@ -1514,87 +1522,86 @@ export default async function courselore(
     }
   );
 
-  /*
-  app.get<{}, HTML, {}, {}, {}>("/settings", ...isAuthenticated, (req, res) => {
-    const user = database.get<{ name: string }>(
-      sql`SELECT "name" FROM "users" WHERE "email" = ${req.session!.email}`
-    )!;
-
-    res.send(
-      app.get("layout main")(
-        req,
-        res,
-        html`<title>User Settings · CourseLore</title>`,
-        html`
-          <h1>User Settings</h1>
-
-          <form
-            method="POST"
-            action="${app.get("url")}/settings?_method=PATCH"
-            style="${css`
-              display: flex;
-              align-items: flex-end;
-
-              & > * + * {
-                margin-left: 1rem;
-              }
-            `}"
-          >
-            <p
-              style="${css`
-                flex: 1;
-              `}"
-            >
-              <label>
-                <strong>Name</strong>
-                <input
-                  type="text"
-                  name="name"
-                  autocomplete="off"
-                  required
-                  value="${user.name}"
-                />
-              </label>
-            </p>
-            <p>
-              <button>Change Name</button>
-            </p>
-          </form>
-
-          <p>
-            <label>
-              <strong>Email</strong>
-              <input type="email" value="${req.session!.email}" disabled />
-              <small class="hint">
-                Your email is your identity in CourseLore and it can’t be
-                changed.
-              </small>
-            </label>
-          </p>
-        `
-      )
-    );
-  });
-
-  app.patch<{}, any, { name?: string }, {}, {}>(
+  app.get<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
     "/settings",
     ...isAuthenticated,
     (req, res) => {
-      if (typeof req.body.name === "string") {
-        if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
-          throw new ValidationError();
-        database.run(
-          sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "email" = ${
-            req.session!.email
-          }`
-        );
-      }
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>User Settings · CourseLore</title>`,
+          html`
+            <h1>User Settings</h1>
 
-      res.redirect(`${app.get("url")}/settings`);
+            <form
+              method="POST"
+              action="${app.get("url")}/settings?_method=PATCH"
+              style="${css`
+                display: flex;
+                align-items: flex-end;
+
+                & > * + * {
+                  margin-left: 1rem;
+                }
+              `}"
+            >
+              <p
+                style="${css`
+                  flex: 1;
+                `}"
+              >
+                <label>
+                  <strong>Name</strong>
+                  <input
+                    type="text"
+                    name="name"
+                    autocomplete="off"
+                    required
+                    value="${res.locals.user.name}"
+                  />
+                </label>
+              </p>
+              <p>
+                <button>Change Name</button>
+              </p>
+            </form>
+
+            <p>
+              <label>
+                <strong>Email</strong>
+                <input type="email" value="${res.locals.user.email}" disabled />
+                <small class="hint">
+                  Your email is your identity in CourseLore and it can’t be
+                  changed.
+                </small>
+              </label>
+            </p>
+          `
+        )
+      );
     }
   );
 
-  app.get<{}, HTML, {}, {}, {}>(
+  app.patch<
+    {},
+    any,
+    { name?: string },
+    {},
+    { user: User; courses: CourseAndEnrollment[] }
+  >("/settings", ...isAuthenticated, (req, res) => {
+    if (typeof req.body.name === "string") {
+      if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
+        throw new ValidationError();
+      database.run(
+        sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
+      );
+    }
+
+    res.redirect(`${app.get("url")}/settings`);
+  });
+
+  app.get<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
     "/courses/new",
     ...isAuthenticated,
     (req, res) => {
@@ -1619,9 +1626,7 @@ export default async function courselore(
                   />
                 </label>
               </p>
-              <p>
-                <button>Create Course</button>
-              </p>
+              <p><button>Create Course</button></p>
             </form>
           `
         )
@@ -1629,305 +1634,180 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, any, { name?: string }, {}, {}>(
-    "/courses",
-    ...isAuthenticated,
-    (req, res) => {
-      if (
-        typeof req.body.name !== "string" ||
-        validator.isEmpty(req.body.name, { ignore_whitespace: true })
-      )
-        throw new ValidationError();
+  app.post<
+    {},
+    any,
+    { name?: string },
+    {},
+    { user: User; courses: CourseAndEnrollment[] }
+  >("/courses", ...isAuthenticated, (req, res) => {
+    if (
+      typeof req.body.name !== "string" ||
+      validator.isEmpty(req.body.name, { ignore_whitespace: true })
+    )
+      throw new ValidationError();
 
-      const courseReference = cryptoRandomString({
-        length: 10,
-        type: "numeric",
-      });
-      const newCourseId = database.run(
-        sql`INSERT INTO "courses" ("reference", "name") VALUES (${courseReference}, ${req.body.name})`
-      ).lastInsertRowid;
-      // TODO: Extract this into an auxiliary function to be used by the student enrollment routine as well.
-      const user = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "users" WHERE "email" = ${req.session!.email}`
-      )!;
-      const accentColorsInUse = database
-        .all<{ accentColor: AccentColor }>(
-          sql`
-            SELECT "accentColor"
-            FROM "enrollments"
-            WHERE "user" = ${user.id}
-            GROUP BY "accentColor"
-            ORDER BY MAX("id") DESC
-          `
-        )
-        .map((enrollment) => enrollment.accentColor);
-      let accentColorsAvailable = [...ACCENT_COLORS];
-      for (const accentColorInUse of accentColorsInUse) {
-        accentColorsAvailable = accentColorsAvailable.filter(
-          (accentColorAvailable) => accentColorAvailable !== accentColorInUse
-        );
-        if (accentColorsAvailable.length === 1) break;
-      }
-      const accentColor = accentColorsAvailable[0];
-      database.run(
-        sql`
+    const courseReference = cryptoRandomString({
+      length: 10,
+      type: "numeric",
+    });
+    const newCourseId = database.run(
+      sql`INSERT INTO "courses" ("reference", "name") VALUES (${courseReference}, ${req.body.name})`
+    ).lastInsertRowid;
+    // TODO: Extract this into an auxiliary function to be used by the student enrollment routine as well.
+    const accentColorsInUse = new Set(
+      res.locals.courses.map((course) => course.accentColor)
+    );
+    let accentColorsAvailable = new Set(ACCENT_COLORS);
+    for (const accentColorInUse of accentColorsInUse) {
+      accentColorsAvailable.delete(accentColorInUse);
+      if (accentColorsAvailable.size === 1) break;
+    }
+    const accentColor = [...accentColorsAvailable][0];
+    database.run(
+      sql`
           INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
           VALUES (
-            ${user.id},
+            ${res.locals.user.id},
             ${newCourseId},
             ${"staff"},
             ${accentColor}
           )
         `
-      );
-      res.redirect(`${app.get("url")}/courses/${courseReference}`);
-    }
-  );
+    );
+    res.redirect(`${app.get("url")}/courses/${courseReference}`);
+  });
 
-  // TODO: Maybe put stuff like "courses"."id" & "courses"."name" into ‘locals’, ’cause we’ll need that often… (The same applies to user data…) (Or just extract auxiliary functions to do that… May be a bit less magic, as your data doesn’t just show up in the ‘locals’ because of some random middleware… Yeah, it’s more explicit this way…)
   const isCourseEnrolled: express.RequestHandler<
     { courseReference: string },
     any,
     {},
     {},
-    {}
+    {
+      user: User;
+      courses: CourseAndEnrollment[];
+      course: CourseAndEnrollment;
+      otherCourses: CourseAndEnrollment[];
+      threads: Thread[];
+    }
   >[] = [
     ...isAuthenticated,
     (req, res, next) => {
-      if (
-        database.get<{ exists: number }>(
+      res.locals.otherCourses = [];
+      for (const course of res.locals.courses)
+        if (course.reference === req.params.courseReference)
+          res.locals.course = course;
+        else res.locals.otherCourses.push(course);
+      if (res.locals.course === undefined) next("route");
+      res.locals.threads = database
+        .all<{
+          threadId: number;
+          reference: string;
+          title: string;
+          authorEnrollmentId: number;
+          role: Role;
+          accentColor: AccentColor;
+          authorUserId: number;
+          email: string;
+          name: string;
+        }>(
           sql`
-            SELECT EXISTS(
-              SELECT 1
-              FROM "enrollments"
-              JOIN "users" ON "enrollments"."user" = "users"."id"
-              JOIN "courses" ON "enrollments"."course" = "courses"."id"
-              WHERE "users"."email" = ${req.session!.email} AND
-                    "courses"."reference" = ${req.params.courseReference}
-            ) AS "exists"
-          `
-        )!.exists === 0
-      )
-        return next("route");
+          SELECT "threads"."id" AS "threadId", "threads"."reference", "threads"."title",
+                 "authorEnrollment"."id" AS "authorEnrollmentId", "authorEnrollment"."role", "authorEnrollment"."accentColor",
+                 "authorUser"."id" AS "authorUserId", "authorUser"."email", "authorUser"."name"
+          FROM "threads"
+          JOIN "enrollments" AS "authorEnrollment" ON "threads"."author" = "authorEnrollment"."id"
+          JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+          WHERE "threads"."course" = ${res.locals.course.id}
+          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
+        `
+        )
+        .map((row) => ({
+          id: row.threadId,
+          reference: row.reference,
+          author: {
+            id: row.threadId,
+            user: {
+              id: row.authorUserId,
+              email: row.email,
+              name: row.name,
+            },
+            role: row.role,
+            accentColor: row.accentColor,
+          },
+          title: row.title,
+        }));
       next();
     },
   ];
 
-  function textEditor(): HTML {
-    // FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too.
-    return html`
-      <div class="text-editor">
-        <p
-          style="${css`
-            & > * + * {
-              margin-left: 0.5rem;
-            }
-
-            & > button {
-              transition-duration: 0.2s;
-              transition-property: font-weight, color;
-
-              &:disabled {
-                font-weight: bold;
-                color: inherit;
-              }
-
-              &:not(:disabled):not(:hover) {
-                color: gray;
-              }
-            }
-          `}"
-        >
-          <button
-            type="button"
-            class="write"
-            disabled
-            onclick="${javascript`
-              const textEditor = this.closest("div.text-editor");
-              textEditor.querySelector("div.preview").hidden = true;
-              textEditor.querySelector("div.write").hidden = false;
-              this.disabled = true;
-              textEditor.querySelector("button.preview").disabled = false;
-            `}"
-          >
-            Write
-          </button>
-          <button
-            type="button"
-            class="preview"
-            onclick="${javascript`
-              (async () => {
-                const textEditor = this.closest("div.text-editor");
-                const textarea = textEditor.querySelector("textarea");
-                if (!isValid(textarea)) return;
-                this.disabled = true;
-                const loading = textEditor.querySelector("div.loading");
-                textEditor.querySelector("div.write").hidden = true;
-                loading.hidden = false;
-                const preview = textEditor.querySelector("div.preview");
-                preview.innerHTML = await (
-                  await fetch("${app.get("url")}/preview", {
-                    method: "POST",
-                    body: new URLSearchParams({ content: textarea.value }),
-                  })
-                ).text();
-                loading.hidden = true;
-                preview.hidden = false;
-                textEditor.querySelector("button.write").disabled = false;
-              })();
-            `}"
-          >
-            Preview
-          </button>
-        </p>
-
-        <div class="write">
-          <p
-            style="${css`
-              margin-top: -0.8rem;
-            `}"
-          >
-            <textarea
-              name="content"
-              required
-              rows="5"
-              onkeypress="${javascript`
-              if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-                event.preventDefault();
-                const form = this.closest("form");
-                if (isValid(form)) form.submit();
-              }
-            `}"
-            ></textarea>
-            <br />
-            <small
-              style="${css`
-                display: block;
-                text-align: right;
-              `}"
-            >
-              <a
-                href="https://guides.github.com/features/mastering-markdown/"
-                target="_blank"
-                >Markdown</a
-              >
-              &
-              <a href="https://katex.org/docs/supported.html" target="_blank"
-                >LaTeX</a
-              >
-              are supported
-            </small>
-          </p>
-        </div>
-
-        $${loading()}
-
-        <div class="preview" hidden></div>
-      </div>
-    `;
-  }
-
-  app.post<{}, HTML, { content?: string }, {}, {}>(
-    "/preview",
-    ...isAuthenticated,
-    (req, res) => {
-      if (
-        typeof req.body.content !== "string" ||
-        validator.isEmpty(req.body.content, { ignore_whitespace: true })
-      )
-        throw new ValidationError();
-
-      res.send(app.get("text processor")(req.body.content));
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      courses: CourseAndEnrollment[];
+      course: CourseAndEnrollment;
+      otherCourses: CourseAndEnrollment[];
+      threads: Thread[];
     }
-  );
+  >("/courses/:courseReference", ...isCourseEnrolled, (req, res) => {
+    if (res.locals.threads.length === 0)
+      return res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>${res.locals.course.name} · CourseLore</title>`,
+          html`
+            <h1>
+              Welcome to
+              <a href="${app.get("url")}/courses/${req.params.courseReference}"
+                >${res.locals.course.name}</a
+              >!
+            </h1>
 
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/courses/:courseReference",
-    ...isCourseEnrolled,
-    (req, res) => {
-      const thread = database.get<{
-        reference: string;
-      }>(
-        sql`
-          SELECT "threads"."reference"
-          FROM "threads"
-          JOIN "courses" ON "threads"."course" = "courses"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference}
-          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
-          LIMIT 1
-        `
-      );
-
-      if (thread === undefined) {
-        const course = database.get<{ id: number; name: string }>(
-          sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-        )!;
-
-        const enrollment = database.get<{ role: Role }>(
-          sql`
-            SELECT "role"
-            FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id"
-            WHERE "users"."email" = ${req.session!.email} AND
-                  "enrollments"."course" = ${course.id}
+            $${res.locals.course.role === "staff"
+              ? html`
+                  <p>
+                    <a
+                      href="${app.get("url")}/courses/${req.params
+                        .courseReference}/settings#invitations"
+                      ><strong>Invite other people to the course</strong></a
+                    >.
+                  </p>
+                  <p>
+                    Or
+                    <a
+                      href="${app.get("url")}/courses/${req.params
+                        .courseReference}/threads/new"
+                      ><strong>create the first thread</strong></a
+                    >.
+                  </p>
+                `
+              : html`
+                  <p>
+                    This is a new course.
+                    <a
+                      href="${app.get("url")}/courses/${req.params
+                        .courseReference}/threads/new"
+                      ><strong>Create the first thread</strong></a
+                    >.
+                  </p>
+                `}
           `
-        )!;
-
-        return res.send(
-          app.get("layout main")(
-            req,
-            res,
-            html`<title>${course.name} · CourseLore</title>`,
-            html`
-              <h1>
-                Welcome to
-                <a
-                  href="${app.get("url")}/courses/${req.params.courseReference}"
-                  >${course.name}</a
-                >!
-              </h1>
-
-              $${enrollment.role === "staff"
-                ? html`
-                    <p>
-                      <a
-                        href="${app.get("url")}/courses/${req.params
-                          .courseReference}/settings#invitations"
-                        ><strong>Invite other people to the course</strong></a
-                      >.
-                    </p>
-                    <p>
-                      Or
-                      <a
-                        href="${app.get("url")}/courses/${req.params
-                          .courseReference}/threads/new"
-                        ><strong>create the first thread</strong></a
-                      >.
-                    </p>
-                  `
-                : html`
-                    <p>
-                      This is a new course.
-                      <a
-                        href="${app.get("url")}/courses/${req.params
-                          .courseReference}/threads/new"
-                        ><strong>Create the first thread</strong></a
-                      >.
-                    </p>
-                  `}
-            `
-          )
-        );
-      }
-
-      res.redirect(
-        `${app.get("url")}/courses/${req.params.courseReference}/threads/${
-          thread.reference
-        }`
+        )
       );
-    }
-  );
 
+    res.redirect(
+      `${app.get("url")}/courses/${req.params.courseReference}/threads/${
+        res.locals.threads[0]
+      }`
+    );
+  });
+
+  /*
   // TODO: Process email addresses
   // https://www.npmjs.com/package/email-addresses
   // https://www.npmjs.com/package/addressparser
@@ -2593,6 +2473,136 @@ export default async function courselore(
       );
     }
   );
+
+  function textEditor(): HTML {
+    // FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too.
+    return html`
+      <div class="text-editor">
+        <p
+          style="${css`
+            & > * + * {
+              margin-left: 0.5rem;
+            }
+
+            & > button {
+              transition-duration: 0.2s;
+              transition-property: font-weight, color;
+
+              &:disabled {
+                font-weight: bold;
+                color: inherit;
+              }
+
+              &:not(:disabled):not(:hover) {
+                color: gray;
+              }
+            }
+          `}"
+        >
+          <button
+            type="button"
+            class="write"
+            disabled
+            onclick="${javascript`
+              const textEditor = this.closest("div.text-editor");
+              textEditor.querySelector("div.preview").hidden = true;
+              textEditor.querySelector("div.write").hidden = false;
+              this.disabled = true;
+              textEditor.querySelector("button.preview").disabled = false;
+            `}"
+          >
+            Write
+          </button>
+          <button
+            type="button"
+            class="preview"
+            onclick="${javascript`
+              (async () => {
+                const textEditor = this.closest("div.text-editor");
+                const textarea = textEditor.querySelector("textarea");
+                if (!isValid(textarea)) return;
+                this.disabled = true;
+                const loading = textEditor.querySelector("div.loading");
+                textEditor.querySelector("div.write").hidden = true;
+                loading.hidden = false;
+                const preview = textEditor.querySelector("div.preview");
+                preview.innerHTML = await (
+                  await fetch("${app.get("url")}/preview", {
+                    method: "POST",
+                    body: new URLSearchParams({ content: textarea.value }),
+                  })
+                ).text();
+                loading.hidden = true;
+                preview.hidden = false;
+                textEditor.querySelector("button.write").disabled = false;
+              })();
+            `}"
+          >
+            Preview
+          </button>
+        </p>
+
+        <div class="write">
+          <p
+            style="${css`
+              margin-top: -0.8rem;
+            `}"
+          >
+            <textarea
+              name="content"
+              required
+              rows="5"
+              onkeypress="${javascript`
+              if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+                event.preventDefault();
+                const form = this.closest("form");
+                if (isValid(form)) form.submit();
+              }
+            `}"
+            ></textarea>
+            <br />
+            <small
+              style="${css`
+                display: block;
+                text-align: right;
+              `}"
+            >
+              <a
+                href="https://guides.github.com/features/mastering-markdown/"
+                target="_blank"
+                >Markdown</a
+              >
+              &
+              <a href="https://katex.org/docs/supported.html" target="_blank"
+                >LaTeX</a
+              >
+              are supported
+            </small>
+          </p>
+        </div>
+
+        $${loading()}
+
+        <div class="preview" hidden></div>
+      </div>
+    `;
+  }
+
+  app.post<
+    {},
+    HTML,
+    { content?: string },
+    {},
+    { user: User; courses: CourseAndEnrollment[] }
+  >("/preview", ...isAuthenticated, (req, res) => {
+    if (
+      typeof req.body.content !== "string" ||
+      validator.isEmpty(req.body.content, { ignore_whitespace: true })
+    )
+      throw new ValidationError();
+
+    res.send(app.get("text processor")(req.body.content));
+  });
 
   app.get<
     { courseReference: string; threadReference: string },
