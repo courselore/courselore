@@ -582,6 +582,27 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-03-20</summary>
+
+- Progress:
+  - Better session management:
+    - Being able to expire sessions individually.
+    - Decouple the session from the email (being able to change emails in the future, if we wish).
+    - Rolling sessions.
+  - Visuals.
+  - Finished accent colors (but they’re broken now for other reasons).
+  - Using magic authentication links when already signed in.
+  - Form validation.
+  - Reuse queries.
+- For next week:
+  - Finish invitations.
+  - Editing threads and posts.
+  - Update threads when other people post.
+  - Focus on forum features like tags, upvotes & notifications.
+
+</details>
+
+<details>
 <summary>2021-03-13</summary>
 
 - Progress:
