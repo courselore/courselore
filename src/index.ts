@@ -61,6 +61,14 @@ export default async function courselore(
     accentColor: AccentColor;
   }
 
+  interface CourseAndEnrollment {
+    id: number;
+    reference: string;
+    name: string;
+    role: Role;
+    accentColor: AccentColor;
+  }
+
   interface Thread {
     id: number;
     reference: string;
@@ -895,7 +903,7 @@ export default async function courselore(
     any,
     {},
     {},
-    { user: User }
+    { user: User; courses: CourseAndEnrollment[] }
   >[] = [
     cookieParser(),
     (req, res, next) => {
@@ -913,6 +921,15 @@ export default async function courselore(
       }
       touchSession(req, res);
       res.locals.user = user;
+      res.locals.courses = database.all<CourseAndEnrollment>(
+        sql`
+          SELECT "courses"."id", "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
+          FROM "courses"
+          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
+          WHERE "enrollments"."user" = ${res.locals.user.id}
+          ORDER BY "enrollments"."id" DESC
+        `
+      );
       next();
     },
   ];
@@ -1313,7 +1330,7 @@ export default async function courselore(
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
 
-  app.delete<{}, any, {}, {}, { user: User }>(
+  app.delete<{}, any, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
     "/authenticate",
     ...isAuthenticated,
     (req, res) => {
@@ -1322,122 +1339,110 @@ export default async function courselore(
     }
   );
 
-  app.get<{ nonce: string }, HTML, {}, { redirect?: string }, { user: User }>(
-    "/authenticate/:nonce",
-    ...isAuthenticated,
-    (req, res) => {
-      const redirect = `${app.get("url")}${req.query.redirect ?? "/"}`;
-      const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
-      const isSelf = otherUserEmail === res.locals.user.email;
-      const otherUser =
-        otherUserEmail === undefined || isSelf
-          ? undefined
-          : database.get<{ name: string }>(
-              sql`SELECT "name" FROM "users" WHERE "email" = ${otherUserEmail}`
-            );
-      const currentUserHTML = html`<strong
-        >${res.locals.user.name} ${`<${res.locals.user.email}>`}</strong
-      >`;
-      const otherUserHTML =
-        otherUserEmail === undefined
-          ? undefined
-          : isSelf
-          ? html`yourself`
-          : otherUser === undefined
-          ? html`<strong>${otherUserEmail}</strong>`
-          : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
-      res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>Magic Authentication Link · CourseLore</title>`,
-          html`
-            <h1>Magic Authentication Link</h1>
+  app.get<
+    { nonce: string },
+    HTML,
+    {},
+    { redirect?: string },
+    { user: User; courses: CourseAndEnrollment[] }
+  >("/authenticate/:nonce", ...isAuthenticated, (req, res) => {
+    const redirect = `${app.get("url")}${req.query.redirect ?? "/"}`;
+    const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
+    const isSelf = otherUserEmail === res.locals.user.email;
+    const otherUser =
+      otherUserEmail === undefined || isSelf
+        ? undefined
+        : database.get<{ name: string }>(
+            sql`SELECT "name" FROM "users" WHERE "email" = ${otherUserEmail}`
+          );
+    const currentUserHTML = html`<strong
+      >${res.locals.user.name} ${`<${res.locals.user.email}>`}</strong
+    >`;
+    const otherUserHTML =
+      otherUserEmail === undefined
+        ? undefined
+        : isSelf
+        ? html`yourself`
+        : otherUser === undefined
+        ? html`<strong>${otherUserEmail}</strong>`
+        : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>Magic Authentication Link · CourseLore</title>`,
+        html`
+          <h1>Magic Authentication Link</h1>
 
-            <p>
-              You’re already signed in as $${currentUserHTML} and you tried to
-              use
-              $${otherUserEmail === undefined
-                ? html`an invalid or expired magic authentication link`
-                : html`a magic authentication link for $${otherUserHTML}`}.
-            </p>
+          <p>
+            You’re already signed in as $${currentUserHTML} and you tried to use
+            $${otherUserEmail === undefined
+              ? html`an invalid or expired magic authentication link`
+              : html`a magic authentication link for $${otherUserHTML}`}.
+          </p>
 
-            $${otherUserEmail === undefined || isSelf
-              ? html`
-                  <form
-                    method="POST"
-                    action="${app.get("url")}/authenticate?_method=DELETE"
-                  >
-                    <p><button>Sign Out</button></p>
-                  </form>
-                `
-              : html`
-                  <form
-                    method="POST"
-                    action="${app.get(
-                      "url"
-                    )}/authenticate/${newAuthenticationNonce(
-                      otherUserEmail
-                    )}?_method=PUT${req.query.redirect === undefined
-                      ? ""
-                      : `&redirect=${req.query.redirect}`}"
-                  >
-                    <p>
-                      Sign out as $${currentUserHTML} and sign
-                      ${otherUser === undefined ? "up" : "in"} as
-                      $${otherUserHTML}:<br />
-                      <button>Switch Users</button>
-                    </p>
-                  </form>
-                `}
-            $${req.query.redirect === undefined
-              ? html``
-              : html`
+          $${otherUserEmail === undefined || isSelf
+            ? html`
+                <form
+                  method="POST"
+                  action="${app.get("url")}/authenticate?_method=DELETE"
+                >
+                  <p><button>Sign Out</button></p>
+                </form>
+              `
+            : html`
+                <form
+                  method="POST"
+                  action="${app.get(
+                    "url"
+                  )}/authenticate/${newAuthenticationNonce(
+                    otherUserEmail
+                  )}?_method=PUT${req.query.redirect === undefined
+                    ? ""
+                    : `&redirect=${req.query.redirect}`}"
+                >
                   <p>
-                    $${otherUserEmail === undefined || isSelf
-                      ? html`Visit`
-                      : html` Continue as $${currentUserHTML} and visit`}
-                    the page to which the magic authentication link would have
-                    redirected you:<br />
-                    <a href="${redirect}">${redirect}</a>
+                    Sign out as $${currentUserHTML} and sign
+                    ${otherUser === undefined ? "up" : "in"} as
+                    $${otherUserHTML}:<br />
+                    <button>Switch Users</button>
                   </p>
-                `}
-          `
-        )
-      );
-    }
-  );
+                </form>
+              `}
+          $${req.query.redirect === undefined
+            ? html``
+            : html`
+                <p>
+                  $${otherUserEmail === undefined || isSelf
+                    ? html`Visit`
+                    : html` Continue as $${currentUserHTML} and visit`}
+                  the page to which the magic authentication link would have
+                  redirected you:<br />
+                  <a href="${redirect}">${redirect}</a>
+                </p>
+              `}
+        `
+      )
+    );
+  });
 
-  app.put<{ nonce: string }, HTML, {}, { redirect?: string }, { user: User }>(
-    "/authenticate/:nonce",
-    ...isAuthenticated,
-    (req, res, next) => {
-      closeSession(req, res);
-      delete (res.locals as { user?: User }).user;
-      authenticate(req, res, next);
-    }
-  );
+  app.put<
+    { nonce: string },
+    HTML,
+    {},
+    { redirect?: string },
+    { user: User; courses: CourseAndEnrollment[] }
+  >("/authenticate/:nonce", ...isAuthenticated, (req, res, next) => {
+    closeSession(req, res);
+    delete (res.locals as { user?: User }).user;
+    authenticate(req, res, next);
+  });
 
-  app.get<{}, HTML, {}, {}, { user: User }>(
+  app.get<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
     "/",
     ...isAuthenticated,
     (req, res) => {
-      const courses = database.all<{
-        reference: string;
-        name: string;
-        role: Role;
-        accentColor: AccentColor;
-      }>(
-        sql`
-          SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
-          FROM "courses"
-          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-          WHERE "enrollments"."user" = ${res.locals.user.id}
-          ORDER BY "enrollments"."id" DESC
-        `
-      );
-
-      switch (courses.length) {
+      switch (res.locals.courses.length) {
         case 0:
           return res.send(
             app.get("layout main")(
@@ -1467,7 +1472,7 @@ export default async function courselore(
 
         case 1:
           return res.redirect(
-            `${app.get("url")}/courses/${courses[0].reference}`
+            `${app.get("url")}/courses/${res.locals.courses[0].reference}`
           );
 
         default:
@@ -1481,7 +1486,7 @@ export default async function courselore(
                   <h1>Hi ${res.locals.user.name},</h1>
 
                   <p>Go to one of your courses:</p>
-                  $${courses.map(
+                  $${res.locals.courses.map(
                     (course) =>
                       html`
                         <p>
@@ -2809,7 +2814,7 @@ export default async function courselore(
     );
   });
 
-  app.all<{}, HTML, {}, {}, { user: User }>(
+  app.all<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
     "*",
     ...isAuthenticated,
     (req, res) => {
