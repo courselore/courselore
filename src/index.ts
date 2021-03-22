@@ -78,6 +78,11 @@ export default async function courselore(
     "#5f574f",
   ] as const;
 
+  interface EnrollmentJoinCourse {
+    enrollment: Enrollment;
+    course: Course;
+  }
+
   interface Thread {
     id: number;
     reference: string;
@@ -739,6 +744,149 @@ export default async function courselore(
   );
 
   app.set(
+    "layout main",
+    (
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        { user?: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+      >,
+      res: express.Response<
+        any,
+        { user?: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+      >,
+      head: HTML,
+      body: HTML
+    ): HTML =>
+      app.get("layout application")(
+        req,
+        res,
+        head,
+        html`
+          <div
+            style="${css`
+              ${res.locals.enrollmentJoinCourse === undefined
+                ? css``
+                : css`
+                    box-sizing: border-box;
+                    border-top: 10px solid
+                      ${res.locals.enrollmentJoinCourse.enrollment.accentColor};
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    overflow: auto;
+                  `}
+            `}"
+          >
+            <div
+              style="${css`
+                max-width: 600px;
+                margin: 0 auto;
+
+                ${res.locals.user !== undefined
+                  ? css``
+                  : css`
+                      text-align: center;
+                    `}
+              `}"
+            >
+              <header>
+                $${res.locals.user === undefined
+                  ? logo()
+                  : logoAndMenu(req as any, res as any)}
+              </header>
+              <main>$${body}</main>
+            </div>
+          </div>
+        `
+      )
+  );
+
+  function logoAndMenu(
+    req: express.Request<
+      {},
+      HTML,
+      {},
+      {},
+      { user: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+    >,
+    res: express.Response<
+      HTML,
+      { user: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+    >
+  ): HTML {
+    return html`
+      <div
+        style="${css`
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+        `}"
+      >
+        $${logo()}
+        <details class="popup">
+          <summary
+            class="no-marker"
+            style="${css`
+              & line {
+                transition: stroke 0.2s;
+              }
+
+              &:hover line,
+              details[open] > & line {
+                stroke: #ff77a8;
+              }
+            `}"
+          >
+            <svg width="30" height="30" viewBox="0 0 30 30">
+              <g stroke="gray" stroke-width="2" stroke-linecap="round">
+                <line x1="8" y1="10" x2="22" y2="10" />
+                <line x1="8" y1="15" x2="22" y2="15" />
+                <line x1="8" y1="20" x2="22" y2="20" />
+              </g>
+            </svg>
+          </summary>
+          <nav
+            style="${css`
+              transform: translate(calc(-100% + 2.3rem), -0.5rem);
+
+              &::before {
+                right: 1rem;
+              }
+            `}"
+          >
+            <p><strong>${res.locals.user.name}</strong></p>
+            <p class="hint">${res.locals.user.email}</p>
+            <form
+              method="POST"
+              action="${app.get("url")}/authenticate?_method=DELETE"
+            >
+              <p><button>Sign Out</button></p>
+            </form>
+            <p><a href="${app.get("url")}/settings">User Settings</a></p>
+            $${res.locals.enrollmentJoinCourse === undefined
+              ? html``
+              : html`
+                  <p>
+                    <a
+                      href="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourse.course.reference}/settings"
+                      >Course Settings</a
+                    >
+                  </p>
+                `}
+            <p><a href="${app.get("url")}/courses/new">New Course</a></p>
+          </nav>
+        </details>
+      </div>
+    `;
+  }
+
+  app.set(
     "text processor",
     (text: string): HTML => textProcessor.processSync(text).toString()
   );
@@ -867,7 +1015,7 @@ export default async function courselore(
     {},
     {
       user: User;
-      enrollmentsJoinCourses: { enrollment: Enrollment; course: Course }[];
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >[] = [
     cookieParser(),
@@ -931,135 +1079,6 @@ export default async function courselore(
   app.set("handler isAuthenticated", isAuthenticated);
 
   /*
-  app.set(
-    "layout main",
-    (
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        { user?: User; course?: CourseAndEnrollment }
-      >,
-      res: express.Response<any, { user?: User; course?: CourseAndEnrollment }>,
-      head: HTML,
-      body: HTML
-    ): HTML =>
-      app.get("layout application")(
-        req,
-        res,
-        head,
-        html`
-          <div
-            style="${css`
-              ${res.locals.course === undefined
-                ? css``
-                : css`
-                    border-top: 10px solid ${res.locals.course.accentColor};
-                  `}
-            `}"
-          >
-            <div
-              style="${css`
-                max-width: 600px;
-                margin: 0 auto;
-
-                ${res.locals.user !== undefined
-                  ? css``
-                  : css`
-                      text-align: center;
-                    `}
-              `}"
-            >
-              <header>
-                $${res.locals.user === undefined
-                  ? logo()
-                  : logoAndMenu(req as any, res as any)}
-              </header>
-              <main>$${body}</main>
-            </div>
-          </div>
-        `
-      )
-  );
-
-  function logoAndMenu(
-    req: express.Request<
-      {},
-      HTML,
-      {},
-      {},
-      { user: User; course?: CourseAndEnrollment }
-    >,
-    res: express.Response<HTML, { user: User; course?: CourseAndEnrollment }>
-  ): HTML {
-    return html`
-      <div
-        style="${css`
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-        `}"
-      >
-        $${logo()}
-        <details class="popup">
-          <summary
-            class="no-marker"
-            style="${css`
-              & line {
-                transition: stroke 0.2s;
-              }
-
-              &:hover line,
-              details[open] > & line {
-                stroke: #ff77a8;
-              }
-            `}"
-          >
-            <svg width="30" height="30" viewBox="0 0 30 30">
-              <g stroke="gray" stroke-width="2" stroke-linecap="round">
-                <line x1="8" y1="10" x2="22" y2="10" />
-                <line x1="8" y1="15" x2="22" y2="15" />
-                <line x1="8" y1="20" x2="22" y2="20" />
-              </g>
-            </svg>
-          </summary>
-          <nav
-            style="${css`
-              transform: translate(calc(-100% + 2.3rem), -0.5rem);
-
-              &::before {
-                right: 1rem;
-              }
-            `}"
-          >
-            <p><strong>${res.locals.user.name}</strong></p>
-            <p class="hint">${res.locals.user.email}</p>
-            <form
-              method="POST"
-              action="${app.get("url")}/authenticate?_method=DELETE"
-            >
-              <p><button>Sign Out</button></p>
-            </form>
-            <p><a href="${app.get("url")}/settings">User Settings</a></p>
-            $${res.locals.course === undefined
-              ? html``
-              : html`
-                  <p>
-                    <a
-                      href="${app.get("url")}/courses/${res.locals.course
-                        .reference}/settings"
-                      >Course Settings</a
-                    >
-                  </p>
-                `}
-            <p><a href="${app.get("url")}/courses/new">New Course</a></p>
-          </nav>
-        </details>
-      </div>
-    `;
-  }
-
   app.get<{}, HTML, {}, { redirect?: string }, {}>(
     ["/", "/authenticate"],
     ...isUnauthenticated,
