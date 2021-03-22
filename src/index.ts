@@ -54,40 +54,17 @@ export default async function courselore(
     name: string;
   }
 
-  // TODO: Maybe fold the next two data types into one, called just ‘Enrollment’
   interface Enrollment {
     id: number;
-    user: User;
     role: Role;
     accentColor: AccentColor;
   }
 
-  interface CourseAndEnrollment {
-    id: number;
-    reference: string;
-    name: string;
-    role: Role;
-    accentColor: AccentColor;
-  }
-
-  interface Thread {
-    id: number;
-    reference: string;
-    author: Enrollment;
-    title: string;
-  }
-
-  interface Post {
-    id: number;
-    createdAt: string;
-    updatedAt: string;
-    reference: string;
-    author: Enrollment;
-    content: string;
-  }
-
-  const ROLES = ["staff", "student"] as const;
   type Role = typeof ROLES[number];
+  const ROLES = ["staff", "student"] as const;
+
+  // https://pico-8.fandom.com/wiki/Palette
+  type AccentColor = typeof ACCENT_COLORS[number];
   const ACCENT_COLORS = [
     "#83769c",
     "#ff77a8",
@@ -100,7 +77,20 @@ export default async function courselore(
     "#1d2b53",
     "#5f574f",
   ] as const;
-  type AccentColor = typeof ACCENT_COLORS[number];
+
+  interface Thread {
+    id: number;
+    reference: string;
+    title: string;
+  }
+
+  interface Post {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    reference: string;
+    content: string;
+  }
 
   await fs.ensureDir(rootDirectory);
   const database = new Database(path.join(rootDirectory, "courselore.db"));
@@ -236,25 +226,16 @@ export default async function courselore(
           <body
             style="${css`
               @at-root {
-                /*
-                  https://pico-8.fandom.com/wiki/Palette
-                  #83769c / darker #6e6382 #584f69
-                  #ff77a8 / darker #e66c98 #cc6088
-                  #29adff
-                */
-
                 body {
                   font-size: 0.875rem;
                   -webkit-text-size-adjust: 100%;
                   line-height: 1.5;
                   font-family: "Public Sans", sans-serif;
-                  color: #000000d4;
-                  background-color: white;
                   margin: 0;
                   overflow-wrap: break-word;
 
                   @media (prefers-color-scheme: dark) {
-                    color: #ffffffd4;
+                    color: #d4d4d4;
                     background-color: #1e1e1e;
                   }
                 }
@@ -264,7 +245,7 @@ export default async function courselore(
                 }
 
                 ::selection {
-                  color: #ffffffd4;
+                  color: white;
                   background-color: #ff77a8;
                 }
 
@@ -301,7 +282,7 @@ export default async function courselore(
                   transition: color 0.2s;
 
                   &:hover {
-                    color: #29adff;
+                    color: #ff77a8;
                   }
 
                   h1 &,
@@ -342,7 +323,7 @@ export default async function courselore(
                   }
 
                   &:focus {
-                    border-color: #29adff;
+                    border-color: #ff77a8;
                   }
 
                   &:disabled {
@@ -373,8 +354,8 @@ export default async function courselore(
 
                   &:active {
                     color: white;
-                    background-color: #29adff;
-                    border-color: #29adff;
+                    background-color: #ff77a8;
+                    border-color: #ff77a8;
                   }
                 }
 
@@ -400,7 +381,7 @@ export default async function courselore(
 
                   &::before {
                     content: "Demonstration";
-                    font-size: 0.3rem;
+                    font-size: 0.56rem;
                     font-weight: bold;
                     text-transform: uppercase;
                     letter-spacing: 2px;
@@ -460,6 +441,13 @@ export default async function courselore(
 
                 summary {
                   outline: none;
+                  cursor: default;
+                  transition: color 0.2s;
+
+                  &:hover,
+                  details[open] > & {
+                    color: #ff77a8;
+                  }
 
                   &.no-marker {
                     list-style: none;
@@ -471,7 +459,6 @@ export default async function courselore(
                 }
 
                 /*
-
                 textarea {
                   padding: 0.5rem 1rem;
                   resize: vertical;
@@ -490,16 +477,6 @@ export default async function courselore(
                   content: "▾";
                   position: absolute;
                   transform: translate(-1.5rem, 4px);
-                }
-
-                summary {
-                  margin: 1rem 0;
-                  outline: none;
-                  cursor: pointer;
-
-                  details[open] > & {
-                    color: #ff77a8;
-                  }
                 }
 
                 hr {
@@ -619,7 +596,7 @@ export default async function courselore(
             ? html`
                 <p
                   style="${css`
-                    font-size: 0.3rem;
+                    font-size: 0.56rem;
                     font-weight: bold;
                     text-transform: uppercase;
                     letter-spacing: 2px;
@@ -850,22 +827,6 @@ export default async function courselore(
     res.cookie("session", token, { ...cookieOptions(), expires: expiresAt });
   }
 
-  function touchSession(
-    req: express.Request<{}, any, {}, {}, {}>,
-    res: express.Response<any, {}>
-  ): void {
-    const sessionExpiringSoon = database.get<{ userId: number }>(sql`
-      SELECT "user" AS "userId"
-      FROM "sessions"
-      WHERE "token" = ${req.cookies.session} AND
-            CURRENT_TIMESTAMP < "expiresAt" AND
-            "expiresAt" < datetime('now', '+1 month')
-    `);
-    if (sessionExpiringSoon === undefined) return;
-    closeSession(req, res);
-    openSession(req, res, sessionExpiringSoon.userId);
-  }
-
   function closeSession(
     req: express.Request<{}, any, {}, {}, {}>,
     res: express.Response<any, {}>
@@ -904,38 +865,72 @@ export default async function courselore(
     any,
     {},
     {},
-    { user: User; courses: CourseAndEnrollment[] }
+    {
+      user: User;
+      enrollmentsJoinCourses: { enrollment: Enrollment; course: Course }[];
+    }
   >[] = [
     cookieParser(),
     (req, res, next) => {
       if (req.cookies.session === undefined) return next("route");
-      const user = database.get<User>(sql`
-        SELECT "users"."id", "users"."email", "users"."name"
-        FROM "users"
-        JOIN "sessions" ON "users"."id" = "sessions"."user"
+      const sessionJoinUser = database.get<{ expiresAt: string } & User>(sql`
+        SELECT "sessions"."expiresAt", "users"."id", "users"."email", "users"."name",
+        FROM "sessions"
+        JOIN "users" ON "sessions"."user" = "users"."id"
         WHERE "sessions"."token" = ${req.cookies.session} AND
               CURRENT_TIMESTAMP < "sessions"."expiresAt"
       `);
-      if (user === undefined) {
+      if (sessionJoinUser === undefined) {
         closeSession(req, res);
         return next("route");
       }
-      touchSession(req, res);
-      res.locals.user = user;
-      res.locals.courses = database.all<CourseAndEnrollment>(
-        sql`
-          SELECT "courses"."id", "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
-          FROM "courses"
-          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-          WHERE "enrollments"."user" = ${user.id}
-          ORDER BY "enrollments"."id" DESC
-        `
-      );
+      if (
+        new Date(sessionJoinUser.expiresAt).getTime() - Date.now() <
+        30 * 24 * 60 * 60 * 1000
+      ) {
+        closeSession(req, res);
+        openSession(req, res, sessionJoinUser.id);
+      }
+      res.locals.user = {
+        id: sessionJoinUser.id,
+        email: sessionJoinUser.email,
+        name: sessionJoinUser.name,
+      };
+      res.locals.enrollmentsJoinCourses = database
+        .all<{
+          enrollmentId: number;
+          role: Role;
+          accentColor: AccentColor;
+          courseId: number;
+          reference: string;
+          name: string;
+        }>(
+          sql`
+            SELECT "enrollment"."id" AS "enrollmentId", "enrollments"."role", "enrollments"."accentColor", "courses"."id" AS "courseId", "courses"."reference", "courses"."name"
+            FROM "enrollments"
+            JOIN "courses" ON "enrollments"."course" = "courses"."id"
+            WHERE "enrollments"."user" = ${res.locals.user.id}
+            ORDER BY "enrollments"."id" DESC
+          `
+        )
+        .map((enrollmentJoinCourse) => ({
+          enrollment: {
+            id: enrollmentJoinCourse.enrollmentId,
+            role: enrollmentJoinCourse.role,
+            accentColor: enrollmentJoinCourse.accentColor,
+          },
+          course: {
+            id: enrollmentJoinCourse.courseId,
+            reference: enrollmentJoinCourse.reference,
+            name: enrollmentJoinCourse.name,
+          },
+        }));
       next();
     },
   ];
   app.set("handler isAuthenticated", isAuthenticated);
 
+  /*
   app.set(
     "layout main",
     (
@@ -1017,7 +1012,7 @@ export default async function courselore(
 
               &:hover line,
               details[open] > & line {
-                stroke: #29adff;
+                stroke: #ff77a8;
               }
             `}"
           >
@@ -1806,6 +1801,7 @@ export default async function courselore(
       }`
     );
   });
+  */
 
   /*
   // TODO: Process email addresses
@@ -1986,11 +1982,9 @@ export default async function courselore(
                           border-radius: 50%;
                           transition: border-color 0.2s;
 
-                          .checked > & {
-                            border-color: #000000d4;
-
-                            @media (prefers-color-scheme: dark) {
-                              border-color: #ffffffd4;
+                          @media (prefers-color-scheme: dark) {
+                            .checked > & {
+                              border-color: #d4d4d4;
                             }
                           }
                         `}"
@@ -2818,6 +2812,7 @@ export default async function courselore(
   );
   */
 
+  /*
   app.all<{}, HTML, {}, {}, {}>("*", ...isUnauthenticated, (req, res) => {
     return res.redirect(
       `${app.get("url")}/authenticate?redirect=${req.originalUrl}`
@@ -2979,6 +2974,7 @@ export default async function courselore(
       >at ${timeString}</time
     >`;
   }
+  */
 
   return app;
 }
