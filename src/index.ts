@@ -1224,88 +1224,81 @@ export default async function courselore(
     }
   );
 
-  const authenticate: express.RequestHandler<
-    { nonce: string },
-    HTML,
-    {},
-    { redirect?: string },
-    {}
-  > = (req, res) => {
-    const email = verifyAuthenticationNonce(req.params.nonce);
-    if (email === undefined)
-      return res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>Authenticate · CourseLore</title>`,
-          html`
-            <p>
-              This magic authentication link is invalid or has expired.
-              <a
-                href="${app.get("url")}/authenticate${req.query.redirect ===
-                undefined
-                  ? ""
-                  : `?redirect=${req.query.redirect}`}"
-                >Start over</a
-              >.
-            </p>
-          `
-        )
-      );
-    const user = database.get<{ id: number }>(
-      sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
-    );
-    if (user === undefined)
-      return res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>Sign up · CourseLore</title>`,
-          html`
-            <h1>Welcome to CourseLore!</h1>
-
-            <form
-              method="POST"
-              action="${app.get("url")}/users${req.query.redirect === undefined
-                ? ""
-                : `?redirect=${req.query.redirect}`}"
-              style="${css`
-                max-width: 300px;
-                margin: 0 auto;
-              `}"
-            >
-              <input
-                type="hidden"
-                name="nonce"
-                value="${newAuthenticationNonce(email)}"
-              />
-              <p>
-                <label>
-                  <strong>Name</strong>
-                  <input type="text" name="name" required autofocus />
-                </label>
-              </p>
-              <p>
-                <label>
-                  <strong>Email</strong>
-                  <input type="email" value="${email}" disabled />
-                </label>
-              </p>
-              <p>
-                <button class="full-width">Create Account</button>
-              </p>
-            </form>
-          `
-        )
-      );
-    openSession(req, res, user.id);
-    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
-  };
-
   app.get<{ nonce: string }, HTML, {}, { redirect?: string }, {}>(
     "/authenticate/:nonce",
     ...isUnauthenticated,
-    authenticate
+    (req, res) => {
+      const email = verifyAuthenticationNonce(req.params.nonce);
+      if (email === undefined)
+        return res.send(
+          app.get("layout main")(
+            req,
+            res,
+            html`<title>Authenticate · CourseLore</title>`,
+            html`
+              <p>
+                This magic authentication link is invalid or has expired.
+                <a
+                  href="${app.get("url")}/authenticate${req.query.redirect ===
+                  undefined
+                    ? ""
+                    : `?redirect=${req.query.redirect}`}"
+                  >Start over</a
+                >.
+              </p>
+            `
+          )
+        );
+      const user = database.get<{ id: number }>(
+        sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
+      );
+      if (user === undefined)
+        return res.send(
+          app.get("layout main")(
+            req,
+            res,
+            html`<title>Sign up · CourseLore</title>`,
+            html`
+              <h1>Welcome to CourseLore!</h1>
+
+              <form
+                method="POST"
+                action="${app.get("url")}/users${req.query.redirect ===
+                undefined
+                  ? ""
+                  : `?redirect=${req.query.redirect}`}"
+                style="${css`
+                  max-width: 300px;
+                  margin: 0 auto;
+                `}"
+              >
+                <input
+                  type="hidden"
+                  name="nonce"
+                  value="${newAuthenticationNonce(email)}"
+                />
+                <p>
+                  <label>
+                    <strong>Name</strong>
+                    <input type="text" name="name" required autofocus />
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    <strong>Email</strong>
+                    <input type="email" value="${email}" disabled />
+                  </label>
+                </p>
+                <p>
+                  <button class="full-width">Create Account</button>
+                </p>
+              </form>
+            `
+          )
+        );
+      openSession(req, res, user.id);
+      res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
+    }
   );
 
   app.post<
@@ -1466,11 +1459,15 @@ export default async function courselore(
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
-  >("/authenticate/:nonce", ...isAuthenticated, (req, res, next) => {
+  >("/authenticate/:nonce", ...isAuthenticated, (req, res) => {
     closeSession(req, res);
-    // TODO: REDIRECT!
-    res.locals = {} as any;
-    authenticate(req, res, next);
+    res.redirect(
+      `${app.get("url")}/authenticate/${req.params.nonce}${
+        req.query.redirect === undefined
+          ? ""
+          : `?redirect=${req.query.redirect}`
+      }`
+    );
   });
 
   /*
