@@ -27,8 +27,8 @@ module.exports = (require) => {
               style="${css`
                 @media (max-width: 1279px), (max-height: 699px) {
                   max-width: 600px;
-                  padding: 0 1em;
-                  margin: 1em auto;
+                  padding: 0 1rem;
+                  margin: 1rem auto;
                 }
 
                 @media (min-width: 1280px) and (min-height: 700px) {
@@ -70,7 +70,7 @@ module.exports = (require) => {
                               rx="10"
                               fill="#83769c"
                             />
-                            <text font-size="5em">CourseLore</text>
+                            <text font-size="5rem">CourseLore</text>
                           </g>
                           <g transform="translate(0, 100)">
                             <rect
@@ -81,7 +81,7 @@ module.exports = (require) => {
                               rx="10"
                               fill="#ff77a8"
                             />
-                            <text font-size="1.5em"
+                            <text font-size="1.5rem"
                               >The Open-Source Student Forum</text
                             >
                           </g>
@@ -94,7 +94,7 @@ module.exports = (require) => {
                               rx="10"
                               fill="#29adff"
                             />
-                            <text font-size="0.8em" letter-spacing="3">
+                            <text font-size="0.8rem" letter-spacing="3">
                               COMING SEPTEMBER 2021!
                             </text>
                           </g>
@@ -172,7 +172,7 @@ module.exports = (require) => {
 
                     @media (max-width: 599px) {
                       &:not(:first-of-type) {
-                        margin-top: 3em;
+                        margin-top: 3rem;
                       }
                     }
 

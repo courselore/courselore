@@ -1078,7 +1078,6 @@ export default async function courselore(
   ];
   app.set("handler isAuthenticated", isAuthenticated);
 
-  /*
   app.get<{}, HTML, {}, { redirect?: string }, {}>(
     ["/", "/authenticate"],
     ...isUnauthenticated,
@@ -1220,6 +1219,7 @@ export default async function courselore(
     }
   );
 
+  /*
   const authenticate: express.RequestHandler<
     { nonce: string },
     HTML,
@@ -2831,13 +2831,13 @@ export default async function courselore(
   );
   */
 
-  /*
   app.all<{}, HTML, {}, {}, {}>("*", ...isUnauthenticated, (req, res) => {
     return res.redirect(
       `${app.get("url")}/authenticate?redirect=${req.originalUrl}`
     );
   });
 
+  /*
   app.all<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
     "*",
     ...isAuthenticated,
@@ -2860,6 +2860,7 @@ export default async function courselore(
       );
     }
   );
+  */
 
   class ValidationError extends Error {}
 
@@ -2993,7 +2994,6 @@ export default async function courselore(
       >at ${timeString}</time
     >`;
   }
-  */
 
   return app;
 }
