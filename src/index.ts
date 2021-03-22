@@ -1470,84 +1470,91 @@ export default async function courselore(
     );
   });
 
-  /*
-  app.get<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
-    "/",
-    ...isAuthenticated,
-    (req, res) => {
-      switch (res.locals.courses.length) {
-        case 0:
-          return res.send(
-            app.get("layout main")(
-              req,
-              res,
-              html`<title>CourseLore</title>`,
-              html`
+  app.get<
+    {},
+    HTML,
+    {},
+    {},
+    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
+  >("/", ...isAuthenticated, (req, res) => {
+    switch (res.locals.enrollmentsJoinCourses.length) {
+      case 0:
+        return res.send(
+          app.get("layout main")(
+            req,
+            res,
+            html`<title>CourseLore</title>`,
+            html`
+              <h1>Hi ${res.locals.user.name},</h1>
+
+              <p><strong>Welcome to CourseLore!</strong></p>
+              <p>
+                To <strong>enroll on an existing course</strong> you either have
+                to follow an invitation link or be invited via email. Contact
+                your course staff for more information.
+              </p>
+              <p>
+                Or
+                <strong
+                  ><a href="${app.get("url")}/courses/new"
+                    >create a new course</a
+                  ></strong
+                >.
+              </p>
+            `
+          )
+        );
+
+      case 1:
+        return res.redirect(
+          `${app.get("url")}/courses/${
+            res.locals.enrollmentsJoinCourses[0].course.reference
+          }`
+        );
+
+      default:
+        return res.send(
+          app.get("layout main")(
+            req,
+            res,
+            html`<title>CourseLore</title>`,
+            html`
+              <div>
                 <h1>Hi ${res.locals.user.name},</h1>
 
-                <p><strong>Welcome to CourseLore!</strong></p>
-                <p>
-                  To <strong>enroll on an existing course</strong> you either
-                  have to follow an invitation link or be invited via email.
-                  Contact your course staff for more information.
-                </p>
-                <p>
-                  Or
-                  <strong
-                    ><a href="${app.get("url")}/courses/new"
-                      >create a new course</a
-                    ></strong
-                  >.
-                </p>
-              `
-            )
-          );
-
-        case 1:
-          return res.redirect(
-            `${app.get("url")}/courses/${res.locals.courses[0].reference}`
-          );
-
-        default:
-          return res.send(
-            app.get("layout main")(
-              req,
-              res,
-              html`<title>CourseLore</title>`,
-              html`
-                <div>
-                  <h1>Hi ${res.locals.user.name},</h1>
-
-                  <p>Go to one of your courses:</p>
-                  $${res.locals.courses.map(
-                    (course) =>
-                      html`
-                        <p>
-                          <a
-                            href="${app.get("url")}/courses/${course.reference}"
-                            ><span
-                              style="${css`
-                                display: inline-block;
-                                width: 0.8rem;
-                                height: 0.8rem;
-                                background-color: ${course.accentColor};
-                                border-radius: 50%;
-                              `}"
-                            ></span>
-                            <strong>${course.name}</strong> (${course.role})</a
-                          >
-                        </p>
-                      `
-                  )}
-                </div>
-              `
-            )
-          );
-      }
+                <p>Go to one of your courses:</p>
+                $${res.locals.enrollmentsJoinCourses.map(
+                  (enrollmentJoinCourse) =>
+                    html`
+                      <p>
+                        <a
+                          href="${app.get("url")}/courses/${enrollmentJoinCourse
+                            .course.reference}"
+                          ><span
+                            style="${css`
+                              display: inline-block;
+                              width: 0.8rem;
+                              height: 0.8rem;
+                              background-color: ${enrollmentJoinCourse
+                                .enrollment.accentColor};
+                              border-radius: 50%;
+                            `}"
+                          ></span>
+                          <strong>${enrollmentJoinCourse.course.name}</strong>
+                          (${enrollmentJoinCourse.enrollment.role})</a
+                        >
+                      </p>
+                    `
+                )}
+              </div>
+            `
+          )
+        );
     }
-  );
+  });
 
-  app.get<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
+  /*
+  app.get<{}, HTML, {}, {}, { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }>(
     "/settings",
     ...isAuthenticated,
     (req, res) => {
@@ -1613,7 +1620,7 @@ export default async function courselore(
     any,
     { name?: string },
     {},
-    { user: User; courses: CourseAndEnrollment[] }
+    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
   >("/settings", ...isAuthenticated, (req, res) => {
     if (typeof req.body.name === "string") {
       if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
@@ -1626,7 +1633,7 @@ export default async function courselore(
     res.redirect(`${app.get("url")}/settings`);
   });
 
-  app.get<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
+  app.get<{}, HTML, {}, {}, { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }>(
     "/courses/new",
     ...isAuthenticated,
     (req, res) => {
@@ -1664,7 +1671,7 @@ export default async function courselore(
     any,
     { name?: string },
     {},
-    { user: User; courses: CourseAndEnrollment[] }
+    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
   >("/courses", ...isAuthenticated, (req, res) => {
     if (
       typeof req.body.name !== "string" ||
@@ -1681,7 +1688,7 @@ export default async function courselore(
     ).lastInsertRowid;
     // TODO: Extract this into an auxiliary function to be used by the student enrollment routine as well.
     const accentColorsInUse = new Set(
-      res.locals.courses.map((course) => course.accentColor)
+      res.locals.enrollmentsJoinCourses.map((course) => course.accentColor)
     );
     let accentColorsAvailable = new Set(ACCENT_COLORS);
     for (const accentColorInUse of accentColorsInUse) {
@@ -1710,16 +1717,16 @@ export default async function courselore(
     {},
     {
       user: User;
-      courses: CourseAndEnrollment[];
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
       course: CourseAndEnrollment;
-      otherCourses: CourseAndEnrollment[];
+      otherenrollmentsJoinCourses: EnrollmentJoinCourse[];
       threads: Thread[];
     }
   >[] = [
     ...isAuthenticated,
     (req, res, next) => {
       res.locals.otherCourses = [];
-      for (const course of res.locals.courses)
+      for (const course of res.locals.enrollmentsJoinCourses)
         if (course.reference === req.params.courseReference)
           res.locals.course = course;
         else res.locals.otherCourses.push(course);
@@ -1773,9 +1780,9 @@ export default async function courselore(
     {},
     {
       user: User;
-      courses: CourseAndEnrollment[];
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
       course: CourseAndEnrollment;
-      otherCourses: CourseAndEnrollment[];
+      otherenrollmentsJoinCourses: EnrollmentJoinCourse[];
       threads: Thread[];
     }
   >("/courses/:courseReference", ...isEnrolledInCourse, (req, res) => {
@@ -2617,7 +2624,7 @@ export default async function courselore(
     HTML,
     { content?: string },
     {},
-    { user: User; courses: CourseAndEnrollment[] }
+    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
   >("/preview", ...isAuthenticated, (req, res) => {
     if (
       typeof req.body.content !== "string" ||
@@ -2849,7 +2856,7 @@ export default async function courselore(
   });
 
   /*
-  app.all<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
+  app.all<{}, HTML, {}, {}, { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }>(
     "*",
     ...isAuthenticated,
     (req, res) => {
