@@ -1678,7 +1678,7 @@ export default async function courselore(
     res.redirect(`${app.get("url")}/courses/${courseReference}`);
   });
 
-  const isCourseEnrolled: express.RequestHandler<
+  const isEnrolledInCourse: express.RequestHandler<
     { courseReference: string },
     any,
     {},
@@ -1753,7 +1753,7 @@ export default async function courselore(
       otherCourses: CourseAndEnrollment[];
       threads: Thread[];
     }
-  >("/courses/:courseReference", ...isCourseEnrolled, (req, res) => {
+  >("/courses/:courseReference", ...isEnrolledInCourse, (req, res) => {
     if (res.locals.threads.length === 0)
       return res.send(
         app.get("layout main")(
