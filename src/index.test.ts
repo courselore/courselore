@@ -19,29 +19,29 @@ beforeEach(async () => {
   server = app.listen(new URL(app.get("url")).port);
   client = got.default.extend({
     prefixUrl: app.get("url"),
-    cookieJar: new toughCookie.CookieJar(),
+    cookieJar: new toughCookie.CookieJar(undefined, {
+      rejectPublicSuffixes: false,
+    }),
   });
-  const signupPage = JSDOM.fragment(
+  const authenticationPage = JSDOM.fragment(
     (
-      await client.post("sign-up", {
+      await client.post("authenticate", {
         form: { email: "leandro@courselore.org" },
       })
     ).body
   );
-  const token = signupPage
-    .querySelector(`a[href^="${app.get("url")}/sign-up/"]`)!
+  const nonce = authenticationPage
+    .querySelector(`a[href^="${app.get("url")}/authenticate/"]`)!
     .getAttribute("href")!
-    .slice(`${app.get("url")}/sign-up/`.length);
-  await client.post("users", {
-    form: { token, name: "Leandro Facchinetti" },
-  });
+    .slice(`${app.get("url")}/authenticate/`.length);
+  await client.post("users", { form: { nonce, name: "Leandro Facchinetti" } });
 });
 afterEach(() => {
   server.close();
 });
 
 test("/preview (Text processor)", async () => {
-  await expect(
+  expect(
     (
       await client.post("preview", {
         form: {

@@ -130,7 +130,6 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
-        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "title" TEXT NOT NULL,
         UNIQUE ("course", "reference")
       );
@@ -1553,67 +1552,68 @@ export default async function courselore(
     }
   });
 
-  /*
-  app.get<{}, HTML, {}, {}, { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }>(
-    "/settings",
-    ...isAuthenticated,
-    (req, res) => {
-      res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>User Settings · CourseLore</title>`,
-          html`
-            <h1>User Settings</h1>
+  app.get<
+    {},
+    HTML,
+    {},
+    {},
+    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
+  >("/settings", ...isAuthenticated, (req, res) => {
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>User Settings · CourseLore</title>`,
+        html`
+          <h1>User Settings</h1>
 
-            <form
-              method="POST"
-              action="${app.get("url")}/settings?_method=PATCH"
+          <form
+            method="POST"
+            action="${app.get("url")}/settings?_method=PATCH"
+            style="${css`
+              display: flex;
+              align-items: flex-end;
+
+              & > * + * {
+                margin-left: 1rem;
+              }
+            `}"
+          >
+            <p
               style="${css`
-                display: flex;
-                align-items: flex-end;
-
-                & > * + * {
-                  margin-left: 1rem;
-                }
+                flex: 1;
               `}"
             >
-              <p
-                style="${css`
-                  flex: 1;
-                `}"
-              >
-                <label>
-                  <strong>Name</strong>
-                  <input
-                    type="text"
-                    name="name"
-                    autocomplete="off"
-                    required
-                    value="${res.locals.user.name}"
-                  />
-                </label>
-              </p>
-              <p>
-                <button>Change Name</button>
-              </p>
-            </form>
-
-            <p>
               <label>
-                <strong>Email</strong>
-                <input type="email" value="${res.locals.user.email}" disabled />
-                <small class="hint">
-                  Your email is your identity in CourseLore and it can’t be
-                  changed.
-                </small>
+                <strong>Name</strong>
+                <input
+                  type="text"
+                  name="name"
+                  autocomplete="off"
+                  required
+                  value="${res.locals.user.name}"
+                />
               </label>
             </p>
-          `
-        )
-      );
-    }
-  );
+            <p>
+              <button>Change Name</button>
+            </p>
+          </form>
+
+          <p>
+            <label>
+              <strong>Email</strong>
+              <input type="email" value="${res.locals.user.email}" disabled />
+              <small>
+                Your email is your identity in CourseLore and it can’t be
+                changed.
+              </small>
+            </label>
+          </p>
+        `
+      )
+    );
+  });
 
   app.patch<
     {},
@@ -1633,38 +1633,40 @@ export default async function courselore(
     res.redirect(`${app.get("url")}/settings`);
   });
 
-  app.get<{}, HTML, {}, {}, { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }>(
-    "/courses/new",
-    ...isAuthenticated,
-    (req, res) => {
-      res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>Create a New Course · CourseLore</title>`,
-          html`
-            <h1>Create a New Course</h1>
+  app.get<
+    {},
+    HTML,
+    {},
+    {},
+    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
+  >("/courses/new", ...isAuthenticated, (req, res) => {
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>Create a New Course · CourseLore</title>`,
+        html`
+          <h1>Create a New Course</h1>
 
-            <form method="POST" action="${app.get("url")}/courses">
-              <p>
-                <label>
-                  <strong>Name</strong>
-                  <input
-                    type="text"
-                    name="name"
-                    autocomplete="off"
-                    required
-                    autofocus
-                  />
-                </label>
-              </p>
-              <p><button>Create Course</button></p>
-            </form>
-          `
-        )
-      );
-    }
-  );
+          <form method="POST" action="${app.get("url")}/courses">
+            <p>
+              <label>
+                <strong>Name</strong>
+                <input
+                  type="text"
+                  name="name"
+                  autocomplete="off"
+                  required
+                  autofocus
+                />
+              </label>
+            </p>
+            <p><button>Create Course</button></p>
+          </form>
+        `
+      )
+    );
+  });
 
   app.post<
     {},
@@ -1686,16 +1688,6 @@ export default async function courselore(
     const newCourseId = database.run(
       sql`INSERT INTO "courses" ("reference", "name") VALUES (${courseReference}, ${req.body.name})`
     ).lastInsertRowid;
-    // TODO: Extract this into an auxiliary function to be used by the student enrollment routine as well.
-    const accentColorsInUse = new Set(
-      res.locals.enrollmentsJoinCourses.map((course) => course.accentColor)
-    );
-    let accentColorsAvailable = new Set(ACCENT_COLORS);
-    for (const accentColorInUse of accentColorsInUse) {
-      accentColorsAvailable.delete(accentColorInUse);
-      if (accentColorsAvailable.size === 1) break;
-    }
-    const accentColor = [...accentColorsAvailable][0];
     database.run(
       sql`
           INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
@@ -1703,13 +1695,40 @@ export default async function courselore(
             ${res.locals.user.id},
             ${newCourseId},
             ${"staff"},
-            ${accentColor}
+            ${defaultAccentColor(req, res)}
           )
         `
     );
     res.redirect(`${app.get("url")}/courses/${courseReference}`);
   });
 
+  function defaultAccentColor(
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      { enrollmentsJoinCourses: EnrollmentJoinCourse[] }
+    >,
+    res: express.Response<
+      any,
+      { enrollmentsJoinCourses: EnrollmentJoinCourse[] }
+    >
+  ): AccentColor {
+    const accentColorsInUse = new Set(
+      res.locals.enrollmentsJoinCourses.map(
+        (enrollmentJoinCourse) => enrollmentJoinCourse.enrollment.accentColor
+      )
+    );
+    let accentColorsAvailable = new Set(ACCENT_COLORS);
+    for (const accentColorInUse of accentColorsInUse) {
+      accentColorsAvailable.delete(accentColorInUse);
+      if (accentColorsAvailable.size === 1) break;
+    }
+    return [...accentColorsAvailable][0];
+  }
+
+  /*
   const isEnrolledInCourse: express.RequestHandler<
     { courseReference: string },
     any,
@@ -1718,20 +1737,26 @@ export default async function courselore(
     {
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      course: CourseAndEnrollment;
-      otherenrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threads: Thread[];
+      enrollmentJoinCourseJoinThreadsJoinAuthors: {
+        enrollmentJoinCourse: EnrollmentJoinCourse;
+        threadsJoinAuthors: Thread[];
+      };
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >[] = [
     ...isAuthenticated,
     (req, res, next) => {
-      res.locals.otherCourses = [];
-      for (const course of res.locals.enrollmentsJoinCourses)
-        if (course.reference === req.params.courseReference)
-          res.locals.course = course;
-        else res.locals.otherCourses.push(course);
-      if (res.locals.course === undefined) next("route");
-      res.locals.threads = database
+      let enrollmentJoinCourse: EnrollmentJoinCourse | undefined;
+      const otherEnrollmentsJoinCourses: EnrollmentJoinCourse[] = [];
+      for (const aEnrollmentJoinCourse of res.locals.enrollmentsJoinCourses)
+        if (
+          aEnrollmentJoinCourse.course.reference === req.params.courseReference
+        )
+          enrollmentJoinCourse = aEnrollmentJoinCourse;
+        else otherEnrollmentsJoinCourses.push(aEnrollmentJoinCourse);
+      if (enrollmentJoinCourse === undefined) return next("route");
+
+      const threads = database
         .all<{
           threadId: number;
           reference: string;
@@ -1744,14 +1769,20 @@ export default async function courselore(
           name: string;
         }>(
           sql`
-          SELECT "threads"."id" AS "threadId", "threads"."reference", "threads"."title",
-                 "authorEnrollment"."id" AS "authorEnrollmentId", "authorEnrollment"."role", "authorEnrollment"."accentColor",
-                 "authorUser"."id" AS "authorUserId", "authorUser"."email", "authorUser"."name"
-          FROM "threads"
-          JOIN "enrollments" AS "authorEnrollment" ON "threads"."author" = "authorEnrollment"."id"
-          JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-          WHERE "threads"."course" = ${res.locals.course.id}
-          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
+            SELECT "threads"."id" AS "threadId",
+                   "threads"."reference",
+                   "threads"."title",
+                   "authorEnrollment"."id" AS "authorEnrollmentId",
+                   "authorEnrollment"."role",
+                   "authorEnrollment"."accentColor",
+                   "authorUser"."id" AS "authorUserId",
+                   "authorUser"."email",
+                   "authorUser"."name"
+            FROM "threads"
+            JOIN "enrollments" AS "authorEnrollment" ON "threads"."author" = "authorEnrollment"."id"
+            JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+            WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
+            ORDER BY CAST("threads"."reference" AS INTEGER) DESC
         `
         )
         .map((row) => ({
@@ -1782,7 +1813,7 @@ export default async function courselore(
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       course: CourseAndEnrollment;
-      otherenrollmentsJoinCourses: EnrollmentJoinCourse[];
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
       threads: Thread[];
     }
   >("/courses/:courseReference", ...isEnrolledInCourse, (req, res) => {
@@ -1838,9 +1869,7 @@ export default async function courselore(
       }`
     );
   });
-  */
 
-  /*
   // TODO: Process email addresses
   // https://www.npmjs.com/package/email-addresses
   // https://www.npmjs.com/package/addressparser
@@ -2618,6 +2647,7 @@ export default async function courselore(
       </div>
     `;
   }
+  */
 
   app.post<
     {},
@@ -2635,6 +2665,7 @@ export default async function courselore(
     res.send(app.get("text processor")(req.body.content));
   });
 
+  /*
   app.get<
     { courseReference: string; threadReference: string },
     HTML,
