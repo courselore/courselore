@@ -352,6 +352,7 @@ export default async function courselore(
                 button {
                   text-align: center;
                   background-color: white;
+                  cursor: default;
 
                   @media (prefers-color-scheme: dark) {
                     background-color: #5a5a5a;
@@ -360,7 +361,6 @@ export default async function courselore(
                   &:active {
                     color: white;
                     background-color: #ff77a8;
-                    border-color: #ff77a8;
                   }
                 }
 
@@ -1219,7 +1219,6 @@ export default async function courselore(
     }
   );
 
-  /*
   const authenticate: express.RequestHandler<
     { nonce: string },
     HTML,
@@ -1352,21 +1351,29 @@ export default async function courselore(
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
 
-  app.delete<{}, any, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
-    "/authenticate",
-    ...isAuthenticated,
-    (req, res) => {
-      closeSession(req, res);
-      res.redirect(`${app.get("url")}/`);
+  app.delete<
+    {},
+    any,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
-  );
+  >("/authenticate", ...isAuthenticated, (req, res) => {
+    closeSession(req, res);
+    res.redirect(`${app.get("url")}/`);
+  });
 
   app.get<
     { nonce: string },
     HTML,
     {},
     { redirect?: string },
-    { user: User; courses: CourseAndEnrollment[] }
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
   >("/authenticate/:nonce", ...isAuthenticated, (req, res) => {
     const redirect = `${app.get("url")}${req.query.redirect ?? "/"}`;
     const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
@@ -1437,7 +1444,7 @@ export default async function courselore(
                 <p>
                   $${otherUserEmail === undefined || isSelf
                     ? html`Visit`
-                    : html` Continue as $${currentUserHTML} and visit`}
+                    : html`Continue as $${currentUserHTML} and visit`}
                   the page to which the magic authentication link would have
                   redirected you:<br />
                   <a href="${redirect}">${redirect}</a>
@@ -1453,13 +1460,18 @@ export default async function courselore(
     HTML,
     {},
     { redirect?: string },
-    { user: User; courses: CourseAndEnrollment[] }
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
   >("/authenticate/:nonce", ...isAuthenticated, (req, res, next) => {
     closeSession(req, res);
-    delete (res.locals as { user?: User }).user;
+    // TODO: REDIRECT!
+    res.locals = {} as any;
     authenticate(req, res, next);
   });
 
+  /*
   app.get<{}, HTML, {}, {}, { user: User; courses: CourseAndEnrollment[] }>(
     "/",
     ...isAuthenticated,
