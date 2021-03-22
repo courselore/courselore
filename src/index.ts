@@ -1022,7 +1022,7 @@ export default async function courselore(
     (req, res, next) => {
       if (req.cookies.session === undefined) return next("route");
       const sessionJoinUser = database.get<{ expiresAt: string } & User>(sql`
-        SELECT "sessions"."expiresAt", "users"."id", "users"."email", "users"."name",
+        SELECT "sessions"."expiresAt", "users"."id", "users"."email", "users"."name"
         FROM "sessions"
         JOIN "users" ON "sessions"."user" = "users"."id"
         WHERE "sessions"."token" = ${req.cookies.session} AND
@@ -1054,7 +1054,12 @@ export default async function courselore(
           name: string;
         }>(
           sql`
-            SELECT "enrollment"."id" AS "enrollmentId", "enrollments"."role", "enrollments"."accentColor", "courses"."id" AS "courseId", "courses"."reference", "courses"."name"
+            SELECT "enrollments"."id" AS "enrollmentId",
+                   "enrollments"."role",
+                   "enrollments"."accentColor",
+                   "courses"."id" AS "courseId",
+                   "courses"."reference",
+                   "courses"."name"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "enrollments"."user" = ${res.locals.user.id}
@@ -1442,11 +1447,8 @@ export default async function courselore(
             ? html``
             : html`
                 <p>
-                  $${otherUserEmail === undefined || isSelf
-                    ? html`Visit`
-                    : html`Continue as $${currentUserHTML} and visit`}
-                  the page to which the magic authentication link would have
-                  redirected you:<br />
+                  Continue as $${currentUserHTML} and visit the page to which
+                  the magic authentication link would have redirected you:<br />
                   <a href="${redirect}">${redirect}</a>
                 </p>
               `}
