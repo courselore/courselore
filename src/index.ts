@@ -2005,7 +2005,12 @@ export default async function courselore(
           $${res.locals.otherEnrollmentsJoinCourses.length === 0
             ? html``
             : html`
-                <details class="popup">
+                <details
+                  class="popup"
+                  style="${css`
+                    margin-top: -0.8rem;
+                  `}"
+                >
                   <summary
                     class="no-marker"
                     style="${css`
@@ -2037,7 +2042,11 @@ export default async function courselore(
                     </svg>
                     <small>Switch to another course</small>
                   </summary>
-                  <nav>
+                  <nav
+                    style="${css`
+                      transform: translateY(0.5rem);
+                    `}"
+                  >
                     $${res.locals.otherEnrollmentsJoinCourses.map(
                       (otherEnrollmentJoinCourse) => html`
                         <p>
