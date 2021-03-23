@@ -1580,10 +1580,10 @@ export default async function courselore(
             res,
             html`<title>CourseLore</title>`,
             html`
-              <div>
-                <h1>Hi ${res.locals.user.name},</h1>
+              <h1>Hi ${res.locals.user.name},</h1>
 
-                <p>Go to one of your courses:</p>
+              <p>Go to one of your courses:</p>
+              <nav>
                 $${res.locals.enrollmentsJoinCourses.map(
                   (enrollmentJoinCourse) =>
                     html`
@@ -1591,23 +1591,22 @@ export default async function courselore(
                         <a
                           href="${app.get("url")}/courses/${enrollmentJoinCourse
                             .course.reference}"
-                          ><span
-                            style="${css`
-                              display: inline-block;
-                              width: 0.8rem;
-                              height: 0.8rem;
-                              background-color: ${enrollmentJoinCourse
-                                .enrollment.accentColor};
-                              border-radius: 50%;
-                            `}"
-                          ></span>
+                          ><svg width="10" height="10" viewBox="0 0 10 10">
+                            <circle
+                              cx="5"
+                              cy="5"
+                              r="5"
+                              fill="${enrollmentJoinCourse.enrollment
+                                .accentColor}"
+                            />
+                          </svg>
                           <strong>${enrollmentJoinCourse.course.name}</strong>
                           (${enrollmentJoinCourse.enrollment.role})</a
                         >
                       </p>
                     `
                 )}
-              </div>
+              </nav>
             `
           )
         );
@@ -2055,16 +2054,15 @@ export default async function courselore(
                               "url"
                             )}/courses/${otherEnrollmentJoinCourse.course
                               .reference}/settings"
-                            ><span
-                              style="${css`
-                                display: inline-block;
-                                width: 0.8rem;
-                                height: 0.8rem;
-                                background-color: ${otherEnrollmentJoinCourse
-                                  .enrollment.accentColor};
-                                border-radius: 50%;
-                              `}"
-                            ></span>
+                            ><svg width="10" height="10" viewBox="0 0 10 10">
+                              <circle
+                                cx="5"
+                                cy="5"
+                                r="5"
+                                fill="${otherEnrollmentJoinCourse.enrollment
+                                  .accentColor}"
+                              />
+                            </svg>
                             <strong
                               >${otherEnrollmentJoinCourse.course.name}</strong
                             >
