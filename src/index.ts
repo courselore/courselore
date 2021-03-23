@@ -796,11 +796,17 @@ export default async function courselore(
         any,
         {},
         {},
-        { user?: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+        {
+          user?: User;
+          enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        }
       >,
       res: express.Response<
         any,
-        { user?: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+        {
+          user?: User;
+          enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        }
       >,
       head: HTML,
       body: HTML
@@ -812,12 +818,14 @@ export default async function courselore(
         html`
           <div
             style="${css`
-              ${res.locals.enrollmentJoinCourse === undefined
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata ===
+              undefined
                 ? css``
                 : css`
                     box-sizing: border-box;
                     border-top: 10px solid
-                      ${res.locals.enrollmentJoinCourse.enrollment.accentColor};
+                      ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                        .enrollment.accentColor};
                     position: absolute;
                     top: 0;
                     left: 0;
@@ -857,11 +865,17 @@ export default async function courselore(
       HTML,
       {},
       {},
-      { user: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+      {
+        user: User;
+        enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      }
     >,
     res: express.Response<
       HTML,
-      { user: User; enrollmentJoinCourse?: EnrollmentJoinCourse }
+      {
+        user: User;
+        enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      }
     >
   ): HTML {
     return html`
@@ -913,13 +927,15 @@ export default async function courselore(
               <p><button>Sign Out</button></p>
             </form>
             <p><a href="${app.get("url")}/settings">User Settings</a></p>
-            $${res.locals.enrollmentJoinCourse === undefined
+            $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata ===
+            undefined
               ? html``
               : html`
                   <p>
                     <a
                       href="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourse.course.reference}/settings"
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/settings"
                       >Course Settings</a
                     >
                   </p>
