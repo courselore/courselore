@@ -2114,7 +2114,17 @@ export default async function courselore(
             A bar of this color appears at the top of your screen to help you
             tell courses apart.
           </p>
-          <div>
+          <div
+            style="${css`
+              & > * {
+                display: inline-block;
+              }
+
+              & > * + * {
+                margin-left: 0.5rem;
+              }
+            `}"
+          >
             $${ACCENT_COLORS.map(
               (accentColor) =>
                 html`
@@ -2123,9 +2133,6 @@ export default async function courselore(
                     action="${app.get("url")}/courses/${res.locals
                       .enrollmentJoinCourseJoinThreadsWithMetadata.course
                       .reference}/settings?_method=PATCH"
-                    style="${css`
-                      display: inline-block;
-                    `}"
                   >
                     <input
                       type="hidden"
@@ -2133,43 +2140,18 @@ export default async function courselore(
                       value="${accentColor}"
                     />
                     <button
-                      class="${accentColor ===
-                      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                        .enrollment.accentColor
-                        ? "checked"
-                        : ""}"
                       style="${css`
-                        width: 2rem;
-                        height: 2rem;
+                        all: unset;
                       `}"
                     >
-                      <span
-                        style="${css`
-                          display: inline-block;
-                          width: 65%;
-                          height: 65%;
-                          border: 5px solid transparent;
-                          border-radius: 50%;
-                          transition: border-color 0.2s;
-
-                          @media (prefers-color-scheme: dark) {
-                            .checked > & {
-                              border-color: #d4d4d4;
-                            }
-                          }
-                        `}"
-                        ><span
-                          style="${css`
-                            background-color: ${accentColor};
-                            display: inline-block;
-                            width: 110%;
-                            height: 110%;
-                            margin-left: -5%;
-                            margin-top: -5%;
-                            border-radius: 50%;
-                          `}"
-                        ></span
-                      ></span>
+                      <svg width="20" height="20" viewBox="0 0 20 20">
+                        <circle cx="10" cy="10" r="10" fill="${accentColor}" />
+                        $${accentColor ===
+                        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                          .enrollment.accentColor
+                          ? html`<circle cx="10" cy="10" r="3" fill="white" />`
+                          : html``}
+                      </svg>
                     </button>
                   </form>
                 `
