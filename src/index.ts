@@ -83,10 +83,26 @@ export default async function courselore(
     course: Course;
   }
 
+  interface EnrollmentJoinUser {
+    enrollment: Enrollment;
+    user: User;
+  }
+
   interface Thread {
     id: number;
     reference: string;
     title: string;
+  }
+
+  interface ThreadWithMetadata extends Thread {
+    createdAt: string;
+    updatedAt: string;
+    author: EnrollmentJoinUser;
+  }
+
+  interface EnrollmentJoinCourseJoinThreadsWithMetadata
+    extends EnrollmentJoinCourse {
+    threadsWithMetadata: ThreadWithMetadata[];
   }
 
   interface Post {
@@ -462,6 +478,15 @@ export default async function courselore(
                   }
                 }
 
+                hr {
+                  border: none;
+                  border-top: 1px solid silver;
+
+                  @media (prefers-color-scheme: dark) {
+                    border-color: black;
+                  }
+                }
+
                 /*
                 textarea {
                   padding: 0.5rem 1rem;
@@ -483,14 +508,6 @@ export default async function courselore(
                   transform: translate(-1.5rem, 4px);
                 }
 
-                hr {
-                  border: none;
-                  border-top: 1px solid silver;
-
-                  @media (prefers-color-scheme: dark) {
-                    border-color: black;
-                  }
-                }
                 */
 
                 [hidden] {
@@ -1065,16 +1082,16 @@ export default async function courselore(
             ORDER BY "enrollments"."id" DESC
           `
         )
-        .map((enrollmentJoinCourse) => ({
+        .map((row) => ({
           enrollment: {
-            id: enrollmentJoinCourse.enrollmentId,
-            role: enrollmentJoinCourse.role,
-            accentColor: enrollmentJoinCourse.accentColor,
+            id: row.enrollmentId,
+            role: row.role,
+            accentColor: row.accentColor,
           },
           course: {
-            id: enrollmentJoinCourse.courseId,
-            reference: enrollmentJoinCourse.reference,
-            name: enrollmentJoinCourse.name,
+            id: row.courseId,
+            reference: row.reference,
+            name: row.name,
           },
         }));
       next();
@@ -1728,7 +1745,6 @@ export default async function courselore(
     return [...accentColorsAvailable][0];
   }
 
-  /*
   const isEnrolledInCourse: express.RequestHandler<
     { courseReference: string },
     any,
@@ -1737,10 +1753,7 @@ export default async function courselore(
     {
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      enrollmentJoinCourseJoinThreadsJoinAuthors: {
-        enrollmentJoinCourse: EnrollmentJoinCourse;
-        threadsJoinAuthors: Thread[];
-      };
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >[] = [
@@ -1756,11 +1769,13 @@ export default async function courselore(
         else otherEnrollmentsJoinCourses.push(aEnrollmentJoinCourse);
       if (enrollmentJoinCourse === undefined) return next("route");
 
-      const threads = database
+      const threadsWithMetadata = database
         .all<{
           threadId: number;
           reference: string;
           title: string;
+          createdAt: string;
+          updatedAt: string;
           authorEnrollmentId: number;
           role: Role;
           accentColor: AccentColor;
@@ -1770,36 +1785,52 @@ export default async function courselore(
         }>(
           sql`
             SELECT "threads"."id" AS "threadId",
-                   "threads"."reference",
-                   "threads"."title",
-                   "authorEnrollment"."id" AS "authorEnrollmentId",
-                   "authorEnrollment"."role",
-                   "authorEnrollment"."accentColor",
-                   "authorUser"."id" AS "authorUserId",
-                   "authorUser"."email",
-                   "authorUser"."name"
+                  "threads"."reference",
+                  "threads"."title",
+                  "originalPost"."createdAt",
+                  "mostRecentlyUpdatedPost"."updatedAt",
+                  "authorEnrollment"."id" AS "authorEnrollmentId",
+                  "authorEnrollment"."role",
+                  "authorEnrollment"."accentColor",
+                  "authorUser"."id" AS "authorUserId",
+                  "authorUser"."email",
+                  "authorUser"."name"
             FROM "threads"
-            JOIN "enrollments" AS "authorEnrollment" ON "threads"."author" = "authorEnrollment"."id"
+            JOIN "posts" AS "originalPost" ON "threads"."id" = "originalPost"."thread"
+            JOIN "enrollments" AS "authorEnrollment" ON "originalPost"."author" = "authorEnrollment"."id"
             JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+            JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."id"
             WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
-            ORDER BY CAST("threads"."reference" AS INTEGER) DESC
-        `
+            GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread"
+            ORDER BY MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt"), "threads"."id" DESC
+          `
         )
         .map((row) => ({
           id: row.threadId,
           reference: row.reference,
+          title: row.title,
+          createdAt: row.createdAt,
+          updatedAt: row.updatedAt,
           author: {
-            id: row.threadId,
+            enrollment: {
+              id: row.authorEnrollmentId,
+              role: row.role,
+              accentColor: row.accentColor,
+            },
             user: {
               id: row.authorUserId,
               email: row.email,
               name: row.name,
             },
-            role: row.role,
-            accentColor: row.accentColor,
           },
-          title: row.title,
         }));
+
+      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata = {
+        ...enrollmentJoinCourse,
+        threadsWithMetadata,
+      };
+      res.locals.otherEnrollmentsJoinCourses = otherEnrollmentsJoinCourses;
+
       next();
     },
   ];
@@ -1812,39 +1843,52 @@ export default async function courselore(
     {
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      course: CourseAndEnrollment;
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threads: Thread[];
     }
   >("/courses/:courseReference", ...isEnrolledInCourse, (req, res) => {
-    if (res.locals.threads.length === 0)
+    if (
+      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.threadsWithMetadata
+        .length === 0
+    )
       return res.send(
         app.get("layout main")(
           req,
           res,
-          html`<title>${res.locals.course.name} · CourseLore</title>`,
+          html`<title>
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+              .name}
+            · CourseLore
+          </title>`,
           html`
             <h1>
               Welcome to
-              <a href="${app.get("url")}/courses/${req.params.courseReference}"
-                >${res.locals.course.name}</a
+              <a
+                href="${app.get("url")}/courses/${res.locals
+                  .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .reference}"
+                >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .name}</a
               >!
             </h1>
 
-            $${res.locals.course.role === "staff"
+            $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
+              .role === "staff"
               ? html`
                   <p>
                     <a
-                      href="${app.get("url")}/courses/${req.params
-                        .courseReference}/settings#invitations"
+                      href="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/settings#invitations"
                       ><strong>Invite other people to the course</strong></a
                     >.
                   </p>
                   <p>
                     Or
                     <a
-                      href="${app.get("url")}/courses/${req.params
-                        .courseReference}/threads/new"
+                      href="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/threads/new"
                       ><strong>create the first thread</strong></a
                     >.
                   </p>
@@ -1853,8 +1897,9 @@ export default async function courselore(
                   <p>
                     This is a new course.
                     <a
-                      href="${app.get("url")}/courses/${req.params
-                        .courseReference}/threads/new"
+                      href="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/threads/new"
                       ><strong>Create the first thread</strong></a
                     >.
                   </p>
@@ -1864,8 +1909,11 @@ export default async function courselore(
       );
 
     res.redirect(
-      `${app.get("url")}/courses/${req.params.courseReference}/threads/${
-        res.locals.threads[0]
+      `${app.get("url")}/courses/${
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
+      }/threads/${
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+          .threadsWithMetadata[0].reference
       }`
     );
   });
@@ -1874,153 +1922,158 @@ export default async function courselore(
   // https://www.npmjs.com/package/email-addresses
   // https://www.npmjs.com/package/addressparser
   // https://www.npmjs.com/package/emailjs-mime-codec
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/courses/:courseReference/settings",
-    ...isCourseEnrolled,
-    (req, res) => {
-      const course = database.get<{ id: number; name: string }>(
-        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
+  // Date pickers
+  // https://github.com/jcgertig/date-input-polyfill
+  // https://github.com/Pikaday/Pikaday
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>
+          Course Settings ·
+          ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}
+          · CourseLore
+        </title>`,
+        html`
+          <h1>
+            Course Settings ·
+            <a
+              href="${app.get("url")}/courses/${res.locals
+                .enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}"
+              >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .name}</a
+            >
+          </h1>
 
-      const enrollment = database.get<{
-        role: Role;
-        accentColor: AccentColor;
-      }>(
-        sql`
-          SELECT "role", "accentColor"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "users"."email" = ${req.session!.email} AND
-                "enrollments"."course" = ${course.id}
-        `
-      )!;
+          $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
+            .role !== "staff"
+            ? html``
+            : html`
+                <form
+                  method="POST"
+                  action="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}/settings?_method=PATCH"
+                  style="${css`
+                    display: flex;
+                    align-items: flex-end;
 
-      return res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>Course Settings · ${course.name} · CourseLore</title>`,
-          html`
-            <h1>
-              Course Settings ·
-              <a href="${app.get("url")}/courses/${req.params.courseReference}"
-                >${course.name}</a
-              >
-            </h1>
-
-            $${enrollment.role !== "staff"
-              ? html``
-              : html`
-                  <form
-                    method="POST"
-                    action="${app.get("url")}/courses/${req.params
-                      .courseReference}/settings?_method=PATCH"
+                    & > * + * {
+                      margin-left: 1rem;
+                    }
+                  `}"
+                >
+                  <p
                     style="${css`
-                      display: flex;
-                      align-items: flex-end;
-
-                      & > * + * {
-                        margin-left: 1rem;
-                      }
+                      flex: 1;
                     `}"
                   >
-                    <p
-                      style="${css`
-                        flex: 1;
-                      `}"
-                    >
-                      <label>
-                        <strong>Name</strong>
-                        <input
-                          type="text"
-                          name="name"
-                          autocomplete="off"
-                          required
-                          value="${course.name}"
-                        />
-                      </label>
-                    </p>
-                    <p>
-                      <button>Rename</button>
-                    </p>
-                  </form>
-
-                  <hr />
-
-                  <p id="invitations">
-                    <strong>Invite with a link</strong><br />
-                    <small>
-                      Anyone with an invitation link may enroll on the course.
-                    </small>
+                    <label>
+                      <strong>Name</strong>
+                      <input
+                        type="text"
+                        name="name"
+                        autocomplete="off"
+                        required
+                        value="${res.locals
+                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          .name}"
+                      />
+                    </label>
                   </p>
-                  <form>
-                    <p>
-                      <!-- WIP: https://github.com/jcgertig/date-input-polyfill https://github.com/Pikaday/Pikaday -->
-                      <label>
-                        For
-                        <span class="select-wrapper">
-                          <select
-                            style="${css`
-                              width: auto;
-                            `}"
-                          >
-                            <option>students</option>
-                            <option>staff</option>
-                          </select>
-                        </span>
-                      </label>
-                    </p>
-                    <p><button>Create</button></p>
-                  </form>
+                  <p><button>Rename</button></p>
+                </form>
+
+                <hr />
+
+                <p id="invitations"><strong>Invite with a link</strong></p>
+                <p class="hint">
+                  Anyone with an invitation link may enroll on the course.
+                </p>
+                <form>
                   <p>
-                    <strong>Invite via email</strong><br />
-                    <small>
-                      Only the people you invite may enroll on the course.
-                    </small>
+                    <label>
+                      For
+                      <span class="select-wrapper">
+                        <select
+                          style="${css`
+                            width: auto;
+                          `}"
+                        >
+                          <option>students</option>
+                          <option>staff</option>
+                        </select>
+                      </span>
+                    </label>
                   </p>
-                  <form>
-                    <p>
-                      <textarea name="invite-by-email"></textarea>
-                    </p>
-                    <p
-                      style="${css`
-                        text-align: right;
-                      `}"
-                    >
-                      <label>
-                        As
-                        <span class="select-wrapper">
-                          <select
-                            style="${css`
-                              width: auto;
-                            `}"
-                          >
-                            <option>students</option>
-                            <option>staff</option>
-                          </select>
-                        </span>
-                      </label>
-                      <button>Invite</button>
-                    </p>
-                  </form>
+                  <p
+                    style="${css`
+                      text-align: right;
+                    `}"
+                  >
+                    <button>Create Invitation Link</button>
+                  </p>
+                </form>
 
-                  <hr />
-                `}
+                <p><strong>Invite via email</strong></p>
+                <p class="hint">
+                  Only the people you invite may enroll on the course.
+                </p>
+                <form>
+                  <p>
+                    <textarea name="invite-by-email"></textarea>
+                  </p>
+                  <p
+                    style="${css`
+                      text-align: right;
+                    `}"
+                  >
+                    <label>
+                      As
+                      <span class="select-wrapper">
+                        <select
+                          style="${css`
+                            width: auto;
+                          `}"
+                        >
+                          <option>students</option>
+                          <option>staff</option>
+                        </select>
+                      </span>
+                    </label>
+                    <button>Invite</button>
+                  </p>
+                </form>
 
-            <p
-              style="${css`
-                margin-bottom: 0;
-              `}"
-            >
-              <strong>Accent color</strong>
-            </p>
+                <hr />
+              `}
+
+          <p><strong>Accent color</strong></p>
+          <p class="hint">
+            A bar of this color appears at the top of your screen to help you
+            tell courses apart.
+          </p>
+          <div>
             $${ACCENT_COLORS.map(
               (accentColor) =>
                 html`
                   <form
                     method="POST"
-                    action="${app.get("url")}/courses/${req.params
-                      .courseReference}/settings?_method=PATCH"
+                    action="${app.get("url")}/courses/${res.locals
+                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      .reference}/settings?_method=PATCH"
                     style="${css`
                       display: inline-block;
                     `}"
@@ -2031,7 +2084,9 @@ export default async function courselore(
                       value="${accentColor}"
                     />
                     <button
-                      class="${accentColor === enrollment.accentColor
+                      class="${accentColor ===
+                      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                        .enrollment.accentColor
                         ? "checked"
                         : ""}"
                       style="${css`
@@ -2070,23 +2125,20 @@ export default async function courselore(
                   </form>
                 `
             )}
-            <p class="hint">
-              A bar of this color appears at the top of your screen to help you
-              tell courses apart.
-            </p>
-          `
-        )
-      );
-    }
-  );
+          </div>
+        `
+      )
+    );
+  });
 
+  /*
   app.patch<
     { courseReference: string },
     any,
     { name?: string; accentColor?: string },
     {},
     {}
-  >("/courses/:courseReference/settings", ...isCourseEnrolled, (req, res) => {
+  >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
     const enrollment = database.get<{ id: number; role: Role }>(
       sql`
           SELECT "enrollments"."id", "enrollments"."role"
@@ -2124,7 +2176,7 @@ export default async function courselore(
     { title?: string; content?: string },
     {},
     {}
-  >("/courses/:courseReference/threads", ...isCourseEnrolled, (req, res) => {
+  >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
     if (
       typeof req.body.title !== "string" ||
       validator.isEmpty(req.body.title, { ignore_whitespace: true }) ||
@@ -2184,7 +2236,7 @@ export default async function courselore(
     {},
     {}
   >[] = [
-    ...isCourseEnrolled,
+    ...isEnrolledInCourse,
     (req, res, next) => {
       if (
         database.get<{ exists: number }>(
@@ -2837,7 +2889,7 @@ export default async function courselore(
 
   app.get<{ courseReference: string }, HTML, {}, {}, {}>(
     "/courses/:courseReference/threads/new",
-    ...isCourseEnrolled,
+    ...isEnrolledInCourse,
     (req, res) => {
       const course = database.get<{ name: string }>(
         sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
