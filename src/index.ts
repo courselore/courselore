@@ -342,6 +342,10 @@ export default async function courselore(
                     border-color: dimgray;
                   }
 
+                  @supports (-webkit-touch-callout: none) {
+                    font-size: 16px;
+                  }
+
                   &:focus {
                     border-color: #ff77a8;
                   }
