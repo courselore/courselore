@@ -285,6 +285,10 @@ export default async function courselore(
                   line-height: 1.3;
                   font-weight: 800;
                   margin-top: 1.5rem;
+
+                  header & {
+                    margin-top: 0;
+                  }
                 }
 
                 pre,
@@ -838,7 +842,8 @@ export default async function courselore(
             <div
               style="${css`
                 max-width: 600px;
-                margin: 0 auto;
+                margin: 1rem auto;
+                padding: 0 1rem;
 
                 ${res.locals.user !== undefined
                   ? css``
