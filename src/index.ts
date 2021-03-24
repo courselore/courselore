@@ -119,6 +119,15 @@ export default async function courselore(
     content: string;
   }
 
+  interface PostJoinAuthor {
+    post: Post;
+    author: EnrollmentJoinUser | Ghost;
+  }
+
+  interface ThreadWithMetadataJoinPostsJoinAuthors extends ThreadWithMetadata {
+    postsJoinAuthors: PostJoinAuthor[];
+  }
+
   await fs.ensureDir(rootDirectory);
   const database = new Database(path.join(rootDirectory, "courselore.db"));
   app.set("database", database);
@@ -2727,7 +2736,7 @@ export default async function courselore(
   });
 
   const isThreadAccessible: express.RequestHandler<
-    { courseReference: string; threadReference?: string },
+    { courseReference: string; threadReference: string },
     HTML,
     {},
     {},
@@ -2736,69 +2745,99 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadata: ThreadWithMetadata;
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
     }
   >[] = [
     ...isEnrolledInCourse,
     (req, res, next) => {
-      if (
-        database.get<{ exists: number }>(
+      const threadWithMetadata = res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.threadsWithMetadata.find(
+        (threadWithMetadata) =>
+          (threadWithMetadata.reference = req.params.threadReference)
+      );
+      if (threadWithMetadata === undefined) return next("route");
+      const postsJoinAuthors = database
+        .all<{
+          postId: number;
+          createdAt: string;
+          updatedAt: string;
+          reference: string;
+          content: string;
+          authorEnrollmentId?: number;
+          role?: Role;
+          accentColor?: AccentColor;
+          authorUserId?: number;
+          email?: string;
+          name?: string;
+        }>(
           sql`
-            SELECT EXISTS(
-              SELECT 1
-              FROM "threads"
-              JOIN "courses" ON "threads"."course" = "courses"."id"
-              WHERE "threads"."reference" = ${req.params.threadReference} AND
-                    "courses"."reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}
-            ) AS "exists"
-          `
-        )!.exists === 0
-      )
-        return next("route");
+        SELECT "posts"."id" AS "postId",
+               "posts"."createdAt",
+               "posts"."updatedAt",
+               "posts"."reference",
+               "posts"."content",
+               "authorEnrollment"."id" AS "authorEnrollmentId",
+               "authorEnrollment"."role",
+               "authorEnrollment"."accentColor",
+               "authorUser"."id" AS "authorUserId",
+               "authorUser"."email",
+               "authorUser"."name"
+        FROM "posts"
+        LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."author" = "authorEnrollment"."id"
+        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+        WHERE "posts"."thread" = ${threadWithMetadata.id}
+        ORDER BY "posts"."id" ASC
+  `
+        )
+        .map((row) => ({
+          post: {
+            id: row.postId,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+            reference: row.reference,
+            content: row.content,
+          },
+          author:
+            row.authorEnrollmentId !== undefined
+              ? {
+                  enrollment: {
+                    id: row.authorEnrollmentId!,
+                    role: row.role!,
+                    accentColor: row.accentColor!,
+                  },
+                  user: {
+                    id: row.authorUserId!,
+                    email: row.email!,
+                    name: row.name!,
+                  },
+                }
+              : GHOST,
+        }));
+
+      res.locals.threadWithMetadataJoinPostsJoinAuthors = {
+        ...threadWithMetadata,
+        postsJoinAuthors,
+      };
+
       next();
     },
   ];
 
-  /*
   app.get<
     { courseReference: string; threadReference: string },
     HTML,
     {},
     {},
-    {}
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+    }
   >(
     "/courses/:courseReference/threads/:threadReference",
     ...isThreadAccessible,
     (req, res) => {
-      const course = database.get<{ id: number; name: string }>(
-        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}`
-      )!;
-
-      const thread = database.get<{ id: number; title: string }>(
-        sql`SELECT "id", "title" FROM "threads" WHERE "course" = ${course.id} AND "reference" = ${req.params.threadReference}`
-      )!;
-
-      const posts = database.all<{
-        createdAt: string;
-        updatedAt: string;
-        reference: string;
-        authorName: string | undefined;
-        content: string;
-      }>(
-        sql`
-          SELECT "posts"."createdAt",
-                 "posts"."updatedAt",
-                 "posts"."reference",
-                 "author"."name" AS "authorName",
-                 "posts"."content"
-          FROM "posts"
-          LEFT JOIN "enrollments" ON "posts"."author" = "enrollments"."id"
-          LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
-          WHERE "posts"."thread" = ${thread.id}
-          ORDER BY "posts"."id" ASC
-        `
-      );
-
       res.send(
         app.get("layout thread")(
           req,
@@ -2813,7 +2852,9 @@ export default async function courselore(
                 `}"
               >
                 <a
-                  href="${app.get("url")}/courses/${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}/threads/${req.params.threadReference}"
+                  href="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}/threads/${req.params.threadReference}"
                   >#${req.params.threadReference}</a
                 >
               </small>
@@ -2842,7 +2883,9 @@ export default async function courselore(
                         : html``}
                       <small>
                         <a
-                          href="${app.get("url")}/courses/${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}/threads/${req.params
+                          href="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/threads/${req.params
                             .threadReference}#${post.reference}"
                           >#${req.params.threadReference}/${post.reference}</a
                         >
@@ -2870,6 +2913,7 @@ export default async function courselore(
     }
   );
 
+  /*
   app.post<
     { courseReference: string; threadReference: string },
     HTML,
