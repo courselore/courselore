@@ -2779,23 +2779,23 @@ export default async function courselore(
           name?: string;
         }>(
           sql`
-        SELECT "posts"."id" AS "postId",
-               "posts"."createdAt",
-               "posts"."updatedAt",
-               "posts"."reference",
-               "posts"."content",
-               "authorEnrollment"."id" AS "authorEnrollmentId",
-               "authorEnrollment"."role",
-               "authorEnrollment"."accentColor",
-               "authorUser"."id" AS "authorUserId",
-               "authorUser"."email",
-               "authorUser"."name"
-        FROM "posts"
-        LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."author" = "authorEnrollment"."id"
-        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-        WHERE "posts"."thread" = ${threadWithMetadata.id}
-        ORDER BY "posts"."id" ASC
-  `
+            SELECT "posts"."id" AS "postId",
+                  "posts"."createdAt",
+                  "posts"."updatedAt",
+                  "posts"."reference",
+                  "posts"."content",
+                  "authorEnrollment"."id" AS "authorEnrollmentId",
+                  "authorEnrollment"."role",
+                  "authorEnrollment"."accentColor",
+                  "authorUser"."id" AS "authorUserId",
+                  "authorUser"."email",
+                  "authorUser"."name"
+            FROM "posts"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."author" = "authorEnrollment"."id"
+            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+            WHERE "posts"."thread" = ${threadWithMetadata.id}
+            ORDER BY "posts"."id" ASC
+          `
         )
         .map((row) => ({
           post: {
@@ -2936,13 +2936,18 @@ export default async function courselore(
     }
   );
 
-  /*
   app.post<
     { courseReference: string; threadReference: string },
     HTML,
     { content?: string },
     {},
-    {}
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+    }
   >(
     "/courses/:courseReference/threads/:threadReference",
     ...isThreadAccessible,
@@ -2953,78 +2958,66 @@ export default async function courselore(
       )
         throw new ValidationError();
 
-      const course = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "courses" WHERE "reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}`
-      )!;
-
-      const thread = database.get<{ id: number; title: string }>(
-        sql`SELECT "id" FROM "threads" WHERE "course" = ${course.id} AND "reference" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.reference}`
-      )!;
-
       const newPostReference = database.get<{ newPostReference: string }>(
         sql`
           SELECT CAST(MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS TEXT) AS "newPostReference"
           FROM "posts"
-          WHERE "posts"."thread" = ${thread.id}
+          WHERE "posts"."thread" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}
         `
       )!.newPostReference;
-
-      const author = database.get<{ id: number }>(
-        sql`
-          SELECT "enrollments"."id"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "enrollments"."course" = ${course.id} AND
-                "users"."email" = ${req.session!.email}
-        `
-      )!;
 
       database.run(
         sql`
           INSERT INTO "posts" ("thread", "reference", "author", "content")
-          VALUES (${thread.id}, ${newPostReference}, ${author.id}, ${req.body.content})
+          VALUES (
+            ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id},
+            ${newPostReference},
+            ${res.locals.user.id},
+            ${req.body.content}
+          )
         `
       );
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}/threads/${
-          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.reference
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/threads/${
+          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+            .reference
         }#${newPostReference}`
       );
     }
   );
-  */
 
   app.all<{}, HTML, {}, {}, {}>("*", ...isUnauthenticated, (req, res) => {
-    return res.redirect(
-      `${app.get("url")}/authenticate?redirect=${req.originalUrl}`
-    );
+    res.redirect(`${app.get("url")}/authenticate?redirect=${req.originalUrl}`);
   });
 
-  /*
-  app.all<{}, HTML, {}, {}, { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }>(
-    "*",
-    ...isAuthenticated,
-    (req, res) => {
-      res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>Not Found · CourseLore</title>`,
-          html`
-            <h1>404 · Not Found</h1>
+  app.all<
+    {},
+    HTML,
+    {},
+    {},
+    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
+  >("*", ...isAuthenticated, (req, res) => {
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>Not Found · CourseLore</title>`,
+        html`
+          <h1>404 · Not Found</h1>
 
-            <p>
-              If you think there should be something here, please contact the
-              course staff or the
-              <a href="${app.get("administrator")}">system administrator</a>.
-            </p>
-          `
-        )
-      );
-    }
-  );
-  */
+          <p>
+            If you think there should be something here, please contact the
+            course staff or the
+            <a href="${app.get("administrator")}">system administrator</a>.
+          </p>
+        `
+      )
+    );
+  });
 
   class ValidationError extends Error {}
 
