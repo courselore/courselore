@@ -2443,7 +2443,7 @@ export default async function courselore(
                             line-height: 1.3;
                             display: block;
                             padding: 0.5rem 1rem;
-                            border-radius: 5px;
+                            margin: 0 -1rem;
 
                             ${threadWithMetadata.id ===
                             res.locals.threadWithMetadataJoinPostsJoinAuthors
