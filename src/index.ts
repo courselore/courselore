@@ -2673,13 +2673,17 @@ export default async function courselore(
     }
   );
 
-  /*
   app.post<
     { courseReference: string },
     HTML,
     { title?: string; content?: string },
     {},
-    {}
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
   >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
     if (
       typeof req.body.title !== "string" ||
@@ -2689,40 +2693,29 @@ export default async function courselore(
     )
       throw new ValidationError();
 
-    const course = database.get<{ id: number }>(
-      sql`SELECT "id" FROM "courses" WHERE "reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}`
-    )!;
-
     const newThreadReference =
       database.get<{ newThreadReference: string }>(
         sql`
           SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
           FROM "threads"
-          WHERE "threads"."course" = ${course.id}
+          WHERE "threads"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
         `
       )?.newThreadReference ?? "1";
 
-    const author = database.get<{ id: number }>(
-      sql`
-        SELECT "enrollments"."id"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        JOIN "courses" ON "enrollments"."course" = "courses"."id"
-        WHERE "users"."email" = ${req.session!.email} AND
-              "courses"."id" = ${course.id}
-      `
-    )!;
-
     const threadId = database.run(
       sql`
-        INSERT INTO "threads" ("course", "reference", "author", "title")
-        VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
+        INSERT INTO "threads" ("course", "reference", "title")
+        VALUES (
+          ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+          ${newThreadReference},
+          ${req.body.title}
+        )
       `
     ).lastInsertRowid;
     database.run(
       sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
-        VALUES (${threadId}, ${"1"}, ${author.id}, ${req.body.content})
+        VALUES (${threadId}, ${"1"}, ${res.locals.user.id}, ${req.body.content})
       `
     );
 
@@ -2733,6 +2726,7 @@ export default async function courselore(
     );
   });
 
+  /*
   const isThreadAccessible: express.RequestHandler<
     { courseReference: string; threadReference: string },
     any,
