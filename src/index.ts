@@ -2016,34 +2016,32 @@ export default async function courselore(
                   action="${app.get("url")}/courses/${res.locals
                     .enrollmentJoinCourseJoinThreadsWithMetadata.course
                     .reference}/settings?_method=PATCH"
-                  style="${css`
-                    display: flex;
-                    align-items: flex-end;
-
-                    & > * + * {
-                      margin-left: 1rem;
-                    }
-                  `}"
                 >
-                  <p
-                    style="${css`
-                      flex: 1;
-                    `}"
-                  >
+                  <p>
                     <label>
                       <strong>Name</strong>
-                      <input
-                        type="text"
-                        name="name"
-                        autocomplete="off"
-                        required
-                        value="${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                          .name}"
-                      />
+                      <span
+                        style="${css`
+                          display: flex;
+
+                          & > * + * {
+                            margin-left: 1rem;
+                          }
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          name="name"
+                          autocomplete="off"
+                          required
+                          value="${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .name}"
+                        />
+                        <button>Rename</button>
+                      </span>
                     </label>
                   </p>
-                  <p><button>Rename</button></p>
                 </form>
 
                 <hr />
@@ -2113,13 +2111,8 @@ export default async function courselore(
           </p>
           <div
             style="${css`
-              & > * {
-                display: inline-block;
-              }
-
-              & > * + * {
-                margin-left: 0.5rem;
-              }
+              margin-left: -5px;
+              margin-top: -0.5rem;
             `}"
           >
             $${ACCENT_COLORS.map(
@@ -2130,6 +2123,9 @@ export default async function courselore(
                     action="${app.get("url")}/courses/${res.locals
                       .enrollmentJoinCourseJoinThreadsWithMetadata.course
                       .reference}/settings?_method=PATCH"
+                    style="${css`
+                      display: inline-block;
+                    `}"
                   >
                     <input
                       type="hidden"
@@ -2138,15 +2134,18 @@ export default async function courselore(
                     />
                     <button
                       style="${css`
-                        all: unset;
+                        &,
+                        &:active {
+                          all: unset;
+                        }
                       `}"
                     >
-                      <svg width="20" height="20" viewBox="0 0 20 20">
-                        <circle cx="10" cy="10" r="10" fill="${accentColor}" />
+                      <svg width="30" height="30" viewBox="0 0 30 30">
+                        <circle cx="15" cy="15" r="10" fill="${accentColor}" />
                         $${accentColor ===
                         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
                           .enrollment.accentColor
-                          ? html`<circle cx="10" cy="10" r="3" fill="white" />`
+                          ? html`<circle cx="15" cy="15" r="3" fill="white" />`
                           : html``}
                       </svg>
                     </button>
@@ -2258,45 +2257,44 @@ export default async function courselore(
     `;
   }
 
-  /*
   app.patch<
     { courseReference: string },
-    any,
-    { name?: string; accentColor?: string },
+    HTML,
+    { name?: string; accentColor?: AccentColor },
     {},
-    {}
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
   >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
-    const enrollment = database.get<{ id: number; role: Role }>(
-      sql`
-          SELECT "enrollments"."id", "enrollments"."role"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          JOIN "courses" ON "enrollments"."course" = "courses"."id"
-          WHERE "users"."email" = ${req.session!.email} AND
-                "courses"."reference" = ${req.params.courseReference}
-        `
-    )!;
-
-    if (typeof req.body.name === "string" && enrollment.role === "staff") {
+    if (
+      typeof req.body.name === "string" &&
+      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
+        "staff"
+    ) {
       if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
         throw new ValidationError();
       database.run(
-        sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "reference" = ${req.params.courseReference}`
+        sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}`
       );
     }
 
     if (typeof req.body.accentColor === "string") {
-      if (!ACCENT_COLORS.includes(req.body.accentColor as any))
+      if (!ACCENT_COLORS.includes(req.body.accentColor))
         throw new ValidationError();
       database.run(
-        sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${enrollment.id}`
+        sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id}`
       );
     }
+
     res.redirect(
       `${app.get("url")}/courses/${req.params.courseReference}/settings`
     );
   });
 
+  /*
   app.post<
     { courseReference: string },
     HTML,
