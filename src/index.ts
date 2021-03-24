@@ -439,7 +439,7 @@ export default async function courselore(
                   font-size: 0.75rem;
                   line-height: 1.3;
                   color: gray;
-                  margin-top: -1rem;
+                  margin-top: -0.9rem;
                 }
 
                 .full-width {
@@ -2006,10 +2006,7 @@ export default async function courselore(
             >
           </h1>
 
-          $${courseSwitcher(
-            res.locals.otherEnrollmentsJoinCourses,
-            "/settings"
-          )}
+          $${courseSwitcher(req, res, "/settings")}
           $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
             .role !== "staff"
             ? html``
@@ -2163,25 +2160,43 @@ export default async function courselore(
   });
 
   function courseSwitcher(
-    otherEnrollmentsJoinCourses: EnrollmentJoinCourse[],
+    req: express.Request<
+      { courseReference: string },
+      HTML,
+      {},
+      {},
+      {
+        user: User;
+        enrollmentsJoinCourses: EnrollmentJoinCourse[];
+        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      }
+    >,
+    res: express.Response<
+      HTML,
+      {
+        user: User;
+        enrollmentsJoinCourses: EnrollmentJoinCourse[];
+        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      }
+    >,
     path = ""
   ): HTML {
-    if (otherEnrollmentsJoinCourses.length === 0) return html``;
+    if (res.locals.otherEnrollmentsJoinCourses.length === 0) return html``;
 
     return html`
-      <details
-        class="popup"
-        style="${css`
-          margin-top: -0.8rem;
-        `}"
-      >
+      <details class="popup">
         <summary
           class="no-marker"
           style="${css`
-            display: flex;
+            p {
+              transition: color 0.2s;
+            }
 
-            &:not(:hover) {
-              color: gray;
+            &:hover p,
+            details[open] > & p {
+              color: #ff77a8;
             }
 
             & path {
@@ -2192,26 +2207,33 @@ export default async function courselore(
             details[open] > & path {
               fill: #ff77a8;
             }
-
-            & > * + * {
-              margin-left: 0.3rem;
-            }
           `}"
         >
-          <svg width="16" height="16" viewBox="0 0 16 16">
-            <path
-              fill="gray"
-              d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
-            ></path>
-          </svg>
-          <small>Switch to another course</small>
+          <p
+            class="hint"
+            style="${css`
+              display: flex;
+
+              & > * + * {
+                margin-left: 0.3rem;
+              }
+            `}"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16">
+              <path
+                fill="gray"
+                d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
+              ></path>
+            </svg>
+            <span>Switch to another course</span>
+          </p>
         </summary>
         <nav
           style="${css`
-            transform: translateY(0.5rem);
+            transform: translateY(-0.5rem);
           `}"
         >
-          $${otherEnrollmentsJoinCourses.map(
+          $${res.locals.otherEnrollmentsJoinCourses.map(
             (otherEnrollmentJoinCourse) => html`
               <p>
                 <a
