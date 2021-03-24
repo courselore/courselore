@@ -97,8 +97,14 @@ export default async function courselore(
   interface ThreadWithMetadata extends Thread {
     createdAt: string;
     updatedAt: string;
-    author: EnrollmentJoinUser;
+    author: EnrollmentJoinUser | Ghost;
   }
+
+  const GHOST = {
+    user: { name: "Ghost" },
+  } as const;
+
+  type Ghost = typeof GHOST;
 
   interface EnrollmentJoinCourseJoinThreadsWithMetadata
     extends EnrollmentJoinCourse {
@@ -1825,29 +1831,29 @@ export default async function courselore(
           title: string;
           createdAt: string;
           updatedAt: string;
-          authorEnrollmentId: number;
-          role: Role;
-          accentColor: AccentColor;
-          authorUserId: number;
-          email: string;
-          name: string;
+          authorEnrollmentId?: number;
+          role?: Role;
+          accentColor?: AccentColor;
+          authorUserId?: number;
+          email?: string;
+          name?: string;
         }>(
           sql`
             SELECT "threads"."id" AS "threadId",
-                  "threads"."reference",
-                  "threads"."title",
-                  "originalPost"."createdAt",
-                  "mostRecentlyUpdatedPost"."updatedAt",
-                  "authorEnrollment"."id" AS "authorEnrollmentId",
-                  "authorEnrollment"."role",
-                  "authorEnrollment"."accentColor",
-                  "authorUser"."id" AS "authorUserId",
-                  "authorUser"."email",
-                  "authorUser"."name"
+                   "threads"."reference",
+                   "threads"."title",
+                   "originalPost"."createdAt",
+                   "mostRecentlyUpdatedPost"."updatedAt",
+                   "authorEnrollment"."id" AS "authorEnrollmentId",
+                   "authorEnrollment"."role",
+                   "authorEnrollment"."accentColor",
+                   "authorUser"."id" AS "authorUserId",
+                   "authorUser"."email",
+                   "authorUser"."name"
             FROM "threads"
             JOIN "posts" AS "originalPost" ON "threads"."id" = "originalPost"."thread"
-            JOIN "enrollments" AS "authorEnrollment" ON "originalPost"."author" = "authorEnrollment"."id"
-            JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "originalPost"."author" = "authorEnrollment"."id"
+            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
             JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."id"
             WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
             GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread"
@@ -1860,18 +1866,21 @@ export default async function courselore(
           title: row.title,
           createdAt: row.createdAt,
           updatedAt: row.updatedAt,
-          author: {
-            enrollment: {
-              id: row.authorEnrollmentId,
-              role: row.role,
-              accentColor: row.accentColor,
-            },
-            user: {
-              id: row.authorUserId,
-              email: row.email,
-              name: row.name,
-            },
-          },
+          author:
+            row.authorEnrollmentId !== undefined
+              ? {
+                  enrollment: {
+                    id: row.authorEnrollmentId!,
+                    role: row.role!,
+                    accentColor: row.accentColor!,
+                  },
+                  user: {
+                    id: row.authorUserId!,
+                    email: row.email!,
+                    name: row.name!,
+                  },
+                }
+              : GHOST,
         }));
 
       res.locals.enrollmentJoinCourseJoinThreadsWithMetadata = {
@@ -2290,170 +2299,42 @@ export default async function courselore(
     }
 
     res.redirect(
-      `${app.get("url")}/courses/${req.params.courseReference}/settings`
-    );
-  });
-
-  /*
-  app.post<
-    { courseReference: string },
-    HTML,
-    { title?: string; content?: string },
-    {},
-    {}
-  >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
-    if (
-      typeof req.body.title !== "string" ||
-      validator.isEmpty(req.body.title, { ignore_whitespace: true }) ||
-      typeof req.body.content !== "string" ||
-      validator.isEmpty(req.body.content, { ignore_whitespace: true })
-    )
-      throw new ValidationError();
-
-    const course = database.get<{ id: number }>(
-      sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-    )!;
-
-    const newThreadReference =
-      database.get<{ newThreadReference: string }>(
-        sql`
-          SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
-          FROM "threads"
-          WHERE "threads"."course" = ${course.id}
-        `
-      )?.newThreadReference ?? "1";
-
-    const author = database.get<{ id: number }>(
-      sql`
-        SELECT "enrollments"."id"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        JOIN "courses" ON "enrollments"."course" = "courses"."id"
-        WHERE "users"."email" = ${req.session!.email} AND
-              "courses"."id" = ${course.id}
-      `
-    )!;
-
-    const threadId = database.run(
-      sql`
-        INSERT INTO "threads" ("course", "reference", "author", "title")
-        VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
-      `
-    ).lastInsertRowid;
-    database.run(
-      sql`
-        INSERT INTO "posts" ("thread", "reference", "author", "content")
-        VALUES (${threadId}, ${"1"}, ${author.id}, ${req.body.content})
-      `
-    );
-
-    res.redirect(
       `${app.get("url")}/courses/${
-        req.params.courseReference
-      }/threads/${newThreadReference}`
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
+      }/settings`
     );
   });
-
-  const isThreadAccessible: express.RequestHandler<
-    { courseReference: string; threadReference: string },
-    any,
-    {},
-    {},
-    {}
-  >[] = [
-    ...isEnrolledInCourse,
-    (req, res, next) => {
-      if (
-        database.get<{ exists: number }>(
-          sql`
-            SELECT EXISTS(
-              SELECT 1
-              FROM "threads"
-              JOIN "courses" ON "threads"."course" = "courses"."id"
-              WHERE "threads"."reference" = ${req.params.threadReference} AND
-                    "courses"."reference" = ${req.params.courseReference}
-            ) AS "exists"
-          `
-        )!.exists === 0
-      )
-        return next("route");
-      next();
-    },
-  ];
 
   app.set(
     "layout thread",
     (
       req: express.Request<
         { courseReference: string; threadReference?: string },
-        any,
+        HTML,
+        { name?: string; accentColor?: AccentColor },
         {},
-        {},
-        {}
+        {
+          user: User;
+          enrollmentsJoinCourses: EnrollmentJoinCourse[];
+          enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+          otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+          threadWithMetadata?: ThreadWithMetadata;
+        }
       >,
-      res: express.Response<any, {}>,
+      res: express.Response<
+        HTML,
+        {
+          user: User;
+          enrollmentsJoinCourses: EnrollmentJoinCourse[];
+          enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+          otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+          threadWithMetadata?: ThreadWithMetadata;
+        }
+      >,
       head: HTML,
       body: HTML
-    ): HTML => {
-      const user = database.get<{ id: number; name: string }>(
-        sql`
-          SELECT "id", "name" FROM "users" WHERE "email" = ${req.session!.email}
-        `
-      )!;
-
-      const course = database.get<{ id: number; name: string }>(
-        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-
-      const otherCourses = database.all<{
-        reference: string;
-        name: string;
-        role: Role;
-        accentColor: AccentColor;
-      }>(
-        sql`
-          SELECT "courses"."reference", "courses"."name", "enrollments"."role", "enrollments"."accentColor"
-          FROM "courses"
-          JOIN "enrollments" ON "courses"."id" = "enrollments"."course"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "courses"."reference" <> ${req.params.courseReference} AND
-                "users"."email" = ${req.session!.email}
-          ORDER BY "enrollments"."id" DESC
-        `
-      );
-
-      const enrollment = database.get<{
-        role: Role;
-        accentColor: AccentColor;
-      }>(
-        sql`SELECT "role", "accentColor" FROM "enrollments" WHERE "user" = ${user.id} AND "course" = ${course.id}`
-      )!;
-
-      const threads = database.all<{
-        createdAt: string;
-        updatedAt: string;
-        reference: string;
-        authorName: string | undefined;
-        title: string;
-      }>(
-        sql`
-          SELECT "threads"."reference",
-                 "author"."name" AS "authorName",
-                 "threads"."title",
-                 MIN("posts"."createdAt") AS "createdAt",
-                 MAX("posts"."updatedAt") AS "updatedAt"
-          FROM "threads"
-          JOIN "courses" ON "threads"."course" = "courses"."id"
-          JOIN "posts" ON "threads"."id" = "posts"."thread"
-          LEFT JOIN "enrollments" ON "threads"."author" = "enrollments"."id"
-          LEFT JOIN "users" AS "author" ON "enrollments"."user" = "author"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference}
-          GROUP BY "posts"."thread"
-          ORDER BY CAST("threads"."reference" AS INTEGER) DESC
-        `
-      );
-
-      return app.get("layout application")(
+    ): HTML =>
+      app.get("layout application")(
         req,
         res,
         head,
@@ -2463,7 +2344,9 @@ export default async function courselore(
               box-sizing: border-box;
               width: 100vw;
               height: 100vh;
-              border-top: 10px solid ${enrollment.accentColor};
+              border-top: 10px solid
+                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                  .enrollment.accentColor};
               display: flex;
             `}"
           >
@@ -2483,7 +2366,6 @@ export default async function courselore(
                 style="${css`
                   border-bottom: 1px solid silver;
                   padding: 0 1rem;
-                  overflow: auto;
 
                   @media (prefers-color-scheme: dark) {
                     border-color: black;
@@ -2497,132 +2379,18 @@ export default async function courselore(
                   `}"
                 >
                   <a
-                    href="${app.get("url")}/courses/${req.params
-                      .courseReference}"
-                    ><strong>${course.name}</strong> (${enrollment.role})</a
+                    href="${app.get("url")}/courses/${res.locals
+                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      .reference}"
+                    ><strong
+                      >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                        .course.name}</strong
+                    >
+                    (${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                      .enrollment.role})</a
                   >
                 </p>
-                $${otherCourses.length === 0
-                  ? html``
-                  : html`
-                      <details
-                        style="${css`
-                          margin-top: -1rem;
-                        `}"
-                      >
-                        <summary
-                          style="${css`
-                            list-style: none;
-
-                            &::-webkit-details-marker {
-                              display: none;
-                            }
-
-                            & path {
-                              transition: fill 0.2s;
-                            }
-
-                            &:hover path,
-                            details[open] > & path {
-                              fill: #ff77a8;
-                            }
-
-                            details[open] > &::before {
-                              content: "";
-                              display: block;
-                              position: absolute;
-                              top: 0;
-                              left: 0;
-                              width: 100vw;
-                              height: 100vw;
-                            }
-                          `}"
-                        >
-                          <p
-                            style="${css`
-                              display: flex;
-
-                              & > * + * {
-                                margin-left: 0.3rem;
-                              }
-                            `}"
-                          >
-                            <svg width="16" height="16" viewBox="0 0 16 16">
-                              <path
-                                fill="gray"
-                                d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
-                              ></path>
-                            </svg>
-                            <small>Switch to another course</small>
-                          </p>
-                        </summary>
-                        <div
-                          style="${css`
-                            background-color: whitesmoke;
-                            max-width: 300px;
-                            padding: 0.5rem 1rem;
-                            border: 1px solid darkgray;
-                            border-radius: 10px;
-                            box-shadow: inset 0px 1px 1px #ffffff10,
-                              0px 1px 3px #00000010;
-                            position: absolute;
-                            transform: translate(0, -10px);
-
-                            @media (prefers-color-scheme: dark) {
-                              background-color: #444444;
-                            }
-
-                            &::before {
-                              content: "";
-                              background-color: whitesmoke;
-                              display: block;
-                              width: 10px;
-                              height: 10px;
-                              position: absolute;
-                              left: 19px;
-                              top: -6px;
-                              transform: rotate(45deg);
-                              border: 1px solid darkgray;
-                              border-right: none;
-                              border-bottom: none;
-                              border-top-left-radius: 5px;
-                              box-shadow: inset 1px 1px 1px #ffffff10;
-
-                              @media (prefers-color-scheme: dark) {
-                                background-color: #444444;
-                              }
-                            }
-
-                            p {
-                              margin: 0;
-                            }
-                          `}"
-                        >
-                          $${otherCourses.map(
-                            (course) => html`
-                              <p>
-                                <a
-                                  href="${app.get(
-                                    "url"
-                                  )}/courses/${course.reference}"
-                                  ><span
-                                    style="${css`
-                                      display: inline-block;
-                                      width: 0.8rem;
-                                      height: 0.8rem;
-                                      background-color: ${course.accentColor};
-                                      border-radius: 50%;
-                                    `}"
-                                  ></span>
-                                  <strong>${course.name}</strong>
-                                  (${course.role})</a
-                                >
-                              </p>
-                            `
-                          )}
-                        </div>
-                      </details>
-                    `}
+                $${courseSwitcher(req, res)}
               </header>
               <div
                 style="${css`
@@ -2637,25 +2405,28 @@ export default async function courselore(
                   `}"
                 >
                   <a
-                    href="${app.get("url")}/courses/${req.params
-                      .courseReference}/threads/new"
+                    href="${app.get("url")}/courses/${res.locals
+                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      .reference}/threads/new"
                     >New thread</a
                   >
                 </p>
-                $${threads.map(
-                  (thread) =>
-                    html`
-                      <p
-                        style="${css`
-                          line-height: 1.3;
-                          margin: 0;
-                        `}"
-                      >
+                <nav>
+                  $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.threadsWithMetadata.map(
+                    (threadWithMetadata) =>
+                      html`
                         <a
-                          href="${app.get("url")}/courses/${req.params
-                            .courseReference}/threads/${thread.reference}"
+                          href="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/threads/${threadWithMetadata.reference}"
                           style="${css`
-                            ${thread.reference === req.params.threadReference
+                            line-height: 1.3;
+                            display: block;
+                            padding: 1rem;
+                            margin: 0 -1rem;
+
+                            ${threadWithMetadata.id ===
+                            res.locals.threadWithMetadata?.id
                               ? css`
                                   background-color: whitesmoke;
 
@@ -2664,25 +2435,27 @@ export default async function courselore(
                                   }
                                 `
                               : css``}
-                            display: block;
-                            padding: 1rem;
-                            margin: 0 -1rem;
                           `}"
                         >
-                          <strong>${thread.title}</strong><br />
-                          <small>
-                            #${thread.reference} created
-                            $${relativeTime(thread.createdAt)} by
-                            ${thread.authorName ?? "Ghost"}
-                            $${thread.updatedAt !== thread.createdAt
-                              ? html`<br />and last updated
-                                  $${relativeTime(thread.updatedAt)}`
-                              : html``}
-                          </small>
+                          <div>
+                            <p><strong>${threadWithMetadata.title}</strong></p>
+                            <p class="hint">
+                              #${threadWithMetadata.reference} created
+                              $${relativeTime(threadWithMetadata.createdAt)} by
+                              ${threadWithMetadata.author.user.name}
+                              $${threadWithMetadata.updatedAt !==
+                              threadWithMetadata.createdAt
+                                ? html`<br />and last updated
+                                    $${relativeTime(
+                                      threadWithMetadata.updatedAt
+                                    )}`
+                                : html``}
+                            </p>
+                          </div>
                         </a>
-                      </p>
-                    `
-                )}
+                      `
+                  )}
+                </nav>
               </div>
             </div>
             <main
@@ -2695,7 +2468,7 @@ export default async function courselore(
                 style="${css`
                   max-width: 800px;
                   padding: 0 1rem;
-                  margin: 0 auto;
+                  margin: 1rem auto;
 
                   & > h1:first-child {
                     margin-top: 1rem;
@@ -2707,8 +2480,7 @@ export default async function courselore(
             </main>
           </div>
         `
-      );
-    }
+      )
   );
 
   function textEditor(): HTML {
@@ -2730,7 +2502,7 @@ export default async function courselore(
                 color: inherit;
               }
 
-              &:not(:disabled):not(:hover) {
+              &:not(:hover):not(:disabled) {
                 color: gray;
               }
             }
@@ -2797,24 +2569,23 @@ export default async function courselore(
               }
             `}"
             ></textarea>
-            <br />
-            <small
-              style="${css`
-                display: block;
-                text-align: right;
-              `}"
+          </p>
+          <p
+            class="hint"
+            style="${css`
+              text-align: right;
+            `}"
+          >
+            <a
+              href="https://guides.github.com/features/mastering-markdown/"
+              target="_blank"
+              >Markdown</a
             >
-              <a
-                href="https://guides.github.com/features/mastering-markdown/"
-                target="_blank"
-                >Markdown</a
-              >
-              &
-              <a href="https://katex.org/docs/supported.html" target="_blank"
-                >LaTeX</a
-              >
-              are supported
-            </small>
+            &
+            <a href="https://katex.org/docs/supported.html" target="_blank"
+              >LaTeX</a
+            >
+            are supported
           </p>
         </div>
 
@@ -2824,14 +2595,16 @@ export default async function courselore(
       </div>
     `;
   }
-  */
 
   app.post<
     {},
-    HTML,
+    any,
     { content?: string },
     {},
-    { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
   >("/preview", ...isAuthenticated, (req, res) => {
     if (
       typeof req.body.content !== "string" ||
@@ -2841,6 +2614,151 @@ export default async function courselore(
 
     res.send(app.get("text processor")(req.body.content));
   });
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/threads/new",
+    ...isEnrolledInCourse,
+    (req, res) => {
+      res.send(
+        app.get("layout thread")(
+          req,
+          res,
+          html`
+            <title>
+              Create a New Thread ·
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .name}
+              · CourseLore
+            </title>
+          `,
+          html`
+            <h1>Create a New Thread</h1>
+
+            <form
+              method="POST"
+              action="${app.get("url")}/courses/${res.locals
+                .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .reference}/threads"
+            >
+              <p>
+                <label>
+                  <strong>Title</strong>
+                  <input type="text" name="title" autocomplete="off" required />
+                </label>
+              </p>
+              $${textEditor()}
+              <p
+                style="${css`
+                  text-align: right;
+                `}"
+              >
+                <button>Create Thread</button>
+              </p>
+            </form>
+          `
+        )
+      );
+    }
+  );
+
+  /*
+  app.post<
+    { courseReference: string },
+    HTML,
+    { title?: string; content?: string },
+    {},
+    {}
+  >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
+    if (
+      typeof req.body.title !== "string" ||
+      validator.isEmpty(req.body.title, { ignore_whitespace: true }) ||
+      typeof req.body.content !== "string" ||
+      validator.isEmpty(req.body.content, { ignore_whitespace: true })
+    )
+      throw new ValidationError();
+
+    const course = database.get<{ id: number }>(
+      sql`SELECT "id" FROM "courses" WHERE "reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}`
+    )!;
+
+    const newThreadReference =
+      database.get<{ newThreadReference: string }>(
+        sql`
+          SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
+          FROM "threads"
+          WHERE "threads"."course" = ${course.id}
+        `
+      )?.newThreadReference ?? "1";
+
+    const author = database.get<{ id: number }>(
+      sql`
+        SELECT "enrollments"."id"
+        FROM "enrollments"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        JOIN "courses" ON "enrollments"."course" = "courses"."id"
+        WHERE "users"."email" = ${req.session!.email} AND
+              "courses"."id" = ${course.id}
+      `
+    )!;
+
+    const threadId = database.run(
+      sql`
+        INSERT INTO "threads" ("course", "reference", "author", "title")
+        VALUES (${course.id}, ${newThreadReference}, ${author.id}, ${req.body.title})
+      `
+    ).lastInsertRowid;
+    database.run(
+      sql`
+        INSERT INTO "posts" ("thread", "reference", "author", "content")
+        VALUES (${threadId}, ${"1"}, ${author.id}, ${req.body.content})
+      `
+    );
+
+    res.redirect(
+      `${app.get("url")}/courses/${
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
+      }/threads/${newThreadReference}`
+    );
+  });
+
+  const isThreadAccessible: express.RequestHandler<
+    { courseReference: string; threadReference: string },
+    any,
+    {},
+    {},
+    {}
+  >[] = [
+    ...isEnrolledInCourse,
+    (req, res, next) => {
+      if (
+        database.get<{ exists: number }>(
+          sql`
+            SELECT EXISTS(
+              SELECT 1
+              FROM "threads"
+              JOIN "courses" ON "threads"."course" = "courses"."id"
+              WHERE "threads"."reference" = ${req.params.threadReference} AND
+                    "courses"."reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}
+            ) AS "exists"
+          `
+        )!.exists === 0
+      )
+        return next("route");
+      next();
+    },
+  ];
+  */
 
   /*
   app.get<
@@ -2854,7 +2772,7 @@ export default async function courselore(
     ...isThreadAccessible,
     (req, res) => {
       const course = database.get<{ id: number; name: string }>(
-        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+        sql`SELECT "id", "name" FROM "courses" WHERE "reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}`
       )!;
 
       const thread = database.get<{ id: number; title: string }>(
@@ -2896,8 +2814,7 @@ export default async function courselore(
                 `}"
               >
                 <a
-                  href="${app.get("url")}/courses/${req.params
-                    .courseReference}/threads/${req.params.threadReference}"
+                  href="${app.get("url")}/courses/${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}/threads/${req.params.threadReference}"
                   >#${req.params.threadReference}</a
                 >
               </small>
@@ -2926,8 +2843,7 @@ export default async function courselore(
                         : html``}
                       <small>
                         <a
-                          href="${app.get("url")}/courses/${req.params
-                            .courseReference}/threads/${req.params
+                          href="${app.get("url")}/courses/${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}/threads/${req.params
                             .threadReference}#${post.reference}"
                           >#${req.params.threadReference}/${post.reference}</a
                         >
@@ -2972,7 +2888,7 @@ export default async function courselore(
         throw new ValidationError();
 
       const course = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+        sql`SELECT "id" FROM "courses" WHERE "reference" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}`
       )!;
 
       const thread = database.get<{ id: number; title: string }>(
@@ -3005,53 +2921,9 @@ export default async function courselore(
       );
 
       res.redirect(
-        `${app.get("url")}/courses/${req.params.courseReference}/threads/${
+        `${app.get("url")}/courses/${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}/threads/${
           req.params.threadReference
         }#${newPostReference}`
-      );
-    }
-  );
-
-  app.get<{ courseReference: string }, HTML, {}, {}, {}>(
-    "/courses/:courseReference/threads/new",
-    ...isEnrolledInCourse,
-    (req, res) => {
-      const course = database.get<{ name: string }>(
-        sql`SELECT "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-
-      res.send(
-        app.get("layout thread")(
-          req,
-          res,
-          html`
-            <title>Create a New Thread · ${course.name} · CourseLore</title>
-          `,
-          html`
-            <h1>Create a New Thread</h1>
-
-            <form
-              method="POST"
-              action="${app.get("url")}/courses/${req.params
-                .courseReference}/threads"
-            >
-              <p>
-                <label>
-                  <strong>Title</strong>
-                  <input type="text" name="title" autocomplete="off" required />
-                </label>
-              </p>
-              $${textEditor()}
-              <p
-                style="${css`
-                  text-align: right;
-                `}"
-              >
-                <button>Create Thread</button>
-              </p>
-            </form>
-          `
-        )
       );
     }
   );
