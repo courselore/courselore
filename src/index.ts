@@ -124,7 +124,8 @@ export default async function courselore(
     author: EnrollmentJoinUser | Ghost;
   }
 
-  interface ThreadWithMetadataJoinPostsJoinAuthors extends ThreadWithMetadata {
+  interface ThreadWithMetadataJoinPostsJoinAuthors {
+    threadWithMetadata: ThreadWithMetadata;
     postsJoinAuthors: PostJoinAuthor[];
   }
 
@@ -327,6 +328,16 @@ export default async function courselore(
                   h1 &,
                   nav & {
                     text-decoration: none;
+                  }
+
+                  &.permalink {
+                    font-size: 0.75rem;
+                    font-weight: normal;
+                    text-decoration: none;
+
+                    &:not(:hover) {
+                      color: gray;
+                    }
                   }
                 }
 
@@ -2322,7 +2333,7 @@ export default async function courselore(
           enrollmentsJoinCourses: EnrollmentJoinCourse[];
           enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
           otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-          threadWithMetadata?: ThreadWithMetadata;
+          threadWithMetadataJoinPostsJoinAuthors?: ThreadWithMetadataJoinPostsJoinAuthors;
         }
       >,
       res: express.Response<
@@ -2332,7 +2343,7 @@ export default async function courselore(
           enrollmentsJoinCourses: EnrollmentJoinCourse[];
           enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
           otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-          threadWithMetadata?: ThreadWithMetadata;
+          threadWithMetadataJoinPostsJoinAuthors?: ThreadWithMetadataJoinPostsJoinAuthors;
         }
       >,
       head: HTML,
@@ -2434,7 +2445,8 @@ export default async function courselore(
                             margin: 0 -1rem;
 
                             ${threadWithMetadata.id ===
-                            res.locals.threadWithMetadata?.id
+                            res.locals.threadWithMetadataJoinPostsJoinAuthors
+                              ?.threadWithMetadata?.id
                               ? css`
                                   background-color: whitesmoke;
 
@@ -2814,7 +2826,7 @@ export default async function courselore(
         }));
 
       res.locals.threadWithMetadataJoinPostsJoinAuthors = {
-        ...threadWithMetadata,
+        threadWithMetadata,
         postsJoinAuthors,
       };
 
@@ -2842,28 +2854,35 @@ export default async function courselore(
         app.get("layout thread")(
           req,
           res,
-          html`<title>${thread.title} · ${course.name} · CourseLore</title>`,
+          html`<title>
+            ${res.locals.threadWithMetadataJoinPostsJoinAuthors
+              .threadWithMetadata.title}
+            ·
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+              .name}
+            · CourseLore
+          </title>`,
           html`
             <h1>
-              ${thread.title}
-              <small
-                style="${css`
-                  font-weight: normal;
-                `}"
+              ${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                .threadWithMetadata.title}
+
+              <a
+                href="${app.get("url")}/courses/${res.locals
+                  .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .reference}/threads/${res.locals
+                  .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+                  .reference}"
+                class="permalink"
+                >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                  .threadWithMetadata.reference}</a
               >
-                <a
-                  href="${app.get("url")}/courses/${res.locals
-                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                    .reference}/threads/${req.params.threadReference}"
-                  >#${req.params.threadReference}</a
-                >
-              </small>
             </h1>
 
-            $${posts.map(
-              (post) => html`
+            $${res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.map(
+              (postJoinAuthor) => html`
                 <section
-                  id="${post.reference}"
+                  id="${postJoinAuthor.post.reference}"
                   style="${css`
                     border-bottom: 1px solid silver;
 
@@ -2873,26 +2892,33 @@ export default async function courselore(
                   `}"
                 >
                   <p>
-                    <strong>${post.authorName ?? "Ghost"}</strong>
-                    <span>
+                    <strong>${postJoinAuthor.author.user.name}</strong>
+                    <span
+                      style="${css`
+                        color: gray;
+                      `}"
+                    >
                       said
-                      $${relativeTime(post.createdAt)}$${post.updatedAt !==
-                      post.createdAt
+                      $${relativeTime(
+                        postJoinAuthor.post.createdAt
+                      )}$${postJoinAuthor.post.updatedAt !==
+                      postJoinAuthor.post.createdAt
                         ? html` (and last edited
-                          $${relativeTime(post.updatedAt)})`
+                          $${relativeTime(postJoinAuthor.post.updatedAt)})`
                         : html``}
-                      <small>
-                        <a
-                          href="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                            .reference}/threads/${req.params
-                            .threadReference}#${post.reference}"
-                          >#${req.params.threadReference}/${post.reference}</a
-                        >
-                      </small>
+                      <a
+                        href="${app.get("url")}/courses/${res.locals
+                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          .reference}/threads/${req.params
+                          .threadReference}#${postJoinAuthor.post.reference}"
+                        class="permalink"
+                        >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                          .threadWithMetadata.reference}/${postJoinAuthor.post
+                          .reference}</a
+                      >
                     </span>
                   </p>
-                  $${app.get("text processor")(post.content)}
+                  $${app.get("text processor")(postJoinAuthor.post.content)}
                 </section>
               `
             )}
@@ -2935,7 +2961,7 @@ export default async function courselore(
       )!;
 
       const thread = database.get<{ id: number; title: string }>(
-        sql`SELECT "id" FROM "threads" WHERE "course" = ${course.id} AND "reference" = ${req.params.threadReference}`
+        sql`SELECT "id" FROM "threads" WHERE "course" = ${course.id} AND "reference" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.reference}`
       )!;
 
       const newPostReference = database.get<{ newPostReference: string }>(
@@ -2965,7 +2991,7 @@ export default async function courselore(
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference}/threads/${
-          req.params.threadReference
+          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.reference
         }#${newPostReference}`
       );
     }
