@@ -2458,21 +2458,17 @@ export default async function courselore(
                               : css``}
                           `}"
                         >
-                          <div>
-                            <p><strong>${threadWithMetadata.title}</strong></p>
-                            <p class="hint">
-                              #${threadWithMetadata.reference} created
-                              $${relativeTime(threadWithMetadata.createdAt)} by
-                              ${threadWithMetadata.author.user.name}
-                              $${threadWithMetadata.updatedAt !==
-                              threadWithMetadata.createdAt
-                                ? html`<br />and last updated
-                                    $${relativeTime(
-                                      threadWithMetadata.updatedAt
-                                    )}`
-                                : html``}
-                            </p>
-                          </div>
+                          <p><strong>${threadWithMetadata.title}</strong></p>
+                          <p class="hint">
+                            #${threadWithMetadata.reference} created
+                            $${relativeTime(threadWithMetadata.createdAt)} by
+                            ${threadWithMetadata.author.user.name}
+                            $${threadWithMetadata.updatedAt !==
+                            threadWithMetadata.createdAt
+                              ? html`<br />and last updated
+                                  $${relativeTime(threadWithMetadata.updatedAt)}`
+                              : html``}
+                          </p>
                         </a>
                       `
                   )}
