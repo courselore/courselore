@@ -1870,7 +1870,7 @@ export default async function courselore(
             JOIN "posts" AS "originalPost" ON "threads"."id" = "originalPost"."thread"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "originalPost"."author" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-            JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."id"
+            JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."thread"
             WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
             GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread"
             ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt")
