@@ -1873,7 +1873,7 @@ export default async function courselore(
             JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."id"
             WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
             GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread"
-            ORDER BY MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt"), "threads"."id" DESC
+            ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt")
           `
         )
         .map((row) => ({
@@ -2761,7 +2761,7 @@ export default async function courselore(
     (req, res, next) => {
       const threadWithMetadata = res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.threadsWithMetadata.find(
         (threadWithMetadata) =>
-          (threadWithMetadata.reference = req.params.threadReference)
+          threadWithMetadata.reference === req.params.threadReference
       );
       if (threadWithMetadata === undefined) return next("route");
       const postsJoinAuthors = database
