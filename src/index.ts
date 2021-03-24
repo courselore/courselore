@@ -381,6 +381,7 @@ export default async function courselore(
                   }
 
                   &:disabled {
+                    color: gray;
                     background-color: whitesmoke;
                     cursor: not-allowed;
 
@@ -511,7 +512,7 @@ export default async function courselore(
                     position: absolute;
 
                     @media (prefers-color-scheme: dark) {
-                      background-color: #444444;
+                      background-color: #464646;
                     }
 
                     &::before {
@@ -530,7 +531,7 @@ export default async function courselore(
                       box-shadow: inset 1px 1px 1px #ffffff10;
 
                       @media (prefers-color-scheme: dark) {
-                        background-color: #444444;
+                        background-color: #464646;
                       }
                     }
                   }
@@ -2441,8 +2442,8 @@ export default async function courselore(
                           style="${css`
                             line-height: 1.3;
                             display: block;
-                            padding: 1rem;
-                            margin: 0 -1rem;
+                            padding: 0.5rem 1rem;
+                            border-radius: 5px;
 
                             ${threadWithMetadata.id ===
                             res.locals.threadWithMetadataJoinPostsJoinAuthors
@@ -2451,7 +2452,7 @@ export default async function courselore(
                                   background-color: whitesmoke;
 
                                   @media (prefers-color-scheme: dark) {
-                                    background-color: #444444;
+                                    background-color: #464646;
                                   }
                                 `
                               : css``}
