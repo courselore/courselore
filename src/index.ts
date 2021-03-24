@@ -2306,7 +2306,7 @@ export default async function courselore(
       req: express.Request<
         { courseReference: string; threadReference?: string },
         HTML,
-        { name?: string; accentColor?: AccentColor },
+        {},
         {},
         {
           user: User;
@@ -2726,13 +2726,18 @@ export default async function courselore(
     );
   });
 
-  /*
   const isThreadAccessible: express.RequestHandler<
-    { courseReference: string; threadReference: string },
-    any,
+    { courseReference: string; threadReference?: string },
+    HTML,
     {},
     {},
-    {}
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadata: ThreadWithMetadata;
+    }
   >[] = [
     ...isEnrolledInCourse,
     (req, res, next) => {
@@ -2753,7 +2758,6 @@ export default async function courselore(
       next();
     },
   ];
-  */
 
   /*
   app.get<
