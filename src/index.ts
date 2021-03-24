@@ -378,16 +378,10 @@ export default async function courselore(
                   width: 100%;
                 }
 
-                /*
                 textarea {
                   padding: 0.5rem 1rem;
                   resize: vertical;
                 }
-
-                ::-webkit-resizer {
-                  display: none;
-                }
-                */
 
                 select {
                   padding-right: 1.5rem;
@@ -2365,6 +2359,7 @@ export default async function courselore(
               <header
                 style="${css`
                   border-bottom: 1px solid silver;
+                  margin-top: 1rem;
                   padding: 0 1rem;
 
                   @media (prefers-color-scheme: dark) {
@@ -2373,23 +2368,26 @@ export default async function courselore(
                 `}"
               >
                 $${logoAndMenu(req, res)}
-                <p
-                  style="${css`
-                    margin-top: -1rem;
-                  `}"
-                >
-                  <a
-                    href="${app.get("url")}/courses/${res.locals
-                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                      .reference}"
-                    ><strong
-                      >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                        .course.name}</strong
-                    >
-                    (${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                      .enrollment.role})</a
+                <nav>
+                  <p
+                    style="${css`
+                      margin-top: -0.5rem;
+                    `}"
                   >
-                </p>
+                    <a
+                      href="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}"
+                      ><strong
+                        >${res.locals
+                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          .name}</strong
+                      >
+                      (${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                        .enrollment.role})</a
+                    >
+                  </p>
+                </nav>
                 $${courseSwitcher(req, res)}
               </header>
               <div
@@ -2489,22 +2487,24 @@ export default async function courselore(
       <div class="text-editor">
         <p
           style="${css`
-            & > * + * {
-              margin-left: 0.5rem;
-            }
-
             & > button {
-              transition-duration: 0.2s;
-              transition-property: font-weight, color;
+              all: unset;
+              color: gray;
+              cursor: default;
+              transition: font-weight 0.2s, color 0.2s;
+
+              &:hover {
+                color: #ff77a8;
+              }
 
               &:disabled {
                 font-weight: bold;
                 color: inherit;
               }
+            }
 
-              &:not(:hover):not(:disabled) {
-                color: gray;
-              }
+            & > * + * {
+              margin-left: 0.5rem !important;
             }
           `}"
         >
@@ -2516,6 +2516,7 @@ export default async function courselore(
               const textEditor = this.closest("div.text-editor");
               textEditor.querySelector("div.preview").hidden = true;
               textEditor.querySelector("div.write").hidden = false;
+              textEditor.querySelector("textarea").focus();
               this.disabled = true;
               textEditor.querySelector("button.preview").disabled = false;
             `}"
@@ -2560,7 +2561,14 @@ export default async function courselore(
             <textarea
               name="content"
               required
-              rows="5"
+              style="${css`
+                min-height: 5rem;
+                transition: border-color 0.2s, min-height 0.2s;
+
+                &:focus {
+                  min-height: 15rem;
+                }
+              `}"
               onkeypress="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
