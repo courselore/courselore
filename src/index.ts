@@ -379,6 +379,7 @@ export default async function courselore(
                 }
 
                 textarea {
+                  min-height: 5rem;
                   padding: 0.5rem 1rem;
                   resize: vertical;
                 }
@@ -2561,14 +2562,6 @@ export default async function courselore(
             <textarea
               name="content"
               required
-              style="${css`
-                min-height: 5rem;
-                transition: border-color 0.2s, min-height 0.2s;
-
-                &:focus {
-                  min-height: 15rem;
-                }
-              `}"
               onkeypress="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
