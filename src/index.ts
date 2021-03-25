@@ -358,22 +358,17 @@ export default async function courselore(
 
                 input[type="text"],
                 input[type="email"],
+                input[type="radio"],
                 textarea,
                 select,
                 button {
                   all: unset;
-                  padding: 0.1rem 1rem;
                   border: 1px solid gainsboro;
-                  border-radius: 5px;
                   box-shadow: inset 0px 1px 1px #ffffff10, 0px 1px 3px #00000010;
-                  transition: border-color 0.2s;
+                  transition: background-color 0.2s, border-color 0.2s;
 
                   @media (prefers-color-scheme: dark) {
                     border-color: dimgray;
-                  }
-
-                  @supports (-webkit-touch-callout: none) {
-                    font-size: 16px;
                   }
 
                   &:focus {
@@ -381,7 +376,6 @@ export default async function courselore(
                   }
 
                   &:disabled {
-                    color: gray;
                     background-color: whitesmoke;
                     cursor: not-allowed;
 
@@ -393,9 +387,49 @@ export default async function courselore(
 
                 input[type="text"],
                 input[type="email"],
+                textarea,
+                select,
+                button {
+                  padding: 0.1rem 1rem;
+                  border-radius: 5px;
+
+                  @supports (-webkit-touch-callout: none) {
+                    font-size: 16px;
+                  }
+
+                  &:disabled {
+                    color: gray;
+                  }
+                }
+
+                input[type="text"],
+                input[type="email"],
                 textarea {
                   box-sizing: border-box;
                   width: 100%;
+                }
+
+                input[type="radio"] {
+                  display: inline-block;
+                  width: 12px;
+                  height: 12px;
+                  border-radius: 50%;
+                  margin-bottom: -2px;
+
+                  &:checked {
+                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                      html`
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 12 12"
+                          width="12"
+                          height="12"
+                        >
+                          <circle cx="6" cy="6" r="4" fill="#ff77a8" />
+                        </svg>
+                      `
+                    ).toString("base64")}");
+                  }
                 }
 
                 textarea {
@@ -2117,7 +2151,7 @@ export default async function courselore(
                           const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
                           expiresAt.disabled = false;
                           expiresAt.focus();
-                          expiresAt.value = expiresAt.value;
+                          expiresAt.setSelectionRange(0, 0);
                         `}"
                       />
                       Expires at
