@@ -393,8 +393,7 @@ export default async function courselore(
 
                 input[type="text"],
                 input[type="email"],
-                textarea,
-                select {
+                textarea {
                   box-sizing: border-box;
                   width: 100%;
                 }
@@ -2080,28 +2079,87 @@ export default async function courselore(
                 <p class="hint">
                   Anyone with an invitation link may enroll on the course.
                 </p>
-                <form>
+                <form action="POST" action="${app.get("url")}/invitations">
                   <p>
                     <label>
                       For
-                      <select
-                        style="${css`
-                          width: auto;
-                        `}"
-                      >
-                        <option>students</option>
-                        <option>staff</option>
+                      <select name="role" required>
+                        <option value="student">students</option>
+                        <option value="staff">staff</option>
                       </select>
                     </label>
                   </p>
-                  <p
-                    style="${css`
-                      text-align: right;
-                    `}"
-                  >
-                    <button>Create Invitation Link</button>
+                  <p>
+                    <label>
+                      <input
+                        type="radio"
+                        name="isExpiresAt"
+                        value="false"
+                        required
+                        checked
+                        onchange="${javascript`
+                          this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
+                        `}"
+                      />
+                      Doesn’t expire
+                    </label>
+                    <label
+                      style="${css`
+                        margin-left: 1rem;
+                      `}"
+                    >
+                      <input
+                        type="radio"
+                        name="isExpiresAt"
+                        value="true"
+                        required
+                        onchange="${javascript`
+                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                          expiresAt.disabled = false;
+                          expiresAt.focus();
+                          expiresAt.value = expiresAt.value;
+                        `}"
+                      />
+                      Expires at
+                    </label>
+                    <input
+                      type="text"
+                      name="expiresAt"
+                      required
+                      disabled
+                      pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
+                      value="${new Date().getFullYear()}-${(
+                        new Date().getMonth() + 1
+                      )
+                        .toString()
+                        .padStart(
+                          2,
+                          "0"
+                        )}-${new Date()
+                        .getDate()
+                        .toString()
+                        .padStart(
+                          2,
+                          "0"
+                        )} ${new Date()
+                        .getHours()
+                        .toString()
+                        .padStart(
+                          2,
+                          "0"
+                        )}:${new Date()
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0")}"
+                      style="${css`
+                        width: auto !important;
+                      `}"
+                    />
                   </p>
+                  <p><button>Create Invitation Link</button></p>
                 </form>
+
+                <hr />
 
                 <p><strong>Invite via email</strong></p>
                 <p class="hint">
@@ -2109,26 +2167,21 @@ export default async function courselore(
                 </p>
                 <form>
                   <p>
-                    <textarea name="invite-by-email"></textarea>
-                  </p>
-                  <p
-                    style="${css`
-                      text-align: right;
-                    `}"
-                  >
                     <label>
                       As
-                      <select
-                        style="${css`
-                          width: auto;
-                        `}"
-                      >
-                        <option>students</option>
-                        <option>staff</option>
+                      <select name="role" required>
+                        <option value="student">students</option>
+                        <option value="staff">staff</option>
                       </select>
                     </label>
-                    <button>Invite</button>
                   </p>
+                  <p>
+                    <label>
+                      <strong>Emails</strong>
+                      <textarea name="invite-by-email" required></textarea>
+                    </label>
+                  </p>
+                  <p><button>Invite</button></p>
                 </form>
 
                 <hr />
