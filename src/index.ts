@@ -359,6 +359,7 @@ export default async function courselore(
                 input[type="text"],
                 input[type="email"],
                 input[type="radio"],
+                input[type="checkbox"],
                 textarea,
                 select,
                 button {
@@ -402,30 +403,48 @@ export default async function courselore(
                   }
                 }
 
-                input[type="text"],
-                input[type="email"],
-                textarea {
-                  box-sizing: border-box;
-                  width: 100%;
-                }
-
-                input[type="radio"] {
+                input[type="radio"],
+                input[type="checkbox"] {
                   display: inline-block;
                   width: 12px;
                   height: 12px;
-                  border-radius: 50%;
+                  margin-right: 5px;
                   margin-bottom: -2px;
+                }
+
+                input[type="radio"] {
+                  border-radius: 50%;
 
                   &:checked {
                     background-image: url("data:image/svg+xml;base64,${Buffer.from(
                       html`
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 12 12"
                           width="12"
                           height="12"
                         >
                           <circle cx="6" cy="6" r="4" fill="#ff77a8" />
+                        </svg>
+                      `
+                    ).toString("base64")}");
+                  }
+                }
+
+                input[type="checkbox"] {
+                  border-radius: 3px;
+
+                  &:checked {
+                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                      html`
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                        >
+                          <path
+                            d="M10.548 1.559a1.315 1.315 0 00-.921.378.652.652 0 00-.003 0L4.258 7.303 2.363 5.408a.652.652 0 00-.013-.01c-.485-.463-1.342-.455-1.817.02C.057 5.89.046 6.75.508 7.237a.652.652 0 00.009.012l2.82 2.82a.652.652 0 00.003 0c.481.48 1.354.48 1.836 0a.652.652 0 00.003 0l6.287-6.287c.484-.483.484-1.364 0-1.846a1.315 1.315 0 00-.915-.378z"
+                            fill="#ff77a8"
+                          />
                         </svg>
                       `
                     ).toString("base64")}");
@@ -444,7 +463,6 @@ export default async function courselore(
                       html`
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 16 16"
                           width="16"
                           height="16"
                         >
@@ -461,7 +479,6 @@ export default async function courselore(
                       html`
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 16 16"
                           width="16"
                           height="16"
                         >
@@ -966,7 +983,7 @@ export default async function courselore(
               }
             `}"
           >
-            <svg width="30" height="30" viewBox="0 0 30 30">
+            <svg width="30" height="30">
               <g stroke="gray" stroke-width="2" stroke-linecap="round">
                 <line x1="8" y1="10" x2="22" y2="10" />
                 <line x1="8" y1="15" x2="22" y2="15" />
@@ -1656,7 +1673,7 @@ export default async function courselore(
                         <a
                           href="${app.get("url")}/courses/${enrollmentJoinCourse
                             .course.reference}"
-                          ><svg width="10" height="10" viewBox="0 0 10 10">
+                          ><svg width="10" height="10">
                             <circle
                               cx="5"
                               cy="5"
@@ -2126,32 +2143,15 @@ export default async function courselore(
                   <p>
                     <label>
                       <input
-                        type="radio"
+                        type="checkbox"
                         name="isExpiresAt"
-                        value="false"
-                        required
-                        checked
-                        onchange="${javascript`
-                          this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
-                        `}"
-                      />
-                      Doesn’t expire
-                    </label>
-                    <label
-                      style="${css`
-                        margin-left: 1rem;
-                      `}"
-                    >
-                      <input
-                        type="radio"
-                        name="isExpiresAt"
-                        value="true"
-                        required
                         onchange="${javascript`
                           const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                          expiresAt.disabled = false;
-                          expiresAt.focus();
-                          expiresAt.setSelectionRange(0, 0);
+                          expiresAt.disabled = !this.checked;
+                          if (this.checked) {
+                            expiresAt.focus();
+                            expiresAt.setSelectionRange(0, 0);
+                          }
                         `}"
                       />
                       Expires at
@@ -2257,7 +2257,7 @@ export default async function courselore(
                         }
                       `}"
                     >
-                      <svg width="30" height="30" viewBox="0 0 30 30">
+                      <svg width="30" height="30">
                         <circle cx="15" cy="15" r="10" fill="${accentColor}" />
                         $${accentColor ===
                         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
@@ -2335,7 +2335,7 @@ export default async function courselore(
               }
             `}"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16">
+            <svg width="16" height="16">
               <path
                 fill="gray"
                 d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
@@ -2355,7 +2355,7 @@ export default async function courselore(
                 <a
                   href="${app.get("url")}/courses/${otherEnrollmentJoinCourse
                     .course.reference}${path}"
-                  ><svg width="10" height="10" viewBox="0 0 10 10">
+                  ><svg width="10" height="10">
                     <circle
                       cx="5"
                       cy="5"
