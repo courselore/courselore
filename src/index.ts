@@ -514,11 +514,6 @@ export default async function courselore(
                   margin-top: -0.9rem;
                 }
 
-                .full-width {
-                  box-sizing: border-box;
-                  width: 100%;
-                }
-
                 div.demonstration {
                   text-align: left;
                   min-height: 7.5rem;
@@ -617,6 +612,11 @@ export default async function courselore(
 
                 [hidden] {
                   display: none !important;
+                }
+
+                .full-width {
+                  box-sizing: border-box !important;
+                  width: 100% !important;
                 }
 
                 @media (prefers-color-scheme: light) {
@@ -1271,6 +1271,7 @@ export default async function courselore(
                       placeholder="name@educational-email.edu"
                       required
                       autofocus
+                      class="full-width"
                     />
                   </label>
                 </p>
@@ -1298,6 +1299,7 @@ export default async function courselore(
                       name="email"
                       placeholder="name@educational-email.edu"
                       required
+                      class="full-width"
                     />
                     <small>
                       We suggest using the email address you use at your
@@ -1423,13 +1425,24 @@ export default async function courselore(
                 <p>
                   <label>
                     <strong>Name</strong>
-                    <input type="text" name="name" required autofocus />
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      autofocus
+                      class="full-width"
+                    />
                   </label>
                 </p>
                 <p>
                   <label>
                     <strong>Email</strong>
-                    <input type="email" value="${email}" disabled />
+                    <input
+                      type="email"
+                      value="${email}"
+                      disabled
+                      class="full-width"
+                    />
                   </label>
                 </p>
                 <p>
@@ -1710,43 +1723,45 @@ export default async function courselore(
         html`
           <h1>User Settings</h1>
 
-          <form
-            method="POST"
-            action="${app.get("url")}/settings?_method=PATCH"
-            style="${css`
-              display: flex;
-              align-items: flex-end;
-
-              & > * + * {
-                margin-left: 1rem;
-              }
-            `}"
-          >
-            <p
-              style="${css`
-                flex: 1;
-              `}"
-            >
+          <form method="POST" action="${app.get("url")}/settings?_method=PATCH">
+            <p>
               <label>
                 <strong>Name</strong>
-                <input
-                  type="text"
-                  name="name"
-                  autocomplete="off"
-                  required
-                  value="${res.locals.user.name}"
-                />
+                <span
+                  style="${css`
+                    display: flex;
+
+                    & > * + * {
+                      margin-left: 1rem;
+                    }
+                  `}"
+                >
+                  <input
+                    type="text"
+                    name="name"
+                    autocomplete="off"
+                    required
+                    value="${res.locals.user.name}"
+                    class="full-width"
+                    style="${css`
+                      flex: 1 !important;
+                    `}"
+                  />
+                  <button>Change Name</button>
+                </span>
               </label>
-            </p>
-            <p>
-              <button>Change Name</button>
             </p>
           </form>
 
           <p>
             <label>
               <strong>Email</strong>
-              <input type="email" value="${res.locals.user.email}" disabled />
+              <input
+                type="email"
+                value="${res.locals.user.email}"
+                disabled
+                class="full-width"
+              />
               <small>
                 Your email is your identity in CourseLore and it can’t be
                 changed.
@@ -1801,6 +1816,7 @@ export default async function courselore(
                   autocomplete="off"
                   required
                   autofocus
+                  class="full-width"
                 />
               </label>
             </p>
@@ -2117,6 +2133,10 @@ export default async function courselore(
                           value="${res.locals
                             .enrollmentJoinCourseJoinThreadsWithMetadata.course
                             .name}"
+                          class="full-width"
+                          style="${css`
+                            flex: 1 !important;
+                          `}"
                         />
                         <button>Rename</button>
                       </span>
@@ -2139,8 +2159,6 @@ export default async function courselore(
                         <option value="staff">staff</option>
                       </select>
                     </label>
-                  </p>
-                  <p>
                     <label>
                       <input
                         type="checkbox"
@@ -2185,12 +2203,9 @@ export default async function courselore(
                         .getMinutes()
                         .toString()
                         .padStart(2, "0")}"
-                      style="${css`
-                        width: auto !important;
-                      `}"
                     />
+                    <button>Create Invitation Link</button>
                   </p>
-                  <p><button>Create Invitation Link</button></p>
                 </form>
 
                 <hr />
@@ -2212,7 +2227,11 @@ export default async function courselore(
                   <p>
                     <label>
                       <strong>Emails</strong>
-                      <textarea name="invite-by-email" required></textarea>
+                      <textarea
+                        name="invite-by-email"
+                        required
+                        class="full-width"
+                      ></textarea>
                     </label>
                   </p>
                   <p><button>Invite</button></p>
@@ -2672,6 +2691,7 @@ export default async function courselore(
             <textarea
               name="content"
               required
+              class="full-width"
               onkeypress="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
@@ -2765,7 +2785,13 @@ export default async function courselore(
               <p>
                 <label>
                   <strong>Title</strong>
-                  <input type="text" name="title" autocomplete="off" required />
+                  <input
+                    type="text"
+                    name="title"
+                    autocomplete="off"
+                    required
+                    class="full-width"
+                  />
                 </label>
               </p>
               $${textEditor()}
