@@ -400,6 +400,10 @@ export default async function courselore(
 
                   &:disabled {
                     color: gray;
+
+                    @media (prefers-color-scheme: dark) {
+                      color: whitesmoke;
+                    }
                   }
                 }
 
