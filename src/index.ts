@@ -487,8 +487,8 @@ export default async function courselore(
                           height="16"
                         >
                           <path
-                            fill="#d4d4d4"
                             d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
+                            fill="#d4d4d4"
                           ></path>
                         </svg>
                       `
@@ -2360,8 +2360,8 @@ export default async function courselore(
           >
             <svg width="16" height="16">
               <path
-                fill="gray"
                 d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
+                fill="gray"
               ></path>
             </svg>
             <span>Switch to another course</span>
