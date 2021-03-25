@@ -823,14 +823,16 @@ export default async function courselore(
                 !validator[element.dataset.validator](element.value)
               ) {
                 shouldResetCustomValidity = true;
-                element.setCustomValidity("This field is invalid");
+                element.setCustomValidity(
+                  element.dataset.validatorMessage ?? "This field is invalid"
+                );
               }
 
               if (element.matches("[data-validator-custom]")) {
                 shouldResetCustomValidity = true;
                 const validationResult = new Function(
                   element.dataset.validatorCustom
-                ).bind(element)();
+                ).call(element);
                 if (validationResult === false)
                   element.setCustomValidity("This field is invalid");
                 if (typeof validationResult === "string")
@@ -2142,7 +2144,7 @@ export default async function courselore(
                             flex: 1 !important;
                           `}"
                         />
-                        <button>Rename</button>
+                        <button>Change Name</button>
                       </span>
                     </label>
                   </p>
@@ -2154,7 +2156,7 @@ export default async function courselore(
                 <p class="hint">
                   Anyone with an invitation link may enroll on the course.
                 </p>
-                <form action="POST" action="${app.get("url")}/invitations">
+                <form method="POST" action="${app.get("url")}/invitations">
                   <p>
                     <label>
                       For
@@ -2163,6 +2165,8 @@ export default async function courselore(
                         <option value="staff">staff</option>
                       </select>
                     </label>
+                  </p>
+                  <p>
                     <label>
                       <input
                         type="checkbox"
@@ -2184,32 +2188,17 @@ export default async function courselore(
                       required
                       disabled
                       pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                      value="${new Date().getFullYear()}-${(
-                        new Date().getMonth() + 1
-                      )
-                        .toString()
-                        .padStart(
-                          2,
-                          "0"
-                        )}-${new Date()
-                        .getDate()
-                        .toString()
-                        .padStart(
-                          2,
-                          "0"
-                        )} ${new Date()
-                        .getHours()
-                        .toString()
-                        .padStart(
-                          2,
-                          "0"
-                        )}:${new Date()
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, "0")}"
+                      data-validator-custom="${javascript`
+                        if (!validator.isAfter(this.value.replace(" ", "T")))
+                          return "Must be in the future";
+                      `}"
+                      value="${new Date()
+                        .toISOString()
+                        .slice(0, "YYYY-MM-DD HH:SS".length)
+                        .replace("T", " ")}"
                     />
-                    <button>Create Invitation Link</button>
                   </p>
+                  <p><button>Create Invitation Link</button></p>
                 </form>
 
                 <hr />
