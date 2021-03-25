@@ -914,7 +914,12 @@ export default async function courselore(
         `}"
       >
         $${logo()}
-        <details class="popup">
+        <details
+          class="popup"
+          style="${css`
+            margin-right: -8px;
+          `}"
+        >
           <summary
             class="no-marker"
             style="${css`
