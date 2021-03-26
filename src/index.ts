@@ -2267,27 +2267,50 @@ export default async function courselore(
                         )}
                       </select>
                     </label>
-                    <label>
+                    <span>
                       <strong>Expiration</strong>
+                      <br />
+
+                      <label>
+                        <input
+                          type="radio"
+                          name="isExpiresAt"
+                          value="false"
+                          checked
+                          required
+                          onchange="${javascript`
+                            this.closest("span").querySelector('[name="expiresAt"]').disabled = true;
+                          `}"
+                        />
+                        Doesn’t expire
+                      </label>
+                      <br />
+
                       <span
                         style="${css`
                           display: flex;
-                          align-items: center;
+                          align-items: baseline;
+
+                          & > * + * {
+                            margin-left: 0.5rem !important;
+                          }
                         `}"
                       >
-                        <input
-                          type="checkbox"
-                          name="isExpiresAt"
-                          onchange="${javascript`
-                            const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                            expiresAt.disabled = !this.checked;
-                            if (this.checked) {
+                        <label>
+                          <input
+                            type="radio"
+                            name="isExpiresAt"
+                            value="true"
+                            required
+                            onchange="${javascript`
+                              const expiresAt = this.closest("span").querySelector('[name="expiresAt"]');
+                              expiresAt.disabled = false;
                               expiresAt.focus();
                               expiresAt.setSelectionRange(0, 0);
-                            }
-                          `}"
-                        />
-
+                            `}"
+                          />
+                          Expires at
+                        </label>
                         <input
                           type="text"
                           name="expiresAt"
@@ -2304,17 +2327,18 @@ export default async function courselore(
                             `}"
                           class="full-width"
                           style="${css`
-                            flex: 1;
+                            flex: 1 !important;
                           `}"
                         />
                       </span>
-                    </label>
+                    </span>
                   </div>
                   <p><button>Create Invitation Link</button></p>
                 </form>
 
                 <hr />
 
+                <!-- TODO:
                 <form>
                   <p><strong>Invite via email</strong></p>
                   <p class="hint">
@@ -2325,11 +2349,11 @@ export default async function courselore(
                       As
                       <select name="role" required>
                         $${ROLES.map(
-                          (role) =>
-                            html`<option value="${role}">
-                              ${lodash.capitalize(role)}
-                            </option>`
-                        )}
+                  (role) =>
+                    html`<option value="${role}">
+                      ${lodash.capitalize(role)}
+                    </option>`
+                )}
                       </select>
                     </label>
                   </p>
@@ -2347,6 +2371,7 @@ export default async function courselore(
                 </form>
 
                 <hr />
+                -->
               `}
 
           <p><strong>Accent color</strong></p>
@@ -2544,7 +2569,7 @@ export default async function courselore(
   app.post<
     { courseReference: string },
     HTML,
-    { role?: Role; isExpiresAt?: boolean; expiresAt?: string },
+    { role?: Role; isExpiresAt?: "true" | "false"; expiresAt?: string },
     {},
     {
       user: User;
@@ -2556,7 +2581,7 @@ export default async function courselore(
     if (
       typeof req.body.role !== "string" ||
       !ROLES.includes(req.body.role) ||
-      (req.body.isExpiresAt &&
+      (req.body.isExpiresAt === "true" &&
         (typeof req.body.expiresAt !== "string" ||
           !validator.isAfter(req.body.expiresAt)))
     )
@@ -2570,7 +2595,7 @@ export default async function courselore(
     database.run(sql`
       INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
       VALUES (
-        ${req.body.isExpiresAt ? req.body.expiresAt : null},
+        ${req.body.isExpiresAt === "true" ? req.body.expiresAt : null},
         ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
         ${invitationReference},
         ${req.body.role}
@@ -3499,9 +3524,9 @@ export default async function courselore(
           <h1>${type} Error</h1>
 
           <p>
-            This is a bug in CourseLore; please report to
-            <a href="mailto:bug-report@courselore.org"
-              >bug-report@courselore.org</a
+            This is an issue in CourseLore; please report to
+            <a href="mailto:issue-report@courselore.org"
+              >issue-report@courselore.org</a
             >.
           </p>
         `
