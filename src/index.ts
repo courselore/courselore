@@ -158,6 +158,16 @@ export default async function courselore(
         UNIQUE ("user", "course")
       );
 
+      CREATE TABLE "invitations" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "expiresAt" TEXT NULL,
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "reference" TEXT NOT NULL,
+        "role" TEXT NOT NULL CHECK ("role" IN ('staff', 'student')),
+        UNIQUE ("course", "reference")
+      );
+
       CREATE TABLE "threads" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
@@ -1881,10 +1891,7 @@ export default async function courselore(
     )
       throw new ValidationError();
 
-    const courseReference = cryptoRandomString({
-      length: 10,
-      type: "numeric",
-    });
+    const courseReference = cryptoRandomString({ length: 10, type: "numeric" });
     const newCourseId = database.run(
       sql`INSERT INTO "courses" ("reference", "name") VALUES (${courseReference}, ${req.body.name})`
     ).lastInsertRowid;
@@ -2018,6 +2025,29 @@ export default async function courselore(
       res.locals.otherEnrollmentsJoinCourses = otherEnrollmentsJoinCourses;
 
       next();
+    },
+  ];
+
+  const isCourseStaff: express.RequestHandler<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >[] = [
+    ...isEnrolledInCourse,
+    (req, res, next) => {
+      if (
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
+          .role === "staff"
+      )
+        return next();
+      next("route");
     },
   ];
 
@@ -2191,7 +2221,12 @@ export default async function courselore(
                 <p class="hint">
                   Anyone with an invitation link may enroll on the course.
                 </p>
-                <form method="POST" action="${app.get("url")}/invitations">
+                <form
+                  method="POST"
+                  action="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}/invitations"
+                >
                   <p>
                     <label>
                       For
@@ -2200,9 +2235,11 @@ export default async function courselore(
                         <option value="staff">staff</option>
                       </select>
                     </label>
-                  </p>
-                  <p>
-                    <label>
+                    <label
+                      style="${css`
+                        margin-left: 2rem;
+                      `}"
+                    >
                       <input
                         type="checkbox"
                         name="isExpiresAt"
@@ -2457,6 +2494,49 @@ export default async function courselore(
       `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
       }/settings`
+    );
+  });
+
+  app.post<
+    { courseReference: string },
+    HTML,
+    { role?: Role; isExpiresAt?: boolean; expiresAt?: string },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >("/courses/:courseReference/invitations", ...isCourseStaff, (req, res) => {
+    if (
+      typeof req.body.role !== "string" ||
+      !ROLES.includes(req.body.role) ||
+      (req.body.isExpiresAt &&
+        (typeof req.body.expiresAt !== "string" ||
+          !validator.isAfter(req.body.expiresAt)))
+    )
+      throw new ValidationError();
+
+    const invitationReference = cryptoRandomString({
+      length: 10,
+      type: "numeric",
+    });
+
+    database.run(sql`
+      INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
+      VALUES (
+        ${req.body.isExpiresAt ? req.body.expiresAt : null},
+        ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+        ${invitationReference},
+        ${req.body.role}
+      )
+    `);
+
+    res.redirect(
+      `${app.get("url")}/courses/${
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
+      }/invitations/${invitationReference}`
     );
   });
 
