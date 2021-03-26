@@ -2669,138 +2669,163 @@ export default async function courselore(
             validator.isAfter(invitation.expiresAt)
               ? html`
                   <p>
-                    <label>
-                      <strong>Role</strong>
-                      As
-                      <select disabled>
-                        $${ROLES.map(
-                          (role) =>
-                            html`
-                              <option
-                                ${role === invitation.role ? `selected` : ``}
-                              >
-                                ${role}
-                              </option>
-                            `
-                        )}
-                      </select>
-                      <small
-                        >To avoid mistakes, you may not change an invitation’s
-                        role, but you may
-                        <a
-                          href="${app.get("url")}/courses/${
-                  res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                    .reference
-                }/settings#invitations"
-                          >create another invitation link for another role</a
-                        >.</small
-                      >
-                    </label>
+                    <strong>Invitation link</strong>
+                    <br />
+                    <code>${link}</code>
+                    <br />
+                    <button
+                      type="button"
+                      onclick="${javascript`
+                        (async () => {
+                          await navigator.clipboard.writeText("${link}");
+                          const originalTextContent = this.textContent;
+                          this.textContent = "Copied";
+                          await new Promise(resolve => window.setTimeout(resolve, 500));
+                          this.textContent = originalTextContent;
+                        })();  
+                      `}"
+                    >
+                      Copy
+                    </button>
                   </p>
-
-                  $${
-                    invitation.expiresAt === null
-                      ? html`
-                          <p>This invitation doesn’t expire.</p>
-
-                          <details>
-                            <summary>Add Expiration</summary>
-                            <form method="POST" action="${link}?_method=PATCH">
-                              <p>
-                                Expires at
-                                <input
-                                  type="text"
-                                  name="expiresAt"
-                                  value="${new Date()
-                                    .toISOString()
-                                    .slice(0, "YYYY-MM-DD HH:SS".length)
-                                    .replace("T", " ")}"
-                                  required
-                                  pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                                  data-validator-custom="${javascript`
-                                if (!validator.isAfter(this.value.replace(" ", "T")))
-                                  return "Must be in the future";
-                              `}"
-                                />
-                                <button>Add Expiration</button>
-                              </p>
-                            </form>
-                          </details>
-                        `
-                      : html`
-                          <form method="POST" action="${link}?_method=PATCH">
-                            <p>
-                              Expires at
-                              <input
-                                type="text"
-                                name="expiresAt"
-                                value="${invitation.expiresAt}"
-                                required
-                                pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                                data-validator-custom="${javascript`
-                                  if (!validator.isAfter(this.value.replace(" ", "T")))
-                                    return "Must be in the future";
-                                `}"
-                              />
-                              <button>Change Expiration Date</button>
-                            </p>
-
-                            <form method="POST" action="${link}?_method=PATCH">
-                              <input
-                                type="hidden"
-                                name="expiresAt"
-                                value="${new Date().toISOString()}"
-                              />
-                              <p>
-                                <button class="danger">
-                                  Expire Invitation Now
-                                </button>
-                              </p>
-                            </form>
-                          </form>
-                        `
-                  }
-
-
-                    <hr />
-
-                    <p>
-                      People may enroll in
-                      ${
-                        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                          .course.name
-                      }
-                      as ${invitation.role} by visiting the following link:
-                      <br />
-                      <code>${link}</code>
-                      <br />
-                      <button
-                        type="button"
-                        onclick="${javascript`
-                      (async () => {
-                        await navigator.clipboard.writeText("${link}");
-                        const originalTextContent = this.textContent;
-                        this.textContent = "Copied";
-                        await new Promise(resolve => window.setTimeout(resolve, 500));
-                        this.textContent = originalTextContent;
-                      })();  
-                    `}"
-                      >
-                        Copy
-                      </button>
-                    </p>
-
-                    <p>
-                      Or tell people to point their phone camera at the
-                      following QR code:
-                    </p>
-
+                  <details>
+                    <summary>QR Code</summary>
                     <p>
                       $${(await QRCode.toString(link, { type: "svg" }))
                         .replace("#000000", "url('#gradient')")
                         .replace("#ffffff", "#00000000")}
                     </p>
-                  </form>
+                  </details>
+
+                  <div
+                    style="${css`
+                      display: flex;
+
+                      & > * {
+                        flex: 1;
+                      }
+
+                      & > * + * {
+                        margin-left: 2rem;
+                      }
+                    `}"
+                  >
+                    <p>
+                      <label>
+                        <strong>Role</strong>
+                        <select disabled class="full-width">
+                          $${ROLES.map(
+                            (role) =>
+                              html`
+                                <option
+                                  ${role === invitation.role ? `selected` : ``}
+                                >
+                                  ${lodash.capitalize(role)}
+                                </option>
+                              `
+                          )}
+                        </select>
+                        <small
+                          >To avoid mistakes you may not change the role, but
+                          you may
+                          <a
+                            href="${app.get("url")}/courses/${res.locals
+                              .enrollmentJoinCourseJoinThreadsWithMetadata
+                              .course.reference}/settings#invitations"
+                            >create a new invitation link for another role</a
+                          >.</small
+                        >
+                      </label>
+                    </p>
+
+                    <div>
+                      <form method="POST" action="${link}?_method=PATCH">
+                        <p>
+                          <strong>Expiration</strong>
+                          <br />
+
+                          <label>
+                            <input
+                              type="radio"
+                              name="isExpiresAt"
+                              value="false"
+                              checked
+                              required
+                              onchange="${javascript`
+                            this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
+                          `}"
+                            />
+                            Doesn’t expire
+                          </label>
+                          <br />
+
+                          <span
+                            style="${css`
+                              display: flex;
+                              align-items: baseline;
+
+                              & > * + * {
+                                margin-left: 0.5rem !important;
+                              }
+                            `}"
+                          >
+                            <label>
+                              <input
+                                type="radio"
+                                name="isExpiresAt"
+                                value="true"
+                                required
+                                onchange="${javascript`
+                              const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                              expiresAt.disabled = false;
+                              expiresAt.focus();
+                              expiresAt.setSelectionRange(0, 0);
+                            `}"
+                              />
+                              Expires at
+                            </label>
+                            <input
+                              type="text"
+                              name="expiresAt"
+                              value="${new Date()
+                                .toISOString()
+                                .slice(0, "YYYY-MM-DD HH:SS".length)
+                                .replace("T", " ")}"
+                              required
+                              disabled
+                              pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
+                              data-validator-custom="${javascript`
+                              if (!validator.isAfter(this.value.replace(" ", "T")))
+                                return "Must be in the future";
+                            `}"
+                              class="full-width"
+                              style="${css`
+                                flex: 1 !important;
+                              `}"
+                            />
+                          </span>
+                        </p>
+                        <p>
+                          <button class="full-width">
+                            Change Expiration Date
+                          </button>
+                        </p>
+                      </form>
+
+                      <form method="POST" action="${link}?_method=PATCH">
+                        <input
+                          type="hidden"
+                          name="expiresAt"
+                          value="${new Date().toISOString()}"
+                        />
+                        <p>
+                          <button class="full-width danger">
+                            Expire Invitation Now
+                          </button>
+                        </p>
+                      </form>
+                    </div>
+                  </div>
                 `
               : html` <p>TODO: Expired</p> `}
           `
