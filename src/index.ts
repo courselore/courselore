@@ -1141,12 +1141,13 @@ export default async function courselore(
       if (
         database.get<{ exists: number }>(
           sql`
-            SELECT (
+            SELECT EXISTS(
               SELECT 1
               FROM "sessions"
               WHERE "token" = ${req.cookies.session} AND
                     CURRENT_TIMESTAMP < "expiresAt"
-            ) AS "exists"`
+            ) AS "exists"
+          `
         )!.exists === 0
       ) {
         closeSession(req, res);
