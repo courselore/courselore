@@ -88,6 +88,13 @@ export default async function courselore(
     user: User;
   }
 
+  interface Invitation {
+    id: number;
+    expiresAt: string | null;
+    reference: string;
+    role: Role;
+  }
+
   interface Thread {
     id: number;
     reference: string;
@@ -2172,7 +2179,6 @@ export default async function courselore(
                 .name}</a
             >
           </h1>
-
           $${courseSwitcher(req, res, "/settings")}
           $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
             .role !== "staff"
@@ -2539,6 +2545,96 @@ export default async function courselore(
       }/invitations/${invitationReference}`
     );
   });
+
+  app.get<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...isCourseStaff,
+    (req, res, next) => {
+      const invitation = database.get<Invitation>(
+        sql`
+          SELECT "id", "expiresAt", "reference", "role"
+          FROM "invitations"
+          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                "reference" = ${req.params.invitationReference}
+        `
+      );
+      if (invitation === undefined) return next();
+
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>
+            Invitation ·
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+              .name}
+            · CourseLore
+          </title>`,
+          html`
+            <h1>
+              Invitation ·
+              <a
+                href="${app.get("url")}/courses/${res.locals
+                  .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .reference}"
+                >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .name}</a
+              >
+            </h1>
+
+            $${invitation.expiresAt === null ||
+            validator.isAfter(invitation.expiresAt)
+              ? html`
+                  <p>
+                    People may enroll in
+                    ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                      .course.name}
+                    as ${invitation.role} by visiting the following link:
+                    <br />
+                    <code
+                      >${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/invitations/${invitation.reference}</code
+                    >
+                    <br />
+                    <button
+                      type="button"
+                      onclick="${javascript`
+                      (async () => {
+                        await navigator.clipboard.writeText("${app.get(
+                          "url"
+                        )}/courses/${
+                        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                          .course.reference
+                      }/invitations/${invitation.reference}");
+                        const originalTextContent = this.textContent;
+                        this.textContent = "Copied";
+                        await new Promise(resolve => window.setTimeout(resolve, 500));
+                        this.textContent = originalTextContent;
+                      })();  
+                    `}"
+                    >
+                      Copy
+                    </button>
+                  </p>
+                `
+              : html` <p>TODO: Expired</p> `}
+          `
+        )
+      );
+    }
+  );
 
   app.set(
     "layout thread",
