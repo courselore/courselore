@@ -2606,7 +2606,6 @@ export default async function courselore(
   );
 
   function textEditor(): HTML {
-    // FIXME: The screen flickers showing the “loading” pane for a split second if the server responds too fast. What to do about it? We can’t know that the server will respond too fast; but introducing an artificial delay seems like a bad idea too.
     return html`
       <div class="text-editor">
         <p
