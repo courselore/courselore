@@ -300,7 +300,12 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
     }
 
     return html`
-      <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="${size}"
+        height="${size}"
+        viewBox="0 0 ${size} ${size}"
+      >
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#83769c" />

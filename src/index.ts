@@ -5,6 +5,7 @@ import path from "path";
 import express from "express";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
+import { asyncHandler } from "@leafac/express-async-handler";
 import validator from "validator";
 
 import { Database, sql } from "@leafac/sqlite";
@@ -27,6 +28,9 @@ import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
+
+import QRCode from "qrcode";
+import lodash from "lodash";
 
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
@@ -61,7 +65,7 @@ export default async function courselore(
   }
 
   type Role = typeof ROLES[number];
-  const ROLES = ["staff", "student"] as const;
+  const ROLES = ["student", "staff"] as const;
 
   // https://pico-8.fandom.com/wiki/Palette
   type AccentColor = typeof ACCENT_COLORS[number];
@@ -160,7 +164,7 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "role" TEXT NOT NULL CHECK ("role" IN ('staff', 'student')),
+        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
         "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
         UNIQUE ("user", "course")
       );
@@ -171,7 +175,7 @@ export default async function courselore(
         "expiresAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('staff', 'student')),
+        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
         UNIQUE ("course", "reference")
       );
 
@@ -559,6 +563,10 @@ export default async function courselore(
                   &:active {
                     color: white;
                     background-color: #ff77a8;
+                  }
+
+                  &.danger:not(:active) {
+                    color: #ff004d;
                   }
                 }
 
@@ -2223,75 +2231,105 @@ export default async function courselore(
 
                 <hr />
 
-                <p id="invitations"><strong>Invite with a link</strong></p>
-                <p class="hint">
-                  Anyone with an invitation link may enroll on the course.
-                </p>
                 <form
                   method="POST"
                   action="${app.get("url")}/courses/${res.locals
                     .enrollmentJoinCourseJoinThreadsWithMetadata.course
                     .reference}/invitations"
+                  id="invitations"
                 >
-                  <p>
+                  <p><strong>Invite with a link</strong></p>
+                  <p class="hint">
+                    Anyone with an invitation link may enroll on the course.
+                  </p>
+
+                  <div
+                    style="${css`
+                      display: flex;
+
+                      & > * {
+                        flex: 1;
+                      }
+
+                      & > * + * {
+                        margin-left: 2rem;
+                      }
+                    `}"
+                  >
                     <label>
-                      For
-                      <select name="role" required>
-                        <option value="student">students</option>
-                        <option value="staff">staff</option>
+                      <strong>Role</strong>
+                      <select name="role" required class="full-width">
+                        $${ROLES.map(
+                          (role) =>
+                            html`<option value="${role}">
+                              ${lodash.capitalize(role)}
+                            </option>`
+                        )}
                       </select>
                     </label>
-                    <label
-                      style="${css`
-                        margin-left: 2rem;
-                      `}"
-                    >
-                      <input
-                        type="checkbox"
-                        name="isExpiresAt"
-                        onchange="${javascript`
-                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                          expiresAt.disabled = !this.checked;
-                          if (this.checked) {
-                            expiresAt.focus();
-                            expiresAt.setSelectionRange(0, 0);
-                          }
+                    <label>
+                      <strong>Expiration</strong>
+                      <span
+                        style="${css`
+                          display: flex;
+                          align-items: center;
                         `}"
-                      />
-                      Expires at
+                      >
+                        <input
+                          type="checkbox"
+                          name="isExpiresAt"
+                          onchange="${javascript`
+                            const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                            expiresAt.disabled = !this.checked;
+                            if (this.checked) {
+                              expiresAt.focus();
+                              expiresAt.setSelectionRange(0, 0);
+                            }
+                          `}"
+                        />
+
+                        <input
+                          type="text"
+                          name="expiresAt"
+                          value="${new Date()
+                            .toISOString()
+                            .slice(0, "YYYY-MM-DD HH:SS".length)
+                            .replace("T", " ")}"
+                          required
+                          disabled
+                          pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
+                          data-validator-custom="${javascript`
+                              if (!validator.isAfter(this.value.replace(" ", "T")))
+                                return "Must be in the future";
+                            `}"
+                          class="full-width"
+                          style="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </span>
                     </label>
-                    <input
-                      type="text"
-                      name="expiresAt"
-                      required
-                      disabled
-                      pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                      data-validator-custom="${javascript`
-                        if (!validator.isAfter(this.value.replace(" ", "T")))
-                          return "Must be in the future";
-                      `}"
-                      value="${new Date()
-                        .toISOString()
-                        .slice(0, "YYYY-MM-DD HH:SS".length)
-                        .replace("T", " ")}"
-                    />
-                  </p>
+                  </div>
                   <p><button>Create Invitation Link</button></p>
                 </form>
 
                 <hr />
 
-                <p><strong>Invite via email</strong></p>
-                <p class="hint">
-                  Only the people you invite may enroll on the course.
-                </p>
                 <form>
+                  <p><strong>Invite via email</strong></p>
+                  <p class="hint">
+                    Only the people you invite may enroll on the course.
+                  </p>
                   <p>
                     <label>
                       As
                       <select name="role" required>
-                        <option value="student">students</option>
-                        <option value="staff">staff</option>
+                        $${ROLES.map(
+                          (role) =>
+                            html`<option value="${role}">
+                              ${lodash.capitalize(role)}
+                            </option>`
+                        )}
                       </select>
                     </label>
                   </p>
@@ -2560,7 +2598,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...isCourseStaff,
-    (req, res, next) => {
+    asyncHandler(async (req, res, next) => {
       const invitation = database.get<Invitation>(
         sql`
           SELECT "id", "expiresAt", "reference", "role"
@@ -2571,16 +2609,22 @@ export default async function courselore(
       );
       if (invitation === undefined) return next();
 
+      const link = `${app.get("url")}/courses/${
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
+      }/invitations/${invitation.reference}`;
+
       res.send(
         app.get("layout main")(
           req,
           res,
-          html`<title>
-            Invitation ·
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-              .name}
-            · CourseLore
-          </title>`,
+          html`
+            <title>
+              Invitation ·
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .name}
+              · CourseLore
+            </title>
+          `,
           html`
             <h1>
               Invitation ·
@@ -2597,43 +2641,144 @@ export default async function courselore(
             validator.isAfter(invitation.expiresAt)
               ? html`
                   <p>
-                    People may enroll in
-                    ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                      .course.name}
-                    as ${invitation.role} by visiting the following link:
-                    <br />
-                    <code
-                      >${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                        .reference}/invitations/${invitation.reference}</code
-                    >
-                    <br />
-                    <button
-                      type="button"
-                      onclick="${javascript`
-                      (async () => {
-                        await navigator.clipboard.writeText("${app.get(
-                          "url"
-                        )}/courses/${
+                    <label>
+                      <strong>Role</strong>
+                      As
+                      <select disabled>
+                        $${ROLES.map(
+                          (role) =>
+                            html`
+                              <option
+                                ${role === invitation.role ? `selected` : ``}
+                              >
+                                ${role}
+                              </option>
+                            `
+                        )}
+                      </select>
+                      <small
+                        >To avoid mistakes, you may not change an invitation’s
+                        role, but you may
+                        <a
+                          href="${app.get("url")}/courses/${
+                  res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference
+                }/settings#invitations"
+                          >create another invitation link for another role</a
+                        >.</small
+                      >
+                    </label>
+                  </p>
+
+                  $${
+                    invitation.expiresAt === null
+                      ? html`
+                          <p>This invitation doesn’t expire.</p>
+
+                          <details>
+                            <summary>Add Expiration</summary>
+                            <form method="POST" action="${link}?_method=PATCH">
+                              <p>
+                                Expires at
+                                <input
+                                  type="text"
+                                  name="expiresAt"
+                                  value="${new Date()
+                                    .toISOString()
+                                    .slice(0, "YYYY-MM-DD HH:SS".length)
+                                    .replace("T", " ")}"
+                                  required
+                                  pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
+                                  data-validator-custom="${javascript`
+                                if (!validator.isAfter(this.value.replace(" ", "T")))
+                                  return "Must be in the future";
+                              `}"
+                                />
+                                <button>Add Expiration</button>
+                              </p>
+                            </form>
+                          </details>
+                        `
+                      : html`
+                          <form method="POST" action="${link}?_method=PATCH">
+                            <p>
+                              Expires at
+                              <input
+                                type="text"
+                                name="expiresAt"
+                                value="${invitation.expiresAt}"
+                                required
+                                pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
+                                data-validator-custom="${javascript`
+                                  if (!validator.isAfter(this.value.replace(" ", "T")))
+                                    return "Must be in the future";
+                                `}"
+                              />
+                              <button>Change Expiration Date</button>
+                            </p>
+
+                            <form method="POST" action="${link}?_method=PATCH">
+                              <input
+                                type="hidden"
+                                name="expiresAt"
+                                value="${new Date().toISOString()}"
+                              />
+                              <p>
+                                <button class="danger">
+                                  Expire Invitation Now
+                                </button>
+                              </p>
+                            </form>
+                          </form>
+                        `
+                  }
+
+
+                    <hr />
+
+                    <p>
+                      People may enroll in
+                      ${
                         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                          .course.reference
-                      }/invitations/${invitation.reference}");
+                          .course.name
+                      }
+                      as ${invitation.role} by visiting the following link:
+                      <br />
+                      <code>${link}</code>
+                      <br />
+                      <button
+                        type="button"
+                        onclick="${javascript`
+                      (async () => {
+                        await navigator.clipboard.writeText("${link}");
                         const originalTextContent = this.textContent;
                         this.textContent = "Copied";
                         await new Promise(resolve => window.setTimeout(resolve, 500));
                         this.textContent = originalTextContent;
                       })();  
                     `}"
-                    >
-                      Copy
-                    </button>
-                  </p>
+                      >
+                        Copy
+                      </button>
+                    </p>
+
+                    <p>
+                      Or tell people to point their phone camera at the
+                      following QR code:
+                    </p>
+
+                    <p>
+                      $${(await QRCode.toString(link, { type: "svg" }))
+                        .replace("#000000", "url('#gradient')")
+                        .replace("#ffffff", "#00000000")}
+                    </p>
+                  </form>
                 `
               : html` <p>TODO: Expired</p> `}
           `
         )
       );
-    }
+    })
   );
 
   app.set(
