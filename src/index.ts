@@ -2242,6 +2242,7 @@ export default async function courselore(
 
                   <div
                     style="${css`
+                      margin: -1rem 0;
                       display: flex;
 
                       & > * {
@@ -2253,18 +2254,23 @@ export default async function courselore(
                       }
                     `}"
                   >
-                    <label>
-                      <strong>Role</strong>
-                      <select name="role" required class="full-width">
-                        $${ROLES.map(
-                          (role) =>
-                            html`<option value="${role}">
-                              ${lodash.capitalize(role)}
-                            </option>`
-                        )}
-                      </select>
-                    </label>
-                    <span>
+                    <p>
+                      <label>
+                        <strong>Role</strong>
+                        <select name="role" required class="full-width">
+                          $${ROLES.map(
+                            (role) =>
+                              html`
+                                <option value="${role}">
+                                  ${lodash.capitalize(role)}
+                                </option>
+                              `
+                          )}
+                        </select>
+                      </label>
+                    </p>
+
+                    <p>
                       <strong>Expiration</strong>
                       <br />
 
@@ -2276,7 +2282,7 @@ export default async function courselore(
                           checked
                           required
                           onchange="${javascript`
-                            this.closest("span").querySelector('[name="expiresAt"]').disabled = true;
+                            this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
                           `}"
                         />
                         Doesn’t expire
@@ -2300,7 +2306,7 @@ export default async function courselore(
                             value="true"
                             required
                             onchange="${javascript`
-                              const expiresAt = this.closest("span").querySelector('[name="expiresAt"]');
+                              const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
                               expiresAt.disabled = false;
                               expiresAt.focus();
                               expiresAt.setSelectionRange(0, 0);
@@ -2328,7 +2334,7 @@ export default async function courselore(
                           `}"
                         />
                       </span>
-                    </span>
+                    </p>
                   </div>
                   <p><button>Create Invitation Link</button></p>
                 </form>
