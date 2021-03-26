@@ -326,6 +326,9 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 - Use `maxlength`.
 - Keep the buttons disabled while the form isn’t in a valid state.
+- Use date pickers:
+  - https://github.com/jcgertig/date-input-polyfill
+  - https://github.com/Pikaday/Pikaday
 
 #### Text Editor Niceties
 

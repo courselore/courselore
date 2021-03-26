@@ -2153,9 +2153,6 @@ export default async function courselore(
   // https://www.npmjs.com/package/email-addresses
   // https://www.npmjs.com/package/addressparser
   // https://www.npmjs.com/package/emailjs-mime-codec
-  // Date pickers
-  // https://github.com/jcgertig/date-input-polyfill
-  // https://github.com/Pikaday/Pikaday
   app.get<
     { courseReference: string },
     HTML,
