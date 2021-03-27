@@ -347,16 +347,6 @@ export default async function courselore(
                   nav & {
                     text-decoration: none;
                   }
-
-                  &.permalink {
-                    font-size: 0.75rem;
-                    font-weight: normal;
-                    text-decoration: none;
-
-                    &:not(:hover) {
-                      color: gray;
-                    }
-                  }
                 }
 
                 input[type="text"],
@@ -552,21 +542,6 @@ export default async function courselore(
                   }
                 }
 
-                .hint {
-                  font-size: 0.75rem;
-                  line-height: 1.3;
-                  color: gray;
-
-                  p& {
-                    margin-top: -0.9rem;
-                  }
-
-                  label small&:last-child {
-                    margin-top: 0.4rem;
-                    display: block;
-                  }
-                }
-
                 div.demonstration {
                   text-align: left;
                   min-height: 7.5rem;
@@ -670,6 +645,15 @@ export default async function courselore(
                 .full-width {
                   box-sizing: border-box !important;
                   width: 100% !important;
+                  display: block !important;
+                }
+
+                .hint {
+                  font-size: 0.75rem;
+                  font-weight: normal;
+                  line-height: 1.3;
+                  color: gray;
+                  margin-top: -0.8rem;
                 }
 
                 @media (prefers-color-scheme: light) {
@@ -999,6 +983,7 @@ export default async function courselore(
           >
         </a>
       </h1>
+
       $${res.locals.user === undefined
         ? html``
         : html`
@@ -1300,8 +1285,14 @@ export default async function courselore(
                   ? ""
                   : `?redirect=${req.query.redirect}`}"
               >
-                <h1>Sign in</h1>
-                <p class="hint">Returning user</p>
+                <div
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  <h1>Sign in</h1>
+                  <p class="hint">Returning user</p>
+                </div>
                 <p
                   style="${css`
                     height: 5rem;
@@ -1329,8 +1320,14 @@ export default async function courselore(
                   ? ""
                   : `?redirect=${req.query.redirect}`}"
               >
-                <h1>Sign up</h1>
-                <p class="hint">New user</p>
+                <div
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  <h1>Sign up</h1>
+                  <p class="hint">New user</p>
+                </div>
                 <p
                   style="${css`
                     height: 5rem;
@@ -1344,8 +1341,8 @@ export default async function courselore(
                       placeholder="name@educational-email.edu"
                       required
                       class="full-width"
-                    />
-                    <small>
+                    /><br />
+                    <small class="full-width hint">
                       We suggest using the email address you use at your
                       educational institution.
                     </small>
@@ -1394,17 +1391,23 @@ export default async function courselore(
           res,
           html`<title>Authenticate · CourseLore</title>`,
           html`
-            <p>
-              To continue, check ${req.body.email} and click on the magic
-              authentication link.
-            </p>
-            <form method="POST">
-              <input type="hidden" name="email" value="${req.body.email}" />
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
               <p>
-                Didn’t receive the email? Already checked the spam folder?
-                <button>Resend</button>
+                To continue, check ${req.body.email} and click on the magic
+                authentication link.
               </p>
-            </form>
+              <form method="POST">
+                <input type="hidden" name="email" value="${req.body.email}" />
+                <p>
+                  Didn’t receive the email? Already checked the spam folder?
+                  <button>Resend</button>
+                </p>
+              </form>
+            </div>
 
             $${sentEmail}
           `
@@ -1425,16 +1428,22 @@ export default async function courselore(
             res,
             html`<title>Authenticate · CourseLore</title>`,
             html`
-              <p>
-                This magic authentication link is invalid or has expired.
-                <a
-                  href="${app.get("url")}/authenticate${req.query.redirect ===
-                  undefined
-                    ? ""
-                    : `?redirect=${req.query.redirect}`}"
-                  >Start over</a
-                >.
-              </p>
+              <div
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                <p>
+                  This magic authentication link is invalid or has expired.
+                  <a
+                    href="${app.get("url")}/authenticate${req.query.redirect ===
+                    undefined
+                      ? ""
+                      : `?redirect=${req.query.redirect}`}"
+                    >Start over</a
+                  >.
+                </p>
+              </div>
             `
           )
         );
@@ -1448,51 +1457,58 @@ export default async function courselore(
             res,
             html`<title>Sign up · CourseLore</title>`,
             html`
-              <h1>Welcome to CourseLore!</h1>
-
-              <form
-                method="POST"
-                action="${app.get("url")}/users${req.query.redirect ===
-                undefined
-                  ? ""
-                  : `?redirect=${req.query.redirect}`}"
+              <div
                 style="${css`
                   max-width: 300px;
                   margin: 0 auto;
                 `}"
               >
-                <input
-                  type="hidden"
-                  name="nonce"
-                  value="${newAuthenticationNonce(email)}"
-                />
-                <p>
-                  <label>
-                    <strong>Name</strong>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      autofocus
-                      class="full-width"
-                    />
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    <strong>Email</strong>
-                    <input
-                      type="email"
-                      value="${email}"
-                      disabled
-                      class="full-width"
-                    />
-                  </label>
-                </p>
-                <p>
-                  <button class="full-width">Create Account</button>
-                </p>
-              </form>
+                <h1
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  Welcome to CourseLore!
+                </h1>
+
+                <form
+                  method="POST"
+                  action="${app.get("url")}/users${req.query.redirect ===
+                  undefined
+                    ? ""
+                    : `?redirect=${req.query.redirect}`}"
+                >
+                  <input
+                    type="hidden"
+                    name="nonce"
+                    value="${newAuthenticationNonce(email)}"
+                  />
+                  <p>
+                    <label>
+                      <strong>Name</strong><br />
+                      <input
+                        type="text"
+                        name="name"
+                        required
+                        autofocus
+                        class="full-width"
+                      />
+                    </label>
+                  </p>
+                  <p>
+                    <label>
+                      <strong>Email</strong><br />
+                      <input
+                        type="email"
+                        value="${email}"
+                        disabled
+                        class="full-width"
+                      />
+                    </label>
+                  </p>
+                  <p><button class="full-width">Create Account</button></p>
+                </form>
+              </div>
             `
           )
         );
@@ -1529,16 +1545,22 @@ export default async function courselore(
           res,
           html`<title>Sign up · CourseLore</title>`,
           html`
-            <p>
-              Something went wrong in your sign up.
-              <a
-                href="${app.get("url")}/sign-up${req.query.redirect ===
-                undefined
-                  ? ""
-                  : `?redirect=${req.query.redirect}`}"
-                >Start over</a
-              >.
-            </p>
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              <p>
+                Something went wrong in your sign up.
+                <a
+                  href="${app.get("url")}/sign-up${req.query.redirect ===
+                  undefined
+                    ? ""
+                    : `?redirect=${req.query.redirect}`}"
+                  >Start over</a
+                >.
+              </p>
+            </div>
           `
         )
       );
@@ -1770,7 +1792,7 @@ export default async function courselore(
           <form method="POST" action="${app.get("url")}/settings?_method=PATCH">
             <p>
               <label>
-                <strong>Name</strong>
+                <strong>Name</strong><br />
                 <span
                   style="${css`
                     display: flex;
@@ -1799,14 +1821,14 @@ export default async function courselore(
 
           <p>
             <label>
-              <strong>Email</strong>
+              <strong>Email</strong><br />
               <input
                 type="email"
                 value="${res.locals.user.email}"
                 disabled
                 class="full-width"
-              />
-              <small>
+              /><br />
+              <small class="full-width hint">
                 Your email is your identity in CourseLore and it can’t be
                 changed.
               </small>
@@ -1853,7 +1875,7 @@ export default async function courselore(
           <form method="POST" action="${app.get("url")}/courses">
             <p>
               <label>
-                <strong>Name</strong>
+                <strong>Name</strong><br />
                 <input
                   type="text"
                   name="name"
@@ -2175,7 +2197,7 @@ export default async function courselore(
                 >
                   <p>
                     <label>
-                      <strong>Name</strong>
+                      <strong>Name</strong><br />
                       <span
                         style="${css`
                           display: flex;
@@ -2234,7 +2256,7 @@ export default async function courselore(
                   >
                     <p>
                       <label>
-                        <strong>Role</strong>
+                        <strong>Role</strong><br />
                         <select name="role" required class="full-width">
                           $${ROLES.map(
                             (role) =>
@@ -2249,9 +2271,7 @@ export default async function courselore(
                     </p>
 
                     <p>
-                      <strong>Expiration</strong>
-                      <br />
-
+                      <strong>Expiration</strong><br />
                       <label>
                         <input
                           type="radio"
@@ -2340,7 +2360,7 @@ export default async function courselore(
                   </p>
                   <p>
                     <label>
-                      <strong>Emails</strong>
+                      <strong>Emails</strong><br/>
                       <textarea
                         name="invite-by-email"
                         required
@@ -2649,10 +2669,8 @@ export default async function courselore(
             validator.isAfter(invitation.expiresAt)
               ? html`
                   <p>
-                    <strong>Invitation link</strong>
-                    <br />
-                    <code>${link}</code>
-                    <br />
+                    <strong>Invitation link</strong><br />
+                    <code>${link}</code><br />
                     <button
                       type="button"
                       onclick="${javascript`
@@ -2692,7 +2710,7 @@ export default async function courselore(
                   >
                     <p>
                       <label>
-                        <strong>Role</strong>
+                        <strong>Role</strong><br />
                         <select disabled class="full-width">
                           $${ROLES.map(
                             (role) =>
@@ -2703,9 +2721,9 @@ export default async function courselore(
                                   ${lodash.capitalize(role)}
                                 </option>
                               `
-                          )}
-                        </select>
-                        <small
+                          )}</select
+                        ><br />
+                        <small class="full-width hint"
                           >To avoid mistakes you may not change the role, but
                           you may
                           <a
@@ -2721,9 +2739,7 @@ export default async function courselore(
                     <div>
                       <form method="POST" action="${link}?_method=PATCH">
                         <p>
-                          <strong>Expiration</strong>
-                          <br />
-
+                          <strong>Expiration</strong><br />
                           <label>
                             <input
                               type="radio"
@@ -3163,7 +3179,7 @@ export default async function courselore(
             >
               <p>
                 <label>
-                  <strong>Title</strong>
+                  <strong>Title</strong><br />
                   <input
                     type="text"
                     name="title"
@@ -3367,7 +3383,7 @@ export default async function courselore(
                   .reference}/threads/${res.locals
                   .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
                   .reference}"
-                class="permalink"
+                class="hint"
                 >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
                   .threadWithMetadata.reference}</a
               >
@@ -3387,11 +3403,7 @@ export default async function courselore(
                 >
                   <p>
                     <strong>${postJoinAuthor.author.user.name}</strong>
-                    <span
-                      style="${css`
-                        color: gray;
-                      `}"
-                    >
+                    <span class="hint">
                       said
                       $${relativeTime(
                         postJoinAuthor.post.createdAt
@@ -3405,7 +3417,9 @@ export default async function courselore(
                           .enrollmentJoinCourseJoinThreadsWithMetadata.course
                           .reference}/threads/${req.params
                           .threadReference}#${postJoinAuthor.post.reference}"
-                        class="permalink"
+                        style="${css`
+                          text-decoration: none;
+                        `}"
                         >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
                           .threadWithMetadata.reference}/${postJoinAuthor.post
                           .reference}</a
@@ -3504,13 +3518,19 @@ export default async function courselore(
         res,
         html`<title>Not Found · CourseLore</title>`,
         html`
-          <h1>404 · Not Found</h1>
+          <div
+            style="${css`
+              text-align: center;
+            `}"
+          >
+            <h1>404 · Not Found</h1>
 
-          <p>
-            If you think there should be something here, please contact the
-            course staff or the
-            <a href="${app.get("administrator")}">system administrator</a>.
-          </p>
+            <p>
+              If you think there should be something here, please contact the
+              course staff or the
+              <a href="${app.get("administrator")}">system administrator</a>.
+            </p>
+          </div>
         `
       )
     );
@@ -3527,14 +3547,20 @@ export default async function courselore(
         res,
         html`<title>${type} Error · CourseLore</title>`,
         html`
-          <h1>${type} Error</h1>
+          <div
+            style="${css`
+              text-align: center;
+            `}"
+          >
+            <h1>${type} Error</h1>
 
-          <p>
-            This is an issue in CourseLore; please report to
-            <a href="mailto:issue-report@courselore.org"
-              >issue-report@courselore.org</a
-            >.
-          </p>
+            <p>
+              This is an issue in CourseLore; please report to
+              <a href="mailto:issue-report@courselore.org"
+                >issue-report@courselore.org</a
+              >.
+            </p>
+          </div>
         `
       )
     );
