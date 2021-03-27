@@ -3137,6 +3137,7 @@ export default async function courselore(
           type="button"
           class="write"
           disabled
+          tabindex="-1"
           onclick="${javascript`
               const textEditor = this.closest("div.text-editor");
               textEditor.querySelector("div.preview").hidden = true;
@@ -3151,6 +3152,7 @@ export default async function courselore(
         <button
           type="button"
           class="preview"
+          tabindex="-1"
           onclick="${javascript`
               (async () => {
                 const textEditor = this.closest("div.text-editor");
