@@ -72,6 +72,7 @@ jobs:
           rsync -a deployment-example/courselore.service root@courselore.org:/etc/systemd/system/courselore.service
 
           ssh root@courselore.org << "EOF"
+          rm courselore/data/courselore.db
           systemctl daemon-reload
           systemctl enable courselore
           systemctl restart courselore

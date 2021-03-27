@@ -2237,6 +2237,66 @@ export default async function courselore(
 
                 <hr />
 
+                <p><strong>Invite with a link</strong></p>
+                <p class="hint">
+                  Anyone with an invitation link may enroll on the course.
+                </p>
+
+                $${invitations.length === 0
+                  ? html``
+                  : html`
+                      <details>
+                        <summary><strong>Existing Invitations</strong></summary>
+                        <nav>
+                          $${invitations.map(
+                            (invitation) => html`
+                              <p>
+                                <a
+                                  href="${app.get("url")}/courses/${res.locals
+                                    .enrollmentJoinCourseJoinThreadsWithMetadata
+                                    .course
+                                    .reference}/invitations/${invitation.reference}"
+                                  style="${css`
+                                    * {
+                                      transition: color 0.2s;
+                                    }
+
+                                    &:hover * {
+                                      color: #ff77a8 !important;
+                                    }
+                                  `}"
+                                  ><code
+                                    style="${css`
+                                      color: ${invitation.expiresAt === null ||
+                                      validator.isAfter(invitation.expiresAt)
+                                        ? "#008751"
+                                        : "#ff004d"};
+                                    `}"
+                                    >${invitation.reference}</code
+                                  >
+                                  <span class="hint">
+                                    · ${lodash.capitalize(invitation.role)} ·
+                                    ${invitation.expiresAt === null
+                                      ? `Doesn’t expire`
+                                      : `${
+                                          validator.isAfter(
+                                            invitation.expiresAt
+                                          )
+                                            ? "Expires"
+                                            : "Expired"
+                                        } at ${new Date(invitation.expiresAt)
+                                          .toISOString()
+                                          .slice(0, "YYYY-MM-DD HH:SS".length)
+                                          .replace("T", " ")}`}
+                                  </span></a
+                                >
+                              </p>
+                            `
+                          )}
+                        </nav>
+                      </details>
+                    `}
+
                 <form
                   method="POST"
                   action="${app.get("url")}/courses/${res.locals
@@ -2244,14 +2304,8 @@ export default async function courselore(
                     .reference}/invitations"
                   id="invitations"
                 >
-                  <p><strong>Invite with a link</strong></p>
-                  <p class="hint">
-                    Anyone with an invitation link may enroll on the course.
-                  </p>
-
                   <div
                     style="${css`
-                      margin: -1rem 0;
                       display: flex;
 
                       & > * {
@@ -2345,69 +2399,14 @@ export default async function courselore(
                   <p><button>Create Invitation Link</button></p>
                 </form>
 
-                $${invitations.length === 0
-                  ? html``
-                  : html`
-                      <details>
-                        <summary>Existing Invitations</summary>
-                        <nav>
-                          $${invitations.map(
-                            (invitation) => html`
-                              <p>
-                                <a
-                                  href="${app.get("url")}/courses/${res.locals
-                                    .enrollmentJoinCourseJoinThreadsWithMetadata
-                                    .course
-                                    .reference}/invitations/${invitation.reference}"
-                                  style="${css`
-                                    * {
-                                      transition: color 0.2s;
-                                    }
-
-                                    &:hover * {
-                                      color: #ff77a8 !important;
-                                    }
-                                  `}"
-                                  ><code
-                                    style="${css`
-                                      color: ${invitation.expiresAt === null ||
-                                      validator.isAfter(invitation.expiresAt)
-                                        ? "#008751"
-                                        : "#ff004d"};
-                                    `}"
-                                    >${invitation.reference}</code
-                                  >
-                                  <span class="hint">
-                                    · ${lodash.capitalize(invitation.role)} ·
-                                    ${invitation.expiresAt === null
-                                      ? `Doesn’t expire`
-                                      : `${
-                                          validator.isAfter(
-                                            invitation.expiresAt
-                                          )
-                                            ? "Expires"
-                                            : "Expired"
-                                        } at ${new Date(invitation.expiresAt)
-                                          .toISOString()
-                                          .slice(0, "YYYY-MM-DD HH:SS".length)
-                                          .replace("T", " ")}`}
-                                  </span></a
-                                >
-                              </p>
-                            `
-                          )}
-                        </nav>
-                      </details>
-                    `}
-
                 <hr />
 
                 <!-- TODO:
+                <p><strong>Invite via email</strong></p>
+                <p class="hint">
+                  Only the people you invite may enroll on the course.
+                </p>
                 <form>
-                  <p><strong>Invite via email</strong></p>
-                  <p class="hint">
-                    Only the people you invite may enroll on the course.
-                  </p>
                   <p>
                     <label>
                       As
