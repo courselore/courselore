@@ -2409,7 +2409,7 @@ export default async function courselore(
     );
   });
 
-  function courseSwitcher(
+  const courseSwitcher = (
     req: express.Request<
       { courseReference: string },
       HTML,
@@ -2432,81 +2432,83 @@ export default async function courselore(
       }
     >,
     path = ""
-  ): HTML {
-    if (res.locals.otherEnrollmentsJoinCourses.length === 0) return html``;
+  ): HTML =>
+    res.locals.otherEnrollmentsJoinCourses.length === 0
+      ? html``
+      : html`
+          <details class="popup">
+            <summary
+              class="no-marker"
+              style="${css`
+                p {
+                  transition: color 0.2s;
+                }
 
-    return html`
-      <details class="popup">
-        <summary
-          class="no-marker"
-          style="${css`
-            p {
-              transition: color 0.2s;
-            }
+                &:hover p,
+                details[open] > & p {
+                  color: #ff77a8;
+                }
 
-            &:hover p,
-            details[open] > & p {
-              color: #ff77a8;
-            }
+                & path {
+                  transition: fill 0.2s;
+                }
 
-            & path {
-              transition: fill 0.2s;
-            }
+                &:hover path,
+                details[open] > & path {
+                  fill: #ff77a8;
+                }
+              `}"
+            >
+              <p
+                class="hint"
+                style="${css`
+                  display: flex;
 
-            &:hover path,
-            details[open] > & path {
-              fill: #ff77a8;
-            }
-          `}"
-        >
-          <p
-            class="hint"
-            style="${css`
-              display: flex;
-
-              & > * + * {
-                margin-left: 0.3rem;
-              }
-            `}"
-          >
-            <svg width="16" height="16">
-              <path
-                d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
-                fill="gray"
-              ></path>
-            </svg>
-            <span>Switch to another course</span>
-          </p>
-        </summary>
-        <nav
-          style="${css`
-            transform: translateY(-0.5rem);
-          `}"
-        >
-          $${res.locals.otherEnrollmentsJoinCourses.map(
-            (otherEnrollmentJoinCourse) => html`
-              <p>
-                <a
-                  href="${app.get("url")}/courses/${otherEnrollmentJoinCourse
-                    .course.reference}${path}"
-                  ><svg width="10" height="10">
-                    <circle
-                      cx="5"
-                      cy="5"
-                      r="5"
-                      fill="${otherEnrollmentJoinCourse.enrollment.accentColor}"
-                    />
-                  </svg>
-                  <strong>${otherEnrollmentJoinCourse.course.name}</strong>
-                  (${otherEnrollmentJoinCourse.enrollment.role})</a
-                >
+                  & > * + * {
+                    margin-left: 0.3rem;
+                  }
+                `}"
+              >
+                <svg width="16" height="16">
+                  <path
+                    d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
+                    fill="gray"
+                  ></path>
+                </svg>
+                <span>Switch to another course</span>
               </p>
-            `
-          )}
-        </nav>
-      </details>
-    `;
-  }
+            </summary>
+            <nav
+              style="${css`
+                transform: translateY(-0.5rem);
+              `}"
+            >
+              $${res.locals.otherEnrollmentsJoinCourses.map(
+                (otherEnrollmentJoinCourse) => html`
+                  <p>
+                    <a
+                      href="${app.get(
+                        "url"
+                      )}/courses/${otherEnrollmentJoinCourse.course
+                        .reference}${path}"
+                      ><svg width="10" height="10">
+                        <circle
+                          cx="5"
+                          cy="5"
+                          r="5"
+                          fill="${otherEnrollmentJoinCourse.enrollment
+                            .accentColor}"
+                        />
+                      </svg>
+                      <strong>${otherEnrollmentJoinCourse.course.name}</strong>
+                      (${otherEnrollmentJoinCourse.enrollment.role})</a
+                    >
+                  </p>
+                `
+              )}
+            </nav>
+          </details>
+        `;
 
   app.patch<
     { courseReference: string },
@@ -2991,37 +2993,36 @@ export default async function courselore(
       )
   );
 
-  function textEditor(): HTML {
-    return html`
-      <div class="text-editor">
-        <p
-          style="${css`
-            & > button {
-              all: unset;
-              color: gray;
-              cursor: default;
-              transition: font-weight 0.2s, color 0.2s;
+  const textEditor = (): HTML => html`
+    <div class="text-editor">
+      <p
+        style="${css`
+          & > button {
+            all: unset;
+            color: gray;
+            cursor: default;
+            transition: font-weight 0.2s, color 0.2s;
 
-              &:hover {
-                color: #ff77a8;
-              }
-
-              &:disabled {
-                font-weight: bold;
-                color: inherit;
-              }
+            &:hover {
+              color: #ff77a8;
             }
 
-            & > * + * {
-              margin-left: 0.5rem !important;
+            &:disabled {
+              font-weight: bold;
+              color: inherit;
             }
-          `}"
-        >
-          <button
-            type="button"
-            class="write"
-            disabled
-            onclick="${javascript`
+          }
+
+          & > * + * {
+            margin-left: 0.5rem !important;
+          }
+        `}"
+      >
+        <button
+          type="button"
+          class="write"
+          disabled
+          onclick="${javascript`
               const textEditor = this.closest("div.text-editor");
               textEditor.querySelector("div.preview").hidden = true;
               textEditor.querySelector("div.write").hidden = false;
@@ -3029,13 +3030,13 @@ export default async function courselore(
               this.disabled = true;
               textEditor.querySelector("button.preview").disabled = false;
             `}"
-          >
-            Write
-          </button>
-          <button
-            type="button"
-            class="preview"
-            onclick="${javascript`
+        >
+          Write
+        </button>
+        <button
+          type="button"
+          class="preview"
+          onclick="${javascript`
               (async () => {
                 const textEditor = this.closest("div.text-editor");
                 const textarea = textEditor.querySelector("textarea");
@@ -3056,55 +3057,54 @@ export default async function courselore(
                 textEditor.querySelector("button.write").disabled = false;
               })();
             `}"
-          >
-            Preview
-          </button>
-        </p>
+        >
+          Preview
+        </button>
+      </p>
 
-        <div class="write">
-          <p
-            style="${css`
-              margin-top: -0.8rem;
-            `}"
-          >
-            <textarea
-              name="content"
-              required
-              class="full-width"
-              onkeypress="${javascript`
+      <div class="write">
+        <p
+          style="${css`
+            margin-top: -0.8rem;
+          `}"
+        >
+          <textarea
+            name="content"
+            required
+            class="full-width"
+            onkeypress="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
                 const form = this.closest("form");
                 if (isValid(form)) form.submit();
               }
             `}"
-            ></textarea>
-          </p>
-          <p
-            class="hint"
-            style="${css`
-              text-align: right;
-            `}"
+          ></textarea>
+        </p>
+        <p
+          class="hint"
+          style="${css`
+            text-align: right;
+          `}"
+        >
+          <a
+            href="https://guides.github.com/features/mastering-markdown/"
+            target="_blank"
+            >Markdown</a
           >
-            <a
-              href="https://guides.github.com/features/mastering-markdown/"
-              target="_blank"
-              >Markdown</a
-            >
-            &
-            <a href="https://katex.org/docs/supported.html" target="_blank"
-              >LaTeX</a
-            >
-            are supported
-          </p>
-        </div>
-
-        $${loading()}
-
-        <div class="preview" hidden></div>
+          &
+          <a href="https://katex.org/docs/supported.html" target="_blank"
+            >LaTeX</a
+          >
+          are supported
+        </p>
       </div>
-    `;
-  }
+
+      $${loading()}
+
+      <div class="preview" hidden></div>
+    </div>
+  `;
 
   app.post<
     {},
