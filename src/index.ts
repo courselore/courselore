@@ -2785,6 +2785,10 @@ export default async function courselore(
                   <details>
                     <summary>QR Code</summary>
                     <p>
+                      People may point their phone camera at the image below to
+                      follow the invitation link:
+                    </p>
+                    <p>
                       $${(await QRCode.toString(link, { type: "svg" }))
                         .replace("#000000", "url('#gradient')")
                         .replace("#ffffff", "#00000000")}
@@ -2841,7 +2845,7 @@ export default async function courselore(
                               type="radio"
                               name="isExpiresAt"
                               value="false"
-                              checked
+                              ${invitation.expiresAt === null ? `checked` : ``}
                               required
                               onchange="${javascript`
                             this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
@@ -2866,25 +2870,30 @@ export default async function courselore(
                                 type="radio"
                                 name="isExpiresAt"
                                 value="true"
+                                ${invitation.expiresAt === null
+                                  ? ``
+                                  : `checked`}
                                 required
                                 onchange="${javascript`
-                              const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                              expiresAt.disabled = false;
-                              expiresAt.focus();
-                              expiresAt.setSelectionRange(0, 0);
-                            `}"
+                                  const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                  expiresAt.disabled = false;
+                                  expiresAt.focus();
+                                  expiresAt.setSelectionRange(0, 0);
+                                `}"
                               />
                               Expires at
                             </label>
                             <input
                               type="text"
                               name="expiresAt"
-                              value="${new Date()
-                                .toISOString()
-                                .slice(0, "YYYY-MM-DD HH:SS".length)
-                                .replace("T", " ")}"
+                              value="${invitation.expiresAt === null
+                                ? new Date()
+                                    .toISOString()
+                                    .slice(0, "YYYY-MM-DD HH:SS".length)
+                                    .replace("T", " ")
+                                : invitation.expiresAt}"
                               required
-                              disabled
+                              ${invitation.expiresAt === null ? `disabled` : ``}
                               pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
                               data-validator-custom="${javascript`
                               if (!validator.isAfter(this.value.replace(" ", "T")))
@@ -2898,18 +2907,12 @@ export default async function courselore(
                           </span>
                         </p>
                         <p>
-                          <button class="full-width">
-                            Change Expiration Date
-                          </button>
+                          <button class="full-width">Change Expiration</button>
                         </p>
                       </form>
 
                       <form method="POST" action="${link}?_method=PATCH">
-                        <input
-                          type="hidden"
-                          name="expiresAt"
-                          value="${new Date().toISOString()}"
-                        />
+                        <input type="hidden" name="expireNow" value="true" />
                         <p>
                           <button class="full-width danger">
                             Expire Invitation Now
