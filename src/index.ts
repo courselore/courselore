@@ -2165,6 +2165,15 @@ export default async function courselore(
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
+    const invitations = database.all<Invitation>(
+      sql`
+        SELECT "id", "expiresAt", "reference", "role"
+        FROM "invitations"
+        WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+        ORDER BY "id" DESC
+      `
+    );
+
     res.send(
       app.get("layout main")(
         req,
@@ -2335,6 +2344,61 @@ export default async function courselore(
                   </div>
                   <p><button>Create Invitation Link</button></p>
                 </form>
+
+                $${invitations.length === 0
+                  ? html``
+                  : html`
+                      <details>
+                        <summary>Existing Invitations</summary>
+                        <nav>
+                          $${invitations.map(
+                            (invitation) => html`
+                              <p>
+                                <a
+                                  href="${app.get("url")}/courses/${res.locals
+                                    .enrollmentJoinCourseJoinThreadsWithMetadata
+                                    .course
+                                    .reference}/invitations/${invitation.reference}"
+                                  style="${css`
+                                    * {
+                                      transition: color 0.2s;
+                                    }
+
+                                    &:hover * {
+                                      color: #ff77a8 !important;
+                                    }
+                                  `}"
+                                  ><code
+                                    style="${css`
+                                      color: ${invitation.expiresAt === null ||
+                                      validator.isAfter(invitation.expiresAt)
+                                        ? "#008751"
+                                        : "#ff004d"};
+                                    `}"
+                                    >${invitation.reference}</code
+                                  >
+                                  <span class="hint">
+                                    · ${lodash.capitalize(invitation.role)} ·
+                                    ${invitation.expiresAt === null
+                                      ? `Doesn’t expire`
+                                      : `${
+                                          validator.isAfter(
+                                            invitation.expiresAt
+                                          )
+                                            ? "Expires"
+                                            : "Expired"
+                                        } at ${new Date(invitation.expiresAt)
+                                          .toISOString()
+                                          .slice(0, "YYYY-MM-DD HH:SS".length)
+                                          .replace("T", " ")}`}
+                                  </span></a
+                                >
+                              </p>
+                            `
+                          )}
+                        </nav>
+                      </details>
+                    `}
 
                 <hr />
 
@@ -2663,6 +2727,39 @@ export default async function courselore(
                   .name}</a
               >
             </h1>
+            <nav>
+              <p class="hint">
+                <a
+                  href="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}/settings"
+                  style="${css`
+                    display: flex;
+                    align-items: center;
+
+                    path {
+                      transition: fill 0.2s;
+                    }
+
+                    &:hover path {
+                      fill: #ff77a8;
+                    }
+                  `}"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    width="16"
+                    height="16"
+                  >
+                    <path
+                      d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"
+                      fill="gray"
+                    ></path>
+                  </svg>
+                  Return to Course Settings</a
+                >
+              </p>
+            </nav>
 
             $${invitation.expiresAt === null ||
             validator.isAfter(invitation.expiresAt)
