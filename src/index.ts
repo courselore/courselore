@@ -64,11 +64,10 @@ export default async function courselore(
     accentColor: AccentColor;
   }
 
-  type Role = typeof ROLES[number];
   const ROLES = ["student", "staff"] as const;
+  type Role = typeof ROLES[number];
 
   // https://pico-8.fandom.com/wiki/Palette
-  type AccentColor = typeof ACCENT_COLORS[number];
   const ACCENT_COLORS = [
     "#83769c",
     "#ff77a8",
@@ -81,6 +80,7 @@ export default async function courselore(
     "#1d2b53",
     "#5f574f",
   ] as const;
+  type AccentColor = typeof ACCENT_COLORS[number];
 
   interface EnrollmentJoinCourse {
     enrollment: Enrollment;
@@ -111,10 +111,7 @@ export default async function courselore(
     author: EnrollmentJoinUser | Ghost;
   }
 
-  const GHOST = {
-    user: { name: "Ghost" },
-  } as const;
-
+  const GHOST = { user: { name: "Ghost" } } as const;
   type Ghost = typeof GHOST;
 
   interface EnrollmentJoinCourseJoinThreadsWithMetadata
@@ -362,21 +359,6 @@ export default async function courselore(
                   }
                 }
 
-                label {
-                  text-align: left;
-
-                  strong:first-child {
-                    display: block;
-                  }
-
-                  small:last-child {
-                    line-height: 1.3;
-                    color: gray;
-                    display: block;
-                    margin-top: 0.4rem;
-                  }
-                }
-
                 input[type="text"],
                 input[type="email"],
                 input[type="radio"],
@@ -570,11 +552,19 @@ export default async function courselore(
                   }
                 }
 
-                p.hint {
+                .hint {
                   font-size: 0.75rem;
                   line-height: 1.3;
                   color: gray;
-                  margin-top: -0.9rem;
+
+                  p& {
+                    margin-top: -0.9rem;
+                  }
+
+                  label small&:last-child {
+                    margin-top: 0.4rem;
+                    display: block;
+                  }
                 }
 
                 div.demonstration {
@@ -700,71 +690,6 @@ export default async function courselore(
           </body>
         </html>
       `)
-  );
-
-  function logo(): HTML {
-    return html`
-      <h1>
-        <a
-          href="${app.get("url")}/"
-          style="${css`
-            display: inline-flex;
-            align-items: center;
-
-            & > * + * {
-              margin-left: 0.5rem;
-            }
-          `}"
-        >
-          $${logoSVG}
-          <script>
-            (() => {
-              const logo = document.currentScript.parentElement;
-              let animationFrame;
-              let timeOffset = 0;
-              logo.addEventListener("mouseover", () => {
-                timeOffset += performance.now();
-                animationFrame = window.requestAnimationFrame(animate);
-              });
-              logo.addEventListener("mouseout", () => {
-                timeOffset -= performance.now();
-                window.cancelAnimationFrame(animationFrame);
-              });
-              const polyline = logo.querySelector("polyline");
-              const points = polyline
-                .getAttribute("points")
-                .split(" ")
-                .map(Number);
-              function animate(time) {
-                time -= timeOffset;
-                polyline.setAttribute(
-                  "points",
-                  points
-                    .map(
-                      (coordinate, index) =>
-                        coordinate + Math.sin(time * 0.0005 * (index % 7))
-                    )
-                    .join(" ")
-                );
-                animationFrame = window.requestAnimationFrame(animate);
-              }
-            })();
-          </script>
-          <span
-            style="${css`
-              font-size: 1.3rem;
-              font-weight: 800;
-            `}"
-            >CourseLore</span
-          >
-        </a>
-      </h1>
-    `;
-  }
-
-  const logoSVG = await fs.readFile(
-    path.join(__dirname, "../public/logo.svg"),
-    "utf-8"
   );
 
   app.set(
@@ -981,19 +906,9 @@ export default async function courselore(
                 max-width: 600px;
                 padding: 0 1rem;
                 margin: 1rem auto;
-
-                ${res.locals.user !== undefined
-                  ? css``
-                  : css`
-                      text-align: center;
-                    `}
               `}"
             >
-              <header>
-                $${res.locals.user === undefined
-                  ? logo()
-                  : logoAndMenu(req as any, res as any)}
-              </header>
+              <header>$${logoAndMenu(req, res)}</header>
               <main>$${body}</main>
             </div>
           </div>
@@ -1001,98 +916,161 @@ export default async function courselore(
       )
   );
 
-  function logoAndMenu(
+  const logoAndMenu = (
     req: express.Request<
       {},
       HTML,
       {},
       {},
       {
-        user: User;
+        user?: User;
         enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
       }
     >,
     res: express.Response<
       HTML,
       {
-        user: User;
+        user?: User;
         enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
       }
     >
-  ): HTML {
-    return html`
-      <div
-        style="${css`
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-        `}"
-      >
-        $${logo()}
-        <details
-          class="popup"
+  ): HTML => html`
+    <div
+      style="${css`
+        display: flex;
+        align-items: baseline;
+        justify-content: ${res.locals.user === undefined
+          ? `space-around`
+          : `space-between`};
+      `}"
+    >
+      <h1>
+        <a
+          href="${app.get("url")}/"
           style="${css`
-            margin-right: -8px;
+            display: inline-flex;
+            align-items: center;
+
+            & > * + * {
+              margin-left: 0.5rem;
+            }
           `}"
         >
-          <summary
-            class="no-marker"
+          $${logo}
+          <script>
+            (() => {
+              const logo = document.currentScript.parentElement;
+              let animationFrame;
+              let timeOffset = 0;
+              logo.addEventListener("mouseover", () => {
+                timeOffset += performance.now();
+                animationFrame = window.requestAnimationFrame(animate);
+              });
+              logo.addEventListener("mouseout", () => {
+                timeOffset -= performance.now();
+                window.cancelAnimationFrame(animationFrame);
+              });
+              const polyline = logo.querySelector("polyline");
+              const points = polyline
+                .getAttribute("points")
+                .split(" ")
+                .map(Number);
+              function animate(time) {
+                time -= timeOffset;
+                polyline.setAttribute(
+                  "points",
+                  points
+                    .map(
+                      (coordinate, index) =>
+                        coordinate + Math.sin(time * 0.0005 * (index % 7))
+                    )
+                    .join(" ")
+                );
+                animationFrame = window.requestAnimationFrame(animate);
+              }
+            })();
+          </script>
+          <span
             style="${css`
-              & line {
-                transition: stroke 0.2s;
-              }
-
-              &:hover line,
-              details[open] > & line {
-                stroke: #ff77a8;
-              }
+              font-size: 1.3rem;
+              font-weight: 800;
             `}"
+            >CourseLore</span
           >
-            <svg width="30" height="30">
-              <g stroke="gray" stroke-width="2" stroke-linecap="round">
-                <line x1="8" y1="10" x2="22" y2="10" />
-                <line x1="8" y1="15" x2="22" y2="15" />
-                <line x1="8" y1="20" x2="22" y2="20" />
-              </g>
-            </svg>
-          </summary>
-          <nav
-            style="${css`
-              transform: translate(calc(-100% + 2.3rem), -0.5rem);
-
-              &::before {
-                right: 1rem;
-              }
-            `}"
-          >
-            <p><strong>${res.locals.user.name}</strong></p>
-            <p class="hint">${res.locals.user.email}</p>
-            <form
-              method="POST"
-              action="${app.get("url")}/authenticate?_method=DELETE"
+        </a>
+      </h1>
+      $${res.locals.user === undefined
+        ? html``
+        : html`
+            <details
+              class="popup"
+              style="${css`
+                margin-right: -8px;
+              `}"
             >
-              <p><button>Sign Out</button></p>
-            </form>
-            <p><a href="${app.get("url")}/settings">User Settings</a></p>
-            $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata ===
-            undefined
-              ? html``
-              : html`
-                  <p>
-                    <a
-                      href="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                        .reference}/settings"
-                      >Course Settings</a
-                    >
-                  </p>
-                `}
-            <p><a href="${app.get("url")}/courses/new">New Course</a></p>
-          </nav>
-        </details>
-      </div>
-    `;
-  }
+              <summary
+                class="no-marker"
+                style="${css`
+                  & line {
+                    transition: stroke 0.2s;
+                  }
+
+                  &:hover line,
+                  details[open] > & line {
+                    stroke: #ff77a8;
+                  }
+                `}"
+              >
+                <svg width="30" height="30">
+                  <g stroke="gray" stroke-width="2" stroke-linecap="round">
+                    <line x1="8" y1="10" x2="22" y2="10" />
+                    <line x1="8" y1="15" x2="22" y2="15" />
+                    <line x1="8" y1="20" x2="22" y2="20" />
+                  </g>
+                </svg>
+              </summary>
+              <nav
+                style="${css`
+                  transform: translate(calc(-100% + 2.3rem), -0.5rem);
+
+                  &::before {
+                    right: 1rem;
+                  }
+                `}"
+              >
+                <p><strong>${res.locals.user.name}</strong></p>
+                <p class="hint">${res.locals.user.email}</p>
+                <form
+                  method="POST"
+                  action="${app.get("url")}/authenticate?_method=DELETE"
+                >
+                  <p><button>Sign Out</button></p>
+                </form>
+                <p><a href="${app.get("url")}/settings">User Settings</a></p>
+                $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata ===
+                undefined
+                  ? html``
+                  : html`
+                      <p>
+                        <a
+                          href="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/settings"
+                          >Course Settings</a
+                        >
+                      </p>
+                    `}
+                <p><a href="${app.get("url")}/courses/new">New Course</a></p>
+              </nav>
+            </details>
+          `}
+    </div>
+  `;
+
+  const logo = await fs.readFile(
+    path.join(__dirname, "../public/logo.svg"),
+    "utf-8"
+  );
 
   app.set(
     "text processor",
@@ -1330,7 +1308,7 @@ export default async function courselore(
                   `}"
                 >
                   <label>
-                    <strong>Email</strong>
+                    <strong>Email</strong><br />
                     <input
                       type="email"
                       name="email"
@@ -1359,7 +1337,7 @@ export default async function courselore(
                   `}"
                 >
                   <label>
-                    <strong>Email</strong>
+                    <strong>Email</strong><br />
                     <input
                       type="email"
                       name="email"
@@ -3611,7 +3589,7 @@ export default async function courselore(
             }
           `}"
         >
-          $${logoSVG
+          $${logo
             .replace(`id="gradient"`, `id="${id}"`)
             .replace("#gradient", `#${id}`)}
           <script>
