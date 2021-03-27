@@ -2286,7 +2286,6 @@ export default async function courselore(
                         Doesn’t expire
                       </label>
                       <br />
-
                       <span
                         style="${css`
                           display: flex;
