@@ -1829,8 +1829,7 @@ export default async function courselore(
                 class="full-width"
               /><br />
               <small class="full-width hint">
-                Your email is your identity in CourseLore and it can’t be
-                changed.
+                Your email is your identity in CourseLore and can’t be changed.
               </small>
             </label>
           </p>
