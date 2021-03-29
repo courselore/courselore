@@ -2731,6 +2731,21 @@ export default async function courselore(
     },
   ];
 
+  const isInvitationAccessible: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    { invitationJoinCourse: InvitationJoinCourse }
+  >[] = [
+    ...invitationExists,
+    (req, res, next) => {
+      if (isInvitationValid(res.locals.invitationJoinCourse.invitation))
+        return next();
+      next("route");
+    },
+  ];
+
   const mayManageInvitation: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
@@ -3082,7 +3097,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...invitationExists,
+    ...isInvitationAccessible,
     ...isEnrolledInCourse,
     (req, res) => {
       res.send(
@@ -3133,7 +3148,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...invitationExists,
+    ...isInvitationAccessible,
     ...isAuthenticated,
     (req, res) => {
       res.send(
@@ -3185,7 +3200,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...invitationExists,
+    ...isInvitationAccessible,
     ...isAuthenticated,
     (req, res) => {
       database.run(
@@ -3205,6 +3220,23 @@ export default async function courselore(
           res.locals.invitationJoinCourse.course.reference
         }`
       );
+    }
+  );
+
+  app.get<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    {},
+    {
+      invitationJoinCourse: InvitationJoinCourse;
+    }
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...isInvitationAccessible,
+    ...isUnauthenticated,
+    (req, res) => {
+      // TODO
     }
   );
 
