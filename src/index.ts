@@ -99,6 +99,11 @@ export default async function courselore(
     role: Role;
   }
 
+  interface InvitationJoinCourse {
+    invitation: Invitation;
+    course: Course;
+  }
+
   interface Thread {
     id: number;
     reference: string;
@@ -2682,20 +2687,46 @@ export default async function courselore(
     any,
     {},
     {},
-    { invitation: Invitation }
+    { invitationJoinCourse: InvitationJoinCourse }
   >[] = [
     (req, res, next) => {
-      const invitation = database.get<Invitation>(
+      const row = database.get<{
+        invitationId: number;
+        expiresAt: string;
+        invitationReference: string;
+        role: Role;
+        courseId: number;
+        courseReference: string;
+        name: string;
+      }>(
         sql`
-          SELECT "invitations"."id", "invitations"."expiresAt", "invitations"."reference", "invitations"."role"
+          SELECT "invitations"."id" AS "invitationId",
+                 "invitations"."expiresAt",
+                 "invitations"."reference" AS "invitationReference",
+                 "invitations"."role",
+                 "courses"."id" AS "courseId",
+                 "courses"."reference" AS "courseReference",
+                 "courses"."name"
           FROM "invitations"
           JOIN "courses" ON "invitations"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference} AND
                 "invitations"."reference" = ${req.params.invitationReference}
         `
       );
-      if (invitation === undefined) return next("route");
-      res.locals.invitation = invitation;
+      if (row === undefined) return next("route");
+      res.locals.invitationJoinCourse = {
+        invitation: {
+          id: row.invitationId,
+          expiresAt: row.expiresAt,
+          reference: row.invitationReference,
+          role: row.role,
+        },
+        course: {
+          id: row.courseId,
+          reference: row.courseReference,
+          name: row.name,
+        },
+      };
       next();
     },
   ];
@@ -2706,7 +2737,7 @@ export default async function courselore(
     {},
     {},
     {
-      invitation: Invitation;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
@@ -2720,7 +2751,7 @@ export default async function courselore(
     {},
     {},
     {
-      invitation: Invitation;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
@@ -2732,7 +2763,7 @@ export default async function courselore(
     asyncHandler(async (req, res) => {
       const link = `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
-      }/invitations/${res.locals.invitation.reference}`;
+      }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`;
 
       res.send(
         app.get("layout main")(
@@ -2791,7 +2822,7 @@ export default async function courselore(
               </p>
             </nav>
 
-            $${isInvitationValid(res.locals.invitation)
+            $${isInvitationValid(res.locals.invitationJoinCourse.invitation)
               ? html``
               : html`
                   <div
@@ -2868,7 +2899,8 @@ export default async function courselore(
                       (role) =>
                         html`
                           <option
-                            ${role === res.locals.invitation.role
+                            ${role ===
+                            res.locals.invitationJoinCourse.invitation.role
                               ? `selected`
                               : ``}
                           >
@@ -2898,7 +2930,8 @@ export default async function courselore(
                         type="radio"
                         name="isExpiresAt"
                         value="false"
-                        ${res.locals.invitation.expiresAt === null
+                        ${res.locals.invitationJoinCourse.invitation
+                          .expiresAt === null
                           ? `checked`
                           : ``}
                         required
@@ -2925,7 +2958,8 @@ export default async function courselore(
                           type="radio"
                           name="isExpiresAt"
                           value="true"
-                          ${res.locals.invitation.expiresAt === null
+                          ${res.locals.invitationJoinCourse.invitation
+                            .expiresAt === null
                             ? ``
                             : `checked`}
                           required
@@ -2941,14 +2975,17 @@ export default async function courselore(
                       <input
                         type="text"
                         name="expiresAt"
-                        value="${res.locals.invitation.expiresAt === null
+                        value="${res.locals.invitationJoinCourse.invitation
+                          .expiresAt === null
                           ? new Date()
                               .toISOString()
                               .slice(0, "YYYY-MM-DD HH:SS".length)
                               .replace("T", " ")
-                          : res.locals.invitation.expiresAt}"
+                          : res.locals.invitationJoinCourse.invitation
+                              .expiresAt}"
                         required
-                        ${res.locals.invitation.expiresAt === null
+                        ${res.locals.invitationJoinCourse.invitation
+                          .expiresAt === null
                           ? `disabled`
                           : ``}
                         pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
@@ -2966,7 +3003,7 @@ export default async function courselore(
                   <p><button class="full-width">Change Expiration</button></p>
                 </form>
 
-                $${isInvitationValid(res.locals.invitation)
+                $${isInvitationValid(res.locals.invitationJoinCourse.invitation)
                   ? html`
                       <form method="POST" action="${link}?_method=PATCH">
                         <input type="hidden" name="expireNow" value="true" />
@@ -2992,7 +3029,7 @@ export default async function courselore(
     { isExpiresAt?: "true" | "false"; expiresAt?: string; expireNow?: "true" },
     {},
     {
-      invitation: Invitation;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
@@ -3004,7 +3041,7 @@ export default async function courselore(
     (req, res) => {
       if (req.body.isExpiresAt === "false")
         database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = NULL WHERE "id" = ${res.locals.invitation.id}`
+          sql`UPDATE "invitations" SET "expiresAt" = NULL WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
         );
       else if (req.body.isExpiresAt === "true")
         if (
@@ -3014,19 +3051,19 @@ export default async function courselore(
           throw new ValidationError();
         else
           database.run(
-            sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
+            sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
           );
 
       if (req.body.expireNow === "true")
         database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = CURRENT_TIMESTAMP WHERE "id" = ${res.locals.invitation.id}`
+          sql`UPDATE "invitations" SET "expiresAt" = CURRENT_TIMESTAMP WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
         );
 
       res.redirect(
         `${app.get("url")}/courses/${
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
-        }/invitations/${res.locals.invitation.reference}`
+        }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`
       );
     }
   );
@@ -3037,7 +3074,7 @@ export default async function courselore(
     {},
     {},
     {
-      invitation: Invitation;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
@@ -3054,10 +3091,8 @@ export default async function courselore(
           res,
           html`
             <title>
-              Invitation ·
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .name}
-              · CourseLore
+              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
+              CourseLore
             </title>
           `,
           html`
@@ -3070,17 +3105,14 @@ export default async function courselore(
                 Invitation ·
                 <a
                   href="${app.get("url")}/courses/${res.locals
-                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                    .reference}"
-                  >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                    .course.name}</a
+                    .invitationJoinCourse.course.reference}"
+                  >${res.locals.invitationJoinCourse.course.name}</a
                 >
               </h1>
 
               <p>
                 You’re already enrolled in
-                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .name}.
+                ${res.locals.invitationJoinCourse.course.name}.
               </p>
             </div>
           `
@@ -3095,7 +3127,7 @@ export default async function courselore(
     {},
     {},
     {
-      invitation: Invitation;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
@@ -3104,27 +3136,33 @@ export default async function courselore(
     ...invitationExists,
     ...isAuthenticated,
     (req, res) => {
-      const course = database.get<Course>(
-        sql`SELECT "id", "reference", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
-      )!;
-
       res.send(
         app.get("layout main")(
           req,
           res,
-          html` <title>Invitation · ${course.name} · CourseLore</title> `,
+          html`
+            <title>
+              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
+              CourseLore
+            </title>
+          `,
           html`
             <div
               style="${css`
                 text-align: center;
               `}"
             >
-              <h1>Welcome to ${course.name}!</h1>
+              <h1>
+                Welcome to ${res.locals.invitationJoinCourse.course.name}!
+              </h1>
 
               <form method="POST">
                 <p>
                   <button>
-                    Enroll as ${lodash.capitalize(res.locals.invitation.role)}
+                    Enroll as
+                    ${lodash.capitalize(
+                      res.locals.invitationJoinCourse.invitation.role
+                    )}
                   </button>
                 </p>
               </form>
@@ -3135,35 +3173,40 @@ export default async function courselore(
     }
   );
 
-  // app.post<
-  //   { courseReference: string; invitationReference: string },
-  //   HTML,
-  //   {},
-  //   {},
-  //   {
-  //     invitation: Invitation;
-  //     user: User;
-  //     enrollmentsJoinCourses: EnrollmentJoinCourse[];
-  //   }
-  // >(
-  //   "/courses/:courseReference/invitations/:invitationReference",
-  //   ...invitationExists,
-  //   ...isAuthenticated,
-  //   (req, res) => {
-  //     database.run(
-  //       sql`
-  //           INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
-  //           VALUES (
-  //             ${res.locals.user.id},
-  //             ${},
-  //             ${"staff"},
-  //             ${defaultAccentColor(req, res)}
-  //           )
-  //         `
-  //     );
-  //     res.redirect(`${app.get("url")}/courses/${courseReference}`);
-  //     }
-  // );
+  app.post<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    {},
+    {
+      invitationJoinCourse: InvitationJoinCourse;
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...invitationExists,
+    ...isAuthenticated,
+    (req, res) => {
+      database.run(
+        sql`
+            INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+            VALUES (
+              ${res.locals.user.id},
+              ${res.locals.invitationJoinCourse.course.id},
+              ${res.locals.invitationJoinCourse.invitation.role},
+              ${defaultAccentColor(req, res)}
+            )
+          `
+      );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.invitationJoinCourse.course.reference
+        }`
+      );
+    }
+  );
 
   app.set(
     "layout thread",
