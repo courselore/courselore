@@ -2731,21 +2731,6 @@ export default async function courselore(
     },
   ];
 
-  const isInvitationAccessible: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    { invitationJoinCourse: InvitationJoinCourse }
-  >[] = [
-    ...invitationExists,
-    (req, res, next) => {
-      if (isInvitationValid(res.locals.invitationJoinCourse.invitation))
-        return next();
-      next("route");
-    },
-  ];
-
   const mayManageInvitation: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
@@ -2759,6 +2744,21 @@ export default async function courselore(
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >[] = [...invitationExists, ...isCourseStaff];
+
+  const isInvitationUsable: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    { invitationJoinCourse: InvitationJoinCourse }
+  >[] = [
+    ...invitationExists,
+    (req, res, next) => {
+      if (isInvitationValid(res.locals.invitationJoinCourse.invitation))
+        return next();
+      next("route");
+    },
+  ];
 
   app.get<
     { courseReference: string; invitationReference: string },
@@ -3097,7 +3097,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationAccessible,
+    ...isInvitationUsable,
     ...isEnrolledInCourse,
     (req, res) => {
       res.send(
@@ -3111,25 +3111,19 @@ export default async function courselore(
             </title>
           `,
           html`
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
-              <h1>
-                Invitation ·
-                <a
-                  href="${app.get("url")}/courses/${res.locals
-                    .invitationJoinCourse.course.reference}"
-                  >${res.locals.invitationJoinCourse.course.name}</a
-                >
-              </h1>
+            <h1>
+              Invitation ·
+              <a
+                href="${app.get("url")}/courses/${res.locals
+                  .invitationJoinCourse.course.reference}"
+                >${res.locals.invitationJoinCourse.course.name}</a
+              >
+            </h1>
 
-              <p>
-                You’re already enrolled in
-                ${res.locals.invitationJoinCourse.course.name}.
-              </p>
-            </div>
+            <p>
+              You’re already enrolled in
+              ${res.locals.invitationJoinCourse.course.name}.
+            </p>
           `
         )
       );
@@ -3148,7 +3142,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationAccessible,
+    ...isInvitationUsable,
     ...isAuthenticated,
     (req, res) => {
       res.send(
@@ -3162,26 +3156,18 @@ export default async function courselore(
             </title>
           `,
           html`
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
-              <h1>
-                Welcome to ${res.locals.invitationJoinCourse.course.name}!
-              </h1>
+            <h1>Welcome to ${res.locals.invitationJoinCourse.course.name}!</h1>
 
-              <form method="POST">
-                <p>
-                  <button>
-                    Enroll as
-                    ${lodash.capitalize(
-                      res.locals.invitationJoinCourse.invitation.role
-                    )}
-                  </button>
-                </p>
-              </form>
-            </div>
+            <form method="POST">
+              <p>
+                <button>
+                  Enroll as
+                  ${lodash.capitalize(
+                    res.locals.invitationJoinCourse.invitation.role
+                  )}
+                </button>
+              </p>
+            </form>
           `
         )
       );
@@ -3200,7 +3186,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationAccessible,
+    ...isInvitationUsable,
     ...isAuthenticated,
     (req, res) => {
       database.run(
@@ -3233,7 +3219,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationAccessible,
+    ...isInvitationUsable,
     ...isUnauthenticated,
     (req, res) => {
       res.send(
@@ -3965,19 +3951,13 @@ export default async function courselore(
         res,
         html`<title>Not Found · CourseLore</title>`,
         html`
-          <div
-            style="${css`
-              text-align: center;
-            `}"
-          >
-            <h1>404 · Not Found</h1>
+          <h1>404 · Not Found</h1>
 
-            <p>
-              If you think there should be something here, please contact the
-              course staff or the
-              <a href="${app.get("administrator")}">system administrator</a>.
-            </p>
-          </div>
+          <p>
+            If you think there should be something here, please contact the
+            course staff or the
+            <a href="${app.get("administrator")}">system administrator</a>.
+          </p>
         `
       )
     );
@@ -4024,18 +4004,12 @@ export default async function courselore(
         res,
         html`<title>${type} Error · CourseLore</title>`,
         html`
-          <div
-            style="${css`
-              text-align: center;
-            `}"
-          >
-            <h1>${type} Error</h1>
+          <h1>${type} Error</h1>
 
-            <p>
-              This is an issue in CourseLore; please report to
-              <a href="mailto:issues@courselore.org">issues@courselore.org</a>.
-            </p>
-          </div>
+          <p>
+            This is an issue in CourseLore; please report to
+            <a href="mailto:issues@courselore.org">issues@courselore.org</a>.
+          </p>
         `
       )
     );
