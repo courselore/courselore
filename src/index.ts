@@ -113,11 +113,11 @@ export default async function courselore(
   interface ThreadWithMetadata extends Thread {
     createdAt: string;
     updatedAt: string;
-    author: EnrollmentJoinUser | Ghost;
+    author: EnrollmentJoinUser | Anonymous;
   }
 
-  const GHOST = { user: { name: "Ghost" } } as const;
-  type Ghost = typeof GHOST;
+  const ANONYMOUS = { user: { name: "Anonymous" } } as const;
+  type Anonymous = typeof ANONYMOUS;
 
   interface EnrollmentJoinCourseJoinThreadsWithMetadata
     extends EnrollmentJoinCourse {
@@ -134,7 +134,7 @@ export default async function courselore(
 
   interface PostJoinAuthor {
     post: Post;
-    author: EnrollmentJoinUser | Ghost;
+    author: EnrollmentJoinUser | Anonymous;
   }
 
   interface ThreadWithMetadataJoinPostsJoinAuthors {
@@ -540,6 +540,10 @@ export default async function courselore(
                   &:active {
                     color: white;
                     background-color: #ff77a8;
+                  }
+
+                  &.action:not(:active) {
+                    color: #008751;
                   }
 
                   &.danger:not(:active) {
@@ -2034,7 +2038,7 @@ export default async function courselore(
                     name: row.name!,
                   },
                 }
-              : GHOST,
+              : ANONYMOUS,
         }));
 
       res.locals.enrollmentJoinCourseJoinThreadsWithMetadata = {
@@ -3769,7 +3773,7 @@ export default async function courselore(
                     name: row.name!,
                   },
                 }
-              : GHOST,
+              : ANONYMOUS,
         }));
 
       res.locals.threadWithMetadataJoinPostsJoinAuthors = {
@@ -3781,6 +3785,42 @@ export default async function courselore(
     },
   ];
 
+  const mayEditThread = (
+    req: express.Request<
+      { courseReference: string; threadReference: string },
+      any,
+      {},
+      {},
+      {
+        user: User;
+        enrollmentsJoinCourses: EnrollmentJoinCourse[];
+        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      }
+    >,
+    res: express.Response<
+      any,
+      {
+        user: User;
+        enrollmentsJoinCourses: EnrollmentJoinCourse[];
+        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      }
+    >
+  ): boolean =>
+    res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
+      "staff" ||
+    (res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+      .author as EnrollmentJoinUser)?.user?.id === res.locals.user.id;
+
+  // TODO: Continue here:
+  //       1. Do something better than a float on the “Edit” button.
+  //       2. Only show the “Edit” button to people who can edit the title.
+  //       3. Create the .patch() action.
+  //       4. Maybe rename the middlewares above for invitation so that they indicate that there’s a predicate and a related middleware—a pattern that’s emerging here as well. The predicate is used for conditionally displaying stuff, and the middleware for authorization.
+  // Other note: There’s a pattern emerging of buttons which toggle the visibility of components within a container. The first instance is the “Write”/“Preview” in the textEditor(), the other is right here on the thread title (and it’ll also come up in editing the posts…)
   app.get<
     { courseReference: string; threadReference: string },
     HTML,
@@ -3810,21 +3850,84 @@ export default async function courselore(
             · CourseLore
           </title>`,
           html`
-            <h1>
-              ${res.locals.threadWithMetadataJoinPostsJoinAuthors
-                .threadWithMetadata.title}
+            <div class="title">
+              <div class="show">
+                <button
+                  type="button"
+                  style="${css`
+                    float: right;
+                  `}"
+                  onclick="${javascript`
+                    const title = this.closest(".title");
+                    title.querySelector(".show").hidden = true;
+                    title.querySelector(".edit").hidden = false;
+                  `}"
+                >
+                  Edit
+                </button>
+                <h1>
+                  ${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                    .threadWithMetadata.title}
 
-              <a
-                href="${app.get("url")}/courses/${res.locals
+                  <a
+                    href="${app.get("url")}/courses/${res.locals
+                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      .reference}/threads/${res.locals
+                      .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+                      .reference}"
+                    class="hint"
+                    >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                      .threadWithMetadata.reference}</a
+                  >
+                </h1>
+              </div>
+              <form
+                method="POST"
+                action="${app.get("url")}/courses/${res.locals
                   .enrollmentJoinCourseJoinThreadsWithMetadata.course
                   .reference}/threads/${res.locals
                   .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-                  .reference}"
-                class="hint"
-                >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
-                  .threadWithMetadata.reference}</a
+                  .reference}?_method=PATCH"
+                hidden
+                class="edit"
+                style="${css`
+                  display: flex;
+
+                  & > * + * {
+                    margin-left: 1rem;
+                  }
+                `}"
               >
-            </h1>
+                <p
+                  style="${css`
+                    flex: 1;
+                  `}"
+                >
+                  <input
+                    type="text"
+                    name="title"
+                    value="${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                      .threadWithMetadata.title}"
+                    autocomplete="off"
+                    required
+                    class="full-width"
+                  />
+                </p>
+                <p>
+                  <button class="action">Save</button>
+                  <button
+                    type="button"
+                    onclick="${javascript`
+                      const title = this.closest(".title");
+                      title.querySelector(".show").hidden = false;
+                      title.querySelector(".edit").hidden = true;
+                    `}"
+                  >
+                    Cancel
+                  </button>
+                </p>
+              </form>
+            </div>
 
             $${res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.map(
               (postJoinAuthor) => html`
