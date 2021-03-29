@@ -3236,7 +3236,39 @@ export default async function courselore(
     ...isInvitationAccessible,
     ...isUnauthenticated,
     (req, res) => {
-      // TODO
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`
+            <title>
+              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
+              CourseLore
+            </title>
+          `,
+          html`
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              <h1>
+                Welcome to ${res.locals.invitationJoinCourse.course.name}!
+              </h1>
+
+              <p>
+                To enroll, first you have to
+                <a
+                  href="${app.get(
+                    "url"
+                  )}/authenticate?redirect=${req.originalUrl}"
+                  >authenticate</a
+                >.
+              </p>
+            </div>
+          `
+        )
+      );
     }
   );
 
@@ -3920,10 +3952,6 @@ export default async function courselore(
     }
   );
 
-  app.all<{}, HTML, {}, {}, {}>("*", ...isUnauthenticated, (req, res) => {
-    res.redirect(`${app.get("url")}/authenticate?redirect=${req.originalUrl}`);
-  });
-
   app.all<
     {},
     HTML,
@@ -3948,6 +3976,36 @@ export default async function courselore(
               If you think there should be something here, please contact the
               course staff or the
               <a href="${app.get("administrator")}">system administrator</a>.
+            </p>
+          </div>
+        `
+      )
+    );
+  });
+
+  app.all<{}, HTML, {}, {}, {}>("*", ...isUnauthenticated, (req, res) => {
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>Not Found · CourseLore</title>`,
+        html`
+          <div
+            style="${css`
+              text-align: center;
+            `}"
+          >
+            <h1>404 · Not Found</h1>
+
+            <p>
+              You may have to
+              <a
+                href="${app.get(
+                  "url"
+                )}/authenticate?redirect=${req.originalUrl}"
+                >authenticate</a
+              >
+              to see this page.
             </p>
           </div>
         `
