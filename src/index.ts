@@ -2677,28 +2677,22 @@ export default async function courselore(
     );
   });
 
-  const mayManageInvitation: express.RequestHandler<
+  const invitationExists: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
     {},
     {},
-    {
-      user: User;
-      enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      invitation: Invitation;
-    }
+    { invitation: Invitation }
   >[] = [
-    ...isCourseStaff,
     (req, res, next) => {
       const invitation = database.get<Invitation>(
         sql`
-        SELECT "id", "expiresAt", "reference", "role"
-        FROM "invitations"
-        WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
-              "reference" = ${req.params.invitationReference}
-      `
+          SELECT "invitations"."id", "invitations"."expiresAt", "invitations"."reference", "invitations"."role"
+          FROM "invitations"
+          JOIN "courses" ON "invitations"."course" = "courses"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference} AND
+                "invitations"."reference" = ${req.params.invitationReference}
+        `
       );
       if (invitation === undefined) return next("route");
       res.locals.invitation = invitation;
@@ -2706,17 +2700,31 @@ export default async function courselore(
     },
   ];
 
+  const mayManageInvitation: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    {
+      invitation: Invitation;
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >[] = [...invitationExists, ...isCourseStaff];
+
   app.get<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
     {},
     {
+      invitation: Invitation;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      invitation: Invitation;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -2984,11 +2992,11 @@ export default async function courselore(
     { isExpiresAt?: "true" | "false"; expiresAt?: string; expireNow?: "true" },
     {},
     {
+      invitation: Invitation;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      invitation: Invitation;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -3022,6 +3030,140 @@ export default async function courselore(
       );
     }
   );
+
+  app.get<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    {},
+    {
+      invitation: Invitation;
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...invitationExists,
+    ...isEnrolledInCourse,
+    (req, res) => {
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`
+            <title>
+              Invitation ·
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .name}
+              · CourseLore
+            </title>
+          `,
+          html`
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              <h1>
+                Invitation ·
+                <a
+                  href="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}"
+                  >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                    .course.name}</a
+                >
+              </h1>
+
+              <p>
+                You’re already enrolled in
+                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .name}.
+              </p>
+            </div>
+          `
+        )
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    {},
+    {
+      invitation: Invitation;
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...invitationExists,
+    ...isAuthenticated,
+    (req, res) => {
+      const course = database.get<Course>(
+        sql`SELECT "id", "reference", "name" FROM "courses" WHERE "reference" = ${req.params.courseReference}`
+      )!;
+
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html` <title>Invitation · ${course.name} · CourseLore</title> `,
+          html`
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              <h1>Welcome to ${course.name}!</h1>
+
+              <form method="POST">
+                <p>
+                  <button>
+                    Enroll as ${lodash.capitalize(res.locals.invitation.role)}
+                  </button>
+                </p>
+              </form>
+            </div>
+          `
+        )
+      );
+    }
+  );
+
+  // app.post<
+  //   { courseReference: string; invitationReference: string },
+  //   HTML,
+  //   {},
+  //   {},
+  //   {
+  //     invitation: Invitation;
+  //     user: User;
+  //     enrollmentsJoinCourses: EnrollmentJoinCourse[];
+  //   }
+  // >(
+  //   "/courses/:courseReference/invitations/:invitationReference",
+  //   ...invitationExists,
+  //   ...isAuthenticated,
+  //   (req, res) => {
+  //     database.run(
+  //       sql`
+  //           INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+  //           VALUES (
+  //             ${res.locals.user.id},
+  //             ${},
+  //             ${"staff"},
+  //             ${defaultAccentColor(req, res)}
+  //           )
+  //         `
+  //     );
+  //     res.redirect(`${app.get("url")}/courses/${courseReference}`);
+  //     }
+  // );
 
   app.set(
     "layout thread",
