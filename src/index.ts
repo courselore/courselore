@@ -2148,6 +2148,12 @@ export default async function courselore(
     );
   });
 
+  function isInvitationValid(invitation: Invitation): boolean {
+    return (
+      invitation.expiresAt === null || validator.isAfter(invitation.expiresAt)
+    );
+  }
+
   // TODO: Process email addresses
   // https://www.npmjs.com/package/email-addresses
   // https://www.npmjs.com/package/addressparser
@@ -2236,7 +2242,7 @@ export default async function courselore(
 
                 <hr />
 
-                <p><strong>Invite with a link</strong></p>
+                <p id="invitations"><strong>Invite with a link</strong></p>
                 <p class="hint">
                   Anyone with an invitation link may enroll on the course.
                 </p>
@@ -2266,8 +2272,7 @@ export default async function courselore(
                                   `}"
                                   ><code
                                     style="${css`
-                                      color: ${invitation.expiresAt === null ||
-                                      validator.isAfter(invitation.expiresAt)
+                                      color: ${isInvitationValid(invitation)
                                         ? "#008751"
                                         : "#ff004d"};
                                     `}"
@@ -2301,7 +2306,6 @@ export default async function courselore(
                   action="${app.get("url")}/courses/${res.locals
                     .enrollmentJoinCourseJoinThreadsWithMetadata.course
                     .reference}/invitations"
-                  id="invitations"
                 >
                   <div
                     style="${css`
@@ -2721,9 +2725,6 @@ export default async function courselore(
       const link = `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
       }/invitations/${res.locals.invitation.reference}`;
-      const isValid =
-        res.locals.invitation.expiresAt === null ||
-        validator.isAfter(res.locals.invitation.expiresAt);
 
       res.send(
         app.get("layout main")(
@@ -2782,7 +2783,7 @@ export default async function courselore(
               </p>
             </nav>
 
-            $${isValid
+            $${isInvitationValid(res.locals.invitation)
               ? html``
               : html`
                   <div
@@ -2811,14 +2812,14 @@ export default async function courselore(
               <button
                 type="button"
                 onclick="${javascript`
-                        (async () => {
-                          await navigator.clipboard.writeText("${link}");
-                          const originalTextContent = this.textContent;
-                          this.textContent = "Copied";
-                          await new Promise(resolve => window.setTimeout(resolve, 500));
-                          this.textContent = originalTextContent;
-                        })();  
-                      `}"
+                  (async () => {
+                    await navigator.clipboard.writeText("${link}");
+                    const originalTextContent = this.textContent;
+                    this.textContent = "Copied";
+                    await new Promise(resolve => window.setTimeout(resolve, 500));
+                    this.textContent = originalTextContent;
+                  })();  
+                `}"
               >
                 Copy
               </button>
@@ -2954,12 +2955,10 @@ export default async function courselore(
                       />
                     </span>
                   </p>
-                  <p>
-                    <button class="full-width">Change Expiration</button>
-                  </p>
+                  <p><button class="full-width">Change Expiration</button></p>
                 </form>
 
-                $${isValid
+                $${isInvitationValid(res.locals.invitation)
                   ? html`
                       <form method="POST" action="${link}?_method=PATCH">
                         <input type="hidden" name="expireNow" value="true" />
