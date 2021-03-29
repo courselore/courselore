@@ -375,6 +375,11 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 - For courses in which participation is graded.
 
+#### Applications
+
+- Desktop & phone.
+- A registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+
 ### Live Course Communication during the Lectures
 
 - https://www.sli.do
@@ -583,6 +588,24 @@ Insiders Builds are generated on every push. They’re useful for development an
 </details>
 
 ### Meetings
+
+<details>
+<summary>2021-03-27</summary>
+
+- Progress:
+  - Fixed everything that was broken last week: Threads, accent colors, and so forth.
+  - Invitation links can be created and modified (almost—the backend for that isn’t working yet). Also, the invitation links don’t work yet.
+  - DRYed up queries: Most of them happen in a single location and are reused throughout the request. Extracted data types (TypeScript) to clean up the code base.
+  - Worked on styles & form validation: Datetime fields; form elements like radio and checkboxes; avoid zooming in on text fields in iOS; use SVG to draw icons & things like the circle that indicate the course accent color; and so forth.
+- For next week:
+  - Fix name on posts.
+  - Finish invitations!!
+  - Editing threads and posts.
+  - Update threads when other people post.
+  - Focus on forum features like **tags** (both on threads and on the posts), upvotes & notifications.
+- Other ideas: Registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+
+</details>
 
 <details>
 <summary>2021-03-20</summary>

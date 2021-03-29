@@ -2794,6 +2794,8 @@ export default async function courselore(
                     </p>
                   </details>
 
+                  <hr />
+
                   <div
                     style="${css`
                       display: flex;
@@ -2927,6 +2929,24 @@ export default async function courselore(
       );
     })
   );
+
+  app.patch<
+  { courseReference: string; invitationReference: string },
+  HTML,
+  {},
+  {},
+  {
+    user: User;
+    enrollmentsJoinCourses: EnrollmentJoinCourse[];
+    enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+    otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+  }
+>(
+  "/courses/:courseReference/invitations/:invitationReference",
+  ...isCourseStaff,
+(req, res) => {
+
+});
 
   app.set(
     "layout thread",
