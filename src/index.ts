@@ -2931,22 +2931,21 @@ export default async function courselore(
   );
 
   app.patch<
-  { courseReference: string; invitationReference: string },
-  HTML,
-  {},
-  {},
-  {
-    user: User;
-    enrollmentsJoinCourses: EnrollmentJoinCourse[];
-    enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-    otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-  }
->(
-  "/courses/:courseReference/invitations/:invitationReference",
-  ...isCourseStaff,
-(req, res) => {
-
-});
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...isCourseStaff,
+    (req, res) => {}
+  );
 
   app.set(
     "layout thread",
@@ -3366,7 +3365,14 @@ export default async function courselore(
     database.run(
       sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
-        VALUES (${threadId}, ${"1"}, ${res.locals.user.id}, ${req.body.content})
+        VALUES (
+          ${threadId},
+          ${"1"},
+          ${
+            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id
+          },
+          ${req.body.content}
+        )
       `
     );
 
@@ -3413,16 +3419,16 @@ export default async function courselore(
         }>(
           sql`
             SELECT "posts"."id" AS "postId",
-                  "posts"."createdAt",
-                  "posts"."updatedAt",
-                  "posts"."reference",
-                  "posts"."content",
-                  "authorEnrollment"."id" AS "authorEnrollmentId",
-                  "authorEnrollment"."role",
-                  "authorEnrollment"."accentColor",
-                  "authorUser"."id" AS "authorUserId",
-                  "authorUser"."email",
-                  "authorUser"."name"
+                   "posts"."createdAt",
+                   "posts"."updatedAt",
+                   "posts"."reference",
+                   "posts"."content",
+                   "authorEnrollment"."id" AS "authorEnrollmentId",
+                   "authorEnrollment"."role",
+                   "authorEnrollment"."accentColor",
+                   "authorUser"."id" AS "authorUserId",
+                   "authorUser"."email",
+                   "authorUser"."name"
             FROM "posts"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."author" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
@@ -3603,7 +3609,7 @@ export default async function courselore(
           VALUES (
             ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id},
             ${newPostReference},
-            ${res.locals.user.id},
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id},
             ${req.body.content}
           )
         `
@@ -3676,9 +3682,7 @@ export default async function courselore(
 
             <p>
               This is an issue in CourseLore; please report to
-              <a href="mailto:issue-report@courselore.org"
-                >issue-report@courselore.org</a
-              >.
+              <a href="mailto:issues@courselore.org">issues@courselore.org</a>.
             </p>
           </div>
         `
