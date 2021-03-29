@@ -2384,9 +2384,9 @@ export default async function courselore(
                           disabled
                           pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
                           data-validator-custom="${javascript`
-                              if (!validator.isAfter(this.value.replace(" ", "T")))
-                                return "Must be in the future";
-                            `}"
+                            if (!validator.isAfter(this.value.replace(" ", "T")))
+                              return "Must be in the future";
+                          `}"
                           class="full-width"
                           style="${css`
                             flex: 1 !important;
@@ -2673,6 +2673,35 @@ export default async function courselore(
     );
   });
 
+  const mayManageInvitation: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitation: Invitation;
+    }
+  >[] = [
+    ...isCourseStaff,
+    (req, res, next) => {
+      const invitation = database.get<Invitation>(
+        sql`
+        SELECT "id", "expiresAt", "reference", "role"
+        FROM "invitations"
+        WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+              "reference" = ${req.params.invitationReference}
+      `
+      );
+      if (invitation === undefined) return next("route");
+      res.locals.invitation = invitation;
+      next();
+    },
+  ];
+
   app.get<
     { courseReference: string; invitationReference: string },
     HTML,
@@ -2683,24 +2712,15 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitation: Invitation;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isCourseStaff,
-    asyncHandler(async (req, res, next) => {
-      const invitation = database.get<Invitation>(
-        sql`
-          SELECT "id", "expiresAt", "reference", "role"
-          FROM "invitations"
-          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
-                "reference" = ${req.params.invitationReference}
-        `
-      );
-      if (invitation === undefined) return next();
-
+    ...mayManageInvitation,
+    asyncHandler(async (req, res) => {
       const link = `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
-      }/invitations/${invitation.reference}`;
+      }/invitations/${res.locals.invitation.reference}`;
 
       res.send(
         app.get("layout main")(
@@ -2759,8 +2779,8 @@ export default async function courselore(
               </p>
             </nav>
 
-            $${invitation.expiresAt === null ||
-            validator.isAfter(invitation.expiresAt)
+            $${res.locals.invitation.expiresAt === null ||
+            validator.isAfter(res.locals.invitation.expiresAt)
               ? html`
                   <p>
                     <strong>Invitation link</strong><br />
@@ -2816,7 +2836,9 @@ export default async function courselore(
                             (role) =>
                               html`
                                 <option
-                                  ${role === invitation.role ? `selected` : ``}
+                                  ${role === res.locals.invitation.role
+                                    ? `selected`
+                                    : ``}
                                 >
                                   ${lodash.capitalize(role)}
                                 </option>
@@ -2845,11 +2867,13 @@ export default async function courselore(
                               type="radio"
                               name="isExpiresAt"
                               value="false"
-                              ${invitation.expiresAt === null ? `checked` : ``}
+                              ${res.locals.invitation.expiresAt === null
+                                ? `checked`
+                                : ``}
                               required
                               onchange="${javascript`
-                            this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
-                          `}"
+                                this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
+                              `}"
                             />
                             Doesn’t expire
                           </label>
@@ -2870,7 +2894,7 @@ export default async function courselore(
                                 type="radio"
                                 name="isExpiresAt"
                                 value="true"
-                                ${invitation.expiresAt === null
+                                ${res.locals.invitation.expiresAt === null
                                   ? ``
                                   : `checked`}
                                 required
@@ -2886,19 +2910,21 @@ export default async function courselore(
                             <input
                               type="text"
                               name="expiresAt"
-                              value="${invitation.expiresAt === null
+                              value="${res.locals.invitation.expiresAt === null
                                 ? new Date()
                                     .toISOString()
                                     .slice(0, "YYYY-MM-DD HH:SS".length)
                                     .replace("T", " ")
-                                : invitation.expiresAt}"
+                                : res.locals.invitation.expiresAt}"
                               required
-                              ${invitation.expiresAt === null ? `disabled` : ``}
+                              ${res.locals.invitation.expiresAt === null
+                                ? `disabled`
+                                : ``}
                               pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
                               data-validator-custom="${javascript`
-                              if (!validator.isAfter(this.value.replace(" ", "T")))
-                                return "Must be in the future";
-                            `}"
+                                if (!validator.isAfter(this.value.replace(" ", "T")))
+                                  return "Must be in the future";
+                              `}"
                               class="full-width"
                               style="${css`
                                 flex: 1 !important;
@@ -2932,18 +2958,46 @@ export default async function courselore(
   app.patch<
     { courseReference: string; invitationReference: string },
     HTML,
-    {},
+    { isExpiresAt?: "true" | "false"; expiresAt?: string; expireNow?: "true" },
     {},
     {
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitation: Invitation;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isCourseStaff,
-    (req, res) => {}
+    ...mayManageInvitation,
+    (req, res) => {
+      if (req.body.isExpiresAt === "false")
+        database.run(
+          sql`UPDATE "invitations" SET "expiresAt" = NULL WHERE "id" = ${res.locals.invitation.id}`
+        );
+      else if (req.body.isExpiresAt === "true")
+        if (
+          typeof req.body.expiresAt !== "string" ||
+          !validator.isAfter(req.body.expiresAt)
+        )
+          throw new ValidationError();
+        else
+          database.run(
+            sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
+          );
+
+      if (req.body.expireNow === "true")
+        database.run(
+          sql`UPDATE "invitations" SET "expiresAt" = CURRENT_TIMESTAMP WHERE "id" = ${res.locals.invitation.id}`
+        );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/invitations/${res.locals.invitation.reference}`
+      );
+    }
   );
 
   app.set(

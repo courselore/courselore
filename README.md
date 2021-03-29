@@ -590,6 +590,14 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-04-03</summary>
+
+- Progress:
+  - I forgot to mention last week, but I came with a solution for images working in light vs dark background: I simply added a background color to transparent images…
+
+</details>
+
+<details>
 <summary>2021-03-27</summary>
 
 - Progress:
