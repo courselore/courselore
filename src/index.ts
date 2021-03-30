@@ -7,6 +7,7 @@ import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import { asyncHandler } from "@leafac/express-async-handler";
 import validator from "validator";
+import emailAddresses from "email-addresses";
 
 import { Database, sql } from "@leafac/sqlite";
 import databaseMigrate from "@leafac/sqlite-migration";
@@ -724,6 +725,9 @@ export default async function courselore(
           <script src="${app.get(
               "url"
             )}/node_modules/validator/validator.min.js"></script>
+          <script src="${app.get(
+              "url"
+            )}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
           <script>
             (() => {
@@ -2509,10 +2513,28 @@ export default async function courselore(
                     <label>
                       <strong>Emails</strong><br />
                       <textarea
-                        name="invite-by-email"
+                        name="emails"
                         required
                         class="full-width"
-                      ></textarea>
+                        data-validator-custom="${javascript`
+                          const emails = emailAddresses.parseAddressList(this.value);
+                          if (
+                            emails === null ||
+                            emails.find((email) => !validator.isEmail(email.address))
+                          )
+                            return "Match the requested format";
+                        `}"
+                      ></textarea
+                      ><br />
+                      <small class="full-width hint">
+                        Emails must be separated by commas and may include
+                        names.
+                        <br />
+                        Example:
+                        <code
+                          >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
+                        >
+                      </small>
                     </label>
                   </p>
                   <p><button>Invite</button></p>
