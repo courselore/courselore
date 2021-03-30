@@ -1713,7 +1713,7 @@ export default async function courselore(
 
               <p><strong>Welcome to CourseLore!</strong></p>
               <p>
-                To <strong>enroll on an existing course</strong> you either have
+                To <strong>enroll in an existing course</strong> you either have
                 to follow an invitation link or be invited via email. Contact
                 your course staff for more information.
               </p>
@@ -2325,7 +2325,7 @@ export default async function courselore(
 
                 <p id="invitations"><strong>Invite with a link</strong></p>
                 <p class="hint">
-                  Anyone with an invitation link may enroll on the course.
+                  Anyone with an invitation link may enroll in the course.
                 </p>
 
                 $${invitations.length === 0
@@ -2483,10 +2483,9 @@ export default async function courselore(
 
                 <hr />
 
-                <!-- TODO:
                 <p><strong>Invite via email</strong></p>
                 <p class="hint">
-                  Only the people you invite may enroll on the course.
+                  Only the people you invite may enroll in the course.
                 </p>
                 <form>
                   <p>
@@ -2494,17 +2493,17 @@ export default async function courselore(
                       As
                       <select name="role" required>
                         $${ROLES.map(
-                  (role) =>
-                    html`<option value="${role}">
-                      ${lodash.capitalize(role)}
-                    </option>`
-                )}
+                          (role) =>
+                            html`<option value="${role}">
+                              ${lodash.capitalize(role)}
+                            </option>`
+                        )}
                       </select>
                     </label>
                   </p>
                   <p>
                     <label>
-                      <strong>Emails</strong><br/>
+                      <strong>Emails</strong><br />
                       <textarea
                         name="invite-by-email"
                         required
@@ -2516,7 +2515,6 @@ export default async function courselore(
                 </form>
 
                 <hr />
-                -->
               `}
 
           <p><strong>Accent color</strong></p>
