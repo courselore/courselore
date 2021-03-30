@@ -2485,7 +2485,8 @@ export default async function courselore(
 
                 <p><strong>Invite via email</strong></p>
                 <p class="hint">
-                  Only the people you invite may enroll in the course.
+                  Only the people with an invitation email may enroll in the
+                  course.
                 </p>
                 <form>
                   <p>
