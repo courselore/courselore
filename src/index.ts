@@ -3357,7 +3357,7 @@ export default async function courselore(
                     href="${app.get("url")}/courses/${res.locals
                       .enrollmentJoinCourseJoinThreadsWithMetadata.course
                       .reference}/threads/new"
-                    >New thread</a
+                    >Create a new thread</a
                   >
                 </p>
                 <nav>
