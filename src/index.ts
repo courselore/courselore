@@ -323,7 +323,6 @@ export default async function courselore(
                   font-size: 1.3rem;
                   line-height: 1.3;
                   font-weight: 800;
-                  margin-top: 1.5rem;
                 }
 
                 pre,
@@ -898,7 +897,7 @@ export default async function courselore(
               style="${css`
                 max-width: 600px;
                 padding: 0 1rem;
-                margin: 1rem auto;
+                margin: 0 auto;
               `}"
             >
               <header>$${logoAndMenu(req, res)}</header>
@@ -937,11 +936,7 @@ export default async function courselore(
           : `space-between`};
       `}"
     >
-      <h1
-        style="${css`
-          margin: 0;
-        `}"
-      >
+      <h1>
         <a
           href="${app.get("url")}/"
           style="${css`
@@ -3317,7 +3312,6 @@ export default async function courselore(
                 style="${css`
                   border-bottom: 1px solid silver;
                   padding: 0 1rem;
-                  margin: 1rem 0;
 
                   @media (prefers-color-scheme: dark) {
                     border-color: black;
@@ -3326,7 +3320,11 @@ export default async function courselore(
               >
                 $${logoAndMenu(req, res)}
                 <nav>
-                  <p>
+                  <p
+                    style="${css`
+                      margin-top: 0;
+                    `}"
+                  >
                     <a
                       href="${app.get("url")}/courses/${res.locals
                         .enrollmentJoinCourseJoinThreadsWithMetadata.course
@@ -3347,7 +3345,6 @@ export default async function courselore(
                 style="${css`
                   flex: 1;
                   padding: 0 1rem;
-                  margin: 1rem 0;
                   overflow: auto;
                 `}"
               >
@@ -3417,7 +3414,7 @@ export default async function courselore(
                 style="${css`
                   max-width: 800px;
                   padding: 0 1rem;
-                  margin: 1rem auto;
+                  margin: 0 auto;
                 `}"
               >
                 $${body}
@@ -3590,13 +3587,7 @@ export default async function courselore(
             </title>
           `,
           html`
-            <h1
-              style="${css`
-                margin-top: 0;
-              `}"
-            >
-              Create a New Thread
-            </h1>
+            <h1>Create a New Thread</h1>
 
             <form
               method="POST"
@@ -3858,7 +3849,6 @@ export default async function courselore(
                 <h1
                   style="${css`
                     flex: 1;
-                    margin-top: 0;
                   `}"
                 >
                   ${res.locals.threadWithMetadataJoinPostsJoinAuthors
