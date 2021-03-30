@@ -3799,26 +3799,26 @@ export default async function courselore(
     (res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
       .author as EnrollmentJoinUser)?.user?.id === res.locals.user.id;
 
-  //   const isInvitationValidMiddleware: express.RequestHandler<
-  //   { courseReference: string; invitationReference: string },
-  //   any,
-  //   {},
-  //   {},
-  //   { invitationJoinCourse: InvitationJoinCourse }
-  // >[] = [
-  //   ...invitationExists,
-  //   (req, res, next) => {
-  //     if (isInvitationValid(res.locals.invitationJoinCourse.invitation))
-  //       return next();
-  //     next("route");
-  //   },
-  // ];
+  const mayEditThreadMiddleware: express.RequestHandler<
+    { courseReference: string; threadReference: string },
+    any,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+    }
+  >[] = [
+    ...isThreadAccessible,
+    (req, res, next) => {
+      if (mayEditThread(req, res)) return next();
+      next("route");
+    },
+  ];
 
-  // TODO: Continue here:
-  //       2. Only show the “Edit” button to people who can edit the title.
-  //       3. Create the .patch() action.
-  //       4. Maybe rename the middlewares above for invitation so that they indicate that there’s a predicate and a related middleware—a pattern that’s emerging here as well. The predicate is used for conditionally displaying stuff, and the middleware for authorization.
-  // Other note: There’s a pattern emerging of buttons which toggle the visibility of components within a container. The first instance is the “Write”/“Preview” in the textEditor(), the other is right here on the thread title (and it’ll also come up in editing the posts…)
   app.get<
     { courseReference: string; threadReference: string },
     HTML,
@@ -3994,7 +3994,14 @@ export default async function courselore(
               `
             )}
 
-            <form method="POST">
+            <form
+              method="POST"
+              action="${app.get("url")}/courses/${res.locals
+                .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .reference}/threads/${res.locals
+                .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+                .reference}/posts"
+            >
               $${textEditor()}
               <p
                 style="${css`
@@ -4013,7 +4020,7 @@ export default async function courselore(
   app.patch<
     { courseReference: string; threadReference: string },
     HTML,
-    {},
+    { title?: string },
     {},
     {
       user: User;
@@ -4024,9 +4031,25 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/threads/:threadReference",
-    ...isThreadAccessible,
+    ...mayEditThreadMiddleware,
     (req, res) => {
-      // TODO
+      if (typeof req.body.title === "string")
+        if (validator.isEmpty(req.body.title, { ignore_whitespace: true }))
+          throw new ValidationError();
+        else
+          database.run(
+            sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}`
+          );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/threads/${
+          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+            .reference
+        }`
+      );
     }
   );
 
@@ -4043,7 +4066,7 @@ export default async function courselore(
       threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
     }
   >(
-    "/courses/:courseReference/threads/:threadReference",
+    "/courses/:courseReference/threads/:threadReference/posts",
     ...isThreadAccessible,
     (req, res) => {
       if (
