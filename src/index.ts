@@ -541,14 +541,6 @@ export default async function courselore(
                     color: white;
                     background-color: #ff77a8;
                   }
-
-                  &.action:not(:active) {
-                    color: #008751;
-                  }
-
-                  &.danger:not(:active) {
-                    color: #ff004d;
-                  }
                 }
 
                 div.demonstration {
@@ -663,6 +655,18 @@ export default async function courselore(
                   line-height: 1.3;
                   color: gray;
                   margin-top: -0.8rem;
+                }
+
+                .green:not(:active) {
+                  color: #008751;
+
+                  @media (prefers-color-scheme: dark) {
+                    color: #00e436;
+                  }
+                }
+
+                .red:not(:active) {
+                  color: #ff004d;
                 }
 
                 @media (prefers-color-scheme: light) {
@@ -2280,11 +2284,9 @@ export default async function courselore(
                                     }
                                   `}"
                                   ><code
-                                    style="${css`
-                                      color: ${isInvitationValid(invitation)
-                                        ? "#008751"
-                                        : "#ff004d"};
-                                    `}"
+                                    class="${isInvitationValid(invitation)
+                                      ? "green"
+                                      : "red"}"
                                     >${invitation.reference}</code
                                   >
                                   <span class="hint">
@@ -2850,10 +2852,7 @@ export default async function courselore(
                     `}"
                   >
                     <p>
-                      <strong
-                        style="${css`
-                          color: #ff004d;
-                        `}"
+                      <strong class="red"
                         >This invitation link has expired.</strong
                       >
                     </p>
@@ -3027,7 +3026,7 @@ export default async function courselore(
                       <form method="POST" action="${link}?_method=PATCH">
                         <input type="hidden" name="expireNow" value="true" />
                         <p>
-                          <button class="full-width danger">
+                          <button class="full-width red">
                             Expire Invitation Now
                           </button>
                         </p>
@@ -3914,7 +3913,7 @@ export default async function courselore(
                   />
                 </p>
                 <p>
-                  <button class="action">Save</button>
+                  <button class="green">Save</button>
                   <button
                     type="button"
                     onclick="${javascript`
