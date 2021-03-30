@@ -3387,8 +3387,19 @@ export default async function courselore(
                               : css``}
                           `}"
                         >
-                          <p><strong>${threadWithMetadata.title}</strong></p>
-                          <p class="hint">
+                          <p
+                            style="${css`
+                              margin-top: 0;
+                            `}"
+                          >
+                            <strong>${threadWithMetadata.title}</strong>
+                          </p>
+                          <p
+                            class="hint"
+                            style="${css`
+                              margin-bottom: 0;
+                            `}"
+                          >
                             #${threadWithMetadata.reference} created
                             $${relativeTime(threadWithMetadata.createdAt)} by
                             ${threadWithMetadata.author.user.name}
