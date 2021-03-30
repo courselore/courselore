@@ -2490,17 +2490,20 @@ export default async function courselore(
                 <form>
                   <p>
                     <label>
-                      As
-                      <select name="role" required>
+                      <strong>Role</strong><br />
+                      <select name="role" required class="full-width">
                         $${ROLES.map(
                           (role) =>
-                            html`<option value="${role}">
-                              ${lodash.capitalize(role)}
-                            </option>`
+                            html`
+                              <option value="${role}">
+                                ${lodash.capitalize(role)}
+                              </option>
+                            `
                         )}
                       </select>
                     </label>
                   </p>
+
                   <p>
                     <label>
                       <strong>Emails</strong><br />
@@ -2525,7 +2528,7 @@ export default async function courselore(
           <div
             style="${css`
               margin-left: -5px;
-              margin-top: -0.5rem;
+              margin-top: -1rem;
             `}"
           >
             $${ACCENT_COLORS.map(
@@ -2545,23 +2548,35 @@ export default async function courselore(
                       name="accentColor"
                       value="${accentColor}"
                     />
-                    <button
-                      style="${css`
-                        &,
-                        &:active {
-                          all: unset;
-                        }
-                      `}"
-                    >
-                      <svg width="30" height="30">
-                        <circle cx="15" cy="15" r="10" fill="${accentColor}" />
-                        $${accentColor ===
-                        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                          .enrollment.accentColor
-                          ? html`<circle cx="15" cy="15" r="3" fill="white" />`
-                          : html``}
-                      </svg>
-                    </button>
+                    <p>
+                      <button
+                        style="${css`
+                          &,
+                          &:active {
+                            all: unset;
+                          }
+                        `}"
+                      >
+                        <svg width="30" height="30">
+                          <circle
+                            cx="15"
+                            cy="15"
+                            r="10"
+                            fill="${accentColor}"
+                          />
+                          $${accentColor ===
+                          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                            .enrollment.accentColor
+                            ? html`<circle
+                                cx="15"
+                                cy="15"
+                                r="3"
+                                fill="white"
+                              />`
+                            : html``}
+                        </svg>
+                      </button>
+                    </p>
                   </form>
                 `
             )}
