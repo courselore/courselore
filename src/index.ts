@@ -2493,21 +2493,98 @@ export default async function courselore(
                   course.
                 </p>
                 <form>
-                  <p>
-                    <label>
-                      <strong>Role</strong><br />
-                      <select name="role" required class="full-width">
-                        $${ROLES.map(
-                          (role) =>
-                            html`
-                              <option value="${role}">
-                                ${lodash.capitalize(role)}
-                              </option>
-                            `
-                        )}
-                      </select>
-                    </label>
-                  </p>
+                  <div
+                    style="${css`
+                      display: flex;
+
+                      & > * {
+                        flex: 1;
+                      }
+
+                      & > * + * {
+                        margin-left: 2rem;
+                      }
+                    `}"
+                  >
+                    <p>
+                      <label>
+                        <strong>Role</strong><br />
+                        <select name="role" required class="full-width">
+                          $${ROLES.map(
+                            (role) =>
+                              html`
+                                <option value="${role}">
+                                  ${lodash.capitalize(role)}
+                                </option>
+                              `
+                          )}
+                        </select>
+                      </label>
+                    </p>
+
+                    <p>
+                      <strong>Expiration</strong><br />
+                      <label>
+                        <input
+                          type="radio"
+                          name="isExpiresAt"
+                          value="false"
+                          checked
+                          required
+                          onchange="${javascript`
+                        this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
+                      `}"
+                        />
+                        Doesn’t expire
+                      </label>
+                      <br />
+                      <span
+                        style="${css`
+                          display: flex;
+                          align-items: baseline;
+
+                          & > * + * {
+                            margin-left: 0.5rem !important;
+                          }
+                        `}"
+                      >
+                        <label>
+                          <input
+                            type="radio"
+                            name="isExpiresAt"
+                            value="true"
+                            required
+                            onchange="${javascript`
+                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                          expiresAt.disabled = false;
+                          expiresAt.focus();
+                          expiresAt.setSelectionRange(0, 0);
+                        `}"
+                          />
+                          Expires at
+                        </label>
+                        <input
+                          type="text"
+                          name="expiresAt"
+                          value="${new Date()
+                            .toISOString()
+                            .slice(0, "YYYY-MM-DD HH:SS".length)
+                            .replace("T", " ")}"
+                          required
+                          disabled
+                          pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
+                          data-validator-custom="${javascript`
+                        if (!validator.isAfter(this.value.replace(" ", "T")))
+                          return "Must be in the future";
+                      `}"
+                          class="full-width"
+                          style="${css`
+                            flex: 1 !important;
+                          `}"
+                        />
+                      </span>
+                    </p>
+                  </div>
 
                   <p>
                     <label>
