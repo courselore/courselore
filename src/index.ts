@@ -747,7 +747,8 @@ export default async function courselore(
                   "time.relative"
                 )) {
                   const difference =
-                    new Date(element.getAttribute("datetime")) - new Date();
+                    new Date(element.getAttribute("datetime")).getTime() -
+                    new Date().getTime();
                   const absoluteDifference = Math.abs(difference);
                   const [value, unit] =
                     absoluteDifference < MINUTES
@@ -2012,7 +2013,7 @@ export default async function courselore(
             JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."thread"
             WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
             GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread"
-            ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt")
+            ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX(datetime("mostRecentlyUpdatedPost"."updatedAt"))
           `
         )
         .map((row) => ({
@@ -3516,8 +3517,10 @@ export default async function courselore(
                             #${threadWithMetadata.reference} created
                             $${relativeTime(threadWithMetadata.createdAt)} by
                             ${threadWithMetadata.author.user.name}
-                            $${threadWithMetadata.updatedAt !==
-                            threadWithMetadata.createdAt
+                            $${new Date(
+                              threadWithMetadata.updatedAt
+                            ).getTime() !==
+                            new Date(threadWithMetadata.createdAt).getTime()
                               ? html`<br />and last updated
                                   $${relativeTime(threadWithMetadata.updatedAt)}`
                               : html``}
@@ -4165,8 +4168,10 @@ ${value}</textarea
                         said
                         $${relativeTime(
                           postJoinAuthor.post.createdAt
-                        )}$${postJoinAuthor.post.updatedAt !==
-                        postJoinAuthor.post.createdAt
+                        )}$${new Date(
+                          postJoinAuthor.post.updatedAt
+                        ).getTime() !==
+                        new Date(postJoinAuthor.post.createdAt).getTime()
                           ? html` (and last edited
                             $${relativeTime(postJoinAuthor.post.updatedAt)})`
                           : html``}
