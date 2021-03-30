@@ -324,10 +324,6 @@ export default async function courselore(
                   line-height: 1.3;
                   font-weight: 800;
                   margin-top: 1.5rem;
-
-                  header & {
-                    margin-top: 0;
-                  }
                 }
 
                 pre,
@@ -941,7 +937,11 @@ export default async function courselore(
           : `space-between`};
       `}"
     >
-      <h1>
+      <h1
+        style="${css`
+          margin: 0;
+        `}"
+      >
         <a
           href="${app.get("url")}/"
           style="${css`
@@ -987,13 +987,7 @@ export default async function courselore(
               }
             })();
           </script>
-          <span
-            style="${css`
-              font-size: 1.3rem;
-              font-weight: 800;
-            `}"
-            >CourseLore</span
-          >
+          <span>CourseLore</span>
         </a>
       </h1>
 
@@ -2115,6 +2109,7 @@ export default async function courselore(
               >!
             </h1>
 
+            $${courseSwitcher(req, res)}
             $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
               .role === "staff"
               ? html`
@@ -3321,8 +3316,8 @@ export default async function courselore(
               <header
                 style="${css`
                   border-bottom: 1px solid silver;
-                  margin-top: 1rem;
                   padding: 0 1rem;
+                  margin: 1rem 0;
 
                   @media (prefers-color-scheme: dark) {
                     border-color: black;
@@ -3331,11 +3326,7 @@ export default async function courselore(
               >
                 $${logoAndMenu(req, res)}
                 <nav>
-                  <p
-                    style="${css`
-                      margin-top: -0.5rem;
-                    `}"
-                  >
+                  <p>
                     <a
                       href="${app.get("url")}/courses/${res.locals
                         .enrollmentJoinCourseJoinThreadsWithMetadata.course
@@ -3356,6 +3347,7 @@ export default async function courselore(
                 style="${css`
                   flex: 1;
                   padding: 0 1rem;
+                  margin: 1rem 0;
                   overflow: auto;
                 `}"
               >
@@ -3426,10 +3418,6 @@ export default async function courselore(
                   max-width: 800px;
                   padding: 0 1rem;
                   margin: 1rem auto;
-
-                  & > h1:first-child {
-                    margin-top: 1rem;
-                  }
                 `}"
               >
                 $${body}
@@ -3602,7 +3590,13 @@ export default async function courselore(
             </title>
           `,
           html`
-            <h1>Create a New Thread</h1>
+            <h1
+              style="${css`
+                margin-top: 0;
+              `}"
+            >
+              Create a New Thread
+            </h1>
 
             <form
               method="POST"
@@ -3850,21 +3844,23 @@ export default async function courselore(
           </title>`,
           html`
             <div class="title">
-              <div class="show">
-                <button
-                  type="button"
+              <div
+                class="show"
+                style="${css`
+                  display: flex;
+                  align-items: baseline;
+
+                  & > * + * {
+                    margin-left: 2rem;
+                  }
+                `}"
+              >
+                <h1
                   style="${css`
-                    float: right;
-                  `}"
-                  onclick="${javascript`
-                    const title = this.closest(".title");
-                    title.querySelector(".show").hidden = true;
-                    title.querySelector(".edit").hidden = false;
+                    flex: 1;
+                    margin-top: 0;
                   `}"
                 >
-                  Edit
-                </button>
-                <h1>
                   ${res.locals.threadWithMetadataJoinPostsJoinAuthors
                     .threadWithMetadata.title}
 
@@ -3879,7 +3875,21 @@ export default async function courselore(
                       .threadWithMetadata.reference}</a
                   >
                 </h1>
+                <button
+                  type="button"
+                  style="${css`
+                    float: right;
+                  `}"
+                  onclick="${javascript`
+                    const title = this.closest(".title");
+                    title.querySelector(".show").hidden = true;
+                    title.querySelector(".edit").hidden = false;
+                  `}"
+                >
+                  Edit Title
+                </button>
               </div>
+
               <form
                 method="POST"
                 action="${app.get("url")}/courses/${res.locals
@@ -3913,7 +3923,7 @@ export default async function courselore(
                   />
                 </p>
                 <p>
-                  <button class="green">Save</button>
+                  <button class="green">Change Title</button>
                   <button
                     type="button"
                     onclick="${javascript`
