@@ -3436,7 +3436,7 @@ export default async function courselore(
       )
   );
 
-  const textEditor = (): HTML => html`
+  const textEditor = (value = ""): HTML => html`
     <div class="text-editor">
       <p
         style="${css`
@@ -3524,7 +3524,9 @@ export default async function courselore(
                 if (isValid(form)) form.submit();
               }
             `}"
-          ></textarea>
+          >
+${value}</textarea
+          >
         </p>
         <p
           class="hint"
@@ -3830,6 +3832,67 @@ export default async function courselore(
     },
   ];
 
+  const mayEditPost = (
+    req: express.Request<
+      { courseReference: string; threadReference: string },
+      any,
+      {},
+      {},
+      {
+        user: User;
+        enrollmentsJoinCourses: EnrollmentJoinCourse[];
+        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      }
+    >,
+    res: express.Response<
+      any,
+      {
+        user: User;
+        enrollmentsJoinCourses: EnrollmentJoinCourse[];
+        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      }
+    >,
+    postJoinAuthor: PostJoinAuthor
+  ): boolean =>
+    res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
+      "staff" ||
+    (postJoinAuthor.author as EnrollmentJoinUser)?.user?.id ===
+      res.locals.user.id;
+
+  const mayEditPostMiddleware: express.RequestHandler<
+    { courseReference: string; threadReference: string; postReference: string },
+    any,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      postJoinAuthor: PostJoinAuthor;
+    }
+  >[] = [
+    ...isThreadAccessible,
+    (req, res, next) => {
+      const postJoinAuthor = res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.find(
+        (postJoinAuthor) =>
+          postJoinAuthor.post.reference === req.params.postReference
+      );
+      if (
+        postJoinAuthor === undefined ||
+        !mayEditPost(req, res, postJoinAuthor)
+      )
+        return next("route");
+      res.locals.postJoinAuthor = postJoinAuthor;
+      next();
+    },
+  ];
+
   app.get<
     { courseReference: string; threadReference: string },
     HTML,
@@ -3895,9 +3958,6 @@ export default async function courselore(
                   ? html`
                       <button
                         type="button"
-                        style="${css`
-                          float: right;
-                        `}"
                         onclick="${javascript`
                           const title = this.closest(".title");
                           title.querySelector(".show").hidden = true;
@@ -3967,6 +4027,7 @@ export default async function courselore(
               (postJoinAuthor) => html`
                 <section
                   id="${postJoinAuthor.post.reference}"
+                  class="post"
                   style="${css`
                     border-bottom: 1px solid silver;
 
@@ -3975,32 +4036,101 @@ export default async function courselore(
                     }
                   `}"
                 >
-                  <p>
-                    <strong>${postJoinAuthor.author.user.name}</strong>
-                    <span class="hint">
-                      said
-                      $${relativeTime(
+                  <div
+                    style="${css`
+                      display: flex;
+                      margin-bottom: -1rem;
+                    `}"
+                  >
+                    <p
+                      style="${css`
+                        flex: 1;
+                      `}"
+                    >
+                      <strong>${postJoinAuthor.author.user.name}</strong>
+                      <span class="hint">
+                        said
+                        $${relativeTime(
+                          postJoinAuthor.post.createdAt
+                        )}$${postJoinAuthor.post.updatedAt !==
                         postJoinAuthor.post.createdAt
-                      )}$${postJoinAuthor.post.updatedAt !==
-                      postJoinAuthor.post.createdAt
-                        ? html` (and last edited
-                          $${relativeTime(postJoinAuthor.post.updatedAt)})`
-                        : html``}
-                      <a
-                        href="${app.get("url")}/courses/${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                          .reference}/threads/${req.params
-                          .threadReference}#${postJoinAuthor.post.reference}"
-                        style="${css`
-                          text-decoration: none;
-                        `}"
-                        >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
-                          .threadWithMetadata.reference}/${postJoinAuthor.post
-                          .reference}</a
-                      >
-                    </span>
-                  </p>
-                  $${app.get("text processor")(postJoinAuthor.post.content)}
+                          ? html` (and last edited
+                            $${relativeTime(postJoinAuthor.post.updatedAt)})`
+                          : html``}
+                        <a
+                          href="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/threads/${req.params
+                            .threadReference}#${postJoinAuthor.post.reference}"
+                          style="${css`
+                            text-decoration: none;
+                          `}"
+                          >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                            .threadWithMetadata.reference}/${postJoinAuthor.post
+                            .reference}</a
+                        >
+                      </span>
+                    </p>
+                    $${mayEditPost(req, res, postJoinAuthor)
+                      ? html`
+                          <p>
+                            <button
+                              type="button"
+                              class="edit-button"
+                              onclick="${javascript`
+                                const post = this.closest(".post");
+                                post.querySelector(".show").hidden = true;
+                                post.querySelector(".edit").hidden = false;
+                                this.hidden = true;
+                              `}"
+                            >
+                              Edit Post
+                            </button>
+                          </p>
+                        `
+                      : html``}
+                  </div>
+
+                  <div class="show">
+                    $${app.get("text processor")(postJoinAuthor.post.content)}
+                  </div>
+
+                  $${mayEditPost(req, res, postJoinAuthor)
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/threads/${res.locals
+                            .threadWithMetadataJoinPostsJoinAuthors
+                            .threadWithMetadata
+                            .reference}/posts/${postJoinAuthor.post
+                            .reference}?_method=PATCH"
+                          hidden
+                          class="edit"
+                        >
+                          $${textEditor(postJoinAuthor.post.content)}
+                          <p
+                            style="${css`
+                              text-align: right;
+                            `}"
+                          >
+                            <button
+                              type="button"
+                              onclick="${javascript`
+                                const post = this.closest(".post");
+                                post.querySelector(".show").hidden = false;
+                                post.querySelector(".edit").hidden = true;
+                                post.querySelector(".edit-button").hidden = false;
+                              `}"
+                            >
+                              Cancel
+                            </button>
+                            <button class="green">Change Post</button>
+                          </p>
+                        </form>
+                      `
+                    : html``}
                 </section>
               `
             )}
@@ -4114,6 +4244,45 @@ export default async function courselore(
           res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
             .reference
         }#${newPostReference}`
+      );
+    }
+  );
+
+  app.patch<
+    { courseReference: string; threadReference: string; postReference: string },
+    any,
+    { content?: string },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      postJoinAuthor: PostJoinAuthor;
+    }
+  >(
+    "/courses/:courseReference/threads/:threadReference/posts/:postReference",
+    ...mayEditPostMiddleware,
+    (req, res) => {
+      if (
+        typeof req.body.content !== "string" ||
+        validator.isEmpty(req.body.content, { ignore_whitespace: true })
+      )
+        throw new ValidationError();
+
+      database.run(
+        sql`UPDATE "posts" SET "content" = ${req.body.content}, "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${res.locals.postJoinAuthor.post.id}`
+      );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/threads/${
+          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+            .reference
+        }#${res.locals.postJoinAuthor.post.reference}`
       );
     }
   );
