@@ -2151,11 +2151,89 @@ export default async function courselore(
     );
   });
 
+  const invitationExists: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    { invitationJoinCourse: InvitationJoinCourse }
+  >[] = [
+    (req, res, next) => {
+      const row = database.get<{
+        invitationId: number;
+        expiresAt: string;
+        invitationReference: string;
+        role: Role;
+        courseId: number;
+        courseReference: string;
+        name: string;
+      }>(
+        sql`
+          SELECT "invitations"."id" AS "invitationId",
+                 "invitations"."expiresAt",
+                 "invitations"."reference" AS "invitationReference",
+                 "invitations"."role",
+                 "courses"."id" AS "courseId",
+                 "courses"."reference" AS "courseReference",
+                 "courses"."name"
+          FROM "invitations"
+          JOIN "courses" ON "invitations"."course" = "courses"."id"
+          WHERE "courses"."reference" = ${req.params.courseReference} AND
+                "invitations"."reference" = ${req.params.invitationReference}
+        `
+      );
+      if (row === undefined) return next("route");
+      res.locals.invitationJoinCourse = {
+        invitation: {
+          id: row.invitationId,
+          expiresAt: row.expiresAt,
+          reference: row.invitationReference,
+          role: row.role,
+        },
+        course: {
+          id: row.courseId,
+          reference: row.courseReference,
+          name: row.name,
+        },
+      };
+      next();
+    },
+  ];
+
+  const mayManageInvitation: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    {
+      invitationJoinCourse: InvitationJoinCourse;
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >[] = [...invitationExists, ...isCourseStaff];
+
   function isInvitationValid(invitation: Invitation): boolean {
     return (
       invitation.expiresAt === null || validator.isAfter(invitation.expiresAt)
     );
   }
+
+  const isInvitationValidMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    { invitationJoinCourse: InvitationJoinCourse }
+  >[] = [
+    ...invitationExists,
+    (req, res, next) => {
+      if (isInvitationValid(res.locals.invitationJoinCourse.invitation))
+        return next();
+      next("route");
+    },
+  ];
 
   // TODO: Process email addresses
   // https://www.npmjs.com/package/email-addresses
@@ -2678,84 +2756,6 @@ export default async function courselore(
     );
   });
 
-  const invitationExists: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    { invitationJoinCourse: InvitationJoinCourse }
-  >[] = [
-    (req, res, next) => {
-      const row = database.get<{
-        invitationId: number;
-        expiresAt: string;
-        invitationReference: string;
-        role: Role;
-        courseId: number;
-        courseReference: string;
-        name: string;
-      }>(
-        sql`
-          SELECT "invitations"."id" AS "invitationId",
-                 "invitations"."expiresAt",
-                 "invitations"."reference" AS "invitationReference",
-                 "invitations"."role",
-                 "courses"."id" AS "courseId",
-                 "courses"."reference" AS "courseReference",
-                 "courses"."name"
-          FROM "invitations"
-          JOIN "courses" ON "invitations"."course" = "courses"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference} AND
-                "invitations"."reference" = ${req.params.invitationReference}
-        `
-      );
-      if (row === undefined) return next("route");
-      res.locals.invitationJoinCourse = {
-        invitation: {
-          id: row.invitationId,
-          expiresAt: row.expiresAt,
-          reference: row.invitationReference,
-          role: row.role,
-        },
-        course: {
-          id: row.courseId,
-          reference: row.courseReference,
-          name: row.name,
-        },
-      };
-      next();
-    },
-  ];
-
-  const mayManageInvitation: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    {
-      invitationJoinCourse: InvitationJoinCourse;
-      user: User;
-      enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-    }
-  >[] = [...invitationExists, ...isCourseStaff];
-
-  const isInvitationUsable: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    { invitationJoinCourse: InvitationJoinCourse }
-  >[] = [
-    ...invitationExists,
-    (req, res, next) => {
-      if (isInvitationValid(res.locals.invitationJoinCourse.invitation))
-        return next();
-      next("route");
-    },
-  ];
-
   app.get<
     { courseReference: string; invitationReference: string },
     HTML,
@@ -3090,7 +3090,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
+    ...isInvitationValidMiddleware,
     ...isEnrolledInCourse,
     (req, res) => {
       res.send(
@@ -3135,7 +3135,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
+    ...isInvitationValidMiddleware,
     ...isAuthenticated,
     (req, res) => {
       res.send(
@@ -3179,7 +3179,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
+    ...isInvitationValidMiddleware,
     ...isAuthenticated,
     (req, res) => {
       database.run(
@@ -3212,7 +3212,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
+    ...isInvitationValidMiddleware,
     ...isUnauthenticated,
     (req, res) => {
       res.send(
@@ -3799,6 +3799,21 @@ export default async function courselore(
     (res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
       .author as EnrollmentJoinUser)?.user?.id === res.locals.user.id;
 
+  //   const isInvitationValidMiddleware: express.RequestHandler<
+  //   { courseReference: string; invitationReference: string },
+  //   any,
+  //   {},
+  //   {},
+  //   { invitationJoinCourse: InvitationJoinCourse }
+  // >[] = [
+  //   ...invitationExists,
+  //   (req, res, next) => {
+  //     if (isInvitationValid(res.locals.invitationJoinCourse.invitation))
+  //       return next();
+  //     next("route");
+  //   },
+  // ];
+
   // TODO: Continue here:
   //       2. Only show the “Edit” button to people who can edit the title.
   //       3. Create the .patch() action.
@@ -3992,6 +4007,26 @@ export default async function courselore(
           `
         )
       );
+    }
+  );
+
+  app.patch<
+    { courseReference: string; threadReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+    }
+  >(
+    "/courses/:courseReference/threads/:threadReference",
+    ...isThreadAccessible,
+    (req, res) => {
+      // TODO
     }
   );
 
