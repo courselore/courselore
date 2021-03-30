@@ -3800,7 +3800,6 @@ export default async function courselore(
       .author as EnrollmentJoinUser)?.user?.id === res.locals.user.id;
 
   // TODO: Continue here:
-  //       1. Do something better than a float on the “Edit” button.
   //       2. Only show the “Edit” button to people who can edit the title.
   //       3. Create the .patch() action.
   //       4. Maybe rename the middlewares above for invitation so that they indicate that there’s a predicate and a related middleware—a pattern that’s emerging here as well. The predicate is used for conditionally displaying stuff, and the middleware for authorization.
@@ -3865,67 +3864,77 @@ export default async function courselore(
                       .threadWithMetadata.reference}</a
                   >
                 </h1>
-                <button
-                  type="button"
-                  style="${css`
-                    float: right;
-                  `}"
-                  onclick="${javascript`
-                    const title = this.closest(".title");
-                    title.querySelector(".show").hidden = true;
-                    title.querySelector(".edit").hidden = false;
-                  `}"
-                >
-                  Edit Title
-                </button>
+
+                $${mayEditThread(req, res)
+                  ? html`
+                      <button
+                        type="button"
+                        style="${css`
+                          float: right;
+                        `}"
+                        onclick="${javascript`
+                          const title = this.closest(".title");
+                          title.querySelector(".show").hidden = true;
+                          title.querySelector(".edit").hidden = false;
+                        `}"
+                      >
+                        Edit Title
+                      </button>
+                    `
+                  : html``}
               </div>
 
-              <form
-                method="POST"
-                action="${app.get("url")}/courses/${res.locals
-                  .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .reference}/threads/${res.locals
-                  .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-                  .reference}?_method=PATCH"
-                hidden
-                class="edit"
-                style="${css`
-                  display: flex;
+              $${mayEditThread(req, res)
+                ? html`
+                    <form
+                      method="POST"
+                      action="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/threads/${res.locals
+                        .threadWithMetadataJoinPostsJoinAuthors
+                        .threadWithMetadata.reference}?_method=PATCH"
+                      hidden
+                      class="edit"
+                      style="${css`
+                        display: flex;
 
-                  & > * + * {
-                    margin-left: 1rem;
-                  }
-                `}"
-              >
-                <p
-                  style="${css`
-                    flex: 1;
-                  `}"
-                >
-                  <input
-                    type="text"
-                    name="title"
-                    value="${res.locals.threadWithMetadataJoinPostsJoinAuthors
-                      .threadWithMetadata.title}"
-                    autocomplete="off"
-                    required
-                    class="full-width"
-                  />
-                </p>
-                <p>
-                  <button class="green">Change Title</button>
-                  <button
-                    type="button"
-                    onclick="${javascript`
-                      const title = this.closest(".title");
-                      title.querySelector(".show").hidden = false;
-                      title.querySelector(".edit").hidden = true;
-                    `}"
-                  >
-                    Cancel
-                  </button>
-                </p>
-              </form>
+                        & > * + * {
+                          margin-left: 1rem;
+                        }
+                      `}"
+                    >
+                      <p
+                        style="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          name="title"
+                          value="${res.locals
+                            .threadWithMetadataJoinPostsJoinAuthors
+                            .threadWithMetadata.title}"
+                          autocomplete="off"
+                          required
+                          class="full-width"
+                        />
+                      </p>
+                      <p>
+                        <button class="green">Change Title</button>
+                        <button
+                          type="button"
+                          onclick="${javascript`
+                            const title = this.closest(".title");
+                            title.querySelector(".show").hidden = false;
+                            title.querySelector(".edit").hidden = true;
+                          `}"
+                        >
+                          Cancel
+                        </button>
+                      </p>
+                    </form>
+                  `
+                : html``}
             </div>
 
             $${res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.map(
