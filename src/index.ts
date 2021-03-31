@@ -793,10 +793,10 @@ export default async function courselore(
               })();
             })();
 
-            function isValid(element) {
+            function validate(element) {
               if (element.matches("form"))
                 return [...element.querySelectorAll("*")].every((descendant) =>
-                  isValid(descendant)
+                  validate(descendant)
                 );
 
               let shouldResetCustomValidity = false;
@@ -847,7 +847,7 @@ export default async function courselore(
             document.body.addEventListener(
               "submit",
               (event) => {
-                if (isValid(event.target))
+                if (validate(event.target))
                   for (const button of event.target.querySelectorAll(
                     'button:not([type="button"])'
                   ))
@@ -3616,7 +3616,7 @@ export default async function courselore(
               (async () => {
                 const textEditor = this.closest("div.text-editor");
                 const textarea = textEditor.querySelector("textarea");
-                if (!isValid(textarea)) return;
+                if (!validate(textarea)) return;
                 this.disabled = true;
                 const loading = textEditor.querySelector("div.loading");
                 textEditor.querySelector("div.write").hidden = true;
@@ -3652,7 +3652,7 @@ export default async function courselore(
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
                 const form = this.closest("form");
-                if (isValid(form)) form.submit();
+                if (validate(form)) form.submit();
               }
             `}"
           >
