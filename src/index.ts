@@ -799,38 +799,38 @@ export default async function courselore(
                   isValid(descendant)
                 );
 
+              let shouldResetCustomValidity = false;
               if (
                 element.matches("[required]") &&
                 element.value.trim() === ""
               ) {
+                shouldResetCustomValidity = true;
                 element.setCustomValidity("Fill out this field");
-                addCustomValidityReseter();
               }
 
               if (
                 element.matches('[type="email"]') &&
                 !validator.isEmail(element.value)
               ) {
+                shouldResetCustomValidity = true;
                 element.setCustomValidity("Enter an email address");
-                addCustomValidityReseter();
               }
 
               if (element.matches("[data-validator]")) {
                 const result = new Function(element.dataset.validator).call(
                   element
                 );
-                if (result === false)
+                if (result === false) {
+                  shouldResetCustomValidity = true;
                   element.setCustomValidity("This field is invalid");
-                if (typeof result === "string")
+                }
+                if (typeof result === "string") {
+                  shouldResetCustomValidity = true;
                   element.setCustomValidity(result);
-                addCustomValidityReseter();
+                }
               }
 
-              return typeof element.reportValidity === "function"
-                ? element.reportValidity()
-                : true;
-
-              function addCustomValidityReseter() {
+              if (shouldResetCustomValidity)
                 element.addEventListener(
                   "input",
                   () => {
@@ -838,7 +838,10 @@ export default async function courselore(
                   },
                   { once: true }
                 );
-              }
+
+              return typeof element.reportValidity === "function"
+                ? element.reportValidity()
+                : true;
             }
 
             document.body.addEventListener(
