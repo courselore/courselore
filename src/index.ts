@@ -746,7 +746,8 @@ export default async function courselore(
               // http://timeago.yarp.com
               // https://sugarjs.com
 
-              const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
+              const relativeTimeFormatter = new Intl.RelativeTimeFormat("en", {
+                localeMatcher: "lookup",
                 numeric: "auto",
               });
               const MINUTES = 60 * 1000;
@@ -755,7 +756,7 @@ export default async function courselore(
               const WEEKS = 7 * DAYS;
               const MONTHS = 30 * DAYS;
               const YEARS = 365 * DAYS;
-              (function relativeTimes() {
+              (function relativizeTimes() {
                 for (const element of document.querySelectorAll("time")) {
                   if (element.getAttribute("datetime") === null) {
                     element.setAttribute("datetime", element.textContent);
@@ -779,13 +780,13 @@ export default async function courselore(
                       : absoluteDifference < YEARS
                       ? [difference / MONTHS, "months"]
                       : [difference / YEARS, "years"];
-                  element.textContent = RELATIVE_TIME_FORMAT.format(
+                  element.textContent = relativeTimeFormatter.format(
                     // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
                     Math.round(value),
                     unit
                   );
                 }
-                window.setTimeout(relativeTimes, 60 * 1000);
+                window.setTimeout(relativizeTimes, 60 * 1000);
               })();
             })();
 
