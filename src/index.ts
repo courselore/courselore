@@ -746,10 +746,13 @@ export default async function courselore(
               // http://timeago.yarp.com
               // https://sugarjs.com
 
-              const relativeTimeFormatter = new Intl.RelativeTimeFormat("en", {
-                localeMatcher: "lookup",
-                numeric: "auto",
-              });
+              const relativeTimeFormatter = new Intl.RelativeTimeFormat(
+                "en-US",
+                {
+                  localeMatcher: "lookup",
+                  numeric: "auto",
+                }
+              );
               const MINUTES = 60 * 1000;
               const HOURS = 60 * MINUTES;
               const DAYS = 24 * HOURS;
