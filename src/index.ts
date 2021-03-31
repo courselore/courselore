@@ -816,8 +816,8 @@ export default async function courselore(
                 element.setCustomValidity("Enter an email address");
               }
 
-              if (element.matches("[data-validator]")) {
-                const result = new Function(element.dataset.validator).call(
+              if (element.matches("[data-onvalidate]")) {
+                const result = new Function(element.dataset.onvalidate).call(
                   element
                 );
                 if (result === false) {
@@ -2483,7 +2483,7 @@ export default async function courselore(
                           required
                           disabled
                           pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                          data-validator="${javascript`
+                          data-onvalidate="${javascript`
                             if (!validator.isAfter(this.value.replace(" ", "T")))
                               return "Must be in the future";
                           `}"
@@ -2586,7 +2586,7 @@ export default async function courselore(
                           required
                           disabled
                           pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                          data-validator="${javascript`
+                          data-onvalidate="${javascript`
                             if (!validator.isAfter(this.value.replace(" ", "T")))
                               return "Must be in the future";
                           `}"
@@ -2606,7 +2606,7 @@ export default async function courselore(
                         name="emails"
                         required
                         class="full-width"
-                        data-validator="${javascript`
+                        data-onvalidate="${javascript`
                           const emails = emailAddresses.parseAddressList(this.value);
                           if (
                             emails === null ||
@@ -3123,7 +3123,7 @@ export default async function courselore(
                           ? `disabled`
                           : ``}
                         pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                        data-validator="${javascript`
+                        data-onvalidate="${javascript`
                           if (!validator.isAfter(this.value.replace(" ", "T")))
                             return "Must be in the future";
                         `}"
