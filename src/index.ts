@@ -767,7 +767,7 @@ export default async function courselore(
                   }
                   const difference =
                     new Date(element.getAttribute("datetime")).getTime() -
-                    new Date().getTime();
+                    Date.now();
                   const absoluteDifference = Math.abs(difference);
                   const [value, unit] =
                     absoluteDifference < MINUTES
@@ -2229,7 +2229,8 @@ export default async function courselore(
 
   function isInvitationValid(invitation: Invitation): boolean {
     return (
-      invitation.expiresAt === null || validator.isAfter(invitation.expiresAt)
+      invitation.expiresAt === null ||
+      Date.now() < new Date(invitation.expiresAt).getTime()
     );
   }
 
@@ -2375,9 +2376,10 @@ export default async function courselore(
                                     ${invitation.expiresAt === null
                                       ? `Doesn’t expire`
                                       : `${
-                                          validator.isAfter(
+                                          Date.now() <
+                                          new Date(
                                             invitation.expiresAt
-                                          )
+                                          ).getTime()
                                             ? "Expires"
                                             : "Expired"
                                         } at ${new Date(invitation.expiresAt)
@@ -2851,7 +2853,7 @@ export default async function courselore(
       !ROLES.includes(req.body.role) ||
       (req.body.isExpiresAt === "true" &&
         (typeof req.body.expiresAt !== "string" ||
-          !validator.isAfter(req.body.expiresAt)))
+          new Date(req.body.expiresAt).getTime() <= Date.now()))
     )
       throw new ValidationError();
 
@@ -3175,7 +3177,7 @@ export default async function courselore(
       else if (req.body.isExpiresAt === "true")
         if (
           typeof req.body.expiresAt !== "string" ||
-          !validator.isAfter(req.body.expiresAt)
+          new Date(req.body.expiresAt).getTime() <= Date.now()
         )
           throw new ValidationError();
         else
