@@ -733,6 +733,16 @@ export default async function courselore(
             (() => {
               // TODO: Extract this into a library?
               // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
+              // https://github.com/catamphetamine/javascript-time-ago
+              // https://github.com/azer/relative-date
+              // https://benborgers.com/posts/js-relative-date
+              // https://github.com/digplan/time-ago
+              // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+              //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
+              // https://day.js.org
+              // http://timeago.yarp.com
+              // https://sugarjs.com
+
               const RELATIVE_TIME_FORMAT = new Intl.RelativeTimeFormat("en", {
                 numeric: "auto",
               });
@@ -744,6 +754,10 @@ export default async function courselore(
               const YEARS = 365 * DAYS;
               (function relativeTimes() {
                 for (const element of document.querySelectorAll("time")) {
+                  if (element.getAttribute("datetime") === null) {
+                    element.setAttribute("datetime", element.textContent);
+                    element.title = element.textContent;
+                  }
                   const difference =
                     new Date(element.getAttribute("datetime")).getTime() -
                     new Date().getTime();
@@ -3517,12 +3531,15 @@ export default async function courselore(
                             `}"
                           >
                             #${threadWithMetadata.reference} created
-                            $${relativeTime(threadWithMetadata.createdAt)} by
+                            <time>${threadWithMetadata.createdAt}</time> by
                             ${threadWithMetadata.author.user.name}
                             $${threadWithMetadata.updatedAt !==
                             threadWithMetadata.createdAt
-                              ? html`<br />and last updated
-                                  $${relativeTime(threadWithMetadata.updatedAt)}`
+                              ? html`
+                                  <br />
+                                  and last updated
+                                  <time>${threadWithMetadata.updatedAt}</time>
+                                `
                               : html``}
                           </p>
                         </a>
@@ -4166,12 +4183,13 @@ ${value}</textarea
                       <strong>${postJoinAuthor.author.user.name}</strong>
                       <span class="hint">
                         said
-                        $${relativeTime(
-                          postJoinAuthor.post.createdAt
-                        )}$${postJoinAuthor.post.updatedAt !==
+                        <time>${postJoinAuthor.post.createdAt}</time>
+                        $${postJoinAuthor.post.updatedAt !==
                         postJoinAuthor.post.createdAt
-                          ? html` (and last edited
-                            $${relativeTime(postJoinAuthor.post.updatedAt)})`
+                          ? html`
+                              (and last edited
+                              <time>${postJoinAuthor.post.updatedAt}</time>)
+                            `
                           : html``}
                         <a
                           href="${app.get("url")}/courses/${res.locals
@@ -4572,20 +4590,6 @@ ${value}</textarea
       `;
     };
   })();
-
-  // TODO: Extract this into its own library?
-  // TODO: Bring this and the client-side JavaScript that makes relative times work closer together.
-  // https://github.com/catamphetamine/javascript-time-ago
-  // https://github.com/azer/relative-date
-  // https://benborgers.com/posts/js-relative-date
-  // https://github.com/digplan/time-ago
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-  //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
-  // https://day.js.org
-  // http://timeago.yarp.com
-  // https://sugarjs.com
-  const relativeTime = (time: string): HTML =>
-    html`<time datetime="${time}" title="${time}">at ${time}</time>`;
 
   return app;
 }
