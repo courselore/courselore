@@ -117,7 +117,10 @@ export default async function courselore(
     author: EnrollmentJoinUser | Anonymous;
   }
 
-  const ANONYMOUS = { user: { name: "Anonymous" } } as const;
+  const ANONYMOUS = {
+    enrollment: { id: undefined, role: undefined, accentColor: undefined },
+    user: { id: undefined, email: undefined, name: "Anonymous" },
+  } as const;
   type Anonymous = typeof ANONYMOUS;
 
   interface EnrollmentJoinCourseJoinThreadsWithMetadata
@@ -3942,8 +3945,8 @@ ${value}</textarea
   ): boolean =>
     res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
       "staff" ||
-    (res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-      .author as EnrollmentJoinUser)?.user?.id === res.locals.user.id;
+    res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.author
+      .user.id === res.locals.user.id;
 
   const mayEditThreadMiddleware: express.RequestHandler<
     { courseReference: string; threadReference: string },
@@ -3992,9 +3995,7 @@ ${value}</textarea
     postJoinAuthor: PostJoinAuthor
   ): boolean =>
     res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
-      "staff" ||
-    (postJoinAuthor.author as EnrollmentJoinUser)?.user?.id ===
-      res.locals.user.id;
+      "staff" || postJoinAuthor.author.user.id === res.locals.user.id;
 
   const mayEditPostMiddleware: express.RequestHandler<
     { courseReference: string; threadReference: string; postReference: string },
