@@ -1545,9 +1545,9 @@ export default async function courselore(
   >("/users", ...isUnauthenticated, (req, res) => {
     if (
       typeof req.body.nonce !== "string" ||
-      validator.isEmpty(req.body.nonce, { ignore_whitespace: true }) ||
+      req.body.nonce.trim() === "" ||
       typeof req.body.name !== "string" ||
-      validator.isEmpty(req.body.name, { ignore_whitespace: true })
+      req.body.name.trim() === ""
     )
       throw new ValidationError();
 
@@ -1865,8 +1865,7 @@ export default async function courselore(
     { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
   >("/settings", ...isAuthenticated, (req, res) => {
     if (typeof req.body.name === "string") {
-      if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
-        throw new ValidationError();
+      if (req.body.name.trim() === "") throw new ValidationError();
       database.run(
         sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
       );
@@ -1918,10 +1917,7 @@ export default async function courselore(
     {},
     { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
   >("/courses", ...isAuthenticated, (req, res) => {
-    if (
-      typeof req.body.name !== "string" ||
-      validator.isEmpty(req.body.name, { ignore_whitespace: true })
-    )
+    if (typeof req.body.name !== "string" || req.body.name.trim() === "")
       throw new ValidationError();
 
     const courseReference = cryptoRandomString({ length: 10, type: "numeric" });
@@ -2817,8 +2813,7 @@ export default async function courselore(
       res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
         "staff"
     ) {
-      if (validator.isEmpty(req.body.name, { ignore_whitespace: true }))
-        throw new ValidationError();
+      if (req.body.name.trim() === "") throw new ValidationError();
       database.run(
         sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}`
       );
@@ -3694,10 +3689,7 @@ ${value}</textarea
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >("/preview", ...isAuthenticated, (req, res) => {
-    if (
-      typeof req.body.content !== "string" ||
-      validator.isEmpty(req.body.content, { ignore_whitespace: true })
-    )
+    if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       throw new ValidationError();
 
     res.send(app.get("text processor")(req.body.content));
@@ -3780,9 +3772,9 @@ ${value}</textarea
   >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
     if (
       typeof req.body.title !== "string" ||
-      validator.isEmpty(req.body.title, { ignore_whitespace: true }) ||
+      req.body.title.trim() === "" ||
       typeof req.body.content !== "string" ||
-      validator.isEmpty(req.body.content, { ignore_whitespace: true })
+      req.body.content.trim() === ""
     )
       throw new ValidationError();
 
@@ -4305,8 +4297,7 @@ ${value}</textarea
     ...mayEditThreadMiddleware,
     (req, res) => {
       if (typeof req.body.title === "string")
-        if (validator.isEmpty(req.body.title, { ignore_whitespace: true }))
-          throw new ValidationError();
+        if (req.body.title.trim() === "") throw new ValidationError();
         else
           database.run(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}`
@@ -4342,7 +4333,7 @@ ${value}</textarea
     (req, res) => {
       if (
         typeof req.body.content !== "string" ||
-        validator.isEmpty(req.body.content, { ignore_whitespace: true })
+        req.body.content.trim() === ""
       )
         throw new ValidationError();
 
@@ -4397,7 +4388,7 @@ ${value}</textarea
     (req, res) => {
       if (
         typeof req.body.content !== "string" ||
-        validator.isEmpty(req.body.content, { ignore_whitespace: true })
+        req.body.content.trim() === ""
       )
         throw new ValidationError();
 
