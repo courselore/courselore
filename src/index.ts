@@ -150,21 +150,21 @@ export default async function courselore(
     sql`
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "email" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL
       );
 
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL
       );
 
       CREATE TABLE "enrollments" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
@@ -174,7 +174,7 @@ export default async function courselore(
 
       CREATE TABLE "invitations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "expiresAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
@@ -192,8 +192,8 @@ export default async function courselore(
 
       CREATE TABLE "posts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "updatedAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
@@ -203,7 +203,7 @@ export default async function courselore(
 
       CREATE TABLE "authenticationNonces" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "expiresAt" TEXT NOT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
         "email" TEXT NOT NULL UNIQUE
@@ -211,7 +211,7 @@ export default async function courselore(
 
       CREATE TABLE "sessions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "expiresAt" TEXT NOT NULL,
         "token" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
@@ -219,8 +219,8 @@ export default async function courselore(
 
       CREATE TABLE "emailsQueue" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "tryAfter" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
         "to" TEXT NOT NULL,
         "subject" TEXT NOT NULL,
@@ -743,9 +743,7 @@ export default async function courselore(
               const MONTHS = 30 * DAYS;
               const YEARS = 365 * DAYS;
               (function relativeTimes() {
-                for (const element of document.querySelectorAll(
-                  "time.relative"
-                )) {
+                for (const element of document.querySelectorAll("time")) {
                   const difference =
                     new Date(element.getAttribute("datetime")).getTime() -
                     new Date().getTime();
@@ -1115,10 +1113,12 @@ export default async function courselore(
       sql`DELETE FROM "authenticationNonces" WHERE "email" = ${email}`
     );
     const nonce = cryptoRandomString({ length: 40, type: "numeric" });
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
     database.run(
       sql`
         INSERT INTO "authenticationNonces" ("expiresAt", "nonce", "email")
-        VALUES (datetime('now', '+10 minutes'), ${nonce}, ${email})
+        VALUES (${expiresAt.toISOString()}, ${nonce}, ${email})
       `
     );
     return nonce;
@@ -1128,7 +1128,7 @@ export default async function courselore(
     const authenticationNonce = database.get<{
       email: string;
     }>(
-      sql`SELECT "email" FROM "authenticationNonces" WHERE "nonce" = ${nonce} AND CURRENT_TIMESTAMP < "expiresAt"`
+      sql`SELECT "email" FROM "authenticationNonces" WHERE "nonce" = ${nonce} AND ${new Date().toISOString()} < "expiresAt"`
     );
     database.run(
       sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
@@ -1174,7 +1174,7 @@ export default async function courselore(
               SELECT 1
               FROM "sessions"
               WHERE "token" = ${req.cookies.session} AND
-                    CURRENT_TIMESTAMP < "expiresAt"
+                    ${new Date().toISOString()} < "expiresAt"
             ) AS "exists"
           `
         )!.exists === 0
@@ -1205,7 +1205,7 @@ export default async function courselore(
         FROM "sessions"
         JOIN "users" ON "sessions"."user" = "users"."id"
         WHERE "sessions"."token" = ${req.cookies.session} AND
-              CURRENT_TIMESTAMP < "sessions"."expiresAt"
+              ${new Date().toISOString()} < "sessions"."expiresAt"
       `);
       if (sessionJoinUser === undefined) {
         closeSession(req, res);
@@ -2013,7 +2013,7 @@ export default async function courselore(
             JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."thread"
             WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
             GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread"
-            ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX(datetime("mostRecentlyUpdatedPost"."updatedAt"))
+            ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt")
           `
         )
         .map((row) => ({
@@ -3178,7 +3178,9 @@ export default async function courselore(
 
       if (req.body.expireNow === "true")
         database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = CURRENT_TIMESTAMP WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+          sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
+            res.locals.invitationJoinCourse.invitation.id
+          }`
         );
 
       res.redirect(
@@ -3517,10 +3519,8 @@ export default async function courselore(
                             #${threadWithMetadata.reference} created
                             $${relativeTime(threadWithMetadata.createdAt)} by
                             ${threadWithMetadata.author.user.name}
-                            $${new Date(
-                              threadWithMetadata.updatedAt
-                            ).getTime() !==
-                            new Date(threadWithMetadata.createdAt).getTime()
+                            $${threadWithMetadata.updatedAt !==
+                            threadWithMetadata.createdAt
                               ? html`<br />and last updated
                                   $${relativeTime(threadWithMetadata.updatedAt)}`
                               : html``}
@@ -4168,10 +4168,8 @@ ${value}</textarea
                         said
                         $${relativeTime(
                           postJoinAuthor.post.createdAt
-                        )}$${new Date(
-                          postJoinAuthor.post.updatedAt
-                        ).getTime() !==
-                        new Date(postJoinAuthor.post.createdAt).getTime()
+                        )}$${postJoinAuthor.post.updatedAt !==
+                        postJoinAuthor.post.createdAt
                           ? html` (and last edited
                             $${relativeTime(postJoinAuthor.post.updatedAt)})`
                           : html``}
@@ -4390,7 +4388,12 @@ ${value}</textarea
         throw new ValidationError();
 
       database.run(
-        sql`UPDATE "posts" SET "content" = ${req.body.content}, "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = ${res.locals.postJoinAuthor.post.id}`
+        sql`
+          UPDATE "posts"
+          SET "content" = ${req.body.content},
+              "updatedAt" = ${new Date().toISOString()}
+          WHERE "id" = ${res.locals.postJoinAuthor.post.id}
+        `
       );
 
       res.redirect(
@@ -4581,15 +4584,8 @@ ${value}</textarea
   // https://day.js.org
   // http://timeago.yarp.com
   // https://sugarjs.com
-  function relativeTime(time: string): HTML {
-    const timeString = new Date(time).toISOString();
-    return html`<time
-      datetime="${timeString}"
-      title="${timeString}"
-      class="relative"
-      >at ${timeString}</time
-    >`;
-  }
+  const relativeTime = (time: string): HTML =>
+    html`<time datetime="${time}" title="${time}">at ${time}</time>`;
 
   return app;
 }
