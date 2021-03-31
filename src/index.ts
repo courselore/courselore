@@ -794,52 +794,43 @@ export default async function courselore(
             })();
 
             function isValid(element) {
-              if (element.matches("form")) {
-                let isDescendantsValid = true;
-                for (const descendant of element.querySelectorAll("*"))
-                  isDescendantsValid &&= isValid(descendant);
-                return isDescendantsValid;
-              }
+              if (element.matches("form"))
+                return [...element.querySelectorAll("*")].every((descendant) =>
+                  isValid(descendant)
+                );
 
-              let shouldResetCustomValidity = false;
               if (
                 element.matches("[required]") &&
-                validator.isEmpty(element.value, { ignore_whitespace: true })
+                element.value.trim() === ""
               ) {
-                shouldResetCustomValidity = true;
                 element.setCustomValidity("Fill out this field");
+                addCustomValidityReseter();
               }
 
               if (
                 element.matches('[type="email"]') &&
                 !validator.isEmail(element.value)
               ) {
-                shouldResetCustomValidity = true;
                 element.setCustomValidity("Enter an email address");
+                addCustomValidityReseter();
               }
 
-              if (
-                element.matches("[data-validator]") &&
-                !validator[element.dataset.validator](element.value)
-              ) {
-                shouldResetCustomValidity = true;
-                element.setCustomValidity(
-                  element.dataset.validatorMessage ?? "This field is invalid"
+              if (element.matches("[data-validator]")) {
+                const result = new Function(element.dataset.validator).call(
+                  element
                 );
-              }
-
-              if (element.matches("[data-validator-custom]")) {
-                shouldResetCustomValidity = true;
-                const validationResult = new Function(
-                  element.dataset.validatorCustom
-                ).call(element);
-                if (validationResult === false)
+                if (result === false)
                   element.setCustomValidity("This field is invalid");
-                if (typeof validationResult === "string")
-                  element.setCustomValidity(validationResult);
+                if (typeof result === "string")
+                  element.setCustomValidity(result);
+                addCustomValidityReseter();
               }
 
-              if (shouldResetCustomValidity)
+              return typeof element.reportValidity === "function"
+                ? element.reportValidity()
+                : true;
+
+              function addCustomValidityReseter() {
                 element.addEventListener(
                   "input",
                   () => {
@@ -847,10 +838,7 @@ export default async function courselore(
                   },
                   { once: true }
                 );
-
-              return typeof element.reportValidity === "function"
-                ? element.reportValidity()
-                : true;
+              }
             }
 
             document.body.addEventListener(
@@ -2492,7 +2480,7 @@ export default async function courselore(
                           required
                           disabled
                           pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                          data-validator-custom="${javascript`
+                          data-validator="${javascript`
                             if (!validator.isAfter(this.value.replace(" ", "T")))
                               return "Must be in the future";
                           `}"
@@ -2595,10 +2583,10 @@ export default async function courselore(
                           required
                           disabled
                           pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                          data-validator-custom="${javascript`
-                        if (!validator.isAfter(this.value.replace(" ", "T")))
-                          return "Must be in the future";
-                      `}"
+                          data-validator="${javascript`
+                            if (!validator.isAfter(this.value.replace(" ", "T")))
+                              return "Must be in the future";
+                          `}"
                           class="full-width"
                           style="${css`
                             flex: 1 !important;
@@ -2615,7 +2603,7 @@ export default async function courselore(
                         name="emails"
                         required
                         class="full-width"
-                        data-validator-custom="${javascript`
+                        data-validator="${javascript`
                           const emails = emailAddresses.parseAddressList(this.value);
                           if (
                             emails === null ||
@@ -3132,10 +3120,10 @@ export default async function courselore(
                           ? `disabled`
                           : ``}
                         pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                        data-validator-custom="${javascript`
-                                if (!validator.isAfter(this.value.replace(" ", "T")))
-                                  return "Must be in the future";
-                              `}"
+                        data-validator="${javascript`
+                          if (!validator.isAfter(this.value.replace(" ", "T")))
+                            return "Must be in the future";
+                        `}"
                         class="full-width"
                         style="${css`
                           flex: 1 !important;
