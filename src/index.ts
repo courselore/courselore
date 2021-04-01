@@ -807,6 +807,7 @@ export default async function courselore(
               if (element.matches("form"))
                 return [...element.querySelectorAll("*")].every(validate);
 
+              const resetters = [];
               try {
                 if (element.matches("[required]"))
                   if (element.value.trim() === "")
@@ -831,22 +832,18 @@ export default async function courselore(
                     throw new ValidationError("Invalid datetime");
 
                   element.value = date.toISOString();
+                  resetters.push(() => {
+                    element.value = new Date(element.value).toLocaleString(
+                      "sv"
+                    );
+                  });
                 }
 
                 if (element.matches("[data-onvalidate]"))
-                  try {
-                    new Function(element.dataset.onvalidate).call(element);
-                  } catch (error) {
-                    if (
-                      error instanceof ValidationError &&
-                      element.matches("input.datetime")
-                    )
-                      element.value = new Date(element.value).toLocaleString(
-                        "sv"
-                      );
-                    throw error;
-                  }
+                  new Function(element.dataset.onvalidate).call(element);
               } catch (error) {
+                for (const resetter of resetters) resetter();
+
                 if (!(error instanceof ValidationError)) throw error;
 
                 element.setCustomValidity(
