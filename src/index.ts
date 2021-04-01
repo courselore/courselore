@@ -795,72 +795,63 @@ export default async function courselore(
             for (const element of document.querySelectorAll("input.datetime"))
               element.value = new Date(element.value).toLocaleString("sv");
 
+            class ValidationError extends Error {}
+
             function validate(element) {
-              if (element.matches("[disabled]")) return true;
+              if (
+                typeof element.reportValidity !== "function" ||
+                element.matches("[disabled]")
+              )
+                return true;
 
               if (element.matches("form"))
-                return [...element.querySelectorAll("*")].every((descendant) =>
-                  validate(descendant)
-                );
+                return [...element.querySelectorAll("*")].every(validate);
 
-              let shouldResetCustomValidity = false;
-              let shouldResetDatetime = false;
-              if (
-                element.matches("[required]") &&
-                element.value.trim() === ""
-              ) {
-                shouldResetCustomValidity = true;
-                element.setCustomValidity("Fill out this field");
-              }
+              try {
+                if (element.matches("[required]"))
+                  if (element.value.trim() === "")
+                    throw new ValidationError("Fill out this field");
 
-              if (
-                element.matches('[type="email"]') &&
-                !validator.isEmail(element.value)
-              ) {
-                shouldResetCustomValidity = true;
-                element.setCustomValidity("Enter an email address");
-              }
+                if (element.matches('[type="email"]'))
+                  if (!validator.isEmail(element.value))
+                    throw new ValidationError("Enter an email address");
 
-              if (element.matches("input.datetime")) {
-                if (
-                  element.value.match(
-                    ${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/}
-                  ) === null
-                ) {
-                  shouldResetCustomValidity = true;
-                  element.setCustomValidity(
-                    "Match the pattern YYYY-MM-DD HH:MM:SS"
-                  );
-                } else {
+                if (element.matches("input.datetime")) {
+                  if (
+                    element.value.match(
+                      ${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/}
+                    ) === null
+                  )
+                    throw new ValidationError(
+                      "Match the pattern YYYY-MM-DD HH:MM:SS"
+                    );
+
                   const date = new Date(element.value.replace(" ", "T"));
-                  if (isNaN(date)) {
-                    shouldResetCustomValidity = true;
-                    element.setCustomValidity("Invalid datetime");
-                  } else {
-                    element.value = date.toISOString();
+                  if (isNaN(date))
+                    throw new ValidationError("Invalid datetime");
+
+                  element.value = date.toISOString();
+                }
+
+                if (element.matches("[data-onvalidate]"))
+                  try {
+                    new Function(element.dataset.onvalidate).call(element);
+                  } catch (error) {
+                    if (
+                      error instanceof ValidationError &&
+                      element.matches("input.datetime")
+                    )
+                      element.value = new Date(element.value).toLocaleString(
+                        "sv"
+                      );
+                    throw error;
                   }
-                }
-              }
+              } catch (error) {
+                if (!(error instanceof ValidationError)) throw error;
 
-              if (element.matches("[data-onvalidate]")) {
-                const result = new Function(element.dataset.onvalidate).call(
-                  element
+                element.setCustomValidity(
+                  error.message === "" ? "This field is invalid" : error.message
                 );
-                if (result === false) {
-                  shouldResetCustomValidity = true;
-                  if (element.matches("input.datetime"))
-                    shouldResetDatetime = true;
-                  element.setCustomValidity("This field is invalid");
-                }
-                if (typeof result === "string") {
-                  shouldResetCustomValidity = true;
-                  if (element.matches("input.datetime"))
-                    shouldResetDatetime = true;
-                  element.setCustomValidity(result);
-                }
-              }
-
-              if (shouldResetCustomValidity)
                 element.addEventListener(
                   "input",
                   () => {
@@ -868,12 +859,9 @@ export default async function courselore(
                   },
                   { once: true }
                 );
-              if (shouldResetDatetime)
-                element.value = new Date(element.value).toLocaleString("sv");
+              }
 
-              return typeof element.reportValidity === "function"
-                ? element.reportValidity()
-                : true;
+              return element.reportValidity();
             }
 
             document.body.addEventListener(
@@ -2497,7 +2485,7 @@ export default async function courselore(
                             disabled
                             data-onvalidate="${javascript`
                               if (new Date(this.value).getTime() <= Date.now())
-                                return "Must be in the future";
+                                throw new ValidationError("Must be in the future");
                             `}"
                             class="full-width datetime"
                             style="${css`
