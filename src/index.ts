@@ -2389,23 +2389,21 @@ export default async function courselore(
                                     class="${isInvitationValid(invitation)
                                       ? "green"
                                       : "red"}"
-                                    >${invitation.reference}</code
+                                    >${"*".repeat(
+                                      6
+                                    )}${invitation.reference.slice(6)}</code
                                   >
                                   <span class="hint">
                                     · ${lodash.capitalize(invitation.role)} ·
-                                    ${invitation.expiresAt === null
-                                      ? `Doesn’t expire`
-                                      : `${
-                                          Date.now() <
+                                    $${invitation.expiresAt === null
+                                      ? html`Doesn’t expire`
+                                      : html`${Date.now() <
                                           new Date(
                                             invitation.expiresAt
                                           ).getTime()
                                             ? "Expires"
-                                            : "Expired"
-                                        } at ${new Date(invitation.expiresAt)
-                                          .toISOString()
-                                          .slice(0, "YYYY-MM-DD HH:SS".length)
-                                          .replace("T", " ")}`}
+                                            : "Expired"}
+                                          <time>${invitation.expiresAt}</time>`}
                                   </span></a
                                 >
                               </p>
