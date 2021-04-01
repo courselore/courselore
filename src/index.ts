@@ -409,7 +409,6 @@ export default async function courselore(
                   display: inline-block;
                   width: 12px;
                   height: 12px;
-                  margin-right: 5px;
                   margin-bottom: -2px;
                 }
 
@@ -793,13 +792,19 @@ export default async function courselore(
               })();
             })();
 
+            for (const element of document.querySelectorAll("input.datetime"))
+              element.value = new Date(element.value).toLocaleString("sv");
+
             function validate(element) {
+              if (element.matches("[disabled]")) return true;
+
               if (element.matches("form"))
                 return [...element.querySelectorAll("*")].every((descendant) =>
                   validate(descendant)
                 );
 
               let shouldResetCustomValidity = false;
+              let shouldResetDatetime = false;
               if (
                 element.matches("[required]") &&
                 element.value.trim() === ""
@@ -816,16 +821,41 @@ export default async function courselore(
                 element.setCustomValidity("Enter an email address");
               }
 
+              if (element.matches("input.datetime")) {
+                if (
+                  element.value.match(
+                    ${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/}
+                  ) === null
+                ) {
+                  shouldResetCustomValidity = true;
+                  element.setCustomValidity(
+                    "Match the pattern YYYY-MM-DD HH:MM:SS"
+                  );
+                } else {
+                  const date = new Date(element.value.replace(" ", "T"));
+                  if (isNaN(date)) {
+                    shouldResetCustomValidity = true;
+                    element.setCustomValidity("Invalid datetime");
+                  } else {
+                    element.value = date.toISOString();
+                  }
+                }
+              }
+
               if (element.matches("[data-onvalidate]")) {
                 const result = new Function(element.dataset.onvalidate).call(
                   element
                 );
                 if (result === false) {
                   shouldResetCustomValidity = true;
+                  if (element.matches("input.datetime"))
+                    shouldResetDatetime = true;
                   element.setCustomValidity("This field is invalid");
                 }
                 if (typeof result === "string") {
                   shouldResetCustomValidity = true;
+                  if (element.matches("input.datetime"))
+                    shouldResetDatetime = true;
                   element.setCustomValidity(result);
                 }
               }
@@ -838,6 +868,8 @@ export default async function courselore(
                   },
                   { once: true }
                 );
+              if (shouldResetDatetime)
+                element.value = new Date(element.value).toLocaleString("sv");
 
               return typeof element.reportValidity === "function"
                 ? element.reportValidity()
@@ -2431,66 +2463,49 @@ export default async function courselore(
                     </p>
 
                     <p>
-                      <strong>Expiration</strong><br />
                       <label>
-                        <input
-                          type="radio"
-                          name="isExpiresAt"
-                          value="false"
-                          checked
-                          required
-                          onchange="${javascript`
-                            this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
-                          `}"
-                        />
-                        Doesn’t expire
-                      </label>
-                      <br />
-                      <span
-                        style="${css`
-                          display: flex;
-                          align-items: baseline;
+                        <strong>Expiration</strong><br />
+                        <span
+                          style="${css`
+                            display: flex;
+                            align-items: baseline;
 
-                          & > * + * {
-                            margin-left: 0.5rem !important;
-                          }
-                        `}"
-                      >
-                        <label>
+                            & > * + * {
+                              margin-left: 0.5rem !important;
+                            }
+                          `}"
+                        >
+                          <span>
+                            <input
+                              type="checkbox"
+                              onchange="${javascript`
+                                const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                expiresAt.disabled = !this.checked;
+                                if (this.checked) {
+                                  expiresAt.focus();
+                                  expiresAt.setSelectionRange(0, 0);
+                                }
+                              `}"
+                            />
+                          </span>
+                          <span>Expires at</span>
                           <input
-                            type="radio"
-                            name="isExpiresAt"
-                            value="true"
+                            type="text"
+                            name="expiresAt"
+                            value="${new Date().toISOString()}"
                             required
-                            onchange="${javascript`
-                              const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                              expiresAt.disabled = false;
-                              expiresAt.focus();
-                              expiresAt.setSelectionRange(0, 0);
+                            disabled
+                            data-onvalidate="${javascript`
+                              if (new Date(this.value).getTime() <= Date.now())
+                                return "Must be in the future";
+                            `}"
+                            class="full-width datetime"
+                            style="${css`
+                              flex: 1 !important;
                             `}"
                           />
-                          Expires at
-                        </label>
-                        <input
-                          type="text"
-                          name="expiresAt"
-                          value="${new Date()
-                            .toISOString()
-                            .slice(0, "YYYY-MM-DD HH:SS".length)
-                            .replace("T", " ")}"
-                          required
-                          disabled
-                          pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                          data-onvalidate="${javascript`
-                            if (!validator.isAfter(this.value.replace(" ", "T")))
-                              return "Must be in the future";
-                          `}"
-                          class="full-width"
-                          style="${css`
-                            flex: 1 !important;
-                          `}"
-                        />
-                      </span>
+                        </span>
+                      </label>
                     </p>
                   </div>
                   <p><button>Create Invitation Link</button></p>
