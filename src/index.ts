@@ -344,7 +344,7 @@ export default async function courselore(
                   transition: color 0.2s;
 
                   &:hover {
-                    color: #ff77a8;
+                    color: #ff77a8 !important;
                   }
 
                   h1 &,
@@ -2367,43 +2367,39 @@ export default async function courselore(
                         <nav>
                           $${invitations.map(
                             (invitation) => html`
-                              <p>
-                                <a
-                                  href="${app.get("url")}/courses/${res.locals
-                                    .enrollmentJoinCourseJoinThreadsWithMetadata
-                                    .course
-                                    .reference}/invitations/${invitation.reference}"
-                                  style="${css`
-                                    * {
-                                      transition: color 0.2s;
-                                    }
-
-                                    &:hover * {
-                                      color: #ff77a8 !important;
-                                    }
-                                  `}"
-                                  ><code
-                                    class="${isInvitationValid(invitation)
-                                      ? "green"
-                                      : "red"}"
-                                    >${"*".repeat(
+                              <a
+                                href="${app.get("url")}/courses/${res.locals
+                                  .enrollmentJoinCourseJoinThreadsWithMetadata
+                                  .course
+                                  .reference}/invitations/${invitation.reference}"
+                                class="${isInvitationValid(invitation)
+                                  ? "green"
+                                  : "red"}"
+                                style="${css`
+                                  display: block;
+                                `}"
+                              >
+                                <p>
+                                  <code>
+                                    ${app.get("url")}/courses/${res.locals
+                                      .enrollmentJoinCourseJoinThreadsWithMetadata
+                                      .course
+                                      .reference}/invitations/${"*".repeat(
                                       6
-                                    )}${invitation.reference.slice(6)}</code
-                                  >
-                                  <span class="hint">
-                                    · ${lodash.capitalize(invitation.role)} ·
-                                    $${invitation.expiresAt === null
-                                      ? html`Doesn’t expire`
-                                      : html`${Date.now() <
-                                          new Date(
-                                            invitation.expiresAt
-                                          ).getTime()
-                                            ? "Expires"
-                                            : "Expired"}
-                                          <time>${invitation.expiresAt}</time>`}
-                                  </span></a
-                                >
-                              </p>
+                                    )}${invitation.reference.slice(6)}
+                                  </code>
+                                </p>
+                                <p class="hint">
+                                  ${lodash.capitalize(invitation.role)} ·
+                                  $${invitation.expiresAt === null
+                                    ? html`Doesn’t expire`
+                                    : html`${Date.now() <
+                                        new Date(invitation.expiresAt).getTime()
+                                          ? "Expires"
+                                          : "Expired"}
+                                        <time>${invitation.expiresAt}</time>`}
+                                </p>
+                              </a>
                             `
                           )}
                         </nav>
