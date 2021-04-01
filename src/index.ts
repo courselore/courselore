@@ -2949,7 +2949,7 @@ export default async function courselore(
                     </p>
                     <p class="hint">
                       You may make it valid again by extending the expiration in
-                      the form at the end of the page.
+                      the <a href="#expiration">form at the end of the page</a>.
                     </p>
                   </div>
                 `}
@@ -3031,7 +3031,12 @@ export default async function courselore(
               </p>
 
               <div>
-                <form method="POST" action="${link}?_method=PATCH">
+                <form
+                  method="POST"
+                  action="${link}?_method=PATCH"
+                  id="expiration"
+                >
+                  <input type="hidden" name="changeExpiration" value="true" />
                   <p>
                     <label>
                       <strong>Expiration</strong><br />
@@ -3108,52 +3113,51 @@ export default async function courselore(
     })
   );
 
-  // app.patch<
-  //   { courseReference: string; invitationReference: string },
-  //   HTML,
-  //   { expiresAt?: string; expireNow?: "true" },
-  //   {},
-  //   {
-  //     invitationJoinCourse: InvitationJoinCourse;
-  //     user: User;
-  //     enrollmentsJoinCourses: EnrollmentJoinCourse[];
-  //     enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-  //     otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-  //   }
-  // >(
-  //   "/courses/:courseReference/invitations/:invitationReference",
-  //   ...mayManageInvitation,
-  //   (req, res) => {
-  //     if (req.body.isExpiresAt === "false")
-  //       database.run(
-  //         sql`UPDATE "invitations" SET "expiresAt" = NULL WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
-  //       );
-  //     else if (req.body.isExpiresAt === "true")
-  //       if (
-  //         typeof req.body.expiresAt !== "string" ||
-  //         new Date(req.body.expiresAt).getTime() <= Date.now()
-  //       )
-  //         throw new ValidationError();
-  //       else
-  //         database.run(
-  //           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
-  //         );
+  app.patch<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    { changeExpiration?: "true"; expiresAt?: string; expireNow?: "true" },
+    {},
+    {
+      invitationJoinCourse: InvitationJoinCourse;
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...mayManageInvitation,
+    (req, res) => {
+      if (req.body.changeExpiration === "true") {
+        if (
+          req.body.expiresAt !== undefined &&
+          (typeof req.body.expiresAt !== "string" ||
+            isNaN(new Date(req.body.expiresAt).getTime()) ||
+            new Date(req.body.expiresAt).getTime() <= Date.now())
+        )
+          throw new ValidationError();
 
-  //     if (req.body.expireNow === "true")
-  //       database.run(
-  //         sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
-  //           res.locals.invitationJoinCourse.invitation.id
-  //         }`
-  //       );
+        database.run(
+          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+        );
+      }
 
-  //     res.redirect(
-  //       `${app.get("url")}/courses/${
-  //         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-  //           .reference
-  //       }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`
-  //     );
-  //   }
-  // );
+      if (req.body.expireNow === "true")
+        database.run(
+          sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
+            res.locals.invitationJoinCourse.invitation.id
+          }`
+        );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`
+      );
+    }
+  );
 
   app.get<
     { courseReference: string; invitationReference: string },
