@@ -3040,81 +3040,57 @@ export default async function courselore(
               <div>
                 <form method="POST" action="${link}?_method=PATCH">
                   <p>
-                    <strong>Expiration</strong><br />
                     <label>
-                      <input
-                        type="radio"
-                        name="isExpiresAt"
-                        value="false"
-                        ${res.locals.invitationJoinCourse.invitation
-                          .expiresAt === null
-                          ? `checked`
-                          : ``}
-                        required
-                        onchange="${javascript`
-                                this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
-                              `}"
-                      />
-                      Doesn’t expire
-                    </label>
-                    <br />
+                      <strong>Expiration</strong><br />
+                      <span
+                        style="${css`
+                          display: flex;
+                          align-items: baseline;
 
-                    <span
-                      style="${css`
-                        display: flex;
-                        align-items: baseline;
-
-                        & > * + * {
-                          margin-left: 0.5rem !important;
-                        }
-                      `}"
-                    >
-                      <label>
+                          & > * + * {
+                            margin-left: 0.5rem !important;
+                          }
+                        `}"
+                      >
+                        <span>
+                          <input
+                            type="checkbox"
+                            ${res.locals.invitationJoinCourse.invitation
+                              .expiresAt === null
+                              ? ``
+                              : `checked`}
+                            onchange="${javascript`
+                              const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                              expiresAt.disabled = !this.checked;
+                              if (this.checked) {
+                                expiresAt.focus();
+                                expiresAt.setSelectionRange(0, 0);
+                              }
+                            `}"
+                          />
+                        </span>
+                        <span>Expires at</span>
                         <input
-                          type="radio"
-                          name="isExpiresAt"
-                          value="true"
+                          type="text"
+                          name="expiresAt"
+                          value="${res.locals.invitationJoinCourse.invitation
+                            .expiresAt ?? new Date().toISOString()}"
+                          required
                           ${res.locals.invitationJoinCourse.invitation
                             .expiresAt === null
-                            ? ``
-                            : `checked`}
-                          required
-                          onchange="${javascript`
-                                  const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                  expiresAt.disabled = false;
-                                  expiresAt.focus();
-                                  expiresAt.setSelectionRange(0, 0);
-                                `}"
+                            ? `disabled`
+                            : ``}
+                          data-onvalidate="${javascript`
+                            if (new Date(this.value).getTime() <= Date.now())
+                              throw new ValidationError("Must be in the future");
+                          `}"
+                          class="full-width datetime"
+                          style="${css`
+                            flex: 1 !important;
+                          `}"
                         />
-                        Expires at
-                      </label>
-                      <input
-                        type="text"
-                        name="expiresAt"
-                        value="${res.locals.invitationJoinCourse.invitation
-                          .expiresAt === null
-                          ? new Date()
-                              .toISOString()
-                              .slice(0, "YYYY-MM-DD HH:SS".length)
-                              .replace("T", " ")
-                          : res.locals.invitationJoinCourse.invitation
-                              .expiresAt}"
-                        required
-                        ${res.locals.invitationJoinCourse.invitation
-                          .expiresAt === null
-                          ? `disabled`
-                          : ``}
-                        pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                        data-onvalidate="${javascript`
-                          if (!validator.isAfter(this.value.replace(" ", "T")))
-                            return "Must be in the future";
-                        `}"
-                        class="full-width"
-                        style="${css`
-                          flex: 1 !important;
-                        `}"
-                      />
-                    </span>
+                      </span>
+                    </label>
                   </p>
                   <p><button class="full-width">Change Expiration</button></p>
                 </form>
