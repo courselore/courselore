@@ -2535,66 +2535,49 @@ export default async function courselore(
                     </p>
 
                     <p>
-                      <strong>Expiration</strong><br />
                       <label>
-                        <input
-                          type="radio"
-                          name="isExpiresAt"
-                          value="false"
-                          checked
-                          required
-                          onchange="${javascript`
-                        this.closest("p").querySelector('[name="expiresAt"]').disabled = true;
-                      `}"
-                        />
-                        Doesn’t expire
-                      </label>
-                      <br />
-                      <span
-                        style="${css`
-                          display: flex;
-                          align-items: baseline;
-
-                          & > * + * {
-                            margin-left: 0.5rem !important;
-                          }
-                        `}"
-                      >
-                        <label>
-                          <input
-                            type="radio"
-                            name="isExpiresAt"
-                            value="true"
-                            required
-                            onchange="${javascript`
-                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                          expiresAt.disabled = false;
-                          expiresAt.focus();
-                          expiresAt.setSelectionRange(0, 0);
-                        `}"
-                          />
-                          Expires at
-                        </label>
-                        <input
-                          type="text"
-                          name="expiresAt"
-                          value="${new Date()
-                            .toISOString()
-                            .slice(0, "YYYY-MM-DD HH:SS".length)
-                            .replace("T", " ")}"
-                          required
-                          disabled
-                          pattern="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}"
-                          data-onvalidate="${javascript`
-                            if (!validator.isAfter(this.value.replace(" ", "T")))
-                              return "Must be in the future";
-                          `}"
-                          class="full-width"
+                        <strong>Expiration</strong><br />
+                        <span
                           style="${css`
-                            flex: 1 !important;
+                            display: flex;
+                            align-items: baseline;
+
+                            & > * + * {
+                              margin-left: 0.5rem !important;
+                            }
                           `}"
-                        />
-                      </span>
+                        >
+                          <span>
+                            <input
+                              type="checkbox"
+                              onchange="${javascript`
+                                const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                expiresAt.disabled = !this.checked;
+                                if (this.checked) {
+                                  expiresAt.focus();
+                                  expiresAt.setSelectionRange(0, 0);
+                                }
+                              `}"
+                            />
+                          </span>
+                          <span>Expires at</span>
+                          <input
+                            type="text"
+                            name="expiresAt"
+                            value="${new Date().toISOString()}"
+                            required
+                            disabled
+                            data-onvalidate="${javascript`
+                              if (new Date(this.value).getTime() <= Date.now())
+                                throw new ValidationError("Must be in the future");
+                            `}"
+                            class="full-width datetime"
+                            style="${css`
+                              flex: 1 !important;
+                            `}"
+                          />
+                        </span>
+                      </label>
                     </p>
                   </div>
 
@@ -2609,9 +2592,9 @@ export default async function courselore(
                           const emails = emailAddresses.parseAddressList(this.value);
                           if (
                             emails === null ||
-                            emails.find((email) => !validator.isEmail(email.address))
+                            !emails.every((email) => validator.isEmail(email.address))
                           )
-                            return "Match the requested format";
+                            throw new ValidationError("Match the requested format");
                         `}"
                       ></textarea
                       ><br />
