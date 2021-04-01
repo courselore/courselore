@@ -827,7 +827,7 @@ export default async function courselore(
                     );
 
                   const date = new Date(element.value.replace(" ", "T"));
-                  if (isNaN(date))
+                  if (isNaN(date.getTime()))
                     throw new ValidationError("Invalid datetime");
 
                   element.value = date.toISOString();
@@ -2842,7 +2842,7 @@ export default async function courselore(
   app.post<
     { courseReference: string },
     HTML,
-    { role?: Role; isExpiresAt?: "true" | "false"; expiresAt?: string },
+    { role?: Role; expiresAt?: string },
     {},
     {
       user: User;
@@ -2854,8 +2854,9 @@ export default async function courselore(
     if (
       typeof req.body.role !== "string" ||
       !ROLES.includes(req.body.role) ||
-      (req.body.isExpiresAt === "true" &&
+      (req.body.expiresAt !== undefined &&
         (typeof req.body.expiresAt !== "string" ||
+          isNaN(new Date(req.body.expiresAt).getTime()) ||
           new Date(req.body.expiresAt).getTime() <= Date.now()))
     )
       throw new ValidationError();
@@ -2868,7 +2869,7 @@ export default async function courselore(
     database.run(sql`
       INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
       VALUES (
-        ${req.body.isExpiresAt === "true" ? req.body.expiresAt : null},
+        ${req.body.expiresAt},
         ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
         ${invitationReference},
         ${req.body.role}
@@ -3157,52 +3158,52 @@ export default async function courselore(
     })
   );
 
-  app.patch<
-    { courseReference: string; invitationReference: string },
-    HTML,
-    { isExpiresAt?: "true" | "false"; expiresAt?: string; expireNow?: "true" },
-    {},
-    {
-      invitationJoinCourse: InvitationJoinCourse;
-      user: User;
-      enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-    }
-  >(
-    "/courses/:courseReference/invitations/:invitationReference",
-    ...mayManageInvitation,
-    (req, res) => {
-      if (req.body.isExpiresAt === "false")
-        database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = NULL WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
-        );
-      else if (req.body.isExpiresAt === "true")
-        if (
-          typeof req.body.expiresAt !== "string" ||
-          new Date(req.body.expiresAt).getTime() <= Date.now()
-        )
-          throw new ValidationError();
-        else
-          database.run(
-            sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
-          );
+  // app.patch<
+  //   { courseReference: string; invitationReference: string },
+  //   HTML,
+  //   { expiresAt?: string; expireNow?: "true" },
+  //   {},
+  //   {
+  //     invitationJoinCourse: InvitationJoinCourse;
+  //     user: User;
+  //     enrollmentsJoinCourses: EnrollmentJoinCourse[];
+  //     enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+  //     otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+  //   }
+  // >(
+  //   "/courses/:courseReference/invitations/:invitationReference",
+  //   ...mayManageInvitation,
+  //   (req, res) => {
+  //     if (req.body.isExpiresAt === "false")
+  //       database.run(
+  //         sql`UPDATE "invitations" SET "expiresAt" = NULL WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+  //       );
+  //     else if (req.body.isExpiresAt === "true")
+  //       if (
+  //         typeof req.body.expiresAt !== "string" ||
+  //         new Date(req.body.expiresAt).getTime() <= Date.now()
+  //       )
+  //         throw new ValidationError();
+  //       else
+  //         database.run(
+  //           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+  //         );
 
-      if (req.body.expireNow === "true")
-        database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
-            res.locals.invitationJoinCourse.invitation.id
-          }`
-        );
+  //     if (req.body.expireNow === "true")
+  //       database.run(
+  //         sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
+  //           res.locals.invitationJoinCourse.invitation.id
+  //         }`
+  //       );
 
-      res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`
-      );
-    }
-  );
+  //     res.redirect(
+  //       `${app.get("url")}/courses/${
+  //         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+  //           .reference
+  //       }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`
+  //     );
+  //   }
+  // );
 
   app.get<
     { courseReference: string; invitationReference: string },
