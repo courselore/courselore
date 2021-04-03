@@ -594,6 +594,8 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 - Progress:
   - I forgot to mention last week, but I came with a solution for images working in light vs dark background: I simply added a background color to transparent images…
+- Next week:
+  - Manage enrollments.
 
 </details>
 

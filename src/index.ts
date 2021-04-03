@@ -238,7 +238,6 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
-        "reference" TEXT NOT NULL UNIQUE,
         "to" TEXT NOT NULL,
         "subject" TEXT NOT NULL,
         "body" TEXT NOT NULL
@@ -555,27 +554,6 @@ export default async function courselore(
                   }
                 }
 
-                div.demonstration {
-                  text-align: left;
-                  min-height: 7.5rem;
-                  padding-left: 0.5rem;
-                  border-left: 1rem solid #83769c;
-                  border-radius: 10px;
-                  margin-left: -1.5rem;
-
-                  &::before {
-                    content: "Demonstration";
-                    font-size: 0.56rem;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                    color: white;
-                    position: absolute;
-                    transform: translate(calc(-50% - 1rem)) rotate(-90deg)
-                      translate(-50%);
-                  }
-                }
-
                 details.popup {
                   &[open] > summary::before {
                     content: "";
@@ -733,7 +711,14 @@ export default async function courselore(
                     bottom: 0;
                   `}"
                 >
-                  Demonstration
+                  <a
+                    href="${app.get("url")}/emails"
+                    title="Go to the demonstration inbox"
+                    style="${css`
+                      text-decoration: none;
+                    `}"
+                    >Demonstration</a
+                  >
                 </p>
               `
             : html``}
@@ -1424,7 +1409,7 @@ export default async function courselore(
           ? ""
           : `?redirect=${req.query.redirect}`
       }`;
-      const sentEmail = sendEmail({
+      sendEmail({
         to: req.body.email,
         subject: "Magic Authentication Link",
         body: html`
@@ -1457,9 +1442,20 @@ export default async function courselore(
                   <button>Resend</button>
                 </p>
               </form>
-            </div>
 
-            $${sentEmail}
+              $${app.get("demonstration")
+                ? html`
+                    <p>
+                      <strong>
+                        CourseLore doesn’t send emails in demonstration mode.
+                        <a href="${app.get("url")}/emails"
+                          >Go to the demonstration inbox</a
+                        >.
+                      </strong>
+                    </p>
+                  `
+                : html``}
+            </div>
           `
         )
       );
@@ -3416,6 +3412,7 @@ export default async function courselore(
         throw new ValidationError();
 
       for (const email of emails as emailAddresses.ParsedMailbox[]) {
+        // TODO: Deal with edge cases like inviting yourself, or someone who’s already enrolled, and so forth.
         const changes = database.run(sql`
           INSERT INTO "invitationEmails" ("expiresAt", "course", "email", "name", "role")
           VALUES (
@@ -3452,14 +3449,7 @@ export default async function courselore(
               </p>
               $${req.body.expiresAt === undefined
                 ? html``
-                : html`
-                    <p>
-                      <small
-                        >This invitation expires at
-                        ${req.body.expiresAt}.</small
-                      >
-                    </p>
-                  `}
+                : html`<p><small>Expires at ${req.body.expiresAt}.</small></p>`}
             `,
           });
         }
@@ -4513,6 +4503,68 @@ ${value}</textarea
     }
   );
 
+  function sendEmail({
+    to,
+    subject,
+    body,
+  }: {
+    to: string;
+    subject: string;
+    body: string;
+  }): void {
+    database.run(
+      sql`INSERT INTO "emailsQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
+    );
+    // TODO: The worker that sends emails on non-demonstration mode. Kick the worker to wake up from here (as well as periodically just in case…)
+  }
+
+  app.get<{}, HTML, {}, {}, {}>("/emails", (req, res, next) => {
+    if (!app.get("demonstration")) return next();
+
+    const emails = database.all<{
+      createdAt: string;
+      to: string;
+      subject: string;
+      body: string;
+    }>(
+      sql`SELECT "createdAt", "to", "subject", "body" FROM "emailsQueue" ORDER BY "id" DESC`
+    );
+
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`
+          <title>
+            Demonstration Inbox · CourseLore · The Open-Source Student Forum
+          </title>
+        `,
+        html`
+          <h1>Demonstration Inbox</h1>
+
+          <p>
+            CourseLore doesn’t send emails in demonstration mode. Here are the
+            emails that would have been sent:
+          </p>
+
+          $${emails.map(
+            (email) => html`
+              <details>
+                <summary>
+                  <strong>${email.subject}</strong>
+                  <span class="hint"
+                    >${email.to} · <time>${email.createdAt}</time></span
+                  >
+                </summary>
+                $${email.body}
+              </details>
+            `
+          )}
+        `
+      )
+    );
+  });
+
   app.all<
     {},
     HTML,
@@ -4589,49 +4641,6 @@ ${value}</textarea
       )
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
-
-  function sendEmail({
-    reference,
-    to,
-    subject,
-    body,
-  }: {
-    reference: string;
-    to: string;
-    subject: string;
-    body: string;
-  }): void {
-    database.run(
-      sql`
-        INSERT INTO "emailsQueue" ("reference", "to", "subject", "body")
-        VALUES (${reference}, ${to}, ${subject}, ${body})
-        ON CONFLICT ("reference")
-        DO UPDATE SET "to" = ${to}, "subject" = ${subject}, "body" = ${body}
-      `
-    );
-  }
-
-  function getEmail(reference: string): HTML {
-    const email = database.get<{ to: string; subject: string; body: string }>(
-      sql`SELECT "to", "subject", "body" FROM "emailsQueue" WHERE "reference" = ${reference}`
-    );
-    if (email === undefined) throw new Error();
-    return app.get("demonstration")
-      ? html`
-          <div class="demonstration">
-            <p>
-              CourseLore doesn’t send emails in demonstration mode. Here’s what
-              would have been sent:
-            </p>
-            <p><strong>From:</strong> CourseLore</p>
-            <p><strong>To:</strong> ${email.to}</p>
-            <p><strong>Subject:</strong> ${email.subject}</p>
-            <p><strong>Body:</strong></p>
-            $${email.body}
-          </div>
-        `
-      : html``;
-  }
 
   const loading = (() => {
     let counter = 0;
