@@ -238,6 +238,7 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
+        "reference" TEXT NOT NULL UNIQUE,
         "to" TEXT NOT NULL,
         "subject" TEXT NOT NULL,
         "body" TEXT NOT NULL
@@ -4590,17 +4591,31 @@ ${value}</textarea
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
   function sendEmail({
+    reference,
     to,
     subject,
     body,
   }: {
+    reference: string;
     to: string;
     subject: string;
     body: string;
-  }): HTML {
+  }): void {
     database.run(
-      sql`INSERT INTO "emailsQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
+      sql`
+        INSERT INTO "emailsQueue" ("reference", "to", "subject", "body")
+        VALUES (${reference}, ${to}, ${subject}, ${body})
+        ON CONFLICT ("reference")
+        DO UPDATE SET "to" = ${to}, "subject" = ${subject}, "body" = ${body}
+      `
     );
+  }
+
+  function getEmail(reference: string): HTML {
+    const email = database.get<{ to: string; subject: string; body: string }>(
+      sql`SELECT "to", "subject", "body" FROM "emailsQueue" WHERE "reference" = ${reference}`
+    );
+    if (email === undefined) throw new Error();
     return app.get("demonstration")
       ? html`
           <div class="demonstration">
@@ -4609,10 +4624,10 @@ ${value}</textarea
               would have been sent:
             </p>
             <p><strong>From:</strong> CourseLore</p>
-            <p><strong>To:</strong> ${to}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>To:</strong> ${email.to}</p>
+            <p><strong>Subject:</strong> ${email.subject}</p>
             <p><strong>Body:</strong></p>
-            $${body}
+            $${email.body}
           </div>
         `
       : html``;
