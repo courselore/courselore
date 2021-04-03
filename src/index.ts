@@ -712,7 +712,7 @@ export default async function courselore(
                   `}"
                 >
                   <a
-                    href="${app.get("url")}/emails"
+                    href="${app.get("url")}/demonstration-inbox"
                     title="Go to the demonstration inbox"
                     style="${css`
                       text-decoration: none;
@@ -1448,7 +1448,7 @@ export default async function courselore(
                     <p>
                       <strong>
                         CourseLore doesn’t send emails in demonstration mode.
-                        <a href="${app.get("url")}/emails"
+                        <a href="${app.get("url")}/demonstration-inbox"
                           >Go to the demonstration inbox</a
                         >.
                       </strong>
@@ -4518,7 +4518,7 @@ ${value}</textarea
     // TODO: The worker that sends emails on non-demonstration mode. Kick the worker to wake up from here (as well as periodically just in case…)
   }
 
-  app.get<{}, HTML, {}, {}, {}>("/emails", (req, res, next) => {
+  app.get<{}, HTML, {}, {}, {}>("/demonstration-inbox", (req, res, next) => {
     if (!app.get("demonstration")) return next();
 
     const emails = database.all<{
