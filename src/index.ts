@@ -713,7 +713,8 @@ export default async function courselore(
                 >
                   <a
                     href="${app.get("url")}/demonstration-inbox"
-                    title="Go to the demonstration inbox"
+                    title="Go to the Demonstration 
+                    Inbox"
                     style="${css`
                       text-decoration: none;
                     `}"
@@ -1449,7 +1450,7 @@ export default async function courselore(
                       <strong>
                         CourseLore doesn’t send emails in demonstration mode.
                         <a href="${app.get("url")}/demonstration-inbox"
-                          >Go to the demonstration inbox</a
+                          >Go to the Demonstration Inbox</a
                         >.
                       </strong>
                     </p>
