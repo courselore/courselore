@@ -23,14 +23,13 @@ beforeEach(async () => {
       rejectPublicSuffixes: false,
     }),
   });
-  const authenticationPage = JSDOM.fragment(
-    (
-      await client.post("authenticate", {
-        form: { email: "leandro@courselore.org" },
-      })
-    ).body
+  await client.post("authenticate", {
+    form: { email: "leandro@courselore.org" },
+  });
+  const demonstrationInbox = JSDOM.fragment(
+    (await client.get("demonstration-inbox")).body
   );
-  const nonce = authenticationPage
+  const nonce = demonstrationInbox
     .querySelector(`a[href^="${app.get("url")}/authenticate/"]`)!
     .getAttribute("href")!
     .slice(`${app.get("url")}/authenticate/`.length);
