@@ -593,8 +593,17 @@ Insiders Builds are generated on every push. They’re useful for development an
 <summary>2021-04-03</summary>
 
 - Progress:
+  - Fixed the bug that was causing my name to appear in a post created by Dr. Scott (it was a simple mistake in one of the queries I DRYed up last week 🙄)
   - I forgot to mention last week, but I came with a solution for images working in light vs dark background: I simply added a background color to transparent images…
+  - Finished invitation links.
+    - Timezone issues.
+  - Editing threads and posts.
+  - Started invitation emails.
+  - Experimented with [Turbo](https://turbo.hotwire.dev).
 - Next week:
+  - Finish invitation emails.
+  - Update threads when other people post.
+  - Focus on forum features like **tags** (both on threads and on the posts), upvotes & notifications.
   - Manage enrollments.
 
 </details>
