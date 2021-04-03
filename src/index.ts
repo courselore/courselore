@@ -6,6 +6,7 @@ import express from "express";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import { asyncHandler } from "@leafac/express-async-handler";
+import qs from "qs";
 import validator from "validator";
 import emailAddresses from "email-addresses";
 
@@ -183,6 +184,18 @@ export default async function courselore(
         "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
         UNIQUE ("course", "reference")
+      );
+
+      CREATE TABLE "invitationEmails" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "expiresAt" TEXT NULL,
+        "usedAt" TEXT NULL,
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "email" TEXT NOT NULL,
+        "name" TEXT NULL,
+        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+        UNIQUE ("course", "email")
       );
 
       CREATE TABLE "threads" (
@@ -2358,7 +2371,9 @@ export default async function courselore(
 
                 <hr />
 
-                <p id="invitations"><strong>Invite with a link</strong></p>
+                <a id="invitations"></a>
+                <a id="invitation-links"></a>
+                <p><strong>Invite with a link</strong></p>
                 <p class="hint">
                   Anyone with an invitation link may enroll in the course.
                 </p>
@@ -2500,12 +2515,18 @@ export default async function courselore(
 
                 <hr />
 
+                <a id="invitation-emails"></a>
                 <p><strong>Invite via email</strong></p>
                 <p class="hint">
-                  Only the people with an invitation email may enroll in the
+                  Only people who receive an invitation email may enroll in the
                   course.
                 </p>
-                <form>
+                <form
+                  method="POST"
+                  action="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}/invitation-emails"
+                >
                   <div
                     style="${css`
                       display: flex;
@@ -2593,7 +2614,10 @@ export default async function courselore(
                           const emails = emailAddresses.parseAddressList(this.value);
                           if (
                             emails === null ||
-                            !emails.every((email) => validator.isEmail(email.address))
+                            emails.find(
+                              (email) =>
+                                email.type !== "mailbox" || !validator.isEmail(email.address)
+                            ) !== undefined
                           )
                             throw new ValidationError("Match the requested format");
                         `}"
@@ -3036,7 +3060,7 @@ export default async function courselore(
                     <a
                       href="${app.get("url")}/courses/${res.locals
                         .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                        .reference}/settings#invitations"
+                        .reference}/settings#invitation-links"
                       >create a new invitation link for another role</a
                     >.</small
                   >
@@ -3350,6 +3374,101 @@ export default async function courselore(
             </div>
           `
         )
+      );
+    }
+  );
+
+  app.post<
+    { courseReference: string },
+    HTML,
+    { role?: Role; expiresAt?: string; emails?: string },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitation-emails",
+    ...isCourseStaff,
+    (req, res) => {
+      if (
+        typeof req.body.role !== "string" ||
+        !ROLES.includes(req.body.role) ||
+        (req.body.expiresAt !== undefined &&
+          (typeof req.body.expiresAt !== "string" ||
+            isNaN(new Date(req.body.expiresAt).getTime()) ||
+            new Date(req.body.expiresAt).getTime() <= Date.now())) ||
+        typeof req.body.emails !== "string"
+      )
+        throw new ValidationError();
+
+      const emails = emailAddresses.parseAddressList(req.body.emails);
+      if (
+        emails === null ||
+        emails.find(
+          (email) =>
+            email.type !== "mailbox" || !validator.isEmail(email.address)
+        ) !== undefined
+      )
+        throw new ValidationError();
+
+      for (const email of emails as emailAddresses.ParsedMailbox[]) {
+        const changes = database.run(sql`
+          INSERT INTO "invitationEmails" ("expiresAt", "course", "email", "name", "role")
+          VALUES (
+            ${req.body.expiresAt},
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+            ${email.address},
+            ${email.name},
+            ${req.body.role}
+          )
+          ON CONFLICT ("course", "email")
+          DO UPDATE SET "expiresAt" = ${req.body.expiresAt},
+                        "name" = ${email.name},
+                        "role" = ${req.body.role}
+          WHERE "usedAt" ISNULL
+        `).changes;
+
+        if (changes === 1) {
+          const link = `${app.get("url")}/courses/${
+            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+              .reference
+          }/invitation-email?${qs.stringify({
+            email: email.address,
+            name: email.name === null ? undefined : email.name,
+          })}`;
+          sendEmail({
+            to: email.address,
+            subject: `Enroll in ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}`,
+            body: html`
+              <p>
+                Visit the following link to enroll in
+                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .name}:<br />
+                <a href="${link}">${link}</a>
+              </p>
+              $${req.body.expiresAt === undefined
+                ? html``
+                : html`
+                    <p>
+                      <small
+                        >This invitation expires at
+                        ${req.body.expiresAt}.</small
+                      >
+                    </p>
+                  `}
+            `,
+          });
+        }
+      }
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/settings#invitation-emails`
       );
     }
   );
@@ -4479,24 +4598,24 @@ ${value}</textarea
     subject: string;
     body: string;
   }): HTML {
-    if (app.get("demonstration"))
-      return html`
-        <div class="demonstration">
-          <p>
-            CourseLore doesn’t send emails in demonstration mode. Here’s what
-            would have been sent:
-          </p>
-          <p><strong>From:</strong> CourseLore</p>
-          <p><strong>To:</strong> ${to}</p>
-          <p><strong>Subject:</strong> ${subject}</p>
-          <p><strong>Body:</strong></p>
-          $${body}
-        </div>
-      `;
     database.run(
       sql`INSERT INTO "emailsQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
     );
-    return html``;
+    return app.get("demonstration")
+      ? html`
+          <div class="demonstration">
+            <p>
+              CourseLore doesn’t send emails in demonstration mode. Here’s what
+              would have been sent:
+            </p>
+            <p><strong>From:</strong> CourseLore</p>
+            <p><strong>To:</strong> ${to}</p>
+            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>Body:</strong></p>
+            $${body}
+          </div>
+        `
+      : html``;
   }
 
   const loading = (() => {
