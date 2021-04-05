@@ -4544,8 +4544,10 @@ ${value}</textarea
           <h1>Demonstration Inbox</h1>
 
           <p>
-            CourseLore doesn’t send emails in demonstration mode. Here are the
-            emails that would have been sent:
+            CourseLore doesn’t send emails in demonstration mode.
+            $${emails.length === 0
+              ? html`Emails that would have been sent will show up here instead.`
+              : html`Here are the emails that would have been sent:`}
           </p>
 
           $${emails.map(
