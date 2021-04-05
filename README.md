@@ -602,9 +602,9 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Experimented with [Turbo](https://turbo.hotwire.dev).
 - Next week:
   - Finish invitation emails.
+  - Manage enrollments.
   - Update threads when other people post.
   - Focus on forum features like **tags** (both on threads and on the posts), upvotes & notifications.
-  - Manage enrollments.
 
 </details>
 
