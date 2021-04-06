@@ -2535,7 +2535,13 @@ export default async function courselore(
                             (invitationEmail) =>
                               html`
                                 <p>
-                                  <strong>
+                                  <strong
+                                    class="$${invitationEmail.usedAt !== null
+                                      ? "green"
+                                      : isExpired(invitationEmail.expiresAt)
+                                      ? "red"
+                                      : ""}"
+                                  >
                                     ${invitationEmail.name === null
                                       ? invitationEmail.email
                                       : `${invitationEmail.name} <${invitationEmail.email}>`}
