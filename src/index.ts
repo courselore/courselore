@@ -166,6 +166,19 @@ export default async function courselore(
         "name" TEXT NOT NULL
       );
 
+      CREATE TABLE "invitations" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "expiresAt" TEXT NULL,
+        "usedAt" TEXT NULL,
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "reference" TEXT NOT NULL,
+        "email" TEXT NULL,
+        "name" TEXT NULL,
+        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+        UNIQUE ("course", "reference")
+      );
+
       CREATE TABLE "enrollments" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -174,29 +187,6 @@ export default async function courselore(
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
         "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
         UNIQUE ("user", "course")
-      );
-
-      CREATE TABLE "invitationLinks" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        UNIQUE ("course", "reference")
-      );
-
-      CREATE TABLE "invitationEmails" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NULL,
-        "usedAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "email" TEXT NOT NULL,
-        "name" TEXT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        UNIQUE ("course", "reference")
       );
 
       CREATE TABLE "threads" (
