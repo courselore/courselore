@@ -794,42 +794,57 @@ export default async function courselore(
             for (const element of document.querySelectorAll("input.datetime"))
               element.value = new Date(element.value).toLocaleString("sv");
 
-            class ValidationError extends Error {}
-
-            function validate(element) {
-              if (
-                typeof element.reportValidity !== "function" ||
-                element.matches("[disabled]")
-              )
-                return true;
-
-              if (element.matches("form"))
-                return [...element.querySelectorAll("*")].every(validate);
-
+            function isValid(element) {
               const resetters = [];
-              try {
-                if (element.matches("[required]"))
-                  if (element.value.trim() === "")
-                    throw new ValidationError("Fill out this field");
+              const isValid = (element.matches("form")
+                ? element.querySelectorAll("*")
+                : [element]
+              ).every((element) => {
+                if (
+                  typeof element.reportValidity !== "function" ||
+                  element.matches("[disabled]")
+                )
+                  return true;
+                const customValidity = customValidator(element);
+                if (typeof customValidity !== "string") return true;
+                element.setCustomValidity(customValidity);
+                resetters.push(() => {
+                  element.addEventListener(
+                    "input",
+                    () => {
+                      element.setCustomValidity("");
+                    },
+                    { once: true }
+                  );
+                });
+                return element.reportValidity();
+              });
 
-                if (element.matches('[type="email"]'))
-                  if (!validator.isEmail(element.value))
-                    throw new ValidationError("Enter an email address");
+              if (!isValid) for (const resetter of resetters) resetter();
+              return isValid;
+
+              function customValidator(element) {
+                if (
+                  element.matches("[required]") &&
+                  element.value.trim() === ""
+                )
+                  return "Fill out this field";
+
+                if (
+                  element.matches('[type="email"]') &&
+                  !validator.isEmail(element.value)
+                )
+                  return "Enter an email address";
 
                 if (element.matches("input.datetime")) {
                   if (
-                    element.value.match(
+                    !element.value.match(
                       ${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/}
-                    ) === null
+                    )
                   )
-                    throw new ValidationError(
-                      "Match the pattern YYYY-MM-DD HH:MM:SS"
-                    );
-
+                    return "Match the pattern YYYY-MM-DD HH:MM:SS";
                   const date = new Date(element.value.replace(" ", "T"));
-                  if (isNaN(date.getTime()))
-                    throw new ValidationError("Invalid datetime");
-
+                  if (isNaN(date.getTime())) return "Invalid datetime";
                   element.value = date.toISOString();
                   resetters.push(() => {
                     element.value = new Date(element.value).toLocaleString(
@@ -838,32 +853,15 @@ export default async function courselore(
                   });
                 }
 
-                if (element.matches("[data-onvalidate]"))
-                  new Function(element.dataset.onvalidate).call(element);
-              } catch (error) {
-                for (const resetter of resetters) resetter();
-
-                if (!(error instanceof ValidationError)) throw error;
-
-                element.setCustomValidity(
-                  error.message === "" ? "This field is invalid" : error.message
-                );
-                element.addEventListener(
-                  "input",
-                  () => {
-                    element.setCustomValidity("");
-                  },
-                  { once: true }
-                );
+                if (element.matches("[data-validator]"))
+                  return new Function(element.dataset.validator).call(element);
               }
-
-              return element.reportValidity();
             }
 
             document.body.addEventListener(
               "submit",
               (event) => {
-                if (validate(event.target))
+                if (isValid(event.target))
                   for (const button of event.target.querySelectorAll(
                     'button:not([type="button"])'
                   ))
@@ -2494,9 +2492,9 @@ export default async function courselore(
                             value="${new Date().toISOString()}"
                             required
                             disabled
-                            data-onvalidate="${javascript`
+                            data-validator="${javascript`
                               if (new Date(this.value).getTime() <= Date.now())
-                                throw new ValidationError("Must be in the future");
+                                return "Must be in the future";
                             `}"
                             class="full-width datetime"
                             style="${css`
@@ -2631,9 +2629,9 @@ export default async function courselore(
                             value="${new Date().toISOString()}"
                             required
                             disabled
-                            data-onvalidate="${javascript`
+                            data-validator="${javascript`
                               if (new Date(this.value).getTime() <= Date.now())
-                                throw new ValidationError("Must be in the future");
+                                return "Must be in the future";
                             `}"
                             class="full-width datetime"
                             style="${css`
@@ -2652,7 +2650,7 @@ export default async function courselore(
                         name="emails"
                         required
                         class="full-width"
-                        data-onvalidate="${javascript`
+                        data-validator="${javascript`
                           const emails = emailAddresses.parseAddressList(this.value);
                           if (
                             emails === null ||
@@ -2661,7 +2659,7 @@ export default async function courselore(
                                 email.type !== "mailbox" || !validator.isEmail(email.address)
                             ) !== undefined
                           )
-                            throw new ValidationError("Match the requested format");
+                            return "Match the requested format";
                         `}"
                       ></textarea
                       ><br />
@@ -3168,9 +3166,9 @@ export default async function courselore(
                             .expiresAt === null
                             ? `disabled`
                             : ``}
-                          data-onvalidate="${javascript`
+                          data-validator="${javascript`
                             if (new Date(this.value).getTime() <= Date.now())
-                              throw new ValidationError("Must be in the future");
+                              return "Must be in the future";
                           `}"
                           class="full-width datetime"
                           style="${css`
@@ -3787,7 +3785,7 @@ export default async function courselore(
               (async () => {
                 const textEditor = this.closest("div.text-editor");
                 const textarea = textEditor.querySelector("textarea");
-                if (!validate(textarea)) return;
+                if (!isValid(textarea)) return;
                 this.disabled = true;
                 const loading = textEditor.querySelector("div.loading");
                 textEditor.querySelector("div.write").hidden = true;
@@ -3823,7 +3821,7 @@ export default async function courselore(
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
                 const form = this.closest("form");
-                if (validate(form)) form.submit();
+                if (isValid(form)) form.submit();
               }
             `}"
           >
