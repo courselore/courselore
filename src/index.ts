@@ -2195,17 +2195,17 @@ export default async function courselore(
         name: string;
       }>(
         sql`
-          SELECT "invitationLinks"."id" AS "invitationLinkId",
-                 "invitationLinks"."expiresAt",
-                 "invitationLinks"."reference" AS "invitationLinkReference",
-                 "invitationLinks"."role",
+          SELECT "invitations"."id" AS "invitationLinkId",
+                 "invitations"."expiresAt",
+                 "invitations"."reference" AS "invitationLinkReference",
+                 "invitations"."role",
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
                  "courses"."name"
-          FROM "invitationLinks"
-          JOIN "courses" ON "invitationLinks"."course" = "courses"."id"
+          FROM "invitations"
+          JOIN "courses" ON "invitations"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference} AND
-                "invitationLinks"."reference" = ${req.params.invitationLinkReference}
+                "invitations"."reference" = ${req.params.invitationLinkReference}
         `
       );
       if (row === undefined) return next("route");
@@ -2257,10 +2257,171 @@ export default async function courselore(
     },
   ];
 
-  // TODO: Process email addresses
-  // https://www.npmjs.com/package/email-addresses
-  // https://www.npmjs.com/package/addressparser
-  // https://www.npmjs.com/package/emailjs-mime-codec
+  /*
+const invitationLinks = database.all<InvitationLink>(
+  sql`
+    SELECT "id", "expiresAt", "reference", "role"
+    FROM "invitationLinks"
+    WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+    ORDER BY "id" DESC
+  `
+);
+const invitationEmails = database.all<{
+  expiresAt: string | null;
+  usedAt: string | null;
+  reference: string;
+  email: string;
+  name: string | null;
+  role: Role;
+}>(sql`
+  SELECT "expiresAt", "usedAt", "reference", "email", "name", "role"
+  FROM "invitationEmails"
+  WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+  ORDER BY "id" DESC
+`);
+
+
+
+
+                $${invitationLinks.length === 0
+                  ? html``
+                  : html`
+                      <details>
+                        <summary><strong>Existing Invitations</strong></summary>
+                        <nav>
+                          $${invitationLinks.map(
+                            (invitationLink) => html`
+                              <a
+                                href="${app.get("url")}/courses/${res.locals
+                                  .enrollmentJoinCourseJoinThreadsWithMetadata
+                                  .course
+                                  .reference}/invitations/${invitationLink.reference}"
+                                class="${isExpired(invitationLink.expiresAt)
+                                  ? "red"
+                                  : "green"}"
+                                style="${css`
+                                  display: block;
+                                `}"
+                              >
+                                <p>
+                                  <code>
+                                    ${app.get("url")}/courses/${res.locals
+                                      .enrollmentJoinCourseJoinThreadsWithMetadata
+                                      .course
+                                      .reference}/invitations/${"*".repeat(
+                                      6
+                                    )}${invitationLink.reference.slice(6)}
+                                  </code>
+                                </p>
+                                <p class="hint">
+                                  ${lodash.capitalize(invitationLink.role)} ·
+                                  $${invitationLink.expiresAt === null
+                                    ? html`Doesn’t expire`
+                                    : html`${isExpired(invitationLink.expiresAt)
+                                          ? "Expired"
+                                          : "Expires"}
+                                        <time
+                                          >${invitationLink.expiresAt}</time
+                                        >`}
+                                </p>
+                              </a>
+                            `
+                          )}
+                        </nav>
+                      </details>
+                    `}
+
+
+
+
+                    $${invitationEmails.length === 0
+                      ? html``
+                      : html`
+                          <details>
+                            <summary>
+                              <strong>Existing Invitations</strong>
+                            </summary>
+                            $${invitationEmails.map(
+                              (invitationEmail) =>
+                                html`
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      justify-content: space-between;
+                                    `}"
+                                  >
+                                    <p>
+                                      <strong
+                                        class="$${invitationEmail.usedAt !== null
+                                          ? "green"
+                                          : isExpired(invitationEmail.expiresAt)
+                                          ? "red"
+                                          : ""}"
+                                      >
+                                        ${invitationEmail.name === null
+                                          ? invitationEmail.email
+                                          : `${invitationEmail.name} <${invitationEmail.email}>`}
+                                      </strong>
+                                      <small class="hint"
+                                        >$${invitationEmail.usedAt !== null
+                                          ? html`<span class="green">Used</span>`
+                                          : isExpired(invitationEmail.expiresAt)
+                                          ? html`<span class="red">Expired</span>`
+                                          : html`<span>Pending</span>`} ·
+                                        ${lodash.capitalize(invitationEmail.role)} ·
+                                        $${invitationEmail.expiresAt === null
+                                          ? html`Doesn’t expire`
+                                          : html`${isExpired(
+                                                invitationEmail.expiresAt
+                                              )
+                                                ? "Expired"
+                                                : "Expires"}
+                                              <time
+                                                >${invitationEmail.expiresAt}</time
+                                              >`}</small
+                                      >
+                                    </p>
+    
+                                    <div
+                                      style="${css`
+                                        display: flex;
+                                        & > * + * {
+                                          margin-left: 1rem;
+                                        }
+                                      `}"
+                                    >
+                                      $${invitationEmail.usedAt === null &&
+                                      !isExpired(invitationEmail.expiresAt)
+                                        ? html`
+                                            <form
+                                              method="POST"
+                                              action="${app.get(
+                                                "url"
+                                              )}/courses/${res.locals
+                                                .enrollmentJoinCourseJoinThreadsWithMetadata
+                                                .course
+                                                .reference}/invitation-emails/${invitationEmail.reference}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="expireNow"
+                                                value="true"
+                                              />
+                                              <p>
+                                                <button class="red">
+                                                  Expire Invitation Now
+                                                </button>
+                                              </p>
+                                            </form>
+                                          `
+                                        : html``}
+                                    </div>
+                                  </div>
+                                `
+                            )}
+                          </details>
+                        `}
+    */
   app.get<
     { courseReference: string },
     HTML,
@@ -2707,7 +2868,12 @@ export default async function courselore(
   app.post<
     { courseReference: string },
     HTML,
-    { role?: Role; expiresAt?: string },
+    {
+      role?: Role;
+      expiresAt?: string;
+      sharing?: "link" | "emails";
+      emails?: string;
+    },
     {},
     {
       user: User;
@@ -2725,31 +2891,134 @@ export default async function courselore(
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             isNaN(new Date(req.body.expiresAt).getTime()) ||
-            isExpired(req.body.expiresAt)))
+            isExpired(req.body.expiresAt))) ||
+        typeof req.body.sharing !== "string" ||
+        !["link", "emails"].includes(req.body.sharing)
       )
         return next("validation");
 
-      const invitationLinkReference = cryptoRandomString({
-        length: 10,
-        type: "numeric",
-      });
+      switch (req.body.sharing) {
+        case "link":
+          const invitationLinkReference = cryptoRandomString({
+            length: 10,
+            type: "numeric",
+          });
+          database.run(sql`
+            INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
+            VALUES (
+              ${req.body.expiresAt},
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+              ${invitationLinkReference},
+              ${req.body.role}
+            )
+          `);
+          res.redirect(
+            `${app.get("url")}/courses/${
+              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .reference
+            }/invitations/${invitationLinkReference}`
+          );
+          break;
 
-      database.run(sql`
-      INSERT INTO "invitationLinks" ("expiresAt", "course", "reference", "role")
-      VALUES (
-        ${req.body.expiresAt},
-        ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-        ${invitationLinkReference},
-        ${req.body.role}
-      )
-    `);
+        case "emails":
+          if (typeof req.body.emails !== "string") return next("validation");
+          const emails = emailAddresses.parseAddressList(req.body.emails);
+          if (
+            emails === null ||
+            emails.find(
+              (email) =>
+                email.type !== "mailbox" || !validator.isEmail(email.address)
+            ) !== undefined
+          )
+            return next("validation");
 
-      res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/invitations/${invitationLinkReference}`
-      );
+          for (const email of emails as emailAddresses.ParsedMailbox[]) {
+            if (
+              database.get<{ exists: number }>(sql`
+                  SELECT EXISTS(
+                    SELECT 1
+                    FROM "enrollments"
+                    JOIN "users" ON "enrollments"."user" = "users"."id"
+                    WHERE "enrollments"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                          "users"."email" = ${email.address}
+                  ) AS "exists"
+                `)!.exists === 1
+            )
+              continue;
+
+            const existingPendingInvitation = database.get<{
+              id: number;
+              name: string | null;
+            }>(sql`
+                SELECT "id", "name"
+                FROM "invitations"
+                WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                      "email" = ${email.address} AND
+                      "usedAt" IS NULL
+              `);
+            if (existingPendingInvitation !== undefined) {
+              database.run(sql`
+                UPDATE "invitations"
+                SET "expiresAt" = ${req.body.expiresAt},
+                    "name" = ${email.name ?? existingPendingInvitation.name},
+                    "role" = ${req.body.role}
+                WHERE "id" = ${existingPendingInvitation.id}
+              `);
+              continue;
+            }
+
+            const invitationLinkReference = cryptoRandomString({
+              length: 10,
+              type: "numeric",
+            });
+            database.run(sql`
+              INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
+              VALUES (
+                ${req.body.expiresAt},
+                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+                ${invitationLinkReference},
+                ${email.address},
+                ${email.name},
+                ${req.body.role}
+              )
+            `);
+
+            const link = `${app.get("url")}/courses/${
+              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .reference
+            }/invitations/${invitationLinkReference}`;
+            sendEmail({
+              to: email.address,
+              subject: `Enroll in ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}`,
+              body: html`
+                <p>
+                  Visit the following link to enroll in
+                  ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                    .course.name}:<br />
+                  <a href="${link}">${link}</a>
+                </p>
+                $${req.body.expiresAt === undefined
+                  ? html``
+                  : html`
+                      <p>
+                        <small>
+                          Expires at
+                          ${new Date(req.body.expiresAt).toISOString()}.
+                        </small>
+                      </p>
+                    `}
+              `,
+            });
+          }
+
+          res.redirect(
+            `${app.get("url")}/courses/${
+              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .reference
+            }/settings#invitations`
+          );
+          break;
+      }
     }
   );
 
@@ -3043,13 +3312,13 @@ export default async function courselore(
           return next("validation");
 
         database.run(
-          sql`UPDATE "invitationLinks" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationLinkJoinCourse.invitationLink.id}`
+          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationLinkJoinCourse.invitationLink.id}`
         );
       }
 
       if (req.body.expireNow === "true")
         database.run(
-          sql`UPDATE "invitationLinks" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
+          sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
             res.locals.invitationLinkJoinCourse.invitationLink.id
           }`
         );
@@ -3238,168 +3507,6 @@ export default async function courselore(
             </div>
           `
         )
-      );
-    }
-  );
-
-  app.post<
-    { courseReference: string },
-    HTML,
-    { role?: Role; expiresAt?: string; emails?: string },
-    {},
-    {
-      user: User;
-      enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-    }
-  >(
-    "/courses/:courseReference/invitation-emails",
-    ...isCourseStaff,
-    (req, res, next) => {
-      if (
-        typeof req.body.role !== "string" ||
-        !ROLES.includes(req.body.role) ||
-        (req.body.expiresAt !== undefined &&
-          (typeof req.body.expiresAt !== "string" ||
-            isNaN(new Date(req.body.expiresAt).getTime()) ||
-            isExpired(req.body.expiresAt))) ||
-        typeof req.body.emails !== "string"
-      )
-        return next("validation");
-      const emails = emailAddresses.parseAddressList(req.body.emails);
-      if (
-        emails === null ||
-        emails.find(
-          (email) =>
-            email.type !== "mailbox" || !validator.isEmail(email.address)
-        ) !== undefined
-      )
-        return next("validation");
-
-      for (const email of emails as emailAddresses.ParsedMailbox[]) {
-        if (
-          database.get<{ exists: number }>(sql`
-            SELECT EXISTS(
-              SELECT 1
-              FROM "enrollments"
-              JOIN "users" ON "enrollments"."user" = "users"."id"
-              WHERE "enrollments"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
-                    "users"."email" = ${email.address}
-            ) AS "exists"
-          `)!.exists === 1
-        )
-          continue;
-
-        const existingPendingInvitationEmail = database.get<{
-          id: number;
-          name: string | null;
-        }>(sql`
-          SELECT "id", "name"
-          FROM "invitationEmails"
-          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
-                "email" = ${email.address} AND
-                "usedAt" IS NULL
-        `);
-        if (existingPendingInvitationEmail !== undefined) {
-          database.run(sql`
-            UPDATE "invitationEmails"
-            SET "expiresAt" = ${req.body.expiresAt},
-                "name" = ${email.name ?? existingPendingInvitationEmail.name},
-                "role" = ${req.body.role}
-            WHERE "id" = ${existingPendingInvitationEmail.id}
-          `);
-          continue;
-        }
-
-        database.run(sql`
-          INSERT INTO "invitationEmails" ("expiresAt", "reference", "course", "email", "name", "role")
-          VALUES (
-            ${req.body.expiresAt},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-            ${email.address},
-            ${email.name},
-            ${req.body.role}
-          )
-        `);
-
-        const link = `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/invitation-email?${qs.stringify({
-          email: email.address,
-          name: email.name === null ? undefined : email.name,
-        })}`;
-        sendEmail({
-          to: email.address,
-          subject: `Enroll in ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}`,
-          body: html`
-            <p>
-              Visit the following link to enroll in
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .name}:<br />
-              <a href="${link}">${link}</a>
-            </p>
-            $${req.body.expiresAt === undefined
-              ? html``
-              : html`
-                  <p>
-                    <small>
-                      Expires at ${new Date(req.body.expiresAt).toISOString()}.
-                    </small>
-                  </p>
-                `}
-          `,
-        });
-      }
-
-      res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/settings#invitation-emails`
-      );
-    }
-  );
-
-  app.post<
-    { courseReference: string; invitationEmail: string },
-    HTML,
-    { expireNow?: "true" },
-    {},
-    {
-      user: User;
-      enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-    }
-  >(
-    "/courses/:courseReference/invitation-emails/:invitationEmail",
-    ...isCourseStaff,
-    (req, res, next) => {
-      const invitationEmail = database.get<{ id: number }>(sql`
-        SELECT "id"
-        FROM "invitationEmails"
-        WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
-              "email" = ${req.params.invitationEmail} AND
-              CURRENT_TIMESTAMP < datetime("expiresAt") AND
-              "usedAt" IS NULL
-      `);
-      if (invitationEmail === undefined) return next();
-
-      if (req.body.expireNow === "true")
-        database.run(sql`
-          UPDATE "invitationEmails"
-          SET "expiresAt" = ${new Date().toISOString()}
-          WHERE "id" = ${invitationEmail.id}
-        `);
-
-      res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/settings#invitation-emails`
       );
     }
   );
