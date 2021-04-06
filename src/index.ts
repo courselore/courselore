@@ -1395,12 +1395,12 @@ export default async function courselore(
   app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
     "/authenticate",
     ...isUnauthenticated,
-    (req, res) => {
+    (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
         !validator.isEmail(req.body.email)
       )
-        throw new ValidationError();
+        return next("validation error");
 
       const magicAuthenticationLink = `${app.get(
         "url"
@@ -1569,14 +1569,14 @@ export default async function courselore(
     { nonce?: string; name?: string },
     { redirect?: string },
     {}
-  >("/users", ...isUnauthenticated, (req, res) => {
+  >("/users", ...isUnauthenticated, (req, res, next) => {
     if (
       typeof req.body.nonce !== "string" ||
       req.body.nonce.trim() === "" ||
       typeof req.body.name !== "string" ||
       req.body.name.trim() === ""
     )
-      throw new ValidationError();
+      return next("validation error");
 
     const email = verifyAuthenticationNonce(req.body.nonce);
     if (
@@ -1890,9 +1890,9 @@ export default async function courselore(
     { name?: string },
     {},
     { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
-  >("/settings", ...isAuthenticated, (req, res) => {
+  >("/settings", ...isAuthenticated, (req, res, next) => {
     if (typeof req.body.name === "string") {
-      if (req.body.name.trim() === "") throw new ValidationError();
+      if (req.body.name.trim() === "") return next("validation error");
       database.run(
         sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
       );
@@ -1943,9 +1943,9 @@ export default async function courselore(
     { name?: string },
     {},
     { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
-  >("/courses", ...isAuthenticated, (req, res) => {
+  >("/courses", ...isAuthenticated, (req, res, next) => {
     if (typeof req.body.name !== "string" || req.body.name.trim() === "")
-      throw new ValidationError();
+      return next("validation error");
 
     const courseReference = cryptoRandomString({ length: 10, type: "numeric" });
     const newCourseId = database.run(
@@ -2860,32 +2860,37 @@ export default async function courselore(
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
-  >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
-    if (
-      typeof req.body.name === "string" &&
-      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
-        "staff"
-    ) {
-      if (req.body.name.trim() === "") throw new ValidationError();
-      database.run(
-        sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}`
+  >(
+    "/courses/:courseReference/settings",
+    ...isEnrolledInCourse,
+    (req, res, next) => {
+      if (
+        typeof req.body.name === "string" &&
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
+          .role === "staff"
+      ) {
+        if (req.body.name.trim() === "") return next("validation error");
+        database.run(
+          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}`
+        );
+      }
+
+      if (typeof req.body.accentColor === "string") {
+        if (!ACCENT_COLORS.includes(req.body.accentColor))
+          return next("validation error");
+        database.run(
+          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id}`
+        );
+      }
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/settings`
       );
     }
-
-    if (typeof req.body.accentColor === "string") {
-      if (!ACCENT_COLORS.includes(req.body.accentColor))
-        throw new ValidationError();
-      database.run(
-        sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id}`
-      );
-    }
-
-    res.redirect(
-      `${app.get("url")}/courses/${
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
-      }/settings`
-    );
-  });
+  );
 
   app.post<
     { courseReference: string },
@@ -2898,23 +2903,26 @@ export default async function courselore(
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
-  >("/courses/:courseReference/invitations", ...isCourseStaff, (req, res) => {
-    if (
-      typeof req.body.role !== "string" ||
-      !ROLES.includes(req.body.role) ||
-      (req.body.expiresAt !== undefined &&
-        (typeof req.body.expiresAt !== "string" ||
-          isNaN(new Date(req.body.expiresAt).getTime()) ||
-          isExpired(req.body.expiresAt)))
-    )
-      throw new ValidationError();
+  >(
+    "/courses/:courseReference/invitations",
+    ...isCourseStaff,
+    (req, res, next) => {
+      if (
+        typeof req.body.role !== "string" ||
+        !ROLES.includes(req.body.role) ||
+        (req.body.expiresAt !== undefined &&
+          (typeof req.body.expiresAt !== "string" ||
+            isNaN(new Date(req.body.expiresAt).getTime()) ||
+            isExpired(req.body.expiresAt)))
+      )
+        return next("validation error");
 
-    const invitationLinkReference = cryptoRandomString({
-      length: 10,
-      type: "numeric",
-    });
+      const invitationLinkReference = cryptoRandomString({
+        length: 10,
+        type: "numeric",
+      });
 
-    database.run(sql`
+      database.run(sql`
       INSERT INTO "invitationLinks" ("expiresAt", "course", "reference", "role")
       VALUES (
         ${req.body.expiresAt},
@@ -2924,12 +2932,14 @@ export default async function courselore(
       )
     `);
 
-    res.redirect(
-      `${app.get("url")}/courses/${
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
-      }/invitations/${invitationLinkReference}`
-    );
-  });
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/invitations/${invitationLinkReference}`
+      );
+    }
+  );
 
   app.get<
     { courseReference: string; invitationLinkReference: string },
@@ -3210,7 +3220,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitations/:invitationLinkReference",
     ...mayManageInvitationLink,
-    (req, res) => {
+    (req, res, next) => {
       if (req.body.changeExpiration === "true") {
         if (
           req.body.expiresAt !== undefined &&
@@ -3218,7 +3228,7 @@ export default async function courselore(
             isNaN(new Date(req.body.expiresAt).getTime()) ||
             isExpired(req.body.expiresAt))
         )
-          throw new ValidationError();
+          return next("validation error");
 
         database.run(
           sql`UPDATE "invitationLinks" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationLinkJoinCourse.invitationLink.id}`
@@ -3434,7 +3444,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitation-emails",
     ...isCourseStaff,
-    (req, res) => {
+    (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
         !ROLES.includes(req.body.role) ||
@@ -3444,7 +3454,7 @@ export default async function courselore(
             isExpired(req.body.expiresAt))) ||
         typeof req.body.emails !== "string"
       )
-        throw new ValidationError();
+        return next("validation error");
       const emails = emailAddresses.parseAddressList(req.body.emails);
       if (
         emails === null ||
@@ -3453,7 +3463,7 @@ export default async function courselore(
             email.type !== "mailbox" || !validator.isEmail(email.address)
         ) !== undefined
       )
-        throw new ValidationError();
+        return next("validation error");
 
       for (const email of emails as emailAddresses.ParsedMailbox[]) {
         if (
@@ -3854,9 +3864,9 @@ ${value}</textarea
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
-  >("/preview", ...isAuthenticated, (req, res) => {
+  >("/preview", ...isAuthenticated, (req, res, next) => {
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
-      throw new ValidationError();
+      return next("validation error");
 
     res.send(app.get("text processor")(req.body.content));
   });
@@ -3935,26 +3945,29 @@ ${value}</textarea
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
-  >("/courses/:courseReference/threads", ...isEnrolledInCourse, (req, res) => {
-    if (
-      typeof req.body.title !== "string" ||
-      req.body.title.trim() === "" ||
-      typeof req.body.content !== "string" ||
-      req.body.content.trim() === ""
-    )
-      throw new ValidationError();
+  >(
+    "/courses/:courseReference/threads",
+    ...isEnrolledInCourse,
+    (req, res, next) => {
+      if (
+        typeof req.body.title !== "string" ||
+        req.body.title.trim() === "" ||
+        typeof req.body.content !== "string" ||
+        req.body.content.trim() === ""
+      )
+        return next("validation error");
 
-    const newThreadReference =
-      database.get<{ newThreadReference: string }>(
-        sql`
+      const newThreadReference =
+        database.get<{ newThreadReference: string }>(
+          sql`
           SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
           FROM "threads"
           WHERE "threads"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
         `
-      )?.newThreadReference ?? "1";
+        )?.newThreadReference ?? "1";
 
-    const threadId = database.run(
-      sql`
+      const threadId = database.run(
+        sql`
         INSERT INTO "threads" ("course", "reference", "title")
         VALUES (
           ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
@@ -3962,9 +3975,9 @@ ${value}</textarea
           ${req.body.title}
         )
       `
-    ).lastInsertRowid;
-    database.run(
-      sql`
+      ).lastInsertRowid;
+      database.run(
+        sql`
         INSERT INTO "posts" ("thread", "reference", "author", "content")
         VALUES (
           ${threadId},
@@ -3975,14 +3988,16 @@ ${value}</textarea
           ${req.body.content}
         )
       `
-    );
+      );
 
-    res.redirect(
-      `${app.get("url")}/courses/${
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
-      }/threads/${newThreadReference}`
-    );
-  });
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/threads/${newThreadReference}`
+      );
+    }
+  );
 
   const isThreadAccessible: express.RequestHandler<
     { courseReference: string; threadReference: string },
@@ -4461,9 +4476,9 @@ ${value}</textarea
   >(
     "/courses/:courseReference/threads/:threadReference",
     ...mayEditThreadMiddleware,
-    (req, res) => {
+    (req, res, next) => {
       if (typeof req.body.title === "string")
-        if (req.body.title.trim() === "") throw new ValidationError();
+        if (req.body.title.trim() === "") return next("validation error");
         else
           database.run(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}`
@@ -4496,12 +4511,12 @@ ${value}</textarea
   >(
     "/courses/:courseReference/threads/:threadReference/posts",
     ...isThreadAccessible,
-    (req, res) => {
+    (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
         req.body.content.trim() === ""
       )
-        throw new ValidationError();
+        return next("validation error");
 
       const newPostReference = database.get<{ newPostReference: string }>(
         sql`
@@ -4551,12 +4566,12 @@ ${value}</textarea
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
     ...mayEditPostMiddleware,
-    (req, res) => {
+    (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
         req.body.content.trim() === ""
       )
-        throw new ValidationError();
+        return next("validation error");
 
       database.run(
         sql`
@@ -4698,11 +4713,9 @@ ${value}</textarea
     );
   });
 
-  class ValidationError extends Error {}
-
   app.use(((err, req, res, next) => {
     console.error(err);
-    const type = err instanceof ValidationError ? "Validation" : "Server";
+    const type = err === "validation error" ? "Validation" : "Server";
     res.status(type === "Validation" ? 422 : 500).send(
       app.get("layout main")(
         req,
