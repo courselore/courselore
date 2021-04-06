@@ -2527,21 +2527,17 @@ export default async function courselore(
                     ? html``
                     : html`
                         <details>
-                          <summary>Existing Invitations</summary>
+                          <summary>
+                            <strong>Existing Invitations</strong>
+                          </summary>
                           $${invitationEmails.map(
                             (invitationEmail) =>
                               html`
                                 <p>
-                                  <strong
-                                    class="${isExpired(
-                                      invitationEmail.expiresAt
-                                    )
-                                      ? "red"
-                                      : "green"}"
-                                  >
+                                  <strong>
                                     ${invitationEmail.name === null
                                       ? invitationEmail.email
-                                      : `${invitationEmail.name} <${invitationEmail}>`}
+                                      : `${invitationEmail.name} <${invitationEmail.email}>`}
                                   </strong>
                                   <small class="hint"
                                     >${lodash.capitalize(invitationEmail.role)}
