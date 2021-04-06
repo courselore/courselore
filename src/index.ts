@@ -192,9 +192,11 @@ export default async function courselore(
         "expiresAt" TEXT NULL,
         "usedAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "reference" TEXT NOT NULL,
         "email" TEXT NOT NULL,
         "name" TEXT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff'))
+        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+        UNIQUE ("course", "reference")
       );
 
       CREATE TABLE "threads" (
@@ -2292,11 +2294,12 @@ export default async function courselore(
     const invitationEmails = database.all<{
       expiresAt: string | null;
       usedAt: string | null;
+      reference: string;
       email: string;
       name: string | null;
       role: Role;
     }>(sql`
-      SELECT "expiresAt", "usedAt", "email", "name", "role"
+      SELECT "expiresAt", "usedAt", "reference", "email", "name", "role"
       FROM "invitationEmails"
       WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
       ORDER BY "id" DESC
@@ -2512,22 +2515,22 @@ export default async function courselore(
                   Only people who receive an invitation email may enroll in the
                   course.
                 </p>
-                <form
-                  method="POST"
-                  action="${app.get("url")}/courses/${res.locals
-                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                    .reference}/invitation-emails"
-                >
-                  $${invitationEmails.length === 0
-                    ? html``
-                    : html`
-                        <details>
-                          <summary>
-                            <strong>Existing Invitations</strong>
-                          </summary>
-                          $${invitationEmails.map(
-                            (invitationEmail) =>
-                              html`
+                $${invitationEmails.length === 0
+                  ? html``
+                  : html`
+                      <details>
+                        <summary>
+                          <strong>Existing Invitations</strong>
+                        </summary>
+                        $${invitationEmails.map(
+                          (invitationEmail) =>
+                            html`
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  justify-content: space-between;
+                                `}"
+                              >
                                 <p>
                                   <strong
                                     class="$${invitationEmail.usedAt !== null
@@ -2559,10 +2562,52 @@ export default async function courselore(
                                           >`}</small
                                   >
                                 </p>
-                              `
-                          )}
-                        </details>
-                      `}
+
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                    & > * + * {
+                                      margin-left: 1rem;
+                                    }
+                                  `}"
+                                >
+                                  $${invitationEmail.usedAt === null &&
+                                  !isExpired(invitationEmail.expiresAt)
+                                    ? html`
+                                        <form
+                                          method="POST"
+                                          action="${app.get(
+                                            "url"
+                                          )}/courses/${res.locals
+                                            .enrollmentJoinCourseJoinThreadsWithMetadata
+                                            .course
+                                            .reference}/invitation-emails/${invitationEmail.reference}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="expireNow"
+                                            value="true"
+                                          />
+                                          <p>
+                                            <button class="red">
+                                              Expire Invitation Now
+                                            </button>
+                                          </p>
+                                        </form>
+                                      `
+                                    : html``}
+                                </div>
+                              </div>
+                            `
+                        )}
+                      </details>
+                    `}
+                <form
+                  method="POST"
+                  action="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}/invitation-emails"
+                >
                   <div
                     style="${css`
                       display: flex;
@@ -3495,9 +3540,10 @@ export default async function courselore(
         }
 
         database.run(sql`
-          INSERT INTO "invitationEmails" ("expiresAt", "course", "email", "name", "role")
+          INSERT INTO "invitationEmails" ("expiresAt", "reference", "course", "email", "name", "role")
           VALUES (
             ${req.body.expiresAt},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
             ${email.address},
             ${email.name},
@@ -3534,6 +3580,47 @@ export default async function courselore(
           `,
         });
       }
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/settings#invitation-emails`
+      );
+    }
+  );
+
+  app.post<
+    { courseReference: string; invitationEmail: string },
+    HTML,
+    { expireNow?: "true" },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    }
+  >(
+    "/courses/:courseReference/invitation-emails/:invitationEmail",
+    ...isCourseStaff,
+    (req, res, next) => {
+      const invitationEmail = database.get<{ id: number }>(sql`
+        SELECT "id"
+        FROM "invitationEmails"
+        WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+              "email" = ${req.params.invitationEmail} AND
+              CURRENT_TIMESTAMP < datetime("expiresAt") AND
+              "usedAt" IS NULL
+      `);
+      if (invitationEmail === undefined) return next();
+
+      if (req.body.expireNow === "true")
+        database.run(sql`
+          UPDATE "invitationEmails"
+          SET "expiresAt" = ${new Date().toISOString()}
+          WHERE "id" = ${invitationEmail.id}
+        `);
 
       res.redirect(
         `${app.get("url")}/courses/${
