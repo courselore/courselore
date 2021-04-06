@@ -3483,7 +3483,7 @@ export default async function courselore(
                 "email" = ${email.address} AND
                 "usedAt" IS NULL
         `);
-        if (existingPendingInvitationEmail !== undefined)
+        if (existingPendingInvitationEmail !== undefined) {
           database.run(sql`
             UPDATE "invitationEmails"
             SET "expiresAt" = ${req.body.expiresAt},
@@ -3491,48 +3491,48 @@ export default async function courselore(
                 "role" = ${req.body.role}
             WHERE "id" = ${existingPendingInvitationEmail.id}
           `);
-        else {
-          database.run(sql`
-            INSERT INTO "invitationEmails" ("expiresAt", "course", "email", "name", "role")
-            VALUES (
-              ${req.body.expiresAt},
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-              ${email.address},
-              ${email.name},
-              ${req.body.role}
-            )
-          `);
-
-          const link = `${app.get("url")}/courses/${
-            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-              .reference
-          }/invitation-email?${qs.stringify({
-            email: email.address,
-            name: email.name === null ? undefined : email.name,
-          })}`;
-          sendEmail({
-            to: email.address,
-            subject: `Enroll in ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}`,
-            body: html`
-              <p>
-                Visit the following link to enroll in
-                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .name}:<br />
-                <a href="${link}">${link}</a>
-              </p>
-              $${req.body.expiresAt === undefined
-                ? html``
-                : html`
-                    <p>
-                      <small>
-                        Expires at
-                        ${new Date(req.body.expiresAt).toISOString()}.
-                      </small>
-                    </p>
-                  `}
-            `,
-          });
+          continue;
         }
+
+        database.run(sql`
+          INSERT INTO "invitationEmails" ("expiresAt", "course", "email", "name", "role")
+          VALUES (
+            ${req.body.expiresAt},
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+            ${email.address},
+            ${email.name},
+            ${req.body.role}
+          )
+        `);
+
+        const link = `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/invitation-email?${qs.stringify({
+          email: email.address,
+          name: email.name === null ? undefined : email.name,
+        })}`;
+        sendEmail({
+          to: email.address,
+          subject: `Enroll in ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}`,
+          body: html`
+            <p>
+              Visit the following link to enroll in
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .name}:<br />
+              <a href="${link}">${link}</a>
+            </p>
+            $${req.body.expiresAt === undefined
+              ? html``
+              : html`
+                  <p>
+                    <small>
+                      Expires at ${new Date(req.body.expiresAt).toISOString()}.
+                    </small>
+                  </p>
+                `}
+          `,
+        });
       }
 
       res.redirect(
