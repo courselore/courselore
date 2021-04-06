@@ -2254,13 +2254,6 @@ export default async function courselore(
     }
   >[] = [...invitationLinkExists, ...isCourseStaff];
 
-  function isInvitationLinkValid(invitationLink: InvitationLink): boolean {
-    return (
-      invitationLink.expiresAt === null ||
-      Date.now() < new Date(invitationLink.expiresAt).getTime()
-    );
-  }
-
   const isInvitationLinkUsable: express.RequestHandler<
     { courseReference: string; invitationLinkReference: string },
     any,
@@ -2271,12 +2264,10 @@ export default async function courselore(
     ...invitationLinkExists,
     (req, res, next) => {
       if (
-        isInvitationLinkValid(
-          res.locals.invitationLinkJoinCourse.invitationLink
-        )
+        isExpired(res.locals.invitationLinkJoinCourse.invitationLink.expiresAt)
       )
-        return next();
-      next("route");
+        return next("route");
+      next();
     },
   ];
 
@@ -2399,9 +2390,9 @@ export default async function courselore(
                                   .enrollmentJoinCourseJoinThreadsWithMetadata
                                   .course
                                   .reference}/invitations/${invitationLink.reference}"
-                                class="${isInvitationLinkValid(invitationLink)
-                                  ? "green"
-                                  : "red"}"
+                                class="${isExpired(invitationLink.expiresAt)
+                                  ? "red"
+                                  : "green"}"
                                 style="${css`
                                   display: block;
                                 `}"
@@ -3019,11 +3010,10 @@ export default async function courselore(
               </p>
             </nav>
 
-            $${isInvitationLinkValid(
-              res.locals.invitationLinkJoinCourse.invitationLink
+            $${isExpired(
+              res.locals.invitationLinkJoinCourse.invitationLink.expiresAt
             )
-              ? html``
-              : html`
+              ? html`
                   <div
                     style="${css`
                       text-align: center;
@@ -3039,7 +3029,8 @@ export default async function courselore(
                       the <a href="#expiration">form at the end of the page</a>.
                     </p>
                   </div>
-                `}
+                `
+              : html``}
 
             <p>
               <strong>Invitation link</strong><br />
@@ -3182,10 +3173,11 @@ export default async function courselore(
                   <p><button class="full-width">Change Expiration</button></p>
                 </form>
 
-                $${isInvitationLinkValid(
-                  res.locals.invitationLinkJoinCourse.invitationLink
+                $${isExpired(
+                  res.locals.invitationLinkJoinCourse.invitationLink.expiresAt
                 )
-                  ? html`
+                  ? html``
+                  : html`
                       <form method="POST" action="${link}?_method=PATCH">
                         <input type="hidden" name="expireNow" value="true" />
                         <p>
@@ -3194,8 +3186,7 @@ export default async function courselore(
                           </button>
                         </p>
                       </form>
-                    `
-                  : html``}
+                    `}
               </div>
             </div>
           `
@@ -4788,6 +4779,10 @@ ${value}</textarea
       `;
     };
   })();
+
+  function isExpired(expiresAt: string | null): boolean {
+    return expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
+  }
 
   return app;
 }
