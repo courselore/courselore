@@ -2304,6 +2304,17 @@ export default async function courselore(
         ORDER BY "id" DESC
       `
     );
+    const invitationEmails = database.all<{
+      expiresAt: string;
+      email: string;
+      name?: string;
+      role: Role;
+    }>(sql`
+      SELECT "expiresAt", "email", "name", "role"
+      FROM "invitationEmails"
+      WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+      ORDER BY "id" DESC
+    `);
 
     res.send(
       app.get("layout main")(
@@ -2524,6 +2535,49 @@ export default async function courselore(
                     .enrollmentJoinCourseJoinThreadsWithMetadata.course
                     .reference}/invitation-emails"
                 >
+                  $${invitationEmails.length === 0
+                    ? html``
+                    : html`
+                        <details>
+                          <summary>Existing Invitations</summary>
+                          $${invitationEmails.map(
+                            (invitationEmail) =>
+                              html`
+                                <p>
+                                  <strong
+                                    class="${invitationEmail.expiresAt ===
+                                      null ||
+                                    Date.now() <
+                                      new Date(
+                                        invitationEmail.expiresAt
+                                      ).getTime()
+                                      ? "green"
+                                      : "red"}"
+                                  >
+                                    ${invitationEmail.name === null
+                                      ? invitationEmail.email
+                                      : `${invitationEmail.name} <${invitationEmail}>`}
+                                  </strong>
+                                  <small class="hint"
+                                    >${lodash.capitalize(invitationEmail.role)}
+                                    ·
+                                    $${invitationEmail.expiresAt === null
+                                      ? html`Doesn’t expire`
+                                      : html`${Date.now() <
+                                          new Date(
+                                            invitationEmail.expiresAt
+                                          ).getTime()
+                                            ? "Expires"
+                                            : "Expired"}
+                                          <time
+                                            >${invitationEmail.expiresAt}</time
+                                          >`}</small
+                                  >
+                                </p>
+                              `
+                          )}
+                        </details>
+                      `}
                   <div
                     style="${css`
                       display: flex;
