@@ -194,7 +194,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "email" TEXT NOT NULL,
         "name" TEXT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff'))
       );
 
       CREATE TABLE "threads" (
@@ -3471,7 +3471,7 @@ export default async function courselore(
           FROM "invitationEmails"
           WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
                 "email" = ${email.address} AND
-                ISNULL("usedAt")
+                "usedAt" IS NULL
         `);
         if (existingPendingInvitationEmail !== undefined)
           database.run(sql`
