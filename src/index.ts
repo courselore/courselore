@@ -797,7 +797,7 @@ export default async function courselore(
             function isValid(element) {
               const resetters = [];
               const isValid = (element.matches("form")
-                ? element.querySelectorAll("*")
+                ? [...element.querySelectorAll("*")]
                 : [element]
               ).every((element) => {
                 if (
@@ -858,18 +858,14 @@ export default async function courselore(
               }
             }
 
-            document.body.addEventListener(
-              "submit",
-              (event) => {
-                if (isValid(event.target))
-                  for (const button of event.target.querySelectorAll(
-                    'button:not([type="button"])'
-                  ))
-                    button.disabled = true;
-                else event.preventDefault();
-              },
-              true
-            );
+            document.body.addEventListener("submit", (event) => {
+              if (isValid(event.target))
+                for (const button of event.target.querySelectorAll(
+                  'button:not([type="button"])'
+                ))
+                  button.disabled = true;
+              else event.preventDefault();
+            });
           </script>
         `
       )
