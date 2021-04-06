@@ -2273,28 +2273,6 @@ export default async function courselore(
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
-    const invitationLinks = database.all<InvitationLink>(
-      sql`
-        SELECT "id", "expiresAt", "reference", "role"
-        FROM "invitationLinks"
-        WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-        ORDER BY "id" DESC
-      `
-    );
-    const invitationEmails = database.all<{
-      expiresAt: string | null;
-      usedAt: string | null;
-      reference: string;
-      email: string;
-      name: string | null;
-      role: Role;
-    }>(sql`
-      SELECT "expiresAt", "usedAt", "reference", "email", "name", "role"
-      FROM "invitationEmails"
-      WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-      ORDER BY "id" DESC
-    `);
-
     res.send(
       app.get("layout main")(
         req,
@@ -2358,9 +2336,7 @@ export default async function courselore(
 
                 <hr />
 
-                <a id="invitations"></a>
-                <p><strong>Invitations</strong></p>
-
+                <p id="invitations"><strong>Invitations</strong></p>
                 <form
                   method="POST"
                   action="${app.get("url")}/courses/${res.locals
@@ -2458,7 +2434,9 @@ export default async function courselore(
                       />
                       Invitation link
                       <small class="hint">
-                        Anyone with an invitation link may enroll.
+                        Create an invitation link that you must share with other
+                        people yourself. The link may be used multiple times.
+                        Anyone with an invitation link may enroll in the course.
                       </small>
                     </label>
                     <br />
@@ -2476,6 +2454,11 @@ export default async function courselore(
                         `}"
                       />
                       Invitation emails
+                      <small class="hint">
+                        Send invitation emails to the people listed below. Each
+                        person receives an individual invitation that may be
+                        used only once.
+                      </small>
                     </label>
                     <br />
                     <textarea
@@ -2484,18 +2467,18 @@ export default async function courselore(
                       class="full-width"
                       disabled
                       data-validator="${javascript`
-                          const emails = emailAddresses.parseAddressList(this.value);
-                          if (
-                            emails === null ||
-                            emails.find(
-                              (email) =>
-                                email.type !== "mailbox" || !validator.isEmail(email.address)
-                            ) !== undefined
-                          )
-                            return "Match the requested format";
-                        `}"
-                    ></textarea
-                    ><br />
+                        const emails = emailAddresses.parseAddressList(this.value);
+                        if (
+                          emails === null ||
+                          emails.find(
+                            (email) =>
+                              email.type !== "mailbox" || !validator.isEmail(email.address)
+                          ) !== undefined
+                        )
+                          return "Match the requested format";
+                      `}"
+                    ></textarea>
+                    <br />
                     <small class="full-width hint">
                       Emails must be separated by commas and may include names.
                       <br />
