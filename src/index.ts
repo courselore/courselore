@@ -119,8 +119,8 @@ export default async function courselore(
   }
 
   const ANONYMOUS = {
-    enrollment: { id: undefined, role: undefined, accentColor: undefined },
-    user: { id: undefined, email: undefined, name: "Anonymous" },
+    enrollment: { id: null, role: null, accentColor: null },
+    user: { id: null, email: null, name: "Anonymous" },
   } as const;
   type Anonymous = typeof ANONYMOUS;
 
@@ -190,11 +190,11 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "expiresAt" TEXT NULL,
+        "usedAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "email" TEXT NOT NULL,
         "name" TEXT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        UNIQUE ("course", "email")
       );
 
       CREATE TABLE "threads" (
@@ -2022,12 +2022,12 @@ export default async function courselore(
           title: string;
           createdAt: string;
           updatedAt: string;
-          authorEnrollmentId?: number;
-          role?: Role;
-          accentColor?: AccentColor;
-          authorUserId?: number;
-          email?: string;
-          name?: string;
+          authorEnrollmentId: number | null;
+          role: Role | null;
+          accentColor: AccentColor | null;
+          authorUserId: number | null;
+          email: string | null;
+          name: string | null;
         }>(
           sql`
             SELECT "threads"."id" AS "threadId",
@@ -2058,7 +2058,7 @@ export default async function courselore(
           createdAt: row.createdAt,
           updatedAt: row.updatedAt,
           author:
-            row.authorEnrollmentId !== undefined
+            row.authorEnrollmentId !== null
               ? {
                   enrollment: {
                     id: row.authorEnrollmentId!,
@@ -2201,7 +2201,7 @@ export default async function courselore(
     (req, res, next) => {
       const row = database.get<{
         invitationLinkId: number;
-        expiresAt: string;
+        expiresAt: string | null;
         invitationLinkReference: string;
         role: Role;
         courseId: number;
@@ -2296,12 +2296,13 @@ export default async function courselore(
       `
     );
     const invitationEmails = database.all<{
-      expiresAt: string;
+      expiresAt: string | null;
+      usedAt: string | null;
       email: string;
-      name?: string;
+      name: string | null;
       role: Role;
     }>(sql`
-      SELECT "expiresAt", "email", "name", "role"
+      SELECT "expiresAt", "usedAt", "email", "name", "role"
       FROM "invitationEmails"
       WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
       ORDER BY "id" DESC
@@ -2540,8 +2541,12 @@ export default async function courselore(
                                       : `${invitationEmail.name} <${invitationEmail.email}>`}
                                   </strong>
                                   <small class="hint"
-                                    >${lodash.capitalize(invitationEmail.role)}
-                                    ·
+                                    >$${invitationEmail.usedAt !== null
+                                      ? html`<span class="green">Used</span>`
+                                      : isExpired(invitationEmail.expiresAt)
+                                      ? html`<span class="red">Expired</span>`
+                                      : html`<span>Pending</span>`} ·
+                                    ${lodash.capitalize(invitationEmail.role)} ·
                                     $${invitationEmail.expiresAt === null
                                       ? html`Doesn’t expire`
                                       : html`${isExpired(
@@ -3458,24 +3463,23 @@ export default async function courselore(
         )
           continue;
 
-        const existingInvitation = database.get<{
-          name: string;
+        const existingPendingInvitationEmail = database.get<{
+          id: number;
+          name: string | null;
         }>(sql`
-          SELECT "name"
+          SELECT "id", "name"
           FROM "invitationEmails"
           WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
-                "email" = ${email.address}
+                "email" = ${email.address} AND
+                ISNULL("usedAt")
         `);
-        if (existingInvitation !== undefined)
+        if (existingPendingInvitationEmail !== undefined)
           database.run(sql`
             UPDATE "invitationEmails"
             SET "expiresAt" = ${req.body.expiresAt},
-                "name" = ${email.name ?? existingInvitation.name},
+                "name" = ${email.name ?? existingPendingInvitationEmail.name},
                 "role" = ${req.body.role}
-            WHERE "course" = ${
-              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id
-            } AND
-                  "email" = ${email.address}
+            WHERE "id" = ${existingPendingInvitationEmail.id}
           `);
         else {
           database.run(sql`
@@ -4001,12 +4005,12 @@ ${value}</textarea
           updatedAt: string;
           reference: string;
           content: string;
-          authorEnrollmentId?: number;
-          role?: Role;
-          accentColor?: AccentColor;
-          authorUserId?: number;
-          email?: string;
-          name?: string;
+          authorEnrollmentId: number | null;
+          role: Role | null;
+          accentColor: AccentColor | null;
+          authorUserId: number | null;
+          email: string | null;
+          name: string | null;
         }>(
           sql`
             SELECT "posts"."id" AS "postId",
@@ -4036,7 +4040,7 @@ ${value}</textarea
             content: row.content,
           },
           author:
-            row.authorEnrollmentId !== undefined
+            row.authorEnrollmentId !== null
               ? {
                   enrollment: {
                     id: row.authorEnrollmentId!,
