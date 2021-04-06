@@ -2261,7 +2261,7 @@ export default async function courselore(
     );
   }
 
-  const isInvitationLinkValidMiddleware: express.RequestHandler<
+  const isInvitationLinkUsable: express.RequestHandler<
     { courseReference: string; invitationLinkReference: string },
     any,
     {},
@@ -3266,7 +3266,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkValidMiddleware,
+    ...isInvitationLinkUsable,
     ...isEnrolledInCourse,
     (req, res) => {
       res.send(
@@ -3311,7 +3311,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkValidMiddleware,
+    ...isInvitationLinkUsable,
     ...isAuthenticated,
     (req, res) => {
       res.send(
@@ -3357,7 +3357,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkValidMiddleware,
+    ...isInvitationLinkUsable,
     ...isAuthenticated,
     (req, res) => {
       database.run(
@@ -3390,7 +3390,7 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkValidMiddleware,
+    ...isInvitationLinkUsable,
     ...isUnauthenticated,
     (req, res) => {
       res.send(
