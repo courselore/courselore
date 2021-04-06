@@ -1400,7 +1400,7 @@ export default async function courselore(
         typeof req.body.email !== "string" ||
         !validator.isEmail(req.body.email)
       )
-        return next("validation error");
+        return next("validation");
 
       const magicAuthenticationLink = `${app.get(
         "url"
@@ -1576,7 +1576,7 @@ export default async function courselore(
       typeof req.body.name !== "string" ||
       req.body.name.trim() === ""
     )
-      return next("validation error");
+      return next("validation");
 
     const email = verifyAuthenticationNonce(req.body.nonce);
     if (
@@ -1892,7 +1892,7 @@ export default async function courselore(
     { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
   >("/settings", ...isAuthenticated, (req, res, next) => {
     if (typeof req.body.name === "string") {
-      if (req.body.name.trim() === "") return next("validation error");
+      if (req.body.name.trim() === "") return next("validation");
       database.run(
         sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
       );
@@ -1945,7 +1945,7 @@ export default async function courselore(
     { user: User; enrollmentsJoinCourses: EnrollmentJoinCourse[] }
   >("/courses", ...isAuthenticated, (req, res, next) => {
     if (typeof req.body.name !== "string" || req.body.name.trim() === "")
-      return next("validation error");
+      return next("validation");
 
     const courseReference = cryptoRandomString({ length: 10, type: "numeric" });
     const newCourseId = database.run(
@@ -2869,7 +2869,7 @@ export default async function courselore(
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
           .role === "staff"
       ) {
-        if (req.body.name.trim() === "") return next("validation error");
+        if (req.body.name.trim() === "") return next("validation");
         database.run(
           sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}`
         );
@@ -2877,7 +2877,7 @@ export default async function courselore(
 
       if (typeof req.body.accentColor === "string") {
         if (!ACCENT_COLORS.includes(req.body.accentColor))
-          return next("validation error");
+          return next("validation");
         database.run(
           sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id}`
         );
@@ -2915,7 +2915,7 @@ export default async function courselore(
             isNaN(new Date(req.body.expiresAt).getTime()) ||
             isExpired(req.body.expiresAt)))
       )
-        return next("validation error");
+        return next("validation");
 
       const invitationLinkReference = cryptoRandomString({
         length: 10,
@@ -3228,7 +3228,7 @@ export default async function courselore(
             isNaN(new Date(req.body.expiresAt).getTime()) ||
             isExpired(req.body.expiresAt))
         )
-          return next("validation error");
+          return next("validation");
 
         database.run(
           sql`UPDATE "invitationLinks" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationLinkJoinCourse.invitationLink.id}`
@@ -3454,7 +3454,7 @@ export default async function courselore(
             isExpired(req.body.expiresAt))) ||
         typeof req.body.emails !== "string"
       )
-        return next("validation error");
+        return next("validation");
       const emails = emailAddresses.parseAddressList(req.body.emails);
       if (
         emails === null ||
@@ -3463,7 +3463,7 @@ export default async function courselore(
             email.type !== "mailbox" || !validator.isEmail(email.address)
         ) !== undefined
       )
-        return next("validation error");
+        return next("validation");
 
       for (const email of emails as emailAddresses.ParsedMailbox[]) {
         if (
@@ -3866,7 +3866,7 @@ ${value}</textarea
     }
   >("/preview", ...isAuthenticated, (req, res, next) => {
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
-      return next("validation error");
+      return next("validation");
 
     res.send(app.get("text processor")(req.body.content));
   });
@@ -3955,7 +3955,7 @@ ${value}</textarea
         typeof req.body.content !== "string" ||
         req.body.content.trim() === ""
       )
-        return next("validation error");
+        return next("validation");
 
       const newThreadReference =
         database.get<{ newThreadReference: string }>(
@@ -4478,7 +4478,7 @@ ${value}</textarea
     ...mayEditThreadMiddleware,
     (req, res, next) => {
       if (typeof req.body.title === "string")
-        if (req.body.title.trim() === "") return next("validation error");
+        if (req.body.title.trim() === "") return next("validation");
         else
           database.run(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}`
@@ -4516,7 +4516,7 @@ ${value}</textarea
         typeof req.body.content !== "string" ||
         req.body.content.trim() === ""
       )
-        return next("validation error");
+        return next("validation");
 
       const newPostReference = database.get<{ newPostReference: string }>(
         sql`
@@ -4571,7 +4571,7 @@ ${value}</textarea
         typeof req.body.content !== "string" ||
         req.body.content.trim() === ""
       )
-        return next("validation error");
+        return next("validation");
 
       database.run(
         sql`
@@ -4715,14 +4715,15 @@ ${value}</textarea
 
   app.use(((err, req, res, next) => {
     console.error(err);
-    const type = err === "validation error" ? "Validation" : "Server";
-    res.status(type === "Validation" ? 422 : 500).send(
+    const isValidation = err === "validation";
+    const message = isValidation ? "Validation" : "Server";
+    res.status(isValidation ? 422 : 500).send(
       app.get("layout main")(
         req,
         res,
-        html`<title>${type} Error · CourseLore</title>`,
+        html`<title>${message} Error · CourseLore</title>`,
         html`
-          <h1>${type} Error</h1>
+          <h1>${message} Error</h1>
 
           <p>
             This is an issue in CourseLore; please report to
