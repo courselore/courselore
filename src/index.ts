@@ -2369,59 +2369,7 @@ export default async function courselore(
                 <hr />
 
                 <a id="invitations"></a>
-                <a id="invitation-links"></a>
-                <p><strong>Invite with a link</strong></p>
-                <p class="hint">
-                  Anyone with an invitation link may enroll in the course.
-                </p>
-
-                $${invitationLinks.length === 0
-                  ? html``
-                  : html`
-                      <details>
-                        <summary><strong>Existing Invitations</strong></summary>
-                        <nav>
-                          $${invitationLinks.map(
-                            (invitationLink) => html`
-                              <a
-                                href="${app.get("url")}/courses/${res.locals
-                                  .enrollmentJoinCourseJoinThreadsWithMetadata
-                                  .course
-                                  .reference}/invitations/${invitationLink.reference}"
-                                class="${isExpired(invitationLink.expiresAt)
-                                  ? "red"
-                                  : "green"}"
-                                style="${css`
-                                  display: block;
-                                `}"
-                              >
-                                <p>
-                                  <code>
-                                    ${app.get("url")}/courses/${res.locals
-                                      .enrollmentJoinCourseJoinThreadsWithMetadata
-                                      .course
-                                      .reference}/invitations/${"*".repeat(
-                                      6
-                                    )}${invitationLink.reference.slice(6)}
-                                  </code>
-                                </p>
-                                <p class="hint">
-                                  ${lodash.capitalize(invitationLink.role)} ·
-                                  $${invitationLink.expiresAt === null
-                                    ? html`Doesn’t expire`
-                                    : html`${isExpired(invitationLink.expiresAt)
-                                          ? "Expired"
-                                          : "Expires"}
-                                        <time
-                                          >${invitationLink.expiresAt}</time
-                                        >`}
-                                </p>
-                              </a>
-                            `
-                          )}
-                        </nav>
-                      </details>
-                    `}
+                <p><strong>Invitations</strong></p>
 
                 <form
                   method="POST"
@@ -2432,6 +2380,7 @@ export default async function courselore(
                   <div
                     style="${css`
                       display: flex;
+                      margin: -1rem 0;
 
                       & > * {
                         flex: 1;
@@ -2504,194 +2453,47 @@ export default async function courselore(
                       </label>
                     </p>
                   </div>
-                  <p><button>Create Invitation Link</button></p>
-                </form>
-
-                <hr />
-
-                <a id="invitation-emails"></a>
-                <p><strong>Invite via email</strong></p>
-                <p class="hint">
-                  Only people who receive an invitation email may enroll in the
-                  course.
-                </p>
-                $${invitationEmails.length === 0
-                  ? html``
-                  : html`
-                      <details>
-                        <summary>
-                          <strong>Existing Invitations</strong>
-                        </summary>
-                        $${invitationEmails.map(
-                          (invitationEmail) =>
-                            html`
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  justify-content: space-between;
-                                `}"
-                              >
-                                <p>
-                                  <strong
-                                    class="$${invitationEmail.usedAt !== null
-                                      ? "green"
-                                      : isExpired(invitationEmail.expiresAt)
-                                      ? "red"
-                                      : ""}"
-                                  >
-                                    ${invitationEmail.name === null
-                                      ? invitationEmail.email
-                                      : `${invitationEmail.name} <${invitationEmail.email}>`}
-                                  </strong>
-                                  <small class="hint"
-                                    >$${invitationEmail.usedAt !== null
-                                      ? html`<span class="green">Used</span>`
-                                      : isExpired(invitationEmail.expiresAt)
-                                      ? html`<span class="red">Expired</span>`
-                                      : html`<span>Pending</span>`} ·
-                                    ${lodash.capitalize(invitationEmail.role)} ·
-                                    $${invitationEmail.expiresAt === null
-                                      ? html`Doesn’t expire`
-                                      : html`${isExpired(
-                                            invitationEmail.expiresAt
-                                          )
-                                            ? "Expired"
-                                            : "Expires"}
-                                          <time
-                                            >${invitationEmail.expiresAt}</time
-                                          >`}</small
-                                  >
-                                </p>
-
-                                <div
-                                  style="${css`
-                                    display: flex;
-                                    & > * + * {
-                                      margin-left: 1rem;
-                                    }
-                                  `}"
-                                >
-                                  $${invitationEmail.usedAt === null &&
-                                  !isExpired(invitationEmail.expiresAt)
-                                    ? html`
-                                        <form
-                                          method="POST"
-                                          action="${app.get(
-                                            "url"
-                                          )}/courses/${res.locals
-                                            .enrollmentJoinCourseJoinThreadsWithMetadata
-                                            .course
-                                            .reference}/invitation-emails/${invitationEmail.reference}?_method=PATCH"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="expireNow"
-                                            value="true"
-                                          />
-                                          <p>
-                                            <button class="red">
-                                              Expire Invitation Now
-                                            </button>
-                                          </p>
-                                        </form>
-                                      `
-                                    : html``}
-                                </div>
-                              </div>
-                            `
-                        )}
-                      </details>
-                    `}
-                <form
-                  method="POST"
-                  action="${app.get("url")}/courses/${res.locals
-                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                    .reference}/invitation-emails"
-                >
-                  <div
-                    style="${css`
-                      display: flex;
-
-                      & > * {
-                        flex: 1;
-                      }
-
-                      & > * + * {
-                        margin-left: 2rem;
-                      }
-                    `}"
-                  >
-                    <p>
-                      <label>
-                        <strong>Role</strong><br />
-                        <select name="role" required class="full-width">
-                          $${ROLES.map(
-                            (role) =>
-                              html`
-                                <option value="${role}">
-                                  ${lodash.capitalize(role)}
-                                </option>
-                              `
-                          )}
-                        </select>
-                      </label>
-                    </p>
-
-                    <p>
-                      <label>
-                        <strong>Expiration</strong><br />
-                        <span
-                          style="${css`
-                            display: flex;
-                            align-items: baseline;
-
-                            & > * + * {
-                              margin-left: 0.5rem !important;
-                            }
-                          `}"
-                        >
-                          <span>
-                            <input
-                              type="checkbox"
-                              onchange="${javascript`
-                                const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                expiresAt.disabled = !this.checked;
-                                if (this.checked) {
-                                  expiresAt.focus();
-                                  expiresAt.setSelectionRange(0, 0);
-                                }
-                              `}"
-                            />
-                          </span>
-                          <span>Expires at</span>
-                          <input
-                            type="text"
-                            name="expiresAt"
-                            value="${new Date().toISOString()}"
-                            required
-                            disabled
-                            data-validator="${javascript`
-                              if (new Date(this.value).getTime() <= Date.now())
-                                return "Must be in the future";
-                            `}"
-                            class="full-width datetime"
-                            style="${css`
-                              flex: 1 !important;
-                            `}"
-                          />
-                        </span>
-                      </label>
-                    </p>
-                  </div>
-
                   <p>
+                    <strong>Sharing</strong><br />
                     <label>
-                      <strong>Emails</strong><br />
-                      <textarea
-                        name="emails"
+                      <input
+                        type="radio"
+                        name="sharing"
+                        value="link"
                         required
-                        class="full-width"
-                        data-validator="${javascript`
+                        checked
+                        onchange="${javascript`
+                          this.closest("p").querySelector('[name="emails"]').disabled = true;
+                        `}"
+                      />
+                      Invitation link
+                      <small class="hint">
+                        Anyone with an invitation link may enroll.
+                      </small>
+                    </label>
+                    <br />
+                    <label>
+                      <input
+                        type="radio"
+                        name="sharing"
+                        value="emails"
+                        required
+                        onchange="${javascript`
+                          const emails = this.closest("p").querySelector('[name="emails"]');
+                          emails.disabled = false;
+                          emails.focus();
+                          emails.setSelectionRange(0, 0);
+                        `}"
+                      />
+                      Invitation emails
+                    </label>
+                    <br />
+                    <textarea
+                      name="emails"
+                      required
+                      class="full-width"
+                      disabled
+                      data-validator="${javascript`
                           const emails = emailAddresses.parseAddressList(this.value);
                           if (
                             emails === null ||
@@ -2702,20 +2504,18 @@ export default async function courselore(
                           )
                             return "Match the requested format";
                         `}"
-                      ></textarea
-                      ><br />
-                      <small class="full-width hint">
-                        Emails must be separated by commas and may include
-                        names.
-                        <br />
-                        Example:
-                        <code
-                          >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
-                        >
-                      </small>
-                    </label>
+                    ></textarea
+                    ><br />
+                    <small class="full-width hint">
+                      Emails must be separated by commas and may include names.
+                      <br />
+                      Example:
+                      <code
+                        >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
+                      >
+                    </small>
                   </p>
-                  <p><button>Invite</button></p>
+                  <p><button>Create Invitation</button></p>
                 </form>
 
                 <hr />
@@ -3151,7 +2951,7 @@ export default async function courselore(
                     <a
                       href="${app.get("url")}/courses/${res.locals
                         .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                        .reference}/settings#invitation-links"
+                        .reference}/settings"
                       >create a new invitation link for another role</a
                     >.</small
                   >
