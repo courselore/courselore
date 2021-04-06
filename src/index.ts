@@ -2411,12 +2411,9 @@ export default async function courselore(
                                   ${lodash.capitalize(invitationLink.role)} ·
                                   $${invitationLink.expiresAt === null
                                     ? html`Doesn’t expire`
-                                    : html`${Date.now() <
-                                        new Date(
-                                          invitationLink.expiresAt
-                                        ).getTime()
-                                          ? "Expires"
-                                          : "Expired"}
+                                    : html`${isExpired(invitationLink.expiresAt)
+                                          ? "Expired"
+                                          : "Expires"}
                                         <time
                                           >${invitationLink.expiresAt}</time
                                         >`}
@@ -2536,14 +2533,11 @@ export default async function courselore(
                               html`
                                 <p>
                                   <strong
-                                    class="${invitationEmail.expiresAt ===
-                                      null ||
-                                    Date.now() <
-                                      new Date(
-                                        invitationEmail.expiresAt
-                                      ).getTime()
-                                      ? "green"
-                                      : "red"}"
+                                    class="${isExpired(
+                                      invitationEmail.expiresAt
+                                    )
+                                      ? "red"
+                                      : "green"}"
                                   >
                                     ${invitationEmail.name === null
                                       ? invitationEmail.email
@@ -2554,12 +2548,11 @@ export default async function courselore(
                                     ·
                                     $${invitationEmail.expiresAt === null
                                       ? html`Doesn’t expire`
-                                      : html`${Date.now() <
-                                          new Date(
+                                      : html`${isExpired(
                                             invitationEmail.expiresAt
-                                          ).getTime()
-                                            ? "Expires"
-                                            : "Expired"}
+                                          )
+                                            ? "Expired"
+                                            : "Expires"}
                                           <time
                                             >${invitationEmail.expiresAt}</time
                                           >`}</small
@@ -2905,7 +2898,7 @@ export default async function courselore(
       (req.body.expiresAt !== undefined &&
         (typeof req.body.expiresAt !== "string" ||
           isNaN(new Date(req.body.expiresAt).getTime()) ||
-          new Date(req.body.expiresAt).getTime() <= Date.now()))
+          isExpired(req.body.expiresAt)))
     )
       throw new ValidationError();
 
@@ -3216,7 +3209,7 @@ export default async function courselore(
           req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             isNaN(new Date(req.body.expiresAt).getTime()) ||
-            new Date(req.body.expiresAt).getTime() <= Date.now())
+            isExpired(req.body.expiresAt))
         )
           throw new ValidationError();
 
@@ -3441,7 +3434,7 @@ export default async function courselore(
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             isNaN(new Date(req.body.expiresAt).getTime()) ||
-            new Date(req.body.expiresAt).getTime() <= Date.now())) ||
+            isExpired(req.body.expiresAt))) ||
         typeof req.body.emails !== "string"
       )
         throw new ValidationError();
