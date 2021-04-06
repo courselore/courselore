@@ -190,7 +190,6 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "expiresAt" TEXT NULL,
-        "usedAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "email" TEXT NOT NULL,
         "name" TEXT NULL,
@@ -3401,7 +3400,6 @@ export default async function courselore(
         typeof req.body.emails !== "string"
       )
         throw new ValidationError();
-
       const emails = emailAddresses.parseAddressList(req.body.emails);
       if (
         emails === null ||
@@ -3413,24 +3411,50 @@ export default async function courselore(
         throw new ValidationError();
 
       for (const email of emails as emailAddresses.ParsedMailbox[]) {
-        // TODO: Deal with edge cases like inviting yourself, or someone who’s already enrolled, and so forth.
-        const changes = database.run(sql`
-          INSERT INTO "invitationEmails" ("expiresAt", "course", "email", "name", "role")
-          VALUES (
-            ${req.body.expiresAt},
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-            ${email.address},
-            ${email.name},
-            ${req.body.role}
-          )
-          ON CONFLICT ("course", "email")
-          DO UPDATE SET "expiresAt" = ${req.body.expiresAt},
-                        "name" = ${email.name},
-                        "role" = ${req.body.role}
-          WHERE "usedAt" ISNULL
-        `).changes;
+        if (
+          database.get<{ exists: number }>(sql`
+            SELECT EXISTS(
+              SELECT 1
+              FROM "enrollments"
+              JOIN "users" ON "enrollments"."user" = "users"."id"
+              WHERE "enrollments"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                    "users"."email" = ${email.address}
+            ) AS "exists"
+          `)!.exists === 1
+        )
+          continue;
 
-        if (changes === 1) {
+        const existingInvitation = database.get<{
+          name: string;
+        }>(sql`
+          SELECT "name"
+          FROM "invitationEmails"
+          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                "email" = ${email.address}
+        `);
+        if (existingInvitation !== undefined)
+          database.run(sql`
+            UPDATE "invitationEmails"
+            SET "expiresAt" = ${req.body.expiresAt},
+                "name" = ${email.name ?? existingInvitation.name},
+                "role" = ${req.body.role}
+            WHERE "course" = ${
+              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id
+            } AND
+                  "email" = ${email.address}
+          `);
+        else {
+          database.run(sql`
+            INSERT INTO "invitationEmails" ("expiresAt", "course", "email", "name", "role")
+            VALUES (
+              ${req.body.expiresAt},
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+              ${email.address},
+              ${email.name},
+              ${req.body.role}
+            )
+          `);
+
           const link = `${app.get("url")}/courses/${
             res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
               .reference
@@ -3450,7 +3474,14 @@ export default async function courselore(
               </p>
               $${req.body.expiresAt === undefined
                 ? html``
-                : html`<p><small>Expires at ${req.body.expiresAt}.</small></p>`}
+                : html`
+                    <p>
+                      <small>
+                        Expires at
+                        ${new Date(req.body.expiresAt).toISOString()}.
+                      </small>
+                    </p>
+                  `}
             `,
           });
         }
