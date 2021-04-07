@@ -6,7 +6,6 @@ import express from "express";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import { asyncHandler } from "@leafac/express-async-handler";
-import qs from "qs";
 import validator from "validator";
 import emailAddresses from "email-addresses";
 
@@ -92,6 +91,16 @@ export default async function courselore(
   interface EnrollmentJoinUser {
     enrollment: Enrollment;
     user: User;
+  }
+
+  interface Invitation {
+    id: number;
+    expiresAt: string | null;
+    usedAt: string | null;
+    reference: string;
+    email: string | null;
+    name: string | null;
+    role: Role;
   }
 
   interface InvitationLink {
@@ -2258,79 +2267,6 @@ export default async function courselore(
   ];
 
   /*
-const invitationLinks = database.all<InvitationLink>(
-  sql`
-    SELECT "id", "expiresAt", "reference", "role"
-    FROM "invitationLinks"
-    WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-    ORDER BY "id" DESC
-  `
-);
-const invitationEmails = database.all<{
-  expiresAt: string | null;
-  usedAt: string | null;
-  reference: string;
-  email: string;
-  name: string | null;
-  role: Role;
-}>(sql`
-  SELECT "expiresAt", "usedAt", "reference", "email", "name", "role"
-  FROM "invitationEmails"
-  WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-  ORDER BY "id" DESC
-`);
-
-
-
-
-                $${invitationLinks.length === 0
-                  ? html``
-                  : html`
-                      <details>
-                        <summary><strong>Existing Invitations</strong></summary>
-                        <nav>
-                          $${invitationLinks.map(
-                            (invitationLink) => html`
-                              <a
-                                href="${app.get("url")}/courses/${res.locals
-                                  .enrollmentJoinCourseJoinThreadsWithMetadata
-                                  .course
-                                  .reference}/invitations/${invitationLink.reference}"
-                                class="${isExpired(invitationLink.expiresAt)
-                                  ? "red"
-                                  : "green"}"
-                                style="${css`
-                                  display: block;
-                                `}"
-                              >
-                                <p>
-                                  <code>
-                                    ${app.get("url")}/courses/${res.locals
-                                      .enrollmentJoinCourseJoinThreadsWithMetadata
-                                      .course
-                                      .reference}/invitations/${"*".repeat(
-                                      6
-                                    )}${invitationLink.reference.slice(6)}
-                                  </code>
-                                </p>
-                                <p class="hint">
-                                  ${lodash.capitalize(invitationLink.role)} ·
-                                  $${invitationLink.expiresAt === null
-                                    ? html`Doesn’t expire`
-                                    : html`${isExpired(invitationLink.expiresAt)
-                                          ? "Expired"
-                                          : "Expires"}
-                                        <time
-                                          >${invitationLink.expiresAt}</time
-                                        >`}
-                                </p>
-                              </a>
-                            `
-                          )}
-                        </nav>
-                      </details>
-                    `}
-
 
 
 
@@ -2358,9 +2294,7 @@ const invitationEmails = database.all<{
                                           ? "red"
                                           : ""}"
                                       >
-                                        ${invitationEmail.name === null
-                                          ? invitationEmail.email
-                                          : `${invitationEmail.name} <${invitationEmail.email}>`}
+                                        
                                       </strong>
                                       <small class="hint"
                                         >$${invitationEmail.usedAt !== null
@@ -2434,6 +2368,16 @@ const invitationEmails = database.all<{
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
+    const invitations =
+      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role !==
+      "staff"
+        ? undefined
+        : database.all<Invitation>(sql`
+          SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+          FROM "invitations"
+          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+          ORDER BY "id" DESC
+        `);
     res.send(
       app.get("layout main")(
         req,
@@ -2498,6 +2442,232 @@ const invitationEmails = database.all<{
                 <hr />
 
                 <p id="invitations"><strong>Invitations</strong></p>
+
+                $${invitations!.length === 0
+                  ? html``
+                  : html`
+                      <details
+                        style="${css`
+                          margin: 1rem 0;
+                        `}"
+                      >
+                        <summary><strong>Existing Invitations</strong></summary>
+
+                        $${invitations!.map((invitation) => {
+                          const link = `${app.get("url")}/courses/${
+                            res.locals
+                              .enrollmentJoinCourseJoinThreadsWithMetadata
+                              .course.reference
+                          }/invitations/${invitation.reference}`;
+
+                          return html`
+                            <details>
+                              <summary>
+                                $${invitation.email === null
+                                  ? html`
+                                      <code>
+                                        ${app.get("url")}/courses/${res.locals
+                                          .enrollmentJoinCourseJoinThreadsWithMetadata
+                                          .course
+                                          .reference}/invitations/${"*".repeat(
+                                          6
+                                        )}${invitation.reference.slice(6)}
+                                      </code>
+                                    `
+                                  : invitation.name === null
+                                  ? invitation.email
+                                  : `${invitation.name} <${invitation.email}>`}
+
+                                <small class="hint">
+                                  ${lodash.capitalize(invitation.role)} ·
+                                  $${invitation.usedAt !== null
+                                    ? html`<span class="green"
+                                        >Used
+                                        <time>${invitation.usedAt}</time></span
+                                      >`
+                                    : isExpired(invitation.expiresAt)
+                                    ? html`<span class="red"
+                                        >Expired
+                                        <time
+                                          >${invitation.expiresAt}</time
+                                        ></span
+                                      >`
+                                    : invitation.expiresAt !== null
+                                    ? html`Expires
+                                        <time>${invitation.expiresAt}</time>`
+                                    : html`Doesn’t expire`}
+                                </small>
+                              </summary>
+
+                              $${invitation.email === null
+                                ? html`
+                                    <p>
+                                      <a
+                                        href="${app.get("url")}/courses/${res
+                                          .locals
+                                          .enrollmentJoinCourseJoinThreadsWithMetadata
+                                          .course
+                                          .reference}/invitations/${invitation.reference}"
+                                        >See invitation link</a
+                                      >
+                                    </p>
+                                  `
+                                : html`TODO`}
+                              $${invitation.usedAt !== null
+                                ? html``
+                                : html`
+                                    <div
+                                      style="${css`
+                                        display: flex;
+
+                                        & > * {
+                                          flex: 1;
+                                        }
+
+                                        & > * + * {
+                                          margin-left: 2rem;
+                                        }
+                                      `}"
+                                    >
+                                      <p>
+                                        <label>
+                                          <strong>Role</strong><br />
+                                          <select disabled class="full-width">
+                                            $${ROLES.map(
+                                              (role) =>
+                                                html`
+                                                  <option
+                                                    ${role === invitation.role
+                                                      ? `selected`
+                                                      : ``}
+                                                  >
+                                                    ${lodash.capitalize(role)}
+                                                  </option>
+                                                `
+                                            )}</select
+                                          ><br />
+                                          <small class="full-width hint"
+                                            >To avoid mistakes you may not
+                                            change the role of an invitation
+                                            link, but you may
+                                            <a
+                                              href="${app.get(
+                                                "url"
+                                              )}/courses/${res.locals
+                                                .enrollmentJoinCourseJoinThreadsWithMetadata
+                                                .course
+                                                .reference}/settings#invitations"
+                                              >create a new invitation link for
+                                              another role</a
+                                            >.</small
+                                          >
+                                        </label>
+                                      </p>
+
+                                      <div>
+                                        <form
+                                          method="POST"
+                                          action="${link}?_method=PATCH"
+                                          id="expiration"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="changeExpiration"
+                                            value="true"
+                                          />
+                                          <p>
+                                            <label>
+                                              <strong>Expiration</strong><br />
+                                              <span
+                                                style="${css`
+                                                  display: flex;
+                                                  align-items: baseline;
+
+                                                  & > * + * {
+                                                    margin-left: 0.5rem !important;
+                                                  }
+                                                `}"
+                                              >
+                                                <span>
+                                                  <input
+                                                    type="checkbox"
+                                                    ${invitation.expiresAt ===
+                                                    null
+                                                      ? ``
+                                                      : `checked`}
+                                                    onchange="${javascript`
+                                                  const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                                  expiresAt.disabled = !this.checked;
+                                                  if (this.checked) {
+                                                    expiresAt.focus();
+                                                    expiresAt.setSelectionRange(0, 0);
+                                                  }
+                                                `}"
+                                                  />
+                                                </span>
+                                                <span>Expires at</span>
+                                                <input
+                                                  type="text"
+                                                  name="expiresAt"
+                                                  value="${invitation.expiresAt ??
+                                                  new Date().toISOString()}"
+                                                  required
+                                                  ${invitation.expiresAt ===
+                                                  null
+                                                    ? `disabled`
+                                                    : ``}
+                                                  data-validator="${javascript`
+                                                if (new Date(this.value).getTime() <= Date.now())
+                                                  return "Must be in the future";
+                                              `}"
+                                                  class="full-width datetime"
+                                                  style="${css`
+                                                    flex: 1 !important;
+                                                  `}"
+                                                />
+                                              </span>
+                                            </label>
+                                          </p>
+                                          <p>
+                                            <button class="full-width">
+                                              Change Expiration
+                                            </button>
+                                          </p>
+                                        </form>
+
+                                        $${isExpired(invitation.expiresAt)
+                                          ? html``
+                                          : html`
+                                              <form
+                                                method="POST"
+                                                action="${link}?_method=PATCH"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="expireNow"
+                                                  value="true"
+                                                />
+                                                <p>
+                                                  <button
+                                                    class="full-width red"
+                                                  >
+                                                    Expire Invitation Now
+                                                  </button>
+                                                </p>
+                                              </form>
+                                            `}
+                                      </div>
+                                    </div>
+                                  `}
+                            </details>
+                          `;
+                        })}
+                        <hr />
+                      </details>
+
+                      <p><strong>Create a New Invitation</strong></p>
+                    `}
+
                 <form
                   method="POST"
                   action="${app.get("url")}/courses/${res.locals
@@ -3106,8 +3276,9 @@ const invitationEmails = database.all<{
                       >
                     </p>
                     <p class="hint">
-                      You may make it valid again by extending the expiration in
-                      the <a href="#expiration">form at the end of the page</a>.
+                      TODO: Fix this message! You may make it valid again by
+                      extending the expiration in the
+                      <a href="#expiration">form at the end of the page</a>.
                     </p>
                   </div>
                 `
@@ -3131,145 +3302,17 @@ const invitationEmails = database.all<{
                 Copy
               </button>
             </p>
-            <details>
-              <summary>QR Code</summary>
-              <p>
-                People may point their phone camera at the image below to follow
-                the invitation link:
-              </p>
-              <p>
-                $${(await QRCode.toString(link, { type: "svg" }))
-                  .replace("#000000", "url('#gradient')")
-                  .replace("#ffffff", "#00000000")}
-              </p>
-            </details>
 
-            <hr />
-
-            <div
-              style="${css`
-                display: flex;
-
-                & > * {
-                  flex: 1;
-                }
-
-                & > * + * {
-                  margin-left: 2rem;
-                }
-              `}"
-            >
-              <p>
-                <label>
-                  <strong>Role</strong><br />
-                  <select disabled class="full-width">
-                    $${ROLES.map(
-                      (role) =>
-                        html`
-                          <option
-                            ${role ===
-                            res.locals.invitationLinkJoinCourse.invitationLink
-                              .role
-                              ? `selected`
-                              : ``}
-                          >
-                            ${lodash.capitalize(role)}
-                          </option>
-                        `
-                    )}</select
-                  ><br />
-                  <small class="full-width hint"
-                    >To avoid mistakes you may not change the role, but you may
-                    <a
-                      href="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                        .reference}/settings"
-                      >create a new invitation link for another role</a
-                    >.</small
-                  >
-                </label>
-              </p>
-
-              <div>
-                <form
-                  method="POST"
-                  action="${link}?_method=PATCH"
-                  id="expiration"
-                >
-                  <input type="hidden" name="changeExpiration" value="true" />
-                  <p>
-                    <label>
-                      <strong>Expiration</strong><br />
-                      <span
-                        style="${css`
-                          display: flex;
-                          align-items: baseline;
-
-                          & > * + * {
-                            margin-left: 0.5rem !important;
-                          }
-                        `}"
-                      >
-                        <span>
-                          <input
-                            type="checkbox"
-                            ${res.locals.invitationLinkJoinCourse.invitationLink
-                              .expiresAt === null
-                              ? ``
-                              : `checked`}
-                            onchange="${javascript`
-                              const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                              expiresAt.disabled = !this.checked;
-                              if (this.checked) {
-                                expiresAt.focus();
-                                expiresAt.setSelectionRange(0, 0);
-                              }
-                            `}"
-                          />
-                        </span>
-                        <span>Expires at</span>
-                        <input
-                          type="text"
-                          name="expiresAt"
-                          value="${res.locals.invitationLinkJoinCourse
-                            .invitationLink.expiresAt ??
-                          new Date().toISOString()}"
-                          required
-                          ${res.locals.invitationLinkJoinCourse.invitationLink
-                            .expiresAt === null
-                            ? `disabled`
-                            : ``}
-                          data-validator="${javascript`
-                            if (new Date(this.value).getTime() <= Date.now())
-                              return "Must be in the future";
-                          `}"
-                          class="full-width datetime"
-                          style="${css`
-                            flex: 1 !important;
-                          `}"
-                        />
-                      </span>
-                    </label>
-                  </p>
-                  <p><button class="full-width">Change Expiration</button></p>
-                </form>
-
-                $${isExpired(
-                  res.locals.invitationLinkJoinCourse.invitationLink.expiresAt
-                )
-                  ? html``
-                  : html`
-                      <form method="POST" action="${link}?_method=PATCH">
-                        <input type="hidden" name="expireNow" value="true" />
-                        <p>
-                          <button class="full-width red">
-                            Expire Invitation Now
-                          </button>
-                        </p>
-                      </form>
-                    `}
-              </div>
-            </div>
+            <p><strong>QR Code</strong></p>
+            <p class="hint">
+              People may point their phone camera at the image below to follow
+              the invitation link.
+            </p>
+            <p>
+              $${(await QRCode.toString(link, { type: "svg" }))
+                .replace("#000000", "url('#gradient')")
+                .replace("#ffffff", "#00000000")}
+            </p>
           `
         )
       );
