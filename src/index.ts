@@ -103,15 +103,8 @@ export default async function courselore(
     role: Role;
   }
 
-  interface InvitationLink {
-    id: number;
-    expiresAt: string | null;
-    reference: string;
-    role: Role;
-  }
-
-  interface InvitationLinkJoinCourse {
-    invitationLink: InvitationLink;
+  interface InvitationJoinCourse {
+    invitation: Invitation;
     course: Course;
   }
 
@@ -2186,27 +2179,27 @@ export default async function courselore(
     );
   });
 
-  const invitationLinkExists: express.RequestHandler<
-    { courseReference: string; invitationLinkReference: string },
+  const invitationExists: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
     any,
     {},
     {},
-    { invitationLinkJoinCourse: InvitationLinkJoinCourse }
+    { invitationJoinCourse: InvitationJoinCourse }
   >[] = [
     (req, res, next) => {
       const row = database.get<{
-        invitationLinkId: number;
+        invitationId: number;
         expiresAt: string | null;
-        invitationLinkReference: string;
+        invitationReference: string;
         role: Role;
         courseId: number;
         courseReference: string;
         name: string;
       }>(
         sql`
-          SELECT "invitations"."id" AS "invitationLinkId",
+          SELECT "invitations"."id" AS "invitationId",
                  "invitations"."expiresAt",
-                 "invitations"."reference" AS "invitationLinkReference",
+                 "invitations"."reference" AS "invitationReference",
                  "invitations"."role",
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
@@ -2214,15 +2207,15 @@ export default async function courselore(
           FROM "invitations"
           JOIN "courses" ON "invitations"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference} AND
-                "invitations"."reference" = ${req.params.invitationLinkReference}
+                "invitations"."reference" = ${req.params.invitationReference}
         `
       );
       if (row === undefined) return next("route");
-      res.locals.invitationLinkJoinCourse = {
-        invitationLink: {
-          id: row.invitationLinkId,
+      res.locals.invitationJoinCourse = {
+        invitation: {
+          id: row.invitationId,
           expiresAt: row.expiresAt,
-          reference: row.invitationLinkReference,
+          reference: row.invitationReference,
           role: row.role,
         },
         course: {
@@ -2235,32 +2228,30 @@ export default async function courselore(
     },
   ];
 
-  const mayManageInvitationLink: express.RequestHandler<
-    { courseReference: string; invitationLinkReference: string },
+  const mayManageInvitation: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
     any,
     {},
     {},
     {
-      invitationLinkJoinCourse: InvitationLinkJoinCourse;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
-  >[] = [...invitationLinkExists, ...isCourseStaff];
+  >[] = [...invitationExists, ...isCourseStaff];
 
-  const isInvitationLinkUsable: express.RequestHandler<
-    { courseReference: string; invitationLinkReference: string },
+  const isInvitationUsable: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
     any,
     {},
     {},
-    { invitationLinkJoinCourse: InvitationLinkJoinCourse }
+    { invitationJoinCourse: InvitationJoinCourse }
   >[] = [
-    ...invitationLinkExists,
+    ...invitationExists,
     (req, res, next) => {
-      if (
-        isExpired(res.locals.invitationLinkJoinCourse.invitationLink.expiresAt)
-      )
+      if (isExpired(res.locals.invitationJoinCourse.invitation.expiresAt))
         return next("route");
       next();
     },
@@ -2983,7 +2974,7 @@ export default async function courselore(
 
       switch (req.body.sharing) {
         case "link":
-          const invitationLinkReference = cryptoRandomString({
+          const invitationReference = cryptoRandomString({
             length: 10,
             type: "numeric",
           });
@@ -2992,7 +2983,7 @@ export default async function courselore(
             VALUES (
               ${req.body.expiresAt},
               ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-              ${invitationLinkReference},
+              ${invitationReference},
               ${req.body.role}
             )
           `);
@@ -3000,7 +2991,7 @@ export default async function courselore(
             `${app.get("url")}/courses/${
               res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
                 .reference
-            }/invitations/${invitationLinkReference}`
+            }/invitations/${invitationReference}`
           );
           break;
 
@@ -3051,7 +3042,7 @@ export default async function courselore(
               continue;
             }
 
-            const invitationLinkReference = cryptoRandomString({
+            const invitationReference = cryptoRandomString({
               length: 10,
               type: "numeric",
             });
@@ -3060,7 +3051,7 @@ export default async function courselore(
               VALUES (
                 ${req.body.expiresAt},
                 ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-                ${invitationLinkReference},
+                ${invitationReference},
                 ${email.address},
                 ${email.name},
                 ${req.body.role}
@@ -3070,7 +3061,7 @@ export default async function courselore(
             const link = `${app.get("url")}/courses/${
               res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
                 .reference
-            }/invitations/${invitationLinkReference}`;
+            }/invitations/${invitationReference}`;
             sendEmail({
               to: email.address,
               subject: `Enroll in ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}`,
@@ -3107,20 +3098,20 @@ export default async function courselore(
   );
 
   app.patch<
-    { courseReference: string; invitationLinkReference: string },
+    { courseReference: string; invitationReference: string },
     HTML,
     { changeExpiration?: "true"; expiresAt?: string; expireNow?: "true" },
     {},
     {
-      invitationLinkJoinCourse: InvitationLinkJoinCourse;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >(
-    "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...mayManageInvitationLink,
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...mayManageInvitation,
     (req, res, next) => {
       if (req.body.changeExpiration === "true") {
         if (
@@ -3132,14 +3123,14 @@ export default async function courselore(
           return next("validation");
 
         database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationLinkJoinCourse.invitationLink.id}`
+          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
         );
       }
 
       if (req.body.expireNow === "true")
         database.run(
           sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
-            res.locals.invitationLinkJoinCourse.invitationLink.id
+            res.locals.invitationJoinCourse.invitation.id
           }`
         );
 
@@ -3147,34 +3138,30 @@ export default async function courselore(
         `${app.get("url")}/courses/${
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
-        }/invitations/${
-          res.locals.invitationLinkJoinCourse.invitationLink.reference
-        }`
+        }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`
       );
     }
   );
 
   app.get<
-    { courseReference: string; invitationLinkReference: string },
+    { courseReference: string; invitationReference: string },
     HTML,
     {},
     {},
     {
-      invitationLinkJoinCourse: InvitationLinkJoinCourse;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >(
-    "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...mayManageInvitationLink,
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...mayManageInvitation,
     asyncHandler(async (req, res) => {
       const link = `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
-      }/invitations/${
-        res.locals.invitationLinkJoinCourse.invitationLink.reference
-      }`;
+      }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`;
 
       res.send(
         app.get("layout main")(
@@ -3233,9 +3220,7 @@ export default async function courselore(
               </p>
             </nav>
 
-            $${isExpired(
-              res.locals.invitationLinkJoinCourse.invitationLink.expiresAt
-            )
+            $${isExpired(res.locals.invitationJoinCourse.invitation.expiresAt)
               ? html`
                   <div
                     style="${css`
@@ -3292,20 +3277,20 @@ export default async function courselore(
   );
 
   app.get<
-    { courseReference: string; invitationLinkReference: string },
+    { courseReference: string; invitationReference: string },
     HTML,
     {},
     {},
     {
-      invitationLinkJoinCourse: InvitationLinkJoinCourse;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >(
-    "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkUsable,
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...isInvitationUsable,
     ...isEnrolledInCourse,
     (req, res) => {
       res.send(
@@ -3314,7 +3299,7 @@ export default async function courselore(
           res,
           html`
             <title>
-              Invitation · ${res.locals.invitationLinkJoinCourse.course.name} ·
+              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
               CourseLore
             </title>
           `,
@@ -3323,14 +3308,14 @@ export default async function courselore(
               Invitation ·
               <a
                 href="${app.get("url")}/courses/${res.locals
-                  .invitationLinkJoinCourse.course.reference}"
-                >${res.locals.invitationLinkJoinCourse.course.name}</a
+                  .invitationJoinCourse.course.reference}"
+                >${res.locals.invitationJoinCourse.course.name}</a
               >
             </h1>
 
             <p>
               You’re already enrolled in
-              ${res.locals.invitationLinkJoinCourse.course.name}.
+              ${res.locals.invitationJoinCourse.course.name}.
             </p>
           `
         )
@@ -3339,18 +3324,18 @@ export default async function courselore(
   );
 
   app.get<
-    { courseReference: string; invitationLinkReference: string },
+    { courseReference: string; invitationReference: string },
     HTML,
     {},
     {},
     {
-      invitationLinkJoinCourse: InvitationLinkJoinCourse;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >(
-    "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkUsable,
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...isInvitationUsable,
     ...isAuthenticated,
     (req, res) => {
       res.send(
@@ -3359,21 +3344,19 @@ export default async function courselore(
           res,
           html`
             <title>
-              InvitationLink ·
-              ${res.locals.invitationLinkJoinCourse.course.name} · CourseLore
+              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
+              CourseLore
             </title>
           `,
           html`
-            <h1>
-              Welcome to ${res.locals.invitationLinkJoinCourse.course.name}!
-            </h1>
+            <h1>Welcome to ${res.locals.invitationJoinCourse.course.name}!</h1>
 
             <form method="POST">
               <p>
                 <button>
                   Enroll as
                   ${lodash.capitalize(
-                    res.locals.invitationLinkJoinCourse.invitationLink.role
+                    res.locals.invitationJoinCourse.invitation.role
                   )}
                 </button>
               </p>
@@ -3385,18 +3368,18 @@ export default async function courselore(
   );
 
   app.post<
-    { courseReference: string; invitationLinkReference: string },
+    { courseReference: string; invitationReference: string },
     HTML,
     {},
     {},
     {
-      invitationLinkJoinCourse: InvitationLinkJoinCourse;
+      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >(
-    "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkUsable,
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...isInvitationUsable,
     ...isAuthenticated,
     (req, res) => {
       database.run(
@@ -3404,8 +3387,8 @@ export default async function courselore(
             INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
             VALUES (
               ${res.locals.user.id},
-              ${res.locals.invitationLinkJoinCourse.course.id},
-              ${res.locals.invitationLinkJoinCourse.invitationLink.role},
+              ${res.locals.invitationJoinCourse.course.id},
+              ${res.locals.invitationJoinCourse.invitation.role},
               ${defaultAccentColor(req, res)}
             )
           `
@@ -3413,23 +3396,23 @@ export default async function courselore(
 
       res.redirect(
         `${app.get("url")}/courses/${
-          res.locals.invitationLinkJoinCourse.course.reference
+          res.locals.invitationJoinCourse.course.reference
         }`
       );
     }
   );
 
   app.get<
-    { courseReference: string; invitationLinkReference: string },
+    { courseReference: string; invitationReference: string },
     HTML,
     {},
     {},
     {
-      invitationLinkJoinCourse: InvitationLinkJoinCourse;
+      invitationJoinCourse: InvitationJoinCourse;
     }
   >(
-    "/courses/:courseReference/invitations/:invitationLinkReference",
-    ...isInvitationLinkUsable,
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...isInvitationUsable,
     ...isUnauthenticated,
     (req, res) => {
       res.send(
@@ -3438,7 +3421,7 @@ export default async function courselore(
           res,
           html`
             <title>
-              Invitation · ${res.locals.invitationLinkJoinCourse.course.name} ·
+              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
               CourseLore
             </title>
           `,
@@ -3449,7 +3432,7 @@ export default async function courselore(
               `}"
             >
               <h1>
-                Welcome to ${res.locals.invitationLinkJoinCourse.course.name}!
+                Welcome to ${res.locals.invitationJoinCourse.course.name}!
               </h1>
 
               <p>
