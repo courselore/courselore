@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "path";
+import { strict as assert } from "assert";
 
 import express from "express";
 import methodOverride from "method-override";
@@ -2367,6 +2368,40 @@ export default async function courselore(
     },
   ];
 
+  function sendInvitationEmail(
+    invitationJoinCourse: InvitationJoinCourse
+  ): void {
+    assert(invitationJoinCourse.invitation.email !== null);
+
+    const link = `${app.get("url")}/courses/${
+      invitationJoinCourse.course.reference
+    }/invitations/${invitationJoinCourse.invitation.reference}`;
+
+    sendEmail({
+      to: invitationJoinCourse.invitation.email,
+      subject: `Enroll in ${invitationJoinCourse.course.name}`,
+      body: html`
+        <p>
+          Visit the following link to enroll in
+          ${invitationJoinCourse.course.name}:<br />
+          <a href="${link}">${link}</a>
+        </p>
+        $${invitationJoinCourse.invitation.expiresAt === null
+          ? html``
+          : html`
+              <p>
+                <small>
+                  Expires at
+                  ${new Date(
+                    invitationJoinCourse.invitation.expiresAt
+                  ).toISOString()}.
+                </small>
+              </p>
+            `}
+      `,
+    });
+  }
+
   app.get<
     { courseReference: string },
     HTML,
@@ -2539,6 +2574,28 @@ export default async function courselore(
                                     </p>
                                   `
                                 : html`
+                                    $${invitation.email === null
+                                      ? html``
+                                      : html`
+                                          <form
+                                            method="POST"
+                                            action="${link}?_method=PATCH"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="resend"
+                                              value="true"
+                                            />
+                                            <p>
+                                              Invitation email wasn’t received?
+                                              Already checked the spam
+                                              folder?<br />
+                                              <button>
+                                                Resend Invitation Email
+                                              </button>
+                                            </p>
+                                          </form>
+                                        `}
                                     <div
                                       style="${css`
                                         display: flex;
@@ -3051,47 +3108,30 @@ export default async function courselore(
               continue;
             }
 
-            const invitationReference = cryptoRandomString({
-              length: 10,
-              type: "numeric",
-            });
-            database.run(sql`
+            const invitation = {
+              expiresAt: req.body.expiresAt ?? null,
+              usedAt: null,
+              reference: cryptoRandomString({ length: 10, type: "numeric" }),
+              email: email.address,
+              name: email.name,
+              role: req.body.role,
+            };
+            const invitationId = database.run(sql`
               INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
               VALUES (
-                ${req.body.expiresAt},
+                ${invitation.expiresAt},
                 ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-                ${invitationReference},
-                ${email.address},
-                ${email.name},
-                ${req.body.role}
+                ${invitation.reference},
+                ${invitation.email},
+                ${invitation.name},
+                ${invitation.role}
               )
-            `);
+            `).lastInsertRowid as number;
 
-            const link = `${app.get("url")}/courses/${
-              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .reference
-            }/invitations/${invitationReference}`;
-            sendEmail({
-              to: email.address,
-              subject: `Enroll in ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}`,
-              body: html`
-                <p>
-                  Visit the following link to enroll in
-                  ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                    .course.name}:<br />
-                  <a href="${link}">${link}</a>
-                </p>
-                $${req.body.expiresAt === undefined
-                  ? html``
-                  : html`
-                      <p>
-                        <small>
-                          Expires at
-                          ${new Date(req.body.expiresAt).toISOString()}.
-                        </small>
-                      </p>
-                    `}
-              `,
+            sendInvitationEmail({
+              invitation: { id: invitationId, ...invitation },
+              course:
+                res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course,
             });
           }
 
@@ -3109,7 +3149,13 @@ export default async function courselore(
   app.patch<
     { courseReference: string; invitationReference: string },
     HTML,
-    { changeExpiration?: "true"; expiresAt?: string; expireNow?: "true" },
+    {
+      resend?: "true";
+      role?: Role;
+      changeExpiration?: "true";
+      expiresAt?: string;
+      expireNow?: "true";
+    },
     {},
     {
       invitationJoinCourse: InvitationJoinCourse;
@@ -3122,6 +3168,24 @@ export default async function courselore(
     "/courses/:courseReference/invitations/:invitationReference",
     ...mayManageInvitation,
     (req, res, next) => {
+      if (res.locals.invitationJoinCourse.invitation.usedAt !== null)
+        return next("validation");
+
+      if (req.body.resend === "true") {
+        if (res.locals.invitationJoinCourse.invitation.email === null)
+          return next("validation");
+
+        sendInvitationEmail(res.locals.invitationJoinCourse);
+      }
+
+      if (req.body.role !== undefined) {
+        if (!ROLES.includes(req.body.role)) return next("validation");
+
+        database.run(
+          sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+        );
+      }
+
       if (req.body.changeExpiration === "true") {
         if (
           req.body.expiresAt !== undefined &&
