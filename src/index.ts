@@ -2378,6 +2378,7 @@ export default async function courselore(
           WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
           ORDER BY "id" DESC
         `);
+
     res.send(
       app.get("layout main")(
         req,
@@ -2473,28 +2474,34 @@ export default async function courselore(
                                           6
                                         )}${invitation.reference.slice(6)}
                                       </code>
+                                      <br />
                                     `
                                   : invitation.name === null
-                                  ? invitation.email
-                                  : `${invitation.name} <${invitation.email}>`}
+                                  ? html`${invitation.email}`
+                                  : html`${invitation.name}
+                                    ${`<${invitation.email}>`}`}
 
                                 <small class="hint">
                                   ${lodash.capitalize(invitation.role)} ·
                                   $${invitation.usedAt !== null
-                                    ? html`<span class="green"
-                                        >Used
-                                        <time>${invitation.usedAt}</time></span
-                                      >`
+                                    ? html`
+                                        <span class="green">
+                                          Used
+                                          <time>${invitation.usedAt}</time>
+                                        </span>
+                                      `
                                     : isExpired(invitation.expiresAt)
-                                    ? html`<span class="red"
-                                        >Expired
-                                        <time
-                                          >${invitation.expiresAt}</time
-                                        ></span
-                                      >`
+                                    ? html`
+                                        <span class="red">
+                                          Expired
+                                          <time>${invitation.expiresAt}</time>
+                                        </span>
+                                      `
                                     : invitation.expiresAt !== null
-                                    ? html`Expires
-                                        <time>${invitation.expiresAt}</time>`
+                                    ? html`
+                                        Expires
+                                        <time>${invitation.expiresAt}</time>
+                                      `
                                     : html`Doesn’t expire`}
                                 </small>
                               </summary>
@@ -2512,9 +2519,14 @@ export default async function courselore(
                                       >
                                     </p>
                                   `
-                                : html`TODO`}
+                                : html``}
                               $${invitation.usedAt !== null
-                                ? html``
+                                ? html`
+                                    <p>
+                                      This invitation has already been used and
+                                      may no longer be modified.
+                                    </p>
+                                  `
                                 : html`
                                     <div
                                       style="${css`
@@ -2529,46 +2541,44 @@ export default async function courselore(
                                         }
                                       `}"
                                     >
-                                      <p>
-                                        <label>
-                                          <strong>Role</strong><br />
-                                          <select disabled class="full-width">
-                                            $${ROLES.map(
-                                              (role) =>
-                                                html`
-                                                  <option
-                                                    ${role === invitation.role
-                                                      ? `selected`
-                                                      : ``}
-                                                  >
-                                                    ${lodash.capitalize(role)}
-                                                  </option>
-                                                `
-                                            )}</select
-                                          ><br />
-                                          <small class="full-width hint"
-                                            >To avoid mistakes you may not
-                                            change the role of an invitation
-                                            link, but you may
-                                            <a
-                                              href="${app.get(
-                                                "url"
-                                              )}/courses/${res.locals
-                                                .enrollmentJoinCourseJoinThreadsWithMetadata
-                                                .course
-                                                .reference}/settings#invitations"
-                                              >create a new invitation link for
-                                              another role</a
-                                            >.</small
-                                          >
-                                        </label>
-                                      </p>
+                                      <form
+                                        method="POST"
+                                        action="${link}?_method=PATCH"
+                                      >
+                                        <p>
+                                          <label>
+                                            <strong>Role</strong><br />
+                                            <select
+                                              name="role"
+                                              required
+                                              class="full-width"
+                                            >
+                                              $${ROLES.map(
+                                                (role) =>
+                                                  html`
+                                                    <option
+                                                      ${role === invitation.role
+                                                        ? `selected`
+                                                        : ``}
+                                                    >
+                                                      ${lodash.capitalize(role)}
+                                                    </option>
+                                                  `
+                                              )}
+                                            </select>
+                                          </label>
+                                        </p>
+                                        <p>
+                                          <button class="full-width">
+                                            Change Role
+                                          </button>
+                                        </p>
+                                      </form>
 
                                       <div>
                                         <form
                                           method="POST"
                                           action="${link}?_method=PATCH"
-                                          id="expiration"
                                         >
                                           <input
                                             type="hidden"
@@ -2596,13 +2606,13 @@ export default async function courselore(
                                                       ? ``
                                                       : `checked`}
                                                     onchange="${javascript`
-                                                  const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                                  expiresAt.disabled = !this.checked;
-                                                  if (this.checked) {
-                                                    expiresAt.focus();
-                                                    expiresAt.setSelectionRange(0, 0);
-                                                  }
-                                                `}"
+                                                      const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                                      expiresAt.disabled = !this.checked;
+                                                      if (this.checked) {
+                                                        expiresAt.focus();
+                                                        expiresAt.setSelectionRange(0, 0);
+                                                      }
+                                                    `}"
                                                   />
                                                 </span>
                                                 <span>Expires at</span>
@@ -2617,9 +2627,9 @@ export default async function courselore(
                                                     ? `disabled`
                                                     : ``}
                                                   data-validator="${javascript`
-                                                if (new Date(this.value).getTime() <= Date.now())
-                                                  return "Must be in the future";
-                                              `}"
+                                                    if (new Date(this.value).getTime() <= Date.now())
+                                                      return "Must be in the future";
+                                                  `}"
                                                   class="full-width datetime"
                                                   style="${css`
                                                     flex: 1 !important;
@@ -2819,6 +2829,10 @@ export default async function courselore(
           <p class="hint">
             A bar of this color appears at the top of your screen to help you
             tell courses apart.
+            $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
+              .role !== "staff"
+              ? html``
+              : html`Everyone gets a different color of their choosing.`}
           </p>
           <div
             style="${css`
