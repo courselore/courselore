@@ -2593,12 +2593,7 @@ const invitationEmails = database.all<{
                           this.closest("p").querySelector('[name="emails"]').disabled = true;
                         `}"
                       />
-                      Invitation link
-                      <small class="hint">
-                        Create an invitation link that you must share with other
-                        people yourself. The link may be used multiple times.
-                        Anyone with an invitation link may enroll in the course.
-                      </small>
+                      With an invitation link
                     </label>
                     <br />
                     <label>
@@ -2614,12 +2609,7 @@ const invitationEmails = database.all<{
                           emails.setSelectionRange(0, 0);
                         `}"
                       />
-                      Invitation emails
-                      <small class="hint">
-                        Send invitation emails to the people listed below. Each
-                        person receives an individual invitation that may be
-                        used only once.
-                      </small>
+                      Via email
                     </label>
                     <br />
                     <textarea
