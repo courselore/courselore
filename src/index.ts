@@ -2190,20 +2190,26 @@ export default async function courselore(
       const row = database.get<{
         invitationId: number;
         expiresAt: string | null;
+        usedAt: string | null;
         invitationReference: string;
+        email: string | null;
+        invitationName: string | null;
         role: Role;
         courseId: number;
         courseReference: string;
-        name: string;
+        courseName: string;
       }>(
         sql`
           SELECT "invitations"."id" AS "invitationId",
                  "invitations"."expiresAt",
+                 "invitations"."usedAt",
                  "invitations"."reference" AS "invitationReference",
+                 "invitations"."email",
+                 "invitations"."name" AS "invitationName",
                  "invitations"."role",
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
-                 "courses"."name"
+                 "courses"."name" AS "courseName"
           FROM "invitations"
           JOIN "courses" ON "invitations"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference} AND
@@ -2215,13 +2221,16 @@ export default async function courselore(
         invitation: {
           id: row.invitationId,
           expiresAt: row.expiresAt,
+          usedAt: row.usedAt,
           reference: row.invitationReference,
+          email: row.email,
+          name: row.invitationName,
           role: row.role,
         },
         course: {
           id: row.courseId,
           reference: row.courseReference,
-          name: row.name,
+          name: row.courseName,
         },
       };
       next();
