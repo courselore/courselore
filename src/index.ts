@@ -2555,14 +2555,7 @@ export default async function courselore(
                               $${invitation.email === null
                                 ? html`
                                     <p>
-                                      <a
-                                        href="${app.get("url")}/courses/${res
-                                          .locals
-                                          .enrollmentJoinCourseJoinThreadsWithMetadata
-                                          .course
-                                          .reference}/invitations/${invitation.reference}"
-                                        >See invitation link</a
-                                      >
+                                      <a href="${link}">See invitation link</a>
                                     </p>
                                   `
                                 : html``}
@@ -2574,7 +2567,8 @@ export default async function courselore(
                                     </p>
                                   `
                                 : html`
-                                    $${invitation.email === null
+                                    $${invitation.email === null ||
+                                    isExpired(invitation.expiresAt)
                                       ? html``
                                       : html`
                                           <form
@@ -2591,11 +2585,29 @@ export default async function courselore(
                                               Already checked the spam
                                               folder?<br />
                                               <button>
-                                                Resend Invitation Email
+                                                Resend Invitation Email</button
+                                              ><br />
+                                              Or you may give them the following
+                                              link:<br />
+                                              <code>${link}</code><br />
+                                              <button
+                                                type="button"
+                                                onclick="${javascript`
+                                                  (async () => {
+                                                    await navigator.clipboard.writeText("${link}");
+                                                    const originalTextContent = this.textContent;
+                                                    this.textContent = "Copied";
+                                                    await new Promise(resolve => window.setTimeout(resolve, 500));
+                                                    this.textContent = originalTextContent;
+                                                  })();  
+                                                `}"
+                                              >
+                                                Copy
                                               </button>
                                             </p>
                                           </form>
                                         `}
+
                                     <div
                                       style="${css`
                                         display: flex;
@@ -2619,12 +2631,16 @@ export default async function courselore(
                                             <select
                                               name="role"
                                               required
+                                              ${isExpired(invitation.expiresAt)
+                                                ? "disabled"
+                                                : ""}
                                               class="full-width"
                                             >
                                               $${ROLES.map(
                                                 (role) =>
                                                   html`
                                                     <option
+                                                      value="${role}"
                                                       ${role === invitation.role
                                                         ? `selected`
                                                         : ``}
@@ -2636,11 +2652,20 @@ export default async function courselore(
                                             </select>
                                           </label>
                                         </p>
-                                        <p>
-                                          <button class="full-width">
-                                            Change Role
-                                          </button>
-                                        </p>
+                                        $${isExpired(invitation.expiresAt)
+                                          ? html`
+                                              <p class="hint">
+                                                You may not change the role of
+                                                an expired invitation.
+                                              </p>
+                                            `
+                                          : html`
+                                              <p>
+                                                <button class="full-width">
+                                                  Change Role
+                                                </button>
+                                              </p>
+                                            `}
                                       </form>
 
                                       <div>
@@ -3211,7 +3236,7 @@ export default async function courselore(
         `${app.get("url")}/courses/${
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
-        }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`
+        }/settings#invitations`
       );
     }
   );
@@ -3232,6 +3257,7 @@ export default async function courselore(
     "/courses/:courseReference/invitations/:invitationReference",
     ...mayManageInvitation,
     asyncHandler(async (req, res) => {
+      // FIXME: Email invitations shouldn’t get to this page.
       const link = `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
       }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`;
