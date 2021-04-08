@@ -3016,63 +3016,94 @@ export default async function courselore(
                           )}
                         </small>
                       </summary>
+
+                      <div
+                        style="${css`
+                          display: flex;
+
+                          & > * {
+                            flex: 1;
+                          }
+
+                          & > * + * {
+                            margin-left: 2rem;
+                          }
+                        `}"
+                      >
+                        <form
+                          method="POST"
+                          action="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/enrollments/${enrollmentJoinUser
+                            .enrollment.reference}?_method=PATCH"
+                        >
+                          <p>
+                            <strong>Role</strong><br />
+                            <span
+                              style="${css`
+                                display: flex;
+
+                                & > * + * {
+                                  margin-left: 1rem;
+                                }
+                              `}"
+                            >
+                              $${ROLES.map(
+                                (role) =>
+                                  html`
+                                    <label>
+                                      <input
+                                        type="radio"
+                                        name="role"
+                                        value="${role}"
+                                        required
+                                        ${role ===
+                                        enrollmentJoinUser.enrollment.role
+                                          ? `checked`
+                                          : ``}
+                                      />
+                                      ${lodash.capitalize(role)}
+                                    </label>
+                                  `
+                              )}
+                              <button
+                                style="${css`
+                                  flex: 1;
+                                `}"
+                              >
+                                Change Role
+                              </button>
+                            </span>
+                          </p>
+                        </form>
+
+                        <div>
+                          <form
+                            method="POST"
+                            action="${app.get("url")}/courses/${res.locals
+                              .enrollmentJoinCourseJoinThreadsWithMetadata
+                              .course
+                              .reference}/enrollments/${enrollmentJoinUser
+                              .enrollment.reference}?_method=DELETE"
+                          >
+                            <p class="red">
+                              <strong>Danger Zone</strong><br />
+                              <button
+                                class="full-width"
+                                onclick="${javascript`
+                                  if (!confirm("Remove ${enrollmentJoinUser.user.name} <${enrollmentJoinUser.user.email}> from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?"))
+                                    event.preventDefault();
+                                `}"
+                              >
+                                Remove from Course
+                              </button>
+                            </p>
+                          </form>
+                        </div>
+                      </div>
+                      TODO: Treat the case of trying to change your own data.
                     </details>
                   `
-                  /* 
-                      <form method="POST" action="${link}?_method=PATCH">
-                        <p>
-                          <strong>Role</strong><br />
-                          <span
-                            style="${css`
-                              display: flex;
-
-                              & > * + * {
-                                margin-left: 1rem;
-                              }
-                            `}"
-                          >
-                            $${ROLES.map(
-                              (role) =>
-                                html`
-                                  <label>
-                                    <input
-                                      type="radio"
-                                      name="role"
-                                      value="${role}"
-                                      required
-                                      ${role === invitation.role
-                                        ? `checked`
-                                        : ``}
-                                      ${isExpired(invitation.expiresAt)
-                                        ? `disabled`
-                                        : ``}
-                                    />
-                                    ${lodash.capitalize(role)}
-                                  </label>
-                                `
-                            )}
-                            $${isExpired(invitation.expiresAt)
-                              ? html``
-                              : html`
-                                  <button
-                                    style="${css`
-                                      flex: 1;
-                                    `}"
-                                  >
-                                    Change Role
-                                  </button>
-                                `}
-                          </span>
-                        </p>
-                        $${isExpired(invitation.expiresAt)
-                          ? html`
-                              <p class="hint">
-                                You may not change the role of an expired
-                                invitation.
-                              </p>
-                            `
-                          : html``}
-                      </form> */
                 )}
 
                 <hr />
@@ -3630,7 +3661,7 @@ export default async function courselore(
           VALUES (
             ${res.locals.user.id},
             ${res.locals.invitationJoinCourse.course.id},
-            ${cryptoRandomString({ length: 10, type: "numeric" })}
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.invitationJoinCourse.invitation.role},
             ${defaultAccentColor(req, res)}
           )
