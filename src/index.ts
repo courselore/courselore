@@ -63,6 +63,7 @@ export default async function courselore(
 
   interface Enrollment {
     id: number;
+    reference: string;
     role: Role;
     accentColor: AccentColor;
   }
@@ -123,7 +124,7 @@ export default async function courselore(
   }
 
   const ANONYMOUS = {
-    enrollment: { id: null, role: null, accentColor: null },
+    enrollment: { id: null, reference: null, role: null, accentColor: null },
     user: { id: null, email: null, name: "Anonymous" },
   } as const;
   type Anonymous = typeof ANONYMOUS;
@@ -188,9 +189,11 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
         "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
-        UNIQUE ("user", "course")
+        UNIQUE ("user", "course"),
+        UNIQUE ("course", "reference")
       );
 
       CREATE TABLE "threads" (
@@ -1244,18 +1247,20 @@ export default async function courselore(
       res.locals.enrollmentsJoinCourses = database
         .all<{
           enrollmentId: number;
+          enrollmentReference: string;
           role: Role;
           accentColor: AccentColor;
           courseId: number;
-          reference: string;
+          courseReference: string;
           name: string;
         }>(
           sql`
             SELECT "enrollments"."id" AS "enrollmentId",
+                   "enrollments"."reference" AS "enrollmentReference",
                    "enrollments"."role",
                    "enrollments"."accentColor",
                    "courses"."id" AS "courseId",
-                   "courses"."reference",
+                   "courses"."reference" AS "courseReference",
                    "courses"."name"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
@@ -1266,12 +1271,13 @@ export default async function courselore(
         .map((row) => ({
           enrollment: {
             id: row.enrollmentId,
+            reference: row.enrollmentReference,
             role: row.role,
             accentColor: row.accentColor,
           },
           course: {
             id: row.courseId,
-            reference: row.reference,
+            reference: row.courseReference,
             name: row.name,
           },
         }));
@@ -2060,10 +2066,11 @@ export default async function courselore(
     ).lastInsertRowid;
     database.run(
       sql`
-          INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+          INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
             ${res.locals.user.id},
             ${newCourseId},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${"staff"},
             ${defaultAccentColor(req, res)}
           )
@@ -2125,11 +2132,12 @@ export default async function courselore(
       const threadsWithMetadata = database
         .all<{
           threadId: number;
-          reference: string;
+          threadReference: string;
           title: string;
           createdAt: string;
           updatedAt: string;
           authorEnrollmentId: number | null;
+          authorEnrollmentReference: string | null;
           role: Role | null;
           accentColor: AccentColor | null;
           authorUserId: number | null;
@@ -2138,11 +2146,12 @@ export default async function courselore(
         }>(
           sql`
             SELECT "threads"."id" AS "threadId",
-                   "threads"."reference",
+                   "threads"."reference" AS "threadReference",
                    "threads"."title",
                    "originalPost"."createdAt",
                    "mostRecentlyUpdatedPost"."updatedAt",
                    "authorEnrollment"."id" AS "authorEnrollmentId",
+                   "authorEnrollment"."reference" AS "authorEnrollmentReference",
                    "authorEnrollment"."role",
                    "authorEnrollment"."accentColor",
                    "authorUser"."id" AS "authorUserId",
@@ -2160,7 +2169,7 @@ export default async function courselore(
         )
         .map((row) => ({
           id: row.threadId,
-          reference: row.reference,
+          reference: row.threadReference,
           title: row.title,
           createdAt: row.createdAt,
           updatedAt: row.updatedAt,
@@ -2169,6 +2178,7 @@ export default async function courselore(
               ? {
                   enrollment: {
                     id: row.authorEnrollmentId!,
+                    reference: row.authorEnrollmentReference!,
                     role: row.role!,
                     accentColor: row.accentColor!,
                   },
@@ -2455,15 +2465,17 @@ export default async function courselore(
         ? undefined
         : (database
             .all<{
-              enrollmentId: number | null;
-              role: Role | null;
-              accentColor: AccentColor | null;
-              userId: number | null;
-              email: string | null;
-              name: string | null;
+              enrollmentId: number;
+              reference: string;
+              role: Role;
+              accentColor: AccentColor;
+              userId: number;
+              email: string;
+              name: string;
             }>(
               sql`
                 SELECT "enrollments"."id" AS "enrollmentId",
+                       "enrollments"."reference",
                        "enrollments"."role",
                        "enrollments"."accentColor",
                        "users"."id" AS "userId",
@@ -2478,6 +2490,7 @@ export default async function courselore(
             .map((row) => ({
               enrollment: {
                 id: row.enrollmentId,
+                reference: row.reference,
                 role: row.role,
                 accentColor: row.accentColor,
               },
@@ -3005,6 +3018,61 @@ export default async function courselore(
                       </summary>
                     </details>
                   `
+                  /* 
+                      <form method="POST" action="${link}?_method=PATCH">
+                        <p>
+                          <strong>Role</strong><br />
+                          <span
+                            style="${css`
+                              display: flex;
+
+                              & > * + * {
+                                margin-left: 1rem;
+                              }
+                            `}"
+                          >
+                            $${ROLES.map(
+                              (role) =>
+                                html`
+                                  <label>
+                                    <input
+                                      type="radio"
+                                      name="role"
+                                      value="${role}"
+                                      required
+                                      ${role === invitation.role
+                                        ? `checked`
+                                        : ``}
+                                      ${isExpired(invitation.expiresAt)
+                                        ? `disabled`
+                                        : ``}
+                                    />
+                                    ${lodash.capitalize(role)}
+                                  </label>
+                                `
+                            )}
+                            $${isExpired(invitation.expiresAt)
+                              ? html``
+                              : html`
+                                  <button
+                                    style="${css`
+                                      flex: 1;
+                                    `}"
+                                  >
+                                    Change Role
+                                  </button>
+                                `}
+                          </span>
+                        </p>
+                        $${isExpired(invitation.expiresAt)
+                          ? html`
+                              <p class="hint">
+                                You may not change the role of an expired
+                                invitation.
+                              </p>
+                            `
+                          : html``}
+                      </form> */
                 )}
 
                 <hr />
@@ -3558,10 +3626,11 @@ export default async function courselore(
     (req, res) => {
       database.run(
         sql`
-          INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+          INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
             ${res.locals.user.id},
             ${res.locals.invitationJoinCourse.course.id},
+            ${cryptoRandomString({ length: 10, type: "numeric" })}
             ${res.locals.invitationJoinCourse.invitation.role},
             ${defaultAccentColor(req, res)}
           )
@@ -4118,9 +4187,10 @@ ${value}</textarea
           postId: number;
           createdAt: string;
           updatedAt: string;
-          reference: string;
+          postReference: string;
           content: string;
           authorEnrollmentId: number | null;
+          authorEnrollmentReference: string | null;
           role: Role | null;
           accentColor: AccentColor | null;
           authorUserId: number | null;
@@ -4131,9 +4201,10 @@ ${value}</textarea
             SELECT "posts"."id" AS "postId",
                    "posts"."createdAt",
                    "posts"."updatedAt",
-                   "posts"."reference",
+                   "posts"."reference" AS "postReference",
                    "posts"."content",
                    "authorEnrollment"."id" AS "authorEnrollmentId",
+                   "authorEnrollment"."reference" AS "authorEnrollmentReference",
                    "authorEnrollment"."role",
                    "authorEnrollment"."accentColor",
                    "authorUser"."id" AS "authorUserId",
@@ -4151,7 +4222,7 @@ ${value}</textarea
             id: row.postId,
             createdAt: row.createdAt,
             updatedAt: row.updatedAt,
-            reference: row.reference,
+            reference: row.postReference,
             content: row.content,
           },
           author:
@@ -4159,6 +4230,7 @@ ${value}</textarea
               ? {
                   enrollment: {
                     id: row.authorEnrollmentId!,
+                    reference: row.authorEnrollmentReference!,
                     role: row.role!,
                     accentColor: row.accentColor!,
                   },
