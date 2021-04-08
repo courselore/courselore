@@ -7,6 +7,7 @@ import express from "express";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import { asyncHandler } from "@leafac/express-async-handler";
+import qs from "qs";
 import validator from "validator";
 import emailAddresses from "email-addresses";
 
@@ -1380,141 +1381,200 @@ export default async function courselore(
           </details>
         `;
 
-  app.get<{}, HTML, {}, { redirect?: string }, {}>(
-    ["/", "/authenticate"],
-    ...isUnauthenticated,
-    (req, res) => {
-      res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`<title>CourseLore · The Open-Source Student Forum</title>`,
-          html`
-            <div
-              style="${css`
-                display: flex;
+  app.get<
+    {},
+    HTML,
+    {},
+    { redirect?: string; email?: string; name?: string },
+    {}
+  >(["/", "/authenticate"], ...isUnauthenticated, (req, res) => {
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>CourseLore · The Open-Source Student Forum</title>`,
+        html`
+          <div
+            style="${css`
+              display: flex;
 
-                & > * {
-                  flex: 1;
-                }
+              & > * {
+                flex: 1;
+              }
 
-                & > * + * {
-                  margin-left: 3rem;
-                }
-              `}"
+              & > * + * {
+                margin-left: 3rem;
+              }
+            `}"
+          >
+            <form
+              method="POST"
+              action="${app.get("url")}/authenticate?${qs.stringify({
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
+              })}"
             >
-              <form
-                method="POST"
-                action="${app.get("url")}/authenticate${req.query.redirect ===
-                undefined
-                  ? ""
-                  : `?redirect=${req.query.redirect}`}"
+              <div
+                style="${css`
+                  text-align: center;
+                `}"
               >
-                <div
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <h1>Sign in</h1>
-                  <p class="hint">Returning user</p>
-                </div>
-                <p
-                  style="${css`
-                    height: 5rem;
-                  `}"
-                >
-                  <label>
-                    <strong>Email</strong><br />
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="name@educational-email.edu"
-                      required
-                      autofocus
-                      class="full-width"
-                    />
-                  </label>
-                </p>
-                <p><button class="full-width">Continue</button></p>
-              </form>
-
-              <form
-                method="POST"
-                action="${app.get("url")}/authenticate${req.query.redirect ===
-                undefined
-                  ? ""
-                  : `?redirect=${req.query.redirect}`}"
+                <h1>Sign in</h1>
+                <p class="hint">Returning user</p>
+              </div>
+              <p
+                style="${css`
+                  height: 5rem;
+                `}"
               >
-                <div
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <h1>Sign up</h1>
-                  <p class="hint">New user</p>
-                </div>
-                <p
-                  style="${css`
-                    height: 5rem;
-                  `}"
-                >
-                  <label>
-                    <strong>Email</strong><br />
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="name@educational-email.edu"
-                      required
-                      class="full-width"
-                    /><br />
-                    <small class="full-width hint">
-                      We suggest using the email address you use at your
-                      educational institution.
-                    </small>
-                  </label>
-                </p>
-                <p><button class="full-width">Continue</button></p>
-              </form>
-            </div>
-          `
-        )
-      );
-    }
-  );
+                <label>
+                  <strong>Email</strong><br />
+                  <input
+                    type="email"
+                    name="email"
+                    value="${req.query.email ?? ""}"
+                    placeholder="name@educational-email.edu"
+                    required
+                    autofocus
+                    class="full-width"
+                  />
+                </label>
+              </p>
+              <p><button class="full-width">Continue</button></p>
+            </form>
 
-  app.post<{}, HTML, { email?: string }, { redirect?: string }, {}>(
-    "/authenticate",
-    ...isUnauthenticated,
-    (req, res, next) => {
-      if (
-        typeof req.body.email !== "string" ||
-        !validator.isEmail(req.body.email)
+            <form
+              method="POST"
+              action="${app.get("url")}/authenticate?${qs.stringify({
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
+              })}"
+            >
+              <div
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                <h1>Sign up</h1>
+                <p class="hint">New user</p>
+              </div>
+              <p
+                style="${css`
+                  height: 5rem;
+                `}"
+              >
+                <label>
+                  <strong>Email</strong><br />
+                  <input
+                    type="email"
+                    name="email"
+                    value="${req.query.email ?? ""}"
+                    placeholder="name@educational-email.edu"
+                    required
+                    class="full-width"
+                  /><br />
+                  <small class="full-width hint">
+                    We suggest using the email address you use at your
+                    educational institution.
+                  </small>
+                </label>
+              </p>
+              <p><button class="full-width">Continue</button></p>
+            </form>
+          </div>
+        `
       )
-        return next("validation");
+    );
+  });
 
-      const magicAuthenticationLink = `${app.get(
-        "url"
-      )}/authenticate/${newAuthenticationNonce(req.body.email)}${
-        req.query.redirect === undefined
-          ? ""
-          : `?redirect=${req.query.redirect}`
-      }`;
-      sendEmail({
-        to: req.body.email,
-        subject: "Magic Authentication Link",
-        body: html`
-          <p>
-            <a href="${magicAuthenticationLink}">${magicAuthenticationLink}</a>
-          </p>
-          <p><small>Expires in 10 minutes and may only be used once.</small></p>
-        `,
-      });
+  app.post<
+    {},
+    HTML,
+    { email?: string },
+    { redirect?: string; email?: string; name?: string },
+    {}
+  >("/authenticate", ...isUnauthenticated, (req, res, next) => {
+    if (
+      typeof req.body.email !== "string" ||
+      !validator.isEmail(req.body.email)
+    )
+      return next("validation");
 
-      res.send(
+    const magicAuthenticationLink = `${app.get(
+      "url"
+    )}/authenticate/${newAuthenticationNonce(req.body.email)}?${qs.stringify({
+      redirect: req.query.redirect,
+      email: req.query.email,
+      name: req.query.name,
+    })}`;
+    sendEmail({
+      to: req.body.email,
+      subject: "Magic Authentication Link",
+      body: html`
+        <p>
+          <a href="${magicAuthenticationLink}">${magicAuthenticationLink}</a>
+        </p>
+        <p><small>Expires in 10 minutes and may only be used once.</small></p>
+      `,
+    });
+
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`<title>Authenticate · CourseLore</title>`,
+        html`
+          <div
+            style="${css`
+              text-align: center;
+            `}"
+          >
+            <p>
+              To continue, check ${req.body.email} and click on the magic
+              authentication link.
+            </p>
+            <form method="POST">
+              <input type="hidden" name="email" value="${req.body.email}" />
+              <p>
+                Didn’t receive the email? Already checked the spam folder?
+                <button>Resend</button>
+              </p>
+            </form>
+
+            $${app.get("demonstration")
+              ? html`
+                  <p>
+                    <strong>
+                      CourseLore doesn’t send emails in demonstration mode.
+                      <a href="${app.get("url")}/demonstration-inbox"
+                        >Go to the Demonstration Inbox</a
+                      >.
+                    </strong>
+                  </p>
+                `
+              : html``}
+          </div>
+        `
+      )
+    );
+  });
+
+  app.get<
+    { nonce: string },
+    HTML,
+    {},
+    { redirect?: string; email?: string; name?: string },
+    {}
+  >("/authenticate/:nonce", ...isUnauthenticated, (req, res) => {
+    const email = verifyAuthenticationNonce(req.params.nonce);
+    if (email === undefined)
+      return res.send(
         app.get("layout main")(
           req,
           res,
-          html`<title>Authenticate · CourseLore</title>`,
+          html`<title>Authenticate · CourseLore</title>`,
           html`
             <div
               style="${css`
@@ -1522,142 +1582,96 @@ export default async function courselore(
               `}"
             >
               <p>
-                To continue, check ${req.body.email} and click on the magic
-                authentication link.
+                This magic authentication link is invalid or has expired.
+                <a
+                  href="${app.get("url")}/authenticate?${qs.stringify({
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
+                  })}"
+                  >Start over</a
+                >.
               </p>
-              <form method="POST">
-                <input type="hidden" name="email" value="${req.body.email}" />
-                <p>
-                  Didn’t receive the email? Already checked the spam folder?
-                  <button>Resend</button>
-                </p>
-              </form>
-
-              $${app.get("demonstration")
-                ? html`
-                    <p>
-                      <strong>
-                        CourseLore doesn’t send emails in demonstration mode.
-                        <a href="${app.get("url")}/demonstration-inbox"
-                          >Go to the Demonstration Inbox</a
-                        >.
-                      </strong>
-                    </p>
-                  `
-                : html``}
             </div>
           `
         )
       );
-    }
-  );
-
-  app.get<{ nonce: string }, HTML, {}, { redirect?: string }, {}>(
-    "/authenticate/:nonce",
-    ...isUnauthenticated,
-    (req, res) => {
-      const email = verifyAuthenticationNonce(req.params.nonce);
-      if (email === undefined)
-        return res.send(
-          app.get("layout main")(
-            req,
-            res,
-            html`<title>Authenticate · CourseLore</title>`,
-            html`
-              <div
+    const user = database.get<{ id: number }>(
+      sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
+    );
+    if (user === undefined)
+      return res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`<title>Sign up · CourseLore</title>`,
+          html`
+            <div
+              style="${css`
+                max-width: 300px;
+                margin: 0 auto;
+              `}"
+            >
+              <h1
                 style="${css`
                   text-align: center;
                 `}"
               >
-                <p>
-                  This magic authentication link is invalid or has expired.
-                  <a
-                    href="${app.get("url")}/authenticate${req.query.redirect ===
-                    undefined
-                      ? ""
-                      : `?redirect=${req.query.redirect}`}"
-                    >Start over</a
-                  >.
-                </p>
-              </div>
-            `
-          )
-        );
-      const user = database.get<{ id: number }>(
-        sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
-      );
-      if (user === undefined)
-        return res.send(
-          app.get("layout main")(
-            req,
-            res,
-            html`<title>Sign up · CourseLore</title>`,
-            html`
-              <div
-                style="${css`
-                  max-width: 300px;
-                  margin: 0 auto;
-                `}"
-              >
-                <h1
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  Welcome to CourseLore!
-                </h1>
+                Welcome to CourseLore!
+              </h1>
 
-                <form
-                  method="POST"
-                  action="${app.get("url")}/users${req.query.redirect ===
-                  undefined
-                    ? ""
-                    : `?redirect=${req.query.redirect}`}"
-                >
-                  <input
-                    type="hidden"
-                    name="nonce"
-                    value="${newAuthenticationNonce(email)}"
-                  />
-                  <p>
-                    <label>
-                      <strong>Name</strong><br />
-                      <input
-                        type="text"
-                        name="name"
-                        required
-                        autofocus
-                        class="full-width"
-                      />
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <strong>Email</strong><br />
-                      <input
-                        type="email"
-                        value="${email}"
-                        disabled
-                        class="full-width"
-                      />
-                    </label>
-                  </p>
-                  <p><button class="full-width">Create Account</button></p>
-                </form>
-              </div>
-            `
-          )
-        );
-      openSession(req, res, user.id);
-      res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
-    }
-  );
+              <form
+                method="POST"
+                action="${app.get("url")}/users?${qs.stringify({
+                  redirect: req.query.redirect,
+                  email: req.query.email,
+                  name: req.query.name,
+                })}"
+              >
+                <input
+                  type="hidden"
+                  name="nonce"
+                  value="${newAuthenticationNonce(email)}"
+                />
+                <p>
+                  <label>
+                    <strong>Name</strong><br />
+                    <input
+                      type="text"
+                      name="name"
+                      value="${req.query.name ?? ""}"
+                      required
+                      autofocus
+                      class="full-width"
+                    />
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    <strong>Email</strong><br />
+                    <input
+                      type="email"
+                      value="${email}"
+                      disabled
+                      class="full-width"
+                    />
+                  </label>
+                </p>
+                <p><button class="full-width">Create Account</button></p>
+              </form>
+            </div>
+          `
+        )
+      );
+    openSession(req, res, user.id);
+    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
+  });
 
   app.post<
     {},
     HTML,
     { nonce?: string; name?: string },
-    { redirect?: string },
+    { redirect?: string; email?: string; name?: string },
     {}
   >("/users", ...isUnauthenticated, (req, res, next) => {
     if (
@@ -1689,10 +1703,11 @@ export default async function courselore(
               <p>
                 Something went wrong in your sign up.
                 <a
-                  href="${app.get("url")}/sign-up${req.query.redirect ===
-                  undefined
-                    ? ""
-                    : `?redirect=${req.query.redirect}`}"
+                  href="${app.get("url")}/authenticate?${qs.stringify({
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
+                  })}"
                   >Start over</a
                 >.
               </p>
@@ -1725,7 +1740,7 @@ export default async function courselore(
     { nonce: string },
     HTML,
     {},
-    { redirect?: string },
+    { redirect?: string; email?: string; name?: string },
     {
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
@@ -1782,9 +1797,11 @@ export default async function courselore(
                     "url"
                   )}/authenticate/${newAuthenticationNonce(
                     otherUserEmail
-                  )}?_method=PUT${req.query.redirect === undefined
-                    ? ""
-                    : `&redirect=${req.query.redirect}`}"
+                  )}?_method=PUT&${qs.stringify({
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
+                  })}"
                 >
                   <p>
                     Sign out as $${currentUserHTML} and sign
@@ -1812,7 +1829,7 @@ export default async function courselore(
     { nonce: string },
     HTML,
     {},
-    { redirect?: string },
+    { redirect?: string; email?: string; name?: string },
     {
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
@@ -1820,11 +1837,11 @@ export default async function courselore(
   >("/authenticate/:nonce", ...isAuthenticated, (req, res) => {
     closeSession(req, res);
     res.redirect(
-      `${app.get("url")}/authenticate/${req.params.nonce}${
-        req.query.redirect === undefined
-          ? ""
-          : `?redirect=${req.query.redirect}`
-      }`
+      `${app.get("url")}/authenticate/${req.params.nonce}?${qs.stringify({
+        redirect: req.query.redirect,
+        email: req.query.email,
+        name: req.query.name,
+      })}`
     );
   });
 
@@ -2358,11 +2375,18 @@ export default async function courselore(
     any,
     {},
     {},
-    { invitationJoinCourse: InvitationJoinCourse }
+    { invitationJoinCourse: InvitationJoinCourse; user?: User }
   >[] = [
     ...invitationExists,
     (req, res, next) => {
-      if (isExpired(res.locals.invitationJoinCourse.invitation.expiresAt))
+      if (
+        res.locals.invitationJoinCourse.invitation.usedAt !== null ||
+        isExpired(res.locals.invitationJoinCourse.invitation.expiresAt) ||
+        (res.locals.invitationJoinCourse.invitation.email !== null &&
+          res.locals.user !== undefined &&
+          res.locals.invitationJoinCourse.invitation.email !==
+            res.locals.user.email)
+      )
         return next("route");
       next();
     },
@@ -3476,15 +3500,22 @@ export default async function courselore(
     (req, res) => {
       database.run(
         sql`
-            INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
-            VALUES (
-              ${res.locals.user.id},
-              ${res.locals.invitationJoinCourse.course.id},
-              ${res.locals.invitationJoinCourse.invitation.role},
-              ${defaultAccentColor(req, res)}
-            )
-          `
+          INSERT INTO "enrollments" ("user", "course", "role", "accentColor")
+          VALUES (
+            ${res.locals.user.id},
+            ${res.locals.invitationJoinCourse.course.id},
+            ${res.locals.invitationJoinCourse.invitation.role},
+            ${defaultAccentColor(req, res)}
+          )
+        `
       );
+      if (res.locals.invitationJoinCourse.invitation.email !== null)
+        database.run(
+          sql`
+          UPDATE "invitations"
+          SET "usedAt" = ${new Date().toISOString()}
+          WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+        );
 
       res.redirect(
         `${app.get("url")}/courses/${
@@ -3530,9 +3561,21 @@ export default async function courselore(
               <p>
                 To enroll, first you have to
                 <a
-                  href="${app.get(
-                    "url"
-                  )}/authenticate?redirect=${req.originalUrl}"
+                  href="${app.get("url")}/authenticate?${qs.stringify({
+                    redirect: req.originalUrl,
+                    ...(res.locals.invitationJoinCourse.invitation.email ===
+                    null
+                      ? {}
+                      : {
+                          email:
+                            res.locals.invitationJoinCourse.invitation.email,
+                        }),
+                    ...(res.locals.invitationJoinCourse.invitation.name === null
+                      ? {}
+                      : {
+                          name: res.locals.invitationJoinCourse.invitation.name,
+                        }),
+                  })}"
                   >authenticate</a
                 >.
               </p>
@@ -4693,9 +4736,9 @@ ${value}</textarea
             <p>
               You may have to
               <a
-                href="${app.get(
-                  "url"
-                )}/authenticate?redirect=${req.originalUrl}"
+                href="${app.get("url")}/authenticate?${qs.stringify({
+                  redirect: req.originalUrl,
+                })}"
                 >authenticate</a
               >
               to see this page.
