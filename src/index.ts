@@ -2552,7 +2552,8 @@ export default async function courselore(
                                 </small>
                               </summary>
 
-                              $${invitation.email === null
+                              $${invitation.email === null &&
+                              !isExpired(invitation.expiresAt)
                                 ? html`
                                     <p>
                                       <a href="${link}">See invitation link</a>
@@ -2585,24 +2586,7 @@ export default async function courselore(
                                               Already checked the spam
                                               folder?<br />
                                               <button>
-                                                Resend Invitation Email</button
-                                              ><br />
-                                              Or you may give them the following
-                                              link:<br />
-                                              <code>${link}</code><br />
-                                              <button
-                                                type="button"
-                                                onclick="${javascript`
-                                                  (async () => {
-                                                    await navigator.clipboard.writeText("${link}");
-                                                    const originalTextContent = this.textContent;
-                                                    this.textContent = "Copied";
-                                                    await new Promise(resolve => window.setTimeout(resolve, 500));
-                                                    this.textContent = originalTextContent;
-                                                  })();  
-                                                `}"
-                                              >
-                                                Copy
+                                                Resend Invitation Email
                                               </button>
                                             </p>
                                           </form>
@@ -3257,7 +3241,7 @@ export default async function courselore(
     "/courses/:courseReference/invitations/:invitationReference",
     ...mayManageInvitation,
     asyncHandler(async (req, res) => {
-      // FIXME: Email invitations shouldn’t get to this page.
+      // FIXME: Email invitations shouldn’t get to this page. Neither should expired invitations!!
       const link = `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
       }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`;
