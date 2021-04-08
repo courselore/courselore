@@ -2085,12 +2085,12 @@ export default async function courselore(
       { enrollmentsJoinCourses: EnrollmentJoinCourse[] }
     >
   ): AccentColor {
-    const accentColorsInUse = new Set(
+    const accentColorsInUse = new Set<AccentColor>(
       res.locals.enrollmentsJoinCourses.map(
         (enrollmentJoinCourse) => enrollmentJoinCourse.enrollment.accentColor
       )
     );
-    let accentColorsAvailable = new Set(ACCENT_COLORS);
+    let accentColorsAvailable = new Set<AccentColor>(ACCENT_COLORS);
     for (const accentColorInUse of accentColorsInUse) {
       accentColorsAvailable.delete(accentColorInUse);
       if (accentColorsAvailable.size === 1) break;
@@ -2443,11 +2443,50 @@ export default async function courselore(
       "staff"
         ? undefined
         : database.all<Invitation>(sql`
-          SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
-          FROM "invitations"
-          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-          ORDER BY "id" DESC
-        `);
+            SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+            FROM "invitations"
+            WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+            ORDER BY "id" DESC
+          `);
+
+    const enrollmentsJoinUsers =
+      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role !==
+      "staff"
+        ? undefined
+        : (database
+            .all<{
+              enrollmentId: number | null;
+              role: Role | null;
+              accentColor: AccentColor | null;
+              userId: number | null;
+              email: string | null;
+              name: string | null;
+            }>(
+              sql`
+                SELECT "enrollments"."id" AS "enrollmentId",
+                       "enrollments"."role",
+                       "enrollments"."accentColor",
+                       "users"."id" AS "userId",
+                       "users"."email",
+                       "users"."name"
+                FROM "enrollments"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                WHERE "enrollments"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+                ORDER BY "enrollments"."id" DESC
+              `
+            )
+            .map((row) => ({
+              enrollment: {
+                id: row.enrollmentId,
+                role: row.role,
+                accentColor: row.accentColor,
+              },
+              user: {
+                id: row.userId,
+                email: row.email,
+                name: row.name,
+              },
+            })) as EnrollmentJoinUser[]);
 
     res.send(
       app.get("layout main")(
@@ -2948,6 +2987,25 @@ export default async function courselore(
                   </p>
                   <p><button>Create Invitation</button></p>
                 </form>
+
+                <hr />
+
+                <p><strong>Enrollments</strong></p>
+                $${enrollmentsJoinUsers!.map(
+                  (enrollmentJoinUser) => html`
+                    <details>
+                      <summary>
+                        ${enrollmentJoinUser.user.name}
+                        ${`<${enrollmentJoinUser.user.email}>`}
+                        <small class="hint">
+                          ${lodash.capitalize(
+                            enrollmentJoinUser.enrollment.role
+                          )}
+                        </small>
+                      </summary>
+                    </details>
+                  `
+                )}
 
                 <hr />
               `}
