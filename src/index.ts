@@ -3333,27 +3333,6 @@ export default async function courselore(
               </p>
             </nav>
 
-            $${isExpired(res.locals.invitationJoinCourse.invitation.expiresAt)
-              ? html`
-                  <div
-                    style="${css`
-                      text-align: center;
-                    `}"
-                  >
-                    <p>
-                      <strong class="red"
-                        >This invitation link has expired.</strong
-                      >
-                    </p>
-                    <p class="hint">
-                      TODO: Fix this message! You may make it valid again by
-                      extending the expiration in the
-                      <a href="#expiration">form at the end of the page</a>.
-                    </p>
-                  </div>
-                `
-              : html``}
-
             <p>
               <strong>Invitation link</strong><br />
               <code>${link}</code><br />
