@@ -3266,12 +3266,16 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...mayManageInvitation,
-    asyncHandler(async (req, res) => {
-      // FIXME: Email invitations shouldn’t get to this page. Neither should expired invitations!!
+    asyncHandler(async (req, res, next) => {
+      if (
+        res.locals.invitationJoinCourse.invitation.email !== null ||
+        isExpired(res.locals.invitationJoinCourse.invitation.expiresAt)
+      )
+        return next();
+
       const link = `${app.get("url")}/courses/${
         res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
       }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`;
-
       res.send(
         app.get("layout main")(
           req,
