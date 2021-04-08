@@ -2610,31 +2610,50 @@ export default async function courselore(
                                         action="${link}?_method=PATCH"
                                       >
                                         <p>
-                                          <label>
-                                            <strong>Role</strong><br />
-                                            <select
-                                              name="role"
-                                              required
-                                              ${isExpired(invitation.expiresAt)
-                                                ? "disabled"
-                                                : ""}
-                                              class="full-width"
-                                            >
-                                              $${ROLES.map(
-                                                (role) =>
-                                                  html`
-                                                    <option
+                                          <strong>Role</strong><br />
+                                          <span
+                                            style="${css`
+                                              display: flex;
+
+                                              & > * + * {
+                                                margin-left: 1rem;
+                                              }
+                                            `}"
+                                          >
+                                            $${ROLES.map(
+                                              (role) =>
+                                                html`
+                                                  <label>
+                                                    <input
+                                                      type="radio"
+                                                      name="role"
                                                       value="${role}"
+                                                      required
                                                       ${role === invitation.role
-                                                        ? `selected`
+                                                        ? `checked`
                                                         : ``}
-                                                    >
-                                                      ${lodash.capitalize(role)}
-                                                    </option>
-                                                  `
-                                              )}
-                                            </select>
-                                          </label>
+                                                      ${isExpired(
+                                                        invitation.expiresAt
+                                                      )
+                                                        ? `disabled`
+                                                        : ``}
+                                                    />
+                                                    ${lodash.capitalize(role)}
+                                                  </label>
+                                                `
+                                            )}
+                                            $${isExpired(invitation.expiresAt)
+                                              ? html``
+                                              : html`
+                                                  <button
+                                                    style="${css`
+                                                      flex: 1;
+                                                    `}"
+                                                  >
+                                                    Change Role
+                                                  </button>
+                                                `}
+                                          </span>
                                         </p>
                                         $${isExpired(invitation.expiresAt)
                                           ? html`
@@ -2643,13 +2662,7 @@ export default async function courselore(
                                                 an expired invitation.
                                               </p>
                                             `
-                                          : html`
-                                              <p>
-                                                <button class="full-width">
-                                                  Change Role
-                                                </button>
-                                              </p>
-                                            `}
+                                          : html``}
                                       </form>
 
                                       <div>
@@ -2776,19 +2789,32 @@ export default async function courselore(
                     `}"
                   >
                     <p>
-                      <label>
-                        <strong>Role</strong><br />
-                        <select name="role" required class="full-width">
-                          $${ROLES.map(
-                            (role) =>
-                              html`
-                                <option value="${role}">
-                                  ${lodash.capitalize(role)}
-                                </option>
-                              `
-                          )}
-                        </select>
-                      </label>
+                      <strong>Role</strong><br />
+                      <span
+                        style="${css`
+                          display: flex;
+
+                          & > * + * {
+                            margin-left: 1rem;
+                          }
+                        `}"
+                      >
+                        $${ROLES.map(
+                          (role, index) =>
+                            html`
+                              <label>
+                                <input
+                                  type="radio"
+                                  name="role"
+                                  value="${role}"
+                                  required
+                                  $${index === 0 ? `checked` : ``}
+                                />
+                                ${lodash.capitalize(role)}
+                              </label>
+                            `
+                        )}
+                      </span>
                     </p>
 
                     <p>
