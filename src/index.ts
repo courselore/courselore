@@ -373,7 +373,7 @@ export default async function courselore(
                 button {
                   all: unset;
                   border: 1px solid gainsboro;
-                  box-shadow: inset 0px 1px 1px #ffffff10, 0px 1px 3px #00000010;
+                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
                   transition: background-color 0.2s, border-color 0.2s;
 
                   @media (prefers-color-scheme: dark) {
@@ -569,8 +569,8 @@ export default async function courselore(
                     padding: 0 1rem;
                     border: 1px solid darkgray;
                     border-radius: 10px;
-                    box-shadow: inset 0px 1px 1px #ffffff10,
-                      0px 1px 3px #00000010, 0px 0px 10px gainsboro;
+                    box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
+                      0 0 10px gainsboro;
                     position: absolute;
 
                     @media (prefers-color-scheme: dark) {
