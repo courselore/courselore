@@ -2342,20 +2342,20 @@ export default async function courselore(
     {},
     {},
     {
-      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitationJoinCourse: InvitationJoinCourse;
     }
-  >[] = [...invitationExists, ...isCourseStaff];
+  >[] = [...isCourseStaff, ...invitationExists];
 
   const isInvitationUsable: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
     {},
     {},
-    { invitationJoinCourse: InvitationJoinCourse; user?: User }
+    { user?: User; invitationJoinCourse: InvitationJoinCourse }
   >[] = [
     ...invitationExists,
     (req, res, next) => {
@@ -3489,11 +3489,11 @@ export default async function courselore(
     },
     {},
     {
-      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitationJoinCourse: InvitationJoinCourse;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -3553,11 +3553,11 @@ export default async function courselore(
     {},
     {},
     {
-      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitationJoinCourse: InvitationJoinCourse;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -3670,16 +3670,16 @@ export default async function courselore(
     {},
     {},
     {
-      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitationJoinCourse: InvitationJoinCourse;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
     ...isEnrolledInCourse,
+    ...isInvitationUsable,
     (req, res) => {
       res.send(
         app.get("layout main")(
@@ -3717,14 +3717,14 @@ export default async function courselore(
     {},
     {},
     {
-      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitationJoinCourse: InvitationJoinCourse;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
     ...isAuthenticated,
+    ...isInvitationUsable,
     (req, res) => {
       res.send(
         app.get("layout main")(
@@ -3761,14 +3761,14 @@ export default async function courselore(
     {},
     {},
     {
-      invitationJoinCourse: InvitationJoinCourse;
       user: User;
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      invitationJoinCourse: InvitationJoinCourse;
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
     ...isAuthenticated,
+    ...isInvitationUsable,
     (req, res) => {
       database.run(
         sql`
@@ -3808,8 +3808,8 @@ export default async function courselore(
     }
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isInvitationUsable,
     ...isUnauthenticated,
+    ...isInvitationUsable,
     (req, res) => {
       res.send(
         app.get("layout main")(
