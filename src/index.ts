@@ -3026,7 +3026,7 @@ export default async function courselore(
 
                 <hr />
 
-                <details>
+                <details id="enrollments">
                   <summary><strong>Enrollments</strong></summary>
 
                   $${enrollmentsJoinUsers!.map(
@@ -3855,6 +3855,72 @@ export default async function courselore(
             </div>
           `
         )
+      );
+    }
+  );
+
+  app.patch<
+    { courseReference: string; enrollmentReference: string },
+    HTML,
+    { role?: Role },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      managedEnrollment: Enrollment;
+    }
+  >(
+    "/courses/:courseReference/enrollments/:enrollmentReference",
+    ...mayManageEnrollment,
+    (req, res, next) => {
+      if (typeof req.body.role === "string") {
+        if (!ROLES.includes(req.body.role)) return next("validation");
+        database.run(
+          sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
+        );
+      }
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/settings#enrollments`
+      );
+    }
+  );
+
+  app.delete<
+    { courseReference: string; enrollmentReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      managedEnrollment: Enrollment;
+    }
+  >(
+    "/courses/:courseReference/enrollments/:enrollmentReference",
+    ...mayManageEnrollment,
+    (req, res) => {
+      database.run(
+        sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
+      );
+
+      if (
+        res.locals.managedEnrollment.id ===
+        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id
+      )
+        return res.redirect(`${app.get("url")}/`);
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/settings#enrollments`
       );
     }
   );
