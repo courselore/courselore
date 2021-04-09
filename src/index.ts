@@ -3188,11 +3188,11 @@ export default async function courselore(
                                       <button
                                         class="full-width"
                                         onclick="${javascript`
-                                        if (!confirm("Convert yourself to student?\\nYou can’t undo this action!"))
+                                        if (!confirm("Convert yourself into student?\\nYou can’t undo this action!"))
                                           event.preventDefault();
                                       `}"
                                       >
-                                        Convert Yourself to Student
+                                        Convert Yourself into Student
                                       </button>
                                     </p>
                                   </form>
