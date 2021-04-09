@@ -2406,6 +2406,50 @@ export default async function courselore(
     });
   }
 
+  const mayManageEnrollment: express.RequestHandler<
+    { courseReference: string; enrollmentReference: string },
+    any,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      managedEnrollment: Enrollment;
+    }
+  >[] = [
+    ...isCourseStaff,
+    (req, res, next) => {
+      const managedEnrollment: Enrollment | undefined = database.get<{
+        id: number;
+        reference: string;
+        role: Role;
+        accentColor: AccentColor;
+      }>(
+        sql`
+          SELECT "id", "reference", "role", "accentColor"
+          FROM "enrollments"
+          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                "reference" = ${req.params.enrollmentReference}
+        `
+      );
+      if (managedEnrollment === undefined) return next("route");
+      if (
+        database.get<{ count: number }>(
+          sql`
+            SELECT COUNT(*) AS "count"
+            FROM "enrollments"
+            WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+          `
+        )!.count === 1
+      )
+        return next("validation");
+      res.locals.managedEnrollment = managedEnrollment;
+      next();
+    },
+  ];
+
   app.get<
     { courseReference: string },
     HTML,
@@ -2418,11 +2462,19 @@ export default async function courselore(
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
     }
   >("/courses/:courseReference/settings", ...isEnrolledInCourse, (req, res) => {
-    const invitations =
+    const invitations: Invitation[] | undefined =
       res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role !==
       "staff"
         ? undefined
-        : database.all<Invitation>(sql`
+        : database.all<{
+            id: number;
+            expiresAt: string | null;
+            usedAt: string | null;
+            reference: string;
+            email: string | null;
+            name: string | null;
+            role: Role;
+          }>(sql`
             SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
             FROM "invitations"
             WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
