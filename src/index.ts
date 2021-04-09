@@ -2660,6 +2660,7 @@ export default async function courselore(
                                           <span
                                             style="${css`
                                               display: flex;
+                                              align-items: baseline;
 
                                               & > * + * {
                                                 margin-left: 1rem;
@@ -2973,108 +2974,200 @@ export default async function courselore(
 
                 <hr />
 
-                <p><strong>Enrollments</strong></p>
-                $${enrollmentsJoinUsers!.map(
-                  (enrollmentJoinUser) => html`
-                    <details>
-                      <summary>
-                        ${enrollmentJoinUser.user.name}
-                        ${`<${enrollmentJoinUser.user.email}>`}
-                        <small class="hint">
-                          ${lodash.capitalize(
-                            enrollmentJoinUser.enrollment.role
-                          )}
-                        </small>
-                      </summary>
+                <details>
+                  <summary><strong>Enrollments</strong></summary>
 
-                      <div
-                        style="${css`
-                          display: flex;
+                  $${enrollmentsJoinUsers!.map(
+                    (enrollmentJoinUser) => html`
+                      <details>
+                        <summary>
+                          ${enrollmentJoinUser.user.name}
+                          ${`<${enrollmentJoinUser.user.email}>`}
+                          <small class="hint">
+                            ${lodash.capitalize(
+                              enrollmentJoinUser.enrollment.role
+                            )}
+                          </small>
+                        </summary>
 
-                          & > * {
-                            flex: 1;
-                          }
-
-                          & > * + * {
-                            margin-left: 2rem;
-                          }
-                        `}"
-                      >
-                        <form
-                          method="POST"
-                          action="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                            .reference}/enrollments/${enrollmentJoinUser
-                            .enrollment.reference}?_method=PATCH"
-                        >
-                          <p>
-                            <strong>Role</strong><br />
-                            <span
-                              style="${css`
-                                display: flex;
-
-                                & > * + * {
-                                  margin-left: 1rem;
-                                }
-                              `}"
-                            >
-                              $${ROLES.map(
-                                (role) =>
-                                  html`
-                                    <label>
-                                      <input
-                                        type="radio"
-                                        name="role"
-                                        value="${role}"
-                                        required
-                                        ${role ===
-                                        enrollmentJoinUser.enrollment.role
-                                          ? `checked`
-                                          : ``}
-                                      />
-                                      ${lodash.capitalize(role)}
-                                    </label>
-                                  `
-                              )}
-                              <button
+                        $${enrollmentJoinUser.user.id !== res.locals.user.id
+                          ? html`
+                              <div
                                 style="${css`
-                                  flex: 1;
-                                `}"
-                              >
-                                Change Role
-                              </button>
-                            </span>
-                          </p>
-                        </form>
+                                  display: flex;
 
-                        <div>
-                          <form
-                            method="POST"
-                            action="${app.get("url")}/courses/${res.locals
-                              .enrollmentJoinCourseJoinThreadsWithMetadata
-                              .course
-                              .reference}/enrollments/${enrollmentJoinUser
-                              .enrollment.reference}?_method=DELETE"
-                          >
-                            <p class="red">
-                              <strong>Danger Zone</strong><br />
-                              <button
-                                class="full-width"
-                                onclick="${javascript`
-                                  if (!confirm("Remove ${enrollmentJoinUser.user.name} <${enrollmentJoinUser.user.email}> from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?"))
-                                    event.preventDefault();
+                                  & > * {
+                                    flex: 1;
+                                  }
+
+                                  & > * + * {
+                                    margin-left: 2rem;
+                                  }
                                 `}"
                               >
-                                Remove from Course
-                              </button>
-                            </p>
-                          </form>
-                        </div>
-                      </div>
-                      TODO: Treat the case of trying to change your own data.
-                    </details>
-                  `
-                )}
+                                <form
+                                  method="POST"
+                                  action="${app.get("url")}/courses/${res.locals
+                                    .enrollmentJoinCourseJoinThreadsWithMetadata
+                                    .course
+                                    .reference}/enrollments/${enrollmentJoinUser
+                                    .enrollment.reference}?_method=PATCH"
+                                >
+                                  <p>
+                                    <strong>Role</strong><br />
+                                    <span
+                                      style="${css`
+                                        display: flex;
+                                        align-items: baseline;
+
+                                        & > * + * {
+                                          margin-left: 1rem;
+                                        }
+                                      `}"
+                                    >
+                                      $${ROLES.map(
+                                        (role) =>
+                                          html`
+                                            <label>
+                                              <input
+                                                type="radio"
+                                                name="role"
+                                                value="${role}"
+                                                required
+                                                ${role ===
+                                                enrollmentJoinUser.enrollment
+                                                  .role
+                                                  ? `checked`
+                                                  : ``}
+                                              />
+                                              ${lodash.capitalize(role)}
+                                            </label>
+                                          `
+                                      )}
+                                      <button
+                                        style="${css`
+                                          flex: 1;
+                                        `}"
+                                      >
+                                        Change Role
+                                      </button>
+                                    </span>
+                                  </p>
+                                </form>
+
+                                <div>
+                                  <form
+                                    method="POST"
+                                    action="${app.get("url")}/courses/${res
+                                      .locals
+                                      .enrollmentJoinCourseJoinThreadsWithMetadata
+                                      .course
+                                      .reference}/enrollments/${enrollmentJoinUser
+                                      .enrollment.reference}?_method=DELETE"
+                                  >
+                                    <p class="red">
+                                      <strong>Danger Zone</strong><br />
+                                      <button
+                                        class="full-width"
+                                        onclick="${javascript`
+                                          if (!confirm("Remove ${enrollmentJoinUser.user.name} <${enrollmentJoinUser.user.email}> from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\nYou can’t undo this action!"))
+                                            event.preventDefault();
+                                        `}"
+                                      >
+                                        Remove from Course
+                                      </button>
+                                    </p>
+                                  </form>
+                                </div>
+                              </div>
+                            `
+                          : enrollmentsJoinUsers!.filter(
+                              (enrollmentJoinUser) =>
+                                enrollmentJoinUser.enrollment.role === "staff"
+                            ).length === 1
+                          ? html`
+                              <p>
+                                You may not modify the details of your
+                                enrollment in
+                                ${res.locals
+                                  .enrollmentJoinCourseJoinThreadsWithMetadata
+                                  .course.name}
+                                because you’re the only staff member.
+                              </p>
+                            `
+                          : html`
+                              <div class="red">
+                                <p
+                                  style="${css`
+                                    margin-bottom: 0;
+                                  `}"
+                                >
+                                  <strong>Danger Zone</strong>
+                                </p>
+
+                                <div
+                                  style="${css`
+                                    display: flex;
+
+                                    & > * {
+                                      flex: 1;
+                                    }
+
+                                    & > * + * {
+                                      margin-left: 2rem;
+                                    }
+                                  `}"
+                                >
+                                  <form
+                                    method="POST"
+                                    action="${app.get("url")}/courses/${res
+                                      .locals
+                                      .enrollmentJoinCourseJoinThreadsWithMetadata
+                                      .course
+                                      .reference}/enrollments/${enrollmentJoinUser
+                                      .enrollment.reference}?_method=PATCH"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="role"
+                                      value="student"
+                                    />
+                                    <button
+                                      class="full-width"
+                                      onclick="${javascript`
+                                        if (!confirm("Convert yourself to student?\\nYou can’t undo this action!"))
+                                          event.preventDefault();
+                                      `}"
+                                    >
+                                      Convert Yourself to Student
+                                    </button>
+                                  </form>
+                                  <form
+                                    method="POST"
+                                    action="${app.get("url")}/courses/${res
+                                      .locals
+                                      .enrollmentJoinCourseJoinThreadsWithMetadata
+                                      .course
+                                      .reference}/enrollments/${enrollmentJoinUser
+                                      .enrollment.reference}?_method=DELETE"
+                                  >
+                                    <button
+                                      class="full-width"
+                                      onclick="${javascript`
+                                        if (!confirm("Remove yourself from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\nYou can’t undo this action!"))
+                                          event.preventDefault();
+                                      `}"
+                                    >
+                                      Remove Yourself from Course
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            `}
+                      </details>
+                    `
+                  )}
+                </details>
 
                 <hr />
               `}
