@@ -3151,7 +3151,7 @@ export default async function courselore(
                               <div class="red">
                                 <p
                                   style="${css`
-                                    margin-bottom: 0;
+                                    margin-bottom: -1rem;
                                   `}"
                                 >
                                   <strong>Danger Zone</strong>
@@ -3184,16 +3184,19 @@ export default async function courselore(
                                       name="role"
                                       value="student"
                                     />
-                                    <button
-                                      class="full-width"
-                                      onclick="${javascript`
+                                    <p>
+                                      <button
+                                        class="full-width"
+                                        onclick="${javascript`
                                         if (!confirm("Convert yourself to student?\\nYou can’t undo this action!"))
                                           event.preventDefault();
                                       `}"
-                                    >
-                                      Convert Yourself to Student
-                                    </button>
+                                      >
+                                        Convert Yourself to Student
+                                      </button>
+                                    </p>
                                   </form>
+
                                   <form
                                     method="POST"
                                     action="${app.get("url")}/courses/${res
@@ -3203,15 +3206,17 @@ export default async function courselore(
                                       .reference}/enrollments/${enrollmentJoinUser
                                       .enrollment.reference}?_method=DELETE"
                                   >
-                                    <button
-                                      class="full-width"
-                                      onclick="${javascript`
+                                    <p>
+                                      <button
+                                        class="full-width"
+                                        onclick="${javascript`
                                         if (!confirm("Remove yourself from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\nYou can’t undo this action!"))
                                           event.preventDefault();
                                       `}"
-                                    >
-                                      Remove Yourself from Course
-                                    </button>
+                                      >
+                                        Remove Yourself from Course
+                                      </button>
+                                    </p>
                                   </form>
                                 </div>
                               </div>
