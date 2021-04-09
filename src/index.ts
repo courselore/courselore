@@ -558,9 +558,9 @@ export default async function courselore(
                     display: block;
                     position: absolute;
                     top: 0;
+                    right: 0;
+                    bottom: 0;
                     left: 0;
-                    width: 100vw;
-                    height: 100vw;
                   }
 
                   & > summary + * {
@@ -570,31 +570,11 @@ export default async function courselore(
                     border: 1px solid darkgray;
                     border-radius: 10px;
                     box-shadow: inset 0px 1px 1px #ffffff10,
-                      0px 1px 3px #00000010;
+                      0px 1px 3px #00000010, 0px 0px 10px gainsboro;
                     position: absolute;
 
                     @media (prefers-color-scheme: dark) {
                       background-color: #464646;
-                    }
-
-                    &::before {
-                      content: "";
-                      background-color: whitesmoke;
-                      display: block;
-                      width: 10px;
-                      height: 10px;
-                      position: absolute;
-                      top: -6px;
-                      transform: rotate(45deg);
-                      border: 1px solid darkgray;
-                      border-right: none;
-                      border-bottom: none;
-                      border-top-left-radius: 5px;
-                      box-shadow: inset 1px 1px 1px #ffffff10;
-
-                      @media (prefers-color-scheme: dark) {
-                        background-color: #464646;
-                      }
                     }
                   }
                 }
@@ -908,12 +888,6 @@ export default async function courselore(
                     border-top: 10px solid
                       ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
                         .enrollment.accentColor};
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100vw;
-                    height: 100vh;
-                    overflow: auto;
                   `}
             `}"
           >
@@ -1042,11 +1016,7 @@ export default async function courselore(
               </summary>
               <nav
                 style="${css`
-                  transform: translate(calc(-100% + 2.3rem), -0.5rem);
-
-                  &::before {
-                    right: 1rem;
-                  }
+                  transform: translate(calc(-100% + 2rem), -0.5rem);
                 `}"
               >
                 <p><strong>${res.locals.user.name}</strong></p>
@@ -3781,7 +3751,6 @@ export default async function courselore(
           <div
             style="${css`
               box-sizing: border-box;
-              width: 100vw;
               height: 100vh;
               border-top: 10px solid
                 ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
