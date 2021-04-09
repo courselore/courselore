@@ -32,7 +32,8 @@ beforeEach(async () => {
   const nonce = demonstrationInbox
     .querySelector(`a[href^="${app.get("url")}/authenticate/"]`)!
     .getAttribute("href")!
-    .slice(`${app.get("url")}/authenticate/`.length);
+    .match(/\/authenticate\/(\d+)/)!
+    .pop();
   await client.post("users", { form: { nonce, name: "Leandro Facchinetti" } });
 });
 afterEach(() => {
