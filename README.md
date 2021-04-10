@@ -158,6 +158,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Manage people in the course
   - Change their roles
   - Remove them from the course
+  - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Allow people to disenroll from a course (but we get to keep their contributions as “ghost”)
 - Allow people who aren’t even users to sign up & enroll in a single operation
   - Do it with a simple `redirect` option in the sign up process
@@ -588,6 +589,21 @@ Insiders Builds are generated on every push. They’re useful for development an
 </details>
 
 ### Meetings
+
+<details>
+<summary>2021-04-10</summary>
+
+- Progress:
+  - Finished invitation emails.
+  - Manage enrollments.
+- Questions:
+  - Delete courses, users, and so forth: Let’s do it later.
+- Nice to have: Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
+- Next week:
+  - Update threads when other people post.
+  - Focus on forum features like **tags** (both on threads and on the posts), upvotes & notifications.
+
+</details>
 
 <details>
 <summary>2021-04-03</summary>
