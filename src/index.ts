@@ -4979,6 +4979,53 @@ export default async function courselore(
     }
   );
 
+  /*
+  // FIXME: This relies on there being a single Node.js process. Ideally there would be some kind of message broker to notify when changes occur across server processes. Probably ZeroMQ fits the bill.
+  const threadsSSE = new Set<
+    express.Response<
+      any,
+      {
+        user: User;
+        enrollmentsJoinCourses: EnrollmentJoinCourse[];
+        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      }
+    >
+  >();
+  app.get<
+    { courseReference: string; threadReference: string },
+    HTML,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+    }
+  >(
+    "/courses/:courseReference/threads/:threadReference/sse",
+    ...isThreadAccessible,
+    (req, res) => {
+      console.log("Connected");
+      threadsSSE.add(res);
+      res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      });
+      res.on("close", () => {
+        console.log("Disconnected");
+        threadsSSE.delete(
+          [...threadsSSE].find((threadSSE) => threadSSE.res === res)!
+        );
+      });
+    }
+  );
+  */
+
   app.patch<
     { courseReference: string; threadReference: string },
     HTML,
