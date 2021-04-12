@@ -3647,7 +3647,9 @@ export default async function courselore(
                 type="button"
                 onclick="${javascript`
                   (async () => {
-                    await navigator.clipboard.writeText("${link}");
+                    await navigator.clipboard.writeText(${JSON.stringify(
+                      link
+                    )});
                     const originalTextContent = this.textContent;
                     this.textContent = "Copied";
                     await new Promise(resolve => window.setTimeout(resolve, 500));
@@ -4123,7 +4125,7 @@ export default async function courselore(
       )
   );
 
-  const textEditor = (value = ""): HTML => html`
+  const textEditor = (): HTML => html`
     <div class="text-editor">
       <p
         style="${css`
@@ -4211,9 +4213,7 @@ export default async function courselore(
                 if (isValid(form)) form.submit();
               }
             `}"
-          >
-${value}</textarea
-          >
+          ></textarea>
         </p>
         <p
           class="hint"
@@ -4651,7 +4651,15 @@ ${value}</textarea
                         onclick="${javascript`
                           const title = this.closest(".title");
                           title.querySelector(".show").hidden = true;
-                          title.querySelector(".edit").hidden = false;
+                          const edit = title.querySelector(".edit");
+                          edit.hidden = false;
+                          const input = edit.querySelector('.edit [name="title"]');
+                          input.value = ${JSON.stringify(
+                            res.locals.threadWithMetadataJoinPostsJoinAuthors
+                              .threadWithMetadata.title
+                          )};
+                          input.focus();
+                          input.setSelectionRange(0, 0);
                         `}"
                       >
                         Edit Title
@@ -4687,9 +4695,6 @@ ${value}</textarea
                         <input
                           type="text"
                           name="title"
-                          value="${res.locals
-                            .threadWithMetadataJoinPostsJoinAuthors
-                            .threadWithMetadata.title}"
                           autocomplete="off"
                           required
                           class="full-width"
@@ -4700,6 +4705,7 @@ ${value}</textarea
                         <button
                           type="button"
                           onclick="${javascript`
+                            if (!confirm("Discard changes?")) return;
                             const title = this.closest(".title");
                             title.querySelector(".show").hidden = false;
                             title.querySelector(".edit").hidden = true;
@@ -4744,8 +4750,8 @@ ${value}</textarea
                         $${postJoinAuthor.post.updatedAt !==
                         postJoinAuthor.post.createdAt
                           ? html`
-                              (and last edited
-                              <time>${postJoinAuthor.post.updatedAt}</time>)
+                              and last edited
+                              <time>${postJoinAuthor.post.updatedAt}</time>
                             `
                           : html``}
                         <a
@@ -4762,6 +4768,7 @@ ${value}</textarea
                         >
                       </span>
                     </p>
+
                     $${mayEditPost(req, res, postJoinAuthor)
                       ? html`
                           <p>
@@ -4771,7 +4778,14 @@ ${value}</textarea
                               onclick="${javascript`
                                 const post = this.closest(".post");
                                 post.querySelector(".show").hidden = true;
-                                post.querySelector(".edit").hidden = false;
+                                const edit = post.querySelector(".edit");
+                                edit.hidden = false;
+                                const textarea = edit.querySelector('.edit [name="content"]');
+                                textarea.value = ${JSON.stringify(
+                                  postJoinAuthor.post.content
+                                )};
+                                textarea.focus();
+                                textarea.setSelectionRange(0, 0);
                                 this.hidden = true;
                               `}"
                             >
@@ -4800,7 +4814,7 @@ ${value}</textarea
                           hidden
                           class="edit"
                         >
-                          $${textEditor(postJoinAuthor.post.content)}
+                          $${textEditor()}
                           <p
                             style="${css`
                               text-align: right;
@@ -4809,6 +4823,7 @@ ${value}</textarea
                             <button
                               type="button"
                               onclick="${javascript`
+                                if (!confirm("Discard changes?")) return;
                                 const post = this.closest(".post");
                                 post.querySelector(".show").hidden = false;
                                 post.querySelector(".edit").hidden = true;
