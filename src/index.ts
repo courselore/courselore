@@ -4233,8 +4233,7 @@ export default async function courselore(
             onkeydown="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
-                const form = this.closest("form");
-                if (isValid(form)) form.submit();
+                this.closest("form").querySelector('button:not([type="button"])').click();
               }
             `}"
           ></textarea>
