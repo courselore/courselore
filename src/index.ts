@@ -857,8 +857,11 @@ export default async function courselore(
             document.addEventListener("input", (event) => {
               modifiedFields.add(event.target);
             });
-            window.onbeforeunload = () =>
-              modifiedFields.size > 0 && !isSubmitting ? "" : undefined;
+            window.addEventListener("beforeunload", (event) => {
+              if (modifiedFields.size === 0 || isSubmitting) return;
+              event.preventDefault();
+              event.returnValue = "";
+            });
           </script>
         `
       )
