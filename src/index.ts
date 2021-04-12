@@ -415,6 +415,12 @@ export default async function courselore(
                   }
                 }
 
+                input[type="text"],
+                input[type="email"],
+                textarea {
+                  cursor: text;
+                }
+
                 input[type="radio"],
                 input[type="checkbox"] {
                   display: inline-block;
@@ -4148,13 +4154,13 @@ export default async function courselore(
           disabled
           tabindex="-1"
           onclick="${javascript`
-              const textEditor = this.closest("div.text-editor");
-              textEditor.querySelector("div.preview").hidden = true;
-              textEditor.querySelector("div.write").hidden = false;
-              textEditor.querySelector("textarea").focus();
-              this.disabled = true;
-              textEditor.querySelector("button.preview").disabled = false;
-            `}"
+            const textEditor = this.closest("div.text-editor");
+            textEditor.querySelector("div.preview").hidden = true;
+            textEditor.querySelector("div.write").hidden = false;
+            textEditor.querySelector("textarea").focus();
+            this.disabled = true;
+            textEditor.querySelector("button.preview").disabled = false;
+          `}"
         >
           Write
         </button>
@@ -4163,26 +4169,26 @@ export default async function courselore(
           class="preview"
           tabindex="-1"
           onclick="${javascript`
-              (async () => {
-                const textEditor = this.closest("div.text-editor");
-                const textarea = textEditor.querySelector("textarea");
-                if (!isValid(textarea)) return;
-                this.disabled = true;
-                const loading = textEditor.querySelector("div.loading");
-                textEditor.querySelector("div.write").hidden = true;
-                loading.hidden = false;
-                const preview = textEditor.querySelector("div.preview");
-                preview.innerHTML = await (
-                  await fetch("${app.get("url")}/preview", {
-                    method: "POST",
-                    body: new URLSearchParams({ content: textarea.value }),
-                  })
-                ).text();
-                loading.hidden = true;
-                preview.hidden = false;
-                textEditor.querySelector("button.write").disabled = false;
-              })();
-            `}"
+            (async () => {
+              const textEditor = this.closest("div.text-editor");
+              const textarea = textEditor.querySelector("textarea");
+              if (!isValid(textarea)) return;
+              this.disabled = true;
+              const loading = textEditor.querySelector("div.loading");
+              textEditor.querySelector("div.write").hidden = true;
+              loading.hidden = false;
+              const preview = textEditor.querySelector("div.preview");
+              preview.innerHTML = await (
+                await fetch("${app.get("url")}/preview", {
+                  method: "POST",
+                  body: new URLSearchParams({ content: textarea.value }),
+                })
+              ).text();
+              loading.hidden = true;
+              preview.hidden = false;
+              textEditor.querySelector("button.write").disabled = false;
+            })();
+          `}"
         >
           Preview
         </button>
@@ -4198,7 +4204,7 @@ export default async function courselore(
             name="content"
             required
             class="full-width"
-            onkeypress="${javascript`
+            onkeydown="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
                 const form = this.closest("form");
