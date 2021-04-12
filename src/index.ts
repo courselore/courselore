@@ -59,6 +59,7 @@ export default async function courselore(
     id: number;
     reference: string;
     name: string;
+    nextThreadReference: number;
   }
 
   interface Enrollment {
@@ -115,6 +116,7 @@ export default async function courselore(
     id: number;
     reference: string;
     title: string;
+    nextPostReference: number;
   }
 
   interface ThreadWithMetadata extends Thread {
@@ -168,7 +170,8 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "reference" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL
+        "name" TEXT NOT NULL,
+        "nextThreadReference" INTEGER NOT NULL DEFAULT 1
       );
 
       CREATE TABLE "invitations" (
@@ -201,6 +204,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "title" TEXT NOT NULL,
+        "nextPostReference" INTEGER NOT NULL DEFAULT 1,
         UNIQUE ("course", "reference")
       );
 
@@ -1240,6 +1244,7 @@ export default async function courselore(
           courseId: number;
           courseReference: string;
           name: string;
+          nextThreadReference: number;
         }>(
           sql`
             SELECT "enrollments"."id" AS "enrollmentId",
@@ -1248,7 +1253,8 @@ export default async function courselore(
                    "enrollments"."accentColor",
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
-                   "courses"."name"
+                   "courses"."name",
+                   "courses"."nextThreadReference"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "enrollments"."user" = ${res.locals.user.id}
@@ -1266,6 +1272,7 @@ export default async function courselore(
             id: row.courseId,
             reference: row.courseReference,
             name: row.name,
+            nextThreadReference: row.nextThreadReference,
           },
         }));
       next();
@@ -2121,6 +2128,7 @@ export default async function courselore(
           threadId: number;
           threadReference: string;
           title: string;
+          nextPostReference: number;
           createdAt: string;
           updatedAt: string;
           authorEnrollmentId: number | null;
@@ -2135,6 +2143,7 @@ export default async function courselore(
             SELECT "threads"."id" AS "threadId",
                    "threads"."reference" AS "threadReference",
                    "threads"."title",
+                   "threads"."nextPostReference",
                    "originalPost"."createdAt",
                    "mostRecentlyUpdatedPost"."updatedAt",
                    "authorEnrollment"."id" AS "authorEnrollmentId",
@@ -2158,6 +2167,7 @@ export default async function courselore(
           id: row.threadId,
           reference: row.threadReference,
           title: row.title,
+          nextPostReference: row.nextPostReference,
           createdAt: row.createdAt,
           updatedAt: row.updatedAt,
           author:
@@ -2314,6 +2324,7 @@ export default async function courselore(
         courseId: number;
         courseReference: string;
         courseName: string;
+        nextThreadReference: number;
       }>(
         sql`
           SELECT "invitations"."id" AS "invitationId",
@@ -2325,7 +2336,8 @@ export default async function courselore(
                  "invitations"."role",
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
-                 "courses"."name" AS "courseName"
+                 "courses"."name" AS "courseName",
+                 "courses"."nextThreadReference"
           FROM "invitations"
           JOIN "courses" ON "invitations"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference} AND
@@ -2347,6 +2359,7 @@ export default async function courselore(
           id: row.courseId,
           reference: row.courseReference,
           name: row.courseName,
+          nextThreadReference: row.nextThreadReference,
         },
       };
       next();
@@ -4353,44 +4366,51 @@ export default async function courselore(
       )
         return next("validation");
 
-      const newThreadReference =
-        database.get<{ newThreadReference: string }>(
-          sql`
-            SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
-            FROM "threads"
-            WHERE "threads"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-          `
-        )?.newThreadReference ?? "1";
-
+      database.run(
+        sql`
+          UPDATE "courses"
+          SET "nextThreadReference" = ${
+            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+              .nextThreadReference + 1
+          }
+          WHERE "id" ${
+            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id
+          }
+        `
+      );
       const threadId = database.run(
         sql`
-        INSERT INTO "threads" ("course", "reference", "title")
-        VALUES (
-          ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-          ${newThreadReference},
-          ${req.body.title}
-        )
-      `
+          INSERT INTO "threads" ("course", "reference", "title")
+          VALUES (
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.nextThreadReference},
+            ${req.body.title}
+          )
+        `
       ).lastInsertRowid;
       database.run(
         sql`
-        INSERT INTO "posts" ("thread", "reference", "author", "content")
-        VALUES (
-          ${threadId},
-          ${"1"},
-          ${
-            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id
-          },
-          ${req.body.content}
-        )
-      `
+          INSERT INTO "posts" ("thread", "reference", "author", "content")
+          VALUES (
+            ${threadId},
+            ${"1"},
+            ${
+              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
+                .id
+            },
+            ${req.body.content}
+          )
+        `
       );
 
       res.redirect(
         `${app.get("url")}/courses/${
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
-        }/threads/${newThreadReference}`
+        }/threads/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .nextThreadReference
+        }`
       );
     }
   );
@@ -4936,20 +4956,25 @@ export default async function courselore(
       )
         return next("validation");
 
-      const newPostReference = database.get<{ newPostReference: string }>(
+      database.run(
         sql`
-          SELECT CAST(MAX(CAST("posts"."reference" AS INTEGER)) + 1 AS TEXT) AS "newPostReference"
-          FROM "posts"
-          WHERE "posts"."thread" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}
+          UPDATE "threads"
+          SET "nextPostReference" = ${
+            res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+              .nextPostReference + 1
+          }
+          WHERE "id" ${
+            res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+              .id
+          }
         `
-      )!.newPostReference;
-
+      );
       database.run(
         sql`
           INSERT INTO "posts" ("thread", "reference", "author", "content")
           VALUES (
             ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id},
-            ${newPostReference},
+            ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.nextPostReference},
             ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id},
             ${req.body.content}
           )
@@ -4963,7 +4988,10 @@ export default async function courselore(
         }/threads/${
           res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
             .reference
-        }#${newPostReference}`
+        }#${
+          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+            .nextPostReference
+        }`
       );
     }
   );
