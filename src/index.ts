@@ -843,14 +843,22 @@ export default async function courselore(
               }
             }
 
-            document.body.addEventListener("submit", (event) => {
-              if (isValid(event.target))
-                for (const button of event.target.querySelectorAll(
-                  'button:not([type="button"])'
-                ))
-                  button.disabled = true;
-              else event.preventDefault();
+            document.addEventListener("submit", (event) => {
+              if (!isValid(event.target)) return event.preventDefault();
+              for (const button of event.target.querySelectorAll(
+                'button:not([type="button"])'
+              ))
+                button.disabled = true;
+              isSubmitting = true;
             });
+
+            const modifiedFields = new Set();
+            let isSubmitting = false;
+            document.addEventListener("input", (event) => {
+              modifiedFields.add(event.target);
+            });
+            window.onbeforeunload = () =>
+              modifiedFields.size > 0 && !isSubmitting ? "" : undefined;
           </script>
         `
       )
@@ -4653,7 +4661,7 @@ export default async function courselore(
                           title.querySelector(".show").hidden = true;
                           const edit = title.querySelector(".edit");
                           edit.hidden = false;
-                          const input = edit.querySelector('.edit [name="title"]');
+                          const input = edit.querySelector('[name="title"]');
                           input.value = ${JSON.stringify(
                             res.locals.threadWithMetadataJoinPostsJoinAuthors
                               .threadWithMetadata.title
@@ -4708,7 +4716,9 @@ export default async function courselore(
                             if (!confirm("Discard changes?")) return;
                             const title = this.closest(".title");
                             title.querySelector(".show").hidden = false;
-                            title.querySelector(".edit").hidden = true;
+                            const edit = title.querySelector(".edit");
+                            edit.hidden = true;
+                            modifiedFields.delete(edit.querySelector('[name="title"]'));
                           `}"
                         >
                           Cancel
@@ -4780,7 +4790,7 @@ export default async function courselore(
                                 post.querySelector(".show").hidden = true;
                                 const edit = post.querySelector(".edit");
                                 edit.hidden = false;
-                                const textarea = edit.querySelector('.edit [name="content"]');
+                                const textarea = edit.querySelector('[name="content"]');
                                 textarea.value = ${JSON.stringify(
                                   postJoinAuthor.post.content
                                 )};
@@ -4826,7 +4836,9 @@ export default async function courselore(
                                 if (!confirm("Discard changes?")) return;
                                 const post = this.closest(".post");
                                 post.querySelector(".show").hidden = false;
-                                post.querySelector(".edit").hidden = true;
+                                const edit = post.querySelector(".edit");
+                                edit.hidden = true;
+                                modifiedFields.delete(edit.querySelector('[name="content"]'));
                                 post.querySelector(".edit-button").hidden = false;
                               `}"
                             >
