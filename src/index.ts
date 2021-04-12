@@ -4559,6 +4559,32 @@ export default async function courselore(
     },
   ];
 
+  const postExists: express.RequestHandler<
+    { courseReference: string; threadReference: string; postReference: string },
+    any,
+    {},
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      postJoinAuthor: PostJoinAuthor;
+    }
+  >[] = [
+    ...isThreadAccessible,
+    (req, res, next) => {
+      const postJoinAuthor = res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.find(
+        (postJoinAuthor) =>
+          postJoinAuthor.post.reference === req.params.postReference
+      );
+      if (postJoinAuthor === undefined) return next("route");
+      res.locals.postJoinAuthor = postJoinAuthor;
+      next();
+    },
+  ];
+
   const mayEditPost = (
     req: express.Request<
       { courseReference: string; threadReference: string },
@@ -4602,19 +4628,10 @@ export default async function courselore(
       postJoinAuthor: PostJoinAuthor;
     }
   >[] = [
-    ...isThreadAccessible,
+    ...postExists,
     (req, res, next) => {
-      const postJoinAuthor = res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.find(
-        (postJoinAuthor) =>
-          postJoinAuthor.post.reference === req.params.postReference
-      );
-      if (
-        postJoinAuthor === undefined ||
-        !mayEditPost(req, res, postJoinAuthor)
-      )
-        return next("route");
-      res.locals.postJoinAuthor = postJoinAuthor;
-      next();
+      if (mayEditPost(req, res, res.locals.postJoinAuthor)) return next();
+      next("route");
     },
   ];
 
@@ -4863,7 +4880,8 @@ export default async function courselore(
                         `
                       : html``}
                     $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                      .enrollment.role === "staff"
+                      .enrollment.role === "staff" &&
+                    postJoinAuthor.post.reference !== "1"
                       ? html`
                           <form
                             method="POST"
@@ -4996,6 +5014,36 @@ export default async function courselore(
     }
   );
 
+  app.delete<
+    { courseReference: string; threadReference: string },
+    HTML,
+    { title?: string },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+    }
+  >(
+    "/courses/:courseReference/threads/:threadReference",
+    ...isCourseStaff,
+    ...isThreadAccessible,
+    (req, res) => {
+      database.run(
+        sql`DELETE FROM "threads" WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}`
+      );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }`
+      );
+    }
+  );
+
   app.post<
     { courseReference: string; threadReference: string },
     HTML,
@@ -5107,6 +5155,43 @@ export default async function courselore(
           res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
             .reference
         }#${res.locals.postJoinAuthor.post.reference}`
+      );
+    }
+  );
+
+  app.delete<
+    { courseReference: string; threadReference: string; postReference: string },
+    any,
+    { content?: string },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      postJoinAuthor: PostJoinAuthor;
+    }
+  >(
+    "/courses/:courseReference/threads/:threadReference/posts/:postReference",
+    ...isCourseStaff,
+    ...postExists,
+    (req, res, next) => {
+      if (res.locals.postJoinAuthor.post.reference === "1")
+        return next("validation");
+
+      database.run(
+        sql`DELETE FROM "posts" WHERE "id" = ${res.locals.postJoinAuthor.post.id}`
+      );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/threads/${
+          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+            .reference
+        }`
       );
     }
   );
