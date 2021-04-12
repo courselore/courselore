@@ -4345,10 +4345,10 @@ ${value}</textarea
       const newThreadReference =
         database.get<{ newThreadReference: string }>(
           sql`
-          SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
-          FROM "threads"
-          WHERE "threads"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-        `
+            SELECT CAST(MAX(CAST("threads"."reference" AS INTEGER)) + 1 AS TEXT) AS "newThreadReference"
+            FROM "threads"
+            WHERE "threads"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+          `
         )?.newThreadReference ?? "1";
 
       const threadId = database.run(
