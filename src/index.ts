@@ -4373,18 +4373,22 @@ export default async function courselore(
             res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
               .nextThreadReference + 1
           }
-          WHERE "id" ${
+          WHERE "id" = ${
             res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id
           }
         `
       );
       const threadId = database.run(
         sql`
-          INSERT INTO "threads" ("course", "reference", "title")
+          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference")
           VALUES (
             ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.nextThreadReference},
-            ${req.body.title}
+            ${String(
+              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .nextThreadReference
+            )},
+            ${req.body.title},
+            ${"2"}
           )
         `
       ).lastInsertRowid;
@@ -4963,7 +4967,7 @@ export default async function courselore(
             res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
               .nextPostReference + 1
           }
-          WHERE "id" ${
+          WHERE "id" = ${
             res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
               .id
           }
@@ -4973,9 +4977,18 @@ export default async function courselore(
         sql`
           INSERT INTO "posts" ("thread", "reference", "author", "content")
           VALUES (
-            ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id},
-            ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.nextPostReference},
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id},
+            ${
+              res.locals.threadWithMetadataJoinPostsJoinAuthors
+                .threadWithMetadata.id
+            },
+            ${String(
+              res.locals.threadWithMetadataJoinPostsJoinAuthors
+                .threadWithMetadata.nextPostReference
+            )},
+            ${
+              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
+                .id
+            },
             ${req.body.content}
           )
         `
