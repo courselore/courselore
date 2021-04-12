@@ -22,7 +22,7 @@
     "access": "public"
   },
   "scripts": {
-    "start": "ts-node-dev src/index.ts",
+    "start": "ts-node-dev --poll src/index.ts",
     "start:customized": "npm start customization-example/configuration.js",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"

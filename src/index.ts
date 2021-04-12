@@ -3152,7 +3152,7 @@ export default async function courselore(
                                       <button
                                         class="full-width"
                                         onclick="${javascript`
-                                          if (!confirm("Remove ${enrollmentJoinUser.user.name} <${enrollmentJoinUser.user.email}> from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\nYou can’t undo this action!"))
+                                          if (!confirm("Remove ${enrollmentJoinUser.user.name} <${enrollmentJoinUser.user.email}> from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\n\\nYou can’t undo this action!"))
                                             event.preventDefault();
                                         `}"
                                       >
@@ -3218,9 +3218,9 @@ export default async function courselore(
                                       <button
                                         class="full-width"
                                         onclick="${javascript`
-                                        if (!confirm("Convert yourself into student?\\nYou can’t undo this action!"))
-                                          event.preventDefault();
-                                      `}"
+                                          if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
+                                            event.preventDefault();
+                                        `}"
                                       >
                                         Convert Yourself into Student
                                       </button>
@@ -3240,9 +3240,9 @@ export default async function courselore(
                                       <button
                                         class="full-width"
                                         onclick="${javascript`
-                                        if (!confirm("Remove yourself from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\nYou can’t undo this action!"))
-                                          event.preventDefault();
-                                      `}"
+                                          if (!confirm("Remove yourself from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\n\\nYou can’t undo this action!"))
+                                            event.preventDefault();
+                                        `}"
                                       >
                                         Remove Yourself from Course
                                       </button>
@@ -4323,6 +4323,7 @@ export default async function courselore(
                     name="title"
                     autocomplete="off"
                     required
+                    autofocus
                     class="full-width"
                   />
                 </label>
@@ -4654,7 +4655,7 @@ export default async function courselore(
                   align-items: baseline;
 
                   & > * + * {
-                    margin-left: 2rem;
+                    margin-left: 1rem;
                   }
                 `}"
               >
@@ -4680,24 +4681,51 @@ export default async function courselore(
 
                 $${mayEditThread(req, res)
                   ? html`
-                      <button
-                        type="button"
-                        onclick="${javascript`
-                          const title = this.closest(".title");
-                          title.querySelector(".show").hidden = true;
-                          const edit = title.querySelector(".edit");
-                          edit.hidden = false;
-                          const input = edit.querySelector('[name="title"]');
-                          input.value = ${JSON.stringify(
-                            res.locals.threadWithMetadataJoinPostsJoinAuthors
-                              .threadWithMetadata.title
-                          )};
-                          input.focus();
-                          input.setSelectionRange(0, 0);
-                        `}"
+                      <p>
+                        <button
+                          type="button"
+                          onclick="${javascript`
+                            const title = this.closest(".title");
+                            title.querySelector(".show").hidden = true;
+                            const edit = title.querySelector(".edit");
+                            edit.hidden = false;
+                            const input = edit.querySelector('[name="title"]');
+                            input.value = ${JSON.stringify(
+                              res.locals.threadWithMetadataJoinPostsJoinAuthors
+                                .threadWithMetadata.title
+                            )};
+                            input.focus();
+                            input.setSelectionRange(0, 0);
+                          `}"
+                        >
+                          Edit Title
+                        </button>
+                      </p>
+                    `
+                  : html``}
+                $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                  .enrollment.role === "staff"
+                  ? html`
+                      <form
+                        method="POST"
+                        action="${app.get("url")}/courses/${res.locals
+                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          .reference}/threads/${res.locals
+                          .threadWithMetadataJoinPostsJoinAuthors
+                          .threadWithMetadata.reference}?_method=DELETE"
                       >
-                        Edit Title
-                      </button>
+                        <p>
+                          <button
+                            class="red"
+                            onclick="${javascript`
+                              if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
+                                event.preventDefault();
+                            `}"
+                          >
+                            Remove Thread
+                          </button>
+                        </p>
+                      </form>
                     `
                   : html``}
               </div>
@@ -4772,6 +4800,10 @@ export default async function courselore(
                     style="${css`
                       display: flex;
                       margin-bottom: -1rem;
+
+                      & > * + * {
+                        margin-left: 1rem;
+                      }
                     `}"
                   >
                     <p
@@ -4828,6 +4860,33 @@ export default async function courselore(
                               Edit Post
                             </button>
                           </p>
+                        `
+                      : html``}
+                    $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                      .enrollment.role === "staff"
+                      ? html`
+                          <form
+                            method="POST"
+                            action="${app.get("url")}/courses/${res.locals
+                              .enrollmentJoinCourseJoinThreadsWithMetadata
+                              .course.reference}/threads/${res.locals
+                              .threadWithMetadataJoinPostsJoinAuthors
+                              .threadWithMetadata
+                              .reference}/posts/${postJoinAuthor.post
+                              .reference}?_method=DELETE"
+                          >
+                            <p>
+                              <button
+                                class="red"
+                                onclick="${javascript`
+                                  if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
+                                    event.preventDefault();
+                                `}"
+                              >
+                                Remove Post
+                              </button>
+                            </p>
+                          </form>
                         `
                       : html``}
                   </div>
