@@ -144,14 +144,24 @@ export default async function courselore(
     content: string;
   }
 
-  interface PostJoinAuthor {
-    post: Post;
-    author: EnrollmentJoinUser | Anonymous;
+  interface Like {
+    id: number;
   }
 
-  interface ThreadWithMetadataJoinPostsJoinAuthors {
+  interface LikeJoinEnrollmentJoinUser {
+    like: Like;
+    enrollmentJoinUser: EnrollmentJoinUser;
+  }
+
+  interface PostJoinAuthorJoinLikesJoinEnrollmentJoinUser {
+    post: Post;
+    author: EnrollmentJoinUser | Anonymous;
+    likesJoinEnrollmentJoinUser: LikeJoinEnrollmentJoinUser[];
+  }
+
+  interface ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser {
     threadWithMetadata: ThreadWithMetadata;
-    postsJoinAuthors: PostJoinAuthor[];
+    postsJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser[];
   }
 
   await fs.ensureDir(rootDirectory);
@@ -217,6 +227,14 @@ export default async function courselore(
         "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "content" TEXT NOT NULL,
         UNIQUE ("thread", "reference")
+      );
+
+      CREATE TABLE "likes" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "post" INTEGER NOT NULL REFERENCES "posts" ON DELETE CASCADE,
+        "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        UNIQUE ("post", "enrollment")
       );
 
       CREATE TABLE "authenticationNonces" (
@@ -3975,7 +3993,7 @@ export default async function courselore(
           enrollmentsJoinCourses: EnrollmentJoinCourse[];
           enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
           otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-          threadWithMetadataJoinPostsJoinAuthors?: ThreadWithMetadataJoinPostsJoinAuthors;
+          threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser?: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
         }
       >,
       res: express.Response<
@@ -3985,7 +4003,7 @@ export default async function courselore(
           enrollmentsJoinCourses: EnrollmentJoinCourse[];
           enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
           otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-          threadWithMetadataJoinPostsJoinAuthors?: ThreadWithMetadataJoinPostsJoinAuthors;
+          threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser?: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
         }
       >,
       head: HTML,
@@ -4085,7 +4103,8 @@ export default async function courselore(
                             margin: 0 -1rem;
 
                             ${threadWithMetadata.id ===
-                            res.locals.threadWithMetadataJoinPostsJoinAuthors
+                            res.locals
+                              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                               ?.threadWithMetadata?.id
                               ? css`
                                   background-color: whitesmoke;
@@ -4429,7 +4448,7 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >[] = [
     ...isEnrolledInCourse,
@@ -4500,7 +4519,7 @@ export default async function courselore(
               : ANONYMOUS,
         }));
 
-      res.locals.threadWithMetadataJoinPostsJoinAuthors = {
+      res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser = {
         threadWithMetadata,
         postsJoinAuthors,
       };
@@ -4520,7 +4539,7 @@ export default async function courselore(
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
         otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >,
     res: express.Response<
@@ -4530,14 +4549,15 @@ export default async function courselore(
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
         otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >
   ): boolean =>
     res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
       "staff" ||
-    res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.author
-      .user.id === res.locals.user.id;
+    res.locals
+      .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+      .threadWithMetadata.author.user.id === res.locals.user.id;
 
   const mayEditThreadMiddleware: express.RequestHandler<
     { courseReference: string; threadReference: string },
@@ -4549,7 +4569,7 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >[] = [
     ...isThreadAccessible,
@@ -4569,13 +4589,13 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
-      postJoinAuthor: PostJoinAuthor;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >[] = [
     ...isThreadAccessible,
     (req, res, next) => {
-      const postJoinAuthor = res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.find(
+      const postJoinAuthor = res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthors.find(
         (postJoinAuthor) =>
           postJoinAuthor.post.reference === req.params.postReference
       );
@@ -4596,7 +4616,7 @@ export default async function courselore(
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
         otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >,
     res: express.Response<
@@ -4606,10 +4626,10 @@ export default async function courselore(
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
         otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >,
-    postJoinAuthor: PostJoinAuthor
+    postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser
   ): boolean =>
     res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
       "staff" || postJoinAuthor.author.user.id === res.locals.user.id;
@@ -4624,8 +4644,8 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
-      postJoinAuthor: PostJoinAuthor;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >[] = [
     ...postExists,
@@ -4644,7 +4664,7 @@ export default async function courselore(
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
         otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >
   >();
@@ -4658,7 +4678,7 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference",
@@ -4671,7 +4691,8 @@ export default async function courselore(
               req,
               res,
               html`<title>
-                ${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                ${res.locals
+                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                   .threadWithMetadata.title}
                 ·
                 ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
@@ -4696,17 +4717,19 @@ export default async function courselore(
                         flex: 1;
                       `}"
                     >
-                      ${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                      ${res.locals
+                        .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                         .threadWithMetadata.title}
 
                       <a
                         href="${app.get("url")}/courses/${res.locals
                           .enrollmentJoinCourseJoinThreadsWithMetadata.course
                           .reference}/threads/${res.locals
-                          .threadWithMetadataJoinPostsJoinAuthors
+                          .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                           .threadWithMetadata.reference}"
                         class="hint"
-                        >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                        >#${res.locals
+                          .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                           .threadWithMetadata.reference}</a
                       >
                     </h1>
@@ -4724,7 +4747,7 @@ export default async function courselore(
                                 const input = edit.querySelector('[name="title"]');
                                 input.value = ${JSON.stringify(
                                   res.locals
-                                    .threadWithMetadataJoinPostsJoinAuthors
+                                    .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                                     .threadWithMetadata.title
                                 )};
                                 input.focus();
@@ -4744,7 +4767,7 @@ export default async function courselore(
                             action="${app.get("url")}/courses/${res.locals
                               .enrollmentJoinCourseJoinThreadsWithMetadata
                               .course.reference}/threads/${res.locals
-                              .threadWithMetadataJoinPostsJoinAuthors
+                              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                               .threadWithMetadata.reference}?_method=DELETE"
                           >
                             <p>
@@ -4770,7 +4793,7 @@ export default async function courselore(
                           action="${app.get("url")}/courses/${res.locals
                             .enrollmentJoinCourseJoinThreadsWithMetadata.course
                             .reference}/threads/${res.locals
-                            .threadWithMetadataJoinPostsJoinAuthors
+                            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                             .threadWithMetadata.reference}?_method=PATCH"
                           hidden
                           class="edit"
@@ -4816,7 +4839,7 @@ export default async function courselore(
                     : html``}
                 </div>
 
-                $${res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.map(
+                $${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthors.map(
                   (postJoinAuthor) => html`
                     <section
                       id="${postJoinAuthor.post.reference}"
@@ -4865,7 +4888,7 @@ export default async function courselore(
                                 text-decoration: none;
                               `}"
                               >#${res.locals
-                                .threadWithMetadataJoinPostsJoinAuthors
+                                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                                 .threadWithMetadata.reference}/${postJoinAuthor
                                 .post.reference}</a
                             >
@@ -4907,7 +4930,7 @@ export default async function courselore(
                                 action="${app.get("url")}/courses/${res.locals
                                   .enrollmentJoinCourseJoinThreadsWithMetadata
                                   .course.reference}/threads/${res.locals
-                                  .threadWithMetadataJoinPostsJoinAuthors
+                                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                                   .threadWithMetadata
                                   .reference}/posts/${postJoinAuthor.post
                                   .reference}?_method=DELETE"
@@ -4941,7 +4964,7 @@ export default async function courselore(
                               action="${app.get("url")}/courses/${res.locals
                                 .enrollmentJoinCourseJoinThreadsWithMetadata
                                 .course.reference}/threads/${res.locals
-                                .threadWithMetadataJoinPostsJoinAuthors
+                                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                                 .threadWithMetadata
                                 .reference}/posts/${postJoinAuthor.post
                                 .reference}?_method=PATCH"
@@ -4982,8 +5005,8 @@ export default async function courselore(
                   action="${app.get("url")}/courses/${res.locals
                     .enrollmentJoinCourseJoinThreadsWithMetadata.course
                     .reference}/threads/${res.locals
-                    .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-                    .reference}/posts"
+                    .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                    .threadWithMetadata.reference}/posts"
                 >
                   $${textEditor()}
                   <p
@@ -5050,7 +5073,8 @@ export default async function courselore(
                           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
                             .course.reference
                         }/threads/${
-                          res.locals.threadWithMetadataJoinPostsJoinAuthors
+                          res.locals
+                            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                             .threadWithMetadata.reference
                         }`
                       )}
@@ -5085,7 +5109,7 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference",
@@ -5095,7 +5119,7 @@ export default async function courselore(
         if (req.body.title.trim() === "") return next("validation");
         else
           database.run(
-            sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}`
+            sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.threadWithMetadata.id}`
           );
 
       res.redirect(
@@ -5103,8 +5127,9 @@ export default async function courselore(
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
         }/threads/${
-          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-            .reference
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.reference
         }`
       );
     }
@@ -5120,7 +5145,7 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference",
@@ -5128,7 +5153,7 @@ export default async function courselore(
     ...isThreadAccessible,
     (req, res) => {
       database.run(
-        sql`DELETE FROM "threads" WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata.id}`
+        sql`DELETE FROM "threads" WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.threadWithMetadata.id}`
       );
 
       res.redirect(
@@ -5150,7 +5175,7 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference/posts",
@@ -5166,12 +5191,14 @@ export default async function courselore(
         sql`
           UPDATE "threads"
           SET "nextPostReference" = ${
-            res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-              .nextPostReference + 1
+            res.locals
+              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+              .threadWithMetadata.nextPostReference + 1
           }
           WHERE "id" = ${
-            res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-              .id
+            res.locals
+              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+              .threadWithMetadata.id
           }
         `
       );
@@ -5180,11 +5207,13 @@ export default async function courselore(
           INSERT INTO "posts" ("thread", "reference", "author", "content")
           VALUES (
             ${
-              res.locals.threadWithMetadataJoinPostsJoinAuthors
+              res.locals
+                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                 .threadWithMetadata.id
             },
             ${String(
-              res.locals.threadWithMetadataJoinPostsJoinAuthors
+              res.locals
+                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                 .threadWithMetadata.nextPostReference
             )},
             ${
@@ -5198,10 +5227,12 @@ export default async function courselore(
 
       for (const threadObserver of [...threadObservers].filter(
         (threadObserver) =>
-          threadObserver.locals.threadWithMetadataJoinPostsJoinAuthors
+          threadObserver.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.id ===
-          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-            .id
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.id
       ))
         threadObserver.write("event: update\ndata:\n\n");
 
@@ -5210,11 +5241,13 @@ export default async function courselore(
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
         }/threads/${
-          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-            .reference
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.reference
         }#${
-          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-            .nextPostReference
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.nextPostReference
         }`
       );
     }
@@ -5230,8 +5263,8 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
-      postJoinAuthor: PostJoinAuthor;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
@@ -5257,8 +5290,9 @@ export default async function courselore(
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
         }/threads/${
-          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-            .reference
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.reference
         }#${res.locals.postJoinAuthor.post.reference}`
       );
     }
@@ -5274,8 +5308,8 @@ export default async function courselore(
       enrollmentsJoinCourses: EnrollmentJoinCourse[];
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
-      postJoinAuthor: PostJoinAuthor;
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
@@ -5294,8 +5328,9 @@ export default async function courselore(
           res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
             .reference
         }/threads/${
-          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-            .reference
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.reference
         }`
       );
     }
