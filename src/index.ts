@@ -5068,13 +5068,8 @@ export default async function courselore(
 
         "text/event-stream": () => {
           threadUpdateObservers.add(res);
-          res.type("text/event-stream").writeHead(200);
           res.on("close", () => {
-            threadUpdateObservers.delete(
-              [...threadUpdateObservers].find(
-                (threadUpdateObserver) => threadUpdateObserver === res
-              )!
-            );
+            threadUpdateObservers.delete(res);
           });
         },
       });
@@ -5208,11 +5203,8 @@ export default async function courselore(
             .threadWithMetadata.id ===
           res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
             .id
-      )) {
-        threadUpdateObserver.write("event: update\ndata:\n\n");
-        threadUpdateObserver.end();
-        threadUpdateObservers.delete(threadUpdateObserver);
-      }
+      ))
+        threadUpdateObserver.end("event: update\ndata:\n\n");
 
       res.redirect(
         `${app.get("url")}/courses/${
