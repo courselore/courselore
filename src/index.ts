@@ -856,13 +856,13 @@ export default async function courselore(
               isSubmitting = true;
             });
 
-            const modifiedFields = new Set();
+            const modifiedInputs = new Set();
             let isSubmitting = false;
             document.addEventListener("input", (event) => {
-              modifiedFields.add(event.target);
+              modifiedInputs.add(event.target);
             });
             window.addEventListener("beforeunload", (event) => {
-              if (modifiedFields.size === 0 || isSubmitting) return;
+              if (modifiedInputs.size === 0 || isSubmitting) return;
               event.preventDefault();
               event.returnValue = "";
             });
@@ -4635,353 +4635,8 @@ export default async function courselore(
     },
   ];
 
-  app.get<
-    { courseReference: string; threadReference: string },
-    HTML,
-    {},
-    {},
-    {
-      user: User;
-      enrollmentsJoinCourses: EnrollmentJoinCourse[];
-      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-      threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
-    }
-  >(
-    "/courses/:courseReference/threads/:threadReference",
-    ...isThreadAccessible,
-    (req, res) => {
-      res.send(
-        app.get("layout thread")(
-          req,
-          res,
-          html`<title>
-            ${res.locals.threadWithMetadataJoinPostsJoinAuthors
-              .threadWithMetadata.title}
-            ·
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-              .name}
-            · CourseLore
-          </title>`,
-          html`
-            <div class="title">
-              <div
-                class="show"
-                style="${css`
-                  display: flex;
-                  align-items: baseline;
-
-                  & > * + * {
-                    margin-left: 1rem;
-                  }
-                `}"
-              >
-                <h1
-                  style="${css`
-                    flex: 1;
-                  `}"
-                >
-                  ${res.locals.threadWithMetadataJoinPostsJoinAuthors
-                    .threadWithMetadata.title}
-
-                  <a
-                    href="${app.get("url")}/courses/${res.locals
-                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                      .reference}/threads/${res.locals
-                      .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-                      .reference}"
-                    class="hint"
-                    >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
-                      .threadWithMetadata.reference}</a
-                  >
-                </h1>
-
-                $${mayEditThread(req, res)
-                  ? html`
-                      <p>
-                        <button
-                          type="button"
-                          onclick="${javascript`
-                            const title = this.closest(".title");
-                            title.querySelector(".show").hidden = true;
-                            const edit = title.querySelector(".edit");
-                            edit.hidden = false;
-                            const input = edit.querySelector('[name="title"]');
-                            input.value = ${JSON.stringify(
-                              res.locals.threadWithMetadataJoinPostsJoinAuthors
-                                .threadWithMetadata.title
-                            )};
-                            input.focus();
-                            input.setSelectionRange(0, 0);
-                          `}"
-                        >
-                          Edit Title
-                        </button>
-                      </p>
-                    `
-                  : html``}
-                $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                  .enrollment.role === "staff"
-                  ? html`
-                      <form
-                        method="POST"
-                        action="${app.get("url")}/courses/${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                          .reference}/threads/${res.locals
-                          .threadWithMetadataJoinPostsJoinAuthors
-                          .threadWithMetadata.reference}?_method=DELETE"
-                      >
-                        <p>
-                          <button
-                            class="red"
-                            onclick="${javascript`
-                              if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
-                                event.preventDefault();
-                            `}"
-                          >
-                            Remove Thread
-                          </button>
-                        </p>
-                      </form>
-                    `
-                  : html``}
-              </div>
-
-              $${mayEditThread(req, res)
-                ? html`
-                    <form
-                      method="POST"
-                      action="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                        .reference}/threads/${res.locals
-                        .threadWithMetadataJoinPostsJoinAuthors
-                        .threadWithMetadata.reference}?_method=PATCH"
-                      hidden
-                      class="edit"
-                      style="${css`
-                        display: flex;
-
-                        & > * + * {
-                          margin-left: 1rem;
-                        }
-                      `}"
-                    >
-                      <p
-                        style="${css`
-                          flex: 1;
-                        `}"
-                      >
-                        <input
-                          type="text"
-                          name="title"
-                          autocomplete="off"
-                          required
-                          class="full-width"
-                        />
-                      </p>
-                      <p>
-                        <button class="green">Change Title</button>
-                        <button
-                          type="button"
-                          onclick="${javascript`
-                            if (!confirm("Discard changes?")) return;
-                            const title = this.closest(".title");
-                            title.querySelector(".show").hidden = false;
-                            const edit = title.querySelector(".edit");
-                            edit.hidden = true;
-                            modifiedFields.delete(edit.querySelector('[name="title"]'));
-                          `}"
-                        >
-                          Cancel
-                        </button>
-                      </p>
-                    </form>
-                  `
-                : html``}
-            </div>
-
-            $${res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.map(
-              (postJoinAuthor) => html`
-                <section
-                  id="${postJoinAuthor.post.reference}"
-                  class="post"
-                  style="${css`
-                    border-bottom: 1px solid silver;
-
-                    @media (prefers-color-scheme: dark) {
-                      border-color: black;
-                    }
-                  `}"
-                >
-                  <div
-                    style="${css`
-                      display: flex;
-                      margin-bottom: -1rem;
-
-                      & > * + * {
-                        margin-left: 1rem;
-                      }
-                    `}"
-                  >
-                    <p
-                      style="${css`
-                        flex: 1;
-                      `}"
-                    >
-                      <strong>${postJoinAuthor.author.user.name}</strong>
-                      <span class="hint">
-                        said
-                        <time>${postJoinAuthor.post.createdAt}</time>
-                        $${postJoinAuthor.post.updatedAt !==
-                        postJoinAuthor.post.createdAt
-                          ? html`
-                              and last edited
-                              <time>${postJoinAuthor.post.updatedAt}</time>
-                            `
-                          : html``}
-                        <a
-                          href="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                            .reference}/threads/${req.params
-                            .threadReference}#${postJoinAuthor.post.reference}"
-                          style="${css`
-                            text-decoration: none;
-                          `}"
-                          >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
-                            .threadWithMetadata.reference}/${postJoinAuthor.post
-                            .reference}</a
-                        >
-                      </span>
-                    </p>
-
-                    $${mayEditPost(req, res, postJoinAuthor)
-                      ? html`
-                          <p>
-                            <button
-                              type="button"
-                              class="edit-button"
-                              onclick="${javascript`
-                                const post = this.closest(".post");
-                                post.querySelector(".show").hidden = true;
-                                const edit = post.querySelector(".edit");
-                                edit.hidden = false;
-                                const textarea = edit.querySelector('[name="content"]');
-                                textarea.value = ${JSON.stringify(
-                                  postJoinAuthor.post.content
-                                )};
-                                textarea.focus();
-                                textarea.setSelectionRange(0, 0);
-                                this.hidden = true;
-                              `}"
-                            >
-                              Edit Post
-                            </button>
-                          </p>
-                        `
-                      : html``}
-                    $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                      .enrollment.role === "staff" &&
-                    postJoinAuthor.post.reference !== "1"
-                      ? html`
-                          <form
-                            method="POST"
-                            action="${app.get("url")}/courses/${res.locals
-                              .enrollmentJoinCourseJoinThreadsWithMetadata
-                              .course.reference}/threads/${res.locals
-                              .threadWithMetadataJoinPostsJoinAuthors
-                              .threadWithMetadata
-                              .reference}/posts/${postJoinAuthor.post
-                              .reference}?_method=DELETE"
-                          >
-                            <p>
-                              <button
-                                class="red"
-                                onclick="${javascript`
-                                  if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
-                                    event.preventDefault();
-                                `}"
-                              >
-                                Remove Post
-                              </button>
-                            </p>
-                          </form>
-                        `
-                      : html``}
-                  </div>
-
-                  <div class="show">
-                    $${app.get("text processor")(postJoinAuthor.post.content)}
-                  </div>
-
-                  $${mayEditPost(req, res, postJoinAuthor)
-                    ? html`
-                        <form
-                          method="POST"
-                          action="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                            .reference}/threads/${res.locals
-                            .threadWithMetadataJoinPostsJoinAuthors
-                            .threadWithMetadata
-                            .reference}/posts/${postJoinAuthor.post
-                            .reference}?_method=PATCH"
-                          hidden
-                          class="edit"
-                        >
-                          $${textEditor()}
-                          <p
-                            style="${css`
-                              text-align: right;
-                            `}"
-                          >
-                            <button
-                              type="button"
-                              onclick="${javascript`
-                                if (!confirm("Discard changes?")) return;
-                                const post = this.closest(".post");
-                                post.querySelector(".show").hidden = false;
-                                const edit = post.querySelector(".edit");
-                                edit.hidden = true;
-                                modifiedFields.delete(edit.querySelector('[name="content"]'));
-                                post.querySelector(".edit-button").hidden = false;
-                              `}"
-                            >
-                              Cancel
-                            </button>
-                            <button class="green">Change Post</button>
-                          </p>
-                        </form>
-                      `
-                    : html``}
-                </section>
-              `
-            )}
-
-            <form
-              method="POST"
-              action="${app.get("url")}/courses/${res.locals
-                .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .reference}/threads/${res.locals
-                .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
-                .reference}/posts"
-            >
-              $${textEditor()}
-              <p
-                style="${css`
-                  text-align: right;
-                `}"
-              >
-                <button>Post</button>
-              </p>
-            </form>
-          `
-        )
-      );
-    }
-  );
-
-  /*
-  // FIXME: This relies on there being a single Node.js process. Ideally there would be some kind of message broker to notify when changes occur across server processes. Probably ZeroMQ fits the bill.
-  const threadsSSE = new Set<
+  // FIXME: This only works for a single process. To support multiple processes, poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
+  const threadUpdateObservers = new Set<
     express.Response<
       any,
       {
@@ -5006,25 +4661,425 @@ export default async function courselore(
       threadWithMetadataJoinPostsJoinAuthors: ThreadWithMetadataJoinPostsJoinAuthors;
     }
   >(
-    "/courses/:courseReference/threads/:threadReference/sse",
+    "/courses/:courseReference/threads/:threadReference",
     ...isThreadAccessible,
     (req, res) => {
-      console.log("Connected");
-      threadsSSE.add(res);
-      res.writeHead(200, {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-      });
-      res.on("close", () => {
-        console.log("Disconnected");
-        threadsSSE.delete(
-          [...threadsSSE].find((threadSSE) => threadSSE.res === res)!
-        );
+      res.format({
+        html: () => {
+          res.send(
+            app.get("layout thread")(
+              req,
+              res,
+              html`<title>
+                ${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                  .threadWithMetadata.title}
+                ·
+                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  .name}
+                · CourseLore
+              </title>`,
+              html`
+                <div class="title">
+                  <div
+                    class="show"
+                    style="${css`
+                      display: flex;
+                      align-items: baseline;
+
+                      & > * + * {
+                        margin-left: 0.5rem;
+                      }
+                    `}"
+                  >
+                    <h1
+                      style="${css`
+                        flex: 1;
+                      `}"
+                    >
+                      ${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                        .threadWithMetadata.title}
+
+                      <a
+                        href="${app.get("url")}/courses/${res.locals
+                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          .reference}/threads/${res.locals
+                          .threadWithMetadataJoinPostsJoinAuthors
+                          .threadWithMetadata.reference}"
+                        class="hint"
+                        >#${res.locals.threadWithMetadataJoinPostsJoinAuthors
+                          .threadWithMetadata.reference}</a
+                      >
+                    </h1>
+
+                    $${mayEditThread(req, res)
+                      ? html`
+                          <p>
+                            <button
+                              type="button"
+                              onclick="${javascript`
+                                const title = this.closest(".title");
+                                title.querySelector(".show").hidden = true;
+                                const edit = title.querySelector(".edit");
+                                edit.hidden = false;
+                                const input = edit.querySelector('[name="title"]');
+                                input.value = ${JSON.stringify(
+                                  res.locals
+                                    .threadWithMetadataJoinPostsJoinAuthors
+                                    .threadWithMetadata.title
+                                )};
+                                input.focus();
+                                input.setSelectionRange(0, 0);
+                              `}"
+                            >
+                              Edit Title
+                            </button>
+                          </p>
+                        `
+                      : html``}
+                    $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                      .enrollment.role === "staff"
+                      ? html`
+                          <form
+                            method="POST"
+                            action="${app.get("url")}/courses/${res.locals
+                              .enrollmentJoinCourseJoinThreadsWithMetadata
+                              .course.reference}/threads/${res.locals
+                              .threadWithMetadataJoinPostsJoinAuthors
+                              .threadWithMetadata.reference}?_method=DELETE"
+                          >
+                            <p>
+                              <button
+                                class="red"
+                                onclick="${javascript`
+                                if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
+                                  event.preventDefault();
+                              `}"
+                              >
+                                Remove Thread
+                              </button>
+                            </p>
+                          </form>
+                        `
+                      : html``}
+                  </div>
+
+                  $${mayEditThread(req, res)
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/threads/${res.locals
+                            .threadWithMetadataJoinPostsJoinAuthors
+                            .threadWithMetadata.reference}?_method=PATCH"
+                          hidden
+                          class="edit"
+                          style="${css`
+                            display: flex;
+
+                            & > * + * {
+                              margin-left: 1rem;
+                            }
+                          `}"
+                        >
+                          <p
+                            style="${css`
+                              flex: 1;
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              name="title"
+                              autocomplete="off"
+                              required
+                              class="full-width"
+                            />
+                          </p>
+                          <p>
+                            <button class="green">Change Title</button>
+                            <button
+                              type="button"
+                              onclick="${javascript`
+                                if (!confirm("Discard changes?")) return;
+                                const title = this.closest(".title");
+                                title.querySelector(".show").hidden = false;
+                                const edit = title.querySelector(".edit");
+                                edit.hidden = true;
+                                modifiedInputs.delete(edit.querySelector('[name="title"]'));
+                              `}"
+                            >
+                              Cancel
+                            </button>
+                          </p>
+                        </form>
+                      `
+                    : html``}
+                </div>
+
+                $${res.locals.threadWithMetadataJoinPostsJoinAuthors.postsJoinAuthors.map(
+                  (postJoinAuthor) => html`
+                    <section
+                      id="${postJoinAuthor.post.reference}"
+                      class="post"
+                      style="${css`
+                        border-bottom: 1px solid silver;
+
+                        @media (prefers-color-scheme: dark) {
+                          border-color: black;
+                        }
+                      `}"
+                    >
+                      <div
+                        style="${css`
+                          display: flex;
+                          margin-bottom: -1rem;
+
+                          & > * + * {
+                            margin-left: 0.5rem;
+                          }
+                        `}"
+                      >
+                        <p
+                          style="${css`
+                            flex: 1;
+                          `}"
+                        >
+                          <strong>${postJoinAuthor.author.user.name}</strong>
+                          <span class="hint">
+                            said
+                            <time>${postJoinAuthor.post.createdAt}</time>
+                            $${postJoinAuthor.post.updatedAt !==
+                            postJoinAuthor.post.createdAt
+                              ? html`
+                                  and last edited
+                                  <time>${postJoinAuthor.post.updatedAt}</time>
+                                `
+                              : html``}
+                            <a
+                              href="${app.get("url")}/courses/${res.locals
+                                .enrollmentJoinCourseJoinThreadsWithMetadata
+                                .course.reference}/threads/${req.params
+                                .threadReference}#${postJoinAuthor.post
+                                .reference}"
+                              style="${css`
+                                text-decoration: none;
+                              `}"
+                              >#${res.locals
+                                .threadWithMetadataJoinPostsJoinAuthors
+                                .threadWithMetadata.reference}/${postJoinAuthor
+                                .post.reference}</a
+                            >
+                          </span>
+                        </p>
+
+                        $${mayEditPost(req, res, postJoinAuthor)
+                          ? html`
+                              <p>
+                                <button
+                                  type="button"
+                                  class="edit-button"
+                                  onclick="${javascript`
+                                    const post = this.closest(".post");
+                                    post.querySelector(".show").hidden = true;
+                                    const edit = post.querySelector(".edit");
+                                    edit.hidden = false;
+                                    const textarea = edit.querySelector('[name="content"]');
+                                    textarea.value = ${JSON.stringify(
+                                      postJoinAuthor.post.content
+                                    )};
+                                    textarea.focus();
+                                    textarea.setSelectionRange(0, 0);
+                                    this.hidden = true;
+                                  `}"
+                                >
+                                  Edit Post
+                                </button>
+                              </p>
+                            `
+                          : html``}
+                        $${res.locals
+                          .enrollmentJoinCourseJoinThreadsWithMetadata
+                          .enrollment.role === "staff" &&
+                        postJoinAuthor.post.reference !== "1"
+                          ? html`
+                              <form
+                                method="POST"
+                                action="${app.get("url")}/courses/${res.locals
+                                  .enrollmentJoinCourseJoinThreadsWithMetadata
+                                  .course.reference}/threads/${res.locals
+                                  .threadWithMetadataJoinPostsJoinAuthors
+                                  .threadWithMetadata
+                                  .reference}/posts/${postJoinAuthor.post
+                                  .reference}?_method=DELETE"
+                              >
+                                <p>
+                                  <button
+                                    class="red"
+                                    onclick="${javascript`
+                                      if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
+                                        event.preventDefault();
+                                    `}"
+                                  >
+                                    Remove Post
+                                  </button>
+                                </p>
+                              </form>
+                            `
+                          : html``}
+                      </div>
+
+                      <div class="show">
+                        $${app.get("text processor")(
+                          postJoinAuthor.post.content
+                        )}
+                      </div>
+
+                      $${mayEditPost(req, res, postJoinAuthor)
+                        ? html`
+                            <form
+                              method="POST"
+                              action="${app.get("url")}/courses/${res.locals
+                                .enrollmentJoinCourseJoinThreadsWithMetadata
+                                .course.reference}/threads/${res.locals
+                                .threadWithMetadataJoinPostsJoinAuthors
+                                .threadWithMetadata
+                                .reference}/posts/${postJoinAuthor.post
+                                .reference}?_method=PATCH"
+                              hidden
+                              class="edit"
+                            >
+                              $${textEditor()}
+                              <p
+                                style="${css`
+                                  text-align: right;
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  onclick="${javascript`
+                                    if (!confirm("Discard changes?")) return;
+                                    const post = this.closest(".post");
+                                    post.querySelector(".show").hidden = false;
+                                    const edit = post.querySelector(".edit");
+                                    edit.hidden = true;
+                                    modifiedInputs.delete(edit.querySelector('[name="content"]'));
+                                    post.querySelector(".edit-button").hidden = false;
+                                  `}"
+                                >
+                                  Cancel
+                                </button>
+                                <button class="green">Change Post</button>
+                              </p>
+                            </form>
+                          `
+                        : html``}
+                    </section>
+                  `
+                )}
+
+                <form
+                  method="POST"
+                  action="${app.get("url")}/courses/${res.locals
+                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    .reference}/threads/${res.locals
+                    .threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+                    .reference}/posts"
+                >
+                  $${textEditor()}
+                  <p
+                    style="${css`
+                      text-align: right;
+                    `}"
+                  >
+                    <button>Post</button>
+                  </p>
+                </form>
+
+                <p
+                  hidden
+                  style="${css`
+                    background-color: white;
+                    padding: 0.5rem 1rem;
+                    border: 1px solid gainsboro;
+                    border-top: none;
+                    border-radius: 10px;
+                    border-top-left-radius: 0;
+                    border-top-right-radius: 0;
+                    margin: 0 auto;
+                    box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+                    position: absolute;
+                    top: 0;
+                    display: flex;
+                    align-items: baseline;
+
+                    @media (prefers-color-scheme: dark) {
+                      color: #d4d4d4;
+                      background-color: #1e1e1e;
+                    }
+
+                    & > * + * {
+                      margin-left: 0.5rem;
+                    }
+                  `}"
+                >
+                  <span>This thread has been updated</span>
+                  <button
+                    type="button"
+                    onclick="${javascript`
+                      window.location.reload();
+                    `}"
+                  >
+                    Reload
+                  </button>
+                  <button
+                    type="button"
+                    onclick="${javascript`
+                      this.parentElement.hidden = true;
+                    `}"
+                  >
+                    Dismiss
+                  </button>
+                </p>
+                <script>
+                  (() => {
+                    const element =
+                      document.currentScript.previousElementSibling;
+                    const eventSource = new EventSource(
+                      $${JSON.stringify(
+                        `${app.get("url")}/courses/${
+                          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                            .course.reference
+                        }/threads/${
+                          res.locals.threadWithMetadataJoinPostsJoinAuthors
+                            .threadWithMetadata.reference
+                        }`
+                      )}
+                    );
+                    eventSource.addEventListener("update", () => {
+                      element.hidden = false;
+                      eventSource.close();
+                    });
+                  })();
+                </script>
+              `
+            )
+          );
+        },
+
+        "text/event-stream": () => {
+          threadUpdateObservers.add(res);
+          res.type("text/event-stream").writeHead(200);
+          res.on("close", () => {
+            threadUpdateObservers.delete(
+              [...threadUpdateObservers].find(
+                (threadUpdateObserver) => threadUpdateObserver === res
+              )!
+            );
+          });
+        },
       });
     }
   );
-  */
 
   app.patch<
     { courseReference: string; threadReference: string },
@@ -5146,6 +5201,18 @@ export default async function courselore(
           )
         `
       );
+
+      for (const threadUpdateObserver of [...threadUpdateObservers].filter(
+        (threadUpdateObserver) =>
+          threadUpdateObserver.locals.threadWithMetadataJoinPostsJoinAuthors
+            .threadWithMetadata.id ===
+          res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
+            .id
+      )) {
+        threadUpdateObserver.write("event: update\ndata:\n\n");
+        threadUpdateObserver.end();
+        threadUpdateObservers.delete(threadUpdateObserver);
+      }
 
       res.redirect(
         `${app.get("url")}/courses/${
