@@ -150,7 +150,7 @@ export default async function courselore(
 
   interface LikeJoinEnrollmentJoinUser {
     like: Like;
-    enrollmentJoinUser: EnrollmentJoinUser;
+    enrollmentJoinUser: EnrollmentJoinUser | Anonymous;
   }
 
   interface PostJoinAuthorJoinLikesJoinEnrollmentJoinUser {
@@ -4458,7 +4458,7 @@ export default async function courselore(
           threadWithMetadata.reference === req.params.threadReference
       );
       if (threadWithMetadata === undefined) return next("route");
-      const postsJoinAuthors = database
+      const postsJoinAuthorJoinLikesJoinEnrollmentJoinUser = database
         .all<{
           postId: number;
           createdAt: string;
@@ -4517,11 +4517,57 @@ export default async function courselore(
                   },
                 }
               : ANONYMOUS,
+          // FIXME: Can we do better than this n+1 query?
+          likesJoinEnrollmentJoinUser: database
+            .all<{
+              likeId: number;
+              enrollmentId: number | null;
+              reference: string | null;
+              role: Role | null;
+              accentColor: AccentColor | null;
+              userId: number | null;
+              email: string | null;
+              name: string | null;
+            }>(
+              sql`
+                SELECT "likes"."id" AS "likeId",
+                       "enrollments"."id" AS "enrollmentId",
+                       "enrollments"."reference",
+                       "enrollments"."role",
+                       "enrollments"."accentColor",
+                       "users"."id" AS "userId",
+                       "users"."email",
+                       "users"."name"
+                FROM "likes"
+                LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
+                LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
+                WHERE "likes"."post" = ${row.postId}
+              `
+            )
+            .map((row) => ({
+              like: { id: row.likeId },
+              enrollmentJoinUser:
+                row.enrollmentId !== null
+                  ? {
+                      enrollment: {
+                        id: row.enrollmentId!,
+                        reference: row.reference!,
+                        role: row.role!,
+                        accentColor: row.accentColor!,
+                      },
+                      user: {
+                        id: row.userId!,
+                        email: row.email!,
+                        name: row.name!,
+                      },
+                    }
+                  : ANONYMOUS,
+            })),
         }));
 
       res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser = {
         threadWithMetadata,
-        postsJoinAuthors,
+        postsJoinAuthorJoinLikesJoinEnrollmentJoinUser,
       };
 
       next();
@@ -4590,17 +4636,19 @@ export default async function courselore(
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
       threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >[] = [
     ...isThreadAccessible,
     (req, res, next) => {
-      const postJoinAuthor = res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthors.find(
-        (postJoinAuthor) =>
-          postJoinAuthor.post.reference === req.params.postReference
+      const postJoinAuthorJoinLikesJoinEnrollmentJoinUser = res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthorJoinLikesJoinEnrollmentJoinUser.find(
+        (postJoinAuthorJoinLikesJoinEnrollmentJoinUser) =>
+          postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.reference ===
+          req.params.postReference
       );
-      if (postJoinAuthor === undefined) return next("route");
-      res.locals.postJoinAuthor = postJoinAuthor;
+      if (postJoinAuthorJoinLikesJoinEnrollmentJoinUser === undefined)
+        return next("route");
+      res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser = postJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       next();
     },
   ];
@@ -4629,10 +4677,12 @@ export default async function courselore(
         threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >,
-    postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser
+    postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser
   ): boolean =>
     res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
-      "staff" || postJoinAuthor.author.user.id === res.locals.user.id;
+      "staff" ||
+    postJoinAuthorJoinLikesJoinEnrollmentJoinUser.author.user.id ===
+      res.locals.user.id;
 
   const mayEditPostMiddleware: express.RequestHandler<
     { courseReference: string; threadReference: string; postReference: string },
@@ -4645,12 +4695,19 @@ export default async function courselore(
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
       threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >[] = [
     ...postExists,
     (req, res, next) => {
-      if (mayEditPost(req, res, res.locals.postJoinAuthor)) return next();
+      if (
+        mayEditPost(
+          req,
+          res,
+          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+        )
+      )
+        return next();
       next("route");
     },
   ];
@@ -4839,10 +4896,11 @@ export default async function courselore(
                     : html``}
                 </div>
 
-                $${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthors.map(
-                  (postJoinAuthor) => html`
+                $${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthorJoinLikesJoinEnrollmentJoinUser.map(
+                  (postJoinAuthorJoinLikesJoinEnrollmentJoinUser) => html`
                     <section
-                      id="${postJoinAuthor.post.reference}"
+                      id="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                        .reference}"
                       class="post"
                       style="${css`
                         border-bottom: 1px solid silver;
@@ -4867,35 +4925,51 @@ export default async function courselore(
                             flex: 1;
                           `}"
                         >
-                          <strong>${postJoinAuthor.author.user.name}</strong>
+                          <strong
+                            >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .author.user.name}</strong
+                          >
                           <span class="hint">
                             said
-                            <time>${postJoinAuthor.post.createdAt}</time>
-                            $${postJoinAuthor.post.updatedAt !==
-                            postJoinAuthor.post.createdAt
+                            <time
+                              >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                .post.createdAt}</time
+                            >
+                            $${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .post.updatedAt !==
+                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                              .createdAt
                               ? html`
                                   and last edited
-                                  <time>${postJoinAuthor.post.updatedAt}</time>
+                                  <time
+                                    >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                      .post.updatedAt}</time
+                                  >
                                 `
                               : html``}
                             <a
                               href="${app.get("url")}/courses/${res.locals
                                 .enrollmentJoinCourseJoinThreadsWithMetadata
                                 .course.reference}/threads/${req.params
-                                .threadReference}#${postJoinAuthor.post
-                                .reference}"
+                                .threadReference}#${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                .post.reference}"
                               style="${css`
                                 text-decoration: none;
                               `}"
                               >#${res.locals
                                 .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .threadWithMetadata.reference}/${postJoinAuthor
+                                .threadWithMetadata
+                                .reference}/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
                                 .post.reference}</a
                             >
                           </span>
                         </p>
 
-                        $${mayEditPost(req, res, postJoinAuthor)
+                        $${mayEditPost(
+                          req,
+                          res,
+                          postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                        )
                           ? html`
                               <p>
                                 <button
@@ -4908,7 +4982,8 @@ export default async function courselore(
                                     edit.hidden = false;
                                     const textarea = edit.querySelector('[name="content"]');
                                     textarea.value = ${JSON.stringify(
-                                      postJoinAuthor.post.content
+                                      postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                        .post.content
                                     )};
                                     textarea.focus();
                                     textarea.setSelectionRange(0, 0);
@@ -4923,7 +4998,8 @@ export default async function courselore(
                         $${res.locals
                           .enrollmentJoinCourseJoinThreadsWithMetadata
                           .enrollment.role === "staff" &&
-                        postJoinAuthor.post.reference !== "1"
+                        postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                          .reference !== "1"
                           ? html`
                               <form
                                 method="POST"
@@ -4932,8 +5008,8 @@ export default async function courselore(
                                   .course.reference}/threads/${res.locals
                                   .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                                   .threadWithMetadata
-                                  .reference}/posts/${postJoinAuthor.post
-                                  .reference}?_method=DELETE"
+                                  .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .post.reference}?_method=DELETE"
                               >
                                 <p>
                                   <button
@@ -4953,11 +5029,16 @@ export default async function courselore(
 
                       <div class="show">
                         $${app.get("text processor")(
-                          postJoinAuthor.post.content
+                          postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                            .content
                         )}
                       </div>
 
-                      $${mayEditPost(req, res, postJoinAuthor)
+                      $${mayEditPost(
+                        req,
+                        res,
+                        postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                      )
                         ? html`
                             <form
                               method="POST"
@@ -4966,8 +5047,8 @@ export default async function courselore(
                                 .course.reference}/threads/${res.locals
                                 .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                                 .threadWithMetadata
-                                .reference}/posts/${postJoinAuthor.post
-                                .reference}?_method=PATCH"
+                                .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                .post.reference}?_method=PATCH"
                               hidden
                               class="edit"
                             >
@@ -5264,7 +5345,7 @@ export default async function courselore(
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
       threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
@@ -5281,7 +5362,9 @@ export default async function courselore(
           UPDATE "posts"
           SET "content" = ${req.body.content},
               "updatedAt" = ${new Date().toISOString()}
-          WHERE "id" = ${res.locals.postJoinAuthor.post.id}
+          WHERE "id" = ${
+            res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id
+          }
         `
       );
 
@@ -5293,7 +5376,10 @@ export default async function courselore(
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
-        }#${res.locals.postJoinAuthor.post.reference}`
+        }#${
+          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+            .reference
+        }`
       );
     }
   );
@@ -5309,18 +5395,21 @@ export default async function courselore(
       enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
       otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
       threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      postJoinAuthor: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
     }
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
     ...isCourseStaff,
     ...postExists,
     (req, res, next) => {
-      if (res.locals.postJoinAuthor.post.reference === "1")
+      if (
+        res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+          .reference === "1"
+      )
         return next("validation");
 
       database.run(
-        sql`DELETE FROM "posts" WHERE "id" = ${res.locals.postJoinAuthor.post.id}`
+        sql`DELETE FROM "posts" WHERE "id" = ${res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id}`
       );
 
       res.redirect(
