@@ -4636,7 +4636,7 @@ export default async function courselore(
   ];
 
   // FIXME: This only works for a single process. To support multiple processes, poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  const threadUpdateObservers = new Set<
+  const threadObservers = new Set<
     express.Response<
       any,
       {
@@ -5067,9 +5067,9 @@ export default async function courselore(
         },
 
         "text/event-stream": () => {
-          threadUpdateObservers.add(res);
+          threadObservers.add(res);
           res.on("close", () => {
-            threadUpdateObservers.delete(res);
+            threadObservers.delete(res);
           });
         },
       });
@@ -5197,14 +5197,14 @@ export default async function courselore(
         `
       );
 
-      for (const threadUpdateObserver of [...threadUpdateObservers].filter(
-        (threadUpdateObserver) =>
-          threadUpdateObserver.locals.threadWithMetadataJoinPostsJoinAuthors
+      for (const threadObserver of [...threadObservers].filter(
+        (threadObserver) =>
+          threadObserver.locals.threadWithMetadataJoinPostsJoinAuthors
             .threadWithMetadata.id ===
           res.locals.threadWithMetadataJoinPostsJoinAuthors.threadWithMetadata
             .id
       ))
-        threadUpdateObserver.end("event: update\ndata:\n\n");
+        threadObserver.write("event: update\ndata:\n\n");
 
       res.redirect(
         `${app.get("url")}/courses/${
