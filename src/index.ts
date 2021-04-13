@@ -5057,7 +5057,6 @@ export default async function courselore(
                     );
                     eventSource.addEventListener("update", () => {
                       element.hidden = false;
-                      eventSource.close();
                     });
                   })();
                 </script>
