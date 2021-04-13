@@ -123,6 +123,8 @@ export default async function courselore(
     createdAt: string;
     updatedAt: string;
     author: EnrollmentJoinUser | Anonymous;
+    postsCount: number;
+    likesCount: number;
   }
 
   const ANONYMOUS = {
@@ -2156,7 +2158,10 @@ export default async function courselore(
           authorUserId: number | null;
           email: string | null;
           name: string | null;
+          postsCount: number;
+          likesCount: number;
         }>(
+          // FIXME: I’d prefer if only the likes on the originalPost counted toward likesCount
           sql`
             SELECT "threads"."id" AS "threadId",
                    "threads"."reference" AS "threadReference",
@@ -2170,14 +2175,18 @@ export default async function courselore(
                    "authorEnrollment"."accentColor",
                    "authorUser"."id" AS "authorUserId",
                    "authorUser"."email",
-                   "authorUser"."name"
+                   "authorUser"."name",
+                   COUNT(DISTINCT "posts"."id") AS "postsCount",
+                   COUNT(DISTINCT "likes"."id") AS "likesCount"
             FROM "threads"
             JOIN "posts" AS "originalPost" ON "threads"."id" = "originalPost"."thread"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "originalPost"."author" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
             JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."thread"
+            JOIN "posts" ON "threads"."id" = "posts"."thread"
+            LEFT JOIN "likes" ON "originalPost"."id" = "likes"."post"
             WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
-            GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread"
+            GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread", "threads"."id"
             ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt")
           `
         )
@@ -2204,6 +2213,8 @@ export default async function courselore(
                   },
                 }
               : ANONYMOUS,
+          postsCount: row.postsCount,
+          likesCount: row.likesCount,
         }));
 
       res.locals.enrollmentJoinCourseJoinThreadsWithMetadata = {
@@ -3666,12 +3677,7 @@ export default async function courselore(
                       fill: #ff77a8;
                     }
                   `}"
-                  ><svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    width="16"
-                    height="16"
-                  >
+                  ><svg viewBox="0 0 16 16" width="16" height="16">
                     <path
                       d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"
                       fill="gray"
@@ -4140,6 +4146,51 @@ export default async function courselore(
                                   <time>${threadWithMetadata.updatedAt}</time>
                                 `
                               : html``}
+                            <br />
+                            <span
+                              style="${css`
+                                & > * {
+                                  display: inline-block;
+                                }
+
+                                & > * + * {
+                                  margin-left: 0.5rem;
+                                }
+                              `}"
+                            >
+                              <span
+                                title="${threadWithMetadata.postsCount} posts"
+                              >
+                                <svg viewBox="0 0 16 16" width="10" height="10">
+                                  <path
+                                    d="M2.75 2.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 01.75.75v2.19l2.72-2.72a.75.75 0 01.53-.22h4.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25H2.75zM1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0113.25 12H9.06l-2.573 2.573A1.457 1.457 0 014 13.543V12H2.75A1.75 1.75 0 011 10.25v-7.5z"
+                                    fill="gray"
+                                  ></path>
+                                </svg>
+                                ${threadWithMetadata.postsCount}
+                              </span>
+
+                              $${threadWithMetadata.likesCount === 0
+                                ? html``
+                                : html`
+                                    <span
+                                      title="${threadWithMetadata.likesCount} likes"
+                                    >
+                                      <svg
+                                        viewBox="0 0 16 16"
+                                        width="10"
+                                        height="10"
+                                      >
+                                        <path
+                                          d="M8.834.066C7.494-.087 6.5 1.048 6.5 2.25v.5c0 1.329-.647 2.124-1.318 2.614-.328.24-.66.403-.918.508A1.75 1.75 0 002.75 5h-1A1.75 1.75 0 000 6.75v7.5C0 15.216.784 16 1.75 16h1a1.75 1.75 0 001.662-1.201c.525.075 1.067.229 1.725.415.152.043.31.088.475.133 1.154.32 2.54.653 4.388.653 1.706 0 2.97-.153 3.722-1.14.353-.463.537-1.042.668-1.672.118-.56.208-1.243.313-2.033l.04-.306c.25-1.869.265-3.318-.188-4.316a2.418 2.418 0 00-1.137-1.2C13.924 5.085 13.353 5 12.75 5h-1.422l.015-.113c.07-.518.157-1.17.157-1.637 0-.922-.151-1.719-.656-2.3-.51-.589-1.247-.797-2.01-.884zM4.5 13.3c.705.088 1.39.284 2.072.478l.441.125c1.096.305 2.334.598 3.987.598 1.794 0 2.28-.223 2.528-.549.147-.193.276-.505.394-1.07.105-.502.188-1.124.295-1.93l.04-.3c.25-1.882.189-2.933-.068-3.497a.922.922 0 00-.442-.48c-.208-.104-.52-.174-.997-.174H11c-.686 0-1.295-.577-1.206-1.336.023-.192.05-.39.076-.586.065-.488.13-.97.13-1.328 0-.809-.144-1.15-.288-1.316-.137-.158-.402-.304-1.048-.378C8.357 1.521 8 1.793 8 2.25v.5c0 1.922-.978 3.128-1.933 3.825a5.861 5.861 0 01-1.567.81V13.3zM2.75 6.5a.25.25 0 01.25.25v7.5a.25.25 0 01-.25.25h-1a.25.25 0 01-.25-.25v-7.5a.25.25 0 01.25-.25h1z"
+                                          fill="gray"
+                                          fill-rule="evenodd"
+                                        ></path>
+                                      </svg>
+                                      ${threadWithMetadata.likesCount}
+                                    </span>
+                                  `}
+                            </span>
                           </p>
                         </a>
                       `
@@ -4920,50 +4971,122 @@ export default async function courselore(
                           }
                         `}"
                       >
-                        <p
+                        <div
                           style="${css`
                             flex: 1;
                           `}"
                         >
-                          <strong
-                            >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .author.user.name}</strong
-                          >
-                          <span class="hint">
-                            said
-                            <time
+                          <p>
+                            <strong
                               >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .post.createdAt}</time
+                                .author.user.name}</strong
                             >
-                            $${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .post.updatedAt !==
-                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                              .createdAt
-                              ? html`
-                                  and last edited
-                                  <time
-                                    >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                      .post.updatedAt}</time
-                                  >
-                                `
-                              : html``}
-                            <a
-                              href="${app.get("url")}/courses/${res.locals
-                                .enrollmentJoinCourseJoinThreadsWithMetadata
-                                .course.reference}/threads/${req.params
-                                .threadReference}#${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .post.reference}"
-                              style="${css`
-                                text-decoration: none;
-                              `}"
-                              >#${res.locals
-                                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .threadWithMetadata
-                                .reference}/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .post.reference}</a
-                            >
-                          </span>
-                        </p>
+                            <span class="hint">
+                              said
+                              <time
+                                >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .post.createdAt}</time
+                              >
+                              $${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                .post.updatedAt !==
+                              postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                                .createdAt
+                                ? html`
+                                    and last edited
+                                    <time
+                                      >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                        .post.updatedAt}</time
+                                    >
+                                  `
+                                : html``}
+                              <a
+                                href="${app.get("url")}/courses/${res.locals
+                                  .enrollmentJoinCourseJoinThreadsWithMetadata
+                                  .course.reference}/threads/${req.params
+                                  .threadReference}#${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .post.reference}"
+                                style="${css`
+                                  text-decoration: none;
+                                `}"
+                                >#${res.locals
+                                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .threadWithMetadata
+                                  .reference}/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .post.reference}</a
+                              >
+                            </span>
+                          </p>
+
+                          <form
+                            method="POST"
+                            action="${app.get("url")}/courses/${res.locals
+                              .enrollmentJoinCourseJoinThreadsWithMetadata
+                              .course.reference}/threads/${res.locals
+                              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .threadWithMetadata
+                              .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .post
+                              .reference}/likes${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
+                              (likeJoinEnrollmentJoinUser) =>
+                                likeJoinEnrollmentJoinUser.enrollmentJoinUser
+                                  .user.id === res.locals.user.id
+                            ) === undefined
+                              ? ""
+                              : "?_method=DELETE"}"
+                            title="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .likesJoinEnrollmentJoinUser.length === 0
+                              ? "Be the first to like this"
+                              : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .likesJoinEnrollmentJoinUser.length === 1
+                              ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} liked this`
+                              : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .likesJoinEnrollmentJoinUser.length === 2
+                              ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} and ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name} liked this`
+                              : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .likesJoinEnrollmentJoinUser.length === 3
+                              ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name}, ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name}, and 1 other liked this`
+                              : `${
+                                  postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                    .likesJoinEnrollmentJoinUser[0]
+                                    .enrollmentJoinUser.user.name
+                                }, ${
+                                  postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                    .likesJoinEnrollmentJoinUser[1]
+                                    .enrollmentJoinUser.user.name
+                                }, and ${
+                                  postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                    .likesJoinEnrollmentJoinUser.length - 2
+                                } others liked this`}"
+                          >
+                            <p class="hint">
+                              <button
+                                style="${css`
+                                  all: unset;
+                                `}"
+                              >
+                                <svg viewBox="0 0 16 16" width="12" height="12">
+                                  <path
+                                    d="M8.834.066C7.494-.087 6.5 1.048 6.5 2.25v.5c0 1.329-.647 2.124-1.318 2.614-.328.24-.66.403-.918.508A1.75 1.75 0 002.75 5h-1A1.75 1.75 0 000 6.75v7.5C0 15.216.784 16 1.75 16h1a1.75 1.75 0 001.662-1.201c.525.075 1.067.229 1.725.415.152.043.31.088.475.133 1.154.32 2.54.653 4.388.653 1.706 0 2.97-.153 3.722-1.14.353-.463.537-1.042.668-1.672.118-.56.208-1.243.313-2.033l.04-.306c.25-1.869.265-3.318-.188-4.316a2.418 2.418 0 00-1.137-1.2C13.924 5.085 13.353 5 12.75 5h-1.422l.015-.113c.07-.518.157-1.17.157-1.637 0-.922-.151-1.719-.656-2.3-.51-.589-1.247-.797-2.01-.884zM4.5 13.3c.705.088 1.39.284 2.072.478l.441.125c1.096.305 2.334.598 3.987.598 1.794 0 2.28-.223 2.528-.549.147-.193.276-.505.394-1.07.105-.502.188-1.124.295-1.93l.04-.3c.25-1.882.189-2.933-.068-3.497a.922.922 0 00-.442-.48c-.208-.104-.52-.174-.997-.174H11c-.686 0-1.295-.577-1.206-1.336.023-.192.05-.39.076-.586.065-.488.13-.97.13-1.328 0-.809-.144-1.15-.288-1.316-.137-.158-.402-.304-1.048-.378C8.357 1.521 8 1.793 8 2.25v.5c0 1.922-.978 3.128-1.933 3.825a5.861 5.861 0 01-1.567.81V13.3zM2.75 6.5a.25.25 0 01.25.25v7.5a.25.25 0 01-.25.25h-1a.25.25 0 01-.25-.25v-7.5a.25.25 0 01.25-.25h1z"
+                                    fill="gray"
+                                    $${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
+                                      (likeJoinEnrollmentJoinUser) =>
+                                        likeJoinEnrollmentJoinUser
+                                          .enrollmentJoinUser.user.id ===
+                                        res.locals.user.id
+                                    ) === undefined
+                                      ? `fill-rule="evenodd"`
+                                      : ``}
+                                  ></path>
+                                </svg>
+                              </button>
+                              ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                .likesJoinEnrollmentJoinUser.length === 0
+                                ? ""
+                                : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                    .likesJoinEnrollmentJoinUser.length}
+                            </p>
+                          </form>
+                        </div>
 
                         $${mayEditPost(
                           req,
@@ -5420,6 +5543,96 @@ export default async function courselore(
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
+        }`
+      );
+    }
+  );
+
+  app.post<
+    { courseReference: string; threadReference: string; postReference: string },
+    any,
+    { content?: string },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+    }
+  >(
+    "/courses/:courseReference/threads/:threadReference/posts/:postReference/likes",
+    ...postExists,
+    (req, res, next) => {
+      if (
+        res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
+          (likeJoinEnrollmentJoinUser) =>
+            likeJoinEnrollmentJoinUser.enrollmentJoinUser.user.id ===
+            res.locals.user.id
+        ) !== undefined
+      )
+        return next("validation");
+
+      database.run(
+        sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id}, ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id})`
+      );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/threads/${
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.reference
+        }#${
+          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+            .reference
+        }`
+      );
+    }
+  );
+
+  app.delete<
+    { courseReference: string; threadReference: string; postReference: string },
+    any,
+    { content?: string },
+    {},
+    {
+      user: User;
+      enrollmentsJoinCourses: EnrollmentJoinCourse[];
+      enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+      otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+      threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+    }
+  >(
+    "/courses/:courseReference/threads/:threadReference/posts/:postReference/likes",
+    ...postExists,
+    (req, res, next) => {
+      const likeJoinEnrollmentJoinUser = res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
+        (likeJoinEnrollmentJoinUser) =>
+          likeJoinEnrollmentJoinUser.enrollmentJoinUser.user.id ===
+          res.locals.user.id
+      );
+      if (likeJoinEnrollmentJoinUser === undefined) return next("validation");
+
+      database.run(
+        sql`DELETE FROM "likes" WHERE "id" = ${likeJoinEnrollmentJoinUser.like.id}`
+      );
+
+      res.redirect(
+        `${app.get("url")}/courses/${
+          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+            .reference
+        }/threads/${
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.reference
+        }#${
+          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+            .reference
         }`
       );
     }
