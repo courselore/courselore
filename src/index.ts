@@ -5335,16 +5335,16 @@ export default async function courselore(
                     <button
                       type="button"
                       onclick="${javascript`
-                      window.location.reload();
-                    `}"
+                        window.location.reload();
+                      `}"
                     >
                       Reload
                     </button>
                     <button
                       type="button"
                       onclick="${javascript`
-                      this.parentElement.hidden = true;
-                    `}"
+                        this.parentElement.hidden = true;
+                      `}"
                     >
                       Dismiss
                     </button>
