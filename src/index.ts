@@ -5286,7 +5286,7 @@ export default async function courselore(
                         }`
                       )}
                     );
-                    eventSource.addEventListener("update", () => {
+                    eventSource.addEventListener("threadUpdate", () => {
                       element.hidden = false;
                     });
                   })();
@@ -5338,7 +5338,7 @@ export default async function courselore(
                   .threadWithMetadata.id
               )
                 return;
-              res.write("event: update\ndata:\n\n");
+              res.write("event: threadUpdate\ndata:\n\n");
             }
           );
         },
