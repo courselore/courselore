@@ -5225,51 +5225,7 @@ export default async function courselore(
                   </p>
                 </form>
 
-                <p
-                  hidden
-                  style="${css`
-                    background-color: white;
-                    padding: 0.5rem 1rem;
-                    border: 1px solid gainsboro;
-                    border-top: none;
-                    border-radius: 10px;
-                    border-top-left-radius: 0;
-                    border-top-right-radius: 0;
-                    margin: 0 auto;
-                    box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-                    position: absolute;
-                    top: 0;
-                    display: flex;
-                    align-items: baseline;
-
-                    @media (prefers-color-scheme: dark) {
-                      color: #d4d4d4;
-                      background-color: #1e1e1e;
-                    }
-
-                    & > * + * {
-                      margin-left: 0.5rem;
-                    }
-                  `}"
-                >
-                  <span>This thread has been updated</span>
-                  <button
-                    type="button"
-                    onclick="${javascript`
-                      window.location.reload();
-                    `}"
-                  >
-                    Reload
-                  </button>
-                  <button
-                    type="button"
-                    onclick="${javascript`
-                      this.parentElement.hidden = true;
-                    `}"
-                  >
-                    Dismiss
-                  </button>
-                </p>
+                <div></div>
                 <script>
                   (() => {
                     const element =
@@ -5286,8 +5242,17 @@ export default async function courselore(
                         }`
                       )}
                     );
-                    eventSource.addEventListener("threadUpdate", () => {
-                      element.hidden = false;
+                    eventSource.addEventListener("threadUpdate", (event) => {
+                      const eventDocument = new DOMParser().parseFromString(
+                        event.data,
+                        "text/html"
+                      );
+                      document
+                        .querySelector("head")
+                        .append(eventDocument.querySelector("head"));
+                      element.replaceChildren(
+                        eventDocument.querySelector("body")
+                      );
                     });
                   })();
                 </script>
@@ -5338,7 +5303,54 @@ export default async function courselore(
                   .threadWithMetadata.id
               )
                 return;
-              res.write("event: threadUpdate\ndata:\n\n");
+              res.write(
+                `event: threadUpdate\ndata:${processCSS(html`
+                  <p
+                    style="${css`
+                      background-color: white;
+                      padding: 0.5rem 1rem;
+                      border: 1px solid gainsboro;
+                      border-top: none;
+                      border-radius: 10px;
+                      border-top-left-radius: 0;
+                      border-top-right-radius: 0;
+                      margin: 0 auto;
+                      box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+                      position: absolute;
+                      top: 0;
+                      display: flex;
+                      align-items: baseline;
+
+                      @media (prefers-color-scheme: dark) {
+                        color: #d4d4d4;
+                        background-color: #1e1e1e;
+                      }
+
+                      & > * + * {
+                        margin-left: 0.5rem;
+                      }
+                    `}"
+                  >
+                    <span>This thread has been updated</span>
+                    <button
+                      type="button"
+                      onclick="${javascript`
+                      window.location.reload();
+                    `}"
+                    >
+                      Reload
+                    </button>
+                    <button
+                      type="button"
+                      onclick="${javascript`
+                      this.parentElement.hidden = true;
+                    `}"
+                    >
+                      Dismiss
+                    </button>
+                  </p>
+                `).replace(/\n/g, "\ndata:")}\n\n`
+              );
             }
           );
         },
