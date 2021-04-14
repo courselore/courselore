@@ -4,6 +4,7 @@ import path from "path";
 import { strict as assert } from "assert";
 
 import express from "express";
+import core from "express-serve-static-core";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import { asyncHandler } from "@leafac/express-async-handler";
@@ -700,6 +701,22 @@ export default async function courselore(
         res,
         head,
         html`
+          <script>
+            const eventSource = new EventSource(window.location.href);
+
+            eventSource.addEventListener("replaceWith", (event) => {
+              const eventDocument = new DOMParser().parseFromString(
+                event.data,
+                "text/html"
+              );
+              document
+                .querySelector("head")
+                .append(eventDocument.querySelector("head"));
+              for (const element of eventDocument.querySelectorAll("body > *"))
+                document.getElementById(element.id).replaceWith(element);
+            });
+          </script>
+
           $${body}
           $${app.get("demonstration")
             ? html`
@@ -753,13 +770,6 @@ export default async function courselore(
               // http://timeago.yarp.com
               // https://sugarjs.com
 
-              const relativeTimeFormatter = new Intl.RelativeTimeFormat(
-                "en-US",
-                {
-                  localeMatcher: "lookup",
-                  numeric: "auto",
-                }
-              );
               const MINUTES = 60 * 1000;
               const HOURS = 60 * MINUTES;
               const DAYS = 24 * HOURS;
@@ -790,7 +800,10 @@ export default async function courselore(
                       : absoluteDifference < YEARS
                       ? [difference / MONTHS, "months"]
                       : [difference / YEARS, "years"];
-                  element.textContent = relativeTimeFormatter.format(
+                  element.textContent = new Intl.RelativeTimeFormat("en-US", {
+                    localeMatcher: "lookup",
+                    numeric: "auto",
+                  }).format(
                     // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
                     Math.round(value),
                     unit
@@ -946,6 +959,25 @@ export default async function courselore(
         `
       )
   );
+
+  // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
+  const eventSources = new Set<express.Response<any, Record<string, any>>>();
+  const eventSource: express.RequestHandler<
+    core.ParamsDictionary,
+    any,
+    any,
+    qs.ParsedQs,
+    Record<string, any>
+  >[] = [
+    (req, res, next) => {
+      if (!req.header("accept")?.includes("text/event-stream")) return next();
+      res.type("text/event-stream").writeHead(200);
+      eventSources.add(res);
+      res.on("close", () => {
+        eventSources.delete(res);
+      });
+    },
+  ];
 
   const logoAndMenu = (
     req: express.Request<
@@ -2270,11 +2302,13 @@ export default async function courselore(
         app.get("layout main")(
           req,
           res,
-          html`<title>
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-              .name}
-            · CourseLore
-          </title>`,
+          html`
+            <title>
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .name}
+              · CourseLore
+            </title>
+          `,
           html`
             <h1>
               Welcome to
@@ -2586,11 +2620,14 @@ export default async function courselore(
       app.get("layout main")(
         req,
         res,
-        html`<title>
-          Course Settings ·
-          ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}
-          · CourseLore
-        </title>`,
+        html`
+          <title>
+            Course Settings ·
+            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+              .name}
+            · CourseLore
+          </title>
+        `,
         html`
           <h1>
             Course Settings ·
@@ -4022,6 +4059,54 @@ export default async function courselore(
         html`
           <div
             style="${css`
+              @at-root {
+                #alert {
+                  background-color: white;
+                  max-width: 700px;
+                  padding: 0 1rem;
+                  border: 1px solid gainsboro;
+                  border-top: none;
+                  border-radius: 10px;
+                  border-top-left-radius: 0;
+                  border-top-right-radius: 0;
+                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+                  position: absolute;
+                  top: 0;
+                  margin: 0 auto;
+
+                  @media (prefers-color-scheme: dark) {
+                    color: #d4d4d4;
+                    background-color: #1e1e1e;
+                  }
+                }
+              }
+            `}"
+          >
+            <div id="alert">
+              <p>REMOVE ME</p>
+            </div>
+            <button
+              type="button"
+              style="${css`
+                &,
+                &:active {
+                  all: unset;
+                }
+              `}"
+              onclick="${javascript`
+                this.parentElement.hidden = true;
+              `}"
+            >
+              <svg viewBox="0 0 16 16" width="16" height="16">
+                <path
+                  d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <div
+            style="${css`
               box-sizing: border-box;
               height: 100vh;
               border-top: 10px solid
@@ -4362,6 +4447,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/threads/new",
     ...isEnrolledInCourse,
+    ...eventSource,
     (req, res) => {
       res.send(
         app.get("layout thread")(
@@ -4762,19 +4848,6 @@ export default async function courselore(
     },
   ];
 
-  // FIXME: This only works for a single process. To support multiple processes, poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  const threadObservers = new Set<
-    express.Response<
-      any,
-      {
-        user: User;
-        enrollmentsJoinCourses: EnrollmentJoinCourse[];
-        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      }
-    >
-  >();
   app.get<
     { courseReference: string; threadReference: string },
     HTML,
@@ -4790,84 +4863,266 @@ export default async function courselore(
   >(
     "/courses/:courseReference/threads/:threadReference",
     ...isThreadAccessible,
+    ...eventSource,
     (req, res) => {
-      res.format({
-        html: () => {
-          res.send(
-            app.get("layout thread")(
-              req,
-              res,
-              html`<title>
-                ${res.locals
-                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                  .threadWithMetadata.title}
-                ·
-                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .name}
-                · CourseLore
-              </title>`,
-              html`
-                <div class="title">
+      res.send(
+        app.get("layout thread")(
+          req,
+          res,
+          html`
+            <title>
+              ${res.locals
+                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                .threadWithMetadata.title}
+              ·
+              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .name}
+              · CourseLore
+            </title>
+          `,
+          html`
+            <div class="title">
+              <div
+                class="show"
+                style="${css`
+                  display: flex;
+                  align-items: baseline;
+
+                  & > * + * {
+                    margin-left: 0.5rem;
+                  }
+                `}"
+              >
+                <h1
+                  style="${css`
+                    flex: 1;
+                  `}"
+                >
+                  ${res.locals
+                    .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                    .threadWithMetadata.title}
+
+                  <a
+                    href="${app.get("url")}/courses/${res.locals
+                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      .reference}/threads/${res.locals
+                      .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                      .threadWithMetadata.reference}"
+                    class="hint"
+                    >#${res.locals
+                      .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                      .threadWithMetadata.reference}</a
+                  >
+                </h1>
+
+                $${mayEditThread(req, res)
+                  ? html`
+                      <p>
+                        <button
+                          type="button"
+                          onclick="${javascript`
+                            const title = this.closest(".title");
+                            title.querySelector(".show").hidden = true;
+                            const edit = title.querySelector(".edit");
+                            edit.hidden = false;
+                            const input = edit.querySelector('[name="title"]');
+                            input.value = ${JSON.stringify(
+                              res.locals
+                                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                .threadWithMetadata.title
+                            )};
+                            input.focus();
+                            input.setSelectionRange(0, 0);
+                          `}"
+                        >
+                          Edit Title
+                        </button>
+                      </p>
+                    `
+                  : html``}
+                $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                  .enrollment.role === "staff"
+                  ? html`
+                      <form
+                        method="POST"
+                        action="${app.get("url")}/courses/${res.locals
+                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          .reference}/threads/${res.locals
+                          .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                          .threadWithMetadata.reference}?_method=DELETE"
+                      >
+                        <p>
+                          <button
+                            class="red"
+                            onclick="${javascript`
+                            if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
+                              event.preventDefault();
+                          `}"
+                          >
+                            Remove Thread
+                          </button>
+                        </p>
+                      </form>
+                    `
+                  : html``}
+              </div>
+
+              $${mayEditThread(req, res)
+                ? html`
+                    <form
+                      method="POST"
+                      action="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/threads/${res.locals
+                        .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                        .threadWithMetadata.reference}?_method=PATCH"
+                      hidden
+                      class="edit"
+                      style="${css`
+                        display: flex;
+
+                        & > * + * {
+                          margin-left: 1rem;
+                        }
+                      `}"
+                    >
+                      <p
+                        style="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          name="title"
+                          autocomplete="off"
+                          required
+                          class="full-width"
+                        />
+                      </p>
+                      <p>
+                        <button class="green">Change Title</button>
+                        <button
+                          type="button"
+                          onclick="${javascript`
+                            if (!confirm("Discard changes?")) return;
+                            const title = this.closest(".title");
+                            title.querySelector(".show").hidden = false;
+                            const edit = title.querySelector(".edit");
+                            edit.hidden = true;
+                            modifiedInputs.delete(edit.querySelector('[name="title"]'));
+                          `}"
+                        >
+                          Cancel
+                        </button>
+                      </p>
+                    </form>
+                  `
+                : html``}
+            </div>
+
+            $${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthorJoinLikesJoinEnrollmentJoinUser.map(
+              (postJoinAuthorJoinLikesJoinEnrollmentJoinUser) => html`
+                <section
+                  id="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                    .reference}"
+                  class="post"
+                  style="${css`
+                    border-bottom: 1px solid silver;
+
+                    @media (prefers-color-scheme: dark) {
+                      border-color: black;
+                    }
+                  `}"
+                >
                   <div
-                    class="show"
                     style="${css`
                       display: flex;
-                      align-items: baseline;
+                      margin-bottom: -1rem;
 
                       & > * + * {
                         margin-left: 0.5rem;
                       }
                     `}"
                   >
-                    <h1
+                    <p
                       style="${css`
                         flex: 1;
                       `}"
                     >
-                      ${res.locals
-                        .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                        .threadWithMetadata.title}
-
-                      <a
-                        href="${app.get("url")}/courses/${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                          .reference}/threads/${res.locals
-                          .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                          .threadWithMetadata.reference}"
-                        class="hint"
-                        >#${res.locals
-                          .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                          .threadWithMetadata.reference}</a
+                      <strong
+                        >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.author
+                          .user.name}</strong
                       >
-                    </h1>
+                      <span class="hint">
+                        said
+                        <time
+                          >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                            .createdAt}</time
+                        >
+                        $${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                          .updatedAt !==
+                        postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                          .createdAt
+                          ? html`
+                              and last edited
+                              <time
+                                >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                  .post.updatedAt}</time
+                              >
+                            `
+                          : html``}
+                        <a
+                          href="${app.get("url")}/courses/${res.locals
+                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                            .reference}/threads/${req.params
+                            .threadReference}#${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                            .post.reference}"
+                          style="${css`
+                            text-decoration: none;
+                          `}"
+                          >#${res.locals
+                            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                            .threadWithMetadata
+                            .reference}/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                            .post.reference}</a
+                        >
+                      </span>
+                    </p>
 
-                    $${mayEditThread(req, res)
+                    $${mayEditPost(
+                      req,
+                      res,
+                      postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                    )
                       ? html`
                           <p>
                             <button
                               type="button"
+                              class="edit-button"
                               onclick="${javascript`
-                                const title = this.closest(".title");
-                                title.querySelector(".show").hidden = true;
-                                const edit = title.querySelector(".edit");
+                                const post = this.closest(".post");
+                                post.querySelector(".show").hidden = true;
+                                const edit = post.querySelector(".edit");
                                 edit.hidden = false;
-                                const input = edit.querySelector('[name="title"]');
-                                input.value = ${JSON.stringify(
-                                  res.locals
-                                    .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                    .threadWithMetadata.title
+                                const textarea = edit.querySelector('[name="content"]');
+                                textarea.value = ${JSON.stringify(
+                                  postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                    .post.content
                                 )};
-                                input.focus();
-                                input.setSelectionRange(0, 0);
+                                textarea.focus();
+                                textarea.setSelectionRange(0, 0);
+                                this.hidden = true;
                               `}"
                             >
-                              Edit Title
+                              Edit Post
                             </button>
                           </p>
                         `
                       : html``}
                     $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                      .enrollment.role === "staff"
+                      .enrollment.role === "staff" &&
+                    postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
+                      .reference !== "1"
                       ? html`
                           <form
                             method="POST"
@@ -4875,17 +5130,19 @@ export default async function courselore(
                               .enrollmentJoinCourseJoinThreadsWithMetadata
                               .course.reference}/threads/${res.locals
                               .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .threadWithMetadata.reference}?_method=DELETE"
+                              .threadWithMetadata
+                              .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .post.reference}?_method=DELETE"
                           >
                             <p>
                               <button
                                 class="red"
                                 onclick="${javascript`
-                                if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
-                                  event.preventDefault();
-                              `}"
+                                  if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
+                                    event.preventDefault();
+                                `}"
                               >
-                                Remove Thread
+                                Remove Post
                               </button>
                             </p>
                           </form>
@@ -4893,197 +5150,97 @@ export default async function courselore(
                       : html``}
                   </div>
 
-                  $${mayEditThread(req, res)
-                    ? html`
-                        <form
-                          method="POST"
-                          action="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                            .reference}/threads/${res.locals
-                            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .threadWithMetadata.reference}?_method=PATCH"
-                          hidden
-                          class="edit"
-                          style="${css`
-                            display: flex;
+                  <div class="show">
+                    $${app.get("text processor")(
+                      postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.content
+                    )}
 
-                            & > * + * {
-                              margin-left: 1rem;
-                            }
-                          `}"
-                        >
-                          <p
-                            style="${css`
-                              flex: 1;
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              name="title"
-                              autocomplete="off"
-                              required
-                              class="full-width"
-                            />
-                          </p>
-                          <p>
-                            <button class="green">Change Title</button>
-                            <button
-                              type="button"
-                              onclick="${javascript`
-                                if (!confirm("Discard changes?")) return;
-                                const title = this.closest(".title");
-                                title.querySelector(".show").hidden = false;
-                                const edit = title.querySelector(".edit");
-                                edit.hidden = true;
-                                modifiedInputs.delete(edit.querySelector('[name="title"]'));
-                              `}"
-                            >
-                              Cancel
-                            </button>
-                          </p>
-                        </form>
-                      `
-                    : html``}
-                </div>
-
-                $${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthorJoinLikesJoinEnrollmentJoinUser.map(
-                  (postJoinAuthorJoinLikesJoinEnrollmentJoinUser) => html`
-                    <section
-                      id="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                        .reference}"
-                      class="post"
-                      style="${css`
-                        border-bottom: 1px solid silver;
-
-                        @media (prefers-color-scheme: dark) {
-                          border-color: black;
-                        }
-                      `}"
+                    <!-- TODO: Say “you” when you have liked the post. -->
+                    <form
+                      method="POST"
+                      action="${app.get("url")}/courses/${res.locals
+                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        .reference}/threads/${res.locals
+                        .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                        .threadWithMetadata
+                        .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                        .post
+                        .reference}/likes${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
+                        (likeJoinEnrollmentJoinUser) =>
+                          likeJoinEnrollmentJoinUser.enrollmentJoinUser.user
+                            .id === res.locals.user.id
+                      ) === undefined
+                        ? ""
+                        : "?_method=DELETE"}"
+                      title="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                        .likesJoinEnrollmentJoinUser.length === 0
+                        ? "Be the first to like this"
+                        : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                            .likesJoinEnrollmentJoinUser.length === 1
+                        ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} liked this`
+                        : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                            .likesJoinEnrollmentJoinUser.length === 2
+                        ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} and ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name} liked this`
+                        : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                            .likesJoinEnrollmentJoinUser.length === 3
+                        ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name}, ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name}, and 1 other liked this`
+                        : `${
+                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .likesJoinEnrollmentJoinUser[0].enrollmentJoinUser
+                              .user.name
+                          }, ${
+                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .likesJoinEnrollmentJoinUser[1].enrollmentJoinUser
+                              .user.name
+                          }, and ${
+                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                              .likesJoinEnrollmentJoinUser.length - 2
+                          } others liked this`}"
                     >
-                      <div
+                      <p
                         style="${css`
-                          display: flex;
-                          margin-bottom: -1rem;
-
-                          & > * + * {
-                            margin-left: 0.5rem;
-                          }
+                          margin-top: -0.5rem;
                         `}"
                       >
-                        <p
-                          style="${css`
-                            flex: 1;
-                          `}"
-                        >
-                          <strong
-                            >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .author.user.name}</strong
+                        <span class="hint">
+                          <button
+                            style="${css`
+                              &,
+                              &:active {
+                                all: unset;
+                              }
+                            `}"
                           >
-                          <span class="hint">
-                            said
-                            <time
-                              >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .post.createdAt}</time
-                            >
-                            $${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .post.updatedAt !==
-                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                              .createdAt
-                              ? html`
-                                  and last edited
-                                  <time
-                                    >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                      .post.updatedAt}</time
-                                  >
-                                `
-                              : html``}
-                            <a
-                              href="${app.get("url")}/courses/${res.locals
-                                .enrollmentJoinCourseJoinThreadsWithMetadata
-                                .course.reference}/threads/${req.params
-                                .threadReference}#${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .post.reference}"
-                              style="${css`
-                                text-decoration: none;
-                              `}"
-                              >#${res.locals
-                                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .threadWithMetadata
-                                .reference}/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .post.reference}</a
-                            >
-                          </span>
-                        </p>
+                            <svg viewBox="0 0 16 16" width="12" height="12">
+                              <path
+                                d="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
+                                  (likeJoinEnrollmentJoinUser) =>
+                                    likeJoinEnrollmentJoinUser
+                                      .enrollmentJoinUser.user.id ===
+                                    res.locals.user.id
+                                ) === undefined
+                                  ? "m 8.3496094,0.06640625 c 0.1554219,-0.01874023 0.316875,-0.019125 0.484375,0 0.763,0.087 1.4997656,0.2938125 2.0097656,0.8828125 C 11.34875,1.5302188 11.5,2.328 11.5,3.25 c 0,0.467 -0.08625,1.1187188 -0.15625,1.6367188 L 11.328125,5 H 12.75 c 0.603,0 1.173969,0.084031 1.667969,0.3320312 0.50821,0.2539996 0.910468,0.6800156 1.136719,1.2011719 0.452999,0.998 0.4375,2.4474063 0.1875,4.3164059 l -0.03906,0.304688 c -0.105,0.79 -0.1945,1.473203 -0.3125,2.033203 -0.131,0.63 -0.314969,1.208875 -0.667969,1.671875 C 13.970656,15.846375 12.706,16 11,16 9.152,16 7.7653281,15.667656 6.6113281,15.347656 c -0.165,-0.045 -0.3226093,-0.08981 -0.4746093,-0.132812 -0.658,-0.186 -1.1996094,-0.341016 -1.7246094,-0.416016 C 4.1752281,15.515796 3.5050863,16.000149 2.75,16 h -1 C 0.784,16 0,15.216 0,14.25 V 6.75 C 0,5.7835017 0.78350169,5 1.75,5 h 1 c 0.6240451,-6.83e-5 1.2005796,0.3312739 1.5136719,0.8710938 0.258,-0.105 0.5899687,-0.2678125 0.9179687,-0.5078126 C 5.8526406,4.8732813 6.5,4.079 6.5,2.75 V 2.25 C 6.5,1.19825 7.2616562,0.19758789 8.3496094,0.06640625 Z M 8.6640625,1.5566406 C 8.3570625,1.5206406 8,1.793 8,2.25 v 0.5 C 8,4.672 7.0214063,5.8772187 6.0664062,6.5742188 5.5879272,6.9217253 5.0602055,7.1953645 4.5,7.3847656 v 5.9160154 c 0.705,0.088 1.3902656,0.282563 2.0722656,0.476563 l 0.4414063,0.125 c 1.096,0.305 2.3333281,0.599609 3.9863281,0.599609 1.794,0 2.279344,-0.224781 2.527344,-0.550781 0.147,-0.193 0.276531,-0.50336 0.394531,-1.06836 0.105,-0.501999 0.187922,-1.12564 0.294922,-1.93164 l 0.04101,-0.298828 C 14.507813,8.7703438 14.446453,7.7182969 14.189453,7.1542969 14.105554,6.9457685 13.947011,6.776555 13.746094,6.6757812 13.538094,6.5717812 13.227,6.5019531 12.75,6.5019531 H 11 c -0.686,0 -1.2940781,-0.5788906 -1.2050781,-1.3378906 0.023,-0.192 0.048219,-0.3899375 0.074219,-0.5859375 C 9.9341406,4.090125 10,3.6099531 10,3.2519531 10,2.4429531 9.8568906,2.1015469 9.7128906,1.9355469 9.5758906,1.7775469 9.3100625,1.6306406 8.6640625,1.5566406 Z M 1.75,6.5 C 1.6119288,6.5 1.5,6.6119288 1.5,6.75 v 7.5 c 0,0.138071 0.1119288,0.25 0.25,0.25 h 1 C 2.8880712,14.5 3,14.388071 3,14.25 V 6.75 C 3,6.6119288 2.8880712,6.5 2.75,6.5 Z"
+                                  : "m 8.7246094,1.0332031 c -0.6587706,-0.0772499 -1.25,0.4857182 -1.25,1.2167969 v 0.5 c 0,1.7433939 -0.8587996,2.7708087 -1.71875,3.3984375 C 5.3203307,6.4645348 4.8409962,6.7146417 4.3320312,6.8867188 A 0.52623759,0.52623759 0 0 0 3.9746094,7.3847656 v 5.9160154 a 0.52623759,0.52623759 0 0 0 0.4609375,0.521485 c 0.6519949,0.08138 1.310355,0.266985 1.9921875,0.460937 a 0.52623759,0.52623759 0 0 0 0.00195,0 l 0.4414063,0.125 a 0.52623759,0.52623759 0 0 0 0.00195,0.002 C 7.9832761,14.719116 9.2844798,15.027344 11,15.027344 c 0.918976,0 1.521459,-0.05327 1.974609,-0.169922 0.45315,-0.116655 0.781843,-0.33963 0.970703,-0.587891 0.221477,-0.290781 0.366317,-0.676611 0.492188,-1.279297 0.111298,-0.532107 0.194074,-1.162979 0.300781,-1.966796 v -0.0039 l 0.04102,-0.294922 a 0.52623759,0.52623759 0 0 0 0,-0.0039 C 15.032977,8.8110901 15.01157,7.7088204 14.669922,6.9492188 14.536072,6.6241198 14.29181,6.3602576 13.982422,6.2050781 a 0.52623759,0.52623759 0 0 0 -0.002,0 C 13.669027,6.0493573 13.278352,5.9765625 12.75,5.9765625 H 11 c -0.389981,0 -0.73475,-0.2990291 -0.681641,-0.7519531 l -0.002,0.00195 c 0.0226,-0.188677 0.04855,-0.3845679 0.07422,-0.578125 v -0.00195 c 0.06475,-0.4859924 0.134766,-0.9725832 0.134766,-1.3945313 0,-0.8699503 -0.149756,-1.354682 -0.414063,-1.6601562 C 9.8593817,1.3012309 9.4326222,1.1143068 8.7246094,1.0332031 Z M 1.75,5.9746094 c -0.4224426,0 -0.77539063,0.352948 -0.77539062,0.7753906 v 7.5 c 0,0.422443 0.35294752,0.775391 0.77539062,0.775391 h 1 c 0.4224431,0 0.7753906,-0.352948 0.7753906,-0.775391 V 6.75 C 3.5253906,6.3275574 3.1724426,5.9746094 2.75,5.9746094 Z"}"
+                                fill="gray"
+                              ></path>
+                            </svg>
+                          </button>
+                          ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                            .likesJoinEnrollmentJoinUser.length === 0
+                            ? ""
+                            : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                                .likesJoinEnrollmentJoinUser.length}
+                        </span>
+                      </p>
+                    </form>
+                  </div>
 
-                        $${mayEditPost(
-                          req,
-                          res,
-                          postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                        )
-                          ? html`
-                              <p>
-                                <button
-                                  type="button"
-                                  class="edit-button"
-                                  onclick="${javascript`
-                                    const post = this.closest(".post");
-                                    post.querySelector(".show").hidden = true;
-                                    const edit = post.querySelector(".edit");
-                                    edit.hidden = false;
-                                    const textarea = edit.querySelector('[name="content"]');
-                                    textarea.value = ${JSON.stringify(
-                                      postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                        .post.content
-                                    )};
-                                    textarea.focus();
-                                    textarea.setSelectionRange(0, 0);
-                                    this.hidden = true;
-                                  `}"
-                                >
-                                  Edit Post
-                                </button>
-                              </p>
-                            `
-                          : html``}
-                        $${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata
-                          .enrollment.role === "staff" &&
-                        postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                          .reference !== "1"
-                          ? html`
-                              <form
-                                method="POST"
-                                action="${app.get("url")}/courses/${res.locals
-                                  .enrollmentJoinCourseJoinThreadsWithMetadata
-                                  .course.reference}/threads/${res.locals
-                                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                  .threadWithMetadata
-                                  .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                  .post.reference}?_method=DELETE"
-                              >
-                                <p>
-                                  <button
-                                    class="red"
-                                    onclick="${javascript`
-                                      if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
-                                        event.preventDefault();
-                                    `}"
-                                  >
-                                    Remove Post
-                                  </button>
-                                </p>
-                              </form>
-                            `
-                          : html``}
-                      </div>
-
-                      <div class="show">
-                        $${app.get("text processor")(
-                          postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                            .content
-                        )}
-
-                        <!-- TODO: Say “you” when you have liked the post. -->
+                  $${mayEditPost(
+                    req,
+                    res,
+                    postJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                  )
+                    ? html`
                         <form
                           method="POST"
                           action="${app.get("url")}/courses/${res.locals
@@ -5092,269 +5249,59 @@ export default async function courselore(
                             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                             .threadWithMetadata
                             .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .post
-                            .reference}/likes${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
-                            (likeJoinEnrollmentJoinUser) =>
-                              likeJoinEnrollmentJoinUser.enrollmentJoinUser.user
-                                .id === res.locals.user.id
-                          ) === undefined
-                            ? ""
-                            : "?_method=DELETE"}"
-                          title="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .likesJoinEnrollmentJoinUser.length === 0
-                            ? "Be the first to like this"
-                            : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .likesJoinEnrollmentJoinUser.length === 1
-                            ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} liked this`
-                            : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .likesJoinEnrollmentJoinUser.length === 2
-                            ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} and ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name} liked this`
-                            : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .likesJoinEnrollmentJoinUser.length === 3
-                            ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name}, ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name}, and 1 other liked this`
-                            : `${
-                                postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                  .likesJoinEnrollmentJoinUser[0]
-                                  .enrollmentJoinUser.user.name
-                              }, ${
-                                postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                  .likesJoinEnrollmentJoinUser[1]
-                                  .enrollmentJoinUser.user.name
-                              }, and ${
-                                postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                  .likesJoinEnrollmentJoinUser.length - 2
-                              } others liked this`}"
+                            .post.reference}?_method=PATCH"
+                          hidden
+                          class="edit"
                         >
+                          $${textEditor()}
                           <p
                             style="${css`
-                              margin-top: -0.5rem;
+                              text-align: right;
                             `}"
                           >
-                            <span class="hint">
-                              <button
-                                style="${css`
-                                  all: unset;
-                                `}"
-                              >
-                                <svg viewBox="0 0 16 16" width="12" height="12">
-                                  <path
-                                    d="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
-                                      (likeJoinEnrollmentJoinUser) =>
-                                        likeJoinEnrollmentJoinUser
-                                          .enrollmentJoinUser.user.id ===
-                                        res.locals.user.id
-                                    ) === undefined
-                                      ? "m 8.3496094,0.06640625 c 0.1554219,-0.01874023 0.316875,-0.019125 0.484375,0 0.763,0.087 1.4997656,0.2938125 2.0097656,0.8828125 C 11.34875,1.5302188 11.5,2.328 11.5,3.25 c 0,0.467 -0.08625,1.1187188 -0.15625,1.6367188 L 11.328125,5 H 12.75 c 0.603,0 1.173969,0.084031 1.667969,0.3320312 0.50821,0.2539996 0.910468,0.6800156 1.136719,1.2011719 0.452999,0.998 0.4375,2.4474063 0.1875,4.3164059 l -0.03906,0.304688 c -0.105,0.79 -0.1945,1.473203 -0.3125,2.033203 -0.131,0.63 -0.314969,1.208875 -0.667969,1.671875 C 13.970656,15.846375 12.706,16 11,16 9.152,16 7.7653281,15.667656 6.6113281,15.347656 c -0.165,-0.045 -0.3226093,-0.08981 -0.4746093,-0.132812 -0.658,-0.186 -1.1996094,-0.341016 -1.7246094,-0.416016 C 4.1752281,15.515796 3.5050863,16.000149 2.75,16 h -1 C 0.784,16 0,15.216 0,14.25 V 6.75 C 0,5.7835017 0.78350169,5 1.75,5 h 1 c 0.6240451,-6.83e-5 1.2005796,0.3312739 1.5136719,0.8710938 0.258,-0.105 0.5899687,-0.2678125 0.9179687,-0.5078126 C 5.8526406,4.8732813 6.5,4.079 6.5,2.75 V 2.25 C 6.5,1.19825 7.2616562,0.19758789 8.3496094,0.06640625 Z M 8.6640625,1.5566406 C 8.3570625,1.5206406 8,1.793 8,2.25 v 0.5 C 8,4.672 7.0214063,5.8772187 6.0664062,6.5742188 5.5879272,6.9217253 5.0602055,7.1953645 4.5,7.3847656 v 5.9160154 c 0.705,0.088 1.3902656,0.282563 2.0722656,0.476563 l 0.4414063,0.125 c 1.096,0.305 2.3333281,0.599609 3.9863281,0.599609 1.794,0 2.279344,-0.224781 2.527344,-0.550781 0.147,-0.193 0.276531,-0.50336 0.394531,-1.06836 0.105,-0.501999 0.187922,-1.12564 0.294922,-1.93164 l 0.04101,-0.298828 C 14.507813,8.7703438 14.446453,7.7182969 14.189453,7.1542969 14.105554,6.9457685 13.947011,6.776555 13.746094,6.6757812 13.538094,6.5717812 13.227,6.5019531 12.75,6.5019531 H 11 c -0.686,0 -1.2940781,-0.5788906 -1.2050781,-1.3378906 0.023,-0.192 0.048219,-0.3899375 0.074219,-0.5859375 C 9.9341406,4.090125 10,3.6099531 10,3.2519531 10,2.4429531 9.8568906,2.1015469 9.7128906,1.9355469 9.5758906,1.7775469 9.3100625,1.6306406 8.6640625,1.5566406 Z M 1.75,6.5 C 1.6119288,6.5 1.5,6.6119288 1.5,6.75 v 7.5 c 0,0.138071 0.1119288,0.25 0.25,0.25 h 1 C 2.8880712,14.5 3,14.388071 3,14.25 V 6.75 C 3,6.6119288 2.8880712,6.5 2.75,6.5 Z"
-                                      : "m 8.7246094,1.0332031 c -0.6587706,-0.0772499 -1.25,0.4857182 -1.25,1.2167969 v 0.5 c 0,1.7433939 -0.8587996,2.7708087 -1.71875,3.3984375 C 5.3203307,6.4645348 4.8409962,6.7146417 4.3320312,6.8867188 A 0.52623759,0.52623759 0 0 0 3.9746094,7.3847656 v 5.9160154 a 0.52623759,0.52623759 0 0 0 0.4609375,0.521485 c 0.6519949,0.08138 1.310355,0.266985 1.9921875,0.460937 a 0.52623759,0.52623759 0 0 0 0.00195,0 l 0.4414063,0.125 a 0.52623759,0.52623759 0 0 0 0.00195,0.002 C 7.9832761,14.719116 9.2844798,15.027344 11,15.027344 c 0.918976,0 1.521459,-0.05327 1.974609,-0.169922 0.45315,-0.116655 0.781843,-0.33963 0.970703,-0.587891 0.221477,-0.290781 0.366317,-0.676611 0.492188,-1.279297 0.111298,-0.532107 0.194074,-1.162979 0.300781,-1.966796 v -0.0039 l 0.04102,-0.294922 a 0.52623759,0.52623759 0 0 0 0,-0.0039 C 15.032977,8.8110901 15.01157,7.7088204 14.669922,6.9492188 14.536072,6.6241198 14.29181,6.3602576 13.982422,6.2050781 a 0.52623759,0.52623759 0 0 0 -0.002,0 C 13.669027,6.0493573 13.278352,5.9765625 12.75,5.9765625 H 11 c -0.389981,0 -0.73475,-0.2990291 -0.681641,-0.7519531 l -0.002,0.00195 c 0.0226,-0.188677 0.04855,-0.3845679 0.07422,-0.578125 v -0.00195 c 0.06475,-0.4859924 0.134766,-0.9725832 0.134766,-1.3945313 0,-0.8699503 -0.149756,-1.354682 -0.414063,-1.6601562 C 9.8593817,1.3012309 9.4326222,1.1143068 8.7246094,1.0332031 Z M 1.75,5.9746094 c -0.4224426,0 -0.77539063,0.352948 -0.77539062,0.7753906 v 7.5 c 0,0.422443 0.35294752,0.775391 0.77539062,0.775391 h 1 c 0.4224431,0 0.7753906,-0.352948 0.7753906,-0.775391 V 6.75 C 3.5253906,6.3275574 3.1724426,5.9746094 2.75,5.9746094 Z"}"
-                                    fill="gray"
-                                  ></path>
-                                </svg>
-                              </button>
-                              ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .likesJoinEnrollmentJoinUser.length === 0
-                                ? ""
-                                : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                    .likesJoinEnrollmentJoinUser.length}
-                            </span>
+                            <button
+                              type="button"
+                              onclick="${javascript`
+                                if (!confirm("Discard changes?")) return;
+                                const post = this.closest(".post");
+                                post.querySelector(".show").hidden = false;
+                                const edit = post.querySelector(".edit");
+                                edit.hidden = true;
+                                modifiedInputs.delete(edit.querySelector('[name="content"]'));
+                                post.querySelector(".edit-button").hidden = false;
+                              `}"
+                            >
+                              Cancel
+                            </button>
+                            <button class="green">Change Post</button>
                           </p>
                         </form>
-                      </div>
-
-                      $${mayEditPost(
-                        req,
-                        res,
-                        postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                      )
-                        ? html`
-                            <form
-                              method="POST"
-                              action="${app.get("url")}/courses/${res.locals
-                                .enrollmentJoinCourseJoinThreadsWithMetadata
-                                .course.reference}/threads/${res.locals
-                                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .threadWithMetadata
-                                .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .post.reference}?_method=PATCH"
-                              hidden
-                              class="edit"
-                            >
-                              $${textEditor()}
-                              <p
-                                style="${css`
-                                  text-align: right;
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  onclick="${javascript`
-                                    if (!confirm("Discard changes?")) return;
-                                    const post = this.closest(".post");
-                                    post.querySelector(".show").hidden = false;
-                                    const edit = post.querySelector(".edit");
-                                    edit.hidden = true;
-                                    modifiedInputs.delete(edit.querySelector('[name="content"]'));
-                                    post.querySelector(".edit-button").hidden = false;
-                                  `}"
-                                >
-                                  Cancel
-                                </button>
-                                <button class="green">Change Post</button>
-                              </p>
-                            </form>
-                          `
-                        : html``}
-                    </section>
-                  `
-                )}
-
-                <form
-                  method="POST"
-                  action="${app.get("url")}/courses/${res.locals
-                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                    .reference}/threads/${res.locals
-                    .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                    .threadWithMetadata.reference}/posts"
-                >
-                  $${textEditor()}
-                  <p
-                    style="${css`
-                      text-align: right;
-                    `}"
-                  >
-                    <button>Post</button>
-                  </p>
-                </form>
-
-                <div></div>
-                <script>
-                  (() => {
-                    const element =
-                      document.currentScript.previousElementSibling;
-                    const eventSource = new EventSource(
-                      $${JSON.stringify(
-                        `${app.get("url")}/courses/${
-                          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                            .course.reference
-                        }/threads/${
-                          res.locals
-                            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .threadWithMetadata.reference
-                        }`
-                      )}
-                    );
-                    eventSource.addEventListener("threadUpdate", (event) => {
-                      const eventDocument = new DOMParser().parseFromString(
-                        event.data,
-                        "text/html"
-                      );
-                      document
-                        .querySelector("head")
-                        .append(eventDocument.querySelector("head"));
-                      element.replaceChildren(
-                        eventDocument.querySelector("body")
-                      );
-                    });
-                  })();
-                </script>
+                      `
+                    : html``}
+                </section>
               `
-            )
-          );
-        },
+            )}
 
-        "text/event-stream": () => {
-          threadObservers.add(res);
-          res.on("close", () => {
-            threadObservers.delete(res);
-          });
-
-          res.on(
-            "threadUpdate",
-            (
-              observerReq: express.Request<
-                { courseReference: string; threadReference: string },
-                HTML,
-                {},
-                {},
-                {
-                  user: User;
-                  enrollmentsJoinCourses: EnrollmentJoinCourse[];
-                  enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-                  otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-                  threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-                }
-              >,
-              observerRes: express.Response<
-                HTML,
-                {
-                  user: User;
-                  enrollmentsJoinCourses: EnrollmentJoinCourse[];
-                  enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-                  otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
-                  threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-                }
+            <form
+              method="POST"
+              action="${app.get("url")}/courses/${res.locals
+                .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                .reference}/threads/${res.locals
+                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                .threadWithMetadata.reference}/posts"
+            >
+              $${textEditor()}
+              <p
+                style="${css`
+                  text-align: right;
+                `}"
               >
-            ) => {
-              if (
-                observerRes.locals
-                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                  .threadWithMetadata.id !==
-                res.locals
-                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                  .threadWithMetadata.id
-              )
-                return;
-              res.write(
-                `event: threadUpdate\ndata:${processCSS(html`
-                  <p
-                    style="${css`
-                      background-color: white;
-                      padding: 0.5rem 1rem;
-                      border: 1px solid gainsboro;
-                      border-top: none;
-                      border-radius: 10px;
-                      border-top-left-radius: 0;
-                      border-top-right-radius: 0;
-                      margin: 0 auto;
-                      box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-                      position: absolute;
-                      top: 0;
-                      display: flex;
-                      align-items: baseline;
-
-                      @media (prefers-color-scheme: dark) {
-                        color: #d4d4d4;
-                        background-color: #1e1e1e;
-                      }
-
-                      & > * + * {
-                        margin-left: 0.5rem;
-                      }
-                    `}"
-                  >
-                    <span>This thread has been updated</span>
-                    <button
-                      type="button"
-                      onclick="${javascript`
-                        window.location.reload();
-                      `}"
-                    >
-                      Reload
-                    </button>
-                    <button
-                      type="button"
-                      onclick="${javascript`
-                        this.parentElement.hidden = true;
-                      `}"
-                    >
-                      Dismiss
-                    </button>
-                  </p>
-                `).replace(/\n/g, "\ndata:")}\n\n`
-              );
-            }
-          );
-        },
-      });
+                <button>Post</button>
+              </p>
+            </form>
+          `
+        )
+      );
     }
   );
 
@@ -5484,8 +5431,49 @@ export default async function courselore(
         `
       );
 
-      for (const threadObserver of threadObservers)
-        threadObserver.emit("threadUpdate", req, res);
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) =>
+          eventSource.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.id ===
+          res.locals
+            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+            .threadWithMetadata.id
+      ))
+        eventSource.write(
+          `event: replaceWith\ndata:${processCSS(html`
+            <div id="alert">
+              <p
+                style="${css`
+                  display: flex;
+                  align-items: baseline;
+
+                  & > * + * {
+                    margin-left: 0.5rem;
+                  }
+                `}"
+              >
+                <span>This thread has been updated</span>
+                <button
+                  type="button"
+                  onclick="${javascript`
+                    window.location.reload();
+                  `}"
+                >
+                  Reload
+                </button>
+                <button
+                  type="button"
+                  onclick="${javascript`
+                    document.querySelector("#alert").hidden = true;
+                  `}"
+                >
+                  Dismiss
+                </button>
+              </p>
+            </div>
+          `).replace(/\n/g, "\ndata:")}\n\n`
+        );
 
       res.redirect(
         `${app.get("url")}/courses/${
