@@ -5301,6 +5301,46 @@ export default async function courselore(
           res.on("close", () => {
             threadObservers.delete(res);
           });
+
+          res.on(
+            "threadUpdate",
+            (
+              observerReq: express.Request<
+                { courseReference: string; threadReference: string },
+                HTML,
+                {},
+                {},
+                {
+                  user: User;
+                  enrollmentsJoinCourses: EnrollmentJoinCourse[];
+                  enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+                  otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+                  threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+                }
+              >,
+              observerRes: express.Response<
+                HTML,
+                {
+                  user: User;
+                  enrollmentsJoinCourses: EnrollmentJoinCourse[];
+                  enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
+                  otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+                  threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+                }
+              >
+            ) => {
+              if (
+                observerRes.locals
+                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                  .threadWithMetadata.id !==
+                res.locals
+                  .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
+                  .threadWithMetadata.id
+              )
+                return;
+              res.write("event: update\ndata:\n\n");
+            }
+          );
         },
       });
     }
@@ -5432,16 +5472,8 @@ export default async function courselore(
         `
       );
 
-      for (const threadObserver of [...threadObservers].filter(
-        (threadObserver) =>
-          threadObserver.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.id ===
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.id
-      ))
-        threadObserver.write("event: update\ndata:\n\n");
+      for (const threadObserver of threadObservers)
+        threadObserver.emit("threadUpdate", req, res);
 
       res.redirect(
         `${app.get("url")}/courses/${
