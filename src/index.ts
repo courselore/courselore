@@ -13,7 +13,6 @@ import validator from "validator";
 import emailAddresses from "email-addresses";
 
 import { Database, sql } from "@leafac/sqlite";
-import databaseMigrate from "@leafac/sqlite-migration";
 
 import { html, HTML } from "@leafac/html";
 import { css, process as processCSS } from "@leafac/css";
@@ -170,103 +169,114 @@ export default async function courselore(
   await fs.ensureDir(rootDirectory);
   const database = new Database(path.join(rootDirectory, "courselore.db"));
   app.set("database", database);
-  databaseMigrate(database, [
-    sql`
-      CREATE TABLE "users" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "email" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL
-      );
-
-      CREATE TABLE "courses" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "reference" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL,
-        "nextThreadReference" INTEGER NOT NULL DEFAULT 1
-      );
-
-      CREATE TABLE "invitations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NULL,
-        "usedAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "email" TEXT NULL,
-        "name" TEXT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        UNIQUE ("course", "reference")
-      );
-
-      CREATE TABLE "enrollments" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
-        UNIQUE ("user", "course"),
-        UNIQUE ("course", "reference")
-      );
-
-      CREATE TABLE "threads" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "title" TEXT NOT NULL,
-        "nextPostReference" INTEGER NOT NULL DEFAULT 1,
-        UNIQUE ("course", "reference")
-      );
-
-      CREATE TABLE "posts" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "content" TEXT NOT NULL,
-        UNIQUE ("thread", "reference")
-      );
-
-      CREATE TABLE "likes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "post" INTEGER NOT NULL REFERENCES "posts" ON DELETE CASCADE,
-        "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        UNIQUE ("post", "enrollment")
-      );
-
-      CREATE TABLE "authenticationNonces" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "email" TEXT NOT NULL UNIQUE
-      );
-
-      CREATE TABLE "sessions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NOT NULL,
-        "token" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
-      );
-
-      CREATE TABLE "emailsQueue" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
-        "to" TEXT NOT NULL,
-        "subject" TEXT NOT NULL,
-        "body" TEXT NOT NULL
-      );
-    `,
-  ]);
+  database.executeTransaction(() => {
+    const migrations = [
+      () => {
+        database.execute(sql`
+          CREATE TABLE "users" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "email" TEXT NOT NULL UNIQUE,
+            "name" TEXT NOT NULL
+          );
+    
+          CREATE TABLE "courses" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "reference" TEXT NOT NULL UNIQUE,
+            "name" TEXT NOT NULL,
+            "nextThreadReference" INTEGER NOT NULL DEFAULT 1
+          );
+    
+          CREATE TABLE "invitations" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "expiresAt" TEXT NULL,
+            "usedAt" TEXT NULL,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "email" TEXT NULL,
+            "name" TEXT NULL,
+            "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+            UNIQUE ("course", "reference")
+          );
+    
+          CREATE TABLE "enrollments" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+            "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
+            UNIQUE ("user", "course"),
+            UNIQUE ("course", "reference")
+          );
+    
+          CREATE TABLE "threads" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "title" TEXT NOT NULL,
+            "nextPostReference" INTEGER NOT NULL DEFAULT 1,
+            UNIQUE ("course", "reference")
+          );
+    
+          CREATE TABLE "posts" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            "content" TEXT NOT NULL,
+            UNIQUE ("thread", "reference")
+          );
+    
+          CREATE TABLE "likes" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "post" INTEGER NOT NULL REFERENCES "posts" ON DELETE CASCADE,
+            "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            UNIQUE ("post", "enrollment")
+          );
+    
+          CREATE TABLE "authenticationNonces" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "expiresAt" TEXT NOT NULL,
+            "nonce" TEXT NOT NULL UNIQUE,
+            "email" TEXT NOT NULL UNIQUE
+          );
+    
+          CREATE TABLE "sessions" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "expiresAt" TEXT NOT NULL,
+            "token" TEXT NOT NULL UNIQUE,
+            "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+          );
+    
+          CREATE TABLE "emailsQueue" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
+            "to" TEXT NOT NULL,
+            "subject" TEXT NOT NULL,
+            "body" TEXT NOT NULL
+          );
+        `);
+      },
+    ];
+    for (const migration of migrations.slice(
+      database.pragma("user_version", {
+        simple: true,
+      })
+    ))
+      migration();
+    database.pragma(`user_version = ${migrations.length}`);
+  });
 
   app.set(
     "layout base",
