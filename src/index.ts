@@ -48,26 +48,6 @@ export default async function courselore(
   app.set("administrator", "mailto:demonstration-development@courselore.org");
   app.enable("demonstration");
 
-  interface User {
-    id: number;
-    email: string;
-    name: string;
-  }
-
-  interface Course {
-    id: number;
-    reference: string;
-    name: string;
-    nextThreadReference: number;
-  }
-
-  interface Enrollment {
-    id: number;
-    reference: string;
-    role: Role;
-    accentColor: AccentColor;
-  }
-
   const ROLES = ["student", "staff"] as const;
   type Role = typeof ROLES[number];
 
@@ -86,56 +66,12 @@ export default async function courselore(
   ] as const;
   type AccentColor = typeof ACCENT_COLORS[number];
 
-  interface EnrollmentJoinCourse {
-    enrollment: Enrollment;
-    course: Course;
-  }
-
-  interface EnrollmentJoinUser {
-    enrollment: Enrollment;
-    user: User;
-  }
-
-  interface Invitation {
-    id: number;
-    expiresAt: string | null;
-    usedAt: string | null;
-    reference: string;
-    email: string | null;
-    name: string | null;
-    role: Role;
-  }
-
-  interface InvitationJoinCourse {
-    invitation: Invitation;
-    course: Course;
-  }
-
-  interface Thread {
-    id: number;
-    reference: string;
-    title: string;
-    nextPostReference: number;
-  }
-
-  interface ThreadWithMetadata extends Thread {
-    createdAt: string;
-    updatedAt: string;
-    author: EnrollmentJoinUser | Anonymous;
-    postsCount: number;
-    likesCount: number;
-  }
-
-  const ANONYMOUS = {
-    enrollment: { id: null, reference: null, role: null, accentColor: null },
+  const ANONYMOUS_ENROLLMENT = {
+    id: null,
     user: { id: null, email: null, name: "Anonymous" },
+    role: null,
   } as const;
-  type Anonymous = typeof ANONYMOUS;
-
-  interface EnrollmentJoinCourseJoinThreadsWithMetadata
-    extends EnrollmentJoinCourse {
-    threadsWithMetadata: ThreadWithMetadata[];
-  }
+  type AnonymousEnrollment = typeof ANONYMOUS_ENROLLMENT;
 
   interface Post {
     id: number;
@@ -147,22 +83,6 @@ export default async function courselore(
 
   interface Like {
     id: number;
-  }
-
-  interface LikeJoinEnrollmentJoinUser {
-    like: Like;
-    enrollmentJoinUser: EnrollmentJoinUser | Anonymous;
-  }
-
-  interface PostJoinAuthorJoinLikesJoinEnrollmentJoinUser {
-    post: Post;
-    author: EnrollmentJoinUser | Anonymous;
-    likesJoinEnrollmentJoinUser: LikeJoinEnrollmentJoinUser[];
-  }
-
-  interface ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser {
-    threadWithMetadata: ThreadWithMetadata;
-    postsJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser[];
   }
 
   await fs.ensureDir(rootDirectory);
@@ -227,7 +147,7 @@ export default async function courselore(
             "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
             "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
             "reference" TEXT NOT NULL,
-            "author" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
             "content" TEXT NOT NULL,
             UNIQUE ("thread", "reference")
           );
@@ -921,18 +841,9 @@ export default async function courselore(
         any,
         {},
         {},
-        {
-          user?: User;
-          enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        }
+        Partial<IsEnrolledInCourseMiddlewareLocals>
       >,
-      res: express.Response<
-        any,
-        {
-          user?: User;
-          enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        }
-      >,
+      res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>,
       head: HTML,
       body: HTML
     ): HTML =>
@@ -943,14 +854,11 @@ export default async function courselore(
         html`
           <div
             style="${css`
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata ===
-              undefined
+              ${res.locals.enrollment === undefined
                 ? css``
                 : css`
                     box-sizing: border-box;
-                    border-top: 10px solid
-                      ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                        .enrollment.accentColor};
+                    border-top: 10px solid ${res.locals.enrollment.accentColor};
                   `}
             `}"
           >
@@ -997,18 +905,9 @@ export default async function courselore(
       HTML,
       {},
       {},
-      {
-        user?: User;
-        enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      }
+      Partial<IsEnrolledInCourseMiddlewareLocals>
     >,
-    res: express.Response<
-      HTML,
-      {
-        user?: User;
-        enrollmentJoinCourseJoinThreadsWithMetadata?: EnrollmentJoinCourseJoinThreadsWithMetadata;
-      }
-    >
+    res: express.Response<HTML, Partial<IsEnrolledInCourseMiddlewareLocals>>
   ): HTML => html`
     <div
       style="${css`
@@ -1113,14 +1012,12 @@ export default async function courselore(
                   <p><button>Sign Out</button></p>
                 </form>
                 <p><a href="${app.get("url")}/settings">User Settings</a></p>
-                $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata ===
-                undefined
+                $${res.locals.course === undefined
                   ? html``
                   : html`
                       <p>
                         <a
-                          href="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          href="${app.get("url")}/courses/${res.locals.course
                             .reference}/settings"
                           >Course Settings</a
                         >
@@ -1278,8 +1175,23 @@ export default async function courselore(
   );
 
   interface IsAuthenticatedMiddlewareLocals {
-    user: User;
-    enrollmentsJoinCourses: EnrollmentJoinCourse[];
+    user: {
+      id: number;
+      email: string;
+      name: string;
+    };
+    enrollments: {
+      id: number;
+      course: {
+        id: number;
+        reference: string;
+        name: string;
+        nextThreadReference: number;
+      };
+      reference: string;
+      role: Role;
+      accentColor: AccentColor;
+    }[];
   }
 
   const isAuthenticatedMiddleware: express.RequestHandler<
@@ -1292,49 +1204,57 @@ export default async function courselore(
     cookieParser(),
     (req, res, next) => {
       if (req.cookies.session === undefined) return next("route");
-      const sessionJoinUser = database.get<{ expiresAt: string } & User>(sql`
-        SELECT "sessions"."expiresAt", "users"."id", "users"."email", "users"."name"
-        FROM "sessions"
-        JOIN "users" ON "sessions"."user" = "users"."id"
-        WHERE "sessions"."token" = ${req.cookies.session} AND
-              ${new Date().toISOString()} < "sessions"."expiresAt"
-      `);
-      if (sessionJoinUser === undefined) {
+      const session = database.get<{
+        expiresAt: string;
+        userId: number;
+        userEmail: string;
+        userName: string;
+      }>(sql`
+          SELECT "sessions"."expiresAt",
+                 "users"."id" AS "userId",
+                 "users"."email" AS "userEmail",
+                 "users"."name" AS "userName"
+          FROM "sessions"
+          JOIN "users" ON "sessions"."user" = "users"."id"
+          WHERE "sessions"."token" = ${req.cookies.session} AND
+                ${new Date().toISOString()} < "sessions"."expiresAt"
+        `);
+      if (session === undefined) {
         closeSession(req, res);
         return next("route");
       }
       if (
-        new Date(sessionJoinUser.expiresAt).getTime() - Date.now() <
+        new Date(session.expiresAt).getTime() - Date.now() <
         30 * 24 * 60 * 60 * 1000
       ) {
         closeSession(req, res);
-        openSession(req, res, sessionJoinUser.id);
+        openSession(req, res, session.userId);
       }
       res.locals.user = {
-        id: sessionJoinUser.id,
-        email: sessionJoinUser.email,
-        name: sessionJoinUser.name,
+        id: session.userId,
+        email: session.userEmail,
+        name: session.userName,
       };
-      res.locals.enrollmentsJoinCourses = database
+      res.locals.enrollments = database
         .all<{
-          enrollmentId: number;
-          enrollmentReference: string;
-          role: Role;
-          accentColor: AccentColor;
+          id: number;
           courseId: number;
           courseReference: string;
-          name: string;
-          nextThreadReference: number;
+          courseName: string;
+          courseNextThreadReference: number;
+          reference: string;
+          role: Role;
+          accentColor: AccentColor;
         }>(
           sql`
-            SELECT "enrollments"."id" AS "enrollmentId",
-                   "enrollments"."reference" AS "enrollmentReference",
-                   "enrollments"."role",
-                   "enrollments"."accentColor",
+            SELECT "enrollments"."id",
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
-                   "courses"."name",
-                   "courses"."nextThreadReference"
+                   "courses"."name" AS "courseName",
+                   "courses"."nextThreadReference" AS "courseNextThreadReference"
+                   "enrollments"."reference",
+                   "enrollments"."role",
+                   "enrollments"."accentColor",
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "enrollments"."user" = ${res.locals.user.id}
@@ -1342,18 +1262,16 @@ export default async function courselore(
           `
         )
         .map((row) => ({
-          enrollment: {
-            id: row.enrollmentId,
-            reference: row.enrollmentReference,
-            role: row.role,
-            accentColor: row.accentColor,
-          },
+          id: row.id,
           course: {
             id: row.courseId,
             reference: row.courseReference,
-            name: row.name,
-            nextThreadReference: row.nextThreadReference,
+            name: row.courseName,
+            nextThreadReference: row.courseNextThreadReference,
           },
+          reference: row.reference,
+          role: row.role,
+          accentColor: row.accentColor,
         }));
       next();
     },
@@ -1371,7 +1289,7 @@ export default async function courselore(
     res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
     path = ""
   ): HTML =>
-    res.locals.otherEnrollmentsJoinCourses.length === 0
+    res.locals.otherEnrollments.length === 0
       ? html``
       : html`
           <details class="popup">
@@ -1421,7 +1339,7 @@ export default async function courselore(
                 transform: translateY(-0.5rem);
               `}"
             >
-              $${res.locals.otherEnrollmentsJoinCourses.map(
+              $${res.locals.otherEnrollments.map(
                 (otherEnrollmentJoinCourse) => html`
                   <p>
                     <a
@@ -1905,7 +1823,7 @@ export default async function courselore(
     "/",
     ...isAuthenticatedMiddleware,
     (req, res) => {
-      switch (res.locals.enrollmentsJoinCourses.length) {
+      switch (res.locals.enrollments.length) {
         case 0:
           return res.send(
             app.get("layout main")(
@@ -1936,7 +1854,7 @@ export default async function courselore(
         case 1:
           return res.redirect(
             `${app.get("url")}/courses/${
-              res.locals.enrollmentsJoinCourses[0].course.reference
+              res.locals.enrollments[0].course.reference
             }`
           );
 
@@ -1951,25 +1869,23 @@ export default async function courselore(
 
                 <p>Go to one of your courses:</p>
                 <nav>
-                  $${res.locals.enrollmentsJoinCourses.map(
-                    (enrollmentJoinCourse) =>
+                  $${res.locals.enrollments.map(
+                    (enrollment) =>
                       html`
                         <p>
                           <a
-                            href="${app.get(
-                              "url"
-                            )}/courses/${enrollmentJoinCourse.course.reference}"
+                            href="${app.get("url")}/courses/${enrollment.course
+                              .reference}"
                             ><svg width="10" height="10">
                               <circle
                                 cx="5"
                                 cy="5"
                                 r="5"
-                                fill="${enrollmentJoinCourse.enrollment
-                                  .accentColor}"
+                                fill="${enrollment.accentColor}"
                               />
                             </svg>
-                            <strong>${enrollmentJoinCourse.course.name}</strong>
-                            (${enrollmentJoinCourse.enrollment.role})</a
+                            <strong>${enrollment.course.name}</strong>
+                            (${enrollment.role})</a
                           >
                         </p>
                       `
@@ -2128,22 +2044,11 @@ export default async function courselore(
   );
 
   function defaultAccentColor(
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      { enrollmentsJoinCourses: EnrollmentJoinCourse[] }
-    >,
-    res: express.Response<
-      any,
-      { enrollmentsJoinCourses: EnrollmentJoinCourse[] }
-    >
+    req: express.Request<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>,
+    res: express.Response<any, IsAuthenticatedMiddlewareLocals>
   ): AccentColor {
     const accentColorsInUse = new Set<AccentColor>(
-      res.locals.enrollmentsJoinCourses.map(
-        (enrollmentJoinCourse) => enrollmentJoinCourse.enrollment.accentColor
-      )
+      res.locals.enrollments.map((enrollment) => enrollment.accentColor)
     );
     let accentColorsAvailable = new Set<AccentColor>(ACCENT_COLORS);
     for (const accentColorInUse of accentColorsInUse) {
@@ -2155,10 +2060,29 @@ export default async function courselore(
 
   interface IsEnrolledInCourseMiddlewareLocals
     extends IsAuthenticatedMiddlewareLocals {
-    enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-    otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+    course: IsAuthenticatedMiddlewareLocals["enrollments"][number]["course"];
+    enrollment: IsAuthenticatedMiddlewareLocals["enrollments"][number];
+    otherEnrollments: IsAuthenticatedMiddlewareLocals["enrollments"];
+    threads: {
+      id: number;
+      reference: string;
+      title: string;
+      nextPostReference: number;
+      createdAt: string;
+      updatedAt: string;
+      authorEnrollment:
+        | {
+            id: number;
+            user: { id: number; email: string; name: string };
+            role: Role;
+          }
+        | AnonymousEnrollment;
+      postsCount: number;
+      likesCount: number;
+    }[];
   }
 
+  // FIXME: Create another middleware that loads threads, because this middleware is also used in pages like /settings, which don’t need threads.
   const isEnrolledInCourseMiddleware: express.RequestHandler<
     { courseReference: string },
     any,
@@ -2168,95 +2092,93 @@ export default async function courselore(
   >[] = [
     ...isAuthenticatedMiddleware,
     (req, res, next) => {
-      let enrollmentJoinCourse: EnrollmentJoinCourse | undefined;
-      const otherEnrollmentsJoinCourses: EnrollmentJoinCourse[] = [];
-      for (const aEnrollmentJoinCourse of res.locals.enrollmentsJoinCourses)
-        if (
-          aEnrollmentJoinCourse.course.reference === req.params.courseReference
-        )
-          enrollmentJoinCourse = aEnrollmentJoinCourse;
-        else otherEnrollmentsJoinCourses.push(aEnrollmentJoinCourse);
-      if (enrollmentJoinCourse === undefined) return next("route");
+      res.locals.otherEnrollments = [];
+      for (const enrollment of res.locals.enrollments)
+        if (enrollment.course.reference === req.params.courseReference) {
+          res.locals.enrollment = enrollment;
+          res.locals.course = enrollment.course;
+        } else res.locals.otherEnrollments.push(enrollment);
+      if (res.locals.enrollment === undefined) return next("route");
 
-      const threadsWithMetadata = database
+      res.locals.threads = database
         .all<{
-          threadId: number;
-          threadReference: string;
+          id: number;
+          reference: string;
           title: string;
           nextPostReference: number;
-          createdAt: string;
-          updatedAt: string;
-          authorEnrollmentId: number | null;
-          authorEnrollmentReference: string | null;
-          role: Role | null;
-          accentColor: AccentColor | null;
-          authorUserId: number | null;
-          email: string | null;
-          name: string | null;
-          postsCount: number;
-          likesCount: number;
         }>(
-          // FIXME: I’d prefer if only the likes on the originalPost counted toward likesCount
           sql`
-            SELECT "threads"."id" AS "threadId",
-                   "threads"."reference" AS "threadReference",
+            SELECT "threads"."id",
+                   "threads"."reference",
                    "threads"."title",
-                   "threads"."nextPostReference",
-                   "originalPost"."createdAt",
-                   "mostRecentlyUpdatedPost"."updatedAt",
-                   "authorEnrollment"."id" AS "authorEnrollmentId",
-                   "authorEnrollment"."reference" AS "authorEnrollmentReference",
-                   "authorEnrollment"."role",
-                   "authorEnrollment"."accentColor",
-                   "authorUser"."id" AS "authorUserId",
-                   "authorUser"."email",
-                   "authorUser"."name",
-                   COUNT(DISTINCT "posts"."id") AS "postsCount",
-                   COUNT(DISTINCT "likes"."id") AS "likesCount"
+                   "threads"."nextPostReference"
             FROM "threads"
-            JOIN "posts" AS "originalPost" ON "threads"."id" = "originalPost"."thread"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "originalPost"."author" = "authorEnrollment"."id"
-            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-            JOIN "posts" AS "mostRecentlyUpdatedPost" ON "threads"."id" = "mostRecentlyUpdatedPost"."thread"
-            JOIN "posts" ON "threads"."id" = "posts"."thread"
-            LEFT JOIN "likes" ON "originalPost"."id" = "likes"."post"
-            WHERE "threads"."course" = ${enrollmentJoinCourse.course.id}
-            GROUP BY "originalPost"."thread", "mostRecentlyUpdatedPost"."thread", "threads"."id"
-            ORDER BY "threads"."id" DESC, MIN("originalPost"."id"), MAX("mostRecentlyUpdatedPost"."updatedAt")
+            WHERE "threads"."course" = ${res.locals.course.id}
+            ORDER BY "threads"."id" DESC
           `
         )
-        .map((row) => ({
-          id: row.threadId,
-          reference: row.threadReference,
-          title: row.title,
-          nextPostReference: row.nextPostReference,
-          createdAt: row.createdAt,
-          updatedAt: row.updatedAt,
-          author:
-            row.authorEnrollmentId !== null
-              ? {
-                  enrollment: {
-                    id: row.authorEnrollmentId!,
-                    reference: row.authorEnrollmentReference!,
-                    role: row.role!,
-                    accentColor: row.accentColor!,
-                  },
-                  user: {
-                    id: row.authorUserId!,
-                    email: row.email!,
-                    name: row.name!,
-                  },
-                }
-              : ANONYMOUS,
-          postsCount: row.postsCount,
-          likesCount: row.likesCount,
-        }));
+        .map((thread) => {
+          // FIXME: Try to get rid of these n+1 queries.
+          const firstPost = database.get<{
+            createdAt: string;
+            authorEnrollmentId: number;
+            authorUserId: number;
+            authorUserEmail: string;
+            authorUserName: string;
+            authorEnrollmentRole: Role;
+            likesCount: number;
+          }>(sql`
+            SELECT "posts"."createdAt",
+                   "authorEnrollment"."id" AS "authorEnrollmentId",
+                   "authorUser"."id" AS "authorUserId",
+                   "authorUser"."email"  AS "authorUserEmail",
+                   "authorUser"."name"  AS "authorUserName",
+                   "authorEnrollment"."role" AS "authorEnrollmentRole",
+                   COUNT("likes"."id") AS "likesCount"
+            FROM "posts"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "enrollments"."id"
+            LEFT JOIN "users" AS "authorUser" ON "enrollments"."user" = "users"."id"
+            LEFT JOIN "likes" ON "posts"."id" = "likes"."post"
+            GROUP BY "posts"."id"
+            WHERE "posts"."thread" = ${thread.id} AND
+                  "posts"."reference" = ${"1"}
+          `)!;
+          const mostRecentlyUpdatedPost = database.get<{
+            updatedAt: string;
+          }>(sql`
+            SELECT "posts"."updatedAt"
+            FROM "posts"
+            WHERE "posts"."thread" = ${thread.id}
+            ORDER BY "posts"."updatedAt" DESC
+            LIMIT 1
+          `)!;
+          const postsCount = database.get<{ postsCount: number }>(
+            sql`SELECT COUNT(*) AS "postsCount" FROM "posts" WHERE "posts"."thread" = ${thread.id}`
+          )!.postsCount;
 
-      res.locals.enrollmentJoinCourseJoinThreadsWithMetadata = {
-        ...enrollmentJoinCourse,
-        threadsWithMetadata,
-      };
-      res.locals.otherEnrollmentsJoinCourses = otherEnrollmentsJoinCourses;
+          return {
+            id: thread.id,
+            reference: thread.reference,
+            title: thread.title,
+            nextPostReference: thread.nextPostReference,
+            createdAt: firstPost.createdAt,
+            updatedAt: mostRecentlyUpdatedPost.updatedAt,
+            authorEnrollment:
+              firstPost.authorEnrollmentId !== null
+                ? {
+                    id: firstPost.authorEnrollmentId,
+                    user: {
+                      id: firstPost.authorUserId,
+                      email: firstPost.authorUserEmail,
+                      name: firstPost.authorUserName,
+                    },
+                    role: firstPost.authorEnrollmentRole,
+                  }
+                : ANONYMOUS_ENROLLMENT,
+            postsCount,
+            likesCount: firstPost.likesCount,
+          };
+        });
 
       next();
     },
@@ -2274,11 +2196,7 @@ export default async function courselore(
   >[] = [
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
-      if (
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
-          .role === "staff"
-      )
-        return next();
+      if (res.locals.enrollment.role === "staff") return next();
       next("route");
     },
   ];
@@ -2293,41 +2211,28 @@ export default async function courselore(
     "/courses/:courseReference",
     ...isEnrolledInCourseMiddleware,
     (req, res) => {
-      if (
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-          .threadsWithMetadata.length === 0
-      )
+      if (res.locals.threads.length === 0)
         return res.send(
           app.get("layout main")(
             req,
             res,
-            html`
-              <title>
-                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .name}
-                · CourseLore
-              </title>
-            `,
+            html`<title>${res.locals.course.name} · CourseLore</title>`,
             html`
               <h1>
                 Welcome to
                 <a
-                  href="${app.get("url")}/courses/${res.locals
-                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  href="${app.get("url")}/courses/${res.locals.course
                     .reference}"
-                  >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                    .course.name}</a
+                  >${res.locals.course.name}</a
                 >!
               </h1>
 
               $${courseSwitcher(req, res)}
-              $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                .enrollment.role === "staff"
+              $${res.locals.enrollment.role === "staff"
                 ? html`
                     <p>
                       <a
-                        href="${app.get("url")}/courses/${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        href="${app.get("url")}/courses/${res.locals.course
                           .reference}/settings#invitations"
                         ><strong>Invite other people to the course</strong></a
                       >.
@@ -2335,8 +2240,7 @@ export default async function courselore(
                     <p>
                       Or
                       <a
-                        href="${app.get("url")}/courses/${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        href="${app.get("url")}/courses/${res.locals.course
                           .reference}/threads/new"
                         ><strong>create the first thread</strong></a
                       >.
@@ -2346,8 +2250,7 @@ export default async function courselore(
                     <p>
                       This is a new course.
                       <a
-                        href="${app.get("url")}/courses/${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        href="${app.get("url")}/courses/${res.locals.course
                           .reference}/threads/new"
                         ><strong>Create the first thread</strong></a
                       >.
@@ -2358,19 +2261,28 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-            .threadsWithMetadata[0].reference
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
+          res.locals.threads[0].reference
         }`
       );
     }
   );
 
   interface InvitationExistsMiddlewareLocals {
-    invitationJoinCourse: InvitationJoinCourse;
+    invitation: {
+      id: number;
+      expiresAt: string | null;
+      usedAt: string | null;
+      course: {
+        id: number;
+        reference: string;
+        name: string;
+      };
+      reference: string;
+      email: string | null;
+      name: string | null;
+      role: Role;
+    };
   }
 
   const invitationExistsMiddleware: express.RequestHandler<
@@ -2381,54 +2293,49 @@ export default async function courselore(
     InvitationExistsMiddlewareLocals
   >[] = [
     (req, res, next) => {
-      const row = database.get<{
-        invitationId: number;
+      const invitation = database.get<{
+        id: number;
         expiresAt: string | null;
         usedAt: string | null;
-        invitationReference: string;
-        email: string | null;
-        invitationName: string | null;
-        role: Role;
         courseId: number;
         courseReference: string;
         courseName: string;
-        nextThreadReference: number;
+        reference: string;
+        email: string | null;
+        name: string | null;
+        role: Role;
       }>(
         sql`
-          SELECT "invitations"."id" AS "invitationId",
+          SELECT "invitations"."id",
                  "invitations"."expiresAt",
                  "invitations"."usedAt",
-                 "invitations"."reference" AS "invitationReference",
-                 "invitations"."email",
-                 "invitations"."name" AS "invitationName",
-                 "invitations"."role",
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
                  "courses"."name" AS "courseName",
-                 "courses"."nextThreadReference"
+                 "invitations"."reference",
+                 "invitations"."email",
+                 "invitations"."name",
+                 "invitations"."role"
           FROM "invitations"
           JOIN "courses" ON "invitations"."course" = "courses"."id"
           WHERE "courses"."reference" = ${req.params.courseReference} AND
                 "invitations"."reference" = ${req.params.invitationReference}
         `
       );
-      if (row === undefined) return next("route");
-      res.locals.invitationJoinCourse = {
-        invitation: {
-          id: row.invitationId,
-          expiresAt: row.expiresAt,
-          usedAt: row.usedAt,
-          reference: row.invitationReference,
-          email: row.email,
-          name: row.invitationName,
-          role: row.role,
-        },
+      if (invitation === undefined) return next("route");
+      res.locals.invitation = {
+        id: invitation.id,
+        expiresAt: invitation.expiresAt,
+        usedAt: invitation.usedAt,
         course: {
-          id: row.courseId,
-          reference: row.courseReference,
-          name: row.courseName,
-          nextThreadReference: row.nextThreadReference,
+          id: invitation.courseId,
+          reference: invitation.courseReference,
+          name: invitation.courseName,
         },
+        reference: invitation.reference,
+        email: invitation.email,
+        name: invitation.name,
+        role: invitation.role,
       };
       next();
     },
@@ -2447,9 +2354,8 @@ export default async function courselore(
   >[] = [...isCourseStaffMiddleware, ...invitationExistsMiddleware];
 
   interface IsInvitationUsableMiddlewareLocals
-    extends InvitationExistsMiddlewareLocals {
-    user?: User;
-  }
+    extends InvitationExistsMiddlewareLocals,
+      Partial<IsAuthenticatedMiddlewareLocals> {}
 
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
@@ -2461,12 +2367,11 @@ export default async function courselore(
     ...invitationExistsMiddleware,
     (req, res, next) => {
       if (
-        res.locals.invitationJoinCourse.invitation.usedAt !== null ||
-        isExpired(res.locals.invitationJoinCourse.invitation.expiresAt) ||
-        (res.locals.invitationJoinCourse.invitation.email !== null &&
+        res.locals.invitation.usedAt !== null ||
+        isExpired(res.locals.invitation.expiresAt) ||
+        (res.locals.invitation.email !== null &&
           res.locals.user !== undefined &&
-          res.locals.invitationJoinCourse.invitation.email !==
-            res.locals.user.email)
+          res.locals.invitation.email !== res.locals.user.email)
       )
         return next("route");
       next();
@@ -2474,32 +2379,28 @@ export default async function courselore(
   ];
 
   function sendInvitationEmail(
-    invitationJoinCourse: InvitationJoinCourse
+    invitation: InvitationExistsMiddlewareLocals["invitation"]
   ): void {
-    assert(invitationJoinCourse.invitation.email !== null);
+    assert(invitation.email !== null);
 
     const link = `${app.get("url")}/courses/${
-      invitationJoinCourse.course.reference
-    }/invitations/${invitationJoinCourse.invitation.reference}`;
+      invitation.course.reference
+    }/invitations/${invitation.reference}`;
 
     sendEmail({
-      to: invitationJoinCourse.invitation.email,
-      subject: `Enroll in ${invitationJoinCourse.course.name}`,
+      to: invitation.email,
+      subject: `Enroll in ${invitation.course.name}`,
       body: html`
         <p>
-          Visit the following link to enroll in
-          ${invitationJoinCourse.course.name}:<br />
+          Visit the following link to enroll in ${invitation.course.name}:<br />
           <a href="${link}">${link}</a>
         </p>
-        $${invitationJoinCourse.invitation.expiresAt === null
+        $${invitation.expiresAt === null
           ? html``
           : html`
               <p>
                 <small>
-                  Expires at
-                  ${new Date(
-                    invitationJoinCourse.invitation.expiresAt
-                  ).toISOString()}.
+                  Expires at ${new Date(invitation.expiresAt).toISOString()}.
                 </small>
               </p>
             `}
@@ -2509,7 +2410,12 @@ export default async function courselore(
 
   interface MayManageEnrollmentMiddlewareLocals
     extends IsCourseStaffMiddlewareLocals {
-    managedEnrollment: Enrollment;
+    managedEnrollment: {
+      id: number;
+      reference: string;
+      role: Role;
+      accentColor: AccentColor;
+    };
   }
 
   const mayManageEnrollmentMiddleware: express.RequestHandler<
@@ -2521,7 +2427,7 @@ export default async function courselore(
   >[] = [
     ...isCourseStaffMiddleware,
     (req, res, next) => {
-      const managedEnrollment: Enrollment | undefined = database.get<{
+      const managedEnrollment = database.get<{
         id: number;
         reference: string;
         role: Role;
@@ -2530,7 +2436,7 @@ export default async function courselore(
         sql`
           SELECT "id", "reference", "role", "accentColor"
           FROM "enrollments"
-          WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+          WHERE "course" = ${res.locals.course.id} AND
                 "reference" = ${req.params.enrollmentReference}
         `
       );
@@ -2540,7 +2446,8 @@ export default async function courselore(
           sql`
             SELECT COUNT(*) AS "count"
             FROM "enrollments"
-            WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
+            WHERE "course" = ${res.locals.course.id} AND
+                  "role" = ${"staff"}
           `
         )!.count === 1
       )
@@ -2555,861 +2462,810 @@ export default async function courselore(
     HTML,
     {},
     {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings",
+    ...isCourseStaffMiddleware,
+    (req, res) => {
+      const invitations = database.all<{
+        id: number;
+        expiresAt: string | null;
+        usedAt: string | null;
+        reference: string;
+        email: string | null;
+        name: string | null;
+        role: Role;
+      }>(sql`
+        SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+        FROM "invitations"
+        WHERE "course" = ${res.locals.course.id}
+        ORDER BY "id" DESC
+      `);
+
+      const enrollments = database.all<{
+        id: number;
+        userId: number;
+        userEmail: string;
+        userName: string;
+        reference: string;
+        role: Role;
+      }>(
+        sql`
+            SELECT "enrollments"."id",
+                   "users"."id" AS "userId",
+                   "users"."email" AS "userEmail",
+                   "users"."name" AS "userName",
+                   "enrollments"."reference",
+                   "enrollments"."role"
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id"
+            WHERE "enrollments"."course" = ${res.locals.course.id}
+            ORDER BY "enrollments"."id" DESC
+          `
+      );
+
+      courseSettings(
+        req,
+        res,
+        html`
+          <form
+            method="POST"
+            action="${app.get("url")}/courses/${res.locals.course
+              .reference}/settings?_method=PATCH"
+          >
+            <p>
+              <label>
+                <strong>Name</strong><br />
+                <span
+                  style="${css`
+                    display: flex;
+
+                    & > * + * {
+                      margin-left: 1rem;
+                    }
+                  `}"
+                >
+                  <input
+                    type="text"
+                    name="name"
+                    autocomplete="off"
+                    required
+                    value="${res.locals.course.name}"
+                    class="full-width"
+                    style="${css`
+                      flex: 1 !important;
+                    `}"
+                  />
+                  <button>Change Name</button>
+                </span>
+              </label>
+            </p>
+          </form>
+
+          <hr />
+
+          <p id="invitations"><strong>Invitations</strong></p>
+
+          $${invitations!.length === 0
+            ? html``
+            : html`
+                <details
+                  style="${css`
+                    margin: 1rem 0;
+                  `}"
+                >
+                  <summary>
+                    <strong>Existing Invitations</strong>
+                  </summary>
+
+                  $${invitations!.map((invitation) => {
+                    const link = `${app.get("url")}/courses/${
+                      res.locals.course.reference
+                    }/invitations/${invitation.reference}`;
+
+                    return html`
+                      <details>
+                        <summary>
+                          $${invitation.email === null
+                            ? html`
+                                <code>
+                                  ${app.get("url")}/courses/${res.locals.course
+                                    .reference}/invitations/${"*".repeat(
+                                    6
+                                  )}${invitation.reference.slice(6)}
+                                </code>
+                                <br />
+                              `
+                            : invitation.name === null
+                            ? html`${invitation.email}`
+                            : html`${invitation.name} ${`<${invitation.email}>`}`}
+
+                          <small class="hint">
+                            ${lodash.capitalize(invitation.role)} ·
+                            $${invitation.usedAt !== null
+                              ? html`
+                                  <span class="green">
+                                    Used
+                                    <time>${invitation.usedAt}</time>
+                                  </span>
+                                `
+                              : isExpired(invitation.expiresAt)
+                              ? html`
+                                  <span class="red">
+                                    Expired
+                                    <time>${invitation.expiresAt}</time>
+                                  </span>
+                                `
+                              : invitation.expiresAt !== null
+                              ? html`
+                                  Expires
+                                  <time>${invitation.expiresAt}</time>
+                                `
+                              : html`Doesn’t expire`}
+                          </small>
+                        </summary>
+
+                        $${invitation.email === null &&
+                        !isExpired(invitation.expiresAt)
+                          ? html`
+                              <p>
+                                <a href="${link}">See invitation link</a>
+                              </p>
+                            `
+                          : html``}
+                        $${invitation.usedAt !== null
+                          ? html`
+                              <p>
+                                This invitation has already been used and may no
+                                longer be modified.
+                              </p>
+                            `
+                          : html`
+                              $${invitation.email === null ||
+                              isExpired(invitation.expiresAt)
+                                ? html``
+                                : html`
+                                    <form
+                                      method="POST"
+                                      action="${link}?_method=PATCH"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="resend"
+                                        value="true"
+                                      />
+                                      <p>
+                                        Invitation email wasn’t received?
+                                        Already checked the spam folder?<br />
+                                        <button>Resend Invitation Email</button>
+                                      </p>
+                                    </form>
+                                  `}
+
+                              <div
+                                style="${css`
+                                  display: flex;
+
+                                  & > * {
+                                    flex: 1;
+                                  }
+
+                                  & > * + * {
+                                    margin-left: 2rem;
+                                  }
+                                `}"
+                              >
+                                <form
+                                  method="POST"
+                                  action="${link}?_method=PATCH"
+                                >
+                                  <p>
+                                    <strong>Role</strong><br />
+                                    <span
+                                      style="${css`
+                                        display: flex;
+                                        align-items: baseline;
+
+                                        & > * + * {
+                                          margin-left: 1rem;
+                                        }
+                                      `}"
+                                    >
+                                      $${ROLES.map(
+                                        (role) =>
+                                          html`
+                                            <label>
+                                              <input
+                                                type="radio"
+                                                name="role"
+                                                value="${role}"
+                                                required
+                                                ${role === invitation.role
+                                                  ? `checked`
+                                                  : ``}
+                                                ${isExpired(
+                                                  invitation.expiresAt
+                                                )
+                                                  ? `disabled`
+                                                  : ``}
+                                              />
+                                              ${lodash.capitalize(role)}
+                                            </label>
+                                          `
+                                      )}
+                                      $${isExpired(invitation.expiresAt)
+                                        ? html``
+                                        : html`
+                                            <button
+                                              style="${css`
+                                                flex: 1;
+                                              `}"
+                                            >
+                                              Change Role
+                                            </button>
+                                          `}
+                                    </span>
+                                  </p>
+                                  $${isExpired(invitation.expiresAt)
+                                    ? html`
+                                        <p class="hint">
+                                          You may not change the role of an
+                                          expired invitation.
+                                        </p>
+                                      `
+                                    : html``}
+                                </form>
+
+                                <div>
+                                  <form
+                                    method="POST"
+                                    action="${link}?_method=PATCH"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="changeExpiration"
+                                      value="true"
+                                    />
+                                    <p>
+                                      <label>
+                                        <strong>Expiration</strong><br />
+                                        <span
+                                          style="${css`
+                                            display: flex;
+                                            align-items: baseline;
+
+                                            & > * + * {
+                                              margin-left: 0.5rem !important;
+                                            }
+                                          `}"
+                                        >
+                                          <span>
+                                            <input
+                                              type="checkbox"
+                                              ${invitation.expiresAt === null
+                                                ? ``
+                                                : `checked`}
+                                              onchange="${javascript`
+                                                const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                                expiresAt.disabled = !this.checked;
+                                                if (this.checked) {
+                                                  expiresAt.focus();
+                                                  expiresAt.setSelectionRange(0, 0);
+                                                }
+                                              `}"
+                                            />
+                                          </span>
+                                          <span>Expires at</span>
+                                          <input
+                                            type="text"
+                                            name="expiresAt"
+                                            value="${invitation.expiresAt ??
+                                            new Date().toISOString()}"
+                                            required
+                                            ${invitation.expiresAt === null
+                                              ? `disabled`
+                                              : ``}
+                                            data-validator="${javascript`
+                                              if (new Date(this.value).getTime() <= Date.now())
+                                                return "Must be in the future";
+                                            `}"
+                                            class="full-width datetime"
+                                            style="${css`
+                                              flex: 1 !important;
+                                            `}"
+                                          />
+                                        </span>
+                                      </label>
+                                    </p>
+                                    <p>
+                                      <button class="full-width">
+                                        Change Expiration
+                                      </button>
+                                    </p>
+                                  </form>
+
+                                  $${isExpired(invitation.expiresAt)
+                                    ? html``
+                                    : html`
+                                        <form
+                                          method="POST"
+                                          action="${link}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="expireNow"
+                                            value="true"
+                                          />
+                                          <p>
+                                            <button class="full-width red">
+                                              Expire Invitation Now
+                                            </button>
+                                          </p>
+                                        </form>
+                                      `}
+                                </div>
+                              </div>
+                            `}
+                      </details>
+                    `;
+                  })}
+                  <hr />
+                </details>
+
+                <p><strong>Create a New Invitation</strong></p>
+              `}
+
+          <form
+            method="POST"
+            action="${app.get("url")}/courses/${res.locals.course
+              .reference}/invitations"
+          >
+            <div
+              style="${css`
+                display: flex;
+                margin: -1rem 0;
+
+                & > * {
+                  flex: 1;
+                }
+
+                & > * + * {
+                  margin-left: 2rem;
+                }
+              `}"
+            >
+              <p>
+                <strong>Role</strong><br />
+                <span
+                  style="${css`
+                    display: flex;
+
+                    & > * + * {
+                      margin-left: 1rem;
+                    }
+                  `}"
+                >
+                  $${ROLES.map(
+                    (role, index) =>
+                      html`
+                        <label>
+                          <input
+                            type="radio"
+                            name="role"
+                            value="${role}"
+                            required
+                            $${index === 0 ? `checked` : ``}
+                          />
+                          ${lodash.capitalize(role)}
+                        </label>
+                      `
+                  )}
+                </span>
+              </p>
+
+              <p>
+                <label>
+                  <strong>Expiration</strong><br />
+                  <span
+                    style="${css`
+                      display: flex;
+                      align-items: baseline;
+
+                      & > * + * {
+                        margin-left: 0.5rem !important;
+                      }
+                    `}"
+                  >
+                    <span>
+                      <input
+                        type="checkbox"
+                        onchange="${javascript`
+                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                          expiresAt.disabled = !this.checked;
+                          if (this.checked) {
+                            expiresAt.focus();
+                            expiresAt.setSelectionRange(0, 0);
+                          }
+                        `}"
+                      />
+                    </span>
+                    <span>Expires at</span>
+                    <input
+                      type="text"
+                      name="expiresAt"
+                      value="${new Date().toISOString()}"
+                      required
+                      disabled
+                      data-validator="${javascript`
+                        if (new Date(this.value).getTime() <= Date.now())
+                          return "Must be in the future";
+                      `}"
+                      class="full-width datetime"
+                      style="${css`
+                        flex: 1 !important;
+                      `}"
+                    />
+                  </span>
+                </label>
+              </p>
+            </div>
+            <p>
+              <strong>Sharing</strong><br />
+              <label>
+                <input
+                  type="radio"
+                  name="sharing"
+                  value="link"
+                  required
+                  checked
+                  onchange="${javascript`
+                    this.closest("p").querySelector('[name="emails"]').disabled = true;
+                  `}"
+                />
+                With an invitation link
+              </label>
+              <br />
+              <label>
+                <input
+                  type="radio"
+                  name="sharing"
+                  value="emails"
+                  required
+                  onchange="${javascript`
+                    const emails = this.closest("p").querySelector('[name="emails"]');
+                    emails.disabled = false;
+                    emails.focus();
+                    emails.setSelectionRange(0, 0);
+                  `}"
+                />
+                Via email
+              </label>
+              <br />
+              <textarea
+                name="emails"
+                required
+                class="full-width"
+                disabled
+                data-validator="${javascript`
+                  const emails = emailAddresses.parseAddressList(this.value);
+                  if (
+                    emails === null ||
+                    emails.find(
+                      (email) =>
+                        email.type !== "mailbox" || !validator.isEmail(email.address)
+                    ) !== undefined
+                  )
+                    return "Match the requested format";
+                `}"
+              ></textarea>
+              <br />
+              <small class="full-width hint">
+                Emails must be separated by commas and may include names.
+                <br />
+                Example:
+                <code
+                  >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
+                >
+              </small>
+            </p>
+            <p><button>Create Invitation</button></p>
+          </form>
+
+          <hr />
+
+          <details id="enrollments">
+            <summary><strong>Enrollments</strong></summary>
+
+            $${enrollments!.map(
+              (enrollment) => html`
+                <details>
+                  <summary>
+                    ${enrollment.userName} ${`<${enrollment.userEmail}>`}
+                    <small class="hint">
+                      ${lodash.capitalize(enrollment.role)}
+                    </small>
+                  </summary>
+
+                  $${enrollment.id !== res.locals.user.id
+                    ? html`
+                        <div
+                          style="${css`
+                            display: flex;
+
+                            & > * {
+                              flex: 1;
+                            }
+
+                            & > * + * {
+                              margin-left: 2rem;
+                            }
+                          `}"
+                        >
+                          <form
+                            method="POST"
+                            action="${app.get("url")}/courses/${res.locals
+                              .course
+                              .reference}/enrollments/${enrollment.reference}?_method=PATCH"
+                          >
+                            <p>
+                              <strong>Role</strong><br />
+                              <span
+                                style="${css`
+                                  display: flex;
+                                  align-items: baseline;
+
+                                  & > * + * {
+                                    margin-left: 1rem;
+                                  }
+                                `}"
+                              >
+                                $${ROLES.map(
+                                  (role) =>
+                                    html`
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="role"
+                                          value="${role}"
+                                          required
+                                          ${role === enrollment.role
+                                            ? `checked`
+                                            : ``}
+                                        />
+                                        ${lodash.capitalize(role)}
+                                      </label>
+                                    `
+                                )}
+                                <button
+                                  style="${css`
+                                    flex: 1;
+                                  `}"
+                                >
+                                  Change Role
+                                </button>
+                              </span>
+                            </p>
+                          </form>
+
+                          <div>
+                            <form
+                              method="POST"
+                              action="${app.get("url")}/courses/${res.locals
+                                .course
+                                .reference}/enrollments/${enrollment.reference}?_method=DELETE"
+                            >
+                              <p class="red">
+                                <strong>Danger Zone</strong><br />
+                                <button
+                                  class="full-width"
+                                  onclick="${javascript`
+                              if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                event.preventDefault();
+                            `}"
+                                >
+                                  Remove from Course
+                                </button>
+                              </p>
+                            </form>
+                          </div>
+                        </div>
+                      `
+                    : enrollments!.filter(
+                        (enrollment) => enrollment.role === "staff"
+                      ).length === 1
+                    ? html`
+                        <p>
+                          You may not modify the details of your enrollment in
+                          ${res.locals.course.name} because you’re the only
+                          staff member.
+                        </p>
+                      `
+                    : html`
+                        <div class="red">
+                          <p
+                            style="${css`
+                              margin-bottom: -1rem;
+                            `}"
+                          >
+                            <strong>Danger Zone</strong>
+                          </p>
+
+                          <div
+                            style="${css`
+                              display: flex;
+
+                              & > * {
+                                flex: 1;
+                              }
+
+                              & > * + * {
+                                margin-left: 2rem;
+                              }
+                            `}"
+                          >
+                            <form
+                              method="POST"
+                              action="${app.get("url")}/courses/${res.locals
+                                .course
+                                .reference}/enrollments/${enrollment.reference}?_method=PATCH"
+                            >
+                              <input
+                                type="hidden"
+                                name="role"
+                                value="student"
+                              />
+                              <p>
+                                <button
+                                  class="full-width"
+                                  onclick="${javascript`
+                                    if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
+                                      event.preventDefault();
+                                  `}"
+                                >
+                                  Convert Yourself into Student
+                                </button>
+                              </p>
+                            </form>
+
+                            <form
+                              method="POST"
+                              action="${app.get("url")}/courses/${res.locals
+                                .course
+                                .reference}/enrollments/${enrollment.reference}?_method=DELETE"
+                            >
+                              <p>
+                                <button
+                                  class="full-width"
+                                  onclick="${javascript`
+                                    if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                      event.preventDefault();
+                                  `}"
+                                >
+                                  Remove Yourself from Course
+                                </button>
+                              </p>
+                            </form>
+                          </div>
+                        </div>
+                      `}
+                </details>
+              `
+            )}
+          </details>
+
+          <hr />
+        `
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
     ...isEnrolledInCourseMiddleware,
     (req, res) => {
-      const invitations: Invitation[] | undefined =
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
-          .role !== "staff"
-          ? undefined
-          : database.all<{
-              id: number;
-              expiresAt: string | null;
-              usedAt: string | null;
-              reference: string;
-              email: string | null;
-              name: string | null;
-              role: Role;
-            }>(sql`
-            SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
-            FROM "invitations"
-            WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-            ORDER BY "id" DESC
-          `);
-
-      const enrollmentsJoinUsers =
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
-          .role !== "staff"
-          ? undefined
-          : (database
-              .all<{
-                enrollmentId: number;
-                reference: string;
-                role: Role;
-                accentColor: AccentColor;
-                userId: number;
-                email: string;
-                name: string;
-              }>(
-                sql`
-                SELECT "enrollments"."id" AS "enrollmentId",
-                       "enrollments"."reference",
-                       "enrollments"."role",
-                       "enrollments"."accentColor",
-                       "users"."id" AS "userId",
-                       "users"."email",
-                       "users"."name"
-                FROM "enrollments"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                WHERE "enrollments"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}
-                ORDER BY "enrollments"."id" DESC
-              `
-              )
-              .map((row) => ({
-                enrollment: {
-                  id: row.enrollmentId,
-                  reference: row.reference,
-                  role: row.role,
-                  accentColor: row.accentColor,
-                },
-                user: {
-                  id: row.userId,
-                  email: row.email,
-                  name: row.name,
-                },
-              })) as EnrollmentJoinUser[]);
-
-      res.send(
-        app.get("layout main")(
-          req,
-          res,
-          html`
-            <title>
-              Course Settings ·
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .name}
-              · CourseLore
-            </title>
-          `,
-          html`
-            <h1>
-              Course Settings ·
-              <a
-                href="${app.get("url")}/courses/${res.locals
-                  .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .reference}"
-                >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .name}</a
-              >
-            </h1>
-            $${courseSwitcher(req, res, "/settings")}
-            $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
-              .role !== "staff"
-              ? html``
-              : html`
-                  <form
-                    method="POST"
-                    action="${app.get("url")}/courses/${res.locals
-                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                      .reference}/settings?_method=PATCH"
-                  >
-                    <p>
-                      <label>
-                        <strong>Name</strong><br />
-                        <span
-                          style="${css`
-                            display: flex;
-
-                            & > * + * {
-                              margin-left: 1rem;
-                            }
-                          `}"
-                        >
-                          <input
-                            type="text"
-                            name="name"
-                            autocomplete="off"
-                            required
-                            value="${res.locals
-                              .enrollmentJoinCourseJoinThreadsWithMetadata
-                              .course.name}"
-                            class="full-width"
-                            style="${css`
-                              flex: 1 !important;
-                            `}"
-                          />
-                          <button>Change Name</button>
-                        </span>
-                      </label>
-                    </p>
-                  </form>
-
-                  <hr />
-
-                  <p id="invitations"><strong>Invitations</strong></p>
-
-                  $${invitations!.length === 0
-                    ? html``
-                    : html`
-                        <details
-                          style="${css`
-                            margin: 1rem 0;
-                          `}"
-                        >
-                          <summary>
-                            <strong>Existing Invitations</strong>
-                          </summary>
-
-                          $${invitations!.map((invitation) => {
-                            const link = `${app.get("url")}/courses/${
-                              res.locals
-                                .enrollmentJoinCourseJoinThreadsWithMetadata
-                                .course.reference
-                            }/invitations/${invitation.reference}`;
-
-                            return html`
-                              <details>
-                                <summary>
-                                  $${invitation.email === null
-                                    ? html`
-                                        <code>
-                                          ${app.get("url")}/courses/${res.locals
-                                            .enrollmentJoinCourseJoinThreadsWithMetadata
-                                            .course
-                                            .reference}/invitations/${"*".repeat(
-                                            6
-                                          )}${invitation.reference.slice(6)}
-                                        </code>
-                                        <br />
-                                      `
-                                    : invitation.name === null
-                                    ? html`${invitation.email}`
-                                    : html`${invitation.name}
-                                      ${`<${invitation.email}>`}`}
-
-                                  <small class="hint">
-                                    ${lodash.capitalize(invitation.role)} ·
-                                    $${invitation.usedAt !== null
-                                      ? html`
-                                          <span class="green">
-                                            Used
-                                            <time>${invitation.usedAt}</time>
-                                          </span>
-                                        `
-                                      : isExpired(invitation.expiresAt)
-                                      ? html`
-                                          <span class="red">
-                                            Expired
-                                            <time>${invitation.expiresAt}</time>
-                                          </span>
-                                        `
-                                      : invitation.expiresAt !== null
-                                      ? html`
-                                          Expires
-                                          <time>${invitation.expiresAt}</time>
-                                        `
-                                      : html`Doesn’t expire`}
-                                  </small>
-                                </summary>
-
-                                $${invitation.email === null &&
-                                !isExpired(invitation.expiresAt)
-                                  ? html`
-                                      <p>
-                                        <a href="${link}"
-                                          >See invitation link</a
-                                        >
-                                      </p>
-                                    `
-                                  : html``}
-                                $${invitation.usedAt !== null
-                                  ? html`
-                                      <p>
-                                        This invitation has already been used
-                                        and may no longer be modified.
-                                      </p>
-                                    `
-                                  : html`
-                                      $${invitation.email === null ||
-                                      isExpired(invitation.expiresAt)
-                                        ? html``
-                                        : html`
-                                            <form
-                                              method="POST"
-                                              action="${link}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="resend"
-                                                value="true"
-                                              />
-                                              <p>
-                                                Invitation email wasn’t
-                                                received? Already checked the
-                                                spam folder?<br />
-                                                <button>
-                                                  Resend Invitation Email
-                                                </button>
-                                              </p>
-                                            </form>
-                                          `}
-
-                                      <div
-                                        style="${css`
-                                          display: flex;
-
-                                          & > * {
-                                            flex: 1;
-                                          }
-
-                                          & > * + * {
-                                            margin-left: 2rem;
-                                          }
-                                        `}"
-                                      >
-                                        <form
-                                          method="POST"
-                                          action="${link}?_method=PATCH"
-                                        >
-                                          <p>
-                                            <strong>Role</strong><br />
-                                            <span
-                                              style="${css`
-                                                display: flex;
-                                                align-items: baseline;
-
-                                                & > * + * {
-                                                  margin-left: 1rem;
-                                                }
-                                              `}"
-                                            >
-                                              $${ROLES.map(
-                                                (role) =>
-                                                  html`
-                                                    <label>
-                                                      <input
-                                                        type="radio"
-                                                        name="role"
-                                                        value="${role}"
-                                                        required
-                                                        ${role ===
-                                                        invitation.role
-                                                          ? `checked`
-                                                          : ``}
-                                                        ${isExpired(
-                                                          invitation.expiresAt
-                                                        )
-                                                          ? `disabled`
-                                                          : ``}
-                                                      />
-                                                      ${lodash.capitalize(role)}
-                                                    </label>
-                                                  `
-                                              )}
-                                              $${isExpired(invitation.expiresAt)
-                                                ? html``
-                                                : html`
-                                                    <button
-                                                      style="${css`
-                                                        flex: 1;
-                                                      `}"
-                                                    >
-                                                      Change Role
-                                                    </button>
-                                                  `}
-                                            </span>
-                                          </p>
-                                          $${isExpired(invitation.expiresAt)
-                                            ? html`
-                                                <p class="hint">
-                                                  You may not change the role of
-                                                  an expired invitation.
-                                                </p>
-                                              `
-                                            : html``}
-                                        </form>
-
-                                        <div>
-                                          <form
-                                            method="POST"
-                                            action="${link}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="changeExpiration"
-                                              value="true"
-                                            />
-                                            <p>
-                                              <label>
-                                                <strong>Expiration</strong
-                                                ><br />
-                                                <span
-                                                  style="${css`
-                                                    display: flex;
-                                                    align-items: baseline;
-
-                                                    & > * + * {
-                                                      margin-left: 0.5rem !important;
-                                                    }
-                                                  `}"
-                                                >
-                                                  <span>
-                                                    <input
-                                                      type="checkbox"
-                                                      ${invitation.expiresAt ===
-                                                      null
-                                                        ? ``
-                                                        : `checked`}
-                                                      onchange="${javascript`
-                                                      const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                                      expiresAt.disabled = !this.checked;
-                                                      if (this.checked) {
-                                                        expiresAt.focus();
-                                                        expiresAt.setSelectionRange(0, 0);
-                                                      }
-                                                    `}"
-                                                    />
-                                                  </span>
-                                                  <span>Expires at</span>
-                                                  <input
-                                                    type="text"
-                                                    name="expiresAt"
-                                                    value="${invitation.expiresAt ??
-                                                    new Date().toISOString()}"
-                                                    required
-                                                    ${invitation.expiresAt ===
-                                                    null
-                                                      ? `disabled`
-                                                      : ``}
-                                                    data-validator="${javascript`
-                                                    if (new Date(this.value).getTime() <= Date.now())
-                                                      return "Must be in the future";
-                                                  `}"
-                                                    class="full-width datetime"
-                                                    style="${css`
-                                                      flex: 1 !important;
-                                                    `}"
-                                                  />
-                                                </span>
-                                              </label>
-                                            </p>
-                                            <p>
-                                              <button class="full-width">
-                                                Change Expiration
-                                              </button>
-                                            </p>
-                                          </form>
-
-                                          $${isExpired(invitation.expiresAt)
-                                            ? html``
-                                            : html`
-                                                <form
-                                                  method="POST"
-                                                  action="${link}?_method=PATCH"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="expireNow"
-                                                    value="true"
-                                                  />
-                                                  <p>
-                                                    <button
-                                                      class="full-width red"
-                                                    >
-                                                      Expire Invitation Now
-                                                    </button>
-                                                  </p>
-                                                </form>
-                                              `}
-                                        </div>
-                                      </div>
-                                    `}
-                              </details>
-                            `;
-                          })}
-                          <hr />
-                        </details>
-
-                        <p><strong>Create a New Invitation</strong></p>
-                      `}
-
-                  <form
-                    method="POST"
-                    action="${app.get("url")}/courses/${res.locals
-                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                      .reference}/invitations"
-                  >
-                    <div
-                      style="${css`
-                        display: flex;
-                        margin: -1rem 0;
-
-                        & > * {
-                          flex: 1;
-                        }
-
-                        & > * + * {
-                          margin-left: 2rem;
-                        }
-                      `}"
-                    >
-                      <p>
-                        <strong>Role</strong><br />
-                        <span
-                          style="${css`
-                            display: flex;
-
-                            & > * + * {
-                              margin-left: 1rem;
-                            }
-                          `}"
-                        >
-                          $${ROLES.map(
-                            (role, index) =>
-                              html`
-                                <label>
-                                  <input
-                                    type="radio"
-                                    name="role"
-                                    value="${role}"
-                                    required
-                                    $${index === 0 ? `checked` : ``}
-                                  />
-                                  ${lodash.capitalize(role)}
-                                </label>
-                              `
-                          )}
-                        </span>
-                      </p>
-
-                      <p>
-                        <label>
-                          <strong>Expiration</strong><br />
-                          <span
-                            style="${css`
-                              display: flex;
-                              align-items: baseline;
-
-                              & > * + * {
-                                margin-left: 0.5rem !important;
-                              }
-                            `}"
-                          >
-                            <span>
-                              <input
-                                type="checkbox"
-                                onchange="${javascript`
-                                const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                expiresAt.disabled = !this.checked;
-                                if (this.checked) {
-                                  expiresAt.focus();
-                                  expiresAt.setSelectionRange(0, 0);
-                                }
-                              `}"
-                              />
-                            </span>
-                            <span>Expires at</span>
-                            <input
-                              type="text"
-                              name="expiresAt"
-                              value="${new Date().toISOString()}"
-                              required
-                              disabled
-                              data-validator="${javascript`
-                              if (new Date(this.value).getTime() <= Date.now())
-                                return "Must be in the future";
-                            `}"
-                              class="full-width datetime"
-                              style="${css`
-                                flex: 1 !important;
-                              `}"
-                            />
-                          </span>
-                        </label>
-                      </p>
-                    </div>
-                    <p>
-                      <strong>Sharing</strong><br />
-                      <label>
-                        <input
-                          type="radio"
-                          name="sharing"
-                          value="link"
-                          required
-                          checked
-                          onchange="${javascript`
-                          this.closest("p").querySelector('[name="emails"]').disabled = true;
-                        `}"
-                        />
-                        With an invitation link
-                      </label>
-                      <br />
-                      <label>
-                        <input
-                          type="radio"
-                          name="sharing"
-                          value="emails"
-                          required
-                          onchange="${javascript`
-                          const emails = this.closest("p").querySelector('[name="emails"]');
-                          emails.disabled = false;
-                          emails.focus();
-                          emails.setSelectionRange(0, 0);
-                        `}"
-                        />
-                        Via email
-                      </label>
-                      <br />
-                      <textarea
-                        name="emails"
-                        required
-                        class="full-width"
-                        disabled
-                        data-validator="${javascript`
-                        const emails = emailAddresses.parseAddressList(this.value);
-                        if (
-                          emails === null ||
-                          emails.find(
-                            (email) =>
-                              email.type !== "mailbox" || !validator.isEmail(email.address)
-                          ) !== undefined
-                        )
-                          return "Match the requested format";
-                      `}"
-                      ></textarea>
-                      <br />
-                      <small class="full-width hint">
-                        Emails must be separated by commas and may include
-                        names.
-                        <br />
-                        Example:
-                        <code
-                          >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
-                        >
-                      </small>
-                    </p>
-                    <p><button>Create Invitation</button></p>
-                  </form>
-
-                  <hr />
-
-                  <details id="enrollments">
-                    <summary><strong>Enrollments</strong></summary>
-
-                    $${enrollmentsJoinUsers!.map(
-                      (enrollmentJoinUser) => html`
-                        <details>
-                          <summary>
-                            ${enrollmentJoinUser.user.name}
-                            ${`<${enrollmentJoinUser.user.email}>`}
-                            <small class="hint">
-                              ${lodash.capitalize(
-                                enrollmentJoinUser.enrollment.role
-                              )}
-                            </small>
-                          </summary>
-
-                          $${enrollmentJoinUser.user.id !== res.locals.user.id
-                            ? html`
-                                <div
-                                  style="${css`
-                                    display: flex;
-
-                                    & > * {
-                                      flex: 1;
-                                    }
-
-                                    & > * + * {
-                                      margin-left: 2rem;
-                                    }
-                                  `}"
-                                >
-                                  <form
-                                    method="POST"
-                                    action="${app.get("url")}/courses/${res
-                                      .locals
-                                      .enrollmentJoinCourseJoinThreadsWithMetadata
-                                      .course
-                                      .reference}/enrollments/${enrollmentJoinUser
-                                      .enrollment.reference}?_method=PATCH"
-                                  >
-                                    <p>
-                                      <strong>Role</strong><br />
-                                      <span
-                                        style="${css`
-                                          display: flex;
-                                          align-items: baseline;
-
-                                          & > * + * {
-                                            margin-left: 1rem;
-                                          }
-                                        `}"
-                                      >
-                                        $${ROLES.map(
-                                          (role) =>
-                                            html`
-                                              <label>
-                                                <input
-                                                  type="radio"
-                                                  name="role"
-                                                  value="${role}"
-                                                  required
-                                                  ${role ===
-                                                  enrollmentJoinUser.enrollment
-                                                    .role
-                                                    ? `checked`
-                                                    : ``}
-                                                />
-                                                ${lodash.capitalize(role)}
-                                              </label>
-                                            `
-                                        )}
-                                        <button
-                                          style="${css`
-                                            flex: 1;
-                                          `}"
-                                        >
-                                          Change Role
-                                        </button>
-                                      </span>
-                                    </p>
-                                  </form>
-
-                                  <div>
-                                    <form
-                                      method="POST"
-                                      action="${app.get("url")}/courses/${res
-                                        .locals
-                                        .enrollmentJoinCourseJoinThreadsWithMetadata
-                                        .course
-                                        .reference}/enrollments/${enrollmentJoinUser
-                                        .enrollment.reference}?_method=DELETE"
-                                    >
-                                      <p class="red">
-                                        <strong>Danger Zone</strong><br />
-                                        <button
-                                          class="full-width"
-                                          onclick="${javascript`
-                                          if (!confirm("Remove ${enrollmentJoinUser.user.name} <${enrollmentJoinUser.user.email}> from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\n\\nYou can’t undo this action!"))
-                                            event.preventDefault();
-                                        `}"
-                                        >
-                                          Remove from Course
-                                        </button>
-                                      </p>
-                                    </form>
-                                  </div>
-                                </div>
-                              `
-                            : enrollmentsJoinUsers!.filter(
-                                (enrollmentJoinUser) =>
-                                  enrollmentJoinUser.enrollment.role === "staff"
-                              ).length === 1
-                            ? html`
-                                <p>
-                                  You may not modify the details of your
-                                  enrollment in
-                                  ${res.locals
-                                    .enrollmentJoinCourseJoinThreadsWithMetadata
-                                    .course.name}
-                                  because you’re the only staff member.
-                                </p>
-                              `
-                            : html`
-                                <div class="red">
-                                  <p
-                                    style="${css`
-                                      margin-bottom: -1rem;
-                                    `}"
-                                  >
-                                    <strong>Danger Zone</strong>
-                                  </p>
-
-                                  <div
-                                    style="${css`
-                                      display: flex;
-
-                                      & > * {
-                                        flex: 1;
-                                      }
-
-                                      & > * + * {
-                                        margin-left: 2rem;
-                                      }
-                                    `}"
-                                  >
-                                    <form
-                                      method="POST"
-                                      action="${app.get("url")}/courses/${res
-                                        .locals
-                                        .enrollmentJoinCourseJoinThreadsWithMetadata
-                                        .course
-                                        .reference}/enrollments/${enrollmentJoinUser
-                                        .enrollment.reference}?_method=PATCH"
-                                    >
-                                      <input
-                                        type="hidden"
-                                        name="role"
-                                        value="student"
-                                      />
-                                      <p>
-                                        <button
-                                          class="full-width"
-                                          onclick="${javascript`
-                                          if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
-                                            event.preventDefault();
-                                        `}"
-                                        >
-                                          Convert Yourself into Student
-                                        </button>
-                                      </p>
-                                    </form>
-
-                                    <form
-                                      method="POST"
-                                      action="${app.get("url")}/courses/${res
-                                        .locals
-                                        .enrollmentJoinCourseJoinThreadsWithMetadata
-                                        .course
-                                        .reference}/enrollments/${enrollmentJoinUser
-                                        .enrollment.reference}?_method=DELETE"
-                                    >
-                                      <p>
-                                        <button
-                                          class="full-width"
-                                          onclick="${javascript`
-                                          if (!confirm("Remove yourself from ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.name}?\\n\\nYou can’t undo this action!"))
-                                            event.preventDefault();
-                                        `}"
-                                        >
-                                          Remove Yourself from Course
-                                        </button>
-                                      </p>
-                                    </form>
-                                  </div>
-                                </div>
-                              `}
-                        </details>
-                      `
-                    )}
-                  </details>
-
-                  <hr />
-                `}
-
-            <p><strong>Accent color</strong></p>
-            <p class="hint">
-              A bar of this color appears at the top of your screen to help you
-              tell courses apart.
-              $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                .enrollment.role !== "staff"
-                ? html``
-                : html`Everyone gets a different color of their choosing.`}
-            </p>
-            <div
-              style="${css`
-                margin-left: -5px;
-                margin-top: -1rem;
-              `}"
-            >
-              $${ACCENT_COLORS.map(
-                (accentColor) =>
-                  html`
-                    <form
-                      method="POST"
-                      action="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                        .reference}/settings?_method=PATCH"
-                      style="${css`
-                        display: inline-block;
-                      `}"
-                    >
-                      <input
-                        type="hidden"
-                        name="accentColor"
-                        value="${accentColor}"
-                      />
-                      <p>
-                        <button
-                          style="${css`
-                            &,
-                            &:active {
-                              all: unset;
-                            }
-                          `}"
-                        >
-                          <svg width="30" height="30">
-                            <circle
-                              cx="15"
-                              cy="15"
-                              r="10"
-                              fill="${accentColor}"
-                            />
-                            $${accentColor ===
-                            res.locals
-                              .enrollmentJoinCourseJoinThreadsWithMetadata
-                              .enrollment.accentColor
-                              ? html`<circle
-                                  cx="15"
-                                  cy="15"
-                                  r="3"
-                                  fill="white"
-                                />`
-                              : html``}
-                          </svg>
-                        </button>
-                      </p>
-                    </form>
-                  `
-              )}
-            </div>
-          `
-        )
-      );
+      courseSettings(req, res);
     }
   );
+
+  const courseSettings = (
+    req: express.Request<
+      { courseReference: string },
+      HTML,
+      {},
+      {},
+      IsEnrolledInCourseMiddlewareLocals
+    >,
+    res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
+    body: HTML = html``
+  ): void => {
+    res.send(
+      app.get("layout main")(
+        req,
+        res,
+        html`
+          <title>
+            Course Settings · ${res.locals.course.name} · CourseLore
+          </title>
+        `,
+        html`
+          <h1>
+            Course Settings ·
+            <a href="${app.get("url")}/courses/${res.locals.course.reference}"
+              >${res.locals.course.name}</a
+            >
+          </h1>
+          $${courseSwitcher(req, res, "/settings")} $${body}
+          <p><strong>Accent color</strong></p>
+          <p class="hint">
+            A bar of this color appears at the top of your screen to help you
+            tell courses apart.
+            $${res.locals.enrollment.role !== "staff"
+              ? html``
+              : html`Everyone gets a different color of their choosing.`}
+          </p>
+          <div
+            style="${css`
+              margin-left: -5px;
+              margin-top: -1rem;
+            `}"
+          >
+            $${ACCENT_COLORS.map(
+              (accentColor) =>
+                html`
+                  <form
+                    method="POST"
+                    action="${app.get("url")}/courses/${res.locals.course
+                      .reference}/settings?_method=PATCH"
+                    style="${css`
+                      display: inline-block;
+                    `}"
+                  >
+                    <input
+                      type="hidden"
+                      name="accentColor"
+                      value="${accentColor}"
+                    />
+                    <p>
+                      <button
+                        style="${css`
+                          &,
+                          &:active {
+                            all: unset;
+                          }
+                        `}"
+                      >
+                        <svg width="30" height="30">
+                          <circle
+                            cx="15"
+                            cy="15"
+                            r="10"
+                            fill="${accentColor}"
+                          />
+                          $${accentColor === res.locals.enrollment.accentColor
+                            ? html`<circle
+                                cx="15"
+                                cy="15"
+                                r="3"
+                                fill="white"
+                              />`
+                            : html``}
+                        </svg>
+                      </button>
+                    </p>
+                  </form>
+                `
+            )}
+          </div>
+        `
+      )
+    );
+  };
 
   app.patch<
     { courseReference: string },
@@ -3423,12 +3279,11 @@ export default async function courselore(
     (req, res, next) => {
       if (
         typeof req.body.name === "string" &&
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
-          .role === "staff"
+        res.locals.enrollment.role === "staff"
       ) {
         if (req.body.name.trim() === "") return next("validation");
         database.run(
-          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id}`
+          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
         );
       }
 
@@ -3436,15 +3291,12 @@ export default async function courselore(
         if (!ACCENT_COLORS.includes(req.body.accentColor))
           return next("validation");
         database.run(
-          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id}`
+          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
         );
       }
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/settings`
+        `${app.get("url")}/courses/${res.locals.course.reference}/settings`
       );
     }
   );
@@ -3486,15 +3338,14 @@ export default async function courselore(
             INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
             VALUES (
               ${req.body.expiresAt},
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+              ${res.locals.course.id},
               ${invitationReference},
               ${req.body.role}
             )
           `);
           res.redirect(
             `${app.get("url")}/courses/${
-              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .reference
+              res.locals.course.reference
             }/invitations/${invitationReference}`
           );
           break;
@@ -3518,7 +3369,7 @@ export default async function courselore(
                     SELECT 1
                     FROM "enrollments"
                     JOIN "users" ON "enrollments"."user" = "users"."id"
-                    WHERE "enrollments"."course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                    WHERE "enrollments"."course" = ${res.locals.course.id} AND
                           "users"."email" = ${email.address}
                   ) AS "exists"
                 `)!.exists === 1
@@ -3531,7 +3382,7 @@ export default async function courselore(
             }>(sql`
                 SELECT "id", "name"
                 FROM "invitations"
-                WHERE "course" = ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id} AND
+                WHERE "course" = ${res.locals.course.id} AND
                       "email" = ${email.address} AND
                       "usedAt" IS NULL
               `);
@@ -3558,7 +3409,7 @@ export default async function courselore(
               INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
               VALUES (
                 ${invitation.expiresAt},
-                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
+                ${res.locals.course.id},
                 ${invitation.reference},
                 ${invitation.email},
                 ${invitation.name},
@@ -3568,15 +3419,13 @@ export default async function courselore(
 
             sendInvitationEmail({
               invitation: { id: invitationId, ...invitation },
-              course:
-                res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course,
+              course: res.locals.course,
             });
           }
 
           res.redirect(
             `${app.get("url")}/courses/${
-              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .reference
+              res.locals.course.reference
             }/settings#invitations`
           );
           break;
@@ -3641,8 +3490,7 @@ export default async function courselore(
 
       res.redirect(
         `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
+          res.locals.course.reference
         }/settings#invitations`
       );
     }
@@ -3665,36 +3513,26 @@ export default async function courselore(
         return next();
 
       const link = `${app.get("url")}/courses/${
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.reference
+        res.locals.course.reference
       }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`;
       res.send(
         app.get("layout main")(
           req,
           res,
           html`
-            <title>
-              Invitation ·
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .name}
-              · CourseLore
-            </title>
+            <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
           html`
             <h1>
               Invitation ·
-              <a
-                href="${app.get("url")}/courses/${res.locals
-                  .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .reference}"
-                >${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                  .name}</a
+              <a href="${app.get("url")}/courses/${res.locals.course.reference}"
+                >${res.locals.course.name}</a
               >
             </h1>
             <nav>
               <p class="hint">
                 <a
-                  href="${app.get("url")}/courses/${res.locals
-                    .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                  href="${app.get("url")}/courses/${res.locals.course
                     .reference}/settings"
                   style="${css`
                     display: flex;
@@ -3954,8 +3792,7 @@ export default async function courselore(
 
       res.redirect(
         `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
+          res.locals.course.reference
         }/settings#enrollments`
       );
     }
@@ -3975,15 +3812,11 @@ export default async function courselore(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
-      if (
-        res.locals.managedEnrollment.id ===
-        res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id
-      )
+      if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
         return res.redirect(`${app.get("url")}/`);
       res.redirect(
         `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
+          res.locals.course.reference
         }/settings#enrollments`
       );
     }
@@ -4001,7 +3834,7 @@ export default async function courselore(
           user: User;
           enrollmentsJoinCourses: EnrollmentJoinCourse[];
           enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-          otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+          otherEnrollments: EnrollmentJoinCourse[];
           threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser?: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
         }
       >,
@@ -4011,7 +3844,7 @@ export default async function courselore(
           user: User;
           enrollmentsJoinCourses: EnrollmentJoinCourse[];
           enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-          otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+          otherEnrollments: EnrollmentJoinCourse[];
           threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser?: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
         }
       >,
@@ -4075,9 +3908,7 @@ export default async function courselore(
             style="${css`
               box-sizing: border-box;
               height: 100vh;
-              border-top: 10px solid
-                ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                  .enrollment.accentColor};
+              border-top: 10px solid ${res.locals.enrollment.accentColor};
               display: flex;
             `}"
           >
@@ -4111,15 +3942,9 @@ export default async function courselore(
                     `}"
                   >
                     <a
-                      href="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      href="${app.get("url")}/courses/${res.locals.course
                         .reference}"
-                      ><strong
-                        >${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
-                          .name}</strong
-                      >
-                      (${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
+                      ><strong>${res.locals.course.name}</strong> (${res.locals
                         .enrollment.role})</a
                     >
                   </p>
@@ -4139,19 +3964,17 @@ export default async function courselore(
                   `}"
                 >
                   <a
-                    href="${app.get("url")}/courses/${res.locals
-                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    href="${app.get("url")}/courses/${res.locals.course
                       .reference}/threads/new"
                     >Create a new thread</a
                   >
                 </p>
                 <nav>
-                  $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.threadsWithMetadata.map(
+                  $${res.locals.threadsWithMetadata.map(
                     (threadWithMetadata) =>
                       html`
                         <a
-                          href="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          href="${app.get("url")}/courses/${res.locals.course
                             .reference}/threads/${threadWithMetadata.reference}"
                           style="${css`
                             line-height: 1.3;
@@ -4414,10 +4237,7 @@ export default async function courselore(
           res,
           html`
             <title>
-              Create a New Thread ·
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .name}
-              · CourseLore
+              Create a New Thread · ${res.locals.course.name} · CourseLore
             </title>
           `,
           html`
@@ -4425,8 +4245,7 @@ export default async function courselore(
 
             <form
               method="POST"
-              action="${app.get("url")}/courses/${res.locals
-                .enrollmentJoinCourseJoinThreadsWithMetadata.course
+              action="${app.get("url")}/courses/${res.locals.course
                 .reference}/threads"
             >
               <p>
@@ -4479,23 +4298,17 @@ export default async function courselore(
         sql`
           UPDATE "courses"
           SET "nextThreadReference" = ${
-            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-              .nextThreadReference + 1
+            res.locals.course.nextThreadReference + 1
           }
-          WHERE "id" = ${
-            res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id
-          }
+          WHERE "id" = ${res.locals.course.id}
         `
       );
       const threadId = database.run(
         sql`
           INSERT INTO "threads" ("course", "reference", "title", "nextPostReference")
           VALUES (
-            ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course.id},
-            ${String(
-              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .nextThreadReference
-            )},
+            ${res.locals.course.id},
+            ${String(res.locals.course.nextThreadReference)},
             ${req.body.title},
             ${"2"}
           )
@@ -4503,26 +4316,19 @@ export default async function courselore(
       ).lastInsertRowid;
       database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "author", "content")
+          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
           VALUES (
             ${threadId},
             ${"1"},
-            ${
-              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
-                .id
-            },
+            ${res.locals.enrollment.id},
             ${req.body.content}
           )
         `
       );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .nextThreadReference
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
+          res.locals.course.nextThreadReference
         }`
       );
     }
@@ -4542,7 +4348,7 @@ export default async function courselore(
   >[] = [
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
-      const threadWithMetadata = res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.threadsWithMetadata.find(
+      const threadWithMetadata = res.locals.threadsWithMetadata.find(
         (threadWithMetadata) =>
           threadWithMetadata.reference === req.params.threadReference
       );
@@ -4576,7 +4382,7 @@ export default async function courselore(
                    "authorUser"."email",
                    "authorUser"."name"
             FROM "posts"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."author" = "authorEnrollment"."id"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
             WHERE "posts"."thread" = ${threadWithMetadata.id}
             ORDER BY "posts"."id" ASC
@@ -4605,7 +4411,7 @@ export default async function courselore(
                     name: row.name!,
                   },
                 }
-              : ANONYMOUS,
+              : ANONYMOUS_ENROLLMENT,
           // FIXME: Can we do better than this n+1 query?
           likesJoinEnrollmentJoinUser: database
             .all<{
@@ -4650,7 +4456,7 @@ export default async function courselore(
                         name: row.name!,
                       },
                     }
-                  : ANONYMOUS,
+                  : ANONYMOUS_ENROLLMENT,
             })),
         }));
 
@@ -4673,7 +4479,7 @@ export default async function courselore(
         user: User;
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        otherEnrollments: EnrollmentJoinCourse[];
         threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >,
@@ -4683,13 +4489,12 @@ export default async function courselore(
         user: User;
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        otherEnrollments: EnrollmentJoinCourse[];
         threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >
   ): boolean =>
-    res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
-      "staff" ||
+    res.locals.enrollment.role === "staff" ||
     res.locals
       .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
       .threadWithMetadata.author.user.id === res.locals.user.id;
@@ -4747,7 +4552,7 @@ export default async function courselore(
         user: User;
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        otherEnrollments: EnrollmentJoinCourse[];
         threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >,
@@ -4757,14 +4562,13 @@ export default async function courselore(
         user: User;
         enrollmentsJoinCourses: EnrollmentJoinCourse[];
         enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollmentsJoinCourses: EnrollmentJoinCourse[];
+        otherEnrollments: EnrollmentJoinCourse[];
         threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
       }
     >,
     postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser
   ): boolean =>
-    res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.role ===
-      "staff" ||
+    res.locals.enrollment.role === "staff" ||
     postJoinAuthorJoinLikesJoinEnrollmentJoinUser.author.user.id ===
       res.locals.user.id;
 
@@ -4811,10 +4615,7 @@ export default async function courselore(
               ${res.locals
                 .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                 .threadWithMetadata.title}
-              ·
-              ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-                .name}
-              · CourseLore
+              · ${res.locals.course.name} · CourseLore
             </title>
           `,
           html`
@@ -4840,8 +4641,7 @@ export default async function courselore(
                     .threadWithMetadata.title}
 
                   <a
-                    href="${app.get("url")}/courses/${res.locals
-                      .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                    href="${app.get("url")}/courses/${res.locals.course
                       .reference}/threads/${res.locals
                       .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                       .threadWithMetadata.reference}"
@@ -4877,13 +4677,11 @@ export default async function courselore(
                       </p>
                     `
                   : html``}
-                $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                  .enrollment.role === "staff"
+                $${res.locals.enrollment.role === "staff"
                   ? html`
                       <form
                         method="POST"
-                        action="${app.get("url")}/courses/${res.locals
-                          .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                        action="${app.get("url")}/courses/${res.locals.course
                           .reference}/threads/${res.locals
                           .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                           .threadWithMetadata.reference}?_method=DELETE"
@@ -4908,8 +4706,7 @@ export default async function courselore(
                 ? html`
                     <form
                       method="POST"
-                      action="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      action="${app.get("url")}/courses/${res.locals.course
                         .reference}/threads/${res.locals
                         .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                         .threadWithMetadata.reference}?_method=PATCH"
@@ -5009,8 +4806,7 @@ export default async function courselore(
                             `
                           : html``}
                         <a
-                          href="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          href="${app.get("url")}/courses/${res.locals.course
                             .reference}/threads/${req.params
                             .threadReference}#${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
                             .post.reference}"
@@ -5056,15 +4852,13 @@ export default async function courselore(
                           </p>
                         `
                       : html``}
-                    $${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata
-                      .enrollment.role === "staff" &&
+                    $${res.locals.enrollment.role === "staff" &&
                     postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
                       .reference !== "1"
                       ? html`
                           <form
                             method="POST"
                             action="${app.get("url")}/courses/${res.locals
-                              .enrollmentJoinCourseJoinThreadsWithMetadata
                               .course.reference}/threads/${res.locals
                               .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                               .threadWithMetadata
@@ -5095,8 +4889,7 @@ export default async function courselore(
                     <!-- TODO: Say “you” when you have liked the post. -->
                     <form
                       method="POST"
-                      action="${app.get("url")}/courses/${res.locals
-                        .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                      action="${app.get("url")}/courses/${res.locals.course
                         .reference}/threads/${res.locals
                         .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                         .threadWithMetadata
@@ -5180,8 +4973,7 @@ export default async function courselore(
                     ? html`
                         <form
                           method="POST"
-                          action="${app.get("url")}/courses/${res.locals
-                            .enrollmentJoinCourseJoinThreadsWithMetadata.course
+                          action="${app.get("url")}/courses/${res.locals.course
                             .reference}/threads/${res.locals
                             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                             .threadWithMetadata
@@ -5221,8 +5013,7 @@ export default async function courselore(
 
             <form
               method="POST"
-              action="${app.get("url")}/courses/${res.locals
-                .enrollmentJoinCourseJoinThreadsWithMetadata.course
+              action="${app.get("url")}/courses/${res.locals.course
                 .reference}/threads/${res.locals
                 .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                 .threadWithMetadata.reference}/posts"
@@ -5260,10 +5051,7 @@ export default async function courselore(
           );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
@@ -5287,12 +5075,7 @@ export default async function courselore(
         sql`DELETE FROM "threads" WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.threadWithMetadata.id}`
       );
 
-      res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }`
-      );
+      res.redirect(`${app.get("url")}/courses/${res.locals.course.reference}`);
     }
   );
 
@@ -5329,7 +5112,7 @@ export default async function courselore(
       );
       database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "author", "content")
+          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
           VALUES (
             ${
               res.locals
@@ -5341,10 +5124,7 @@ export default async function courselore(
                 .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
                 .threadWithMetadata.nextPostReference
             )},
-            ${
-              res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment
-                .id
-            },
+            ${res.locals.enrollment.id},
             ${req.body.content}
           )
         `
@@ -5395,10 +5175,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
@@ -5439,10 +5216,7 @@ export default async function courselore(
       );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
@@ -5476,10 +5250,7 @@ export default async function courselore(
       );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
@@ -5508,14 +5279,11 @@ export default async function courselore(
         return next("validation");
 
       database.run(
-        sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id}, ${res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.enrollment.id})`
+        sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id}, ${res.locals.enrollment.id})`
       );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
@@ -5549,10 +5317,7 @@ export default async function courselore(
       );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.enrollmentJoinCourseJoinThreadsWithMetadata.course
-            .reference
-        }/threads/${
+        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals
             .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
             .threadWithMetadata.reference
