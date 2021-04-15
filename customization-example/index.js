@@ -12,7 +12,7 @@ module.exports = (require) => {
   function middleware(app) {
     const router = express.Router();
 
-    router.all("*", ...app.get("handler isAuthenticated"), (req, res, next) => {
+    router.all("*", ...app.get("middleware isAuthenticatedMiddleware"), (req, res, next) => {
       next("router");
     });
     router.use(express.static(path.join(__dirname, "public")));
