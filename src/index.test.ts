@@ -16,6 +16,8 @@ beforeEach(async () => {
     path.join(os.tmpdir(), "courselore-test-")
   );
   const app = courselore(rootDirectory);
+  // FIXME:
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   server = app.listen(new URL(app.get("url")).port);
   client = got.default.extend({
     prefixUrl: app.get("url"),
