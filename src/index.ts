@@ -858,7 +858,7 @@ export default async function courselore(
   );
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  const eventSources = new Set<express.Response<any, Record<string, any>>>();
+  const eventSources = new Set<express.Response<any, {}>>();
 
   interface EventSourceMiddlewareLocals {}
 
