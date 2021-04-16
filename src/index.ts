@@ -2398,7 +2398,6 @@ export default function courselore(rootDirectory: string): express.Express {
       id: number;
       reference: string;
       role: Role;
-      accentColor: AccentColor;
     };
   }
 
@@ -2415,16 +2414,16 @@ export default function courselore(rootDirectory: string): express.Express {
         id: number;
         reference: string;
         role: Role;
-        accentColor: AccentColor;
       }>(
         sql`
-          SELECT "id", "reference", "role", "accentColor"
+          SELECT "id", "reference", "role"
           FROM "enrollments"
           WHERE "course" = ${res.locals.course.id} AND
                 "reference" = ${req.params.enrollmentReference}
         `
       );
       if (managedEnrollment === undefined) return next("route");
+      res.locals.managedEnrollment = managedEnrollment;
       if (
         database.get<{ count: number }>(
           sql`
@@ -2436,7 +2435,6 @@ export default function courselore(rootDirectory: string): express.Express {
         )!.count === 1
       )
         return next("validation");
-      res.locals.managedEnrollment = managedEnrollment;
       next();
     },
   ];
