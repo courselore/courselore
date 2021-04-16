@@ -3789,23 +3789,13 @@ export default function courselore(rootDirectory: string): express.Express {
         HTML,
         {},
         {},
-        {
-          user: User;
-          enrollmentsJoinCourses: EnrollmentJoinCourse[];
-          enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-          otherEnrollments: EnrollmentJoinCourse[];
-          threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser?: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-        }
+        IsEnrolledInCourseMiddlewareLocals &
+          Partial<IsThreadAccessibleMiddlewareLocals>
       >,
       res: express.Response<
         HTML,
-        {
-          user: User;
-          enrollmentsJoinCourses: EnrollmentJoinCourse[];
-          enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-          otherEnrollments: EnrollmentJoinCourse[];
-          threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser?: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-        }
+        IsEnrolledInCourseMiddlewareLocals &
+          Partial<IsThreadAccessibleMiddlewareLocals>
       >,
       head: HTML,
       body: HTML
@@ -3927,22 +3917,19 @@ export default function courselore(rootDirectory: string): express.Express {
                   >
                 </p>
                 <nav>
-                  $${res.locals.threadsWithMetadata.map(
-                    (threadWithMetadata) =>
+                  $${res.locals.threads.map(
+                    (thread) =>
                       html`
                         <a
                           href="${app.get("url")}/courses/${res.locals.course
-                            .reference}/threads/${threadWithMetadata.reference}"
+                            .reference}/threads/${thread.reference}"
                           style="${css`
                             line-height: 1.3;
                             display: block;
                             padding: 0.5rem 1rem;
                             margin: 0 -1rem;
 
-                            ${threadWithMetadata.id ===
-                            res.locals
-                              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              ?.threadWithMetadata?.id
+                            ${thread.id === res.locals.thread?.id
                               ? css`
                                   background-color: whitesmoke;
                                   @media (prefers-color-scheme: dark) {
@@ -3957,7 +3944,7 @@ export default function courselore(rootDirectory: string): express.Express {
                               margin-top: 0;
                             `}"
                           >
-                            <strong>${threadWithMetadata.title}</strong>
+                            <strong>${thread.title}</strong>
                           </p>
                           <p
                             class="hint"
@@ -3965,15 +3952,14 @@ export default function courselore(rootDirectory: string): express.Express {
                               margin-bottom: 0;
                             `}"
                           >
-                            #${threadWithMetadata.reference} created
-                            <time>${threadWithMetadata.createdAt}</time> by
-                            ${threadWithMetadata.author.user.name}
-                            $${threadWithMetadata.updatedAt !==
-                            threadWithMetadata.createdAt
+                            #${thread.reference} created
+                            <time>${thread.createdAt}</time> by
+                            ${thread.authorEnrollment.user.name}
+                            $${thread.updatedAt !== thread.createdAt
                               ? html`
                                   <br />
                                   and last updated
-                                  <time>${threadWithMetadata.updatedAt}</time>
+                                  <time>${thread.updatedAt}</time>
                                 `
                               : html``}
                             <br />
@@ -3988,24 +3974,20 @@ export default function courselore(rootDirectory: string): express.Express {
                                 }
                               `}"
                             >
-                              <span
-                                title="${threadWithMetadata.postsCount} posts"
-                              >
+                              <span title="${thread.postsCount} posts">
                                 <svg viewBox="0 0 16 16" width="10" height="10">
                                   <path
                                     d="M2.75 2.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 01.75.75v2.19l2.72-2.72a.75.75 0 01.53-.22h4.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25H2.75zM1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0113.25 12H9.06l-2.573 2.573A1.457 1.457 0 014 13.543V12H2.75A1.75 1.75 0 011 10.25v-7.5z"
                                     fill="gray"
                                   ></path>
                                 </svg>
-                                ${threadWithMetadata.postsCount}
+                                ${thread.postsCount}
                               </span>
 
-                              $${threadWithMetadata.likesCount === 0
+                              $${thread.likesCount === 0
                                 ? html``
                                 : html`
-                                    <span
-                                      title="${threadWithMetadata.likesCount} likes"
-                                    >
+                                    <span title="${thread.likesCount} likes">
                                       <svg
                                         viewBox="0 0 16 16"
                                         width="10"
@@ -4016,7 +3998,7 @@ export default function courselore(rootDirectory: string): express.Express {
                                           fill="gray"
                                         ></path>
                                       </svg>
-                                      ${threadWithMetadata.likesCount}
+                                      ${thread.likesCount}
                                     </span>
                                   `}
                             </span>
@@ -4292,7 +4274,8 @@ export default function courselore(rootDirectory: string): express.Express {
 
   interface IsThreadAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
-    threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+    thread: { id: number };
+    posts: "TODO";
   }
 
   const isThreadAccessibleMiddleware: express.RequestHandler<
