@@ -1143,7 +1143,7 @@ export default function courselore(rootDirectory: string): express.Express {
               SELECT 1
               FROM "sessions"
               WHERE "token" = ${req.cookies.session} AND
-                    datetime(${new Date().toISOString()} < datetime("expiresAt")
+                    datetime(${new Date().toISOString()}) < datetime("expiresAt")
             ) AS "exists"
           `
         )!.exists === 0
@@ -1202,7 +1202,7 @@ export default function courselore(rootDirectory: string): express.Express {
           FROM "sessions"
           JOIN "users" ON "sessions"."user" = "users"."id"
           WHERE "sessions"."token" = ${req.cookies.session} AND
-                datetime(${new Date().toISOString()} < datetime("sessions"."expiresAt")
+                datetime(${new Date().toISOString()}) < datetime("sessions"."expiresAt")
         `);
       if (session === undefined) {
         closeSession(req, res);
@@ -1236,10 +1236,10 @@ export default function courselore(rootDirectory: string): express.Express {
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
                    "courses"."name" AS "courseName",
-                   "courses"."nextThreadReference" AS "courseNextThreadReference"
+                   "courses"."nextThreadReference" AS "courseNextThreadReference",
                    "enrollments"."reference",
                    "enrollments"."role",
-                   "enrollments"."accentColor",
+                   "enrollments"."accentColor"
             FROM "enrollments"
             JOIN "courses" ON "enrollments"."course" = "courses"."id"
             WHERE "enrollments"."user" = ${res.locals.user.id}
@@ -2115,17 +2115,17 @@ export default function courselore(rootDirectory: string): express.Express {
             SELECT "posts"."createdAt",
                    "authorEnrollment"."id" AS "authorEnrollmentId",
                    "authorUser"."id" AS "authorUserId",
-                   "authorUser"."email"  AS "authorUserEmail",
-                   "authorUser"."name"  AS "authorUserName",
+                   "authorUser"."email" AS "authorUserEmail",
+                   "authorUser"."name" AS "authorUserName",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
                    COUNT("likes"."id") AS "likesCount"
             FROM "posts"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
-            LEFT JOIN "users" AS "authorUser" ON "enrollments"."user" = "authorUser"."id"
+            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
             LEFT JOIN "likes" ON "posts"."id" = "likes"."post"
-            GROUP BY "posts"."id"
             WHERE "posts"."thread" = ${thread.id} AND
                   "posts"."reference" = ${"1"}
+            GROUP BY "posts"."id"
           `)!;
           const mostRecentlyUpdatedPost = database.get<{
             updatedAt: string;
@@ -4327,13 +4327,13 @@ export default function courselore(rootDirectory: string): express.Express {
                    "posts"."reference",
                    "authorEnrollment"."id" AS "authorEnrollmentId",
                    "authorUser"."id" AS "authorUserId",
-                   "authorUser"."email"  AS "authorUserEmail",
-                   "authorUser"."name"  AS "authorUserName",
+                   "authorUser"."email" AS "authorUserEmail",
+                   "authorUser"."name" AS "authorUserName",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
                    "posts"."content"
             FROM "posts"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "enrollments"."id"
-            LEFT JOIN "users" AS "authorUser" ON "enrollments"."user" = "users"."id"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
+            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
             WHERE "posts"."thread" = ${thread.id}
             ORDER BY "posts"."id" ASC
           `
@@ -4372,11 +4372,11 @@ export default function courselore(rootDirectory: string): express.Express {
             }>(
               sql`
                 SELECT "likes"."id",
-                       "enrollment"."id" AS "enrollmentId",
-                       "user"."id" AS "userId",
-                       "user"."email"  AS "userEmail",
-                       "user"."name"  AS "userName",
-                       "enrollment"."role" AS "enrollmentRole",
+                       "enrollments"."id" AS "enrollmentId",
+                       "users"."id" AS "userId",
+                       "users"."email" AS "userEmail",
+                       "users"."name" AS "userName",
+                       "enrollments"."role" AS "enrollmentRole"
                 FROM "likes"
                 LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
                 LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
