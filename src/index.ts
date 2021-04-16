@@ -2444,810 +2444,804 @@ export default function courselore(rootDirectory: string): express.Express {
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals
+    IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...isCourseStaffMiddleware,
+    ...isEnrolledInCourseMiddleware,
     (req, res) => {
-      const invitations = database.all<{
-        id: number;
-        expiresAt: string | null;
-        usedAt: string | null;
-        reference: string;
-        email: string | null;
-        name: string | null;
-        role: Role;
-      }>(sql`
-          SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
-          FROM "invitations"
-          WHERE "course" = ${res.locals.course.id}
-          ORDER BY "id" DESC
-        `);
+      res.send(
+        app.get("layout main")(
+          req,
+          res,
+          html`
+            <title>
+              Course Settings · ${res.locals.course.name} · CourseLore
+            </title>
+          `,
+          html`
+            <h1>
+              Course Settings ·
+              <a href="${app.get("url")}/courses/${res.locals.course.reference}"
+                >${res.locals.course.name}</a
+              >
+            </h1>
+            $${courseSwitcher(req, res, "/settings")}
+            $${res.locals.enrollment.role !== "staff"
+              ? html``
+              : (() => {
+                  const invitations = database.all<{
+                    id: number;
+                    expiresAt: string | null;
+                    usedAt: string | null;
+                    reference: string;
+                    email: string | null;
+                    name: string | null;
+                    role: Role;
+                  }>(sql`
+                    SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+                    FROM "invitations"
+                    WHERE "course" = ${res.locals.course.id}
+                    ORDER BY "id" DESC
+                  `);
+                  const enrollments = database.all<{
+                    id: number;
+                    userId: number;
+                    userEmail: string;
+                    userName: string;
+                    reference: string;
+                    role: Role;
+                  }>(
+                    sql`
+                      SELECT "enrollments"."id",
+                              "users"."id" AS "userId",
+                              "users"."email" AS "userEmail",
+                              "users"."name" AS "userName",
+                              "enrollments"."reference",
+                              "enrollments"."role"
+                      FROM "enrollments"
+                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                      WHERE "enrollments"."course" = ${res.locals.course.id}
+                      ORDER BY "enrollments"."id" DESC
+                    `
+                  );
 
-      const enrollments = database.all<{
-        id: number;
-        userId: number;
-        userEmail: string;
-        userName: string;
-        reference: string;
-        role: Role;
-      }>(
-        sql`
-          SELECT "enrollments"."id",
-                  "users"."id" AS "userId",
-                  "users"."email" AS "userEmail",
-                  "users"."name" AS "userName",
-                  "enrollments"."reference",
-                  "enrollments"."role"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "enrollments"."course" = ${res.locals.course.id}
-          ORDER BY "enrollments"."id" DESC
-        `
-      );
+                  return html`
+                    <form
+                      method="POST"
+                      action="${app.get("url")}/courses/${res.locals.course
+                        .reference}/settings?_method=PATCH"
+                    >
+                      <p>
+                        <label>
+                          <strong>Name</strong><br />
+                          <span
+                            style="${css`
+                              display: flex;
 
-      courseSettings(
-        req,
-        res,
-        html`
-          <form
-            method="POST"
-            action="${app.get("url")}/courses/${res.locals.course
-              .reference}/settings?_method=PATCH"
-          >
-            <p>
-              <label>
-                <strong>Name</strong><br />
-                <span
-                  style="${css`
-                    display: flex;
+                              & > * + * {
+                                margin-left: 1rem;
+                              }
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              name="name"
+                              autocomplete="off"
+                              required
+                              value="${res.locals.course.name}"
+                              class="full-width"
+                              style="${css`
+                                flex: 1 !important;
+                              `}"
+                            />
+                            <button>Change Name</button>
+                          </span>
+                        </label>
+                      </p>
+                    </form>
 
-                    & > * + * {
-                      margin-left: 1rem;
-                    }
-                  `}"
-                >
-                  <input
-                    type="text"
-                    name="name"
-                    autocomplete="off"
-                    required
-                    value="${res.locals.course.name}"
-                    class="full-width"
-                    style="${css`
-                      flex: 1 !important;
-                    `}"
-                  />
-                  <button>Change Name</button>
-                </span>
-              </label>
-            </p>
-          </form>
+                    <hr />
 
-          <hr />
+                    <p id="invitations"><strong>Invitations</strong></p>
 
-          <p id="invitations"><strong>Invitations</strong></p>
+                    $${invitations!.length === 0
+                      ? html``
+                      : html`
+                          <details
+                            style="${css`
+                              margin: 1rem 0;
+                            `}"
+                          >
+                            <summary>
+                              <strong>Existing Invitations</strong>
+                            </summary>
 
-          $${invitations!.length === 0
-            ? html``
-            : html`
-                <details
-                  style="${css`
-                    margin: 1rem 0;
-                  `}"
-                >
-                  <summary>
-                    <strong>Existing Invitations</strong>
-                  </summary>
+                            $${invitations!.map((invitation) => {
+                              const link = `${app.get("url")}/courses/${
+                                res.locals.course.reference
+                              }/invitations/${invitation.reference}`;
 
-                  $${invitations!.map((invitation) => {
-                    const link = `${app.get("url")}/courses/${
-                      res.locals.course.reference
-                    }/invitations/${invitation.reference}`;
+                              return html`
+                                <details>
+                                  <summary>
+                                    $${invitation.email === null
+                                      ? html`
+                                          <code>
+                                            ${app.get("url")}/courses/${res
+                                              .locals.course
+                                              .reference}/invitations/${"*".repeat(
+                                              6
+                                            )}${invitation.reference.slice(6)}
+                                          </code>
+                                          <br />
+                                        `
+                                      : invitation.name === null
+                                      ? html`${invitation.email}`
+                                      : html`${invitation.name}
+                                        ${`<${invitation.email}>`}`}
 
-                    return html`
-                      <details>
-                        <summary>
-                          $${invitation.email === null
-                            ? html`
-                                <code>
-                                  ${app.get("url")}/courses/${res.locals.course
-                                    .reference}/invitations/${"*".repeat(
-                                    6
-                                  )}${invitation.reference.slice(6)}
-                                </code>
-                                <br />
-                              `
-                            : invitation.name === null
-                            ? html`${invitation.email}`
-                            : html`${invitation.name} ${`<${invitation.email}>`}`}
-
-                          <small class="hint">
-                            ${lodash.capitalize(invitation.role)} ·
-                            $${invitation.usedAt !== null
-                              ? html`
-                                  <span class="green">
-                                    Used
-                                    <time>${invitation.usedAt}</time>
-                                  </span>
-                                `
-                              : isExpired(invitation.expiresAt)
-                              ? html`
-                                  <span class="red">
-                                    Expired
-                                    <time>${invitation.expiresAt}</time>
-                                  </span>
-                                `
-                              : invitation.expiresAt !== null
-                              ? html`
-                                  Expires
-                                  <time>${invitation.expiresAt}</time>
-                                `
-                              : html`Doesn’t expire`}
-                          </small>
-                        </summary>
-
-                        $${invitation.email === null &&
-                        !isExpired(invitation.expiresAt)
-                          ? html`
-                              <p>
-                                <a href="${link}">See invitation link</a>
-                              </p>
-                            `
-                          : html``}
-                        $${invitation.usedAt !== null
-                          ? html`
-                              <p>
-                                This invitation has already been used and may no
-                                longer be modified.
-                              </p>
-                            `
-                          : html`
-                              $${invitation.email === null ||
-                              isExpired(invitation.expiresAt)
-                                ? html``
-                                : html`
-                                    <form
-                                      method="POST"
-                                      action="${link}?_method=PATCH"
-                                    >
-                                      <input
-                                        type="hidden"
-                                        name="resend"
-                                        value="true"
-                                      />
-                                      <p>
-                                        Invitation email wasn’t received?
-                                        Already checked the spam folder?<br />
-                                        <button>Resend Invitation Email</button>
-                                      </p>
-                                    </form>
-                                  `}
-
-                              <div
-                                style="${css`
-                                  display: flex;
-
-                                  & > * {
-                                    flex: 1;
-                                  }
-
-                                  & > * + * {
-                                    margin-left: 2rem;
-                                  }
-                                `}"
-                              >
-                                <form
-                                  method="POST"
-                                  action="${link}?_method=PATCH"
-                                >
-                                  <p>
-                                    <strong>Role</strong><br />
-                                    <span
-                                      style="${css`
-                                        display: flex;
-                                        align-items: baseline;
-
-                                        & > * + * {
-                                          margin-left: 1rem;
-                                        }
-                                      `}"
-                                    >
-                                      $${ROLES.map(
-                                        (role) =>
-                                          html`
-                                            <label>
-                                              <input
-                                                type="radio"
-                                                name="role"
-                                                value="${role}"
-                                                required
-                                                ${role === invitation.role
-                                                  ? `checked`
-                                                  : ``}
-                                                ${isExpired(
-                                                  invitation.expiresAt
-                                                )
-                                                  ? `disabled`
-                                                  : ``}
-                                              />
-                                              ${lodash.capitalize(role)}
-                                            </label>
+                                    <small class="hint">
+                                      ${lodash.capitalize(invitation.role)} ·
+                                      $${invitation.usedAt !== null
+                                        ? html`
+                                            <span class="green">
+                                              Used
+                                              <time>${invitation.usedAt}</time>
+                                            </span>
                                           `
-                                      )}
-                                      $${isExpired(invitation.expiresAt)
-                                        ? html``
-                                        : html`
-                                            <button
-                                              style="${css`
-                                                flex: 1;
-                                              `}"
-                                            >
-                                              Change Role
-                                            </button>
-                                          `}
-                                    </span>
-                                  </p>
-                                  $${isExpired(invitation.expiresAt)
+                                        : isExpired(invitation.expiresAt)
+                                        ? html`
+                                            <span class="red">
+                                              Expired
+                                              <time
+                                                >${invitation.expiresAt}</time
+                                              >
+                                            </span>
+                                          `
+                                        : invitation.expiresAt !== null
+                                        ? html`
+                                            Expires
+                                            <time>${invitation.expiresAt}</time>
+                                          `
+                                        : html`Doesn’t expire`}
+                                    </small>
+                                  </summary>
+
+                                  $${invitation.email === null &&
+                                  !isExpired(invitation.expiresAt)
                                     ? html`
-                                        <p class="hint">
-                                          You may not change the role of an
-                                          expired invitation.
+                                        <p>
+                                          <a href="${link}"
+                                            >See invitation link</a
+                                          >
                                         </p>
                                       `
                                     : html``}
-                                </form>
+                                  $${invitation.usedAt !== null
+                                    ? html`
+                                        <p>
+                                          This invitation has already been used
+                                          and may no longer be modified.
+                                        </p>
+                                      `
+                                    : html`
+                                        $${invitation.email === null ||
+                                        isExpired(invitation.expiresAt)
+                                          ? html``
+                                          : html`
+                                              <form
+                                                method="POST"
+                                                action="${link}?_method=PATCH"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="resend"
+                                                  value="true"
+                                                />
+                                                <p>
+                                                  Invitation email wasn’t
+                                                  received? Already checked the
+                                                  spam folder?<br />
+                                                  <button>
+                                                    Resend Invitation Email
+                                                  </button>
+                                                </p>
+                                              </form>
+                                            `}
 
-                                <div>
-                                  <form
-                                    method="POST"
-                                    action="${link}?_method=PATCH"
-                                  >
+                                        <div
+                                          style="${css`
+                                            display: flex;
+
+                                            & > * {
+                                              flex: 1;
+                                            }
+
+                                            & > * + * {
+                                              margin-left: 2rem;
+                                            }
+                                          `}"
+                                        >
+                                          <form
+                                            method="POST"
+                                            action="${link}?_method=PATCH"
+                                          >
+                                            <p>
+                                              <strong>Role</strong><br />
+                                              <span
+                                                style="${css`
+                                                  display: flex;
+                                                  align-items: baseline;
+
+                                                  & > * + * {
+                                                    margin-left: 1rem;
+                                                  }
+                                                `}"
+                                              >
+                                                $${ROLES.map(
+                                                  (role) =>
+                                                    html`
+                                                      <label>
+                                                        <input
+                                                          type="radio"
+                                                          name="role"
+                                                          value="${role}"
+                                                          required
+                                                          ${role ===
+                                                          invitation.role
+                                                            ? `checked`
+                                                            : ``}
+                                                          ${isExpired(
+                                                            invitation.expiresAt
+                                                          )
+                                                            ? `disabled`
+                                                            : ``}
+                                                        />
+                                                        ${lodash.capitalize(
+                                                          role
+                                                        )}
+                                                      </label>
+                                                    `
+                                                )}
+                                                $${isExpired(
+                                                  invitation.expiresAt
+                                                )
+                                                  ? html``
+                                                  : html`
+                                                      <button
+                                                        style="${css`
+                                                          flex: 1;
+                                                        `}"
+                                                      >
+                                                        Change Role
+                                                      </button>
+                                                    `}
+                                              </span>
+                                            </p>
+                                            $${isExpired(invitation.expiresAt)
+                                              ? html`
+                                                  <p class="hint">
+                                                    You may not change the role
+                                                    of an expired invitation.
+                                                  </p>
+                                                `
+                                              : html``}
+                                          </form>
+
+                                          <div>
+                                            <form
+                                              method="POST"
+                                              action="${link}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="changeExpiration"
+                                                value="true"
+                                              />
+                                              <p>
+                                                <label>
+                                                  <strong>Expiration</strong
+                                                  ><br />
+                                                  <span
+                                                    style="${css`
+                                                      display: flex;
+                                                      align-items: baseline;
+
+                                                      & > * + * {
+                                                        margin-left: 0.5rem !important;
+                                                      }
+                                                    `}"
+                                                  >
+                                                    <span>
+                                                      <input
+                                                        type="checkbox"
+                                                        ${invitation.expiresAt ===
+                                                        null
+                                                          ? ``
+                                                          : `checked`}
+                                                        onchange="${javascript`
+                                                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                                          expiresAt.disabled = !this.checked;
+                                                          if (this.checked) {
+                                                            expiresAt.focus();
+                                                            expiresAt.setSelectionRange(0, 0);
+                                                          }
+                                                        `}"
+                                                      />
+                                                    </span>
+                                                    <span>Expires at</span>
+                                                    <input
+                                                      type="text"
+                                                      name="expiresAt"
+                                                      value="${invitation.expiresAt ??
+                                                      new Date().toISOString()}"
+                                                      required
+                                                      ${invitation.expiresAt ===
+                                                      null
+                                                        ? `disabled`
+                                                        : ``}
+                                                      data-validator="${javascript`
+                                                        if (new Date(this.value).getTime() <= Date.now())
+                                                          return "Must be in the future";
+                                                      `}"
+                                                      class="full-width datetime"
+                                                      style="${css`
+                                                        flex: 1 !important;
+                                                      `}"
+                                                    />
+                                                  </span>
+                                                </label>
+                                              </p>
+                                              <p>
+                                                <button class="full-width">
+                                                  Change Expiration
+                                                </button>
+                                              </p>
+                                            </form>
+
+                                            $${isExpired(invitation.expiresAt)
+                                              ? html``
+                                              : html`
+                                                  <form
+                                                    method="POST"
+                                                    action="${link}?_method=PATCH"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="expireNow"
+                                                      value="true"
+                                                    />
+                                                    <p>
+                                                      <button
+                                                        class="full-width red"
+                                                      >
+                                                        Expire Invitation Now
+                                                      </button>
+                                                    </p>
+                                                  </form>
+                                                `}
+                                          </div>
+                                        </div>
+                                      `}
+                                </details>
+                              `;
+                            })}
+                            <hr />
+                          </details>
+
+                          <p><strong>Create a New Invitation</strong></p>
+                        `}
+
+                    <form
+                      method="POST"
+                      action="${app.get("url")}/courses/${res.locals.course
+                        .reference}/invitations"
+                    >
+                      <div
+                        style="${css`
+                          display: flex;
+                          margin: -1rem 0;
+
+                          & > * {
+                            flex: 1;
+                          }
+
+                          & > * + * {
+                            margin-left: 2rem;
+                          }
+                        `}"
+                      >
+                        <p>
+                          <strong>Role</strong><br />
+                          <span
+                            style="${css`
+                              display: flex;
+
+                              & > * + * {
+                                margin-left: 1rem;
+                              }
+                            `}"
+                          >
+                            $${ROLES.map(
+                              (role, index) =>
+                                html`
+                                  <label>
                                     <input
-                                      type="hidden"
-                                      name="changeExpiration"
-                                      value="true"
+                                      type="radio"
+                                      name="role"
+                                      value="${role}"
+                                      required
+                                      $${index === 0 ? `checked` : ``}
                                     />
-                                    <p>
-                                      <label>
-                                        <strong>Expiration</strong><br />
+                                    ${lodash.capitalize(role)}
+                                  </label>
+                                `
+                            )}
+                          </span>
+                        </p>
+
+                        <p>
+                          <label>
+                            <strong>Expiration</strong><br />
+                            <span
+                              style="${css`
+                                display: flex;
+                                align-items: baseline;
+
+                                & > * + * {
+                                  margin-left: 0.5rem !important;
+                                }
+                              `}"
+                            >
+                              <span>
+                                <input
+                                  type="checkbox"
+                                  onchange="${javascript`
+                                    const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                    expiresAt.disabled = !this.checked;
+                                    if (this.checked) {
+                                      expiresAt.focus();
+                                      expiresAt.setSelectionRange(0, 0);
+                                    }
+                                  `}"
+                                />
+                              </span>
+                              <span>Expires at</span>
+                              <input
+                                type="text"
+                                name="expiresAt"
+                                value="${new Date().toISOString()}"
+                                required
+                                disabled
+                                data-validator="${javascript`
+                                  if (new Date(this.value).getTime() <= Date.now())
+                                    return "Must be in the future";
+                                `}"
+                                class="full-width datetime"
+                                style="${css`
+                                  flex: 1 !important;
+                                `}"
+                              />
+                            </span>
+                          </label>
+                        </p>
+                      </div>
+                      <p>
+                        <strong>Sharing</strong><br />
+                        <label>
+                          <input
+                            type="radio"
+                            name="sharing"
+                            value="link"
+                            required
+                            checked
+                            onchange="${javascript`
+                              this.closest("p").querySelector('[name="emails"]').disabled = true;
+                            `}"
+                          />
+                          With an invitation link
+                        </label>
+                        <br />
+                        <label>
+                          <input
+                            type="radio"
+                            name="sharing"
+                            value="emails"
+                            required
+                            onchange="${javascript`
+                              const emails = this.closest("p").querySelector('[name="emails"]');
+                              emails.disabled = false;
+                              emails.focus();
+                              emails.setSelectionRange(0, 0);
+                            `}"
+                          />
+                          Via email
+                        </label>
+                        <br />
+                        <textarea
+                          name="emails"
+                          required
+                          class="full-width"
+                          disabled
+                          data-validator="${javascript`
+                            const emails = emailAddresses.parseAddressList(this.value);
+                            if (
+                              emails === null ||
+                              emails.find(
+                                (email) =>
+                                  email.type !== "mailbox" || !validator.isEmail(email.address)
+                              ) !== undefined
+                            )
+                              return "Match the requested format";
+                          `}"
+                        ></textarea>
+                        <br />
+                        <small class="full-width hint">
+                          Emails must be separated by commas and may include
+                          names.
+                          <br />
+                          Example:
+                          <code
+                            >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
+                          >
+                        </small>
+                      </p>
+                      <p><button>Create Invitation</button></p>
+                    </form>
+
+                    <hr />
+
+                    <details id="enrollments">
+                      <summary><strong>Enrollments</strong></summary>
+
+                      $${enrollments!.map(
+                        (enrollment) => html`
+                          <details>
+                            <summary>
+                              ${enrollment.userName}
+                              ${`<${enrollment.userEmail}>`}
+                              <small class="hint">
+                                ${lodash.capitalize(enrollment.role)}
+                              </small>
+                            </summary>
+
+                            $${enrollment.id !== res.locals.user.id
+                              ? html`
+                                  <div
+                                    style="${css`
+                                      display: flex;
+
+                                      & > * {
+                                        flex: 1;
+                                      }
+
+                                      & > * + * {
+                                        margin-left: 2rem;
+                                      }
+                                    `}"
+                                  >
+                                    <form
+                                      method="POST"
+                                      action="${app.get("url")}/courses/${res
+                                        .locals.course
+                                        .reference}/enrollments/${enrollment.reference}?_method=PATCH"
+                                    >
+                                      <p>
+                                        <strong>Role</strong><br />
                                         <span
                                           style="${css`
                                             display: flex;
                                             align-items: baseline;
 
                                             & > * + * {
-                                              margin-left: 0.5rem !important;
+                                              margin-left: 1rem;
                                             }
                                           `}"
                                         >
-                                          <span>
-                                            <input
-                                              type="checkbox"
-                                              ${invitation.expiresAt === null
-                                                ? ``
-                                                : `checked`}
-                                              onchange="${javascript`
-                                                const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                                expiresAt.disabled = !this.checked;
-                                                if (this.checked) {
-                                                  expiresAt.focus();
-                                                  expiresAt.setSelectionRange(0, 0);
-                                                }
-                                              `}"
-                                            />
-                                          </span>
-                                          <span>Expires at</span>
-                                          <input
-                                            type="text"
-                                            name="expiresAt"
-                                            value="${invitation.expiresAt ??
-                                            new Date().toISOString()}"
-                                            required
-                                            ${invitation.expiresAt === null
-                                              ? `disabled`
-                                              : ``}
-                                            data-validator="${javascript`
-                                              if (new Date(this.value).getTime() <= Date.now())
-                                                return "Must be in the future";
-                                            `}"
-                                            class="full-width datetime"
+                                          $${ROLES.map(
+                                            (role) =>
+                                              html`
+                                                <label>
+                                                  <input
+                                                    type="radio"
+                                                    name="role"
+                                                    value="${role}"
+                                                    required
+                                                    ${role === enrollment.role
+                                                      ? `checked`
+                                                      : ``}
+                                                  />
+                                                  ${lodash.capitalize(role)}
+                                                </label>
+                                              `
+                                          )}
+                                          <button
                                             style="${css`
-                                              flex: 1 !important;
+                                              flex: 1;
                                             `}"
-                                          />
+                                          >
+                                            Change Role
+                                          </button>
                                         </span>
-                                      </label>
+                                      </p>
+                                    </form>
+
+                                    <div>
+                                      <form
+                                        method="POST"
+                                        action="${app.get("url")}/courses/${res
+                                          .locals.course
+                                          .reference}/enrollments/${enrollment.reference}?_method=DELETE"
+                                      >
+                                        <p class="red">
+                                          <strong>Danger Zone</strong><br />
+                                          <button
+                                            class="full-width"
+                                            onclick="${javascript`
+                                              if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                                event.preventDefault();
+                                            `}"
+                                          >
+                                            Remove from Course
+                                          </button>
+                                        </p>
+                                      </form>
+                                    </div>
+                                  </div>
+                                `
+                              : enrollments!.filter(
+                                  (enrollment) => enrollment.role === "staff"
+                                ).length === 1
+                              ? html`
+                                  <p>
+                                    You may not modify the details of your
+                                    enrollment in ${res.locals.course.name}
+                                    because you’re the only staff member.
+                                  </p>
+                                `
+                              : html`
+                                  <div class="red">
+                                    <p
+                                      style="${css`
+                                        margin-bottom: -1rem;
+                                      `}"
+                                    >
+                                      <strong>Danger Zone</strong>
                                     </p>
-                                    <p>
-                                      <button class="full-width">
-                                        Change Expiration
-                                      </button>
-                                    </p>
-                                  </form>
 
-                                  $${isExpired(invitation.expiresAt)
-                                    ? html``
-                                    : html`
-                                        <form
-                                          method="POST"
-                                          action="${link}?_method=PATCH"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="expireNow"
-                                            value="true"
-                                          />
-                                          <p>
-                                            <button class="full-width red">
-                                              Expire Invitation Now
-                                            </button>
-                                          </p>
-                                        </form>
-                                      `}
-                                </div>
-                              </div>
-                            `}
-                      </details>
-                    `;
-                  })}
-                  <hr />
-                </details>
+                                    <div
+                                      style="${css`
+                                        display: flex;
 
-                <p><strong>Create a New Invitation</strong></p>
-              `}
+                                        & > * {
+                                          flex: 1;
+                                        }
 
-          <form
-            method="POST"
-            action="${app.get("url")}/courses/${res.locals.course
-              .reference}/invitations"
-          >
+                                        & > * + * {
+                                          margin-left: 2rem;
+                                        }
+                                      `}"
+                                    >
+                                      <form
+                                        method="POST"
+                                        action="${app.get("url")}/courses/${res
+                                          .locals.course
+                                          .reference}/enrollments/${enrollment.reference}?_method=PATCH"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="role"
+                                          value="student"
+                                        />
+                                        <p>
+                                          <button
+                                            class="full-width"
+                                            onclick="${javascript`
+                                              if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
+                                                event.preventDefault();
+                                            `}"
+                                          >
+                                            Convert Yourself into Student
+                                          </button>
+                                        </p>
+                                      </form>
+
+                                      <form
+                                        method="POST"
+                                        action="${app.get("url")}/courses/${res
+                                          .locals.course
+                                          .reference}/enrollments/${enrollment.reference}?_method=DELETE"
+                                      >
+                                        <p>
+                                          <button
+                                            class="full-width"
+                                            onclick="${javascript`
+                                              if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                                event.preventDefault();
+                                            `}"
+                                          >
+                                            Remove Yourself from Course
+                                          </button>
+                                        </p>
+                                      </form>
+                                    </div>
+                                  </div>
+                                `}
+                          </details>
+                        `
+                      )}
+                    </details>
+
+                    <hr />
+                  `;
+                })()}
+
+            <p><strong>Accent color</strong></p>
+            <p class="hint">
+              A bar of this color appears at the top of your screen to help you
+              tell courses apart.
+              $${res.locals.enrollment.role !== "staff"
+                ? html``
+                : html`Everyone gets a different color of their choosing.`}
+            </p>
             <div
               style="${css`
-                display: flex;
-                margin: -1rem 0;
-
-                & > * {
-                  flex: 1;
-                }
-
-                & > * + * {
-                  margin-left: 2rem;
-                }
+                margin-left: -5px;
+                margin-top: -1rem;
               `}"
             >
-              <p>
-                <strong>Role</strong><br />
-                <span
-                  style="${css`
-                    display: flex;
-
-                    & > * + * {
-                      margin-left: 1rem;
-                    }
-                  `}"
-                >
-                  $${ROLES.map(
-                    (role, index) =>
-                      html`
-                        <label>
-                          <input
-                            type="radio"
-                            name="role"
-                            value="${role}"
-                            required
-                            $${index === 0 ? `checked` : ``}
-                          />
-                          ${lodash.capitalize(role)}
-                        </label>
-                      `
-                  )}
-                </span>
-              </p>
-
-              <p>
-                <label>
-                  <strong>Expiration</strong><br />
-                  <span
-                    style="${css`
-                      display: flex;
-                      align-items: baseline;
-
-                      & > * + * {
-                        margin-left: 0.5rem !important;
-                      }
-                    `}"
-                  >
-                    <span>
-                      <input
-                        type="checkbox"
-                        onchange="${javascript`
-                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                          expiresAt.disabled = !this.checked;
-                          if (this.checked) {
-                            expiresAt.focus();
-                            expiresAt.setSelectionRange(0, 0);
-                          }
-                        `}"
-                      />
-                    </span>
-                    <span>Expires at</span>
-                    <input
-                      type="text"
-                      name="expiresAt"
-                      value="${new Date().toISOString()}"
-                      required
-                      disabled
-                      data-validator="${javascript`
-                        if (new Date(this.value).getTime() <= Date.now())
-                          return "Must be in the future";
-                      `}"
-                      class="full-width datetime"
+              $${ACCENT_COLORS.map(
+                (accentColor) =>
+                  html`
+                    <form
+                      method="POST"
+                      action="${app.get("url")}/courses/${res.locals.course
+                        .reference}/settings?_method=PATCH"
                       style="${css`
-                        flex: 1 !important;
+                        display: inline-block;
                       `}"
-                    />
-                  </span>
-                </label>
-              </p>
-            </div>
-            <p>
-              <strong>Sharing</strong><br />
-              <label>
-                <input
-                  type="radio"
-                  name="sharing"
-                  value="link"
-                  required
-                  checked
-                  onchange="${javascript`
-                    this.closest("p").querySelector('[name="emails"]').disabled = true;
-                  `}"
-                />
-                With an invitation link
-              </label>
-              <br />
-              <label>
-                <input
-                  type="radio"
-                  name="sharing"
-                  value="emails"
-                  required
-                  onchange="${javascript`
-                    const emails = this.closest("p").querySelector('[name="emails"]');
-                    emails.disabled = false;
-                    emails.focus();
-                    emails.setSelectionRange(0, 0);
-                  `}"
-                />
-                Via email
-              </label>
-              <br />
-              <textarea
-                name="emails"
-                required
-                class="full-width"
-                disabled
-                data-validator="${javascript`
-                  const emails = emailAddresses.parseAddressList(this.value);
-                  if (
-                    emails === null ||
-                    emails.find(
-                      (email) =>
-                        email.type !== "mailbox" || !validator.isEmail(email.address)
-                    ) !== undefined
-                  )
-                    return "Match the requested format";
-                `}"
-              ></textarea>
-              <br />
-              <small class="full-width hint">
-                Emails must be separated by commas and may include names.
-                <br />
-                Example:
-                <code
-                  >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
-                >
-              </small>
-            </p>
-            <p><button>Create Invitation</button></p>
-          </form>
-
-          <hr />
-
-          <details id="enrollments">
-            <summary><strong>Enrollments</strong></summary>
-
-            $${enrollments!.map(
-              (enrollment) => html`
-                <details>
-                  <summary>
-                    ${enrollment.userName} ${`<${enrollment.userEmail}>`}
-                    <small class="hint">
-                      ${lodash.capitalize(enrollment.role)}
-                    </small>
-                  </summary>
-
-                  $${enrollment.id !== res.locals.user.id
-                    ? html`
-                        <div
+                    >
+                      <input
+                        type="hidden"
+                        name="accentColor"
+                        value="${accentColor}"
+                      />
+                      <p>
+                        <button
                           style="${css`
-                            display: flex;
-
-                            & > * {
-                              flex: 1;
-                            }
-
-                            & > * + * {
-                              margin-left: 2rem;
+                            &,
+                            &:active {
+                              all: unset;
                             }
                           `}"
                         >
-                          <form
-                            method="POST"
-                            action="${app.get("url")}/courses/${res.locals
-                              .course
-                              .reference}/enrollments/${enrollment.reference}?_method=PATCH"
-                          >
-                            <p>
-                              <strong>Role</strong><br />
-                              <span
-                                style="${css`
-                                  display: flex;
-                                  align-items: baseline;
-
-                                  & > * + * {
-                                    margin-left: 1rem;
-                                  }
-                                `}"
-                              >
-                                $${ROLES.map(
-                                  (role) =>
-                                    html`
-                                      <label>
-                                        <input
-                                          type="radio"
-                                          name="role"
-                                          value="${role}"
-                                          required
-                                          ${role === enrollment.role
-                                            ? `checked`
-                                            : ``}
-                                        />
-                                        ${lodash.capitalize(role)}
-                                      </label>
-                                    `
-                                )}
-                                <button
-                                  style="${css`
-                                    flex: 1;
-                                  `}"
-                                >
-                                  Change Role
-                                </button>
-                              </span>
-                            </p>
-                          </form>
-
-                          <div>
-                            <form
-                              method="POST"
-                              action="${app.get("url")}/courses/${res.locals
-                                .course
-                                .reference}/enrollments/${enrollment.reference}?_method=DELETE"
-                            >
-                              <p class="red">
-                                <strong>Danger Zone</strong><br />
-                                <button
-                                  class="full-width"
-                                  onclick="${javascript`
-                              if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
-                                event.preventDefault();
-                            `}"
-                                >
-                                  Remove from Course
-                                </button>
-                              </p>
-                            </form>
-                          </div>
-                        </div>
-                      `
-                    : enrollments!.filter(
-                        (enrollment) => enrollment.role === "staff"
-                      ).length === 1
-                    ? html`
-                        <p>
-                          You may not modify the details of your enrollment in
-                          ${res.locals.course.name} because you’re the only
-                          staff member.
-                        </p>
-                      `
-                    : html`
-                        <div class="red">
-                          <p
-                            style="${css`
-                              margin-bottom: -1rem;
-                            `}"
-                          >
-                            <strong>Danger Zone</strong>
-                          </p>
-
-                          <div
-                            style="${css`
-                              display: flex;
-
-                              & > * {
-                                flex: 1;
-                              }
-
-                              & > * + * {
-                                margin-left: 2rem;
-                              }
-                            `}"
-                          >
-                            <form
-                              method="POST"
-                              action="${app.get("url")}/courses/${res.locals
-                                .course
-                                .reference}/enrollments/${enrollment.reference}?_method=PATCH"
-                            >
-                              <input
-                                type="hidden"
-                                name="role"
-                                value="student"
-                              />
-                              <p>
-                                <button
-                                  class="full-width"
-                                  onclick="${javascript`
-                                    if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
-                                      event.preventDefault();
-                                  `}"
-                                >
-                                  Convert Yourself into Student
-                                </button>
-                              </p>
-                            </form>
-
-                            <form
-                              method="POST"
-                              action="${app.get("url")}/courses/${res.locals
-                                .course
-                                .reference}/enrollments/${enrollment.reference}?_method=DELETE"
-                            >
-                              <p>
-                                <button
-                                  class="full-width"
-                                  onclick="${javascript`
-                                    if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
-                                      event.preventDefault();
-                                  `}"
-                                >
-                                  Remove Yourself from Course
-                                </button>
-                              </p>
-                            </form>
-                          </div>
-                        </div>
-                      `}
-                </details>
-              `
-            )}
-          </details>
-
-          <hr />
-        `
+                          <svg width="30" height="30">
+                            <circle
+                              cx="15"
+                              cy="15"
+                              r="10"
+                              fill="${accentColor}"
+                            />
+                            $${accentColor === res.locals.enrollment.accentColor
+                              ? html`<circle
+                                  cx="15"
+                                  cy="15"
+                                  r="3"
+                                  fill="white"
+                                />`
+                              : html``}
+                          </svg>
+                        </button>
+                      </p>
+                    </form>
+                  `
+              )}
+            </div>
+          `
+        )
       );
     }
   );
-
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/settings",
-    ...isEnrolledInCourseMiddleware,
-    (req, res) => {
-      courseSettings(req, res);
-    }
-  );
-
-  const courseSettings = (
-    req: express.Request<
-      { courseReference: string },
-      HTML,
-      {},
-      {},
-      IsEnrolledInCourseMiddlewareLocals
-    >,
-    res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
-    body: HTML = html``
-  ): void => {
-    res.send(
-      app.get("layout main")(
-        req,
-        res,
-        html`
-          <title>
-            Course Settings · ${res.locals.course.name} · CourseLore
-          </title>
-        `,
-        html`
-          <h1>
-            Course Settings ·
-            <a href="${app.get("url")}/courses/${res.locals.course.reference}"
-              >${res.locals.course.name}</a
-            >
-          </h1>
-          $${courseSwitcher(req, res, "/settings")} $${body}
-          <p><strong>Accent color</strong></p>
-          <p class="hint">
-            A bar of this color appears at the top of your screen to help you
-            tell courses apart.
-            $${res.locals.enrollment.role !== "staff"
-              ? html``
-              : html`Everyone gets a different color of their choosing.`}
-          </p>
-          <div
-            style="${css`
-              margin-left: -5px;
-              margin-top: -1rem;
-            `}"
-          >
-            $${ACCENT_COLORS.map(
-              (accentColor) =>
-                html`
-                  <form
-                    method="POST"
-                    action="${app.get("url")}/courses/${res.locals.course
-                      .reference}/settings?_method=PATCH"
-                    style="${css`
-                      display: inline-block;
-                    `}"
-                  >
-                    <input
-                      type="hidden"
-                      name="accentColor"
-                      value="${accentColor}"
-                    />
-                    <p>
-                      <button
-                        style="${css`
-                          &,
-                          &:active {
-                            all: unset;
-                          }
-                        `}"
-                      >
-                        <svg width="30" height="30">
-                          <circle
-                            cx="15"
-                            cy="15"
-                            r="10"
-                            fill="${accentColor}"
-                          />
-                          $${accentColor === res.locals.enrollment.accentColor
-                            ? html`<circle
-                                cx="15"
-                                cy="15"
-                                r="3"
-                                fill="white"
-                              />`
-                            : html``}
-                        </svg>
-                      </button>
-                    </p>
-                  </form>
-                `
-            )}
-          </div>
-        `
-      )
-    );
-  };
 
   app.patch<
     { courseReference: string },
