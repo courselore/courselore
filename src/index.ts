@@ -3341,14 +3341,14 @@ export default function courselore(rootDirectory: string): express.Express {
           for (const email of emails as emailAddresses.ParsedMailbox[]) {
             if (
               database.get<{ exists: number }>(sql`
-                  SELECT EXISTS(
-                    SELECT 1
-                    FROM "enrollments"
-                    JOIN "users" ON "enrollments"."user" = "users"."id"
-                    WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                          "users"."email" = ${email.address}
-                  ) AS "exists"
-                `)!.exists === 1
+                SELECT EXISTS(
+                  SELECT 1
+                  FROM "enrollments"
+                  JOIN "users" ON "enrollments"."user" = "users"."id"
+                  WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                        "users"."email" = ${email.address}
+                ) AS "exists"
+              `)!.exists === 1
             )
               continue;
 
@@ -3396,7 +3396,8 @@ export default function courselore(rootDirectory: string): express.Express {
             );
 
             sendInvitationEmail({
-              invitation: { id: invitationId, ...invitation },
+              id: invitationId,
+              ...invitation,
               course: res.locals.course,
             });
           }
@@ -3427,21 +3428,19 @@ export default function courselore(rootDirectory: string): express.Express {
     "/courses/:courseReference/invitations/:invitationReference",
     ...mayManageInvitationMiddleware,
     (req, res, next) => {
-      if (res.locals.invitationJoinCourse.invitation.usedAt !== null)
-        return next("validation");
+      if (res.locals.invitation.usedAt !== null) return next("validation");
 
       if (req.body.resend === "true") {
-        if (res.locals.invitationJoinCourse.invitation.email === null)
-          return next("validation");
+        if (res.locals.invitation.email === null) return next("validation");
 
-        sendInvitationEmail(res.locals.invitationJoinCourse);
+        sendInvitationEmail(res.locals.invitation);
       }
 
       if (req.body.role !== undefined) {
         if (!ROLES.includes(req.body.role)) return next("validation");
 
         database.run(
-          sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+          sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
         );
       }
 
@@ -3455,14 +3454,14 @@ export default function courselore(rootDirectory: string): express.Express {
           return next("validation");
 
         database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
       }
 
       if (req.body.expireNow === "true")
         database.run(
           sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
-            res.locals.invitationJoinCourse.invitation.id
+            res.locals.invitation.id
           }`
         );
 
@@ -3485,14 +3484,14 @@ export default function courselore(rootDirectory: string): express.Express {
     ...mayManageInvitationMiddleware,
     asyncHandler(async (req, res, next) => {
       if (
-        res.locals.invitationJoinCourse.invitation.email !== null ||
-        isExpired(res.locals.invitationJoinCourse.invitation.expiresAt)
+        res.locals.invitation.email !== null ||
+        isExpired(res.locals.invitation.expiresAt)
       )
         return next();
 
       const link = `${app.get("url")}/courses/${
         res.locals.course.reference
-      }/invitations/${res.locals.invitationJoinCourse.invitation.reference}`;
+      }/invitations/${res.locals.invitation.reference}`;
       res.send(
         app.get("layout main")(
           req,
@@ -3588,25 +3587,17 @@ export default function courselore(rootDirectory: string): express.Express {
           req,
           res,
           html`
-            <title>
-              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
-              CourseLore
-            </title>
+            <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
           html`
             <h1>
               Invitation ·
-              <a
-                href="${app.get("url")}/courses/${res.locals
-                  .invitationJoinCourse.course.reference}"
-                >${res.locals.invitationJoinCourse.course.name}</a
+              <a href="${app.get("url")}/courses/${res.locals.course.reference}"
+                >${res.locals.course.name}</a
               >
             </h1>
 
-            <p>
-              You’re already enrolled in
-              ${res.locals.invitationJoinCourse.course.name}.
-            </p>
+            <p>You’re already enrolled in ${res.locals.course.name}.</p>
           `
         )
       );
@@ -3629,21 +3620,15 @@ export default function courselore(rootDirectory: string): express.Express {
           req,
           res,
           html`
-            <title>
-              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
-              CourseLore
-            </title>
+            <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
           html`
-            <h1>Welcome to ${res.locals.invitationJoinCourse.course.name}!</h1>
+            <h1>Welcome to ${res.locals.course.name}!</h1>
 
             <form method="POST">
               <p>
                 <button>
-                  Enroll as
-                  ${lodash.capitalize(
-                    res.locals.invitationJoinCourse.invitation.role
-                  )}
+                  Enroll as ${lodash.capitalize(res.locals.invitation.role)}
                 </button>
               </p>
             </form>
@@ -3669,26 +3654,22 @@ export default function courselore(rootDirectory: string): express.Express {
           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
             ${res.locals.user.id},
-            ${res.locals.invitationJoinCourse.course.id},
+            ${res.locals.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${res.locals.invitationJoinCourse.invitation.role},
+            ${res.locals.invitation.role},
             ${defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
-      if (res.locals.invitationJoinCourse.invitation.email !== null)
+      if (res.locals.invitation.email !== null)
         database.run(
           sql`
           UPDATE "invitations"
           SET "usedAt" = ${new Date().toISOString()}
-          WHERE "id" = ${res.locals.invitationJoinCourse.invitation.id}`
+          WHERE "id" = ${res.locals.invitation.id}`
         );
 
-      res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.invitationJoinCourse.course.reference
-        }`
-      );
+      res.redirect(`${app.get("url")}/courses/${res.locals.course.reference}`);
     }
   );
 
@@ -3708,10 +3689,7 @@ export default function courselore(rootDirectory: string): express.Express {
           req,
           res,
           html`
-            <title>
-              Invitation · ${res.locals.invitationJoinCourse.course.name} ·
-              CourseLore
-            </title>
+            <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
           html`
             <div
@@ -3719,26 +3697,22 @@ export default function courselore(rootDirectory: string): express.Express {
                 text-align: center;
               `}"
             >
-              <h1>
-                Welcome to ${res.locals.invitationJoinCourse.course.name}!
-              </h1>
+              <h1>Welcome to ${res.locals.course.name}!</h1>
 
               <p>
                 To enroll, first you have to
                 <a
                   href="${app.get("url")}/authenticate?${qs.stringify({
                     redirect: req.originalUrl,
-                    ...(res.locals.invitationJoinCourse.invitation.email ===
-                    null
+                    ...(res.locals.invitation.email === null
                       ? {}
                       : {
-                          email:
-                            res.locals.invitationJoinCourse.invitation.email,
+                          email: res.locals.invitation.email,
                         }),
-                    ...(res.locals.invitationJoinCourse.invitation.name === null
+                    ...(res.locals.invitation.name === null
                       ? {}
                       : {
-                          name: res.locals.invitationJoinCourse.invitation.name,
+                          name: res.locals.invitation.name,
                         }),
                   })}"
                   >authenticate</a
