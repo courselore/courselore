@@ -549,6 +549,7 @@ export default async function courselore(
                   display: none !important;
                 }
 
+                /* FIXME: Try ‘.full-width’ instead of ‘!important’ */
                 .full-width {
                   box-sizing: border-box !important;
                   width: 100% !important;
@@ -675,7 +676,6 @@ export default async function courselore(
               // https://day.js.org
               // http://timeago.yarp.com
               // https://sugarjs.com
-
               const MINUTES = 60 * 1000;
               const HOURS = 60 * MINUTES;
               const DAYS = 24 * HOURS;
@@ -710,7 +710,7 @@ export default async function courselore(
                     localeMatcher: "lookup",
                     numeric: "auto",
                   }).format(
-                    // TODO: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                    // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
                     Math.round(value),
                     unit
                   );
@@ -719,11 +719,22 @@ export default async function courselore(
               })();
             })();
 
-            for (const element of document.querySelectorAll("input.datetime"))
-              element.value = new Date(element.value).toLocaleString("sv");
+            for (const element of document.querySelectorAll("input.datetime")) {
+              const date = new Date(element.value);
+              element.value =
+                String(date.getFullYear()) +
+                "-" +
+                String(date.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(date.getDate()).padStart(2, "0") +
+                " " +
+                String(date.getHours()).padStart(2, "0") +
+                ":" +
+                String(date.getMinutes()).padStart(2, "0");
+            }
 
             function isValid(element) {
-              const resetters = [];
+              const formatters = [];
               const isValid = (element.matches("form")
                 ? [...element.querySelectorAll("*")]
                 : [element]
@@ -736,19 +747,16 @@ export default async function courselore(
                 const customValidity = customValidator(element);
                 if (typeof customValidity !== "string") return true;
                 element.setCustomValidity(customValidity);
-                resetters.push(() => {
-                  element.addEventListener(
-                    "input",
-                    () => {
-                      element.setCustomValidity("");
-                    },
-                    { once: true }
-                  );
-                });
+                element.addEventListener(
+                  "input",
+                  () => {
+                    element.setCustomValidity("");
+                  },
+                  { once: true }
+                );
                 return element.reportValidity();
               });
-
-              if (!isValid) for (const resetter of resetters) resetter();
+              if (isValid) for (const formatter of formatters) formatter();
               return isValid;
 
               function customValidator(element) {
@@ -766,18 +774,13 @@ export default async function courselore(
 
                 if (element.matches("input.datetime")) {
                   if (
-                    !element.value.match(
-                      ${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/}
-                    )
+                    !element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/})
                   )
-                    return "Match the pattern YYYY-MM-DD HH:MM:SS";
+                    return "Match the pattern YYYY-MM-DD HH:MM";
                   const date = new Date(element.value.replace(" ", "T"));
                   if (isNaN(date.getTime())) return "Invalid datetime";
-                  element.value = date.toISOString();
-                  resetters.push(() => {
-                    element.value = new Date(element.value).toLocaleString(
-                      "sv"
-                    );
+                  formatters.push(() => {
+                    element.value = date.toISOString();
                   });
                 }
 
