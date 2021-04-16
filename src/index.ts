@@ -1013,39 +1013,40 @@ export default function courselore(rootDirectory: string): express.Express {
     "utf-8"
   );
 
-  shiki.getHighlighter({ theme: "light-plus" }).then((lightHighlighter) => {
-    shiki.getHighlighter({ theme: "dark-plus" }).then((darkHighlighter) => {
-      // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
-      // TODO: Extract this into a library?
-      const textProcessor = unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkMath)
-        .use(remarkRehype, { allowDangerousHtml: true })
-        .use(rehypeRaw)
-        .use(
-          rehypeSanitize,
-          deepMerge<hastUtilSanitize.Schema>(
-            require("hast-util-sanitize/lib/github.json"),
-            {
-              attributes: {
-                code: ["className"],
-                span: [["className", "math-inline"]],
-                div: [["className", "math-display"]],
-              },
-            }
-          )
+  Promise.all([
+    shiki.getHighlighter({ theme: "light-plus" }),
+    shiki.getHighlighter({ theme: "dark-plus" }),
+  ]).then(([lightHighlighter, darkHighlighter]) => {
+    // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
+    // TODO: Extract this into a library?
+    const textProcessor = unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkMath)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(
+        rehypeSanitize,
+        deepMerge<hastUtilSanitize.Schema>(
+          require("hast-util-sanitize/lib/github.json"),
+          {
+            attributes: {
+              code: ["className"],
+              span: [["className", "math-inline"]],
+              div: [["className", "math-display"]],
+            },
+          }
         )
-        .use(rehypeShiki, {
-          highlighter: { light: lightHighlighter, dark: darkHighlighter },
-        })
-        .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
-        .use(rehypeStringify);
-      app.set(
-        "text processor",
-        (text: string): HTML => textProcessor.processSync(text).toString()
-      );
-    });
+      )
+      .use(rehypeShiki, {
+        highlighter: { light: lightHighlighter, dark: darkHighlighter },
+      })
+      .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
+      .use(rehypeStringify);
+    app.set(
+      "text processor",
+      (text: string): HTML => textProcessor.processSync(text).toString()
+    );
   });
 
   app.use(express.static(path.join(__dirname, "../public")));
