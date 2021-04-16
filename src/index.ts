@@ -1084,7 +1084,12 @@ export default function courselore(rootDirectory: string): express.Express {
     const authenticationNonce = database.get<{
       email: string;
     }>(
-      sql`SELECT "email" FROM "authenticationNonces" WHERE "nonce" = ${nonce} AND ${new Date().toISOString()} < "expiresAt"`
+      sql`
+        SELECT "email"
+        FROM "authenticationNonces"
+        WHERE "nonce" = ${nonce} AND
+              datetime(${new Date().toISOString()}) < datetime("expiresAt")
+      `
     );
     database.run(
       sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
@@ -1138,7 +1143,7 @@ export default function courselore(rootDirectory: string): express.Express {
               SELECT 1
               FROM "sessions"
               WHERE "token" = ${req.cookies.session} AND
-                    ${new Date().toISOString()} < "expiresAt"
+                    datetime(${new Date().toISOString()} < datetime("expiresAt")
             ) AS "exists"
           `
         )!.exists === 0
@@ -1197,7 +1202,7 @@ export default function courselore(rootDirectory: string): express.Express {
           FROM "sessions"
           JOIN "users" ON "sessions"."user" = "users"."id"
           WHERE "sessions"."token" = ${req.cookies.session} AND
-                ${new Date().toISOString()} < "sessions"."expiresAt"
+                datetime(${new Date().toISOString()} < datetime("sessions"."expiresAt")
         `);
       if (session === undefined) {
         closeSession(req, res);
@@ -1320,24 +1325,21 @@ export default function courselore(rootDirectory: string): express.Express {
               `}"
             >
               $${res.locals.otherEnrollments.map(
-                (otherEnrollmentJoinCourse) => html`
+                (otherEnrollment) => html`
                   <p>
                     <a
-                      href="${app.get(
-                        "url"
-                      )}/courses/${otherEnrollmentJoinCourse.course
+                      href="${app.get("url")}/courses/${otherEnrollment.course
                         .reference}${path}"
                       ><svg width="10" height="10">
                         <circle
                           cx="5"
                           cy="5"
                           r="5"
-                          fill="${otherEnrollmentJoinCourse.enrollment
-                            .accentColor}"
+                          fill="${otherEnrollment.accentColor}"
                         />
                       </svg>
-                      <strong>${otherEnrollmentJoinCourse.course.name}</strong>
-                      (${otherEnrollmentJoinCourse.enrollment.role})</a
+                      <strong>${otherEnrollment.course.name}</strong>
+                      (${otherEnrollment.role})</a
                     >
                   </p>
                 `
@@ -1680,9 +1682,11 @@ export default function courselore(rootDirectory: string): express.Express {
           `
         )
       );
-    const userId = database.run(
-      sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${req.body.name})`
-    ).lastInsertRowid as number;
+    const userId = Number(
+      database.run(
+        sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${req.body.name})`
+      ).lastInsertRowid
+    );
     openSession(req, res, userId);
     res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
   });
@@ -1703,7 +1707,6 @@ export default function courselore(rootDirectory: string): express.Express {
     { redirect?: string; email?: string; name?: string },
     IsAuthenticatedMiddlewareLocals
   >("/authenticate/:nonce", ...isAuthenticatedMiddleware, (req, res) => {
-    const redirect = `${app.get("url")}${req.query.redirect ?? "/"}`;
     const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
     const isSelf = otherUserEmail === res.locals.user.email;
     const otherUser =
@@ -1774,7 +1777,9 @@ export default function courselore(rootDirectory: string): express.Express {
                 <p>
                   Continue as $${currentUserHTML} and visit the page to which
                   the magic authentication link would have redirected you:<br />
-                  <a href="${redirect}">${redirect}</a>
+                  <a href="${app.get("url")}${req.query.redirect}"
+                    >${app.get("url")}${req.query.redirect}</a
+                  >
                 </p>
               `}
         `
@@ -2015,7 +2020,7 @@ export default function courselore(rootDirectory: string): express.Express {
             ${newCourseId},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${"staff"},
-            ${defaultAccentColor(req, res)}
+            ${defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
@@ -2024,11 +2029,10 @@ export default function courselore(rootDirectory: string): express.Express {
   );
 
   function defaultAccentColor(
-    req: express.Request<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>,
-    res: express.Response<any, IsAuthenticatedMiddlewareLocals>
+    enrollments: IsAuthenticatedMiddlewareLocals["enrollments"]
   ): AccentColor {
     const accentColorsInUse = new Set<AccentColor>(
-      res.locals.enrollments.map((enrollment) => enrollment.accentColor)
+      enrollments.map((enrollment) => enrollment.accentColor)
     );
     let accentColorsAvailable = new Set<AccentColor>(ACCENT_COLORS);
     for (const accentColorInUse of accentColorsInUse) {
@@ -3385,17 +3389,19 @@ export default function courselore(rootDirectory: string): express.Express {
               name: email.name,
               role: req.body.role,
             };
-            const invitationId = database.run(sql`
-              INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
-              VALUES (
-                ${invitation.expiresAt},
-                ${res.locals.course.id},
-                ${invitation.reference},
-                ${invitation.email},
-                ${invitation.name},
-                ${invitation.role}
-              )
-            `).lastInsertRowid as number;
+            const invitationId = Number(
+              database.run(sql`
+                INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
+                VALUES (
+                  ${invitation.expiresAt},
+                  ${res.locals.course.id},
+                  ${invitation.reference},
+                  ${invitation.email},
+                  ${invitation.name},
+                  ${invitation.role}
+                )
+              `).lastInsertRowid
+            );
 
             sendInvitationEmail({
               invitation: { id: invitationId, ...invitation },
@@ -3674,7 +3680,7 @@ export default function courselore(rootDirectory: string): express.Express {
             ${res.locals.invitationJoinCourse.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.invitationJoinCourse.invitation.role},
-            ${defaultAccentColor(req, res)}
+            ${defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
