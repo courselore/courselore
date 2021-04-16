@@ -2458,11 +2458,11 @@ export default function courselore(rootDirectory: string): express.Express {
         name: string | null;
         role: Role;
       }>(sql`
-        SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
-        FROM "invitations"
-        WHERE "course" = ${res.locals.course.id}
-        ORDER BY "id" DESC
-      `);
+          SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+          FROM "invitations"
+          WHERE "course" = ${res.locals.course.id}
+          ORDER BY "id" DESC
+        `);
 
       const enrollments = database.all<{
         id: number;
@@ -2473,17 +2473,17 @@ export default function courselore(rootDirectory: string): express.Express {
         role: Role;
       }>(
         sql`
-            SELECT "enrollments"."id",
-                   "users"."id" AS "userId",
-                   "users"."email" AS "userEmail",
-                   "users"."name" AS "userName",
-                   "enrollments"."reference",
-                   "enrollments"."role"
-            FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id"
-            WHERE "enrollments"."course" = ${res.locals.course.id}
-            ORDER BY "enrollments"."id" DESC
-          `
+          SELECT "enrollments"."id",
+                  "users"."id" AS "userId",
+                  "users"."email" AS "userEmail",
+                  "users"."name" AS "userName",
+                  "enrollments"."reference",
+                  "enrollments"."role"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "enrollments"."course" = ${res.locals.course.id}
+          ORDER BY "enrollments"."id" DESC
+        `
       );
 
       courseSettings(
