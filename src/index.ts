@@ -1037,10 +1037,7 @@ export default function courselore(rootDirectory: string): express.Express {
           )
         )
         .use(rehypeShiki, {
-          highlighter: {
-            light: lightHighlighter,
-            dark: darkHighlighter,
-          },
+          highlighter: { light: lightHighlighter, dark: darkHighlighter },
         })
         .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
         .use(rehypeStringify);
