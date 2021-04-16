@@ -75,11 +75,27 @@ export default function courselore(rootDirectory: string): express.Express {
   const migrations = [
     () => {
       database.execute(sql`
+        CREATE TABLE "authenticationNonces" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+          "expiresAt" TEXT NOT NULL,
+          "nonce" TEXT NOT NULL UNIQUE,
+          "email" TEXT NOT NULL UNIQUE
+        );
+
         CREATE TABLE "users" (
           "id" INTEGER PRIMARY KEY AUTOINCREMENT,
           "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
           "email" TEXT NOT NULL UNIQUE,
           "name" TEXT NOT NULL
+        );
+
+        CREATE TABLE "sessions" (
+          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+          "expiresAt" TEXT NOT NULL,
+          "token" TEXT NOT NULL UNIQUE,
+          "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
         );
   
         CREATE TABLE "courses" (
@@ -141,22 +157,6 @@ export default function courselore(rootDirectory: string): express.Express {
           "post" INTEGER NOT NULL REFERENCES "posts" ON DELETE CASCADE,
           "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
           UNIQUE ("post", "enrollment")
-        );
-  
-        CREATE TABLE "authenticationNonces" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "expiresAt" TEXT NOT NULL,
-          "nonce" TEXT NOT NULL UNIQUE,
-          "email" TEXT NOT NULL UNIQUE
-        );
-  
-        CREATE TABLE "sessions" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "expiresAt" TEXT NOT NULL,
-          "token" TEXT NOT NULL UNIQUE,
-          "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
         );
   
         CREATE TABLE "emailsQueue" (
@@ -856,7 +856,7 @@ export default function courselore(rootDirectory: string): express.Express {
   );
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  const eventSources = new Set<express.Response<any, {}>>();
+  const eventSources = new Set<express.Response<any, Record<string, any>>>();
 
   interface EventSourceMiddlewareLocals {}
 
@@ -1246,17 +1246,17 @@ export default function courselore(rootDirectory: string): express.Express {
             ORDER BY "enrollments"."id" DESC
           `
         )
-        .map((row) => ({
-          id: row.id,
+        .map((enrollment) => ({
+          id: enrollment.id,
           course: {
-            id: row.courseId,
-            reference: row.courseReference,
-            name: row.courseName,
-            nextThreadReference: row.courseNextThreadReference,
+            id: enrollment.courseId,
+            reference: enrollment.courseReference,
+            name: enrollment.courseName,
+            nextThreadReference: enrollment.courseNextThreadReference,
           },
-          reference: row.reference,
-          role: row.role,
-          accentColor: row.accentColor,
+          reference: enrollment.reference,
+          role: enrollment.role,
+          accentColor: enrollment.accentColor,
         }));
       next();
     },
@@ -2105,11 +2105,11 @@ export default function courselore(rootDirectory: string): express.Express {
           // FIXME: Try to get rid of these n+1 queries.
           const firstPost = database.get<{
             createdAt: string;
-            authorEnrollmentId: number;
-            authorUserId: number;
-            authorUserEmail: string;
-            authorUserName: string;
-            authorEnrollmentRole: Role;
+            authorEnrollmentId: number | null;
+            authorUserId: number | null;
+            authorUserEmail: string | null;
+            authorUserName: string | null;
+            authorEnrollmentRole: Role | null;
             likesCount: number;
           }>(sql`
             SELECT "posts"."createdAt",
@@ -2120,8 +2120,8 @@ export default function courselore(rootDirectory: string): express.Express {
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
                    COUNT("likes"."id") AS "likesCount"
             FROM "posts"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "enrollments"."id"
-            LEFT JOIN "users" AS "authorUser" ON "enrollments"."user" = "users"."id"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
+            LEFT JOIN "users" AS "authorUser" ON "enrollments"."user" = "authorUser"."id"
             LEFT JOIN "likes" ON "posts"."id" = "likes"."post"
             GROUP BY "posts"."id"
             WHERE "posts"."thread" = ${thread.id} AND
@@ -2148,7 +2148,11 @@ export default function courselore(rootDirectory: string): express.Express {
             createdAt: firstPost.createdAt,
             updatedAt: mostRecentlyUpdatedPost.updatedAt,
             authorEnrollment:
-              firstPost.authorEnrollmentId !== null
+              firstPost.authorEnrollmentId !== null &&
+              firstPost.authorUserId !== null &&
+              firstPost.authorUserEmail !== null &&
+              firstPost.authorUserName !== null &&
+              firstPost.authorEnrollmentRole !== null
                 ? {
                     id: firstPost.authorEnrollmentId,
                     user: {
@@ -4274,8 +4278,19 @@ export default function courselore(rootDirectory: string): express.Express {
 
   interface IsThreadAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
-    thread: { id: number };
-    posts: "TODO";
+    thread: IsEnrolledInCourseMiddlewareLocals["threads"][number];
+    posts: {
+      id: number;
+      createdAt: string;
+      updatedAt: string;
+      reference: string;
+      authorEnrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
+      content: string;
+      likes: {
+        id: number;
+        enrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
+      }[];
+    }[];
   }
 
   const isThreadAccessibleMiddleware: express.RequestHandler<
@@ -4287,122 +4302,107 @@ export default function courselore(rootDirectory: string): express.Express {
   >[] = [
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
-      const threadWithMetadata = res.locals.threadsWithMetadata.find(
-        (threadWithMetadata) =>
-          threadWithMetadata.reference === req.params.threadReference
+      const thread = res.locals.threads.find(
+        (thread) => thread.reference === req.params.threadReference
       );
-      if (threadWithMetadata === undefined) return next("route");
-      const postsJoinAuthorJoinLikesJoinEnrollmentJoinUser = database
+      if (thread === undefined) return next("route");
+      res.locals.thread = thread;
+      res.locals.posts = database
         .all<{
-          postId: number;
+          id: number;
           createdAt: string;
           updatedAt: string;
-          postReference: string;
-          content: string;
+          reference: string;
           authorEnrollmentId: number | null;
-          authorEnrollmentReference: string | null;
-          role: Role | null;
-          accentColor: AccentColor | null;
           authorUserId: number | null;
-          email: string | null;
-          name: string | null;
+          authorUserEmail: string | null;
+          authorUserName: string | null;
+          authorEnrollmentRole: Role | null;
+          content: string;
         }>(
           sql`
             SELECT "posts"."id" AS "postId",
                    "posts"."createdAt",
                    "posts"."updatedAt",
-                   "posts"."reference" AS "postReference",
-                   "posts"."content",
+                   "posts"."reference",
                    "authorEnrollment"."id" AS "authorEnrollmentId",
-                   "authorEnrollment"."reference" AS "authorEnrollmentReference",
-                   "authorEnrollment"."role",
-                   "authorEnrollment"."accentColor",
                    "authorUser"."id" AS "authorUserId",
-                   "authorUser"."email",
-                   "authorUser"."name"
+                   "authorUser"."email"  AS "authorUserEmail",
+                   "authorUser"."name"  AS "authorUserName",
+                   "authorEnrollment"."role" AS "authorEnrollmentRole",
+                   "posts"."content"
             FROM "posts"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
-            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-            WHERE "posts"."thread" = ${threadWithMetadata.id}
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "enrollments"."id"
+            LEFT JOIN "users" AS "authorUser" ON "enrollments"."user" = "users"."id"
+            WHERE "posts"."thread" = ${thread.id}
             ORDER BY "posts"."id" ASC
           `
         )
-        .map((row) => ({
-          post: {
-            id: row.postId,
-            createdAt: row.createdAt,
-            updatedAt: row.updatedAt,
-            reference: row.postReference,
-            content: row.content,
-          },
-          author:
-            row.authorEnrollmentId !== null
+        .map((post) => ({
+          id: post.id,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          reference: post.reference,
+          authorEnrollment:
+            post.authorEnrollmentId !== null &&
+            post.authorUserId !== null &&
+            post.authorUserEmail !== null &&
+            post.authorUserName !== null &&
+            post.authorEnrollmentRole !== null
               ? {
-                  enrollment: {
-                    id: row.authorEnrollmentId!,
-                    reference: row.authorEnrollmentReference!,
-                    role: row.role!,
-                    accentColor: row.accentColor!,
-                  },
+                  id: post.authorEnrollmentId,
                   user: {
-                    id: row.authorUserId!,
-                    email: row.email!,
-                    name: row.name!,
+                    id: post.authorUserId,
+                    email: post.authorUserEmail,
+                    name: post.authorUserName,
                   },
+                  role: post.authorEnrollmentRole,
                 }
               : ANONYMOUS_ENROLLMENT,
-          // FIXME: Can we do better than this n+1 query?
-          likesJoinEnrollmentJoinUser: database
+          content: post.content,
+          // FIXME: Try to get rid of this n+1 query.
+          likes: database
             .all<{
-              likeId: number;
+              id: number;
               enrollmentId: number | null;
-              reference: string | null;
-              role: Role | null;
-              accentColor: AccentColor | null;
               userId: number | null;
-              email: string | null;
-              name: string | null;
+              userEmail: string | null;
+              userName: string | null;
+              enrollmentRole: Role | null;
             }>(
               sql`
-                SELECT "likes"."id" AS "likeId",
-                       "enrollments"."id" AS "enrollmentId",
-                       "enrollments"."reference",
-                       "enrollments"."role",
-                       "enrollments"."accentColor",
-                       "users"."id" AS "userId",
-                       "users"."email",
-                       "users"."name"
+                SELECT "likes"."id",
+                       "enrollment"."id" AS "enrollmentId",
+                       "user"."id" AS "userId",
+                       "user"."email"  AS "userEmail",
+                       "user"."name"  AS "userName",
+                       "enrollment"."role" AS "enrollmentRole",
                 FROM "likes"
                 LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
                 LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
-                WHERE "likes"."post" = ${row.postId}
+                WHERE "likes"."post" = ${post.id}
               `
             )
-            .map((row) => ({
-              like: { id: row.likeId },
-              enrollmentJoinUser:
-                row.enrollmentId !== null
+            .map((like) => ({
+              id: like.id,
+              enrollment:
+                like.enrollmentId !== null &&
+                like.userId !== null &&
+                like.userEmail !== null &&
+                like.userName !== null &&
+                like.enrollmentRole !== null
                   ? {
-                      enrollment: {
-                        id: row.enrollmentId!,
-                        reference: row.reference!,
-                        role: row.role!,
-                        accentColor: row.accentColor!,
-                      },
+                      id: like.enrollmentId,
                       user: {
-                        id: row.userId!,
-                        email: row.email!,
-                        name: row.name!,
+                        id: like.userId,
+                        email: like.userEmail,
+                        name: like.userName,
                       },
+                      role: like.enrollmentRole,
                     }
                   : ANONYMOUS_ENROLLMENT,
             })),
         }));
-
-      res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser = {
-        threadWithMetadata,
-        postsJoinAuthorJoinLikesJoinEnrollmentJoinUser,
-      };
 
       next();
     },
@@ -4414,50 +4414,16 @@ export default function courselore(rootDirectory: string): express.Express {
       any,
       {},
       {},
-      {
-        user: User;
-        enrollmentsJoinCourses: EnrollmentJoinCourse[];
-        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollments: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      }
+      IsThreadAccessibleMiddlewareLocals
     >,
-    res: express.Response<
-      any,
-      {
-        user: User;
-        enrollmentsJoinCourses: EnrollmentJoinCourse[];
-        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollments: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      }
-    >
+    res: express.Response<any, IsThreadAccessibleMiddlewareLocals>
   ): boolean =>
     res.locals.enrollment.role === "staff" ||
-    res.locals
-      .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-      .threadWithMetadata.author.user.id === res.locals.user.id;
-
-  interface MayEditThreadMiddlewareLocals
-    extends IsThreadAccessibleMiddlewareLocals {}
-
-  const mayEditThreadMiddleware: express.RequestHandler<
-    { courseReference: string; threadReference: string },
-    any,
-    {},
-    {},
-    MayEditThreadMiddlewareLocals
-  >[] = [
-    ...isThreadAccessibleMiddleware,
-    (req, res, next) => {
-      if (mayEditThread(req, res)) return next();
-      next("route");
-    },
-  ];
+    res.locals.thread.authorEnrollment.user.id === res.locals.user.id;
 
   interface PostExistsMiddlewareLocals
     extends IsThreadAccessibleMiddlewareLocals {
-    postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+    post: IsThreadAccessibleMiddlewareLocals["posts"][number];
   }
 
   const postExistsMiddleware: express.RequestHandler<
@@ -4469,14 +4435,11 @@ export default function courselore(rootDirectory: string): express.Express {
   >[] = [
     ...isThreadAccessibleMiddleware,
     (req, res, next) => {
-      const postJoinAuthorJoinLikesJoinEnrollmentJoinUser = res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthorJoinLikesJoinEnrollmentJoinUser.find(
-        (postJoinAuthorJoinLikesJoinEnrollmentJoinUser) =>
-          postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.reference ===
-          req.params.postReference
+      const post = res.locals.posts.find(
+        (post) => post.reference === req.params.postReference
       );
-      if (postJoinAuthorJoinLikesJoinEnrollmentJoinUser === undefined)
-        return next("route");
-      res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser = postJoinAuthorJoinLikesJoinEnrollmentJoinUser;
+      if (post === undefined) return next("route");
+      res.locals.post = post;
       next();
     },
   ];
@@ -4487,29 +4450,13 @@ export default function courselore(rootDirectory: string): express.Express {
       any,
       {},
       {},
-      {
-        user: User;
-        enrollmentsJoinCourses: EnrollmentJoinCourse[];
-        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollments: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      }
+      IsThreadAccessibleMiddlewareLocals
     >,
-    res: express.Response<
-      any,
-      {
-        user: User;
-        enrollmentsJoinCourses: EnrollmentJoinCourse[];
-        enrollmentJoinCourseJoinThreadsWithMetadata: EnrollmentJoinCourseJoinThreadsWithMetadata;
-        otherEnrollments: EnrollmentJoinCourse[];
-        threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser: ThreadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser;
-      }
-    >,
-    postJoinAuthorJoinLikesJoinEnrollmentJoinUser: PostJoinAuthorJoinLikesJoinEnrollmentJoinUser
+    res: express.Response<any, IsThreadAccessibleMiddlewareLocals>,
+    post: PostExistsMiddlewareLocals["post"]
   ): boolean =>
     res.locals.enrollment.role === "staff" ||
-    postJoinAuthorJoinLikesJoinEnrollmentJoinUser.author.user.id ===
-      res.locals.user.id;
+    post.authorEnrollment.user.id === res.locals.user.id;
 
   interface MayEditPostMiddlewareLocals extends PostExistsMiddlewareLocals {}
 
@@ -4522,14 +4469,7 @@ export default function courselore(rootDirectory: string): express.Express {
   >[] = [
     ...postExistsMiddleware,
     (req, res, next) => {
-      if (
-        mayEditPost(
-          req,
-          res,
-          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-        )
-      )
-        return next();
+      if (mayEditPost(req, res, res.locals.post)) return next();
       next("route");
     },
   ];
@@ -4551,10 +4491,8 @@ export default function courselore(rootDirectory: string): express.Express {
           res,
           html`
             <title>
-              ${res.locals
-                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                .threadWithMetadata.title}
-              · ${res.locals.course.name} · CourseLore
+              ${res.locals.thread.title} · ${res.locals.course.name} ·
+              CourseLore
             </title>
           `,
           html`
@@ -4575,19 +4513,13 @@ export default function courselore(rootDirectory: string): express.Express {
                     flex: 1;
                   `}"
                 >
-                  ${res.locals
-                    .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                    .threadWithMetadata.title}
+                  ${res.locals.thread.title}
 
                   <a
                     href="${app.get("url")}/courses/${res.locals.course
-                      .reference}/threads/${res.locals
-                      .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                      .threadWithMetadata.reference}"
+                      .reference}/threads/${res.locals.thread.reference}"
                     class="hint"
-                    >#${res.locals
-                      .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                      .threadWithMetadata.reference}</a
+                    >#${res.locals.thread.reference}</a
                   >
                 </h1>
 
@@ -4603,9 +4535,7 @@ export default function courselore(rootDirectory: string): express.Express {
                             edit.hidden = false;
                             const input = edit.querySelector('[name="title"]');
                             input.value = ${JSON.stringify(
-                              res.locals
-                                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .threadWithMetadata.title
+                              res.locals.thread.title
                             )};
                             input.focus();
                             input.setSelectionRange(0, 0);
@@ -4621,9 +4551,8 @@ export default function courselore(rootDirectory: string): express.Express {
                       <form
                         method="POST"
                         action="${app.get("url")}/courses/${res.locals.course
-                          .reference}/threads/${res.locals
-                          .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                          .threadWithMetadata.reference}?_method=DELETE"
+                          .reference}/threads/${res.locals.thread
+                          .reference}?_method=DELETE"
                       >
                         <p>
                           <button
@@ -4646,9 +4575,8 @@ export default function courselore(rootDirectory: string): express.Express {
                     <form
                       method="POST"
                       action="${app.get("url")}/courses/${res.locals.course
-                        .reference}/threads/${res.locals
-                        .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                        .threadWithMetadata.reference}?_method=PATCH"
+                        .reference}/threads/${res.locals.thread
+                        .reference}?_method=PATCH"
                       hidden
                       class="edit"
                       style="${css`
@@ -4693,11 +4621,10 @@ export default function courselore(rootDirectory: string): express.Express {
                 : html``}
             </div>
 
-            $${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.postsJoinAuthorJoinLikesJoinEnrollmentJoinUser.map(
-              (postJoinAuthorJoinLikesJoinEnrollmentJoinUser) => html`
+            $${res.locals.posts.map(
+              (post) => html`
                 <section
-                  id="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                    .reference}"
+                  id="${post.reference}"
                   class="post"
                   style="${css`
                     border-bottom: 1px solid silver;
@@ -4721,50 +4648,29 @@ export default function courselore(rootDirectory: string): express.Express {
                         flex: 1;
                       `}"
                     >
-                      <strong
-                        >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.author
-                          .user.name}</strong
-                      >
+                      <strong>${post.authorEnrollment.user.name}</strong>
                       <span class="hint">
                         said
-                        <time
-                          >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                            .createdAt}</time
-                        >
-                        $${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                          .updatedAt !==
-                        postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                          .createdAt
+                        <time>${post.createdAt}</time>
+                        $${post.updatedAt !== post.createdAt
                           ? html`
                               and last edited
-                              <time
-                                >${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                  .post.updatedAt}</time
-                              >
+                              <time>${post.updatedAt}</time>
                             `
                           : html``}
                         <a
                           href="${app.get("url")}/courses/${res.locals.course
                             .reference}/threads/${req.params
-                            .threadReference}#${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .post.reference}"
+                            .threadReference}#${post.reference}"
                           style="${css`
                             text-decoration: none;
                           `}"
-                          >#${res.locals
-                            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .threadWithMetadata
-                            .reference}/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .post.reference}</a
+                          >#${res.locals.thread.reference}/${post.reference}</a
                         >
                       </span>
                     </p>
 
-                    $${mayEditPost(
-                      req,
-                      res,
-                      postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                    )
+                    $${mayEditPost(req, res, post)
                       ? html`
                           <p>
                             <button
@@ -4777,8 +4683,7 @@ export default function courselore(rootDirectory: string): express.Express {
                                 edit.hidden = false;
                                 const textarea = edit.querySelector('[name="content"]');
                                 textarea.value = ${JSON.stringify(
-                                  postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                    .post.content
+                                  post.content
                                 )};
                                 textarea.focus();
                                 textarea.setSelectionRange(0, 0);
@@ -4791,17 +4696,13 @@ export default function courselore(rootDirectory: string): express.Express {
                         `
                       : html``}
                     $${res.locals.enrollment.role === "staff" &&
-                    postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-                      .reference !== "1"
+                    post.reference !== "1"
                       ? html`
                           <form
                             method="POST"
                             action="${app.get("url")}/courses/${res.locals
-                              .course.reference}/threads/${res.locals
-                              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .threadWithMetadata
-                              .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .post.reference}?_method=DELETE"
+                              .course.reference}/threads/${res.locals.thread
+                              .reference}/posts/${post.reference}?_method=DELETE"
                           >
                             <p>
                               <button
@@ -4820,50 +4721,29 @@ export default function courselore(rootDirectory: string): express.Express {
                   </div>
 
                   <div class="show">
-                    $${app.get("text processor")(
-                      postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.content
-                    )}
+                    $${app.get("text processor")(post.content)}
 
                     <!-- TODO: Say “you” when you have liked the post. -->
                     <form
                       method="POST"
                       action="${app.get("url")}/courses/${res.locals.course
-                        .reference}/threads/${res.locals
-                        .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                        .threadWithMetadata
-                        .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                        .post
-                        .reference}/likes${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
-                        (likeJoinEnrollmentJoinUser) =>
-                          likeJoinEnrollmentJoinUser.enrollmentJoinUser.user
-                            .id === res.locals.user.id
+                        .reference}/threads/${res.locals.thread
+                        .reference}/posts/${post.reference}/likes${post.likes.find(
+                        (like) => like.enrollment.user.id === res.locals.user.id
                       ) === undefined
                         ? ""
                         : "?_method=DELETE"}"
-                      title="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                        .likesJoinEnrollmentJoinUser.length === 0
+                      title="${post.likes.length === 0
                         ? "Be the first to like this"
-                        : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .likesJoinEnrollmentJoinUser.length === 1
-                        ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} liked this`
-                        : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .likesJoinEnrollmentJoinUser.length === 2
-                        ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name} and ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name} liked this`
-                        : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .likesJoinEnrollmentJoinUser.length === 3
-                        ? `${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[0].enrollmentJoinUser.user.name}, ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser[1].enrollmentJoinUser.user.name}, and 1 other liked this`
-                        : `${
-                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .likesJoinEnrollmentJoinUser[0].enrollmentJoinUser
-                              .user.name
-                          }, ${
-                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .likesJoinEnrollmentJoinUser[1].enrollmentJoinUser
-                              .user.name
-                          }, and ${
-                            postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                              .likesJoinEnrollmentJoinUser.length - 2
-                          } others liked this`}"
+                        : post.likes.length === 1
+                        ? `${post.likes[0].enrollment.user.name} liked this`
+                        : post.likes.length === 2
+                        ? `${post.likes[0].enrollment.user.name} and ${post.likes[1].enrollment.user.name} liked this`
+                        : post.likes.length === 3
+                        ? `${post.likes[0].enrollment.user.name}, ${post.likes[1].enrollment.user.name}, and 1 other liked this`
+                        : `${post.likes[0].enrollment.user.name}, ${
+                            post.likes[1].enrollment.user.name
+                          }, and ${post.likes.length - 2} others liked this`}"
                     >
                       <p
                         style="${css`
@@ -4881,10 +4761,9 @@ export default function courselore(rootDirectory: string): express.Express {
                           >
                             <svg viewBox="0 0 16 16" width="12" height="12">
                               <path
-                                d="${postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
-                                  (likeJoinEnrollmentJoinUser) =>
-                                    likeJoinEnrollmentJoinUser
-                                      .enrollmentJoinUser.user.id ===
+                                d="${post.likes.find(
+                                  (like) =>
+                                    like.enrollment.user.id ===
                                     res.locals.user.id
                                 ) === undefined
                                   ? "m 8.3496094,0.06640625 c 0.1554219,-0.01874023 0.316875,-0.019125 0.484375,0 0.763,0.087 1.4997656,0.2938125 2.0097656,0.8828125 C 11.34875,1.5302188 11.5,2.328 11.5,3.25 c 0,0.467 -0.08625,1.1187188 -0.15625,1.6367188 L 11.328125,5 H 12.75 c 0.603,0 1.173969,0.084031 1.667969,0.3320312 0.50821,0.2539996 0.910468,0.6800156 1.136719,1.2011719 0.452999,0.998 0.4375,2.4474063 0.1875,4.3164059 l -0.03906,0.304688 c -0.105,0.79 -0.1945,1.473203 -0.3125,2.033203 -0.131,0.63 -0.314969,1.208875 -0.667969,1.671875 C 13.970656,15.846375 12.706,16 11,16 9.152,16 7.7653281,15.667656 6.6113281,15.347656 c -0.165,-0.045 -0.3226093,-0.08981 -0.4746093,-0.132812 -0.658,-0.186 -1.1996094,-0.341016 -1.7246094,-0.416016 C 4.1752281,15.515796 3.5050863,16.000149 2.75,16 h -1 C 0.784,16 0,15.216 0,14.25 V 6.75 C 0,5.7835017 0.78350169,5 1.75,5 h 1 c 0.6240451,-6.83e-5 1.2005796,0.3312739 1.5136719,0.8710938 0.258,-0.105 0.5899687,-0.2678125 0.9179687,-0.5078126 C 5.8526406,4.8732813 6.5,4.079 6.5,2.75 V 2.25 C 6.5,1.19825 7.2616562,0.19758789 8.3496094,0.06640625 Z M 8.6640625,1.5566406 C 8.3570625,1.5206406 8,1.793 8,2.25 v 0.5 C 8,4.672 7.0214063,5.8772187 6.0664062,6.5742188 5.5879272,6.9217253 5.0602055,7.1953645 4.5,7.3847656 v 5.9160154 c 0.705,0.088 1.3902656,0.282563 2.0722656,0.476563 l 0.4414063,0.125 c 1.096,0.305 2.3333281,0.599609 3.9863281,0.599609 1.794,0 2.279344,-0.224781 2.527344,-0.550781 0.147,-0.193 0.276531,-0.50336 0.394531,-1.06836 0.105,-0.501999 0.187922,-1.12564 0.294922,-1.93164 l 0.04101,-0.298828 C 14.507813,8.7703438 14.446453,7.7182969 14.189453,7.1542969 14.105554,6.9457685 13.947011,6.776555 13.746094,6.6757812 13.538094,6.5717812 13.227,6.5019531 12.75,6.5019531 H 11 c -0.686,0 -1.2940781,-0.5788906 -1.2050781,-1.3378906 0.023,-0.192 0.048219,-0.3899375 0.074219,-0.5859375 C 9.9341406,4.090125 10,3.6099531 10,3.2519531 10,2.4429531 9.8568906,2.1015469 9.7128906,1.9355469 9.5758906,1.7775469 9.3100625,1.6306406 8.6640625,1.5566406 Z M 1.75,6.5 C 1.6119288,6.5 1.5,6.6119288 1.5,6.75 v 7.5 c 0,0.138071 0.1119288,0.25 0.25,0.25 h 1 C 2.8880712,14.5 3,14.388071 3,14.25 V 6.75 C 3,6.6119288 2.8880712,6.5 2.75,6.5 Z"
@@ -4893,30 +4772,19 @@ export default function courselore(rootDirectory: string): express.Express {
                               ></path>
                             </svg>
                           </button>
-                          ${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .likesJoinEnrollmentJoinUser.length === 0
-                            ? ""
-                            : postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                                .likesJoinEnrollmentJoinUser.length}
+                          ${post.likes.length === 0 ? "" : post.likes.length}
                         </span>
                       </p>
                     </form>
                   </div>
 
-                  $${mayEditPost(
-                    req,
-                    res,
-                    postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                  )
+                  $${mayEditPost(req, res, post)
                     ? html`
                         <form
                           method="POST"
                           action="${app.get("url")}/courses/${res.locals.course
-                            .reference}/threads/${res.locals
-                            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .threadWithMetadata
-                            .reference}/posts/${postJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                            .post.reference}?_method=PATCH"
+                            .reference}/threads/${res.locals.thread
+                            .reference}/posts/${post.reference}?_method=PATCH"
                           hidden
                           class="edit"
                         >
@@ -4952,9 +4820,7 @@ export default function courselore(rootDirectory: string): express.Express {
             <form
               method="POST"
               action="${app.get("url")}/courses/${res.locals.course
-                .reference}/threads/${res.locals
-                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                .threadWithMetadata.reference}/posts"
+                .reference}/threads/${res.locals.thread.reference}/posts"
             >
               $${textEditor()}
               <p
@@ -4976,23 +4842,22 @@ export default function courselore(rootDirectory: string): express.Express {
     HTML,
     { title?: string },
     {},
-    MayEditThreadMiddlewareLocals
+    IsThreadAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference",
-    ...mayEditThreadMiddleware,
+    ...isThreadAccessibleMiddleware,
     (req, res, next) => {
+      if (!mayEditThread(req, res)) return next();
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
         else
           database.run(
-            sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.threadWithMetadata.id}`
+            sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.thread.id}`
           );
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.reference
+          res.locals.thread.reference
         }`
       );
     }
@@ -5010,7 +4875,7 @@ export default function courselore(rootDirectory: string): express.Express {
     ...isThreadAccessibleMiddleware,
     (req, res) => {
       database.run(
-        sql`DELETE FROM "threads" WHERE "id" = ${res.locals.threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser.threadWithMetadata.id}`
+        sql`DELETE FROM "threads" WHERE "id" = ${res.locals.thread.id}`
       );
 
       res.redirect(`${app.get("url")}/courses/${res.locals.course.reference}`);
@@ -5036,32 +4901,16 @@ export default function courselore(rootDirectory: string): express.Express {
       database.run(
         sql`
           UPDATE "threads"
-          SET "nextPostReference" = ${
-            res.locals
-              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-              .threadWithMetadata.nextPostReference + 1
-          }
-          WHERE "id" = ${
-            res.locals
-              .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-              .threadWithMetadata.id
-          }
+          SET "nextPostReference" = ${res.locals.thread.nextPostReference + 1}
+          WHERE "id" = ${res.locals.thread.id}
         `
       );
       database.run(
         sql`
           INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
           VALUES (
-            ${
-              res.locals
-                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                .threadWithMetadata.id
-            },
-            ${String(
-              res.locals
-                .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-                .threadWithMetadata.nextPostReference
-            )},
+            ${res.locals.thread.id},
+            ${String(res.locals.thread.nextPostReference)},
             ${res.locals.enrollment.id},
             ${req.body.content}
           )
@@ -5069,13 +4918,7 @@ export default function courselore(rootDirectory: string): express.Express {
       );
 
       for (const eventSource of [...eventSources].filter(
-        (eventSource) =>
-          eventSource.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.id ===
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.id
+        (eventSource) => eventSource.locals.thread?.id === res.locals.thread.id
       ))
         eventSource.write(
           `event: replaceWith\ndata:${processCSS(html`
@@ -5114,14 +4957,8 @@ export default function courselore(rootDirectory: string): express.Express {
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.reference
-        }#${
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.nextPostReference
-        }`
+          res.locals.thread.reference
+        }#${res.locals.thread.nextPostReference}`
       );
     }
   );
@@ -5147,21 +4984,14 @@ export default function courselore(rootDirectory: string): express.Express {
           UPDATE "posts"
           SET "content" = ${req.body.content},
               "updatedAt" = ${new Date().toISOString()}
-          WHERE "id" = ${
-            res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id
-          }
+          WHERE "id" = ${res.locals.post.id}
         `
       );
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.reference
-        }#${
-          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-            .reference
-        }`
+          res.locals.thread.reference
+        }#${res.locals.post.reference}`
       );
     }
   );
@@ -5177,21 +5007,13 @@ export default function courselore(rootDirectory: string): express.Express {
     ...isCourseStaffMiddleware,
     ...postExistsMiddleware,
     (req, res, next) => {
-      if (
-        res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-          .reference === "1"
-      )
-        return next("validation");
+      if (res.locals.post.reference === "1") return next("validation");
 
-      database.run(
-        sql`DELETE FROM "posts" WHERE "id" = ${res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id}`
-      );
+      database.run(sql`DELETE FROM "posts" WHERE "id" = ${res.locals.post.id}`);
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.reference
+          res.locals.thread.reference
         }`
       );
     }
@@ -5208,27 +5030,20 @@ export default function courselore(rootDirectory: string): express.Express {
     ...postExistsMiddleware,
     (req, res, next) => {
       if (
-        res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
-          (likeJoinEnrollmentJoinUser) =>
-            likeJoinEnrollmentJoinUser.enrollmentJoinUser.user.id ===
-            res.locals.user.id
+        res.locals.post.likes.find(
+          (like) => like.enrollment.user.id === res.locals.user.id
         ) !== undefined
       )
         return next("validation");
 
       database.run(
-        sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post.id}, ${res.locals.enrollment.id})`
+        sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.post.id}, ${res.locals.enrollment.id})`
       );
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.reference
-        }#${
-          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-            .reference
-        }`
+          res.locals.thread.reference
+        }#${res.locals.post.reference}`
       );
     }
   );
@@ -5243,26 +5058,17 @@ export default function courselore(rootDirectory: string): express.Express {
     "/courses/:courseReference/threads/:threadReference/posts/:postReference/likes",
     ...postExistsMiddleware,
     (req, res, next) => {
-      const likeJoinEnrollmentJoinUser = res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.likesJoinEnrollmentJoinUser.find(
-        (likeJoinEnrollmentJoinUser) =>
-          likeJoinEnrollmentJoinUser.enrollmentJoinUser.user.id ===
-          res.locals.user.id
+      const like = res.locals.post.likes.find(
+        (like) => like.enrollment.user.id === res.locals.user.id
       );
-      if (likeJoinEnrollmentJoinUser === undefined) return next("validation");
+      if (like === undefined) return next("validation");
 
-      database.run(
-        sql`DELETE FROM "likes" WHERE "id" = ${likeJoinEnrollmentJoinUser.like.id}`
-      );
+      database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals
-            .threadWithMetadataJoinPostsJoinAuthorJoinLikesJoinEnrollmentJoinUser
-            .threadWithMetadata.reference
-        }#${
-          res.locals.postJoinAuthorJoinLikesJoinEnrollmentJoinUser.post
-            .reference
-        }`
+          res.locals.thread.reference
+        }#${res.locals.post.reference}`
       );
     }
   );
@@ -5339,9 +5145,9 @@ export default function courselore(rootDirectory: string): express.Express {
         app.get("layout main")(
           req,
           res,
-          html`<title>Not Found · CourseLore</title>`,
+          html`<title>404 Not Found · CourseLore</title>`,
           html`
-            <h1>404 · Not Found</h1>
+            <h1>404 Not Found</h1>
 
             <p>
               If you think there should be something here, please contact the
@@ -5362,14 +5168,14 @@ export default function courselore(rootDirectory: string): express.Express {
         app.get("layout main")(
           req,
           res,
-          html`<title>Not Found · CourseLore</title>`,
+          html`<title>404 Not Found · CourseLore</title>`,
           html`
             <div
               style="${css`
                 text-align: center;
               `}"
             >
-              <h1>404 · Not Found</h1>
+              <h1>404 Not Found</h1>
 
               <p>
                 You may have to
