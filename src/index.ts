@@ -3297,7 +3297,7 @@ export default function courselore(rootDirectory: string): express.Express {
         !ROLES.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
-            isNaN(new Date(req.body.expiresAt).getTime()) ||
+            !isDate(req.body.expiresAt) ||
             isExpired(req.body.expiresAt))) ||
         typeof req.body.sharing !== "string" ||
         !["link", "emails"].includes(req.body.sharing)
@@ -3449,7 +3449,7 @@ export default function courselore(rootDirectory: string): express.Express {
         if (
           req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
-            isNaN(new Date(req.body.expiresAt).getTime()) ||
+            !isDate(req.body.expiresAt) ||
             isExpired(req.body.expiresAt))
         )
           return next("validation");
@@ -5503,6 +5503,13 @@ export default function courselore(rootDirectory: string): express.Express {
       `;
     };
   })();
+
+  function isDate(dateString: string) {
+    return (
+      dateString.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) &&
+      !isNaN(new Date(dateString).getTime())
+    );
+  }
 
   function isExpired(expiresAt: string | null): boolean {
     return expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
