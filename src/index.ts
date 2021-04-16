@@ -313,12 +313,11 @@ export default async function courselore(
                 button {
                   all: unset;
                   border: 1px solid gainsboro;
-                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-                  transition: background-color 0.2s, border-color 0.2s;
-
                   @media (prefers-color-scheme: dark) {
                     border-color: dimgray;
                   }
+                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+                  transition: background-color 0.2s, border-color 0.2s;
 
                   &:focus {
                     border-color: #ff77a8;
@@ -326,11 +325,10 @@ export default async function courselore(
 
                   &:disabled {
                     background-color: whitesmoke;
-                    cursor: not-allowed;
-
                     @media (prefers-color-scheme: dark) {
                       background-color: #333333;
                     }
+                    cursor: not-allowed;
                   }
                 }
 
@@ -348,7 +346,6 @@ export default async function courselore(
 
                   &:disabled {
                     color: gray;
-
                     @media (prefers-color-scheme: dark) {
                       color: whitesmoke;
                     }
@@ -430,7 +427,6 @@ export default async function courselore(
                       `
                     ).toString("base64")}")
                     center right 0.3rem no-repeat;
-
                   @media (prefers-color-scheme: dark) {
                     background-image: url("data:image/svg+xml;base64,${Buffer.from(
                       html`
@@ -463,7 +459,6 @@ export default async function courselore(
                         </svg>
                       `
                     ).toString("base64")}");
-
                     @media (prefers-color-scheme: dark) {
                       background-image: url("data:image/svg+xml;base64,${Buffer.from(
                         html`
@@ -486,11 +481,10 @@ export default async function courselore(
                 button {
                   text-align: center;
                   background-color: white;
-                  cursor: default;
-
                   @media (prefers-color-scheme: dark) {
                     background-color: #5a5a5a;
                   }
+                  cursor: default;
 
                   &:active {
                     color: white;
@@ -511,6 +505,9 @@ export default async function courselore(
 
                   & > summary + * {
                     background-color: whitesmoke;
+                    @media (prefers-color-scheme: dark) {
+                      background-color: #464646;
+                    }
                     max-width: 300px;
                     padding: 0 1rem;
                     border: 1px solid darkgray;
@@ -518,10 +515,6 @@ export default async function courselore(
                     box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
                       0 0 10px gainsboro;
                     position: absolute;
-
-                    @media (prefers-color-scheme: dark) {
-                      background-color: #464646;
-                    }
                   }
                 }
 
@@ -547,7 +540,6 @@ export default async function courselore(
                 hr {
                   border: none;
                   border-top: 1px solid silver;
-
                   @media (prefers-color-scheme: dark) {
                     border-color: black;
                   }
@@ -573,7 +565,6 @@ export default async function courselore(
 
                 .green:not(:active) {
                   color: #008751;
-
                   @media (prefers-color-scheme: dark) {
                     color: #00e436;
                   }
@@ -3902,22 +3893,20 @@ export default async function courselore(
               style="${css`
                 width: 400px;
                 border-right: 1px solid silver;
-                display: flex;
-                flex-direction: column;
-
                 @media (prefers-color-scheme: dark) {
                   border-color: black;
                 }
+                display: flex;
+                flex-direction: column;
               `}"
             >
               <header
                 style="${css`
                   border-bottom: 1px solid silver;
-                  padding: 0 1rem;
-
                   @media (prefers-color-scheme: dark) {
                     border-color: black;
                   }
+                  padding: 0 1rem;
                 `}"
               >
                 $${logoAndMenu(req, res)}
@@ -3974,7 +3963,6 @@ export default async function courselore(
                               ?.threadWithMetadata?.id
                               ? css`
                                   background-color: whitesmoke;
-
                                   @media (prefers-color-scheme: dark) {
                                     background-color: #464646;
                                   }
@@ -4748,7 +4736,6 @@ export default async function courselore(
                   class="post"
                   style="${css`
                     border-bottom: 1px solid silver;
-
                     @media (prefers-color-scheme: dark) {
                       border-color: black;
                     }
