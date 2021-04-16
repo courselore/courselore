@@ -492,7 +492,7 @@ export default async function courselore(
                   }
                 }
 
-                details.popup {
+                details.dropdown {
                   &[open] > summary::before {
                     content: "";
                     display: block;
@@ -949,7 +949,7 @@ export default async function courselore(
         ? html``
         : html`
             <details
-              class="popup"
+              class="dropdown"
               style="${css`
                 margin-right: -8px;
               `}"
@@ -1269,7 +1269,7 @@ export default async function courselore(
     res.locals.otherEnrollments.length === 0
       ? html``
       : html`
-          <details class="popup">
+          <details class="dropdown">
             <summary
               class="no-marker"
               style="${css`
