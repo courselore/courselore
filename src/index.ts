@@ -37,9 +37,7 @@ import cryptoRandomString from "crypto-random-string";
 
 const VERSION = require("../package.json").version;
 
-export default async function courselore(
-  rootDirectory: string
-): Promise<express.Express> {
+export default function courselore(rootDirectory: string): express.Express {
   const app = express();
 
   app.set("url", "http://localhost:4000");
@@ -71,7 +69,7 @@ export default async function courselore(
   } as const;
   type AnonymousEnrollment = typeof ANONYMOUS_ENROLLMENT;
 
-  await fs.ensureDir(rootDirectory);
+  fs.ensureDirSync(rootDirectory);
   const database = new Database(path.join(rootDirectory, "courselore.db"));
   app.set("database", database);
   const migrations = [
@@ -1010,44 +1008,48 @@ export default async function courselore(
     </div>
   `;
 
-  const logo = await fs.readFile(
+  const logo = fs.readFileSync(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
   );
 
-  app.set(
-    "text processor",
-    (text: string): HTML => textProcessor.processSync(text).toString()
-  );
-  // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
-  // TODO: Extract this into a library?
-  const textProcessor = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkMath)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeRaw)
-    .use(
-      rehypeSanitize,
-      deepMerge<hastUtilSanitize.Schema>(
-        require("hast-util-sanitize/lib/github.json"),
-        {
-          attributes: {
-            code: ["className"],
-            span: [["className", "math-inline"]],
-            div: [["className", "math-display"]],
+  shiki.getHighlighter({ theme: "light-plus" }).then((lightHighlighter) => {
+    shiki.getHighlighter({ theme: "dark-plus" }).then((darkHighlighter) => {
+      // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
+      // TODO: Extract this into a library?
+      const textProcessor = unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkMath)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeRaw)
+        .use(
+          rehypeSanitize,
+          deepMerge<hastUtilSanitize.Schema>(
+            require("hast-util-sanitize/lib/github.json"),
+            {
+              attributes: {
+                code: ["className"],
+                span: [["className", "math-inline"]],
+                div: [["className", "math-display"]],
+              },
+            }
+          )
+        )
+        .use(rehypeShiki, {
+          highlighter: {
+            light: lightHighlighter,
+            dark: darkHighlighter,
           },
-        }
-      )
-    )
-    .use(rehypeShiki, {
-      highlighter: {
-        light: await shiki.getHighlighter({ theme: "light-plus" }),
-        dark: await shiki.getHighlighter({ theme: "dark-plus" }),
-      },
-    })
-    .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
-    .use(rehypeStringify);
+        })
+        .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
+        .use(rehypeStringify);
+      app.set(
+        "text processor",
+        (text: string): HTML => textProcessor.processSync(text).toString()
+      );
+    });
+  });
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
@@ -5513,18 +5515,17 @@ export default async function courselore(
   return app;
 }
 
-if (require.main === module)
-  (async () => {
-    console.log(`CourseLore/${VERSION}`);
-    const configurationFile =
-      process.argv[2] === undefined ? undefined : path.resolve(process.argv[2]);
-    if (configurationFile === undefined) {
-      const app = await courselore(path.join(process.cwd(), "data"));
-      app.listen(new URL(app.get("url")).port, () => {
-        console.log(`Server started at ${app.get("url")}`);
-      });
-    } else {
-      await require(configurationFile)(require);
-      console.log(`Configuration loaded from ‘${configurationFile}’.`);
-    }
-  })();
+if (require.main === module) {
+  console.log(`CourseLore/${VERSION}`);
+  const configurationFile =
+    process.argv[2] === undefined ? undefined : path.resolve(process.argv[2]);
+  if (configurationFile === undefined) {
+    const app = courselore(path.join(process.cwd(), "data"));
+    app.listen(new URL(app.get("url")).port, () => {
+      console.log(`Server started at ${app.get("url")}`);
+    });
+  } else {
+    require(configurationFile)(require);
+    console.log(`Configuration loaded from ‘${configurationFile}’.`);
+  }
+}
