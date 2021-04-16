@@ -3620,10 +3620,12 @@ export default function courselore(rootDirectory: string): express.Express {
           req,
           res,
           html`
-            <title>Invitation · ${res.locals.course.name} · CourseLore</title>
+            <title>
+              Invitation · ${res.locals.invitation.course.name} · CourseLore
+            </title>
           `,
           html`
-            <h1>Welcome to ${res.locals.course.name}!</h1>
+            <h1>Welcome to ${res.locals.invitation.course.name}!</h1>
 
             <form method="POST">
               <p>
@@ -3654,7 +3656,7 @@ export default function courselore(rootDirectory: string): express.Express {
           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
             ${res.locals.user.id},
-            ${res.locals.course.id},
+            ${res.locals.invitation.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.invitation.role},
             ${defaultAccentColor(res.locals.enrollments)}
@@ -3664,12 +3666,15 @@ export default function courselore(rootDirectory: string): express.Express {
       if (res.locals.invitation.email !== null)
         database.run(
           sql`
-          UPDATE "invitations"
-          SET "usedAt" = ${new Date().toISOString()}
-          WHERE "id" = ${res.locals.invitation.id}`
+            UPDATE "invitations"
+            SET "usedAt" = ${new Date().toISOString()}
+            WHERE "id" = ${res.locals.invitation.id}
+          `
         );
 
-      res.redirect(`${app.get("url")}/courses/${res.locals.course.reference}`);
+      res.redirect(
+        `${app.get("url")}/courses/${res.locals.invitation.course.reference}`
+      );
     }
   );
 
@@ -3689,7 +3694,9 @@ export default function courselore(rootDirectory: string): express.Express {
           req,
           res,
           html`
-            <title>Invitation · ${res.locals.course.name} · CourseLore</title>
+            <title>
+              Invitation · ${res.locals.invitation.course.name} · CourseLore
+            </title>
           `,
           html`
             <div
@@ -3697,7 +3704,7 @@ export default function courselore(rootDirectory: string): express.Express {
                 text-align: center;
               `}"
             >
-              <h1>Welcome to ${res.locals.course.name}!</h1>
+              <h1>Welcome to ${res.locals.invitation.course.name}!</h1>
 
               <p>
                 To enroll, first you have to
