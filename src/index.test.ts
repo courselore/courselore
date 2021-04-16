@@ -15,7 +15,7 @@ beforeEach(async () => {
   const rootDirectory = await fs.mkdtemp(
     path.join(os.tmpdir(), "courselore-test-")
   );
-  const app = await courselore(rootDirectory);
+  const app = courselore(rootDirectory);
   server = app.listen(new URL(app.get("url")).port);
   client = got.default.extend({
     prefixUrl: app.get("url"),
