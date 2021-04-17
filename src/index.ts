@@ -4611,7 +4611,8 @@ export default async function courselore(
                             title.querySelector(".show").hidden = false;
                             const edit = title.querySelector(".edit");
                             edit.hidden = true;
-                            modifiedInputs.delete(edit.querySelector('[name="title"]'));
+                            for (const element of edit.querySelectorAll("*"))
+                              modifiedInputs.delete(element);
                           `}"
                         >
                           Cancel
@@ -4803,7 +4804,8 @@ export default async function courselore(
                                 post.querySelector(".show").hidden = false;
                                 const edit = post.querySelector(".edit");
                                 edit.hidden = true;
-                                modifiedInputs.delete(edit.querySelector('[name="content"]'));
+                                for (const element of edit.querySelectorAll("*"))
+                                  modifiedInputs.delete(element);
                                 post.querySelector(".edit-button").hidden = false;
                               `}"
                             >
