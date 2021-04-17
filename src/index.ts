@@ -37,7 +37,9 @@ import cryptoRandomString from "crypto-random-string";
 
 const VERSION = require("../package.json").version;
 
-export default function courselore(rootDirectory: string): express.Express {
+export default async function courselore(
+  rootDirectory: string
+): Promise<express.Express> {
   const app = express();
 
   app.set("url", "http://localhost:4000");
@@ -69,7 +71,7 @@ export default function courselore(rootDirectory: string): express.Express {
   } as const;
   type AnonymousEnrollment = typeof ANONYMOUS_ENROLLMENT;
 
-  fs.ensureDirSync(rootDirectory);
+  await fs.ensureDir(rootDirectory);
   const database = new Database(path.join(rootDirectory, "courselore.db"));
   app.set("database", database);
   const migrations = [
@@ -1008,46 +1010,45 @@ export default function courselore(rootDirectory: string): express.Express {
     </div>
   `;
 
-  const logo = fs.readFileSync(
+  const logo = await fs.readFile(
     path.join(__dirname, "../public/logo.svg"),
     "utf-8"
   );
 
-  Promise.all([
-    shiki.getHighlighter({ theme: "light-plus" }),
-    shiki.getHighlighter({ theme: "dark-plus" }),
-  ]).then(([lightHighlighter, darkHighlighter]) => {
-    // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
-    // TODO: Extract this into a library?
-    const textProcessor = unified()
-      .use(remarkParse)
-      .use(remarkGfm)
-      .use(remarkMath)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(
-        rehypeSanitize,
-        deepMerge<hastUtilSanitize.Schema>(
-          require("hast-util-sanitize/lib/github.json"),
-          {
-            attributes: {
-              code: ["className"],
-              span: [["className", "math-inline"]],
-              div: [["className", "math-display"]],
-            },
-          }
-        )
+  // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
+  // TODO: Extract this into a library?
+  const textProcessor = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(
+      rehypeSanitize,
+      deepMerge<hastUtilSanitize.Schema>(
+        require("hast-util-sanitize/lib/github.json"),
+        {
+          attributes: {
+            code: ["className"],
+            span: [["className", "math-inline"]],
+            div: [["className", "math-display"]],
+          },
+        }
       )
-      .use(rehypeShiki, {
-        highlighter: { light: lightHighlighter, dark: darkHighlighter },
-      })
-      .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
-      .use(rehypeStringify);
-    app.set(
-      "text processor",
-      (text: string): HTML => textProcessor.processSync(text).toString()
-    );
-  });
+    )
+    .use(rehypeShiki, {
+      highlighter: {
+        light: await shiki.getHighlighter({ theme: "light-plus" }),
+        dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+      },
+    })
+    .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
+    .use(rehypeStringify);
+  app.set(
+    "text processor",
+    // FIXME: Would making this async speed things up in any way?
+    (text: string): HTML => textProcessor.processSync(text).toString()
+  );
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
@@ -5288,17 +5289,18 @@ export default function courselore(rootDirectory: string): express.Express {
   return app;
 }
 
-if (require.main === module) {
-  console.log(`CourseLore/${VERSION}`);
-  const configurationFile =
-    process.argv[2] === undefined ? undefined : path.resolve(process.argv[2]);
-  if (configurationFile === undefined) {
-    const app = courselore(path.join(process.cwd(), "data"));
-    app.listen(new URL(app.get("url")).port, () => {
-      console.log(`Server started at ${app.get("url")}`);
-    });
-  } else {
-    require(configurationFile)(require);
-    console.log(`Configuration loaded from ‘${configurationFile}’.`);
-  }
-}
+if (require.main === module)
+  (async () => {
+    console.log(`CourseLore/${VERSION}`);
+    const configurationFile =
+      process.argv[2] === undefined ? undefined : path.resolve(process.argv[2]);
+    if (configurationFile === undefined) {
+      const app = await courselore(path.join(process.cwd(), "data"));
+      app.listen(new URL(app.get("url")).port, () => {
+        console.log(`Server started at ${app.get("url")}`);
+      });
+    } else {
+      await require(configurationFile)(require);
+      console.log(`Configuration loaded from ‘${configurationFile}’.`);
+    }
+  })();

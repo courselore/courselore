@@ -1,8 +1,8 @@
 import { test, expect, beforeEach, afterEach } from "@jest/globals";
 import os from "os";
-import fs from "fs/promises";
 import path from "path";
 import http from "http";
+import fs from "fs-extra";
 import * as got from "got";
 import * as toughCookie from "tough-cookie";
 import { JSDOM } from "jsdom";
@@ -15,9 +15,7 @@ beforeEach(async () => {
   const rootDirectory = await fs.mkdtemp(
     path.join(os.tmpdir(), "courselore-test-")
   );
-  const app = courselore(rootDirectory);
-  // FIXME:
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const app = await courselore(rootDirectory);
   server = app.listen(new URL(app.get("url")).port);
   client = got.default.extend({
     prefixUrl: app.get("url"),

@@ -1,11 +1,11 @@
-module.exports = (require) => {
+module.exports = async (require) => {
   const path = require("path");
   const express = require("express");
   const AutoEncrypt = require("@small-tech/auto-encrypt");
   const courselore = require(".").default;
   const customization = require(path.join(__dirname, "customization"))(require);
 
-  const app = courselore(path.join(__dirname, "data"));
+  const app = await courselore(path.join(__dirname, "data"));
 
   app.set("url", "https://courselore.org");
   app.set("administrator", "mailto:administrator@courselore.org");
