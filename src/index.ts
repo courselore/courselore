@@ -4661,8 +4661,8 @@ export default async function courselore(
                           : html``}
                         <a
                           href="${app.get("url")}/courses/${res.locals.course
-                            .reference}/threads/${req.params
-                            .threadReference}#${post.reference}"
+                            .reference}/threads/${res.locals.thread
+                            .reference}#${post.reference}"
                           style="${css`
                             text-decoration: none;
                           `}"
@@ -5216,6 +5216,7 @@ export default async function courselore(
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
+  // FIXME: Include this as a ‘<template>’ in the layout and then ‘.cloneNode()’ it when necessary.
   const loading = (() => {
     let counter = 0;
     return (): HTML => {
@@ -5292,14 +5293,13 @@ export default async function courselore(
 if (require.main === module)
   (async () => {
     console.log(`CourseLore/${VERSION}`);
-    const configurationFile =
-      process.argv[2] === undefined ? undefined : path.resolve(process.argv[2]);
-    if (configurationFile === undefined) {
+    if (process.argv[2] === undefined) {
       const app = await courselore(path.join(process.cwd(), "data"));
       app.listen(new URL(app.get("url")).port, () => {
         console.log(`Server started at ${app.get("url")}`);
       });
     } else {
+      const configurationFile = path.resolve(process.argv[2]);
       await require(configurationFile)(require);
       console.log(`Configuration loaded from ‘${configurationFile}’.`);
     }
