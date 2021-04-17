@@ -3011,7 +3011,7 @@ export default async function courselore(
                               </small>
                             </summary>
 
-                            $${enrollment.id !== res.locals.user.id
+                            $${enrollment.id !== res.locals.enrollment.id
                               ? html`
                                   <div
                                     style="${css`
