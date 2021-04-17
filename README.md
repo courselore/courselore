@@ -591,6 +591,26 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-04-17</summary>
+
+- Progress:
+  - Infrastructure for live updates of stuff on the page.
+  - Notification when someone else posts on a thread.
+  - Likes.
+  - Small niceties: Warn before leaving page; thread and post deletion; and a count of posts on threads.
+  - Stuff you don’t see: A refactoring of the types and local data; and a simpler migration system (which allows functions in addition to SQL).
+- Next week:
+  - Fix the alignment of “alerts”.
+  - Live update posts & likes count.
+  - Save the content of a new post textarea in localStorage.
+  - Tags.
+    - Question & Answer.
+    - Instructor likes → Endorsed.
+- Mobile app may not be necessary, as web applications are capable of some “native” things.
+
+</details>
+
+<details>
 <summary>2021-04-10</summary>
 
 - Progress:
