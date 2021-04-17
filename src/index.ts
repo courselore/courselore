@@ -3802,6 +3802,7 @@ export default async function courselore(
         html`
           <div
             class="alert"
+            hidden
             style="${css`
               display: flex;
               justify-content: center;
@@ -3833,9 +3834,7 @@ export default async function courselore(
                 }
               `}"
             >
-              <div id="content">
-                <p>REMOVE ME</p>
-              </div>
+              <div class="content"></div>
               <p>
                 <button
                   type="button"
@@ -3857,25 +3856,25 @@ export default async function courselore(
                 </button>
               </p>
             </div>
+            <script>
+              (() => {
+                const alert = document.currentScript.parentElement;
+                eventSource.addEventListener("alert", (event) => {
+                  const eventDocument = new DOMParser().parseFromString(
+                    event.data,
+                    "text/html"
+                  );
+                  document
+                    .querySelector("head")
+                    .append(eventDocument.querySelector("head"));
+                  alert
+                    .querySelector(".content")
+                    .replaceChildren(eventDocument.querySelector("body"));
+                  alert.hidden = false;
+                });
+              })();
+            </script>
           </div>
-          <script>
-            (() => {
-              const alert = document.currentScript.parentElement;
-              eventSource.on("alert", (event) => {
-                const eventDocument = new DOMParser().parseFromString(
-                  event.data,
-                  "text/html"
-                );
-                document
-                  .querySelector("head")
-                  .append(eventDocument.querySelector("head"));
-                alert.hidden = false;
-                alert
-                  .querySelector(".content")
-                  .replaceChildren(eventDocument.querySelector("body"));
-              });
-            })();
-          </script>
 
           <div
             style="${css`
