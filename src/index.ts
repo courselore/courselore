@@ -864,7 +864,7 @@ export default async function courselore(
       res.on("close", () => {
         eventSources.delete(res);
       });
-      res.type("text/event-stream").writeHead(200);
+      res.type("text/event-stream").write("");
     },
   ];
 
