@@ -3801,52 +3801,81 @@ export default async function courselore(
         head,
         html`
           <div
+            class="alert"
             style="${css`
-              @at-root {
-                #alert {
-                  background-color: white;
-                  max-width: 700px;
-                  padding: 0 1rem;
-                  border: 1px solid gainsboro;
-                  border-top: none;
-                  border-radius: 10px;
-                  border-top-left-radius: 0;
-                  border-top-right-radius: 0;
-                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-                  position: absolute;
-                  top: 0;
-                  margin: 0 auto;
-
-                  @media (prefers-color-scheme: dark) {
-                    color: #d4d4d4;
-                    background-color: #1e1e1e;
-                  }
-                }
-              }
+              display: flex;
+              justify-content: center;
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
             `}"
           >
-            <div id="alert">
-              <p>REMOVE ME</p>
-            </div>
-            <button
-              type="button"
+            <div
               style="${css`
-                &,
-                &:active {
-                  all: unset;
+                background-color: white;
+                @media (prefers-color-scheme: dark) {
+                  background-color: #1e1e1e;
+                }
+                max-width: 700px;
+                padding: 0 1rem;
+                border: 1px solid gainsboro;
+                border-top: none;
+                border-radius: 10px;
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+                box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+                display: flex;
+                align-items: center;
+
+                & > * + * {
+                  margin-left: 0.5rem;
                 }
               `}"
-              onclick="${javascript`
-                this.parentElement.hidden = true;
-              `}"
             >
-              <svg viewBox="0 0 16 16" width="16" height="16">
-                <path
-                  d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"
-                ></path>
-              </svg>
-            </button>
+              <div id="content">
+                <p>REMOVE ME</p>
+              </div>
+              <p>
+                <button
+                  type="button"
+                  style="${css`
+                    &,
+                    &:active {
+                      all: unset;
+                    }
+                  `}"
+                  onclick="${javascript`
+                  this.closest(".alert").hidden = true;
+                `}"
+                >
+                  <svg viewBox="0 0 16 16" width="16" height="16">
+                    <path
+                      d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"
+                    />
+                  </svg>
+                </button>
+              </p>
+            </div>
           </div>
+          <script>
+            (() => {
+              const alert = document.currentScript.parentElement;
+              eventSource.on("alert", (event) => {
+                const eventDocument = new DOMParser().parseFromString(
+                  event.data,
+                  "text/html"
+                );
+                document
+                  .querySelector("head")
+                  .append(eventDocument.querySelector("head"));
+                alert.hidden = false;
+                alert
+                  .querySelector(".content")
+                  .replaceChildren(eventDocument.querySelector("body"));
+              });
+            })();
+          </script>
 
           <div
             style="${css`
