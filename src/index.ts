@@ -733,21 +733,51 @@ export default async function courselore(
                 String(date.getMinutes()).padStart(2, "0");
             }
 
+            class ValidationError extends Error {}
+
             function isValid(element) {
-              const isValid = (element.matches("form")
-                ? [...element.querySelectorAll("*")]
-                : [element]
-              ).every((element) => {
+              if (
+                typeof element.reportValidity !== "function" ||
+                element.matches("[disabled]")
+              )
+                return true;
+
+              if (element.matches("form"))
+                return [...element.querySelectorAll("*")].every(isValid);
+
+              const originalValue = element.value;
+              try {
                 if (
-                  typeof element.reportValidity !== "function" ||
-                  element.matches("[disabled]")
+                  element.matches("[required]") &&
+                  element.value.trim() === ""
                 )
-                  return true;
-                const originalValue = element.value;
-                const customValidity = customValidator(element);
-                if (typeof customValidity !== "string") return true;
+                  throw new ValidationError("Fill out this field");
+
+                if (
+                  element.matches('[type="email"]') &&
+                  !validator.isEmail(element.value)
+                )
+                  throw new ValidationError("Enter an email address");
+
+                if (element.matches("input.datetime")) {
+                  if (
+                    !element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/})
+                  )
+                    throw new ValidationError(
+                      "Match the pattern YYYY-MM-DD HH:MM"
+                    );
+                  const date = new Date(element.value.replace(" ", "T"));
+                  if (isNaN(date.getTime()))
+                    throw new ValidationError("Invalid datetime");
+                  element.value = date.toISOString();
+                }
+
+                if (element.matches("[data-validator]"))
+                  new Function(element.dataset.validator).call(element);
+              } catch (error) {
                 element.value = originalValue;
-                element.setCustomValidity(customValidity);
+                if (!error instanceof ValidationError) throw error;
+                element.setCustomValidity(error.message);
                 element.addEventListener(
                   "input",
                   () => {
@@ -755,36 +785,8 @@ export default async function courselore(
                   },
                   { once: true }
                 );
-                return element.reportValidity();
-              });
-              return isValid;
-
-              function customValidator(element) {
-                if (
-                  element.matches("[required]") &&
-                  element.value.trim() === ""
-                )
-                  return "Fill out this field";
-
-                if (
-                  element.matches('[type="email"]') &&
-                  !validator.isEmail(element.value)
-                )
-                  return "Enter an email address";
-
-                if (element.matches("input.datetime")) {
-                  if (
-                    !element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/})
-                  )
-                    return "Match the pattern YYYY-MM-DD HH:MM";
-                  const date = new Date(element.value.replace(" ", "T"));
-                  if (isNaN(date.getTime())) return "Invalid datetime";
-                  element.value = date.toISOString();
-                }
-
-                if (element.matches("[data-validator]"))
-                  return new Function(element.dataset.validator).call(element);
               }
+              return element.reportValidity();
             }
 
             document.addEventListener("submit", (event) => {
@@ -2785,7 +2787,7 @@ export default async function courselore(
                                                         : ``}
                                                       data-validator="${javascript`
                                                         if (new Date(this.value).getTime() <= Date.now())
-                                                          return "Must be in the future";
+                                                          throw new ValidationError("Must be in the future");
                                                       `}"
                                                       class="full-width datetime"
                                                       style="${css`
@@ -2918,7 +2920,7 @@ export default async function courselore(
                                 disabled
                                 data-validator="${javascript`
                                   if (new Date(this.value).getTime() <= Date.now())
-                                    return "Must be in the future";
+                                    throw new ValidationError("Must be in the future");
                                 `}"
                                 class="full-width datetime"
                                 style="${css`
@@ -2975,7 +2977,7 @@ export default async function courselore(
                                   email.type !== "mailbox" || !validator.isEmail(email.address)
                               ) !== undefined
                             )
-                              return "Match the requested format";
+                              throw new ValidationError("Match the requested format");
                           `}"
                         ></textarea>
                         <br />
