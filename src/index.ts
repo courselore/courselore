@@ -513,7 +513,7 @@ export default async function courselore(
                     border: 1px solid darkgray;
                     border-radius: 10px;
                     box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
-                      0 0 10px gainsboro;
+                      0 0 50px -20px;
                     position: absolute;
                   }
                 }
@@ -3825,7 +3825,8 @@ export default async function courselore(
                 border-radius: 10px;
                 border-top-left-radius: 0;
                 border-top-right-radius: 0;
-                box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+                box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
+                  0 0 50px -20px;
                 display: flex;
                 align-items: center;
 
