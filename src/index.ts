@@ -734,7 +734,6 @@ export default async function courselore(
             }
 
             function isValid(element) {
-              const formatters = [];
               const isValid = (element.matches("form")
                 ? [...element.querySelectorAll("*")]
                 : [element]
@@ -744,8 +743,10 @@ export default async function courselore(
                   element.matches("[disabled]")
                 )
                   return true;
+                const originalValue = element.value;
                 const customValidity = customValidator(element);
                 if (typeof customValidity !== "string") return true;
+                element.value = originalValue;
                 element.setCustomValidity(customValidity);
                 element.addEventListener(
                   "input",
@@ -756,7 +757,6 @@ export default async function courselore(
                 );
                 return element.reportValidity();
               });
-              if (isValid) for (const formatter of formatters) formatter();
               return isValid;
 
               function customValidator(element) {
@@ -779,9 +779,7 @@ export default async function courselore(
                     return "Match the pattern YYYY-MM-DD HH:MM";
                   const date = new Date(element.value.replace(" ", "T"));
                   if (isNaN(date.getTime())) return "Invalid datetime";
-                  formatters.push(() => {
-                    element.value = date.toISOString();
-                  });
+                  element.value = date.toISOString();
                 }
 
                 if (element.matches("[data-validator]"))
