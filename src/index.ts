@@ -4323,7 +4323,7 @@ export default async function courselore(
           content: string;
         }>(
           sql`
-            SELECT "posts"."id" AS "postId",
+            SELECT "posts"."id",
                    "posts"."createdAt",
                    "posts"."updatedAt",
                    "posts"."reference",
