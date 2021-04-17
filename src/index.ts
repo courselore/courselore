@@ -4925,37 +4925,18 @@ export default async function courselore(
         (eventSource) => eventSource.locals.thread?.id === res.locals.thread.id
       ))
         eventSource.write(
-          `event: replaceWith\ndata:${processCSS(html`
-            <div id="alert">
-              <p
-                style="${css`
-                  display: flex;
-                  align-items: baseline;
-
-                  & > * + * {
-                    margin-left: 0.5rem;
-                  }
+          `event: alert\ndata:${processCSS(html`
+            <p>
+              This thread has been updated
+              <button
+                type="button"
+                onclick="${javascript`
+                  window.location.reload();
                 `}"
               >
-                <span>This thread has been updated</span>
-                <button
-                  type="button"
-                  onclick="${javascript`
-                    window.location.reload();
-                  `}"
-                >
-                  Reload
-                </button>
-                <button
-                  type="button"
-                  onclick="${javascript`
-                    document.querySelector("#alert").hidden = true;
-                  `}"
-                >
-                  Dismiss
-                </button>
-              </p>
-            </div>
+                Reload
+              </button>
+            </p>
           `).replace(/\n/g, "\ndata:")}\n\n`
         );
 
