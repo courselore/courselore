@@ -610,18 +610,6 @@ export default async function courselore(
         html`
           <script>
             const eventSource = new EventSource(window.location.href);
-
-            eventSource.addEventListener("replaceWith", (event) => {
-              const eventDocument = new DOMParser().parseFromString(
-                event.data,
-                "text/html"
-              );
-              document
-                .querySelector("head")
-                .append(eventDocument.querySelector("head"));
-              for (const element of eventDocument.querySelectorAll("body > *"))
-                document.getElementById(element.id).replaceWith(element);
-            });
           </script>
 
           $${body}
@@ -872,11 +860,11 @@ export default async function courselore(
   >[] = [
     (req, res, next) => {
       if (!req.header("accept")?.includes("text/event-stream")) return next();
-      res.type("text/event-stream").writeHead(200);
       eventSources.add(res);
       res.on("close", () => {
         eventSources.delete(res);
       });
+      res.type("text/event-stream").writeHead(200);
     },
   ];
 
