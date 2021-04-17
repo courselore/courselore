@@ -2430,6 +2430,7 @@ export default async function courselore(
       if (managedEnrollment === undefined) return next("route");
       res.locals.managedEnrollment = managedEnrollment;
       if (
+        managedEnrollment.id === res.locals.enrollment.id &&
         database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count"
