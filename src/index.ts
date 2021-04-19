@@ -3941,7 +3941,7 @@ export default async function courselore(
                     >Create a new thread</a
                   >
                 </p>
-                <nav>
+                <nav id="threads">
                   $${res.locals.threads.map(
                     (thread) =>
                       html`
@@ -4041,6 +4041,23 @@ export default async function courselore(
                         </a>
                       `
                   )}
+                  <script>
+                    (() => {
+                      const threads = document.currentScript.parentElement;
+                      eventSource.addEventListener(
+                        "threadsUpdate",
+                        async () => {
+                          const newThreadsPage = new DOMParser().parseFromString(
+                            await (await fetch(window.location.href)).text(),
+                            "text/html"
+                          );
+                          threads.replaceWith(
+                            newThreadsPage.querySelector("#threads")
+                          );
+                        }
+                      );
+                    })();
+                  </script>
                 </nav>
               </div>
             </div>
@@ -4955,7 +4972,7 @@ export default async function courselore(
         (eventSource) => eventSource.locals.thread?.id === res.locals.thread.id
       ))
         eventSource.write(
-          `event: alert\ndata:${processCSS(html`
+          `event: alert\ndata: ${processCSS(html`
             <p
               style="${css`
                 display: flex;
@@ -4976,7 +4993,7 @@ export default async function courselore(
                 Reload
               </button>
             </p>
-          `).replace(/\n/g, "\ndata:")}\n\n`
+          `).replace(/\n/g, "\ndata: ")}\n\nevent: threadsUpdate\ndata:\n\n`
         );
 
       res.redirect(
