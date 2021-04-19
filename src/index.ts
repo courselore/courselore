@@ -703,60 +703,70 @@ export default async function courselore(
               }
             }
 
-            class ValidationError extends Error {}
-
             function isValid(element) {
-              if (
-                typeof element.reportValidity !== "function" ||
-                element.matches("[disabled]")
-              )
-                return true;
+              const elementsToValidate = [
+                ...element.querySelectorAll("*"),
+                element,
+              ];
+              const elementsToReset = new Map();
 
-              if (element.matches("form"))
-                return [...element.querySelectorAll("*")].every(isValid);
+              for (const element of elementsToValidate) {
+                if (
+                  typeof element.reportValidity !== "function" ||
+                  element.matches("[disabled]")
+                )
+                  continue;
 
-              const originalValue = element.value;
-              try {
+                const originalValue = element.value;
+                const customValidity = validate(element);
+                if (element.value !== originalValue)
+                  elementsToReset.set(element, originalValue);
+
+                if (typeof customValidity === "string") {
+                  element.setCustomValidity(customValidity);
+                  element.addEventListener(
+                    "input",
+                    () => {
+                      element.setCustomValidity("");
+                    },
+                    { once: true }
+                  );
+                }
+
+                if (!element.reportValidity()) {
+                  for (const [element, originalValue] of elementsToReset)
+                    element.value = originalValue;
+                  return false;
+                }
+              }
+              return true;
+
+              function validate(element) {
                 if (
                   element.matches("[required]") &&
                   element.value.trim() === ""
                 )
-                  throw new ValidationError("Fill out this field");
+                  return "Fill out this field";
 
                 if (
                   element.matches('[type="email"]') &&
                   !validator.isEmail(element.value)
                 )
-                  throw new ValidationError("Enter an email address");
+                  return "Enter an email address";
 
                 if (element.matches("input.datetime")) {
                   if (
                     !element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/})
                   )
-                    throw new ValidationError(
-                      "Match the pattern YYYY-MM-DD HH:MM"
-                    );
+                    return "Match the pattern YYYY-MM-DD HH:MM";
                   const date = new Date(element.value.replace(" ", "T"));
-                  if (isNaN(date.getTime()))
-                    throw new ValidationError("Invalid datetime");
+                  if (isNaN(date.getTime())) return "Invalid datetime";
                   element.value = date.toISOString();
                 }
 
-                if (element.matches("[data-validator]"))
-                  new Function(element.dataset.validator).call(element);
-              } catch (error) {
-                element.value = originalValue;
-                if (!error instanceof ValidationError) throw error;
-                element.setCustomValidity(error.message);
-                element.addEventListener(
-                  "input",
-                  () => {
-                    element.setCustomValidity("");
-                  },
-                  { once: true }
-                );
+                if (element.matches("[data-onvalidate]"))
+                  return new Function(element.dataset.onvalidate).call(element);
               }
-              return element.reportValidity();
             }
 
             document.addEventListener("submit", (event) => {
@@ -2811,9 +2821,9 @@ export default async function courselore(
                                                       null
                                                         ? `disabled`
                                                         : ``}
-                                                      data-validator="${javascript`
+                                                      data-onvalidate="${javascript`
                                                         if (new Date(this.value).getTime() <= Date.now())
-                                                          throw new ValidationError("Must be in the future");
+                                                          return "Must be in the future";
                                                       `}"
                                                       class="full-width datetime"
                                                       style="${css`
@@ -2944,9 +2954,9 @@ export default async function courselore(
                                 value="${new Date().toISOString()}"
                                 required
                                 disabled
-                                data-validator="${javascript`
+                                data-onvalidate="${javascript`
                                   if (new Date(this.value).getTime() <= Date.now())
-                                    throw new ValidationError("Must be in the future");
+                                    return "Must be in the future";
                                 `}"
                                 class="full-width datetime"
                                 style="${css`
@@ -2994,7 +3004,7 @@ export default async function courselore(
                           required
                           class="full-width"
                           disabled
-                          data-validator="${javascript`
+                          data-onvalidate="${javascript`
                             const emails = emailAddresses.parseAddressList(this.value);
                             if (
                               emails === null ||
@@ -3003,7 +3013,7 @@ export default async function courselore(
                                   email.type !== "mailbox" || !validator.isEmail(email.address)
                               ) !== undefined
                             )
-                              throw new ValidationError("Match the requested format");
+                              return "Match the requested format";
                           `}"
                         ></textarea>
                         <br />
