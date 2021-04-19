@@ -598,8 +598,14 @@ export default async function courselore(
   app.set(
     "layout application",
     (
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<EventSourceMiddlewareLocals>
+      >,
+      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>,
       head: HTML,
       body: HTML
     ): HTML =>
@@ -608,10 +614,13 @@ export default async function courselore(
         res,
         head,
         html`
-          <script>
-            const eventSource = new EventSource(window.location.href);
-          </script>
-
+          $${res.locals.eventSource
+            ? html`
+                <script>
+                  const eventSource = new EventSource(window.location.href);
+                </script>
+              `
+            : html``}
           $${body}
           $${app.get("demonstration")
             ? html`
@@ -849,7 +858,9 @@ export default async function courselore(
   // FIXME: A browser exception is thrown when the eventSource isn’t necessary. Is this an issue?
   const eventSources = new Set<express.Response<any, Record<string, any>>>();
 
-  interface EventSourceMiddlewareLocals {}
+  interface EventSourceMiddlewareLocals {
+    eventSource: boolean;
+  }
 
   const eventSourceMiddleware: express.RequestHandler<
     {},
@@ -859,6 +870,7 @@ export default async function courselore(
     EventSourceMiddlewareLocals
   >[] = [
     (req, res, next) => {
+      res.locals.eventSource = true;
       if (!req.header("accept")?.includes("text/event-stream")) return next();
       eventSources.add(res);
       res.on("close", () => {
@@ -3801,84 +3813,6 @@ export default async function courselore(
         head,
         html`
           <div
-            class="alert"
-            hidden
-            style="${css`
-              display: flex;
-              justify-content: center;
-              position: absolute;
-              top: 0;
-              left: 0;
-              right: 0;
-            `}"
-          >
-            <div
-              style="${css`
-                background-color: white;
-                @media (prefers-color-scheme: dark) {
-                  background-color: #1e1e1e;
-                }
-                max-width: 700px;
-                padding: 0 0.5rem 0 1rem;
-                border: 1px solid gainsboro;
-                border-top: none;
-                border-radius: 10px;
-                border-top-left-radius: 0;
-                border-top-right-radius: 0;
-                box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
-                  0 0 50px -20px;
-                display: flex;
-                align-items: center;
-
-                & > * + * {
-                  margin-left: 0.5rem;
-                }
-              `}"
-            >
-              <div class="content"></div>
-              <p>
-                <button
-                  type="button"
-                  style="${css`
-                    &,
-                    &:active {
-                      all: unset;
-                      display: flex;
-                    }
-                  `}"
-                  onclick="${javascript`
-                  this.closest(".alert").hidden = true;
-                `}"
-                >
-                  <svg viewBox="0 0 16 16" width="16" height="16">
-                    <path
-                      d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"
-                    />
-                  </svg>
-                </button>
-              </p>
-            </div>
-            <script>
-              (() => {
-                const alert = document.currentScript.parentElement;
-                eventSource.addEventListener("alert", (event) => {
-                  const eventDocument = new DOMParser().parseFromString(
-                    event.data,
-                    "text/html"
-                  );
-                  document
-                    .querySelector("head")
-                    .append(eventDocument.querySelector("head"));
-                  alert
-                    .querySelector(".content")
-                    .replaceChildren(eventDocument.querySelector("body"));
-                  alert.hidden = false;
-                });
-              })();
-            </script>
-          </div>
-
-          <div
             style="${css`
               box-sizing: border-box;
               height: 100vh;
@@ -3941,7 +3875,7 @@ export default async function courselore(
                     >Create a new thread</a
                   >
                 </p>
-                <nav id="threads">
+                <nav>
                   $${res.locals.threads.map(
                     (thread) =>
                       html`
@@ -4041,23 +3975,6 @@ export default async function courselore(
                         </a>
                       `
                   )}
-                  <script>
-                    (() => {
-                      const threads = document.currentScript.parentElement;
-                      eventSource.addEventListener(
-                        "threadsUpdate",
-                        async () => {
-                          const newThreadsPage = new DOMParser().parseFromString(
-                            await (await fetch(window.location.href)).text(),
-                            "text/html"
-                          );
-                          threads.replaceWith(
-                            newThreadsPage.querySelector("#threads")
-                          );
-                        }
-                      );
-                    })();
-                  </script>
                 </nav>
               </div>
             </div>
@@ -4971,30 +4888,7 @@ export default async function courselore(
       for (const eventSource of [...eventSources].filter(
         (eventSource) => eventSource.locals.thread?.id === res.locals.thread.id
       ))
-        eventSource.write(
-          `event: alert\ndata: ${processCSS(html`
-            <p
-              style="${css`
-                display: flex;
-                align-items: baseline;
-
-                & > * + * {
-                  margin-left: 0.5rem;
-                }
-              `}"
-            >
-              <span>This thread has been updated</span>
-              <button
-                type="button"
-                onclick="${javascript`
-                  window.location.reload();
-                `}"
-              >
-                Reload
-              </button>
-            </p>
-          `).replace(/\n/g, "\ndata: ")}\n\nevent: threadsUpdate\ndata:\n\n`
-        );
+        eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
