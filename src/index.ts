@@ -708,7 +708,7 @@ export default async function courselore(
                 ...element.querySelectorAll("*"),
                 element,
               ];
-              const elementsToReset = new Map();
+              const elementsToReset = [];
 
               for (const element of elementsToValidate) {
                 if (
@@ -720,7 +720,7 @@ export default async function courselore(
                 const originalValue = element.value;
                 const customValidity = validate(element);
                 if (element.value !== originalValue)
-                  elementsToReset.set(element, originalValue);
+                  elementsToReset.push({ element, originalValue });
 
                 if (typeof customValidity === "string") {
                   element.setCustomValidity(customValidity);
@@ -734,7 +734,7 @@ export default async function courselore(
                 }
 
                 if (!element.reportValidity()) {
-                  for (const [element, originalValue] of elementsToReset)
+                  for (const { element, originalValue } of elementsToReset)
                     element.value = originalValue;
                   return false;
                 }
