@@ -4890,6 +4890,11 @@ export default async function courselore(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.thread.id}`
           );
 
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
+      ))
+        eventSource.write(`event: refresh\ndata:\n\n`);
+
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals.thread.reference
@@ -4912,6 +4917,11 @@ export default async function courselore(
       database.run(
         sql`DELETE FROM "threads" WHERE "id" = ${res.locals.thread.id}`
       );
+
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
+      ))
+        eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(`${app.get("url")}/courses/${res.locals.course.reference}`);
     }
@@ -4990,6 +5000,11 @@ export default async function courselore(
         `
       );
 
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
+      ))
+        eventSource.write(`event: refresh\ndata:\n\n`);
+
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals.thread.reference
@@ -5012,6 +5027,11 @@ export default async function courselore(
       if (res.locals.post.reference === "1") return next("validation");
 
       database.run(sql`DELETE FROM "posts" WHERE "id" = ${res.locals.post.id}`);
+
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
+      ))
+        eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
@@ -5042,6 +5062,11 @@ export default async function courselore(
         sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.post.id}, ${res.locals.enrollment.id})`
       );
 
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
+      ))
+        eventSource.write(`event: refresh\ndata:\n\n`);
+
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
           res.locals.thread.reference
@@ -5066,6 +5091,11 @@ export default async function courselore(
       if (like === undefined) return next("validation");
 
       database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
+
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
+      ))
+        eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
