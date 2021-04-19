@@ -612,59 +612,7 @@ export default async function courselore(
       app.get("layout base")(
         req,
         res,
-        head,
         html`
-          $${res.locals.eventSource
-            ? html`
-                <script>
-                  const eventSource = new EventSource(window.location.href);
-                  eventSource.addEventListener("refresh", async () => {
-                    const refreshedPage = new DOMParser().parseFromString(
-                      await (await fetch(window.location.href)).text(),
-                      "text/html"
-                    );
-                    eventSource.dispatchEvent(
-                      new CustomEvent("refreshed", {
-                        detail: { refreshedPage },
-                      })
-                    );
-                    preparePage();
-                  });
-                </script>
-              `
-            : html``}
-          $${body}
-          $${app.get("demonstration")
-            ? html`
-                <p
-                  style="${css`
-                    font-size: 0.56rem;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                    color: white;
-                    background-color: #83769c;
-                    padding: 0.1rem 1rem;
-                    border-top-left-radius: 5px;
-                    margin: 0;
-                    position: fixed;
-                    right: 0;
-                    bottom: 0;
-                  `}"
-                >
-                  <a
-                    href="${app.get("url")}/demonstration-inbox"
-                    title="Go to the Demonstration 
-                    Inbox"
-                    style="${css`
-                      text-decoration: none;
-                    `}"
-                    >Demonstration</a
-                  >
-                </p>
-              `
-            : html``}
-
           <script src="${app.get(
               "url"
             )}/node_modules/validator/validator.min.js"></script>
@@ -675,9 +623,9 @@ export default async function courselore(
           <script>
             function preparePage() {
               relativizeTimes();
-              toLocalTime();
+              UTCToLocal();
             }
-            preparePage();
+            document.addEventListener("DOMContentLoaded", preparePage);
             (function refresh() {
               relativizeTimes();
               window.setTimeout(refresh, 60 * 1000);
@@ -735,7 +683,7 @@ export default async function courselore(
               }
             }
 
-            function toLocalTime() {
+            function UTCToLocal() {
               for (const element of document.querySelectorAll(
                 "input.datetime"
               )) {
@@ -830,7 +778,58 @@ export default async function courselore(
               event.preventDefault();
               event.returnValue = "";
             });
+
+            $${res.locals.eventSource
+              ? javascript`
+                const eventSource = new EventSource(window.location.href);
+                eventSource.addEventListener("refresh", async () => {
+                  const refreshedPage = new DOMParser().parseFromString(
+                    await (await fetch(window.location.href)).text(),
+                    "text/html"
+                  );
+                  eventSource.dispatchEvent(
+                    new CustomEvent("refreshed", { detail: { refreshedPage } })
+                  );
+                  preparePage();
+                });
+              `
+              : javascript``};
           </script>
+
+          $${head}
+        `,
+        html`
+          $${body}
+          $${app.get("demonstration")
+            ? html`
+                <p
+                  style="${css`
+                    font-size: 0.56rem;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    color: white;
+                    background-color: #83769c;
+                    padding: 0.1rem 1rem;
+                    border-top-left-radius: 5px;
+                    margin: 0;
+                    position: fixed;
+                    right: 0;
+                    bottom: 0;
+                  `}"
+                >
+                  <a
+                    href="${app.get("url")}/demonstration-inbox"
+                    title="Go to the Demonstration 
+                    Inbox"
+                    style="${css`
+                      text-decoration: none;
+                    `}"
+                    >Demonstration</a
+                  >
+                </p>
+              `
+            : html``}
         `
       )
   );
