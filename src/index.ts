@@ -3819,7 +3819,7 @@ export default async function courselore(
                   background-color: #1e1e1e;
                 }
                 max-width: 700px;
-                padding: 0 1rem;
+                padding: 0 0.5rem 0 1rem;
                 border: 1px solid gainsboro;
                 border-top: none;
                 border-radius: 10px;
@@ -3843,6 +3843,7 @@ export default async function courselore(
                     &,
                     &:active {
                       all: unset;
+                      display: flex;
                     }
                   `}"
                   onclick="${javascript`
