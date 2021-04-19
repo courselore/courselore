@@ -409,6 +409,7 @@ export default async function courselore(
                   min-height: 5rem;
                   padding: 0.5rem 1rem;
                   resize: vertical;
+                  white-space: pre-wrap;
                 }
 
                 select {
