@@ -4513,39 +4513,40 @@ export default async function courselore(
             </title>
           `,
           html`
-            <div class="title">
-              <div
-                class="show"
-                style="${css`
-                  display: flex;
-                  align-items: baseline;
-
-                  & > * + * {
-                    margin-left: 0.5rem;
-                  }
-                `}"
-              >
-                <h1
+            <div id="thread">
+              <div class="title">
+                <div
+                  class="show"
                   style="${css`
-                    flex: 1;
+                    display: flex;
+                    align-items: baseline;
+
+                    & > * + * {
+                      margin-left: 0.5rem;
+                    }
                   `}"
                 >
-                  ${res.locals.thread.title}
-
-                  <a
-                    href="${app.get("url")}/courses/${res.locals.course
-                      .reference}/threads/${res.locals.thread.reference}"
-                    class="hint"
-                    >#${res.locals.thread.reference}</a
+                  <h1
+                    style="${css`
+                      flex: 1;
+                    `}"
                   >
-                </h1>
+                    ${res.locals.thread.title}
 
-                $${mayEditThread(req, res)
-                  ? html`
-                      <p>
-                        <button
-                          type="button"
-                          onclick="${javascript`
+                    <a
+                      href="${app.get("url")}/courses/${res.locals.course
+                        .reference}/threads/${res.locals.thread.reference}"
+                      class="hint"
+                      >#${res.locals.thread.reference}</a
+                    >
+                  </h1>
+
+                  $${mayEditThread(req, res)
+                    ? html`
+                        <p>
+                          <button
+                            type="button"
+                            onclick="${javascript`
                             const title = this.closest(".title");
                             title.querySelector(".show").hidden = true;
                             const edit = title.querySelector(".edit");
@@ -4557,71 +4558,71 @@ export default async function courselore(
                             input.focus();
                             input.setSelectionRange(0, 0);
                           `}"
+                          >
+                            Edit Title
+                          </button>
+                        </p>
+                      `
+                    : html``}
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${app.get("url")}/courses/${res.locals.course
+                            .reference}/threads/${res.locals.thread
+                            .reference}?_method=DELETE"
                         >
-                          Edit Title
-                        </button>
-                      </p>
-                    `
-                  : html``}
-                $${res.locals.enrollment.role === "staff"
+                          <p>
+                            <button
+                              class="red"
+                              onclick="${javascript`
+                            if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
+                              event.preventDefault();
+                          `}"
+                            >
+                              Remove Thread
+                            </button>
+                          </p>
+                        </form>
+                      `
+                    : html``}
+                </div>
+
+                $${mayEditThread(req, res)
                   ? html`
                       <form
                         method="POST"
                         action="${app.get("url")}/courses/${res.locals.course
                           .reference}/threads/${res.locals.thread
-                          .reference}?_method=DELETE"
-                      >
-                        <p>
-                          <button
-                            class="red"
-                            onclick="${javascript`
-                            if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
-                              event.preventDefault();
-                          `}"
-                          >
-                            Remove Thread
-                          </button>
-                        </p>
-                      </form>
-                    `
-                  : html``}
-              </div>
-
-              $${mayEditThread(req, res)
-                ? html`
-                    <form
-                      method="POST"
-                      action="${app.get("url")}/courses/${res.locals.course
-                        .reference}/threads/${res.locals.thread
-                        .reference}?_method=PATCH"
-                      hidden
-                      class="edit"
-                      style="${css`
-                        display: flex;
-
-                        & > * + * {
-                          margin-left: 1rem;
-                        }
-                      `}"
-                    >
-                      <p
+                          .reference}?_method=PATCH"
+                        hidden
+                        class="edit"
                         style="${css`
-                          flex: 1;
+                          display: flex;
+
+                          & > * + * {
+                            margin-left: 1rem;
+                          }
                         `}"
                       >
-                        <input
-                          type="text"
-                          name="title"
-                          autocomplete="off"
-                          required
-                          class="full-width"
-                        />
-                      </p>
-                      <p>
-                        <button class="green">Change Title</button>
-                        <button
-                          type="button"
-                          onclick="${javascript`
+                        <p
+                          style="${css`
+                            flex: 1;
+                          `}"
+                        >
+                          <input
+                            type="text"
+                            name="title"
+                            autocomplete="off"
+                            required
+                            class="full-width"
+                          />
+                        </p>
+                        <p>
+                          <button class="green">Change Title</button>
+                          <button
+                            type="button"
+                            onclick="${javascript`
                             if (!confirm("Discard changes?")) return;
                             const title = this.closest(".title");
                             title.querySelector(".show").hidden = false;
@@ -4630,71 +4631,72 @@ export default async function courselore(
                             for (const element of edit.querySelectorAll("*"))
                               modifiedInputs.delete(element);
                           `}"
-                        >
-                          Cancel
-                        </button>
-                      </p>
-                    </form>
-                  `
-                : html``}
-            </div>
+                          >
+                            Cancel
+                          </button>
+                        </p>
+                      </form>
+                    `
+                  : html``}
+              </div>
 
-            $${res.locals.posts.map(
-              (post) => html`
-                <section
-                  id="${post.reference}"
-                  class="post"
-                  style="${css`
-                    border-bottom: 1px solid silver;
-                    @media (prefers-color-scheme: dark) {
-                      border-color: black;
-                    }
-                  `}"
-                >
-                  <div
+              $${res.locals.posts.map(
+                (post) => html`
+                  <section
+                    id="${post.reference}"
+                    class="post"
                     style="${css`
-                      display: flex;
-                      margin-bottom: -1rem;
-
-                      & > * + * {
-                        margin-left: 0.5rem;
+                      border-bottom: 1px solid silver;
+                      @media (prefers-color-scheme: dark) {
+                        border-color: black;
                       }
                     `}"
                   >
-                    <p
+                    <div
                       style="${css`
-                        flex: 1;
+                        display: flex;
+                        margin-bottom: -1rem;
+
+                        & > * + * {
+                          margin-left: 0.5rem;
+                        }
                       `}"
                     >
-                      <strong>${post.authorEnrollment.user.name}</strong>
-                      <span class="hint">
-                        said
-                        <time>${post.createdAt}</time>
-                        $${post.updatedAt !== post.createdAt
-                          ? html`
-                              and last edited
-                              <time>${post.updatedAt}</time>
-                            `
-                          : html``}
-                        <a
-                          href="${app.get("url")}/courses/${res.locals.course
-                            .reference}/threads/${res.locals.thread
-                            .reference}#${post.reference}"
-                          style="${css`
-                            text-decoration: none;
-                          `}"
-                          >#${res.locals.thread.reference}/${post.reference}</a
-                        >
-                      </span>
-                    </p>
+                      <p
+                        style="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <strong>${post.authorEnrollment.user.name}</strong>
+                        <span class="hint">
+                          said
+                          <time>${post.createdAt}</time>
+                          $${post.updatedAt !== post.createdAt
+                            ? html`
+                                and last edited
+                                <time>${post.updatedAt}</time>
+                              `
+                            : html``}
+                          <a
+                            href="${app.get("url")}/courses/${res.locals.course
+                              .reference}/threads/${res.locals.thread
+                              .reference}#${post.reference}"
+                            style="${css`
+                              text-decoration: none;
+                            `}"
+                            >#${res.locals.thread
+                              .reference}/${post.reference}</a
+                          >
+                        </span>
+                      </p>
 
-                    $${mayEditPost(req, res, post)
-                      ? html`
-                          <p>
-                            <button
-                              type="button"
-                              class="edit-button"
-                              onclick="${javascript`
+                      $${mayEditPost(req, res, post)
+                        ? html`
+                            <p>
+                              <button
+                                type="button"
+                                class="edit-button"
+                                onclick="${javascript`
                                 const post = this.closest(".post");
                                 post.querySelector(".show").hidden = true;
                                 const edit = post.querySelector(".edit");
@@ -4707,115 +4709,115 @@ export default async function courselore(
                                 textarea.setSelectionRange(0, 0);
                                 this.hidden = true;
                               `}"
+                              >
+                                Edit Post
+                              </button>
+                            </p>
+                          `
+                        : html``}
+                      $${res.locals.enrollment.role === "staff" &&
+                      post.reference !== "1"
+                        ? html`
+                            <form
+                              method="POST"
+                              action="${app.get("url")}/courses/${res.locals
+                                .course.reference}/threads/${res.locals.thread
+                                .reference}/posts/${post.reference}?_method=DELETE"
                             >
-                              Edit Post
+                              <p>
+                                <button
+                                  class="red"
+                                  onclick="${javascript`
+                                  if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
+                                    event.preventDefault();
+                                `}"
+                                >
+                                  Remove Post
+                                </button>
+                              </p>
+                            </form>
+                          `
+                        : html``}
+                    </div>
+
+                    <div class="show">
+                      $${app.get("text processor")(post.content)}
+
+                      <!-- TODO: Say “you” when you have liked the post. -->
+                      <form
+                        method="POST"
+                        action="${app.get("url")}/courses/${res.locals.course
+                          .reference}/threads/${res.locals.thread
+                          .reference}/posts/${post.reference}/likes${post.likes.find(
+                          (like) =>
+                            like.enrollment.id === res.locals.enrollment.id
+                        ) === undefined
+                          ? ""
+                          : "?_method=DELETE"}"
+                        title="${post.likes.length === 0
+                          ? "Be the first to like this"
+                          : post.likes.length === 1
+                          ? `${post.likes[0].enrollment.user.name} liked this`
+                          : post.likes.length === 2
+                          ? `${post.likes[0].enrollment.user.name} and ${post.likes[1].enrollment.user.name} liked this`
+                          : post.likes.length === 3
+                          ? `${post.likes[0].enrollment.user.name}, ${post.likes[1].enrollment.user.name}, and 1 other liked this`
+                          : `${post.likes[0].enrollment.user.name}, ${
+                              post.likes[1].enrollment.user.name
+                            }, and ${post.likes.length - 2} others liked this`}"
+                      >
+                        <p
+                          style="${css`
+                            margin-top: -0.5rem;
+                          `}"
+                        >
+                          <span class="hint">
+                            <button
+                              style="${css`
+                                &,
+                                &:active {
+                                  all: unset;
+                                }
+                              `}"
+                            >
+                              <svg viewBox="0 0 512 512" width="12" height="12">
+                                <path
+                                  d="${post.likes.find(
+                                    (like) =>
+                                      like.enrollment.id ===
+                                      res.locals.enrollment.id
+                                  ) === undefined
+                                    ? "M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"
+                                    : "M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"}"
+                                  fill="gray"
+                                ></path>
+                              </svg>
                             </button>
-                          </p>
-                        `
-                      : html``}
-                    $${res.locals.enrollment.role === "staff" &&
-                    post.reference !== "1"
+                            ${post.likes.length === 0 ? "" : post.likes.length}
+                          </span>
+                        </p>
+                      </form>
+                    </div>
+
+                    $${mayEditPost(req, res, post)
                       ? html`
                           <form
                             method="POST"
                             action="${app.get("url")}/courses/${res.locals
                               .course.reference}/threads/${res.locals.thread
-                              .reference}/posts/${post.reference}?_method=DELETE"
+                              .reference}/posts/${post.reference}?_method=PATCH"
+                            hidden
+                            class="edit"
                           >
-                            <p>
+                            $${textEditor()}
+                            <p
+                              style="${css`
+                                text-align: right;
+                              `}"
+                            >
                               <button
-                                class="red"
+                                type="button"
                                 onclick="${javascript`
-                                  if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
-                                    event.preventDefault();
-                                `}"
-                              >
-                                Remove Post
-                              </button>
-                            </p>
-                          </form>
-                        `
-                      : html``}
-                  </div>
-
-                  <div class="show">
-                    $${app.get("text processor")(post.content)}
-
-                    <!-- TODO: Say “you” when you have liked the post. -->
-                    <form
-                      method="POST"
-                      action="${app.get("url")}/courses/${res.locals.course
-                        .reference}/threads/${res.locals.thread
-                        .reference}/posts/${post.reference}/likes${post.likes.find(
-                        (like) =>
-                          like.enrollment.id === res.locals.enrollment.id
-                      ) === undefined
-                        ? ""
-                        : "?_method=DELETE"}"
-                      title="${post.likes.length === 0
-                        ? "Be the first to like this"
-                        : post.likes.length === 1
-                        ? `${post.likes[0].enrollment.user.name} liked this`
-                        : post.likes.length === 2
-                        ? `${post.likes[0].enrollment.user.name} and ${post.likes[1].enrollment.user.name} liked this`
-                        : post.likes.length === 3
-                        ? `${post.likes[0].enrollment.user.name}, ${post.likes[1].enrollment.user.name}, and 1 other liked this`
-                        : `${post.likes[0].enrollment.user.name}, ${
-                            post.likes[1].enrollment.user.name
-                          }, and ${post.likes.length - 2} others liked this`}"
-                    >
-                      <p
-                        style="${css`
-                          margin-top: -0.5rem;
-                        `}"
-                      >
-                        <span class="hint">
-                          <button
-                            style="${css`
-                              &,
-                              &:active {
-                                all: unset;
-                              }
-                            `}"
-                          >
-                            <svg viewBox="0 0 512 512" width="12" height="12">
-                              <path
-                                d="${post.likes.find(
-                                  (like) =>
-                                    like.enrollment.id ===
-                                    res.locals.enrollment.id
-                                ) === undefined
-                                  ? "M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"
-                                  : "M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"}"
-                                fill="gray"
-                              ></path>
-                            </svg>
-                          </button>
-                          ${post.likes.length === 0 ? "" : post.likes.length}
-                        </span>
-                      </p>
-                    </form>
-                  </div>
-
-                  $${mayEditPost(req, res, post)
-                    ? html`
-                        <form
-                          method="POST"
-                          action="${app.get("url")}/courses/${res.locals.course
-                            .reference}/threads/${res.locals.thread
-                            .reference}/posts/${post.reference}?_method=PATCH"
-                          hidden
-                          class="edit"
-                        >
-                          $${textEditor()}
-                          <p
-                            style="${css`
-                              text-align: right;
-                            `}"
-                          >
-                            <button
-                              type="button"
-                              onclick="${javascript`
                                 if (!confirm("Discard changes?")) return;
                                 const post = this.closest(".post");
                                 post.querySelector(".show").hidden = false;
@@ -4825,17 +4827,30 @@ export default async function courselore(
                                   modifiedInputs.delete(element);
                                 post.querySelector(".edit-button").hidden = false;
                               `}"
-                            >
-                              Cancel
-                            </button>
-                            <button class="green">Change Post</button>
-                          </p>
-                        </form>
-                      `
-                    : html``}
-                </section>
-              `
-            )}
+                              >
+                                Cancel
+                              </button>
+                              <button class="green">Change Post</button>
+                            </p>
+                          </form>
+                        `
+                      : html``}
+                  </section>
+                `
+              )}
+            </div>
+            <script>
+              (() => {
+                const id = document.currentScript.previousElementSibling.id;
+                eventSource.addEventListener("refreshed", (event) => {
+                  document
+                    .querySelector("#" + id)
+                    .replaceWith(
+                      event.detail.refreshedPage.querySelector("#" + id)
+                    );
+                });
+              })();
+            </script>
 
             <form
               method="POST"
