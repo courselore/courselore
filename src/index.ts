@@ -947,41 +947,41 @@ export default async function courselore(
           `}"
         >
           $${logo}
-          <script>
-            (() => {
-              const logo = document.currentScript.parentElement;
-              let animationFrame;
-              let timeOffset = 0;
-              logo.addEventListener("mouseover", () => {
-                timeOffset += performance.now();
-                animationFrame = window.requestAnimationFrame(animate);
-              });
-              logo.addEventListener("mouseout", () => {
-                timeOffset -= performance.now();
-                window.cancelAnimationFrame(animationFrame);
-              });
-              const polyline = logo.querySelector("polyline");
-              const points = polyline
-                .getAttribute("points")
-                .split(" ")
-                .map(Number);
-              function animate(time) {
-                time -= timeOffset;
-                polyline.setAttribute(
-                  "points",
-                  points
-                    .map(
-                      (coordinate, index) =>
-                        coordinate + Math.sin(time * 0.0005 * (index % 7))
-                    )
-                    .join(" ")
-                );
-                animationFrame = window.requestAnimationFrame(animate);
-              }
-            })();
-          </script>
           <span>CourseLore</span>
         </a>
+        <script>
+          (() => {
+            const logo = document.currentScript.previousElementSibling;
+            let animationFrame;
+            let timeOffset = 0;
+            logo.addEventListener("mouseover", () => {
+              timeOffset += performance.now();
+              animationFrame = window.requestAnimationFrame(animate);
+            });
+            logo.addEventListener("mouseout", () => {
+              timeOffset -= performance.now();
+              window.cancelAnimationFrame(animationFrame);
+            });
+            const polyline = logo.querySelector("polyline");
+            const points = polyline
+              .getAttribute("points")
+              .split(" ")
+              .map(Number);
+            function animate(time) {
+              time -= timeOffset;
+              polyline.setAttribute(
+                "points",
+                points
+                  .map(
+                    (coordinate, index) =>
+                      coordinate + Math.sin(time * 0.0005 * (index % 7))
+                  )
+                  .join(" ")
+              );
+              animationFrame = window.requestAnimationFrame(animate);
+            }
+          })();
+        </script>
       </h1>
 
       $${res.locals.user === undefined
@@ -4010,19 +4010,19 @@ export default async function courselore(
                         </a>
                       `
                   )}
-                  <script>
-                    (() => {
-                      const id = document.currentScript.parentElement.id;
-                      eventSource.addEventListener("refreshed", (event) => {
-                        document
-                          .querySelector("#" + id)
-                          .replaceWith(
-                            event.detail.refreshedPage.querySelector("#" + id)
-                          );
-                      });
-                    })();
-                  </script>
                 </nav>
+                <script>
+                  (() => {
+                    const id = document.currentScript.previousElementSibling.id;
+                    eventSource.addEventListener("refreshed", (event) => {
+                      document
+                        .querySelector("#" + id)
+                        .replaceWith(
+                          event.detail.refreshedPage.querySelector("#" + id)
+                        );
+                    });
+                  })();
+                </script>
               </div>
             </div>
             <main
@@ -5226,38 +5226,38 @@ export default async function courselore(
           $${logo
             .replace(`id="gradient"`, `id="${id}"`)
             .replace("#gradient", `#${id}`)}
-          <script>
-            (() => {
-              const loading = document.currentScript.parentElement;
-              let animationFrame;
-              new MutationObserver(() => {
-                if (loading.hidden) window.cancelAnimationFrame(animationFrame);
-                else animationFrame = window.requestAnimationFrame(animate);
-              }).observe(loading, {
-                attributes: true,
-                attributeFilter: ["hidden"],
-              });
-              const polyline = loading.querySelector("polyline");
-              const points = polyline
-                .getAttribute("points")
-                .split(" ")
-                .map(Number);
-              function animate(time) {
-                polyline.setAttribute(
-                  "points",
-                  points
-                    .map(
-                      (coordinate, index) =>
-                        coordinate + Math.sin(time * 0.005 + index)
-                    )
-                    .join(" ")
-                );
-                animationFrame = window.requestAnimationFrame(animate);
-              }
-            })();
-          </script>
           <strong>Loading…</strong>
         </div>
+        <script>
+          (() => {
+            const loading = document.currentScript.previousElementSibling;
+            let animationFrame;
+            new MutationObserver(() => {
+              if (loading.hidden) window.cancelAnimationFrame(animationFrame);
+              else animationFrame = window.requestAnimationFrame(animate);
+            }).observe(loading, {
+              attributes: true,
+              attributeFilter: ["hidden"],
+            });
+            const polyline = loading.querySelector("polyline");
+            const points = polyline
+              .getAttribute("points")
+              .split(" ")
+              .map(Number);
+            function animate(time) {
+              polyline.setAttribute(
+                "points",
+                points
+                  .map(
+                    (coordinate, index) =>
+                      coordinate + Math.sin(time * 0.005 + index)
+                  )
+                  .join(" ")
+              );
+              animationFrame = window.requestAnimationFrame(animate);
+            }
+          })();
+        </script>
       `;
     };
   })();
