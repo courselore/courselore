@@ -4956,8 +4956,17 @@ export default async function courselore(
       ))
         eventSource.write(
           `event: alert\ndata:${processCSS(html`
-            <p>
-              This thread has been updated
+            <p
+              style="${css`
+                display: flex;
+                align-items: baseline;
+
+                & > * + * {
+                  margin-left: 0.5rem;
+                }
+              `}"
+            >
+              <span>This thread has been updated</span>
               <button
                 type="button"
                 onclick="${javascript`
