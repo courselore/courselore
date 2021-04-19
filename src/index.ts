@@ -618,6 +618,18 @@ export default async function courselore(
             ? html`
                 <script>
                   const eventSource = new EventSource(window.location.href);
+                  eventSource.addEventListener("refresh", async () => {
+                    const refreshedPage = new DOMParser().parseFromString(
+                      await (await fetch(window.location.href)).text(),
+                      "text/html"
+                    );
+                    eventSource.dispatchEvent(
+                      new CustomEvent("refreshed", {
+                        detail: { refreshedPage },
+                      })
+                    );
+                    preparePage();
+                  });
                 </script>
               `
             : html``}
@@ -661,7 +673,17 @@ export default async function courselore(
             )}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
           <script>
-            (() => {
+            function preparePage() {
+              relativizeTimes();
+              toLocalTime();
+            }
+            preparePage();
+            (function refresh() {
+              relativizeTimes();
+              window.setTimeout(refresh, 60 * 1000);
+            })();
+
+            function relativizeTimes() {
               // TODO: Extract this into a library?
               // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
               // https://github.com/catamphetamine/javascript-time-ago
@@ -673,61 +695,64 @@ export default async function courselore(
               // https://day.js.org
               // http://timeago.yarp.com
               // https://sugarjs.com
-              const MINUTES = 60 * 1000;
-              const HOURS = 60 * MINUTES;
-              const DAYS = 24 * HOURS;
-              const WEEKS = 7 * DAYS;
-              const MONTHS = 30 * DAYS;
-              const YEARS = 365 * DAYS;
-              (function relativizeTimes() {
-                for (const element of document.querySelectorAll("time")) {
-                  if (element.getAttribute("datetime") === null) {
-                    element.setAttribute("datetime", element.textContent);
-                    element.title = element.textContent;
-                  }
-                  const difference =
-                    new Date(element.getAttribute("datetime")).getTime() -
-                    Date.now();
-                  const absoluteDifference = Math.abs(difference);
-                  const [value, unit] =
-                    absoluteDifference < MINUTES
-                      ? [0, "seconds"]
-                      : absoluteDifference < HOURS
-                      ? [difference / MINUTES, "minutes"]
-                      : absoluteDifference < DAYS
-                      ? [difference / HOURS, "hours"]
-                      : absoluteDifference < WEEKS
-                      ? [difference / DAYS, "days"]
-                      : absoluteDifference < MONTHS
-                      ? [difference / WEEKS, "weeks"]
-                      : absoluteDifference < YEARS
-                      ? [difference / MONTHS, "months"]
-                      : [difference / YEARS, "years"];
-                  element.textContent = new Intl.RelativeTimeFormat("en-US", {
-                    localeMatcher: "lookup",
-                    numeric: "auto",
-                  }).format(
-                    // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
-                    Math.round(value),
-                    unit
-                  );
+              const minutes = 60 * 1000;
+              const hours = 60 * minutes;
+              const days = 24 * hours;
+              const weeks = 7 * days;
+              const months = 30 * days;
+              const years = 365 * days;
+              for (const element of document.querySelectorAll("time")) {
+                if (element.getAttribute("datetime") === null) {
+                  element.setAttribute("datetime", element.textContent);
+                  element.title = element.textContent;
                 }
-                window.setTimeout(relativizeTimes, 60 * 1000);
-              })();
-            })();
+                const difference =
+                  new Date(element.getAttribute("datetime")).getTime() -
+                  Date.now();
+                const absoluteDifference = Math.abs(difference);
+                const [value, unit] =
+                  absoluteDifference < minutes
+                    ? [0, "seconds"]
+                    : absoluteDifference < hours
+                    ? [difference / minutes, "minutes"]
+                    : absoluteDifference < days
+                    ? [difference / hours, "hours"]
+                    : absoluteDifference < weeks
+                    ? [difference / days, "days"]
+                    : absoluteDifference < months
+                    ? [difference / weeks, "weeks"]
+                    : absoluteDifference < years
+                    ? [difference / months, "months"]
+                    : [difference / years, "years"];
+                element.textContent = new Intl.RelativeTimeFormat("en-US", {
+                  localeMatcher: "lookup",
+                  numeric: "auto",
+                }).format(
+                  // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                  Math.round(value),
+                  unit
+                );
+              }
+            }
 
-            for (const element of document.querySelectorAll("input.datetime")) {
-              const date = new Date(element.value);
-              element.value =
-                String(date.getFullYear()) +
-                "-" +
-                String(date.getMonth() + 1).padStart(2, "0") +
-                "-" +
-                String(date.getDate()).padStart(2, "0") +
-                " " +
-                String(date.getHours()).padStart(2, "0") +
-                ":" +
-                String(date.getMinutes()).padStart(2, "0");
+            function toLocalTime() {
+              for (const element of document.querySelectorAll(
+                "input.datetime"
+              )) {
+                if (element.dataset.local === "true") continue;
+                element.dataset.local = "true";
+                const date = new Date(element.value);
+                element.value =
+                  String(date.getFullYear()) +
+                  "-" +
+                  String(date.getMonth() + 1).padStart(2, "0") +
+                  "-" +
+                  String(date.getDate()).padStart(2, "0") +
+                  " " +
+                  String(date.getHours()).padStart(2, "0") +
+                  ":" +
+                  String(date.getMinutes()).padStart(2, "0");
+              }
             }
 
             class ValidationError extends Error {}
@@ -3875,7 +3900,7 @@ export default async function courselore(
                     >Create a new thread</a
                   >
                 </p>
-                <nav>
+                <nav id="threads">
                   $${res.locals.threads.map(
                     (thread) =>
                       html`
@@ -3975,6 +4000,18 @@ export default async function courselore(
                         </a>
                       `
                   )}
+                  <script>
+                    (() => {
+                      const id = document.currentScript.parentElement.id;
+                      eventSource.addEventListener("refreshed", (event) => {
+                        document
+                          .querySelector("#" + id)
+                          .replaceWith(
+                            event.detail.refreshedPage.querySelector("#" + id)
+                          );
+                      });
+                    })();
+                  </script>
                 </nav>
               </div>
             </div>
@@ -4232,6 +4269,11 @@ export default async function courselore(
           )
         `
       );
+
+      for (const eventSource of [...eventSources].filter(
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
+      ))
+        eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
         `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
@@ -4886,7 +4928,7 @@ export default async function courselore(
       );
 
       for (const eventSource of [...eventSources].filter(
-        (eventSource) => eventSource.locals.thread?.id === res.locals.thread.id
+        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
 
