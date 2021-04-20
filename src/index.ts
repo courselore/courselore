@@ -4693,6 +4693,40 @@ export default async function courselore(
                         </span>
                       </p>
 
+                      <p>
+                        <button
+                          title="Reply"
+                          type="button"
+                          style="${css`
+                            &,
+                            &:active {
+                              all: unset;
+                            }
+                          `}"
+                          onclick="${javascript`
+                            const newPost = document.querySelector("#new-post");
+                            newPost.querySelector(".write").click();
+                            const newPostContent = newPost.querySelector('[name="content"]');
+                            newPostContent.value += (newPostContent.value === "" ? "" : "\\n\\n") + "> @" + ${JSON.stringify(
+                              post.authorEnrollment.user.name
+                            )} + "\\n>\\n" + ${JSON.stringify(
+                            post.content
+                              .split("\n")
+                              .map((line) => `> ${line}`)
+                              .join("\n")
+                          )} + "\\n\\n";
+                            newPostContent.focus();
+                            newPostContent.setSelectionRange(newPostContent.value.length, newPostContent.value.length);
+                          `}"
+                        >
+                          <svg width="16" height="16">
+                            <path
+                              d="M6.78 1.97a.75.75 0 010 1.06L3.81 6h6.44A4.75 4.75 0 0115 10.75v2.5a.75.75 0 01-1.5 0v-2.5a3.25 3.25 0 00-3.25-3.25H3.81l2.97 2.97a.75.75 0 11-1.06 1.06L1.47 7.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0z"
+                            ></path>
+                          </svg>
+                        </button>
+                      </p>
+
                       $${mayEditPost(req, res, post)
                         ? html`
                             <p>
@@ -4894,6 +4928,7 @@ export default async function courselore(
             </script>
 
             <form
+              id="new-post"
               method="POST"
               action="${app.get("url")}/courses/${res.locals.course
                 .reference}/threads/${res.locals.thread.reference}/posts"
