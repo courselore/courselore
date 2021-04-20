@@ -807,8 +807,10 @@ export default async function courselore(
                 const eventSource = new EventSource(window.location.href);
                 const refreshers = [];
                 eventSource.addEventListener("refresh", async () => {
+                  const response = await fetch(window.location.href);
+                  if (response.status !== 200) return;
                   const refreshedDocument = new DOMParser().parseFromString(
-                    await (await fetch(window.location.href)).text(),
+                    await response.text(),
                     "text/html"
                   );
                   for (const refresher of refreshers) refresher(refreshedDocument);
@@ -5252,7 +5254,7 @@ export default async function courselore(
     "*",
     ...isAuthenticatedMiddleware,
     (req, res) => {
-      res.send(
+      res.status(404).send(
         app.get("layout main")(
           req,
           res,
@@ -5275,7 +5277,7 @@ export default async function courselore(
     "*",
     ...isUnauthenticatedMiddleware,
     (req, res) => {
-      res.send(
+      res.status(404).send(
         app.get("layout main")(
           req,
           res,
