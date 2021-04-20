@@ -547,6 +547,13 @@ export default async function courselore(
                   }
                 }
 
+                blockquote {
+                  color: gray;
+                  padding-left: 0.5rem;
+                  border-left: 3px solid gray;
+                  margin: 1rem 0;
+                }
+
                 [hidden] {
                   display: none !important;
                 }
