@@ -4524,17 +4524,17 @@ export default async function courselore(
                           <button
                             type="button"
                             onclick="${javascript`
-                            const title = this.closest(".title");
-                            title.querySelector(".show").hidden = true;
-                            const edit = title.querySelector(".edit");
-                            edit.hidden = false;
-                            const input = edit.querySelector('[name="title"]');
-                            input.value = ${JSON.stringify(
-                              res.locals.thread.title
-                            )};
-                            input.focus();
-                            input.setSelectionRange(0, 0);
-                          `}"
+                              const title = this.closest(".title");
+                              title.querySelector(".show").hidden = true;
+                              const edit = title.querySelector(".edit");
+                              edit.hidden = false;
+                              const input = edit.querySelector('[name="title"]');
+                              input.value = ${JSON.stringify(
+                                res.locals.thread.title
+                              )};
+                              input.focus();
+                              input.setSelectionRange(0, 0);
+                            `}"
                           >
                             Edit Title
                           </button>
@@ -4600,14 +4600,14 @@ export default async function courselore(
                           <button
                             type="button"
                             onclick="${javascript`
-                            if (!confirm("Discard changes?")) return;
-                            const title = this.closest(".title");
-                            title.querySelector(".show").hidden = false;
-                            const edit = title.querySelector(".edit");
-                            edit.hidden = true;
-                            for (const element of edit.querySelectorAll("*"))
-                              modifiedInputs.delete(element);
-                          `}"
+                              if (!confirm("Discard changes?")) return;
+                              const title = this.closest(".title");
+                              title.querySelector(".show").hidden = false;
+                              const edit = title.querySelector(".edit");
+                              edit.hidden = true;
+                              for (const element of edit.querySelectorAll("*"))
+                                modifiedInputs.delete(element);
+                            `}"
                           >
                             Cancel
                           </button>
@@ -4674,18 +4674,18 @@ export default async function courselore(
                                 type="button"
                                 class="edit-button"
                                 onclick="${javascript`
-                                const post = this.closest(".post");
-                                post.querySelector(".show").hidden = true;
-                                const edit = post.querySelector(".edit");
-                                edit.hidden = false;
-                                const textarea = edit.querySelector('[name="content"]');
-                                textarea.value = ${JSON.stringify(
-                                  post.content
-                                )};
-                                textarea.focus();
-                                textarea.setSelectionRange(0, 0);
-                                this.hidden = true;
-                              `}"
+                                  const post = this.closest(".post");
+                                  post.querySelector(".show").hidden = true;
+                                  const edit = post.querySelector(".edit");
+                                  edit.hidden = false;
+                                  const textarea = edit.querySelector('[name="content"]');
+                                  textarea.value = ${JSON.stringify(
+                                    post.content
+                                  )};
+                                  textarea.focus();
+                                  textarea.setSelectionRange(0, 0);
+                                  this.hidden = true;
+                                `}"
                               >
                                 Edit Post
                               </button>
@@ -4810,15 +4810,15 @@ export default async function courselore(
                               <button
                                 type="button"
                                 onclick="${javascript`
-                                if (!confirm("Discard changes?")) return;
-                                const post = this.closest(".post");
-                                post.querySelector(".show").hidden = false;
-                                const edit = post.querySelector(".edit");
-                                edit.hidden = true;
-                                for (const element of edit.querySelectorAll("*"))
-                                  modifiedInputs.delete(element);
-                                post.querySelector(".edit-button").hidden = false;
-                              `}"
+                                  if (!confirm("Discard changes?")) return;
+                                  const post = this.closest(".post");
+                                  post.querySelector(".show").hidden = false;
+                                  const edit = post.querySelector(".edit");
+                                  edit.hidden = true;
+                                  for (const element of edit.querySelectorAll("*"))
+                                    modifiedInputs.delete(element);
+                                  post.querySelector(".edit-button").hidden = false;
+                                `}"
                               >
                                 Cancel
                               </button>
