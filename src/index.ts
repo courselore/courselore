@@ -4831,6 +4831,10 @@ export default async function courselore(
                           : `${post.likes[0].enrollment.user.name}, ${
                               post.likes[1].enrollment.user.name
                             }, and ${post.likes.length - 2} others liked this`}"
+                        onsubmit="${javascript`
+                          event.preventDefault();
+                          fetch(this.action, { method: this.method });
+                        `}"
                       >
                         <p
                           style="${css`
@@ -4873,8 +4877,10 @@ export default async function courselore(
                                       ></path>
                                     </svg>
                                   `}
+                              ${post.likes.length === 0
+                                ? ""
+                                : post.likes.length}
                             </button>
-                            ${post.likes.length === 0 ? "" : post.likes.length}
                           </span>
                         </p>
                       </form>
