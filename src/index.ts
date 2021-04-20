@@ -76,101 +76,103 @@ export default async function courselore(
   app.set("database", database);
   const migrations = [
     () => {
-      database.execute(sql`
-        CREATE TABLE "authenticationNonces" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "expiresAt" TEXT NOT NULL,
-          "nonce" TEXT NOT NULL UNIQUE,
-          "email" TEXT NOT NULL UNIQUE
-        );
+      database.execute(
+        sql`
+          CREATE TABLE "authenticationNonces" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "expiresAt" TEXT NOT NULL,
+            "nonce" TEXT NOT NULL UNIQUE,
+            "email" TEXT NOT NULL UNIQUE
+          );
 
-        CREATE TABLE "users" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "email" TEXT NOT NULL UNIQUE,
-          "name" TEXT NOT NULL
-        );
+          CREATE TABLE "users" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "email" TEXT NOT NULL UNIQUE,
+            "name" TEXT NOT NULL
+          );
 
-        CREATE TABLE "sessions" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "expiresAt" TEXT NOT NULL,
-          "token" TEXT NOT NULL UNIQUE,
-          "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
-        );
-  
-        CREATE TABLE "courses" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "reference" TEXT NOT NULL UNIQUE,
-          "name" TEXT NOT NULL,
-          "nextThreadReference" INTEGER NOT NULL DEFAULT 1
-        );
-  
-        CREATE TABLE "invitations" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "expiresAt" TEXT NULL,
-          "usedAt" TEXT NULL,
-          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-          "reference" TEXT NOT NULL,
-          "email" TEXT NULL,
-          "name" TEXT NULL,
-          "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-          UNIQUE ("course", "reference")
-        );
-  
-        CREATE TABLE "enrollments" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
-          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-          "reference" TEXT NOT NULL,
-          "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-          "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
-          UNIQUE ("user", "course"),
-          UNIQUE ("course", "reference")
-        );
-  
-        CREATE TABLE "threads" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-          "reference" TEXT NOT NULL,
-          "title" TEXT NOT NULL,
-          "nextPostReference" INTEGER NOT NULL DEFAULT 1,
-          UNIQUE ("course", "reference")
-        );
-  
-        CREATE TABLE "posts" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
-          "reference" TEXT NOT NULL,
-          "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-          "content" TEXT NOT NULL,
-          UNIQUE ("thread", "reference")
-        );
-  
-        CREATE TABLE "likes" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "post" INTEGER NOT NULL REFERENCES "posts" ON DELETE CASCADE,
-          "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-          UNIQUE ("post", "enrollment")
-        );
-  
-        CREATE TABLE "emailsQueue" (
-          "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-          "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-          "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
-          "to" TEXT NOT NULL,
-          "subject" TEXT NOT NULL,
-          "body" TEXT NOT NULL
-        );
-      `);
+          CREATE TABLE "sessions" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "expiresAt" TEXT NOT NULL,
+            "token" TEXT NOT NULL UNIQUE,
+            "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+          );
+    
+          CREATE TABLE "courses" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "reference" TEXT NOT NULL UNIQUE,
+            "name" TEXT NOT NULL,
+            "nextThreadReference" INTEGER NOT NULL DEFAULT 1
+          );
+    
+          CREATE TABLE "invitations" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "expiresAt" TEXT NULL,
+            "usedAt" TEXT NULL,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "email" TEXT NULL,
+            "name" TEXT NULL,
+            "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+            UNIQUE ("course", "reference")
+          );
+    
+          CREATE TABLE "enrollments" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+            "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
+            UNIQUE ("user", "course"),
+            UNIQUE ("course", "reference")
+          );
+    
+          CREATE TABLE "threads" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "title" TEXT NOT NULL,
+            "nextPostReference" INTEGER NOT NULL DEFAULT 1,
+            UNIQUE ("course", "reference")
+          );
+    
+          CREATE TABLE "posts" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            "content" TEXT NOT NULL,
+            UNIQUE ("thread", "reference")
+          );
+    
+          CREATE TABLE "likes" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "post" INTEGER NOT NULL REFERENCES "posts" ON DELETE CASCADE,
+            "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            UNIQUE ("post", "enrollment")
+          );
+    
+          CREATE TABLE "emailsQueue" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+            "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
+            "to" TEXT NOT NULL,
+            "subject" TEXT NOT NULL,
+            "body" TEXT NOT NULL
+          );
+        `
+      );
     },
   ];
   database.executeTransaction(() => {
@@ -1213,7 +1215,8 @@ export default async function courselore(
         userId: number;
         userEmail: string;
         userName: string;
-      }>(sql`
+      }>(
+        sql`
           SELECT "sessions"."expiresAt",
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
@@ -1222,7 +1225,8 @@ export default async function courselore(
           JOIN "users" ON "sessions"."user" = "users"."id"
           WHERE "sessions"."token" = ${req.cookies.session} AND
                 datetime(${new Date().toISOString()}) < datetime("sessions"."expiresAt")
-        `);
+        `
+      );
       if (session === undefined) {
         closeSession(req, res);
         return next("route");
@@ -2108,31 +2112,35 @@ export default async function courselore(
             authorUserName: string | null;
             authorEnrollmentRole: Role | null;
             likesCount: number;
-          }>(sql`
-            SELECT "posts"."createdAt",
-                   "authorEnrollment"."id" AS "authorEnrollmentId",
-                   "authorUser"."id" AS "authorUserId",
-                   "authorUser"."email" AS "authorUserEmail",
-                   "authorUser"."name" AS "authorUserName",
-                   "authorEnrollment"."role" AS "authorEnrollmentRole",
-                   COUNT("likes"."id") AS "likesCount"
-            FROM "posts"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
-            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-            LEFT JOIN "likes" ON "posts"."id" = "likes"."post"
-            WHERE "posts"."thread" = ${thread.id} AND
-                  "posts"."reference" = ${"1"}
-            GROUP BY "posts"."id"
-          `)!;
+          }>(
+            sql`
+              SELECT "posts"."createdAt",
+                    "authorEnrollment"."id" AS "authorEnrollmentId",
+                    "authorUser"."id" AS "authorUserId",
+                    "authorUser"."email" AS "authorUserEmail",
+                    "authorUser"."name" AS "authorUserName",
+                    "authorEnrollment"."role" AS "authorEnrollmentRole",
+                    COUNT("likes"."id") AS "likesCount"
+              FROM "posts"
+              LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
+              LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+              LEFT JOIN "likes" ON "posts"."id" = "likes"."post"
+              WHERE "posts"."thread" = ${thread.id} AND
+                    "posts"."reference" = ${"1"}
+              GROUP BY "posts"."id"
+            `
+          )!;
           const mostRecentlyUpdatedPost = database.get<{
             updatedAt: string;
-          }>(sql`
-            SELECT "posts"."updatedAt"
-            FROM "posts"
-            WHERE "posts"."thread" = ${thread.id}
-            ORDER BY "posts"."updatedAt" DESC
-            LIMIT 1
-          `)!;
+          }>(
+            sql`
+              SELECT "posts"."updatedAt"
+              FROM "posts"
+              WHERE "posts"."thread" = ${thread.id}
+              ORDER BY "posts"."updatedAt" DESC
+              LIMIT 1
+            `
+          )!;
           const postsCount = database.get<{ postsCount: number }>(
             sql`SELECT COUNT(*) AS "postsCount" FROM "posts" WHERE "posts"."thread" = ${thread.id}`
           )!.postsCount;
@@ -2479,12 +2487,14 @@ export default async function courselore(
                     email: string | null;
                     name: string | null;
                     role: Role;
-                  }>(sql`
-                    SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
-                    FROM "invitations"
-                    WHERE "course" = ${res.locals.course.id}
-                    ORDER BY "id" DESC
-                  `);
+                  }>(
+                    sql`
+                      SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+                      FROM "invitations"
+                      WHERE "course" = ${res.locals.course.id}
+                      ORDER BY "id" DESC
+                    `
+                  );
                   const enrollments = database.all<{
                     id: number;
                     userId: number;
@@ -3312,15 +3322,17 @@ export default async function courselore(
             length: 10,
             type: "numeric",
           });
-          database.run(sql`
-            INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
-            VALUES (
-              ${req.body.expiresAt},
-              ${res.locals.course.id},
-              ${invitationReference},
-              ${req.body.role}
-            )
-          `);
+          database.run(
+            sql`
+              INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
+              VALUES (
+                ${req.body.expiresAt},
+                ${res.locals.course.id},
+                ${invitationReference},
+                ${req.body.role}
+              )
+            `
+          );
           res.redirect(
             `${app.get("url")}/courses/${
               res.locals.course.reference
@@ -3342,36 +3354,42 @@ export default async function courselore(
 
           for (const email of emails as emailAddresses.ParsedMailbox[]) {
             if (
-              database.get<{ exists: number }>(sql`
-                SELECT EXISTS(
-                  SELECT 1
-                  FROM "enrollments"
-                  JOIN "users" ON "enrollments"."user" = "users"."id"
-                  WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                        "users"."email" = ${email.address}
-                ) AS "exists"
-              `)!.exists === 1
+              database.get<{ exists: number }>(
+                sql`
+                  SELECT EXISTS(
+                    SELECT 1
+                    FROM "enrollments"
+                    JOIN "users" ON "enrollments"."user" = "users"."id"
+                    WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                          "users"."email" = ${email.address}
+                  ) AS "exists"
+                `
+              )!.exists === 1
             )
               continue;
 
             const existingUnusedInvitation = database.get<{
               id: number;
               name: string | null;
-            }>(sql`
+            }>(
+              sql`
                 SELECT "id", "name"
                 FROM "invitations"
                 WHERE "course" = ${res.locals.course.id} AND
                       "email" = ${email.address} AND
                       "usedAt" IS NULL
-              `);
+              `
+            );
             if (existingUnusedInvitation !== undefined) {
-              database.run(sql`
-                UPDATE "invitations"
-                SET "expiresAt" = ${req.body.expiresAt},
-                    "name" = ${email.name ?? existingUnusedInvitation.name},
-                    "role" = ${req.body.role}
-                WHERE "id" = ${existingUnusedInvitation.id}
-              `);
+              database.run(
+                sql`
+                  UPDATE "invitations"
+                  SET "expiresAt" = ${req.body.expiresAt},
+                      "name" = ${email.name ?? existingUnusedInvitation.name},
+                      "role" = ${req.body.role}
+                  WHERE "id" = ${existingUnusedInvitation.id}
+                `
+              );
               continue;
             }
 
@@ -3384,17 +3402,19 @@ export default async function courselore(
               role: req.body.role,
             };
             const invitationId = Number(
-              database.run(sql`
-                INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
-                VALUES (
-                  ${invitation.expiresAt},
-                  ${res.locals.course.id},
-                  ${invitation.reference},
-                  ${invitation.email},
-                  ${invitation.name},
-                  ${invitation.role}
-                )
-              `).lastInsertRowid
+              database.run(
+                sql`
+                  INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
+                  VALUES (
+                    ${invitation.expiresAt},
+                    ${res.locals.course.id},
+                    ${invitation.reference},
+                    ${invitation.email},
+                    ${invitation.name},
+                    ${invitation.role}
+                  )
+                `
+              ).lastInsertRowid
             );
 
             sendInvitationEmail({
@@ -3462,9 +3482,11 @@ export default async function courselore(
 
       if (req.body.expireNow === "true")
         database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = ${new Date().toISOString()} WHERE "id" = ${
-            res.locals.invitation.id
-          }`
+          sql`
+            UPDATE "invitations"
+            SET "expiresAt" = ${new Date().toISOString()}
+            WHERE "id" = ${res.locals.invitation.id}
+          `
         );
 
       res.redirect(
