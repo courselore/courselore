@@ -407,7 +407,7 @@ export default async function courselore(
                 }
 
                 textarea {
-                  min-height: 5rem;
+                  min-height: 10rem;
                   padding: 0.5rem 1rem;
                   resize: vertical;
                   white-space: pre-wrap;
