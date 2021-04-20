@@ -525,7 +525,6 @@ export default async function courselore(
                   cursor: default;
 
                   &:hover,
-                  &:focus,
                   details[open] > & {
                     color: #ff77a8;
                     fill: #ff77a8;
