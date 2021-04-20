@@ -1234,7 +1234,7 @@ export default async function courselore(
           FROM "sessions"
           JOIN "users" ON "sessions"."user" = "users"."id"
           WHERE "sessions"."token" = ${req.cookies.session} AND
-                datetime(${new Date().toISOString()}) < datetime("sessions"."expiresAt")
+                CURRENT_TIMESTAMP < datetime("sessions"."expiresAt")
         `
       );
       if (session === undefined) {
