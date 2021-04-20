@@ -805,14 +805,13 @@ export default async function courselore(
             $${res.locals.eventSource
               ? javascript`
                 const eventSource = new EventSource(window.location.href);
+                const refreshers = [];
                 eventSource.addEventListener("refresh", async () => {
-                  const refreshedPage = new DOMParser().parseFromString(
+                  const refreshedDocument = new DOMParser().parseFromString(
                     await (await fetch(window.location.href)).text(),
                     "text/html"
                   );
-                  eventSource.dispatchEvent(
-                    new CustomEvent("refreshed", { detail: { refreshedPage } })
-                  );
+                  for (const refresher of refreshers) refresher(refreshedDocument);
                   preparePage();
                 });
               `
@@ -4001,12 +4000,10 @@ export default async function courselore(
                 <script>
                   (() => {
                     const id = document.currentScript.previousElementSibling.id;
-                    eventSource.addEventListener("refreshed", (event) => {
+                    refreshers.push((refreshedDocument) => {
                       document
                         .querySelector("#" + id)
-                        .replaceWith(
-                          event.detail.refreshedPage.querySelector("#" + id)
-                        );
+                        .replaceWith(refreshedDocument.querySelector("#" + id));
                     });
                   })();
                 </script>
@@ -4924,12 +4921,11 @@ export default async function courselore(
             <script>
               (() => {
                 const id = document.currentScript.previousElementSibling.id;
-                eventSource.addEventListener("refreshed", (event) => {
-                  document
-                    .querySelector("#" + id)
-                    .replaceWith(
-                      event.detail.refreshedPage.querySelector("#" + id)
-                    );
+                refreshers.push((refreshedDocument) => {
+                  const posts = document.querySelector("#" + id);
+                  if (posts.querySelector(".edit:not([hidden])") !== null)
+                    return;
+                  posts.replaceWith(refreshedDocument.querySelector("#" + id));
                 });
               })();
             </script>
