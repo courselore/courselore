@@ -34,6 +34,8 @@ import QRCode from "qrcode";
 import lodash from "lodash";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
+// FIXME: Add types.
+const octicons = require("@primer/octicons");
 
 const VERSION = require("../package.json").version;
 
@@ -292,7 +294,6 @@ export default async function courselore(
 
                 a {
                   color: inherit;
-                  transition: color 0.2s;
 
                   &:hover {
                     color: #ff77a8 !important;
@@ -317,7 +318,6 @@ export default async function courselore(
                     border-color: dimgray;
                   }
                   box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-                  transition: background-color 0.2s, border-color 0.2s;
 
                   &:focus {
                     border-color: #ff77a8;
@@ -522,11 +522,11 @@ export default async function courselore(
                 summary {
                   outline: none;
                   cursor: default;
-                  transition: color 0.2s;
 
                   &:hover,
                   details[open] > & {
                     color: #ff77a8;
+                    fill: #ff77a8;
                   }
 
                   &.no-marker {
@@ -550,7 +550,7 @@ export default async function courselore(
                   display: none !important;
                 }
 
-                /* FIXME: Try ‘.full-width’ instead of ‘!important’ */
+                /* FIXME: Try ‘.full-width.full-width’ instead of ‘!important’ */
                 .full-width {
                   box-sizing: border-box !important;
                   width: 100% !important;
@@ -562,6 +562,7 @@ export default async function courselore(
                   font-weight: normal;
                   line-height: 1.3;
                   color: gray;
+                  fill: gray;
                   margin-top: -0.8rem;
                 }
 
@@ -928,7 +929,7 @@ export default async function courselore(
     <div
       style="${css`
         display: flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: ${res.locals.user === undefined
           ? `space-around`
           : `space-between`};
@@ -987,36 +988,13 @@ export default async function courselore(
       $${res.locals.user === undefined
         ? html``
         : html`
-            <details
-              class="dropdown"
-              style="${css`
-                margin-right: -8px;
-              `}"
-            >
-              <summary
-                class="no-marker"
-                style="${css`
-                  & line {
-                    transition: stroke 0.2s;
-                  }
-
-                  &:hover line,
-                  details[open] > & line {
-                    stroke: #ff77a8;
-                  }
-                `}"
-              >
-                <svg width="30" height="30">
-                  <g stroke="gray" stroke-width="2" stroke-linecap="round">
-                    <line x1="8" y1="10" x2="22" y2="10" />
-                    <line x1="8" y1="15" x2="22" y2="15" />
-                    <line x1="8" y1="20" x2="22" y2="20" />
-                  </g>
-                </svg>
+            <details class="dropdown">
+              <summary class="no-marker">
+                $${octicons["three-bars"].toSVG()}
               </summary>
               <nav
                 style="${css`
-                  transform: translate(calc(-100% + 2rem), -0.5rem);
+                  transform: translate(calc(-100% + 2rem));
                 `}"
               >
                 <p><strong>${res.locals.user.name}</strong></p>
@@ -1315,44 +1293,18 @@ export default async function courselore(
       ? html``
       : html`
           <details class="dropdown">
-            <summary
-              class="no-marker"
-              style="${css`
-                p {
-                  transition: color 0.2s;
-                }
-
-                &:hover p,
-                details[open] > & p {
-                  color: #ff77a8;
-                }
-
-                & path {
-                  transition: fill 0.2s;
-                }
-
-                &:hover path,
-                details[open] > & path {
-                  fill: #ff77a8;
-                }
-              `}"
-            >
+            <summary class="no-marker hint">
               <p
-                class="hint"
                 style="${css`
                   display: flex;
+                  align-items: center;
 
                   & > * + * {
                     margin-left: 0.3rem;
                   }
                 `}"
               >
-                <svg width="16" height="16">
-                  <path
-                    d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
-                    fill="gray"
-                  ></path>
-                </svg>
+                $${octicons["arrow-switch"].toSVG()}
                 <span>Switch to another course</span>
               </p>
             </summary>
@@ -3556,14 +3508,6 @@ export default async function courselore(
                   style="${css`
                     display: flex;
                     align-items: center;
-
-                    path {
-                      transition: fill 0.2s;
-                    }
-
-                    &:hover path {
-                      fill: #ff77a8;
-                    }
                   `}"
                   ><svg viewBox="0 0 16 16" width="16" height="16">
                     <path
