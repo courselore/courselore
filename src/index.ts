@@ -994,7 +994,7 @@ export default async function courselore(
               </summary>
               <nav
                 style="${css`
-                  transform: translate(calc(-100% + 2rem));
+                  transform: translate(calc(-100% + 1rem));
                 `}"
               >
                 <p><strong>${res.locals.user.name}</strong></p>
