@@ -371,6 +371,8 @@ Insiders Builds are generated on every push. They’re useful for development an
 #### Design
 
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting.
+- Add support for screen readers.
+- Add support for keyboard navigation.
 
 #### Metrics
 
