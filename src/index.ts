@@ -569,13 +569,16 @@ export default async function courselore(
 
                 .green:not(:active) {
                   color: #008751;
+                  fill: #008751;
                   @media (prefers-color-scheme: dark) {
                     color: #00e436;
+                    fill: #00e436;
                   }
                 }
 
                 .red:not(:active) {
                   color: #ff004d;
+                  fill: #ff004d;
                 }
 
                 @media (prefers-color-scheme: light) {
@@ -4522,7 +4525,14 @@ export default async function courselore(
                     ? html`
                         <p>
                           <button
+                            title="Edit Title"
                             type="button"
+                            style="${css`
+                              &,
+                              &:active {
+                                all: unset;
+                              }
+                            `}"
                             onclick="${javascript`
                               const title = this.closest(".title");
                               title.querySelector(".show").hidden = true;
@@ -4536,7 +4546,11 @@ export default async function courselore(
                               input.setSelectionRange(0, 0);
                             `}"
                           >
-                            Edit Title
+                            <svg width="16" height="16">
+                              <path
+                                d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"
+                              ></path>
+                            </svg>
                           </button>
                         </p>
                       `
@@ -4551,13 +4565,25 @@ export default async function courselore(
                         >
                           <p>
                             <button
+                              title="Remove Thread"
                               class="red"
+                              style="${css`
+                                &,
+                                &:active {
+                                  all: unset;
+                                }
+                              `}"
                               onclick="${javascript`
-                            if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
-                              event.preventDefault();
-                          `}"
+                                if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
+                                  event.preventDefault();
+                              `}"
                             >
-                              Remove Thread
+                              <svg width="16" height="16">
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M6.5 1.75a.25.25 0 01.25-.25h2.5a.25.25 0 01.25.25V3h-3V1.75zm4.5 0V3h2.25a.75.75 0 010 1.5H2.75a.75.75 0 010-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675a.75.75 0 10-1.492.15l.66 6.6A1.75 1.75 0 005.405 15h5.19c.9 0 1.652-.681 1.741-1.576l.66-6.6a.75.75 0 00-1.492-.149l-.66 6.6a.25.25 0 01-.249.225h-5.19a.25.25 0 01-.249-.225l-.66-6.6z"
+                                ></path>
+                              </svg>
                             </button>
                           </p>
                         </form>
@@ -4671,8 +4697,15 @@ export default async function courselore(
                         ? html`
                             <p>
                               <button
+                                title="Edit Post"
                                 type="button"
                                 class="edit-button"
+                                style="${css`
+                                  &,
+                                  &:active {
+                                    all: unset;
+                                  }
+                                `}"
                                 onclick="${javascript`
                                   const post = this.closest(".post");
                                   post.querySelector(".show").hidden = true;
@@ -4687,7 +4720,11 @@ export default async function courselore(
                                   this.hidden = true;
                                 `}"
                               >
-                                Edit Post
+                                <svg width="16" height="16">
+                                  <path
+                                    d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"
+                                  ></path>
+                                </svg>
                               </button>
                             </p>
                           `
@@ -4703,13 +4740,25 @@ export default async function courselore(
                             >
                               <p>
                                 <button
+                                  title="Remove Post"
                                   class="red"
+                                  style="${css`
+                                    &,
+                                    &:active {
+                                      all: unset;
+                                    }
+                                  `}"
                                   onclick="${javascript`
-                                  if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
-                                    event.preventDefault();
-                                `}"
+                                    if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
+                                      event.preventDefault();
+                                  `}"
                                 >
-                                  Remove Post
+                                  <svg width="16" height="16">
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M6.5 1.75a.25.25 0 01.25-.25h2.5a.25.25 0 01.25.25V3h-3V1.75zm4.5 0V3h2.25a.75.75 0 010 1.5H2.75a.75.75 0 010-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675a.75.75 0 10-1.492.15l.66 6.6A1.75 1.75 0 005.405 15h5.19c.9 0 1.652-.681 1.741-1.576l.66-6.6a.75.75 0 00-1.492-.149l-.66 6.6a.25.25 0 01-.249.225h-5.19a.25.25 0 01-.249-.225l-.66-6.6z"
+                                    ></path>
+                                  </svg>
                                 </button>
                               </p>
                             </form>
@@ -4776,8 +4825,8 @@ export default async function courselore(
                                 : html`
                                     <svg
                                       viewBox="0 0 512 512"
-                                      width="11"
-                                      height="11"
+                                      width="12"
+                                      height="12"
                                     >
                                       <path
                                         d="M104 224H24c-13.255 0-24 10.745-24 24v240c0 13.255 10.745 24 24 24h80c13.255 0 24-10.745 24-24V248c0-13.255-10.745-24-24-24zM64 472c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zM384 81.452c0 42.416-25.97 66.208-33.277 94.548h101.723c33.397 0 59.397 27.746 59.553 58.098.084 17.938-7.546 37.249-19.439 49.197l-.11.11c9.836 23.337 8.237 56.037-9.308 79.469 8.681 25.895-.069 57.704-16.382 74.757 4.298 17.598 2.244 32.575-6.148 44.632C440.202 511.587 389.616 512 346.839 512l-2.845-.001c-48.287-.017-87.806-17.598-119.56-31.725-15.957-7.099-36.821-15.887-52.651-16.178-6.54-.12-11.783-5.457-11.783-11.998v-213.77c0-3.2 1.282-6.271 3.558-8.521 39.614-39.144 56.648-80.587 89.117-113.111 14.804-14.832 20.188-37.236 25.393-58.902C282.515 39.293 291.817 0 312 0c24 0 72 8 72 81.452z"
