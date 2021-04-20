@@ -34,8 +34,6 @@ import QRCode from "qrcode";
 import lodash from "lodash";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
-// FIXME: Add types.
-const octicons = require("@primer/octicons");
 
 const VERSION = require("../package.json").version;
 
@@ -990,7 +988,11 @@ export default async function courselore(
         : html`
             <details class="dropdown">
               <summary class="no-marker">
-                $${octicons["three-bars"].toSVG()}
+                <svg width="16" height="16">
+                  <path
+                    d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z"
+                  />
+                </svg>
               </summary>
               <nav
                 style="${css`
@@ -1304,7 +1306,11 @@ export default async function courselore(
                   }
                 `}"
               >
-                $${octicons["arrow-switch"].toSVG()}
+                <svg width="16" height="16">
+                  <path
+                    d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
+                  />
+                </svg>
                 <span>Switch to another course</span>
               </p>
             </summary>
