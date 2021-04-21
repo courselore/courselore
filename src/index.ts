@@ -40,16 +40,25 @@ const VERSION = require("../package.json").version;
 export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
-  const app = express();
+  interface CourseLore extends express.Express {
+    locals: CourseLoreLocals;
+  }
+  const app = express() as CourseLore;
 
+  interface CourseLoreLocals {
+    url: string;
+    administrator: string;
+    demonstration: boolean;
+  }
   app.locals.url = "http://localhost:4000";
   app.locals.administrator = "mailto:demonstration-development@courselore.org";
   app.locals.demonstration = true;
 
-  const ROLES = ["student", "staff"] as const;
   type Role = typeof ROLES[number];
+  const ROLES = ["student", "staff"] as const;
 
   // https://pico-8.fandom.com/wiki/Palette
+  type AccentColor = typeof ACCENT_COLORS[number];
   const ACCENT_COLORS = [
     "#83769c",
     "#ff77a8",
@@ -62,14 +71,13 @@ export default async function courselore(
     "#1d2b53",
     "#5f574f",
   ] as const;
-  type AccentColor = typeof ACCENT_COLORS[number];
 
+  type AnonymousEnrollment = typeof ANONYMOUS_ENROLLMENT;
   const ANONYMOUS_ENROLLMENT = {
     id: null,
     user: { id: null, email: null, name: "Anonymous" },
     role: null,
   } as const;
-  type AnonymousEnrollment = typeof ANONYMOUS_ENROLLMENT;
 
   await fs.ensureDir(rootDirectory);
   const database = new Database(path.join(rootDirectory, "courselore.db"));
