@@ -189,7 +189,7 @@ module.exports = (require) => {
                   }
                 `}"
               >
-                $${app.get("text processor")(
+                $${app.locals.textProcessor(
                   // prettier-ignore
                   markdown`
 # What Will CourseLore Be?
