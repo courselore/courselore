@@ -40,19 +40,23 @@ const VERSION = require("../package.json").version;
 export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
-  interface CourseLore extends express.Express {
-    locals: CourseLoreLocals;
+  interface App extends express.Express {
+    locals: AppLocals;
   }
-  const app = express() as CourseLore;
+  const app = express() as App;
 
-  interface CourseLoreLocals {
+  interface AppLocals {
     url: string;
     administrator: string;
     demonstration: boolean;
+    middlewares: Middlewares;
+    layouts: Layouts;
   }
   app.locals.url = "http://localhost:4000";
   app.locals.administrator = "mailto:demonstration-development@courselore.org";
   app.locals.demonstration = true;
+  app.locals.middlewares = {} as Middlewares;
+  app.locals.layouts = {} as Layouts;
 
   type Role = typeof ROLES[number];
   const ROLES = ["student", "staff"] as const;
@@ -79,7 +83,7 @@ export default async function courselore(
     role: null,
   } as const;
 
-  interface CourseLoreLocals {
+  interface AppLocals {
     database: Database;
   }
   await fs.ensureDir(rootDirectory);
@@ -195,430 +199,427 @@ export default async function courselore(
     app.locals.database.pragma(`user_version = ${migrations.length}`);
   });
 
-  app.set(
-    "layout base",
-    (
+  interface Layouts {
+    base: (
       req: express.Request<{}, any, {}, {}, {}>,
       res: express.Response<any, {}>,
       head: HTML,
       body: HTML
-    ): HTML =>
-      processCSS(html`
-        <!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="UTF-8" />
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
-            <meta name="generator" content="CourseLore/${VERSION}" />
-            <meta name="description" content="The Open-Source Student Forum" />
-            <link
-              rel="icon"
-              type="image/png"
-              sizes="32x32"
-              href="${app.locals.url}/favicon-32x32.png"
-            />
-            <link
-              rel="icon"
-              type="image/png"
-              sizes="16x16"
-              href="${app.locals.url}/favicon-16x16.png"
-            />
-            <link
-              rel="shortcut icon"
-              type="image/x-icon"
-              href="${app.locals.url}/favicon.ico"
-            />
-            <link
-              rel="stylesheet"
-              href="${app.locals
-                .url}/node_modules/typeface-public-sans/index.css"
-            />
-            <link
-              rel="stylesheet"
-              href="${app.locals
-                .url}/node_modules/typeface-roboto-mono/index.css"
-            />
-            <link
-              rel="stylesheet"
-              href="${app.locals.url}/node_modules/katex/dist/katex.min.css"
-            />
-            $${head}
-          </head>
-          <body
-            style="${css`
-              @at-root {
-                body {
-                  font-size: 0.875rem;
-                  -webkit-text-size-adjust: 100%;
-                  line-height: 1.5;
-                  font-family: "Public Sans", sans-serif;
-                  margin: 0;
-                  overflow-wrap: break-word;
+    ) => HTML;
+  }
+  app.locals.layouts.base = (req, res, head, body) =>
+    processCSS(html`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <meta name="generator" content="CourseLore/${VERSION}" />
+          <meta name="description" content="The Open-Source Student Forum" />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="${app.locals.url}/favicon-32x32.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="${app.locals.url}/favicon-16x16.png"
+          />
+          <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="${app.locals.url}/favicon.ico"
+          />
+          <link
+            rel="stylesheet"
+            href="${app.locals.url}/node_modules/typeface-public-sans/index.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${app.locals.url}/node_modules/typeface-roboto-mono/index.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${app.locals.url}/node_modules/katex/dist/katex.min.css"
+          />
+          $${head}
+        </head>
+        <body
+          style="${css`
+            @at-root {
+              body {
+                font-size: 0.875rem;
+                -webkit-text-size-adjust: 100%;
+                line-height: 1.5;
+                font-family: "Public Sans", sans-serif;
+                margin: 0;
+                overflow-wrap: break-word;
 
+                @media (prefers-color-scheme: dark) {
+                  color: #d4d4d4;
+                  fill: #d4d4d4;
+                  background-color: #1e1e1e;
+                }
+              }
+
+              code {
+                font-family: "Roboto Mono", monospace;
+              }
+
+              ::selection {
+                color: white;
+                background-color: #ff77a8;
+              }
+
+              img,
+              svg {
+                max-width: 100%;
+                height: auto;
+              }
+
+              img {
+                border-radius: 10px;
+                background-color: white;
+              }
+
+              h1 {
+                font-size: 1.3rem;
+                line-height: 1.3;
+                font-weight: 800;
+              }
+
+              pre,
+              div.math-display {
+                overflow: auto;
+                overflow-wrap: normal;
+              }
+
+              pre {
+                line-height: 1.3;
+              }
+
+              a {
+                color: inherit;
+
+                &:hover {
+                  color: #ff77a8 !important;
+                }
+
+                h1 &,
+                nav & {
+                  text-decoration: none;
+                }
+              }
+
+              input[type="text"],
+              input[type="email"],
+              input[type="radio"],
+              input[type="checkbox"],
+              textarea,
+              select,
+              button {
+                all: unset;
+                border: 1px solid gainsboro;
+                @media (prefers-color-scheme: dark) {
+                  border-color: dimgray;
+                }
+                box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+
+                &:focus {
+                  border-color: #ff77a8;
+                }
+
+                &:disabled {
+                  background-color: whitesmoke;
                   @media (prefers-color-scheme: dark) {
-                    color: #d4d4d4;
-                    fill: #d4d4d4;
-                    background-color: #1e1e1e;
+                    background-color: #333333;
+                  }
+                  cursor: not-allowed;
+                }
+              }
+
+              input[type="text"],
+              input[type="email"],
+              textarea,
+              select,
+              button {
+                padding: 0.1rem 1rem;
+                border-radius: 5px;
+
+                @supports (-webkit-touch-callout: none) {
+                  font-size: 16px;
+                }
+
+                &:disabled {
+                  color: gray;
+                  @media (prefers-color-scheme: dark) {
+                    color: whitesmoke;
                   }
                 }
+              }
 
-                code {
-                  font-family: "Roboto Mono", monospace;
+              input[type="text"],
+              input[type="email"],
+              textarea {
+                cursor: text;
+              }
+
+              input[type="radio"],
+              input[type="checkbox"] {
+                display: inline-block;
+                width: 12px;
+                height: 12px;
+                margin-bottom: -2px;
+              }
+
+              input[type="radio"] {
+                border-radius: 50%;
+
+                &:checked {
+                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                    html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                      >
+                        <circle cx="6" cy="6" r="3" fill="#ff77a8" />
+                      </svg>
+                    `
+                  ).toString("base64")}");
+                }
+              }
+
+              input[type="checkbox"] {
+                border-radius: 3px;
+
+                &:checked {
+                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                    html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                      >
+                        <path
+                          d="M10.548 1.559a1.315 1.315 0 00-.921.378.652.652 0 00-.003 0L4.258 7.303 2.363 5.408a.652.652 0 00-.013-.01c-.485-.463-1.342-.455-1.817.02C.057 5.89.046 6.75.508 7.237a.652.652 0 00.009.012l2.82 2.82a.652.652 0 00.003 0c.481.48 1.354.48 1.836 0a.652.652 0 00.003 0l6.287-6.287c.484-.483.484-1.364 0-1.846a1.315 1.315 0 00-.915-.378z"
+                          fill="#ff77a8"
+                        />
+                      </svg>
+                    `
+                  ).toString("base64")}");
+                }
+              }
+
+              textarea {
+                min-height: 10rem;
+                padding: 0.5rem 1rem;
+                resize: vertical;
+                white-space: pre-wrap;
+              }
+
+              select {
+                padding-right: 1.5rem;
+                background: url("data:image/svg+xml;base64,${Buffer.from(
+                    html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                      >
+                        <path
+                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
+                        ></path>
+                      </svg>
+                    `
+                  ).toString("base64")}")
+                  center right 0.3rem no-repeat;
+                @media (prefers-color-scheme: dark) {
+                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                    html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                      >
+                        <path
+                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
+                          fill="#d4d4d4"
+                        ></path>
+                      </svg>
+                    `
+                  ).toString("base64")}");
                 }
 
-                ::selection {
+                &:disabled {
+                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                    html`
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                      >
+                        <path
+                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
+                          fill="gray"
+                        ></path>
+                      </svg>
+                    `
+                  ).toString("base64")}");
+                  @media (prefers-color-scheme: dark) {
+                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                      html`
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                        >
+                          <path
+                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
+                            fill="whitesmoke"
+                          ></path>
+                        </svg>
+                      `
+                    ).toString("base64")}");
+                  }
+                }
+              }
+
+              button {
+                text-align: center;
+                background-color: white;
+                @media (prefers-color-scheme: dark) {
+                  background-color: #5a5a5a;
+                }
+                cursor: default;
+
+                &:active {
                   color: white;
                   background-color: #ff77a8;
                 }
+              }
 
-                img,
-                svg {
-                  max-width: 100%;
-                  height: auto;
+              details.dropdown {
+                &[open] > summary::before {
+                  content: "";
+                  display: block;
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  bottom: 0;
+                  left: 0;
                 }
 
-                img {
+                & > summary + * {
+                  background-color: whitesmoke;
+                  @media (prefers-color-scheme: dark) {
+                    background-color: #464646;
+                  }
+                  max-width: 300px;
+                  padding: 0 1rem;
+                  border: 1px solid darkgray;
                   border-radius: 10px;
-                  background-color: white;
+                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
+                    0 0 50px -20px;
+                  position: absolute;
+                }
+              }
+
+              summary {
+                outline: none;
+                cursor: default;
+
+                &:hover,
+                details[open] > & {
+                  color: #ff77a8;
+                  fill: #ff77a8;
                 }
 
-                h1 {
-                  font-size: 1.3rem;
-                  line-height: 1.3;
-                  font-weight: 800;
-                }
+                &.no-marker {
+                  list-style: none;
 
-                pre,
-                div.math-display {
-                  overflow: auto;
-                  overflow-wrap: normal;
-                }
-
-                pre {
-                  line-height: 1.3;
-                }
-
-                a {
-                  color: inherit;
-
-                  &:hover {
-                    color: #ff77a8 !important;
-                  }
-
-                  h1 &,
-                  nav & {
-                    text-decoration: none;
-                  }
-                }
-
-                input[type="text"],
-                input[type="email"],
-                input[type="radio"],
-                input[type="checkbox"],
-                textarea,
-                select,
-                button {
-                  all: unset;
-                  border: 1px solid gainsboro;
-                  @media (prefers-color-scheme: dark) {
-                    border-color: dimgray;
-                  }
-                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-
-                  &:focus {
-                    border-color: #ff77a8;
-                  }
-
-                  &:disabled {
-                    background-color: whitesmoke;
-                    @media (prefers-color-scheme: dark) {
-                      background-color: #333333;
-                    }
-                    cursor: not-allowed;
-                  }
-                }
-
-                input[type="text"],
-                input[type="email"],
-                textarea,
-                select,
-                button {
-                  padding: 0.1rem 1rem;
-                  border-radius: 5px;
-
-                  @supports (-webkit-touch-callout: none) {
-                    font-size: 16px;
-                  }
-
-                  &:disabled {
-                    color: gray;
-                    @media (prefers-color-scheme: dark) {
-                      color: whitesmoke;
-                    }
-                  }
-                }
-
-                input[type="text"],
-                input[type="email"],
-                textarea {
-                  cursor: text;
-                }
-
-                input[type="radio"],
-                input[type="checkbox"] {
-                  display: inline-block;
-                  width: 12px;
-                  height: 12px;
-                  margin-bottom: -2px;
-                }
-
-                input[type="radio"] {
-                  border-radius: 50%;
-
-                  &:checked {
-                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                      html`
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                        >
-                          <circle cx="6" cy="6" r="3" fill="#ff77a8" />
-                        </svg>
-                      `
-                    ).toString("base64")}");
-                  }
-                }
-
-                input[type="checkbox"] {
-                  border-radius: 3px;
-
-                  &:checked {
-                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                      html`
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                        >
-                          <path
-                            d="M10.548 1.559a1.315 1.315 0 00-.921.378.652.652 0 00-.003 0L4.258 7.303 2.363 5.408a.652.652 0 00-.013-.01c-.485-.463-1.342-.455-1.817.02C.057 5.89.046 6.75.508 7.237a.652.652 0 00.009.012l2.82 2.82a.652.652 0 00.003 0c.481.48 1.354.48 1.836 0a.652.652 0 00.003 0l6.287-6.287c.484-.483.484-1.364 0-1.846a1.315 1.315 0 00-.915-.378z"
-                            fill="#ff77a8"
-                          />
-                        </svg>
-                      `
-                    ).toString("base64")}");
-                  }
-                }
-
-                textarea {
-                  min-height: 10rem;
-                  padding: 0.5rem 1rem;
-                  resize: vertical;
-                  white-space: pre-wrap;
-                }
-
-                select {
-                  padding-right: 1.5rem;
-                  background: url("data:image/svg+xml;base64,${Buffer.from(
-                      html`
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                        >
-                          <path
-                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                          ></path>
-                        </svg>
-                      `
-                    ).toString("base64")}")
-                    center right 0.3rem no-repeat;
-                  @media (prefers-color-scheme: dark) {
-                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                      html`
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                        >
-                          <path
-                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                            fill="#d4d4d4"
-                          ></path>
-                        </svg>
-                      `
-                    ).toString("base64")}");
-                  }
-
-                  &:disabled {
-                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                      html`
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                        >
-                          <path
-                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                            fill="gray"
-                          ></path>
-                        </svg>
-                      `
-                    ).toString("base64")}");
-                    @media (prefers-color-scheme: dark) {
-                      background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                        html`
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                          >
-                            <path
-                              d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                              fill="whitesmoke"
-                            ></path>
-                          </svg>
-                        `
-                      ).toString("base64")}");
-                    }
-                  }
-                }
-
-                button {
-                  text-align: center;
-                  background-color: white;
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #5a5a5a;
-                  }
-                  cursor: default;
-
-                  &:active {
-                    color: white;
-                    background-color: #ff77a8;
-                  }
-                }
-
-                details.dropdown {
-                  &[open] > summary::before {
-                    content: "";
-                    display: block;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                  }
-
-                  & > summary + * {
-                    background-color: whitesmoke;
-                    @media (prefers-color-scheme: dark) {
-                      background-color: #464646;
-                    }
-                    max-width: 300px;
-                    padding: 0 1rem;
-                    border: 1px solid darkgray;
-                    border-radius: 10px;
-                    box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
-                      0 0 50px -20px;
-                    position: absolute;
-                  }
-                }
-
-                summary {
-                  outline: none;
-                  cursor: default;
-
-                  &:hover,
-                  details[open] > & {
-                    color: #ff77a8;
-                    fill: #ff77a8;
-                  }
-
-                  &.no-marker {
-                    list-style: none;
-
-                    &::-webkit-details-marker {
-                      display: none;
-                    }
-                  }
-                }
-
-                hr {
-                  border: none;
-                  border-top: 1px solid silver;
-                  @media (prefers-color-scheme: dark) {
-                    border-color: black;
-                  }
-                }
-
-                blockquote {
-                  color: gray;
-                  padding-left: 0.5rem;
-                  border-left: 3px solid gray;
-                  margin: 1rem 0;
-                }
-
-                [hidden] {
-                  display: none !important;
-                }
-
-                /* FIXME: Try ‘.full-width.full-width’ instead of ‘!important’ */
-                .full-width {
-                  box-sizing: border-box !important;
-                  width: 100% !important;
-                  display: block !important;
-                }
-
-                .hint {
-                  font-size: 0.75rem;
-                  font-weight: normal;
-                  line-height: 1.3;
-                  color: gray;
-                  fill: gray;
-                  margin-top: -0.8rem;
-                }
-
-                .green:not(:active) {
-                  color: #008751;
-                  fill: #008751;
-                  @media (prefers-color-scheme: dark) {
-                    color: #00e436;
-                    fill: #00e436;
-                  }
-                }
-
-                .red:not(:active) {
-                  color: #ff004d;
-                  fill: #ff004d;
-                }
-
-                @media (prefers-color-scheme: light) {
-                  .dark {
-                    display: none;
-                  }
-                }
-
-                @media (prefers-color-scheme: dark) {
-                  .light {
+                  &::-webkit-details-marker {
                     display: none;
                   }
                 }
               }
-            `}"
-          >
-            $${body}
-          </body>
-        </html>
-      `)
-  );
 
-  app.set(
-    "layout application",
-    (
+              hr {
+                border: none;
+                border-top: 1px solid silver;
+                @media (prefers-color-scheme: dark) {
+                  border-color: black;
+                }
+              }
+
+              blockquote {
+                color: gray;
+                padding-left: 0.5rem;
+                border-left: 3px solid gray;
+                margin: 1rem 0;
+              }
+
+              [hidden] {
+                display: none !important;
+              }
+
+              /* FIXME: Try ‘.full-width.full-width’ instead of ‘!important’ */
+              .full-width {
+                box-sizing: border-box !important;
+                width: 100% !important;
+                display: block !important;
+              }
+
+              .hint {
+                font-size: 0.75rem;
+                font-weight: normal;
+                line-height: 1.3;
+                color: gray;
+                fill: gray;
+                margin-top: -0.8rem;
+              }
+
+              .green:not(:active) {
+                color: #008751;
+                fill: #008751;
+                @media (prefers-color-scheme: dark) {
+                  color: #00e436;
+                  fill: #00e436;
+                }
+              }
+
+              .red:not(:active) {
+                color: #ff004d;
+                fill: #ff004d;
+              }
+
+              @media (prefers-color-scheme: light) {
+                .dark {
+                  display: none;
+                }
+              }
+
+              @media (prefers-color-scheme: dark) {
+                .light {
+                  display: none;
+                }
+              }
+            }
+          `}"
+        >
+          $${body}
+        </body>
+      </html>
+    `);
+
+  interface Layouts {
+    application: (
       req: express.Request<
         {},
         any,
@@ -629,270 +630,261 @@ export default async function courselore(
       res: express.Response<any, Partial<EventSourceMiddlewareLocals>>,
       head: HTML,
       body: HTML
-    ): HTML =>
-      app.get("layout base")(
-        req,
-        res,
-        html`
-          <script src="${app.locals
-              .url}/node_modules/validator/validator.min.js"></script>
-          <script src="${app.locals
-              .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
+    ) => HTML;
+  }
+  app.locals.layouts.application = (req, res, head, body) =>
+    app.get("layout base")(
+      req,
+      res,
+      html`
+        <script src="${app.locals
+            .url}/node_modules/validator/validator.min.js"></script>
+        <script src="${app.locals
+            .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
-          <script>
-            (() => {
-              const relativizeTimes = () => {
-                // TODO: Extract this into a library?
-                // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
-                // https://github.com/catamphetamine/javascript-time-ago
-                // https://github.com/azer/relative-date
-                // https://benborgers.com/posts/js-relative-date
-                // https://github.com/digplan/time-ago
-                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-                //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
-                // https://day.js.org
-                // http://timeago.yarp.com
-                // https://sugarjs.com
-                const minutes = 60 * 1000;
-                const hours = 60 * minutes;
-                const days = 24 * hours;
-                const weeks = 7 * days;
-                const months = 30 * days;
-                const years = 365 * days;
-                for (const element of document.querySelectorAll("time")) {
-                  if (element.getAttribute("datetime") === null) {
-                    element.setAttribute("datetime", element.textContent);
-                    element.title = element.textContent;
-                  }
-                  const difference =
-                    new Date(element.getAttribute("datetime")).getTime() -
-                    Date.now();
-                  const absoluteDifference = Math.abs(difference);
-                  const [value, unit] =
-                    absoluteDifference < minutes
-                      ? [0, "seconds"]
-                      : absoluteDifference < hours
-                      ? [difference / minutes, "minutes"]
-                      : absoluteDifference < days
-                      ? [difference / hours, "hours"]
-                      : absoluteDifference < weeks
-                      ? [difference / days, "days"]
-                      : absoluteDifference < months
-                      ? [difference / weeks, "weeks"]
-                      : absoluteDifference < years
-                      ? [difference / months, "months"]
-                      : [difference / years, "years"];
-                  element.textContent = new Intl.RelativeTimeFormat("en-US", {
-                    localeMatcher: "lookup",
-                    numeric: "auto",
-                  }).format(
-                    // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
-                    Math.round(value),
-                    unit
-                  );
+        <script>
+          (() => {
+            const relativizeTimes = () => {
+              // TODO: Extract this into a library?
+              // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
+              // https://github.com/catamphetamine/javascript-time-ago
+              // https://github.com/azer/relative-date
+              // https://benborgers.com/posts/js-relative-date
+              // https://github.com/digplan/time-ago
+              // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+              //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
+              // https://day.js.org
+              // http://timeago.yarp.com
+              // https://sugarjs.com
+              const minutes = 60 * 1000;
+              const hours = 60 * minutes;
+              const days = 24 * hours;
+              const weeks = 7 * days;
+              const months = 30 * days;
+              const years = 365 * days;
+              for (const element of document.querySelectorAll("time")) {
+                if (element.getAttribute("datetime") === null) {
+                  element.setAttribute("datetime", element.textContent);
+                  element.title = element.textContent;
                 }
-              };
+                const difference =
+                  new Date(element.getAttribute("datetime")).getTime() -
+                  Date.now();
+                const absoluteDifference = Math.abs(difference);
+                const [value, unit] =
+                  absoluteDifference < minutes
+                    ? [0, "seconds"]
+                    : absoluteDifference < hours
+                    ? [difference / minutes, "minutes"]
+                    : absoluteDifference < days
+                    ? [difference / hours, "hours"]
+                    : absoluteDifference < weeks
+                    ? [difference / days, "days"]
+                    : absoluteDifference < months
+                    ? [difference / weeks, "weeks"]
+                    : absoluteDifference < years
+                    ? [difference / months, "months"]
+                    : [difference / years, "years"];
+                element.textContent = new Intl.RelativeTimeFormat("en-US", {
+                  localeMatcher: "lookup",
+                  numeric: "auto",
+                }).format(
+                  // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                  Math.round(value),
+                  unit
+                );
+              }
+            };
 
-              document.addEventListener("DOMContentLoaded", relativizeTimes);
-              (function refresh() {
-                relativizeTimes();
-                window.setTimeout(refresh, 60 * 1000);
-              })();
+            document.addEventListener("DOMContentLoaded", relativizeTimes);
+            (function refresh() {
+              relativizeTimes();
+              window.setTimeout(refresh, 60 * 1000);
             })();
+          })();
 
-            document.addEventListener("DOMContentLoaded", () => {
-              for (const element of document.querySelectorAll(
-                "input.datetime"
-              )) {
-                if (element.dataset.local === "true") continue;
-                element.dataset.local = "true";
-                const date = new Date(element.value);
-                element.value =
-                  String(date.getFullYear()) +
-                  "-" +
-                  String(date.getMonth() + 1).padStart(2, "0") +
-                  "-" +
-                  String(date.getDate()).padStart(2, "0") +
-                  " " +
-                  String(date.getHours()).padStart(2, "0") +
-                  ":" +
-                  String(date.getMinutes()).padStart(2, "0");
+          document.addEventListener("DOMContentLoaded", () => {
+            for (const element of document.querySelectorAll("input.datetime")) {
+              if (element.dataset.local === "true") continue;
+              element.dataset.local = "true";
+              const date = new Date(element.value);
+              element.value =
+                String(date.getFullYear()) +
+                "-" +
+                String(date.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(date.getDate()).padStart(2, "0") +
+                " " +
+                String(date.getHours()).padStart(2, "0") +
+                ":" +
+                String(date.getMinutes()).padStart(2, "0");
+            }
+          });
+
+          function isValid(element) {
+            const elementsToValidate = [
+              ...element.querySelectorAll("*"),
+              element,
+            ];
+            const elementsToReset = [];
+
+            for (const element of elementsToValidate) {
+              if (
+                typeof element.reportValidity !== "function" ||
+                element.matches("[disabled]")
+              )
+                continue;
+
+              const originalValue = element.value;
+              const customValidity = validate(element);
+              if (element.value !== originalValue)
+                elementsToReset.push({ element, originalValue });
+
+              if (typeof customValidity === "string") {
+                element.setCustomValidity(customValidity);
+                element.addEventListener(
+                  "input",
+                  () => {
+                    element.setCustomValidity("");
+                  },
+                  { once: true }
+                );
               }
-            });
 
-            function isValid(element) {
-              const elementsToValidate = [
-                ...element.querySelectorAll("*"),
-                element,
-              ];
-              const elementsToReset = [];
-
-              for (const element of elementsToValidate) {
-                if (
-                  typeof element.reportValidity !== "function" ||
-                  element.matches("[disabled]")
-                )
-                  continue;
-
-                const originalValue = element.value;
-                const customValidity = validate(element);
-                if (element.value !== originalValue)
-                  elementsToReset.push({ element, originalValue });
-
-                if (typeof customValidity === "string") {
-                  element.setCustomValidity(customValidity);
-                  element.addEventListener(
-                    "input",
-                    () => {
-                      element.setCustomValidity("");
-                    },
-                    { once: true }
-                  );
-                }
-
-                if (!element.reportValidity()) {
-                  for (const { element, originalValue } of elementsToReset)
-                    element.value = originalValue;
-                  return false;
-                }
-              }
-              return true;
-
-              function validate(element) {
-                if (
-                  element.matches("[required]") &&
-                  element.value.trim() === ""
-                )
-                  return "Fill out this field";
-
-                if (
-                  element.matches('[type="email"]') &&
-                  !validator.isEmail(element.value)
-                )
-                  return "Enter an email address";
-
-                if (element.matches("input.datetime")) {
-                  if (
-                    !element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/})
-                  )
-                    return "Match the pattern YYYY-MM-DD HH:MM";
-                  const date = new Date(element.value.replace(" ", "T"));
-                  if (isNaN(date.getTime())) return "Invalid datetime";
-                  element.value = date.toISOString();
-                }
-
-                if (element.matches("[data-onvalidate]"))
-                  return new Function(element.dataset.onvalidate).call(element);
+              if (!element.reportValidity()) {
+                for (const { element, originalValue } of elementsToReset)
+                  element.value = originalValue;
+                return false;
               }
             }
+            return true;
 
-            const modifiedInputs = new Set();
-            (() => {
-              document.addEventListener("input", (event) => {
-                modifiedInputs.add(event.target);
-              });
+            function validate(element) {
+              if (element.matches("[required]") && element.value.trim() === "")
+                return "Fill out this field";
 
-              document.addEventListener("submit", (event) => {
-                if (!isValid(event.target)) return event.preventDefault();
-                window.removeEventListener("beforeunload", beforeUnloadHandler);
-                for (const button of event.target.querySelectorAll(
-                  'button:not([type="button"])'
-                ))
-                  button.disabled = true;
-              });
+              if (
+                element.matches('[type="email"]') &&
+                !validator.isEmail(element.value)
+              )
+                return "Enter an email address";
 
-              const beforeUnloadHandler = (event) => {
-                if (modifiedInputs.size === 0) return;
-                event.preventDefault();
-                event.returnValue = "";
-              };
-              window.addEventListener("beforeunload", beforeUnloadHandler);
-            })();
-          </script>
+              if (element.matches("input.datetime")) {
+                if (!element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}))
+                  return "Match the pattern YYYY-MM-DD HH:MM";
+                const date = new Date(element.value.replace(" ", "T"));
+                if (isNaN(date.getTime())) return "Invalid datetime";
+                element.value = date.toISOString();
+              }
 
-          $${res.locals.eventSource
-            ? html`
-                <script>
-                  const eventSource = new EventSource(window.location.href);
-                  eventSource.addEventListener("refresh", async () => {
-                    const response = await fetch(window.location.href);
-                    switch (response.status) {
-                      case 200:
-                        const refreshedDocument = new DOMParser().parseFromString(
-                          await response.text(),
-                          "text/html"
+              if (element.matches("[data-onvalidate]"))
+                return new Function(element.dataset.onvalidate).call(element);
+            }
+          }
+
+          const modifiedInputs = new Set();
+          (() => {
+            document.addEventListener("input", (event) => {
+              modifiedInputs.add(event.target);
+            });
+
+            document.addEventListener("submit", (event) => {
+              if (!isValid(event.target)) return event.preventDefault();
+              window.removeEventListener("beforeunload", beforeUnloadHandler);
+              for (const button of event.target.querySelectorAll(
+                'button:not([type="button"])'
+              ))
+                button.disabled = true;
+            });
+
+            const beforeUnloadHandler = (event) => {
+              if (modifiedInputs.size === 0) return;
+              event.preventDefault();
+              event.returnValue = "";
+            };
+            window.addEventListener("beforeunload", beforeUnloadHandler);
+          })();
+        </script>
+
+        $${res.locals.eventSource
+          ? html`
+              <script>
+                const eventSource = new EventSource(window.location.href);
+                eventSource.addEventListener("refresh", async () => {
+                  const response = await fetch(window.location.href);
+                  switch (response.status) {
+                    case 200:
+                      const refreshedDocument = new DOMParser().parseFromString(
+                        await response.text(),
+                        "text/html"
+                      );
+                      document
+                        .querySelector("head")
+                        .append(
+                          ...refreshedDocument.querySelectorAll("head style")
                         );
-                        document
-                          .querySelector("head")
-                          .append(
-                            ...refreshedDocument.querySelectorAll("head style")
-                          );
-                        eventSource.dispatchEvent(
-                          new CustomEvent("refreshed", {
-                            detail: { document: refreshedDocument },
-                          })
-                        );
-                        document.dispatchEvent(new Event("DOMContentLoaded"));
-                        break;
+                      eventSource.dispatchEvent(
+                        new CustomEvent("refreshed", {
+                          detail: { document: refreshedDocument },
+                        })
+                      );
+                      document.dispatchEvent(new Event("DOMContentLoaded"));
+                      break;
 
-                      case 404:
-                        alert(
-                          "This page has been removed.\\n\\nYou’ll be redirected now."
-                        );
-                        window.location.href = $${JSON.stringify(
-                          app.locals.url
-                        )};
-                        break;
+                    case 404:
+                      alert(
+                        "This page has been removed.\\n\\nYou’ll be redirected now."
+                      );
+                      window.location.href = $${JSON.stringify(app.locals.url)};
+                      break;
 
-                      default:
-                        console.error(response);
-                        break;
-                    }
-                  });
-                </script>
-              `
-            : html``}
-          $${head}
-        `,
-        html`
-          $${body}
-          $${app.locals.demonstration
-            ? html`
-                <p
-                  style="${css`
-                    font-size: 0.56rem;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                    color: white;
-                    background-color: #83769c;
-                    padding: 0.1rem 1rem;
-                    border-top-left-radius: 5px;
-                    margin: 0;
-                    position: fixed;
-                    right: 0;
-                    bottom: 0;
-                  `}"
-                >
-                  <a
-                    href="${app.locals.url}/demonstration-inbox"
-                    title="Go to the Demonstration 
+                    default:
+                      console.error(response);
+                      break;
+                  }
+                });
+              </script>
+            `
+          : html``}
+        $${head}
+      `,
+      html`
+        $${body}
+        $${app.locals.demonstration
+          ? html`
+              <p
+                style="${css`
+                  font-size: 0.56rem;
+                  font-weight: bold;
+                  text-transform: uppercase;
+                  letter-spacing: 2px;
+                  color: white;
+                  background-color: #83769c;
+                  padding: 0.1rem 1rem;
+                  border-top-left-radius: 5px;
+                  margin: 0;
+                  position: fixed;
+                  right: 0;
+                  bottom: 0;
+                `}"
+              >
+                <a
+                  href="${app.locals.url}/demonstration-inbox"
+                  title="Go to the Demonstration 
                     Inbox"
-                    style="${css`
-                      text-decoration: none;
-                    `}"
-                    >Demonstration</a
-                  >
-                </p>
-              `
-            : html``}
-        `
-      )
-  );
+                  style="${css`
+                    text-decoration: none;
+                  `}"
+                  >Demonstration</a
+                >
+              </p>
+            `
+          : html``}
+      `
+    );
 
-  app.set(
-    "layout main",
-    (
+  interface Layouts {
+    main: (
       req: express.Request<
         {},
         any,
@@ -903,41 +895,43 @@ export default async function courselore(
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>,
       head: HTML,
       body: HTML
-    ): HTML =>
-      app.get("layout application")(
-        req,
-        res,
-        head,
-        html`
+    ) => HTML;
+  }
+  app.locals.layouts.main = (req, res, head, body) =>
+    app.get("layout application")(
+      req,
+      res,
+      head,
+      html`
+        <div
+          style="${css`
+            ${res.locals.enrollment === undefined
+              ? css``
+              : css`
+                  box-sizing: border-box;
+                  border-top: 10px solid ${res.locals.enrollment.accentColor};
+                `}
+          `}"
+        >
           <div
             style="${css`
-              ${res.locals.enrollment === undefined
-                ? css``
-                : css`
-                    box-sizing: border-box;
-                    border-top: 10px solid ${res.locals.enrollment.accentColor};
-                  `}
+              max-width: 600px;
+              padding: 0 1rem;
+              margin: 0 auto;
             `}"
           >
-            <div
-              style="${css`
-                max-width: 600px;
-                padding: 0 1rem;
-                margin: 0 auto;
-              `}"
-            >
-              <header>$${logoAndMenu(req, res)}</header>
-              <main>$${body}</main>
-            </div>
+            <header>$${logoAndMenu(req, res)}</header>
+            <main>$${body}</main>
           </div>
-        `
-      )
-  );
+        </div>
+      `
+    );
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
   // FIXME: A browser exception is thrown when the eventSource isn’t necessary. Is this an issue?
   const eventSources = new Set<express.Response<any, Record<string, any>>>();
 
+  interface Middlewares {}
   interface EventSourceMiddlewareLocals {
     eventSource: boolean;
   }
@@ -1108,7 +1102,7 @@ export default async function courselore(
     })
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
-  interface CourseLoreLocals {
+  interface AppLocals {
     textProcessor: (text: string) => HTML;
   }
   // FIXME: Would making this async speed things up in any way?
@@ -3820,9 +3814,8 @@ export default async function courselore(
     }
   );
 
-  app.set(
-    "layout thread",
-    (
+  interface Layouts {
+    thread: (
       req: express.Request<
         { courseReference: string; threadReference?: string },
         HTML,
@@ -3838,215 +3831,216 @@ export default async function courselore(
       >,
       head: HTML,
       body: HTML
-    ): HTML =>
-      app.get("layout application")(
-        req,
-        res,
-        head,
-        html`
+    ) => HTML;
+  }
+  app.locals.layouts.thread = (req, res, head, body) =>
+    app.get("layout application")(
+      req,
+      res,
+      head,
+      html`
+        <div
+          style="${css`
+            box-sizing: border-box;
+            height: 100vh;
+            border-top: 10px solid ${res.locals.enrollment.accentColor};
+            display: flex;
+          `}"
+        >
           <div
             style="${css`
-              box-sizing: border-box;
-              height: 100vh;
-              border-top: 10px solid ${res.locals.enrollment.accentColor};
+              width: 400px;
+              border-right: 1px solid silver;
+              @media (prefers-color-scheme: dark) {
+                border-color: black;
+              }
               display: flex;
+              flex-direction: column;
             `}"
           >
-            <div
+            <header
               style="${css`
-                width: 400px;
-                border-right: 1px solid silver;
+                border-bottom: 1px solid silver;
                 @media (prefers-color-scheme: dark) {
                   border-color: black;
                 }
-                display: flex;
-                flex-direction: column;
+                padding: 0 1rem;
               `}"
             >
-              <header
-                style="${css`
-                  border-bottom: 1px solid silver;
-                  @media (prefers-color-scheme: dark) {
-                    border-color: black;
-                  }
-                  padding: 0 1rem;
-                `}"
-              >
-                $${logoAndMenu(req, res)}
-                <nav>
-                  <p
-                    style="${css`
-                      margin-top: 0;
-                    `}"
-                  >
-                    <a
-                      href="${app.locals.url}/courses/${res.locals.course
-                        .reference}"
-                      ><strong>${res.locals.course.name}</strong> (${res.locals
-                        .enrollment.role})</a
-                    >
-                  </p>
-                </nav>
-                $${courseSwitcher(req, res)}
-              </header>
-              <div
-                style="${css`
-                  flex: 1;
-                  padding: 0 1rem;
-                  overflow: auto;
-                `}"
-              >
+              $${logoAndMenu(req, res)}
+              <nav>
                 <p
                   style="${css`
-                    text-align: center;
+                    margin-top: 0;
                   `}"
                 >
                   <a
                     href="${app.locals.url}/courses/${res.locals.course
-                      .reference}/threads/new"
-                    >Create a new thread</a
+                      .reference}"
+                    ><strong>${res.locals.course.name}</strong> (${res.locals
+                      .enrollment.role})</a
                   >
                 </p>
-                <nav id="threads">
-                  $${res.locals.threads.map(
-                    (thread) =>
-                      html`
-                        <a
-                          href="${app.locals.url}/courses/${res.locals.course
-                            .reference}/threads/${thread.reference}"
-                          style="${css`
-                            line-height: 1.3;
-                            display: block;
-                            padding: 0.5rem 1rem;
-                            margin: 0 -1rem;
-
-                            ${thread.id === res.locals.thread?.id
-                              ? css`
-                                  background-color: whitesmoke;
-                                  @media (prefers-color-scheme: dark) {
-                                    background-color: #464646;
-                                  }
-                                `
-                              : css``}
-                          `}"
-                        >
-                          <p
-                            style="${css`
-                              margin-top: 0;
-                            `}"
-                          >
-                            <strong>${thread.title}</strong>
-                          </p>
-                          <p
-                            class="hint"
-                            style="${css`
-                              margin-bottom: 0;
-                            `}"
-                          >
-                            #${thread.reference} created
-                            <time>${thread.createdAt}</time> by
-                            ${thread.authorEnrollment.user.name}
-                            $${thread.updatedAt !== thread.createdAt
-                              ? html`
-                                  <br />
-                                  and last updated
-                                  <time>${thread.updatedAt}</time>
-                                `
-                              : html``}
-                            <br />
-                            <span
-                              style="${css`
-                                & > * {
-                                  display: inline-block;
-                                }
-
-                                & > * + * {
-                                  margin-left: 0.5rem;
-                                }
-                              `}"
-                            >
-                              <span
-                                title="${thread.postsCount} post${thread.postsCount ===
-                                1
-                                  ? ""
-                                  : "s"}"
-                              >
-                                <svg
-                                  viewBox="0 0 16 16"
-                                  width="10"
-                                  height="10"
-                                  style="${css`
-                                    transform: translateY(1px);
-                                  `}"
-                                >
-                                  <path
-                                    d="M2.75 2.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 01.75.75v2.19l2.72-2.72a.75.75 0 01.53-.22h4.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25H2.75zM1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0113.25 12H9.06l-2.573 2.573A1.457 1.457 0 014 13.543V12H2.75A1.75 1.75 0 011 10.25v-7.5z"
-                                  ></path>
-                                </svg>
-                                ${thread.postsCount}
-                              </span>
-
-                              $${thread.likesCount === 0
-                                ? html``
-                                : html`
-                                    <span
-                                      title="${thread.likesCount} like${thread.likesCount ===
-                                      1
-                                        ? ""
-                                        : "s"}"
-                                    >
-                                      <svg
-                                        viewBox="0 0 512 512"
-                                        width="10"
-                                        height="10"
-                                      >
-                                        <path
-                                          d="M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"
-                                        />
-                                      </svg>
-                                      ${thread.likesCount}
-                                    </span>
-                                  `}
-                            </span>
-                          </p>
-                        </a>
-                      `
-                  )}
-                </nav>
-                <script>
-                  (() => {
-                    const id = document.currentScript.previousElementSibling.id;
-                    eventSource.addEventListener("refreshed", (event) => {
-                      document
-                        .querySelector("#" + id)
-                        .replaceWith(
-                          event.detail.document.querySelector("#" + id)
-                        );
-                    });
-                  })();
-                </script>
-              </div>
-            </div>
-            <main
+              </nav>
+              $${courseSwitcher(req, res)}
+            </header>
+            <div
               style="${css`
                 flex: 1;
+                padding: 0 1rem;
                 overflow: auto;
               `}"
             >
-              <div
+              <p
                 style="${css`
-                  max-width: 800px;
-                  padding: 0 1rem;
-                  margin: 0 auto;
+                  text-align: center;
                 `}"
               >
-                $${body}
-              </div>
-            </main>
+                <a
+                  href="${app.locals.url}/courses/${res.locals.course
+                    .reference}/threads/new"
+                  >Create a new thread</a
+                >
+              </p>
+              <nav id="threads">
+                $${res.locals.threads.map(
+                  (thread) =>
+                    html`
+                      <a
+                        href="${app.locals.url}/courses/${res.locals.course
+                          .reference}/threads/${thread.reference}"
+                        style="${css`
+                          line-height: 1.3;
+                          display: block;
+                          padding: 0.5rem 1rem;
+                          margin: 0 -1rem;
+
+                          ${thread.id === res.locals.thread?.id
+                            ? css`
+                                background-color: whitesmoke;
+                                @media (prefers-color-scheme: dark) {
+                                  background-color: #464646;
+                                }
+                              `
+                            : css``}
+                        `}"
+                      >
+                        <p
+                          style="${css`
+                            margin-top: 0;
+                          `}"
+                        >
+                          <strong>${thread.title}</strong>
+                        </p>
+                        <p
+                          class="hint"
+                          style="${css`
+                            margin-bottom: 0;
+                          `}"
+                        >
+                          #${thread.reference} created
+                          <time>${thread.createdAt}</time> by
+                          ${thread.authorEnrollment.user.name}
+                          $${thread.updatedAt !== thread.createdAt
+                            ? html`
+                                <br />
+                                and last updated
+                                <time>${thread.updatedAt}</time>
+                              `
+                            : html``}
+                          <br />
+                          <span
+                            style="${css`
+                              & > * {
+                                display: inline-block;
+                              }
+
+                              & > * + * {
+                                margin-left: 0.5rem;
+                              }
+                            `}"
+                          >
+                            <span
+                              title="${thread.postsCount} post${thread.postsCount ===
+                              1
+                                ? ""
+                                : "s"}"
+                            >
+                              <svg
+                                viewBox="0 0 16 16"
+                                width="10"
+                                height="10"
+                                style="${css`
+                                  transform: translateY(1px);
+                                `}"
+                              >
+                                <path
+                                  d="M2.75 2.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 01.75.75v2.19l2.72-2.72a.75.75 0 01.53-.22h4.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25H2.75zM1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0113.25 12H9.06l-2.573 2.573A1.457 1.457 0 014 13.543V12H2.75A1.75 1.75 0 011 10.25v-7.5z"
+                                ></path>
+                              </svg>
+                              ${thread.postsCount}
+                            </span>
+
+                            $${thread.likesCount === 0
+                              ? html``
+                              : html`
+                                  <span
+                                    title="${thread.likesCount} like${thread.likesCount ===
+                                    1
+                                      ? ""
+                                      : "s"}"
+                                  >
+                                    <svg
+                                      viewBox="0 0 512 512"
+                                      width="10"
+                                      height="10"
+                                    >
+                                      <path
+                                        d="M466.27 286.69C475.04 271.84 480 256 480 236.85c0-44.015-37.218-85.58-85.82-85.58H357.7c4.92-12.81 8.85-28.13 8.85-46.54C366.55 31.936 328.86 0 271.28 0c-61.607 0-58.093 94.933-71.76 108.6-22.747 22.747-49.615 66.447-68.76 83.4H32c-17.673 0-32 14.327-32 32v240c0 17.673 14.327 32 32 32h64c14.893 0 27.408-10.174 30.978-23.95 44.509 1.001 75.06 39.94 177.802 39.94 7.22 0 15.22.01 22.22.01 77.117 0 111.986-39.423 112.94-95.33 13.319-18.425 20.299-43.122 17.34-66.99 9.854-18.452 13.664-40.343 8.99-62.99zm-61.75 53.83c12.56 21.13 1.26 49.41-13.94 57.57 7.7 48.78-17.608 65.9-53.12 65.9h-37.82c-71.639 0-118.029-37.82-171.64-37.82V240h10.92c28.36 0 67.98-70.89 94.54-97.46 28.36-28.36 18.91-75.63 37.82-94.54 47.27 0 47.27 32.98 47.27 56.73 0 39.17-28.36 56.72-28.36 94.54h103.99c21.11 0 37.73 18.91 37.82 37.82.09 18.9-12.82 37.81-22.27 37.81 13.489 14.555 16.371 45.236-5.21 65.62zM88 432c0 13.255-10.745 24-24 24s-24-10.745-24-24 10.745-24 24-24 24 10.745 24 24z"
+                                      />
+                                    </svg>
+                                    ${thread.likesCount}
+                                  </span>
+                                `}
+                          </span>
+                        </p>
+                      </a>
+                    `
+                )}
+              </nav>
+              <script>
+                (() => {
+                  const id = document.currentScript.previousElementSibling.id;
+                  eventSource.addEventListener("refreshed", (event) => {
+                    document
+                      .querySelector("#" + id)
+                      .replaceWith(
+                        event.detail.document.querySelector("#" + id)
+                      );
+                  });
+                })();
+              </script>
+            </div>
           </div>
-        `
-      )
-  );
+          <main
+            style="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+          >
+            <div
+              style="${css`
+                max-width: 800px;
+                padding: 0 1rem;
+                margin: 0 auto;
+              `}"
+            >
+              $${body}
+            </div>
+          </main>
+        </div>
+      `
+    );
 
   const textEditor = (): HTML => html`
     <div class="text-editor">
