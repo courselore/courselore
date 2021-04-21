@@ -634,69 +634,67 @@ export default async function courselore(
             )}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
           <script>
-            function preparePage() {
-              relativizeTimes();
-              UTCToLocal();
-            }
-            document.addEventListener("DOMContentLoaded", preparePage);
-            (function refresh() {
-              relativizeTimes();
-              window.setTimeout(refresh, 60 * 1000);
+            (() => {
+              const relativizeTimes = () => {
+                // TODO: Extract this into a library?
+                // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
+                // https://github.com/catamphetamine/javascript-time-ago
+                // https://github.com/azer/relative-date
+                // https://benborgers.com/posts/js-relative-date
+                // https://github.com/digplan/time-ago
+                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+                //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
+                // https://day.js.org
+                // http://timeago.yarp.com
+                // https://sugarjs.com
+                const minutes = 60 * 1000;
+                const hours = 60 * minutes;
+                const days = 24 * hours;
+                const weeks = 7 * days;
+                const months = 30 * days;
+                const years = 365 * days;
+                for (const element of document.querySelectorAll("time")) {
+                  if (element.getAttribute("datetime") === null) {
+                    element.setAttribute("datetime", element.textContent);
+                    element.title = element.textContent;
+                  }
+                  const difference =
+                    new Date(element.getAttribute("datetime")).getTime() -
+                    Date.now();
+                  const absoluteDifference = Math.abs(difference);
+                  const [value, unit] =
+                    absoluteDifference < minutes
+                      ? [0, "seconds"]
+                      : absoluteDifference < hours
+                      ? [difference / minutes, "minutes"]
+                      : absoluteDifference < days
+                      ? [difference / hours, "hours"]
+                      : absoluteDifference < weeks
+                      ? [difference / days, "days"]
+                      : absoluteDifference < months
+                      ? [difference / weeks, "weeks"]
+                      : absoluteDifference < years
+                      ? [difference / months, "months"]
+                      : [difference / years, "years"];
+                  element.textContent = new Intl.RelativeTimeFormat("en-US", {
+                    localeMatcher: "lookup",
+                    numeric: "auto",
+                  }).format(
+                    // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                    Math.round(value),
+                    unit
+                  );
+                }
+              };
+
+              document.addEventListener("DOMContentLoaded", relativizeTimes);
+              (function refresh() {
+                relativizeTimes();
+                window.setTimeout(refresh, 60 * 1000);
+              })();
             })();
 
-            function relativizeTimes() {
-              // TODO: Extract this into a library?
-              // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
-              // https://github.com/catamphetamine/javascript-time-ago
-              // https://github.com/azer/relative-date
-              // https://benborgers.com/posts/js-relative-date
-              // https://github.com/digplan/time-ago
-              // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-              //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
-              // https://day.js.org
-              // http://timeago.yarp.com
-              // https://sugarjs.com
-              const minutes = 60 * 1000;
-              const hours = 60 * minutes;
-              const days = 24 * hours;
-              const weeks = 7 * days;
-              const months = 30 * days;
-              const years = 365 * days;
-              for (const element of document.querySelectorAll("time")) {
-                if (element.getAttribute("datetime") === null) {
-                  element.setAttribute("datetime", element.textContent);
-                  element.title = element.textContent;
-                }
-                const difference =
-                  new Date(element.getAttribute("datetime")).getTime() -
-                  Date.now();
-                const absoluteDifference = Math.abs(difference);
-                const [value, unit] =
-                  absoluteDifference < minutes
-                    ? [0, "seconds"]
-                    : absoluteDifference < hours
-                    ? [difference / minutes, "minutes"]
-                    : absoluteDifference < days
-                    ? [difference / hours, "hours"]
-                    : absoluteDifference < weeks
-                    ? [difference / days, "days"]
-                    : absoluteDifference < months
-                    ? [difference / weeks, "weeks"]
-                    : absoluteDifference < years
-                    ? [difference / months, "months"]
-                    : [difference / years, "years"];
-                element.textContent = new Intl.RelativeTimeFormat("en-US", {
-                  localeMatcher: "lookup",
-                  numeric: "auto",
-                }).format(
-                  // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
-                  Math.round(value),
-                  unit
-                );
-              }
-            }
-
-            function UTCToLocal() {
+            document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 "input.datetime"
               )) {
@@ -714,7 +712,7 @@ export default async function courselore(
                   ":" +
                   String(date.getMinutes()).padStart(2, "0");
               }
-            }
+            });
 
             function isValid(element) {
               const elementsToValidate = [
@@ -782,56 +780,72 @@ export default async function courselore(
               }
             }
 
-            document.addEventListener("submit", (event) => {
-              if (!isValid(event.target)) return event.preventDefault();
-              for (const button of event.target.querySelectorAll(
-                'button:not([type="button"])'
-              ))
-                button.disabled = true;
-              isSubmitting = true;
-            });
-
             const modifiedInputs = new Set();
-            let isSubmitting = false;
-            document.addEventListener("input", (event) => {
-              modifiedInputs.add(event.target);
-            });
-            window.addEventListener("beforeunload", (event) => {
-              if (modifiedInputs.size === 0 || isSubmitting) return;
-              event.preventDefault();
-              event.returnValue = "";
-            });
+            (() => {
+              document.addEventListener("input", (event) => {
+                modifiedInputs.add(event.target);
+              });
 
-            $${res.locals.eventSource
-              ? javascript`
-                const eventSource = new EventSource(window.location.href);
-                const refreshers = [];
-                eventSource.addEventListener("refresh", async () => {
-                  const response = await fetch(window.location.href);
-                  switch (response.status) {
-                    case 200:
-                      const refreshedDocument = new DOMParser().parseFromString(
-                        await response.text(),
-                        "text/html"
-                      );
-                      for (const refresher of refreshers) refresher(refreshedDocument);
-                      preparePage();
-                      break;
+              document.addEventListener("submit", (event) => {
+                if (!isValid(event.target)) return event.preventDefault();
+                window.removeEventListener("beforeunload", beforeUnloadHandler);
+                for (const button of event.target.querySelectorAll(
+                  'button:not([type="button"])'
+                ))
+                  button.disabled = true;
+              });
 
-                    case 404:
-                      alert("This page has been removed.\\n\\nYou’ll be redirected now.");
-                      window.location.href = ${JSON.stringify(app.get("url"))};
-                      break;
-
-                    default:
-                      console.error(response);
-                      break;
-                  }
-                });
-              `
-              : javascript``};
+              const beforeUnloadHandler = (event) => {
+                if (modifiedInputs.size === 0) return;
+                event.preventDefault();
+                event.returnValue = "";
+              };
+              window.addEventListener("beforeunload", beforeUnloadHandler);
+            })();
           </script>
 
+          $${res.locals.eventSource
+            ? html`
+                <script>
+                  const eventSource = new EventSource(window.location.href);
+                  eventSource.addEventListener("refresh", async () => {
+                    const response = await fetch(window.location.href);
+                    switch (response.status) {
+                      case 200:
+                        const refreshedDocument = new DOMParser().parseFromString(
+                          await response.text(),
+                          "text/html"
+                        );
+                        document
+                          .querySelector("head")
+                          .append(
+                            ...refreshedDocument.querySelectorAll("head style")
+                          );
+                        eventSource.dispatchEvent(
+                          new CustomEvent("refreshed", {
+                            detail: { document: refreshedDocument },
+                          })
+                        );
+                        document.dispatchEvent(new Event("DOMContentLoaded"));
+                        break;
+
+                      case 404:
+                        alert(
+                          "This page has been removed.\\n\\nYou’ll be redirected now."
+                        );
+                        window.location.href = $${JSON.stringify(
+                          app.get("url")
+                        )};
+                        break;
+
+                      default:
+                        console.error(response);
+                        break;
+                    }
+                  });
+                </script>
+              `
+            : html``}
           $${head}
         `,
         html`
@@ -930,8 +944,10 @@ export default async function courselore(
     EventSourceMiddlewareLocals
   >[] = [
     (req, res, next) => {
-      res.locals.eventSource = true;
-      if (!req.header("accept")?.includes("text/event-stream")) return next();
+      if (!req.header("accept")?.includes("text/event-stream")) {
+        res.locals.eventSource = true;
+        return next();
+      }
       eventSources.add(res);
       res.on("close", () => {
         eventSources.delete(res);
@@ -4014,10 +4030,12 @@ export default async function courselore(
                 <script>
                   (() => {
                     const id = document.currentScript.previousElementSibling.id;
-                    refreshers.push((refreshedDocument) => {
+                    eventSource.addEventListener("refreshed", (event) => {
                       document
                         .querySelector("#" + id)
-                        .replaceWith(refreshedDocument.querySelector("#" + id));
+                        .replaceWith(
+                          event.detail.document.querySelector("#" + id)
+                        );
                     });
                   })();
                 </script>
@@ -4941,11 +4959,13 @@ export default async function courselore(
             <script>
               (() => {
                 const id = document.currentScript.previousElementSibling.id;
-                refreshers.push((refreshedDocument) => {
+                eventSource.addEventListener("refreshed", (event) => {
                   const posts = document.querySelector("#" + id);
                   if (posts.querySelector(".edit:not([hidden])") !== null)
                     return;
-                  posts.replaceWith(refreshedDocument.querySelector("#" + id));
+                  posts.replaceWith(
+                    event.detail.document.querySelector("#" + id)
+                  );
                 });
               })();
             </script>
