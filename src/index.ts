@@ -808,13 +808,25 @@ export default async function courselore(
                 const refreshers = [];
                 eventSource.addEventListener("refresh", async () => {
                   const response = await fetch(window.location.href);
-                  if (response.status !== 200) return;
-                  const refreshedDocument = new DOMParser().parseFromString(
-                    await response.text(),
-                    "text/html"
-                  );
-                  for (const refresher of refreshers) refresher(refreshedDocument);
-                  preparePage();
+                  switch (response.status) {
+                    case 200:
+                      const refreshedDocument = new DOMParser().parseFromString(
+                        await response.text(),
+                        "text/html"
+                      );
+                      for (const refresher of refreshers) refresher(refreshedDocument);
+                      preparePage();
+                      break;
+
+                    case 404:
+                      alert("This page has been removed.\\n\\nYou’ll be redirected now.");
+                      window.location.href = ${JSON.stringify(app.get("url"))};
+                      break;
+
+                    default:
+                      console.error(response);
+                      break;
+                  }
                 });
               `
               : javascript``};
