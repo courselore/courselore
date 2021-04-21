@@ -890,9 +890,14 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<IsEnrolledInCourseMiddlewareLocals>
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
       >,
-      res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>,
+      res: express.Response<
+        any,
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
+      >,
       head: HTML,
       body: HTML
     ) => HTML;
@@ -3822,12 +3827,14 @@ export default async function courselore(
         {},
         {},
         IsEnrolledInCourseMiddlewareLocals &
-          Partial<IsThreadAccessibleMiddlewareLocals>
+          Partial<IsThreadAccessibleMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
       >,
       res: express.Response<
         HTML,
         IsEnrolledInCourseMiddlewareLocals &
-          Partial<IsThreadAccessibleMiddlewareLocals>
+          Partial<IsThreadAccessibleMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
       >,
       head: HTML,
       body: HTML
