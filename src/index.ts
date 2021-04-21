@@ -1105,11 +1105,12 @@ export default async function courselore(
     })
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
-  app.set(
-    "text processor",
-    // FIXME: Would making this async speed things up in any way?
-    (text: string): HTML => textProcessor.processSync(text).toString()
-  );
+  interface CourseLoreLocals {
+    textProcessor: (text: string) => HTML;
+  }
+  // FIXME: Would making this async speed things up in any way?
+  app.locals.textProcessor = (text) =>
+    textProcessor.processSync(text).toString();
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
@@ -4168,7 +4169,7 @@ export default async function courselore(
       )
         return next("validation");
 
-      res.send(app.get("text processor")(req.body.content));
+      res.send(app.locals.textProcessor(req.body.content));
     }
   );
 
@@ -4817,7 +4818,7 @@ export default async function courselore(
                     </div>
 
                     <div class="show">
-                      $${app.get("text processor")(post.content)}
+                      $${app.locals.textProcessor(post.content)}
 
                       <!-- TODO: Say “you” when you have liked the post. -->
                       <form
