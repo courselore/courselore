@@ -12,9 +12,13 @@ module.exports = (require) => {
   function middleware(app) {
     const router = express.Router();
 
-    router.all("*", ...app.get("middleware isAuthenticatedMiddleware"), (req, res, next) => {
-      next("router");
-    });
+    router.all(
+      "*",
+      ...app.get("middleware isAuthenticatedMiddleware"),
+      (req, res, next) => {
+        next("router");
+      }
+    );
     router.use(express.static(path.join(__dirname, "public")));
     router.get("/", (req, res, next) => {
       res.send(
@@ -253,7 +257,7 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
 
 # I’m Interested! How Do I Participate?
 
-**Try our [super-early development demos](${app.get("url")}/authenticate)!**
+**Try our [super-early development demos](${app.locals.url}/authenticate)!**
 
 **Educators & Students:** We want to hear [your feedback](mailto:feedback@courselore.com).
 

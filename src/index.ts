@@ -42,9 +42,9 @@ export default async function courselore(
 ): Promise<express.Express> {
   const app = express();
 
-  app.set("url", "http://localhost:4000");
-  app.set("administrator", "mailto:demonstration-development@courselore.org");
-  app.enable("demonstration");
+  app.locals.url = "http://localhost:4000";
+  app.locals.administrator = "mailto:demonstration-development@courselore.org";
+  app.locals.demonstration = true;
 
   const ROLES = ["student", "staff"] as const;
   type Role = typeof ROLES[number];
@@ -73,7 +73,6 @@ export default async function courselore(
 
   await fs.ensureDir(rootDirectory);
   const database = new Database(path.join(rootDirectory, "courselore.db"));
-  app.set("database", database);
   const migrations = [
     () => {
       database.execute(
@@ -208,34 +207,32 @@ export default async function courselore(
               rel="icon"
               type="image/png"
               sizes="32x32"
-              href="${app.get("url")}/favicon-32x32.png"
+              href="${app.locals.url}/favicon-32x32.png"
             />
             <link
               rel="icon"
               type="image/png"
               sizes="16x16"
-              href="${app.get("url")}/favicon-16x16.png"
+              href="${app.locals.url}/favicon-16x16.png"
             />
             <link
               rel="shortcut icon"
               type="image/x-icon"
-              href="${app.get("url")}/favicon.ico"
+              href="${app.locals.url}/favicon.ico"
             />
             <link
               rel="stylesheet"
-              href="${app.get(
-                "url"
-              )}/node_modules/typeface-public-sans/index.css"
+              href="${app.locals
+                .url}/node_modules/typeface-public-sans/index.css"
             />
             <link
               rel="stylesheet"
-              href="${app.get(
-                "url"
-              )}/node_modules/typeface-roboto-mono/index.css"
+              href="${app.locals
+                .url}/node_modules/typeface-roboto-mono/index.css"
             />
             <link
               rel="stylesheet"
-              href="${app.get("url")}/node_modules/katex/dist/katex.min.css"
+              href="${app.locals.url}/node_modules/katex/dist/katex.min.css"
             />
             $${head}
           </head>
@@ -626,12 +623,10 @@ export default async function courselore(
         req,
         res,
         html`
-          <script src="${app.get(
-              "url"
-            )}/node_modules/validator/validator.min.js"></script>
-          <script src="${app.get(
-              "url"
-            )}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
+          <script src="${app.locals
+              .url}/node_modules/validator/validator.min.js"></script>
+          <script src="${app.locals
+              .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
           <script>
             (() => {
@@ -834,7 +829,7 @@ export default async function courselore(
                           "This page has been removed.\\n\\nYou’ll be redirected now."
                         );
                         window.location.href = $${JSON.stringify(
-                          app.get("url")
+                          app.locals.url
                         )};
                         break;
 
@@ -850,7 +845,7 @@ export default async function courselore(
         `,
         html`
           $${body}
-          $${app.get("demonstration")
+          $${app.locals.demonstration
             ? html`
                 <p
                   style="${css`
@@ -869,7 +864,7 @@ export default async function courselore(
                   `}"
                 >
                   <a
-                    href="${app.get("url")}/demonstration-inbox"
+                    href="${app.locals.url}/demonstration-inbox"
                     title="Go to the Demonstration 
                     Inbox"
                     style="${css`
@@ -977,7 +972,7 @@ export default async function courselore(
     >
       <h1>
         <a
-          href="${app.get("url")}/"
+          href="${app.locals.url}/"
           style="${css`
             display: inline-flex;
             align-items: center;
@@ -1045,23 +1040,23 @@ export default async function courselore(
                 <p class="hint">${res.locals.user.email}</p>
                 <form
                   method="POST"
-                  action="${app.get("url")}/authenticate?_method=DELETE"
+                  action="${app.locals.url}/authenticate?_method=DELETE"
                 >
                   <p><button>Sign Out</button></p>
                 </form>
-                <p><a href="${app.get("url")}/settings">User Settings</a></p>
+                <p><a href="${app.locals.url}/settings">User Settings</a></p>
                 $${res.locals.course === undefined
                   ? html``
                   : html`
                       <p>
                         <a
-                          href="${app.get("url")}/courses/${res.locals.course
+                          href="${app.locals.url}/courses/${res.locals.course
                             .reference}/settings"
                           >Course Settings</a
                         >
                       </p>
                     `}
-                <p><a href="${app.get("url")}/courses/new">New Course</a></p>
+                <p><a href="${app.locals.url}/courses/new">New Course</a></p>
               </nav>
             </details>
           `}
@@ -1113,7 +1108,7 @@ export default async function courselore(
   app.use(express.urlencoded({ extended: true }));
 
   const cookieOptions = (): express.CookieOptions => {
-    const url = new URL(app.get("url"));
+    const url = new URL(app.locals.url);
     return {
       domain: url.hostname,
       httpOnly: true,
@@ -1367,7 +1362,7 @@ export default async function courselore(
                 (otherEnrollment) => html`
                   <p>
                     <a
-                      href="${app.get("url")}/courses/${otherEnrollment.course
+                      href="${app.locals.url}/courses/${otherEnrollment.course
                         .reference}${path}"
                       ><svg width="10" height="10">
                         <circle
@@ -1415,7 +1410,7 @@ export default async function courselore(
           >
             <form
               method="POST"
-              action="${app.get("url")}/authenticate?${qs.stringify({
+              action="${app.locals.url}/authenticate?${qs.stringify({
                 redirect: req.query.redirect,
                 email: req.query.email,
                 name: req.query.name,
@@ -1452,7 +1447,7 @@ export default async function courselore(
 
             <form
               method="POST"
-              action="${app.get("url")}/authenticate?${qs.stringify({
+              action="${app.locals.url}/authenticate?${qs.stringify({
                 redirect: req.query.redirect,
                 email: req.query.email,
                 name: req.query.name,
@@ -1508,9 +1503,9 @@ export default async function courselore(
     )
       return next("validation");
 
-    const magicAuthenticationLink = `${app.get(
-      "url"
-    )}/authenticate/${newAuthenticationNonce(req.body.email)}?${qs.stringify({
+    const magicAuthenticationLink = `${
+      app.locals.url
+    }/authenticate/${newAuthenticationNonce(req.body.email)}?${qs.stringify({
       redirect: req.query.redirect,
       email: req.query.email,
       name: req.query.name,
@@ -1549,12 +1544,12 @@ export default async function courselore(
               </p>
             </form>
 
-            $${app.get("demonstration")
+            $${app.locals.demonstration
               ? html`
                   <p>
                     <strong>
                       CourseLore doesn’t send emails in demonstration mode.
-                      <a href="${app.get("url")}/demonstration-inbox"
+                      <a href="${app.locals.url}/demonstration-inbox"
                         >Go to the Demonstration Inbox</a
                       >.
                     </strong>
@@ -1590,7 +1585,7 @@ export default async function courselore(
               <p>
                 This magic authentication link is invalid or has expired.
                 <a
-                  href="${app.get("url")}/authenticate?${qs.stringify({
+                  href="${app.locals.url}/authenticate?${qs.stringify({
                     redirect: req.query.redirect,
                     email: req.query.email,
                     name: req.query.name,
@@ -1628,7 +1623,7 @@ export default async function courselore(
 
               <form
                 method="POST"
-                action="${app.get("url")}/users?${qs.stringify({
+                action="${app.locals.url}/users?${qs.stringify({
                   redirect: req.query.redirect,
                   email: req.query.email,
                   name: req.query.name,
@@ -1670,7 +1665,7 @@ export default async function courselore(
         )
       );
     openSession(req, res, user.id);
-    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
+    res.redirect(`${app.locals.url}${req.query.redirect ?? "/"}`);
   });
 
   app.post<
@@ -1709,7 +1704,7 @@ export default async function courselore(
               <p>
                 Something went wrong in your sign up.
                 <a
-                  href="${app.get("url")}/authenticate?${qs.stringify({
+                  href="${app.locals.url}/authenticate?${qs.stringify({
                     redirect: req.query.redirect,
                     email: req.query.email,
                     name: req.query.name,
@@ -1727,7 +1722,7 @@ export default async function courselore(
       ).lastInsertRowid
     );
     openSession(req, res, userId);
-    res.redirect(`${app.get("url")}${req.query.redirect ?? "/"}`);
+    res.redirect(`${app.locals.url}${req.query.redirect ?? "/"}`);
   });
 
   app.delete<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
@@ -1735,7 +1730,7 @@ export default async function courselore(
     ...isAuthenticatedMiddleware,
     (req, res) => {
       closeSession(req, res);
-      res.redirect(`${app.get("url")}/`);
+      res.redirect(`${app.locals.url}/`);
     }
   );
 
@@ -1784,7 +1779,7 @@ export default async function courselore(
             ? html`
                 <form
                   method="POST"
-                  action="${app.get("url")}/authenticate?_method=DELETE"
+                  action="${app.locals.url}/authenticate?_method=DELETE"
                 >
                   <p><button>Sign Out</button></p>
                 </form>
@@ -1792,9 +1787,8 @@ export default async function courselore(
             : html`
                 <form
                   method="POST"
-                  action="${app.get(
-                    "url"
-                  )}/authenticate/${newAuthenticationNonce(
+                  action="${app.locals
+                    .url}/authenticate/${newAuthenticationNonce(
                     otherUserEmail
                   )}?_method=PUT&${qs.stringify({
                     redirect: req.query.redirect,
@@ -1816,8 +1810,8 @@ export default async function courselore(
                 <p>
                   Continue as $${currentUserHTML} and visit the page to which
                   the magic authentication link would have redirected you:<br />
-                  <a href="${app.get("url")}${req.query.redirect}"
-                    >${app.get("url")}${req.query.redirect}</a
+                  <a href="${app.locals.url}${req.query.redirect}"
+                    >${app.locals.url}${req.query.redirect}</a
                   >
                 </p>
               `}
@@ -1835,7 +1829,7 @@ export default async function courselore(
   >("/authenticate/:nonce", ...isAuthenticatedMiddleware, (req, res) => {
     closeSession(req, res);
     res.redirect(
-      `${app.get("url")}/authenticate/${req.params.nonce}?${qs.stringify({
+      `${app.locals.url}/authenticate/${req.params.nonce}?${qs.stringify({
         redirect: req.query.redirect,
         email: req.query.email,
         name: req.query.name,
@@ -1866,7 +1860,7 @@ export default async function courselore(
                 <p>
                   Or
                   <strong
-                    ><a href="${app.get("url")}/courses/new"
+                    ><a href="${app.locals.url}/courses/new"
                       >create a new course</a
                     ></strong
                   >.
@@ -1877,9 +1871,7 @@ export default async function courselore(
 
         case 1:
           return res.redirect(
-            `${app.get("url")}/courses/${
-              res.locals.enrollments[0].course.reference
-            }`
+            `${app.locals.url}/courses/${res.locals.enrollments[0].course.reference}`
           );
 
         default:
@@ -1898,7 +1890,7 @@ export default async function courselore(
                       html`
                         <p>
                           <a
-                            href="${app.get("url")}/courses/${enrollment.course
+                            href="${app.locals.url}/courses/${enrollment.course
                               .reference}"
                             ><svg width="10" height="10">
                               <circle
@@ -1936,7 +1928,7 @@ export default async function courselore(
 
             <form
               method="POST"
-              action="${app.get("url")}/settings?_method=PATCH"
+              action="${app.locals.url}/settings?_method=PATCH"
             >
               <p>
                 <label>
@@ -1999,7 +1991,7 @@ export default async function courselore(
         );
       }
 
-      res.redirect(`${app.get("url")}/settings`);
+      res.redirect(`${app.locals.url}/settings`);
     }
   );
 
@@ -2015,7 +2007,7 @@ export default async function courselore(
           html`
             <h1>Create a New Course</h1>
 
-            <form method="POST" action="${app.get("url")}/courses">
+            <form method="POST" action="${app.locals.url}/courses">
               <p>
                 <label>
                   <strong>Name</strong><br />
@@ -2063,7 +2055,7 @@ export default async function courselore(
           )
         `
       );
-      res.redirect(`${app.get("url")}/courses/${courseReference}`);
+      res.redirect(`${app.locals.url}/courses/${courseReference}`);
     }
   );
 
@@ -2252,7 +2244,7 @@ export default async function courselore(
               <h1>
                 Welcome to
                 <a
-                  href="${app.get("url")}/courses/${res.locals.course
+                  href="${app.locals.url}/courses/${res.locals.course
                     .reference}"
                   >${res.locals.course.name}</a
                 >!
@@ -2263,7 +2255,7 @@ export default async function courselore(
                 ? html`
                     <p>
                       <a
-                        href="${app.get("url")}/courses/${res.locals.course
+                        href="${app.locals.url}/courses/${res.locals.course
                           .reference}/settings#invitations"
                         ><strong>Invite other people to the course</strong></a
                       >.
@@ -2271,7 +2263,7 @@ export default async function courselore(
                     <p>
                       Or
                       <a
-                        href="${app.get("url")}/courses/${res.locals.course
+                        href="${app.locals.url}/courses/${res.locals.course
                           .reference}/threads/new"
                         ><strong>create the first thread</strong></a
                       >.
@@ -2281,7 +2273,7 @@ export default async function courselore(
                     <p>
                       This is a new course.
                       <a
-                        href="${app.get("url")}/courses/${res.locals.course
+                        href="${app.locals.url}/courses/${res.locals.course
                           .reference}/threads/new"
                         ><strong>Create the first thread</strong></a
                       >.
@@ -2292,9 +2284,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.threads[0].reference
-        }`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.threads[0].reference}`
       );
     }
   );
@@ -2414,9 +2404,7 @@ export default async function courselore(
   ): void {
     assert(invitation.email !== null);
 
-    const link = `${app.get("url")}/courses/${
-      invitation.course.reference
-    }/invitations/${invitation.reference}`;
+    const link = `${app.locals.url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
 
     sendEmail({
       to: invitation.email,
@@ -2509,7 +2497,7 @@ export default async function courselore(
           html`
             <h1>
               Course Settings ·
-              <a href="${app.get("url")}/courses/${res.locals.course.reference}"
+              <a href="${app.locals.url}/courses/${res.locals.course.reference}"
                 >${res.locals.course.name}</a
               >
             </h1>
@@ -2558,7 +2546,7 @@ export default async function courselore(
                   return html`
                     <form
                       method="POST"
-                      action="${app.get("url")}/courses/${res.locals.course
+                      action="${app.locals.url}/courses/${res.locals.course
                         .reference}/settings?_method=PATCH"
                     >
                       <p>
@@ -2607,9 +2595,7 @@ export default async function courselore(
                             </summary>
 
                             $${invitations!.map((invitation) => {
-                              const link = `${app.get("url")}/courses/${
-                                res.locals.course.reference
-                              }/invitations/${invitation.reference}`;
+                              const link = `${app.locals.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
 
                               return html`
                                 <details>
@@ -2617,7 +2603,7 @@ export default async function courselore(
                                     $${invitation.email === null
                                       ? html`
                                           <code>
-                                            ${app.get("url")}/courses/${res
+                                            ${app.locals.url}/courses/${res
                                               .locals.course
                                               .reference}/invitations/${"*".repeat(
                                               6
@@ -2884,7 +2870,7 @@ export default async function courselore(
 
                     <form
                       method="POST"
-                      action="${app.get("url")}/courses/${res.locals.course
+                      action="${app.locals.url}/courses/${res.locals.course
                         .reference}/invitations"
                     >
                       <div
@@ -3072,7 +3058,7 @@ export default async function courselore(
                                   >
                                     <form
                                       method="POST"
-                                      action="${app.get("url")}/courses/${res
+                                      action="${app.locals.url}/courses/${res
                                         .locals.course
                                         .reference}/enrollments/${enrollment.reference}?_method=PATCH"
                                     >
@@ -3119,7 +3105,7 @@ export default async function courselore(
                                     <div>
                                       <form
                                         method="POST"
-                                        action="${app.get("url")}/courses/${res
+                                        action="${app.locals.url}/courses/${res
                                           .locals.course
                                           .reference}/enrollments/${enrollment.reference}?_method=DELETE"
                                       >
@@ -3174,7 +3160,7 @@ export default async function courselore(
                                     >
                                       <form
                                         method="POST"
-                                        action="${app.get("url")}/courses/${res
+                                        action="${app.locals.url}/courses/${res
                                           .locals.course
                                           .reference}/enrollments/${enrollment.reference}?_method=PATCH"
                                       >
@@ -3198,7 +3184,7 @@ export default async function courselore(
 
                                       <form
                                         method="POST"
-                                        action="${app.get("url")}/courses/${res
+                                        action="${app.locals.url}/courses/${res
                                           .locals.course
                                           .reference}/enrollments/${enrollment.reference}?_method=DELETE"
                                       >
@@ -3245,7 +3231,7 @@ export default async function courselore(
                   html`
                     <form
                       method="POST"
-                      action="${app.get("url")}/courses/${res.locals.course
+                      action="${app.locals.url}/courses/${res.locals.course
                         .reference}/settings?_method=PATCH"
                       style="${css`
                         display: inline-block;
@@ -3322,7 +3308,7 @@ export default async function courselore(
       }
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/settings`
+        `${app.locals.url}/courses/${res.locals.course.reference}/settings`
       );
     }
   );
@@ -3372,9 +3358,7 @@ export default async function courselore(
             `
           );
           res.redirect(
-            `${app.get("url")}/courses/${
-              res.locals.course.reference
-            }/invitations/${invitationReference}`
+            `${app.locals.url}/courses/${res.locals.course.reference}/invitations/${invitationReference}`
           );
           break;
 
@@ -3463,9 +3447,7 @@ export default async function courselore(
           }
 
           res.redirect(
-            `${app.get("url")}/courses/${
-              res.locals.course.reference
-            }/settings#invitations`
+            `${app.locals.url}/courses/${res.locals.course.reference}/settings#invitations`
           );
           break;
       }
@@ -3528,9 +3510,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.course.reference
-        }/settings#invitations`
+        `${app.locals.url}/courses/${res.locals.course.reference}/settings#invitations`
       );
     }
   );
@@ -3551,9 +3531,7 @@ export default async function courselore(
       )
         return next();
 
-      const link = `${app.get("url")}/courses/${
-        res.locals.course.reference
-      }/invitations/${res.locals.invitation.reference}`;
+      const link = `${app.locals.url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
         app.get("layout main")(
           req,
@@ -3564,14 +3542,14 @@ export default async function courselore(
           html`
             <h1>
               Invitation ·
-              <a href="${app.get("url")}/courses/${res.locals.course.reference}"
+              <a href="${app.locals.url}/courses/${res.locals.course.reference}"
                 >${res.locals.course.name}</a
               >
             </h1>
             <nav>
               <p class="hint">
                 <a
-                  href="${app.get("url")}/courses/${res.locals.course
+                  href="${app.locals.url}/courses/${res.locals.course
                     .reference}/settings"
                   style="${css`
                     display: flex;
@@ -3645,7 +3623,7 @@ export default async function courselore(
           html`
             <h1>
               Invitation ·
-              <a href="${app.get("url")}/courses/${res.locals.course.reference}"
+              <a href="${app.locals.url}/courses/${res.locals.course.reference}"
                 >${res.locals.course.name}</a
               >
             </h1>
@@ -3726,7 +3704,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.invitation.course.reference}`
+        `${app.locals.url}/courses/${res.locals.invitation.course.reference}`
       );
     }
   );
@@ -3762,7 +3740,7 @@ export default async function courselore(
               <p>
                 To enroll, first you have to
                 <a
-                  href="${app.get("url")}/authenticate?${qs.stringify({
+                  href="${app.locals.url}/authenticate?${qs.stringify({
                     redirect: req.originalUrl,
                     ...(res.locals.invitation.email === null
                       ? {}
@@ -3803,9 +3781,7 @@ export default async function courselore(
       }
 
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.course.reference
-        }/settings#enrollments`
+        `${app.locals.url}/courses/${res.locals.course.reference}/settings#enrollments`
       );
     }
   );
@@ -3825,11 +3801,9 @@ export default async function courselore(
       );
 
       if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
-        return res.redirect(`${app.get("url")}/`);
+        return res.redirect(`${app.locals.url}/`);
       res.redirect(
-        `${app.get("url")}/courses/${
-          res.locals.course.reference
-        }/settings#enrollments`
+        `${app.locals.url}/courses/${res.locals.course.reference}/settings#enrollments`
       );
     }
   );
@@ -3894,7 +3868,7 @@ export default async function courselore(
                     `}"
                   >
                     <a
-                      href="${app.get("url")}/courses/${res.locals.course
+                      href="${app.locals.url}/courses/${res.locals.course
                         .reference}"
                       ><strong>${res.locals.course.name}</strong> (${res.locals
                         .enrollment.role})</a
@@ -3916,7 +3890,7 @@ export default async function courselore(
                   `}"
                 >
                   <a
-                    href="${app.get("url")}/courses/${res.locals.course
+                    href="${app.locals.url}/courses/${res.locals.course
                       .reference}/threads/new"
                     >Create a new thread</a
                   >
@@ -3926,7 +3900,7 @@ export default async function courselore(
                     (thread) =>
                       html`
                         <a
-                          href="${app.get("url")}/courses/${res.locals.course
+                          href="${app.locals.url}/courses/${res.locals.course
                             .reference}/threads/${thread.reference}"
                           style="${css`
                             line-height: 1.3;
@@ -4118,7 +4092,7 @@ export default async function courselore(
               loading.hidden = false;
               const preview = textEditor.querySelector("div.preview");
               preview.innerHTML = await (
-                await fetch("${app.get("url")}/preview", {
+                await fetch("${app.locals.url}/preview", {
                   method: "POST",
                   body: new URLSearchParams({ content: textarea.value }),
                 })
@@ -4215,7 +4189,7 @@ export default async function courselore(
 
             <form
               method="POST"
-              action="${app.get("url")}/courses/${res.locals.course
+              action="${app.locals.url}/courses/${res.locals.course
                 .reference}/threads"
             >
               <p>
@@ -4302,9 +4276,7 @@ export default async function courselore(
         eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.course.nextThreadReference
-        }`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.course.nextThreadReference}`
       );
     }
   );
@@ -4550,7 +4522,7 @@ export default async function courselore(
                     ${res.locals.thread.title}
 
                     <a
-                      href="${app.get("url")}/courses/${res.locals.course
+                      href="${app.locals.url}/courses/${res.locals.course
                         .reference}/threads/${res.locals.thread.reference}"
                       class="hint"
                       >#${res.locals.thread.reference}</a
@@ -4595,7 +4567,7 @@ export default async function courselore(
                     ? html`
                         <form
                           method="POST"
-                          action="${app.get("url")}/courses/${res.locals.course
+                          action="${app.locals.url}/courses/${res.locals.course
                             .reference}/threads/${res.locals.thread
                             .reference}?_method=DELETE"
                         >
@@ -4631,7 +4603,7 @@ export default async function courselore(
                   ? html`
                       <form
                         method="POST"
-                        action="${app.get("url")}/courses/${res.locals.course
+                        action="${app.locals.url}/courses/${res.locals.course
                           .reference}/threads/${res.locals.thread
                           .reference}?_method=PATCH"
                         hidden
@@ -4717,7 +4689,7 @@ export default async function courselore(
                               `
                             : html``}
                           <a
-                            href="${app.get("url")}/courses/${res.locals.course
+                            href="${app.locals.url}/courses/${res.locals.course
                               .reference}/threads/${res.locals.thread
                               .reference}#${post.reference}"
                             style="${css`
@@ -4804,7 +4776,7 @@ export default async function courselore(
                         ? html`
                             <form
                               method="POST"
-                              action="${app.get("url")}/courses/${res.locals
+                              action="${app.locals.url}/courses/${res.locals
                                 .course.reference}/threads/${res.locals.thread
                                 .reference}/posts/${post.reference}?_method=DELETE"
                             >
@@ -4842,7 +4814,7 @@ export default async function courselore(
                       <!-- TODO: Say “you” when you have liked the post. -->
                       <form
                         method="POST"
-                        action="${app.get("url")}/courses/${res.locals.course
+                        action="${app.locals.url}/courses/${res.locals.course
                           .reference}/threads/${res.locals.thread
                           .reference}/posts/${post.reference}/likes${post.likes.find(
                           (like) =>
@@ -4920,7 +4892,7 @@ export default async function courselore(
                       ? html`
                           <form
                             method="POST"
-                            action="${app.get("url")}/courses/${res.locals
+                            action="${app.locals.url}/courses/${res.locals
                               .course.reference}/threads/${res.locals.thread
                               .reference}/posts/${post.reference}?_method=PATCH"
                             hidden
@@ -4973,7 +4945,7 @@ export default async function courselore(
             <form
               id="new-post"
               method="POST"
-              action="${app.get("url")}/courses/${res.locals.course
+              action="${app.locals.url}/courses/${res.locals.course
                 .reference}/threads/${res.locals.thread.reference}/posts"
             >
               $${textEditor()}
@@ -5015,9 +4987,7 @@ export default async function courselore(
         eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.thread.reference
-        }`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}`
       );
     }
   );
@@ -5042,7 +5012,7 @@ export default async function courselore(
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
 
-      res.redirect(`${app.get("url")}/courses/${res.locals.course.reference}`);
+      res.redirect(`${app.locals.url}/courses/${res.locals.course.reference}`);
     }
   );
 
@@ -5087,9 +5057,7 @@ export default async function courselore(
         eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.thread.reference
-        }#${res.locals.thread.nextPostReference}`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.thread.nextPostReference}`
       );
     }
   );
@@ -5125,9 +5093,7 @@ export default async function courselore(
         eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.thread.reference
-        }#${res.locals.post.reference}`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
       );
     }
   );
@@ -5153,9 +5119,7 @@ export default async function courselore(
         eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.thread.reference
-        }`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}`
       );
     }
   );
@@ -5187,9 +5151,7 @@ export default async function courselore(
         eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.thread.reference
-        }#${res.locals.post.reference}`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
       );
     }
   );
@@ -5217,9 +5179,7 @@ export default async function courselore(
         eventSource.write(`event: refresh\ndata:\n\n`);
 
       res.redirect(
-        `${app.get("url")}/courses/${res.locals.course.reference}/threads/${
-          res.locals.thread.reference
-        }#${res.locals.post.reference}`
+        `${app.locals.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
       );
     }
   );
@@ -5240,7 +5200,7 @@ export default async function courselore(
   }
 
   app.get<{}, HTML, {}, {}, {}>("/demonstration-inbox", (req, res, next) => {
-    if (!app.get("demonstration")) return next();
+    if (!app.locals.demonstration) return next();
 
     const emails = database.all<{
       createdAt: string;
@@ -5303,7 +5263,7 @@ export default async function courselore(
             <p>
               If you think there should be something here, please contact the
               course staff or the
-              <a href="${app.get("administrator")}">system administrator</a>.
+              <a href="${app.locals.administrator}">system administrator</a>.
             </p>
           `
         )
@@ -5331,7 +5291,7 @@ export default async function courselore(
               <p>
                 You may have to
                 <a
-                  href="${app.get("url")}/authenticate?${qs.stringify({
+                  href="${app.locals.url}/authenticate?${qs.stringify({
                     redirect: req.originalUrl,
                   })}"
                   >authenticate</a
@@ -5445,8 +5405,8 @@ if (require.main === module)
     console.log(`CourseLore/${VERSION}`);
     if (process.argv[2] === undefined) {
       const app = await courselore(path.join(process.cwd(), "data"));
-      app.listen(new URL(app.get("url")).port, () => {
-        console.log(`Server started at ${app.get("url")}`);
+      app.listen(new URL(app.locals.url).port, () => {
+        console.log(`Server started at ${app.locals.url}`);
       });
     } else {
       const configurationFile = path.resolve(process.argv[2]);

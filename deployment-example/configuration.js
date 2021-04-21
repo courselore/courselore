@@ -7,14 +7,14 @@ module.exports = async (require) => {
 
   const app = await courselore(path.join(__dirname, "data"));
 
-  app.set("url", "https://courselore.org");
-  app.set("administrator", "mailto:administrator@courselore.org");
+  app.locals.url = "https://courselore.org";
+  app.locals.administrator = "mailto:administrator@courselore.org";
 
   const reverseProxy = express();
 
   reverseProxy.use((req, res, next) => {
-    if (req.hostname !== new URL(app.get("url")).hostname)
-      return res.redirect(`${app.get("url")}${req.originalUrl}`);
+    if (req.hostname !== new URL(app.locals.url).hostname)
+      return res.redirect(`${app.locals.url}${req.originalUrl}`);
     next();
   });
   reverseProxy.use(customization(app));
