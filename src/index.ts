@@ -936,18 +936,19 @@ export default async function courselore(
   // FIXME: A browser exception is thrown when the eventSource isn’t necessary. Is this an issue?
   const eventSources = new Set<express.Response<any, Record<string, any>>>();
 
-  interface Middlewares {}
+  interface Middlewares {
+    eventSource: express.RequestHandler<
+      {},
+      any,
+      {},
+      {},
+      EventSourceMiddlewareLocals
+    >[];
+  }
   interface EventSourceMiddlewareLocals {
     eventSource: boolean;
   }
-
-  const eventSourceMiddleware: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    EventSourceMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.eventSource = [
     (req, res, next) => {
       if (!req.header("accept")?.includes("text/event-stream")) {
         res.locals.eventSource = true;
@@ -4186,7 +4187,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/threads/new",
     ...isEnrolledInCourseMiddleware,
-    ...eventSourceMiddleware,
+    ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
         app.locals.layouts.thread(
@@ -4501,7 +4502,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/threads/:threadReference",
     ...isThreadAccessibleMiddleware,
-    ...eventSourceMiddleware,
+    ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
         app.locals.layouts.thread(
