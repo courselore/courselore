@@ -1190,15 +1190,17 @@ export default async function courselore(
     res.clearCookie("session", cookieOptions());
   }
 
+  interface Middlewares {
+    isUnauthenticated: express.RequestHandler<
+      {},
+      any,
+      {},
+      {},
+      IsUnauthenticatedMiddlewareLocals
+    >[];
+  }
   interface IsUnauthenticatedMiddlewareLocals {}
-
-  const isUnauthenticatedMiddleware: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    IsUnauthenticatedMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isUnauthenticated = [
     cookieParser(),
     (req, res, next) => {
       if (req.cookies.session === undefined) return next();
@@ -1220,11 +1222,16 @@ export default async function courselore(
       return next("route");
     },
   ];
-  app.set(
-    "middleware isUnauthenticatedMiddleware",
-    isUnauthenticatedMiddleware
-  );
 
+  interface Middlewares {
+    isAuthenticated: express.RequestHandler<
+      {},
+      any,
+      {},
+      {},
+      IsAuthenticatedMiddlewareLocals
+    >[];
+  }
   interface IsAuthenticatedMiddlewareLocals {
     user: {
       id: number;
@@ -1244,14 +1251,7 @@ export default async function courselore(
       accentColor: AccentColor;
     }[];
   }
-
-  const isAuthenticatedMiddleware: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    IsAuthenticatedMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isAuthenticated = [
     cookieParser(),
     (req, res, next) => {
       if (req.cookies.session === undefined) return next("route");
@@ -1329,7 +1329,6 @@ export default async function courselore(
       next();
     },
   ];
-  app.set("middleware isAuthenticatedMiddleware", isAuthenticatedMiddleware);
 
   const courseSwitcher = (
     req: express.Request<
@@ -1400,107 +1399,111 @@ export default async function courselore(
     {},
     { redirect?: string; email?: string; name?: string },
     IsUnauthenticatedMiddlewareLocals
-  >(["/", "/authenticate"], ...isUnauthenticatedMiddleware, (req, res) => {
-    res.send(
-      app.locals.layouts.main(
-        req,
-        res,
-        html`<title>CourseLore · The Open-Source Student Forum</title>`,
-        html`
-          <div
-            style="${css`
-              display: flex;
+  >(
+    ["/", "/authenticate"],
+    ...app.locals.middlewares.isUnauthenticated,
+    (req, res) => {
+      res.send(
+        app.locals.layouts.main(
+          req,
+          res,
+          html`<title>CourseLore · The Open-Source Student Forum</title>`,
+          html`
+            <div
+              style="${css`
+                display: flex;
 
-              & > * {
-                flex: 1;
-              }
+                & > * {
+                  flex: 1;
+                }
 
-              & > * + * {
-                margin-left: 3rem;
-              }
-            `}"
-          >
-            <form
-              method="POST"
-              action="${app.locals.url}/authenticate?${qs.stringify({
-                redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
-              })}"
+                & > * + * {
+                  margin-left: 3rem;
+                }
+              `}"
             >
-              <div
-                style="${css`
-                  text-align: center;
-                `}"
+              <form
+                method="POST"
+                action="${app.locals.url}/authenticate?${qs.stringify({
+                  redirect: req.query.redirect,
+                  email: req.query.email,
+                  name: req.query.name,
+                })}"
               >
-                <h1>Sign in</h1>
-                <p class="hint">Returning user</p>
-              </div>
-              <p
-                style="${css`
-                  height: 5rem;
-                `}"
-              >
-                <label>
-                  <strong>Email</strong><br />
-                  <input
-                    type="email"
-                    name="email"
-                    value="${req.query.email ?? ""}"
-                    placeholder="name@educational-email.edu"
-                    required
-                    autofocus
-                    class="full-width"
-                  />
-                </label>
-              </p>
-              <p><button class="full-width">Continue</button></p>
-            </form>
+                <div
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  <h1>Sign in</h1>
+                  <p class="hint">Returning user</p>
+                </div>
+                <p
+                  style="${css`
+                    height: 5rem;
+                  `}"
+                >
+                  <label>
+                    <strong>Email</strong><br />
+                    <input
+                      type="email"
+                      name="email"
+                      value="${req.query.email ?? ""}"
+                      placeholder="name@educational-email.edu"
+                      required
+                      autofocus
+                      class="full-width"
+                    />
+                  </label>
+                </p>
+                <p><button class="full-width">Continue</button></p>
+              </form>
 
-            <form
-              method="POST"
-              action="${app.locals.url}/authenticate?${qs.stringify({
-                redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
-              })}"
-            >
-              <div
-                style="${css`
-                  text-align: center;
-                `}"
+              <form
+                method="POST"
+                action="${app.locals.url}/authenticate?${qs.stringify({
+                  redirect: req.query.redirect,
+                  email: req.query.email,
+                  name: req.query.name,
+                })}"
               >
-                <h1>Sign up</h1>
-                <p class="hint">New user</p>
-              </div>
-              <p
-                style="${css`
-                  height: 5rem;
-                `}"
-              >
-                <label>
-                  <strong>Email</strong><br />
-                  <input
-                    type="email"
-                    name="email"
-                    value="${req.query.email ?? ""}"
-                    placeholder="name@educational-email.edu"
-                    required
-                    class="full-width"
-                  /><br />
-                  <small class="full-width hint">
-                    We suggest using the email address you use at your
-                    educational institution.
-                  </small>
-                </label>
-              </p>
-              <p><button class="full-width">Continue</button></p>
-            </form>
-          </div>
-        `
-      )
-    );
-  });
+                <div
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  <h1>Sign up</h1>
+                  <p class="hint">New user</p>
+                </div>
+                <p
+                  style="${css`
+                    height: 5rem;
+                  `}"
+                >
+                  <label>
+                    <strong>Email</strong><br />
+                    <input
+                      type="email"
+                      name="email"
+                      value="${req.query.email ?? ""}"
+                      placeholder="name@educational-email.edu"
+                      required
+                      class="full-width"
+                    /><br />
+                    <small class="full-width hint">
+                      We suggest using the email address you use at your
+                      educational institution.
+                    </small>
+                  </label>
+                </p>
+                <p><button class="full-width">Continue</button></p>
+              </form>
+            </div>
+          `
+        )
+      );
+    }
+  );
 
   app.post<
     {},
@@ -1508,86 +1511,39 @@ export default async function courselore(
     { email?: string },
     { redirect?: string; email?: string; name?: string },
     IsUnauthenticatedMiddlewareLocals
-  >("/authenticate", ...isUnauthenticatedMiddleware, (req, res, next) => {
-    if (
-      typeof req.body.email !== "string" ||
-      !validator.isEmail(req.body.email)
-    )
-      return next("validation");
-
-    const magicAuthenticationLink = `${
-      app.locals.url
-    }/authenticate/${newAuthenticationNonce(req.body.email)}?${qs.stringify({
-      redirect: req.query.redirect,
-      email: req.query.email,
-      name: req.query.name,
-    })}`;
-    sendEmail({
-      to: req.body.email,
-      subject: "Magic Authentication Link",
-      body: html`
-        <p>
-          <a href="${magicAuthenticationLink}">${magicAuthenticationLink}</a>
-        </p>
-        <p><small>Expires in 10 minutes and may only be used once.</small></p>
-      `,
-    });
-
-    res.send(
-      app.locals.layouts.main(
-        req,
-        res,
-        html`<title>Authenticate · CourseLore</title>`,
-        html`
-          <div
-            style="${css`
-              text-align: center;
-            `}"
-          >
-            <p>
-              To continue, check ${req.body.email} and click on the magic
-              authentication link.
-            </p>
-            <form method="POST">
-              <input type="hidden" name="email" value="${req.body.email}" />
-              <p>
-                Didn’t receive the email? Already checked the spam folder?
-                <button>Resend</button>
-              </p>
-            </form>
-
-            $${app.locals.demonstration
-              ? html`
-                  <p>
-                    <strong>
-                      CourseLore doesn’t send emails in demonstration mode.
-                      <a href="${app.locals.url}/demonstration-inbox"
-                        >Go to the Demonstration Inbox</a
-                      >.
-                    </strong>
-                  </p>
-                `
-              : html``}
-          </div>
-        `
+  >(
+    "/authenticate",
+    ...app.locals.middlewares.isUnauthenticated,
+    (req, res, next) => {
+      if (
+        typeof req.body.email !== "string" ||
+        !validator.isEmail(req.body.email)
       )
-    );
-  });
+        return next("validation");
 
-  app.get<
-    { nonce: string },
-    HTML,
-    {},
-    { redirect?: string; email?: string; name?: string },
-    IsUnauthenticatedMiddlewareLocals
-  >("/authenticate/:nonce", ...isUnauthenticatedMiddleware, (req, res) => {
-    const email = verifyAuthenticationNonce(req.params.nonce);
-    if (email === undefined)
-      return res.send(
+      const magicAuthenticationLink = `${
+        app.locals.url
+      }/authenticate/${newAuthenticationNonce(req.body.email)}?${qs.stringify({
+        redirect: req.query.redirect,
+        email: req.query.email,
+        name: req.query.name,
+      })}`;
+      sendEmail({
+        to: req.body.email,
+        subject: "Magic Authentication Link",
+        body: html`
+          <p>
+            <a href="${magicAuthenticationLink}">${magicAuthenticationLink}</a>
+          </p>
+          <p><small>Expires in 10 minutes and may only be used once.</small></p>
+        `,
+      });
+
+      res.send(
         app.locals.layouts.main(
           req,
           res,
-          html`<title>Authenticate · CourseLore</title>`,
+          html`<title>Authenticate · CourseLore</title>`,
           html`
             <div
               style="${css`
@@ -1595,90 +1551,145 @@ export default async function courselore(
               `}"
             >
               <p>
-                This magic authentication link is invalid or has expired.
-                <a
-                  href="${app.locals.url}/authenticate?${qs.stringify({
-                    redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
-                  })}"
-                  >Start over</a
-                >.
+                To continue, check ${req.body.email} and click on the magic
+                authentication link.
               </p>
+              <form method="POST">
+                <input type="hidden" name="email" value="${req.body.email}" />
+                <p>
+                  Didn’t receive the email? Already checked the spam folder?
+                  <button>Resend</button>
+                </p>
+              </form>
+
+              $${app.locals.demonstration
+                ? html`
+                    <p>
+                      <strong>
+                        CourseLore doesn’t send emails in demonstration mode.
+                        <a href="${app.locals.url}/demonstration-inbox"
+                          >Go to the Demonstration Inbox</a
+                        >.
+                      </strong>
+                    </p>
+                  `
+                : html``}
             </div>
           `
         )
       );
-    const user = app.locals.database.get<{ id: number }>(
-      sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
-    );
-    if (user === undefined)
-      return res.send(
-        app.locals.layouts.main(
-          req,
-          res,
-          html`<title>Sign up · CourseLore</title>`,
-          html`
-            <div
-              style="${css`
-                max-width: 300px;
-                margin: 0 auto;
-              `}"
-            >
-              <h1
+    }
+  );
+
+  app.get<
+    { nonce: string },
+    HTML,
+    {},
+    { redirect?: string; email?: string; name?: string },
+    IsUnauthenticatedMiddlewareLocals
+  >(
+    "/authenticate/:nonce",
+    ...app.locals.middlewares.isUnauthenticated,
+    (req, res) => {
+      const email = verifyAuthenticationNonce(req.params.nonce);
+      if (email === undefined)
+        return res.send(
+          app.locals.layouts.main(
+            req,
+            res,
+            html`<title>Authenticate · CourseLore</title>`,
+            html`
+              <div
                 style="${css`
                   text-align: center;
                 `}"
               >
-                Welcome to CourseLore!
-              </h1>
-
-              <form
-                method="POST"
-                action="${app.locals.url}/users?${qs.stringify({
-                  redirect: req.query.redirect,
-                  email: req.query.email,
-                  name: req.query.name,
-                })}"
-              >
-                <input
-                  type="hidden"
-                  name="nonce"
-                  value="${newAuthenticationNonce(email)}"
-                />
                 <p>
-                  <label>
-                    <strong>Name</strong><br />
-                    <input
-                      type="text"
-                      name="name"
-                      value="${req.query.name ?? ""}"
-                      required
-                      autofocus
-                      class="full-width"
-                    />
-                  </label>
+                  This magic authentication link is invalid or has expired.
+                  <a
+                    href="${app.locals.url}/authenticate?${qs.stringify({
+                      redirect: req.query.redirect,
+                      email: req.query.email,
+                      name: req.query.name,
+                    })}"
+                    >Start over</a
+                  >.
                 </p>
-                <p>
-                  <label>
-                    <strong>Email</strong><br />
-                    <input
-                      type="email"
-                      value="${email}"
-                      disabled
-                      class="full-width"
-                    />
-                  </label>
-                </p>
-                <p><button class="full-width">Create Account</button></p>
-              </form>
-            </div>
-          `
-        )
+              </div>
+            `
+          )
+        );
+      const user = app.locals.database.get<{ id: number }>(
+        sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
       );
-    openSession(req, res, user.id);
-    res.redirect(`${app.locals.url}${req.query.redirect ?? "/"}`);
-  });
+      if (user === undefined)
+        return res.send(
+          app.locals.layouts.main(
+            req,
+            res,
+            html`<title>Sign up · CourseLore</title>`,
+            html`
+              <div
+                style="${css`
+                  max-width: 300px;
+                  margin: 0 auto;
+                `}"
+              >
+                <h1
+                  style="${css`
+                    text-align: center;
+                  `}"
+                >
+                  Welcome to CourseLore!
+                </h1>
+
+                <form
+                  method="POST"
+                  action="${app.locals.url}/users?${qs.stringify({
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
+                  })}"
+                >
+                  <input
+                    type="hidden"
+                    name="nonce"
+                    value="${newAuthenticationNonce(email)}"
+                  />
+                  <p>
+                    <label>
+                      <strong>Name</strong><br />
+                      <input
+                        type="text"
+                        name="name"
+                        value="${req.query.name ?? ""}"
+                        required
+                        autofocus
+                        class="full-width"
+                      />
+                    </label>
+                  </p>
+                  <p>
+                    <label>
+                      <strong>Email</strong><br />
+                      <input
+                        type="email"
+                        value="${email}"
+                        disabled
+                        class="full-width"
+                      />
+                    </label>
+                  </p>
+                  <p><button class="full-width">Create Account</button></p>
+                </form>
+              </div>
+            `
+          )
+        );
+      openSession(req, res, user.id);
+      res.redirect(`${app.locals.url}${req.query.redirect ?? "/"}`);
+    }
+  );
 
   app.post<
     {},
@@ -1686,7 +1697,7 @@ export default async function courselore(
     { nonce?: string; name?: string },
     { redirect?: string; email?: string; name?: string },
     IsUnauthenticatedMiddlewareLocals
-  >("/users", ...isUnauthenticatedMiddleware, (req, res, next) => {
+  >("/users", ...app.locals.middlewares.isUnauthenticated, (req, res, next) => {
     if (
       typeof req.body.nonce !== "string" ||
       req.body.nonce.trim() === "" ||
@@ -1739,7 +1750,7 @@ export default async function courselore(
 
   app.delete<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/authenticate",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       closeSession(req, res);
       res.redirect(`${app.locals.url}/`);
@@ -1752,85 +1763,90 @@ export default async function courselore(
     {},
     { redirect?: string; email?: string; name?: string },
     IsAuthenticatedMiddlewareLocals
-  >("/authenticate/:nonce", ...isAuthenticatedMiddleware, (req, res) => {
-    const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
-    const isSelf = otherUserEmail === res.locals.user.email;
-    const otherUser =
-      otherUserEmail === undefined || isSelf
-        ? undefined
-        : app.locals.database.get<{ name: string }>(
-            sql`SELECT "name" FROM "users" WHERE "email" = ${otherUserEmail}`
-          );
-    const currentUserHTML = html`<strong
-      >${res.locals.user.name} ${`<${res.locals.user.email}>`}</strong
-    >`;
-    const otherUserHTML =
-      otherUserEmail === undefined
-        ? undefined
-        : isSelf
-        ? html`yourself`
-        : otherUser === undefined
-        ? html`<strong>${otherUserEmail}</strong>`
-        : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
-    res.send(
-      app.locals.layouts.main(
-        req,
-        res,
-        html`<title>Magic Authentication Link · CourseLore</title>`,
-        html`
-          <h1>Magic Authentication Link</h1>
+  >(
+    "/authenticate/:nonce",
+    ...app.locals.middlewares.isAuthenticated,
+    (req, res) => {
+      const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
+      const isSelf = otherUserEmail === res.locals.user.email;
+      const otherUser =
+        otherUserEmail === undefined || isSelf
+          ? undefined
+          : app.locals.database.get<{ name: string }>(
+              sql`SELECT "name" FROM "users" WHERE "email" = ${otherUserEmail}`
+            );
+      const currentUserHTML = html`<strong
+        >${res.locals.user.name} ${`<${res.locals.user.email}>`}</strong
+      >`;
+      const otherUserHTML =
+        otherUserEmail === undefined
+          ? undefined
+          : isSelf
+          ? html`yourself`
+          : otherUser === undefined
+          ? html`<strong>${otherUserEmail}</strong>`
+          : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
+      res.send(
+        app.locals.layouts.main(
+          req,
+          res,
+          html`<title>Magic Authentication Link · CourseLore</title>`,
+          html`
+            <h1>Magic Authentication Link</h1>
 
-          <p>
-            You’re already signed in as $${currentUserHTML} and you tried to use
-            $${otherUserEmail === undefined
-              ? html`an invalid or expired magic authentication link`
-              : html`a magic authentication link for $${otherUserHTML}`}.
-          </p>
+            <p>
+              You’re already signed in as $${currentUserHTML} and you tried to
+              use
+              $${otherUserEmail === undefined
+                ? html`an invalid or expired magic authentication link`
+                : html`a magic authentication link for $${otherUserHTML}`}.
+            </p>
 
-          $${otherUserEmail === undefined || isSelf
-            ? html`
-                <form
-                  method="POST"
-                  action="${app.locals.url}/authenticate?_method=DELETE"
-                >
-                  <p><button>Sign Out</button></p>
-                </form>
-              `
-            : html`
-                <form
-                  method="POST"
-                  action="${app.locals
-                    .url}/authenticate/${newAuthenticationNonce(
-                    otherUserEmail
-                  )}?_method=PUT&${qs.stringify({
-                    redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
-                  })}"
-                >
-                  <p>
-                    Sign out as $${currentUserHTML} and sign
-                    ${otherUser === undefined ? "up" : "in"} as
-                    $${otherUserHTML}:<br />
-                    <button>Switch Users</button>
-                  </p>
-                </form>
-              `}
-          $${req.query.redirect === undefined
-            ? html``
-            : html`
-                <p>
-                  Continue as $${currentUserHTML} and visit the page to which
-                  the magic authentication link would have redirected you:<br />
-                  <a href="${app.locals.url}${req.query.redirect}"
-                    >${app.locals.url}${req.query.redirect}</a
+            $${otherUserEmail === undefined || isSelf
+              ? html`
+                  <form
+                    method="POST"
+                    action="${app.locals.url}/authenticate?_method=DELETE"
                   >
-                </p>
-              `}
-        `
-      )
-    );
-  });
+                    <p><button>Sign Out</button></p>
+                  </form>
+                `
+              : html`
+                  <form
+                    method="POST"
+                    action="${app.locals
+                      .url}/authenticate/${newAuthenticationNonce(
+                      otherUserEmail
+                    )}?_method=PUT&${qs.stringify({
+                      redirect: req.query.redirect,
+                      email: req.query.email,
+                      name: req.query.name,
+                    })}"
+                  >
+                    <p>
+                      Sign out as $${currentUserHTML} and sign
+                      ${otherUser === undefined ? "up" : "in"} as
+                      $${otherUserHTML}:<br />
+                      <button>Switch Users</button>
+                    </p>
+                  </form>
+                `}
+            $${req.query.redirect === undefined
+              ? html``
+              : html`
+                  <p>
+                    Continue as $${currentUserHTML} and visit the page to which
+                    the magic authentication link would have redirected you:<br />
+                    <a href="${app.locals.url}${req.query.redirect}"
+                      >${app.locals.url}${req.query.redirect}</a
+                    >
+                  </p>
+                `}
+          `
+        )
+      );
+    }
+  );
 
   app.put<
     { nonce: string },
@@ -1838,20 +1854,24 @@ export default async function courselore(
     {},
     { redirect?: string; email?: string; name?: string },
     IsAuthenticatedMiddlewareLocals
-  >("/authenticate/:nonce", ...isAuthenticatedMiddleware, (req, res) => {
-    closeSession(req, res);
-    res.redirect(
-      `${app.locals.url}/authenticate/${req.params.nonce}?${qs.stringify({
-        redirect: req.query.redirect,
-        email: req.query.email,
-        name: req.query.name,
-      })}`
-    );
-  });
+  >(
+    "/authenticate/:nonce",
+    ...app.locals.middlewares.isAuthenticated,
+    (req, res) => {
+      closeSession(req, res);
+      res.redirect(
+        `${app.locals.url}/authenticate/${req.params.nonce}?${qs.stringify({
+          redirect: req.query.redirect,
+          email: req.query.email,
+          name: req.query.name,
+        })}`
+      );
+    }
+  );
 
   app.get<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       switch (res.locals.enrollments.length) {
         case 0:
@@ -1928,7 +1948,7 @@ export default async function courselore(
 
   app.get<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/settings",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
         app.locals.layouts.main(
@@ -1994,7 +2014,7 @@ export default async function courselore(
 
   app.patch<{}, any, { name?: string }, {}, IsAuthenticatedMiddlewareLocals>(
     "/settings",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res, next) => {
       if (typeof req.body.name === "string") {
         if (req.body.name.trim() === "") return next("validation");
@@ -2009,7 +2029,7 @@ export default async function courselore(
 
   app.get<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/courses/new",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
         app.locals.layouts.main(
@@ -2043,7 +2063,7 @@ export default async function courselore(
 
   app.post<{}, any, { name?: string }, {}, IsAuthenticatedMiddlewareLocals>(
     "/courses",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
@@ -2117,7 +2137,7 @@ export default async function courselore(
     {},
     IsEnrolledInCourseMiddlewareLocals
   >[] = [
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res, next) => {
       res.locals.otherEnrollments = [];
       for (const enrollment of res.locals.enrollments)
@@ -3655,7 +3675,7 @@ export default async function courselore(
     IsAuthenticatedMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
@@ -3691,7 +3711,7 @@ export default async function courselore(
     IsAuthenticatedMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       app.locals.database.run(
@@ -3729,7 +3749,7 @@ export default async function courselore(
     IsUnauthenticatedMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isUnauthenticatedMiddleware,
+    ...app.locals.middlewares.isUnauthenticated,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
@@ -4166,7 +4186,7 @@ export default async function courselore(
 
   app.post<{}, any, { content?: string }, {}, IsAuthenticatedMiddlewareLocals>(
     "/preview",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -5266,7 +5286,7 @@ export default async function courselore(
 
   app.all<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "*",
-    ...isAuthenticatedMiddleware,
+    ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.status(404).send(
         app.locals.layouts.main(
@@ -5289,7 +5309,7 @@ export default async function courselore(
 
   app.all<{}, HTML, {}, {}, IsUnauthenticatedMiddlewareLocals>(
     "*",
-    ...isUnauthenticatedMiddleware,
+    ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.status(404).send(
         app.locals.layouts.main(
