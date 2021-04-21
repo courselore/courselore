@@ -14,7 +14,7 @@ module.exports = (require) => {
 
     router.all(
       "*",
-      ...app.get("middleware isAuthenticatedMiddleware"),
+      ...app.locals.middlewares.isAuthenticated,
       (req, res, next) => {
         next("router");
       }
@@ -22,7 +22,7 @@ module.exports = (require) => {
     router.use(express.static(path.join(__dirname, "public")));
     router.get("/", (req, res, next) => {
       res.send(
-        app.get("layout base")(
+        app.locals.layouts.base(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,

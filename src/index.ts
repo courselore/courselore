@@ -633,7 +633,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.application = (req, res, head, body) =>
-    app.get("layout base")(
+    app.locals.layouts.base(
       req,
       res,
       html`
@@ -898,7 +898,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.main = (req, res, head, body) =>
-    app.get("layout application")(
+    app.locals.layouts.application(
       req,
       res,
       head,
@@ -1396,7 +1396,7 @@ export default async function courselore(
     IsUnauthenticatedMiddlewareLocals
   >(["/", "/authenticate"], ...isUnauthenticatedMiddleware, (req, res) => {
     res.send(
-      app.get("layout main")(
+      app.locals.layouts.main(
         req,
         res,
         html`<title>CourseLore · The Open-Source Student Forum</title>`,
@@ -1528,7 +1528,7 @@ export default async function courselore(
     });
 
     res.send(
-      app.get("layout main")(
+      app.locals.layouts.main(
         req,
         res,
         html`<title>Authenticate · CourseLore</title>`,
@@ -1578,7 +1578,7 @@ export default async function courselore(
     const email = verifyAuthenticationNonce(req.params.nonce);
     if (email === undefined)
       return res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>Authenticate · CourseLore</title>`,
@@ -1608,7 +1608,7 @@ export default async function courselore(
     );
     if (user === undefined)
       return res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>Sign up · CourseLore</title>`,
@@ -1697,7 +1697,7 @@ export default async function courselore(
       )!.exists === 1
     )
       return res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>Sign up · CourseLore</title>`,
@@ -1767,7 +1767,7 @@ export default async function courselore(
         ? html`<strong>${otherUserEmail}</strong>`
         : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
     res.send(
-      app.get("layout main")(
+      app.locals.layouts.main(
         req,
         res,
         html`<title>Magic Authentication Link · CourseLore</title>`,
@@ -1850,7 +1850,7 @@ export default async function courselore(
       switch (res.locals.enrollments.length) {
         case 0:
           return res.send(
-            app.get("layout main")(
+            app.locals.layouts.main(
               req,
               res,
               html`<title>CourseLore</title>`,
@@ -1882,7 +1882,7 @@ export default async function courselore(
 
         default:
           return res.send(
-            app.get("layout main")(
+            app.locals.layouts.main(
               req,
               res,
               html`<title>CourseLore</title>`,
@@ -1925,7 +1925,7 @@ export default async function courselore(
     ...isAuthenticatedMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>User Settings · CourseLore</title>`,
@@ -2006,7 +2006,7 @@ export default async function courselore(
     ...isAuthenticatedMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>Create a New Course · CourseLore</title>`,
@@ -2242,7 +2242,7 @@ export default async function courselore(
     (req, res) => {
       if (res.locals.threads.length === 0)
         return res.send(
-          app.get("layout main")(
+          app.locals.layouts.main(
             req,
             res,
             html`<title>${res.locals.course.name} · CourseLore</title>`,
@@ -2492,7 +2492,7 @@ export default async function courselore(
     ...isEnrolledInCourseMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3539,7 +3539,7 @@ export default async function courselore(
 
       const link = `${app.locals.url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3620,7 +3620,7 @@ export default async function courselore(
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3653,7 +3653,7 @@ export default async function courselore(
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3727,7 +3727,7 @@ export default async function courselore(
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3834,7 +3834,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.thread = (req, res, head, body) =>
-    app.get("layout application")(
+    app.locals.layouts.application(
       req,
       res,
       head,
@@ -4182,7 +4182,7 @@ export default async function courselore(
     ...eventSourceMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout thread")(
+        app.locals.layouts.thread(
           req,
           res,
           html`
@@ -4497,7 +4497,7 @@ export default async function courselore(
     ...eventSourceMiddleware,
     (req, res) => {
       res.send(
-        app.get("layout thread")(
+        app.locals.layouts.thread(
           req,
           res,
           html`
@@ -5220,7 +5220,7 @@ export default async function courselore(
     );
 
     res.send(
-      app.get("layout main")(
+      app.locals.layouts.main(
         req,
         res,
         html`
@@ -5261,7 +5261,7 @@ export default async function courselore(
     ...isAuthenticatedMiddleware,
     (req, res) => {
       res.status(404).send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
@@ -5284,7 +5284,7 @@ export default async function courselore(
     ...isUnauthenticatedMiddleware,
     (req, res) => {
       res.status(404).send(
-        app.get("layout main")(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
@@ -5318,7 +5318,7 @@ export default async function courselore(
     const isValidation = err === "validation";
     const message = isValidation ? "Validation" : "Server";
     res.status(isValidation ? 422 : 500).send(
-      app.get("layout main")(
+      app.locals.layouts.main(
         req,
         res,
         html`<title>${message} Error · CourseLore</title>`,
