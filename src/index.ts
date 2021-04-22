@@ -1184,10 +1184,10 @@ export default async function courselore(
   app.use(methodOverride("_method"));
   app.use(express.urlencoded({ extended: true }));
 
-  interface AppLocals {
+  interface Settings {
     cookieOptions: () => express.CookieOptions;
   }
-  app.locals.cookieOptions = () => {
+  app.locals.settings.cookieOptions = () => {
     const url = new URL(app.locals.settings.url);
     return {
       domain: url.hostname,
@@ -1246,7 +1246,7 @@ export default async function courselore(
       `
     );
     res.cookie("session", token, {
-      ...app.locals.cookieOptions(),
+      ...app.locals.settings.cookieOptions(),
       expires: expiresAt,
     });
   }
@@ -1258,7 +1258,7 @@ export default async function courselore(
     app.locals.database.run(
       sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
     );
-    res.clearCookie("session", app.locals.cookieOptions());
+    res.clearCookie("session", app.locals.settings.cookieOptions());
   }
 
   interface Middlewares {
