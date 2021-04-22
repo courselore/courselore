@@ -972,38 +972,6 @@ export default async function courselore(
       `
     );
 
-  // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  interface AppLocals {
-    eventSources: Set<express.Response<any, Record<string, any>>>;
-  }
-  app.locals.eventSources = new Set();
-
-  interface Middlewares {
-    eventSource: express.RequestHandler<
-      {},
-      any,
-      {},
-      {},
-      EventSourceMiddlewareLocals
-    >[];
-  }
-  interface EventSourceMiddlewareLocals {
-    eventSource: boolean;
-  }
-  app.locals.middlewares.eventSource = [
-    (req, res, next) => {
-      if (!req.header("accept")?.includes("text/event-stream")) {
-        res.locals.eventSource = true;
-        return next();
-      }
-      app.locals.eventSources.add(res);
-      res.on("close", () => {
-        app.locals.eventSources.delete(res);
-      });
-      res.type("text/event-stream").write("");
-    },
-  ];
-
   interface Partials {
     logoAndMenu: (
       req: express.Request<
@@ -1159,6 +1127,38 @@ export default async function courselore(
   };
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
+
+  // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
+  interface AppLocals {
+    eventSources: Set<express.Response<any, Record<string, any>>>;
+  }
+  app.locals.eventSources = new Set();
+
+  interface Middlewares {
+    eventSource: express.RequestHandler<
+      {},
+      any,
+      {},
+      {},
+      EventSourceMiddlewareLocals
+    >[];
+  }
+  interface EventSourceMiddlewareLocals {
+    eventSource: boolean;
+  }
+  app.locals.middlewares.eventSource = [
+    (req, res, next) => {
+      if (!req.header("accept")?.includes("text/event-stream")) {
+        res.locals.eventSource = true;
+        return next();
+      }
+      app.locals.eventSources.add(res);
+      res.on("close", () => {
+        app.locals.eventSources.delete(res);
+      });
+      res.type("text/event-stream").write("");
+    },
+  ];
 
   interface Helpers {
     authenticationNonce: {
