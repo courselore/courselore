@@ -58,22 +58,26 @@ export default async function courselore(
   app.locals.settings.demonstration = true;
 
   interface AppLocals {
+    constants: Constants;
     middlewares: Middlewares;
     layouts: Layouts;
     partials: Partials;
+    // helpers: Helpers;
   }
+  app.locals.constants = {} as Constants;
   app.locals.middlewares = {} as Middlewares;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
+  // app.locals.helpers = {} as Helpers;
 
-  interface AppLocals {
+  interface Constants {
     roles: Role[];
   }
   type Role = "student" | "staff";
-  app.locals.roles = ["student", "staff"];
+  app.locals.constants.roles = ["student", "staff"];
 
   // https://pico-8.fandom.com/wiki/Palette
-  interface AppLocals {
+  interface Constants {
     accentColors: AccentColor[];
   }
   type AccentColor =
@@ -87,7 +91,7 @@ export default async function courselore(
     | "#ab5236"
     | "#1d2b53"
     | "#5f574f";
-  app.locals.accentColors = [
+  app.locals.constants.accentColors = [
     "#83769c",
     "#ff77a8",
     "#29adff",
@@ -100,7 +104,7 @@ export default async function courselore(
     "#5f574f",
   ];
 
-  interface AppLocals {
+  interface Constants {
     anonymousEnrollment: AnonymousEnrollment;
   }
   interface AnonymousEnrollment {
@@ -108,7 +112,7 @@ export default async function courselore(
     user: { id: null; email: null; name: "Anonymous" };
     role: null;
   }
-  app.locals.anonymousEnrollment = {
+  app.locals.constants.anonymousEnrollment = {
     id: null,
     user: { id: null, email: null, name: "Anonymous" },
     role: null,
@@ -2169,7 +2173,9 @@ export default async function courselore(
     const accentColorsInUse = new Set<AccentColor>(
       enrollments.map((enrollment) => enrollment.accentColor)
     );
-    let accentColorsAvailable = new Set<AccentColor>(app.locals.accentColors);
+    let accentColorsAvailable = new Set<AccentColor>(
+      app.locals.constants.accentColors
+    );
     for (const accentColorInUse of accentColorsInUse) {
       accentColorsAvailable.delete(accentColorInUse);
       if (accentColorsAvailable.size === 1) break;
@@ -2301,7 +2307,7 @@ export default async function courselore(
                     },
                     role: firstPost.authorEnrollmentRole,
                   }
-                : app.locals.anonymousEnrollment,
+                : app.locals.constants.anonymousEnrollment,
             postsCount,
             likesCount: firstPost.likesCount,
           };
@@ -2820,7 +2826,7 @@ export default async function courselore(
                                                   }
                                                 `}"
                                               >
-                                                $${app.locals.roles.map(
+                                                $${app.locals.constants.roles.map(
                                                   (role) =>
                                                     html`
                                                       <label>
@@ -3004,7 +3010,7 @@ export default async function courselore(
                               }
                             `}"
                           >
-                            $${app.locals.roles.map(
+                            $${app.locals.constants.roles.map(
                               (role, index) =>
                                 html`
                                   <label>
@@ -3180,7 +3186,7 @@ export default async function courselore(
                                             }
                                           `}"
                                         >
-                                          $${app.locals.roles.map(
+                                          $${app.locals.constants.roles.map(
                                             (role) =>
                                               html`
                                                 <label>
@@ -3332,7 +3338,7 @@ export default async function courselore(
                 margin-top: -1rem;
               `}"
             >
-              $${app.locals.accentColors.map(
+              $${app.locals.constants.accentColors.map(
                 (accentColor) =>
                   html`
                     <form
@@ -3406,7 +3412,7 @@ export default async function courselore(
       }
 
       if (typeof req.body.accentColor === "string") {
-        if (!app.locals.accentColors.includes(req.body.accentColor))
+        if (!app.locals.constants.accentColors.includes(req.body.accentColor))
           return next("validation");
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
@@ -3436,7 +3442,7 @@ export default async function courselore(
     (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
-        !app.locals.roles.includes(req.body.role) ||
+        !app.locals.constants.roles.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             !isDate(req.body.expiresAt) ||
@@ -3585,7 +3591,7 @@ export default async function courselore(
       }
 
       if (req.body.role !== undefined) {
-        if (!app.locals.roles.includes(req.body.role))
+        if (!app.locals.constants.roles.includes(req.body.role))
           return next("validation");
 
         app.locals.database.run(
@@ -3885,7 +3891,7 @@ export default async function courselore(
     ...mayManageEnrollmentMiddleware,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
-        if (!app.locals.roles.includes(req.body.role))
+        if (!app.locals.constants.roles.includes(req.body.role))
           return next("validation");
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
@@ -4477,7 +4483,7 @@ export default async function courselore(
                   },
                   role: post.authorEnrollmentRole,
                 }
-              : app.locals.anonymousEnrollment,
+              : app.locals.constants.anonymousEnrollment,
           content: post.content,
           // FIXME: Try to get rid of this n+1 query.
           likes: app.locals.database
@@ -4519,7 +4525,7 @@ export default async function courselore(
                       },
                       role: like.enrollmentRole,
                     }
-                  : app.locals.anonymousEnrollment,
+                  : app.locals.constants.anonymousEnrollment,
             })),
         }));
 
