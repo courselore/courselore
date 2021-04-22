@@ -313,6 +313,7 @@ export default async function courselore(
 
               ::selection {
                 color: white;
+                fill: white;
                 background-color: #ff77a8;
               }
 
@@ -345,9 +346,11 @@ export default async function courselore(
 
               a {
                 color: inherit;
+                fill: inherit;
 
                 &:hover {
                   color: #ff77a8 !important;
+                  fill: #ff77a8 !important;
                 }
 
                 h1 &,
@@ -397,8 +400,10 @@ export default async function courselore(
 
                 &:disabled {
                   color: gray;
+                  fill: gray;
                   @media (prefers-color-scheme: dark) {
                     color: whitesmoke;
+                    fill: whitesmoke;
                   }
                 }
               }
@@ -540,6 +545,7 @@ export default async function courselore(
 
                 &:active {
                   color: white;
+                  fill: white;
                   background-color: #ff77a8;
                 }
               }
@@ -599,6 +605,7 @@ export default async function courselore(
 
               blockquote {
                 color: gray;
+                fill: gray;
                 padding-left: 0.5rem;
                 border-left: 3px solid gray;
                 margin: 1rem 0;
@@ -902,6 +909,7 @@ export default async function courselore(
                   text-transform: uppercase;
                   letter-spacing: 2px;
                   color: white;
+                  fill: white;
                   background-color: #83769c;
                   padding: 0.1rem 1rem;
                   border-top-left-radius: 5px;
@@ -3687,7 +3695,7 @@ export default async function courselore(
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/settings"
                   style="${css`
-                    display: flex;
+                    display: inline-flex;
                     align-items: center;
                   `}"
                   ><svg viewBox="0 0 16 16" width="16" height="16">
@@ -4186,16 +4194,19 @@ export default async function courselore(
           & > button {
             all: unset;
             color: gray;
+            fill: gray;
             cursor: default;
             transition: font-weight 0.2s, color 0.2s;
 
             &:hover {
               color: #ff77a8;
+              fill: #ff77a8;
             }
 
             &:disabled {
               font-weight: bold;
               color: inherit;
+              fill: inherit;
             }
           }
 
