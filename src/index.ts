@@ -1162,12 +1162,12 @@ export default async function courselore(
 
   interface Helpers {
     authenticationNonce: {
-      new: (email: string) => string;
+      create: (email: string) => string;
       verify: (nonce: string) => string | undefined;
     };
   }
   app.locals.helpers.authenticationNonce = {
-    new(email) {
+    create(email) {
       app.locals.database.run(
         sql`DELETE FROM "authenticationNonces" WHERE "email" = ${email}`
       );
@@ -1507,7 +1507,7 @@ export default async function courselore(
 
       const magicAuthenticationLink = `${
         app.locals.settings.url
-      }/authenticate/${app.locals.helpers.authenticationNonce.new(
+      }/authenticate/${app.locals.helpers.authenticationNonce.create(
         req.body.email
       )}?${qs.stringify({
         redirect: req.query.redirect,
@@ -1643,7 +1643,9 @@ export default async function courselore(
                   <input
                     type="hidden"
                     name="nonce"
-                    value="${app.locals.helpers.authenticationNonce.new(email)}"
+                    value="${app.locals.helpers.authenticationNonce.create(
+                      email
+                    )}"
                   />
                   <p>
                     <label>
@@ -1807,7 +1809,7 @@ export default async function courselore(
                   <form
                     method="POST"
                     action="${app.locals.settings
-                      .url}/authenticate/${app.locals.helpers.authenticationNonce.new(
+                      .url}/authenticate/${app.locals.helpers.authenticationNonce.create(
                       otherUserEmail
                     )}?_method=PUT&${qs.stringify({
                       redirect: req.query.redirect,
