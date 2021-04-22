@@ -4274,7 +4274,58 @@ export default async function courselore(
         </p>
       </div>
 
-      $${loading()}
+      <div
+        class="loading"
+        hidden
+        style="${css`
+          margin: 3rem 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          & > * + * {
+            margin-left: 0.5rem;
+          }
+        `}"
+      >
+        <svg width="30" height="30">
+          <polyline
+            stroke="url(#gradient)"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            points="1.875 1.875 5.625 5.625 5.625 1.875 1.875 5.625 9.375 1.875 13.125 5.625 9.375 5.625 13.125 1.875 9.375 9.375 13.125 13.125 9.375 13.125 13.125 9.375 5.625 13.125 1.875 9.375 1.875 13.125 5.625 9.375 1.875 16.875 5.625 20.625 1.875 20.625 5.625 16.875 1.875 24.375 5.625 28.125 5.625 24.375 1.875 28.125 9.375 24.375 13.125 28.125 13.125 24.375 9.375 28.125 13.125 20.625 9.375 16.875 13.125 16.875 9.375 20.625 16.875 16.875 20.625 20.625 16.875 20.625 20.625 16.875 16.875 24.375 20.625 28.125 20.625 24.375 16.875 28.125 24.375 24.375 28.125 28.125 28.125 24.375 24.375 28.125 28.125 20.625 24.375 16.875 28.125 16.875 24.375 20.625 28.125 13.125 24.375 9.375 24.375 13.125 28.125 9.375 20.625 13.125 16.875 9.375 20.625 9.375 16.875 13.125 20.625 5.625 16.875 1.875 20.625 1.875 16.875 5.625 24.375 1.875 28.125 5.625 28.125 1.875 24.375 5.625"
+          />
+        </svg>
+        <strong>Loading…</strong>
+      </div>
+      <script>
+        (() => {
+          const loading = document.currentScript.previousElementSibling;
+          let animationFrame;
+          new MutationObserver(() => {
+            if (loading.hidden) window.cancelAnimationFrame(animationFrame);
+            else animationFrame = window.requestAnimationFrame(animate);
+          }).observe(loading, {
+            attributes: true,
+            attributeFilter: ["hidden"],
+          });
+          const polyline = loading.querySelector("polyline");
+          const points = polyline.getAttribute("points").split(" ").map(Number);
+          function animate(time) {
+            polyline.setAttribute(
+              "points",
+              points
+                .map(
+                  (coordinate, index) =>
+                    coordinate + Math.sin(time * 0.005 + index)
+                )
+                .join(" ")
+            );
+            animationFrame = window.requestAnimationFrame(animate);
+          }
+        })();
+      </script>
 
       <div class="preview" hidden></div>
     </div>
@@ -5535,72 +5586,6 @@ export default async function courselore(
       )
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
-
-  // FIXME: !!!!!!INLINE THIS!!!!!
-  const loading = (() => {
-    let counter = 0;
-    return (): HTML => {
-      counter++;
-      const id = `loading-gradient-${counter}`;
-      return html`
-        <div
-          class="loading"
-          hidden
-          style="${css`
-            margin: 3rem 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            & > * + * {
-              margin-left: 0.5rem;
-            }
-          `}"
-        >
-          <svg width="30" height="30">
-            <polyline
-              stroke="url(#gradient)"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              fill="none"
-              points="1.875 1.875 5.625 5.625 5.625 1.875 1.875 5.625 9.375 1.875 13.125 5.625 9.375 5.625 13.125 1.875 9.375 9.375 13.125 13.125 9.375 13.125 13.125 9.375 5.625 13.125 1.875 9.375 1.875 13.125 5.625 9.375 1.875 16.875 5.625 20.625 1.875 20.625 5.625 16.875 1.875 24.375 5.625 28.125 5.625 24.375 1.875 28.125 9.375 24.375 13.125 28.125 13.125 24.375 9.375 28.125 13.125 20.625 9.375 16.875 13.125 16.875 9.375 20.625 16.875 16.875 20.625 20.625 16.875 20.625 20.625 16.875 16.875 24.375 20.625 28.125 20.625 24.375 16.875 28.125 24.375 24.375 28.125 28.125 28.125 24.375 24.375 28.125 28.125 20.625 24.375 16.875 28.125 16.875 24.375 20.625 28.125 13.125 24.375 9.375 24.375 13.125 28.125 9.375 20.625 13.125 16.875 9.375 20.625 9.375 16.875 13.125 20.625 5.625 16.875 1.875 20.625 1.875 16.875 5.625 24.375 1.875 28.125 5.625 28.125 1.875 24.375 5.625"
-            />
-          </svg>
-          <strong>Loading…</strong>
-        </div>
-        <script>
-          (() => {
-            const loading = document.currentScript.previousElementSibling;
-            let animationFrame;
-            new MutationObserver(() => {
-              if (loading.hidden) window.cancelAnimationFrame(animationFrame);
-              else animationFrame = window.requestAnimationFrame(animate);
-            }).observe(loading, {
-              attributes: true,
-              attributeFilter: ["hidden"],
-            });
-            const polyline = loading.querySelector("polyline");
-            const points = polyline
-              .getAttribute("points")
-              .split(" ")
-              .map(Number);
-            function animate(time) {
-              polyline.setAttribute(
-                "points",
-                points
-                  .map(
-                    (coordinate, index) =>
-                      coordinate + Math.sin(time * 0.005 + index)
-                  )
-                  .join(" ")
-              );
-              animationFrame = window.requestAnimationFrame(animate);
-            }
-          })();
-        </script>
-      `;
-    };
-  })();
 
   function isDate(dateString: string) {
     return (
