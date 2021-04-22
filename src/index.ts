@@ -2240,17 +2240,20 @@ export default async function courselore(
     },
   ];
 
-  const courseSwitcher = (
-    req: express.Request<
-      { courseReference: string },
-      HTML,
-      {},
-      {},
-      IsEnrolledInCourseMiddlewareLocals
-    >,
-    res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
-    path = ""
-  ): HTML =>
+  interface Partials {
+    courseSwitcher: (
+      req: express.Request<
+        { courseReference: string },
+        HTML,
+        {},
+        {},
+        IsEnrolledInCourseMiddlewareLocals
+      >,
+      res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
+      path?: string
+    ) => HTML;
+  }
+  app.locals.partials.courseSwitcher = (req, res, path = "") =>
     res.locals.otherEnrollments.length === 0
       ? html``
       : html`
@@ -2346,7 +2349,7 @@ export default async function courselore(
                 >!
               </h1>
 
-              $${courseSwitcher(req, res)}
+              $${app.locals.partials.courseSwitcher(req, res)}
               $${res.locals.enrollment.role === "staff"
                 ? html`
                     <p>
@@ -2599,7 +2602,7 @@ export default async function courselore(
                 >${res.locals.course.name}</a
               >
             </h1>
-            $${courseSwitcher(req, res, "/settings")}
+            $${app.locals.partials.courseSwitcher(req, res, "/settings")}
             $${res.locals.enrollment.role !== "staff"
               ? html``
               : (() => {
@@ -3982,7 +3985,7 @@ export default async function courselore(
                   >
                 </p>
               </nav>
-              $${courseSwitcher(req, res)}
+              $${app.locals.partials.courseSwitcher(req, res)}
             </header>
             <div
               style="${css`
