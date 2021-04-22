@@ -61,15 +61,15 @@ export default async function courselore(
   interface AppLocals {
     constants: Constants;
     middlewares: Middlewares;
+    helpers: Helpers;
     layouts: Layouts;
     partials: Partials;
-    helpers: Helpers;
   }
   app.locals.constants = {} as Constants;
   app.locals.middlewares = {} as Middlewares;
+  app.locals.helpers = {} as Helpers;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
-  app.locals.helpers = {} as Helpers;
 
   interface Constants {
     roles: Role[];
