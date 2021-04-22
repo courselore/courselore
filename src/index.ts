@@ -673,9 +673,9 @@ export default async function courselore(
       req,
       res,
       html`
-        <script src="${app.locals
+        <script src="${app.locals.settings
             .url}/node_modules/validator/validator.min.js"></script>
-        <script src="${app.locals
+        <script src="${app.locals.settings
             .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
         <script>
@@ -1884,7 +1884,7 @@ export default async function courselore(
               : html`
                   <form
                     method="POST"
-                    action="${app.locals
+                    action="${app.locals.settings
                       .url}/authenticate/${newAuthenticationNonce(
                       otherUserEmail
                     )}?_method=PUT&${qs.stringify({
