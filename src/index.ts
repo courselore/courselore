@@ -1371,69 +1371,6 @@ export default async function courselore(
     },
   ];
 
-  const courseSwitcher = (
-    req: express.Request<
-      { courseReference: string },
-      HTML,
-      {},
-      {},
-      IsEnrolledInCourseMiddlewareLocals
-    >,
-    res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
-    path = ""
-  ): HTML =>
-    res.locals.otherEnrollments.length === 0
-      ? html``
-      : html`
-          <details class="dropdown">
-            <summary class="no-marker hint">
-              <p
-                style="${css`
-                  display: flex;
-                  align-items: center;
-
-                  & > * + * {
-                    margin-left: 0.3rem;
-                  }
-                `}"
-              >
-                <svg width="16" height="16">
-                  <path
-                    d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
-                  />
-                </svg>
-                <span>Switch to another course</span>
-              </p>
-            </summary>
-            <nav
-              style="${css`
-                transform: translateY(-0.5rem);
-              `}"
-            >
-              $${res.locals.otherEnrollments.map(
-                (otherEnrollment) => html`
-                  <p>
-                    <a
-                      href="${app.locals.settings.url}/courses/${otherEnrollment
-                        .course.reference}${path}"
-                      ><svg width="10" height="10">
-                        <circle
-                          cx="5"
-                          cy="5"
-                          r="5"
-                          fill="${otherEnrollment.accentColor}"
-                        />
-                      </svg>
-                      <strong>${otherEnrollment.course.name}</strong>
-                      (${otherEnrollment.role})</a
-                    >
-                  </p>
-                `
-              )}
-            </nav>
-          </details>
-        `;
-
   app.get<
     {},
     HTML,
@@ -2291,6 +2228,69 @@ export default async function courselore(
       next();
     },
   ];
+
+  const courseSwitcher = (
+    req: express.Request<
+      { courseReference: string },
+      HTML,
+      {},
+      {},
+      IsEnrolledInCourseMiddlewareLocals
+    >,
+    res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
+    path = ""
+  ): HTML =>
+    res.locals.otherEnrollments.length === 0
+      ? html``
+      : html`
+          <details class="dropdown">
+            <summary class="no-marker hint">
+              <p
+                style="${css`
+                  display: flex;
+                  align-items: center;
+
+                  & > * + * {
+                    margin-left: 0.3rem;
+                  }
+                `}"
+              >
+                <svg width="16" height="16">
+                  <path
+                    d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
+                  />
+                </svg>
+                <span>Switch to another course</span>
+              </p>
+            </summary>
+            <nav
+              style="${css`
+                transform: translateY(-0.5rem);
+              `}"
+            >
+              $${res.locals.otherEnrollments.map(
+                (otherEnrollment) => html`
+                  <p>
+                    <a
+                      href="${app.locals.settings.url}/courses/${otherEnrollment
+                        .course.reference}${path}"
+                      ><svg width="10" height="10">
+                        <circle
+                          cx="5"
+                          cy="5"
+                          r="5"
+                          fill="${otherEnrollment.accentColor}"
+                        />
+                      </svg>
+                      <strong>${otherEnrollment.course.name}</strong>
+                      (${otherEnrollment.role})</a
+                    >
+                  </p>
+                `
+              )}
+            </nav>
+          </details>
+        `;
 
   interface IsCourseStaffMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {}
