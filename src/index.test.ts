@@ -22,6 +22,8 @@ beforeEach(async () => {
     cookieJar: new toughCookie.CookieJar(undefined, {
       rejectPublicSuffixes: false,
     }),
+    // FIXME:
+    followRedirect: false,
   });
   await client.post("authenticate", {
     form: { email: "leandro@courselore.org" },
