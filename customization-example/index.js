@@ -1,6 +1,7 @@
 module.exports = (require) => {
   const path = require("path");
   const express = require("express");
+  const cookieParser = require("cookie-parser");
   const html = require("@leafac/html").default;
   const css = require("tagged-template-noop");
   const markdown = require("tagged-template-noop");
@@ -12,6 +13,7 @@ module.exports = (require) => {
   function middleware(app) {
     const router = express.Router();
 
+    router.use(cookieParser());
     router.all(
       "*",
       ...app.locals.middlewares.isAuthenticated,

@@ -1144,6 +1144,7 @@ export default async function courselore(
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
+  app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
 
   interface Settings {
@@ -1234,7 +1235,6 @@ export default async function courselore(
   }
   interface IsUnauthenticatedMiddlewareLocals {}
   app.locals.middlewares.isUnauthenticated = [
-    cookieParser(),
     (req, res, next) => {
       if (req.cookies.session === undefined) return next();
       if (
@@ -1285,7 +1285,6 @@ export default async function courselore(
     }[];
   }
   app.locals.middlewares.isAuthenticated = [
-    cookieParser(),
     (req, res, next) => {
       if (req.cookies.session === undefined) return next("route");
       const session = app.locals.database.get<{
