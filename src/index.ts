@@ -1102,10 +1102,11 @@ export default async function courselore(
   // TODO: Extract this into a library?
   interface AppLocals {
     textProcessor: (text: string) => HTML;
+    textProcessorConfiguration: unified.Processor;
   }
   app.locals.textProcessor = (text) =>
-    textProcessorConfiguration.processSync(text).toString();
-  const textProcessorConfiguration = unified()
+    app.locals.textProcessorConfiguration.processSync(text).toString();
+  app.locals.textProcessorConfiguration = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
