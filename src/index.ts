@@ -1514,7 +1514,7 @@ export default async function courselore(
         email: req.query.email,
         name: req.query.name,
       })}`;
-      sendEmail({
+      app.locals.helpers.sendEmail({
         to: req.body.email,
         subject: "Magic Authentication Link",
         body: html`
@@ -2516,15 +2516,12 @@ export default async function courselore(
       invitation: InvitationExistsMiddlewareLocals["invitation"]
     ) => void;
   }
-
-  function sendInvitationEmail(
-    invitation: InvitationExistsMiddlewareLocals["invitation"]
-  ): void {
+  app.locals.helpers.sendInvitationEmail = (invitation) => {
     assert(invitation.email !== null);
 
     const link = `${app.locals.settings.url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
 
-    sendEmail({
+    app.locals.helpers.sendEmail({
       to: invitation.email,
       subject: `Enroll in ${invitation.course.name}`,
       body: html`
@@ -2543,8 +2540,17 @@ export default async function courselore(
             `}
       `,
     });
-  }
+  };
 
+  interface Middlewares {
+    mayManageEnrollment: express.RequestHandler<
+      { courseReference: string; enrollmentReference: string },
+      any,
+      {},
+      {},
+      MayManageEnrollmentMiddlewareLocals
+    >[];
+  }
   interface MayManageEnrollmentMiddlewareLocals
     extends IsCourseStaffMiddlewareLocals {
     managedEnrollment: {
@@ -2553,14 +2559,7 @@ export default async function courselore(
       role: Role;
     };
   }
-
-  const mayManageEnrollmentMiddleware: express.RequestHandler<
-    { courseReference: string; enrollmentReference: string },
-    any,
-    {},
-    {},
-    MayManageEnrollmentMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.mayManageEnrollment = [
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       const managedEnrollment = app.locals.database.get<{
@@ -3559,7 +3558,7 @@ export default async function courselore(
               ).lastInsertRowid
             );
 
-            sendInvitationEmail({
+            app.locals.helpers.sendInvitationEmail({
               id: invitationId,
               ...invitation,
               course: res.locals.course,
@@ -3595,7 +3594,7 @@ export default async function courselore(
       if (req.body.resend === "true") {
         if (res.locals.invitation.email === null) return next("validation");
 
-        sendInvitationEmail(res.locals.invitation);
+        app.locals.helpers.sendInvitationEmail(res.locals.invitation);
       }
 
       if (req.body.role !== undefined) {
@@ -3896,7 +3895,7 @@ export default async function courselore(
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/enrollments/:enrollmentReference",
-    ...mayManageEnrollmentMiddleware,
+    ...app.locals.middlewares.mayManageEnrollment,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
         if (!app.locals.constants.roles.includes(req.body.role))
@@ -3920,7 +3919,7 @@ export default async function courselore(
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/enrollments/:enrollmentReference",
-    ...mayManageEnrollmentMiddleware,
+    ...app.locals.middlewares.mayManageEnrollment,
     (req, res) => {
       app.locals.database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
@@ -4164,7 +4163,10 @@ export default async function courselore(
       `
     );
 
-  const textEditor = (): HTML => html`
+  interface Partials {
+    textEditor: () => HTML;
+  }
+  app.locals.partials.textEditor = (): HTML => html`
     <div class="text-editor">
       <p
         style="${css`
@@ -4371,7 +4373,7 @@ export default async function courselore(
                   />
                 </label>
               </p>
-              $${textEditor()}
+              $${app.locals.partials.textEditor()}
               <p
                 style="${css`
                   text-align: right;
@@ -4447,6 +4449,15 @@ export default async function courselore(
     }
   );
 
+  interface Middlewares {
+    isThreadAccessible: express.RequestHandler<
+      { courseReference: string; threadReference: string },
+      HTML,
+      {},
+      {},
+      IsThreadAccessibleMiddlewareLocals
+    >[];
+  }
   interface IsThreadAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
     thread: IsEnrolledInCourseMiddlewareLocals["threads"][number];
@@ -4463,14 +4474,7 @@ export default async function courselore(
       }[];
     }[];
   }
-
-  const isThreadAccessibleMiddleware: express.RequestHandler<
-    { courseReference: string; threadReference: string },
-    HTML,
-    {},
-    {},
-    IsThreadAccessibleMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isThreadAccessible = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       const thread = res.locals.threads.find(
@@ -4579,7 +4583,19 @@ export default async function courselore(
     },
   ];
 
-  const mayEditThread = (
+  interface Helpers {
+    mayEditThread: (
+      req: express.Request<
+        { courseReference: string; threadReference: string },
+        any,
+        {},
+        {},
+        IsThreadAccessibleMiddlewareLocals
+      >,
+      res: express.Response<any, IsThreadAccessibleMiddlewareLocals>
+    ) => boolean;
+  }
+  app.locals.helpers.mayEditThread = (
     req: express.Request<
       { courseReference: string; threadReference: string },
       any,
@@ -4592,19 +4608,25 @@ export default async function courselore(
     res.locals.enrollment.role === "staff" ||
     res.locals.thread.authorEnrollment.id === res.locals.enrollment.id;
 
+  interface Middlewares {
+    postExists: express.RequestHandler<
+      {
+        courseReference: string;
+        threadReference: string;
+        postReference: string;
+      },
+      any,
+      {},
+      {},
+      PostExistsMiddlewareLocals
+    >[];
+  }
   interface PostExistsMiddlewareLocals
     extends IsThreadAccessibleMiddlewareLocals {
     post: IsThreadAccessibleMiddlewareLocals["posts"][number];
   }
-
-  const postExistsMiddleware: express.RequestHandler<
-    { courseReference: string; threadReference: string; postReference: string },
-    any,
-    {},
-    {},
-    PostExistsMiddlewareLocals
-  >[] = [
-    ...isThreadAccessibleMiddleware,
+  app.locals.middlewares.postExists = [
+    ...app.locals.middlewares.isThreadAccessible,
     (req, res, next) => {
       const post = res.locals.posts.find(
         (post) => post.reference === req.params.postReference
@@ -4615,32 +4637,42 @@ export default async function courselore(
     },
   ];
 
-  const mayEditPost = (
-    req: express.Request<
-      { courseReference: string; threadReference: string },
-      any,
-      {},
-      {},
-      IsThreadAccessibleMiddlewareLocals
-    >,
-    res: express.Response<any, IsThreadAccessibleMiddlewareLocals>,
-    post: PostExistsMiddlewareLocals["post"]
-  ): boolean =>
+  interface Helpers {
+    mayEditPost: (
+      req: express.Request<
+        { courseReference: string; threadReference: string },
+        any,
+        {},
+        {},
+        IsThreadAccessibleMiddlewareLocals
+      >,
+      res: express.Response<any, IsThreadAccessibleMiddlewareLocals>,
+      post: PostExistsMiddlewareLocals["post"]
+    ) => boolean;
+  }
+  app.locals.helpers.mayEditPost = (req, res, post) =>
     res.locals.enrollment.role === "staff" ||
     post.authorEnrollment.id === res.locals.enrollment.id;
 
+  interface Middlewares {
+    mayEditPost: express.RequestHandler<
+      {
+        courseReference: string;
+        threadReference: string;
+        postReference: string;
+      },
+      any,
+      {},
+      {},
+      MayEditPostMiddlewareLocals
+    >[];
+  }
   interface MayEditPostMiddlewareLocals extends PostExistsMiddlewareLocals {}
-
-  const mayEditPostMiddleware: express.RequestHandler<
-    { courseReference: string; threadReference: string; postReference: string },
-    any,
-    {},
-    {},
-    MayEditPostMiddlewareLocals
-  >[] = [
-    ...postExistsMiddleware,
+  app.locals.middlewares.mayEditPost = [
+    ...app.locals.middlewares.postExists,
     (req, res, next) => {
-      if (mayEditPost(req, res, res.locals.post)) return next();
+      if (app.locals.helpers.mayEditPost(req, res, res.locals.post))
+        return next();
       next("route");
     },
   ];
@@ -4653,7 +4685,7 @@ export default async function courselore(
     IsThreadAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference",
-    ...isThreadAccessibleMiddleware,
+    ...app.locals.middlewares.isThreadAccessible,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
@@ -4696,7 +4728,7 @@ export default async function courselore(
                     >
                   </h1>
 
-                  $${mayEditThread(req, res)
+                  $${app.locals.helpers.mayEditThread(req, res)
                     ? html`
                         <p>
                           <button
@@ -4766,7 +4798,7 @@ export default async function courselore(
                     : html``}
                 </div>
 
-                $${mayEditThread(req, res)
+                $${app.locals.helpers.mayEditThread(req, res)
                   ? html`
                       <form
                         method="POST"
@@ -4902,7 +4934,7 @@ export default async function courselore(
                         </button>
                       </p>
 
-                      $${mayEditPost(req, res, post)
+                      $${app.locals.helpers.mayEditPost(req, res, post)
                         ? html`
                             <p>
                               <button
@@ -5056,7 +5088,7 @@ export default async function courselore(
                       </form>
                     </div>
 
-                    $${mayEditPost(req, res, post)
+                    $${app.locals.helpers.mayEditPost(req, res, post)
                       ? html`
                           <form
                             method="POST"
@@ -5067,7 +5099,7 @@ export default async function courselore(
                             hidden
                             class="edit"
                           >
-                            $${textEditor()}
+                            $${app.locals.partials.textEditor()}
                             <p
                               style="${css`
                                 text-align: right;
@@ -5117,7 +5149,7 @@ export default async function courselore(
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/threads/${res.locals.thread.reference}/posts"
             >
-              $${textEditor()}
+              $${app.locals.partials.textEditor()}
               <p
                 style="${css`
                   text-align: right;
@@ -5140,9 +5172,9 @@ export default async function courselore(
     IsThreadAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference",
-    ...isThreadAccessibleMiddleware,
+    ...app.locals.middlewares.isThreadAccessible,
     (req, res, next) => {
-      if (!mayEditThread(req, res)) return next();
+      if (!app.locals.helpers.mayEditThread(req, res)) return next();
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
         else
@@ -5170,7 +5202,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/threads/:threadReference",
     ...app.locals.middlewares.isCourseStaff,
-    ...isThreadAccessibleMiddleware,
+    ...app.locals.middlewares.isThreadAccessible,
     (req, res) => {
       app.locals.database.run(
         sql`DELETE FROM "threads" WHERE "id" = ${res.locals.thread.id}`
@@ -5195,7 +5227,7 @@ export default async function courselore(
     IsThreadAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference/posts",
-    ...isThreadAccessibleMiddleware,
+    ...app.locals.middlewares.isThreadAccessible,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -5241,7 +5273,7 @@ export default async function courselore(
     MayEditPostMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
-    ...mayEditPostMiddleware,
+    ...app.locals.middlewares.mayEditPost,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -5278,7 +5310,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
     ...app.locals.middlewares.isCourseStaff,
-    ...postExistsMiddleware,
+    ...app.locals.middlewares.postExists,
     (req, res, next) => {
       if (res.locals.post.reference === "1") return next("validation");
 
@@ -5305,7 +5337,7 @@ export default async function courselore(
     PostExistsMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference/likes",
-    ...postExistsMiddleware,
+    ...app.locals.middlewares.postExists,
     (req, res, next) => {
       if (
         res.locals.post.likes.find(
@@ -5337,7 +5369,7 @@ export default async function courselore(
     PostExistsMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference/likes",
-    ...postExistsMiddleware,
+    ...app.locals.middlewares.postExists,
     (req, res, next) => {
       const like = res.locals.post.likes.find(
         (like) => like.enrollment.id === res.locals.enrollment.id
@@ -5357,20 +5389,23 @@ export default async function courselore(
     }
   );
 
-  function sendEmail({
-    to,
-    subject,
-    body,
-  }: {
-    to: string;
-    subject: string;
-    body: string;
-  }): void {
+  interface Helpers {
+    sendEmail: ({
+      to,
+      subject,
+      body,
+    }: {
+      to: string;
+      subject: string;
+      body: string;
+    }) => void;
+  }
+  app.locals.helpers.sendEmail = ({ to, subject, body }) => {
     app.locals.database.run(
       sql`INSERT INTO "emailsQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
     );
     // TODO: The worker that sends emails on non-demonstration mode. Kick the worker to wake up from here (as well as periodically just in case…)
-  }
+  };
 
   app.get<{}, HTML, {}, {}, {}>("/demonstration-inbox", (req, res, next) => {
     if (!app.locals.settings.demonstration) return next();
