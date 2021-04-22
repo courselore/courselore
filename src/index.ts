@@ -937,7 +937,10 @@ export default async function courselore(
     );
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  const eventSources = new Set<express.Response<any, Record<string, any>>>();
+  interface AppLocals {
+    eventSources: Set<express.Response<any, Record<string, any>>>;
+  }
+  app.locals.eventSources = new Set();
 
   interface Middlewares {
     eventSource: express.RequestHandler<
@@ -957,9 +960,9 @@ export default async function courselore(
         res.locals.eventSource = true;
         return next();
       }
-      eventSources.add(res);
+      app.locals.eventSources.add(res);
       res.on("close", () => {
-        eventSources.delete(res);
+        app.locals.eventSources.delete(res);
       });
       res.type("text/event-stream").write("");
     },
@@ -4319,7 +4322,7 @@ export default async function courselore(
         `
       );
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
@@ -5030,7 +5033,7 @@ export default async function courselore(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.thread.id}`
           );
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
@@ -5056,7 +5059,7 @@ export default async function courselore(
         sql`DELETE FROM "threads" WHERE "id" = ${res.locals.thread.id}`
       );
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
@@ -5100,7 +5103,7 @@ export default async function courselore(
         `
       );
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
@@ -5136,7 +5139,7 @@ export default async function courselore(
         `
       );
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
@@ -5164,7 +5167,7 @@ export default async function courselore(
         sql`DELETE FROM "posts" WHERE "id" = ${res.locals.post.id}`
       );
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
@@ -5196,7 +5199,7 @@ export default async function courselore(
         sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.post.id}, ${res.locals.enrollment.id})`
       );
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
@@ -5224,7 +5227,7 @@ export default async function courselore(
 
       app.locals.database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
 
-      for (const eventSource of [...eventSources].filter(
+      for (const eventSource of [...app.locals.eventSources].filter(
         (eventSource) => eventSource.locals.course?.id === res.locals.course.id
       ))
         eventSource.write(`event: refresh\ndata:\n\n`);
