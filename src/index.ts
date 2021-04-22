@@ -2390,6 +2390,15 @@ export default async function courselore(
     }
   );
 
+  interface Middlewares {
+    invitationExists: express.RequestHandler<
+      { courseReference: string; invitationReference: string },
+      any,
+      {},
+      {},
+      InvitationExistsMiddlewareLocals
+    >[];
+  }
   interface InvitationExistsMiddlewareLocals {
     invitation: {
       id: number;
@@ -2406,14 +2415,7 @@ export default async function courselore(
       role: Role;
     };
   }
-
-  const invitationExistsMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    InvitationExistsMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.invitationExists = [
     (req, res, next) => {
       const invitation = app.locals.database.get<{
         id: number;
@@ -2463,33 +2465,37 @@ export default async function courselore(
     },
   ];
 
+  interface Middlewares {
+    mayManageInvitation: express.RequestHandler<
+      { courseReference: string; invitationReference: string },
+      any,
+      {},
+      {},
+      MayManageInvitationMiddlewareLocals
+    >[];
+  }
   interface MayManageInvitationMiddlewareLocals
     extends IsCourseStaffMiddlewareLocals,
       InvitationExistsMiddlewareLocals {}
-
-  const mayManageInvitationMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    MayManageInvitationMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.mayManageInvitation = [
     ...app.locals.middlewares.isCourseStaff,
-    ...invitationExistsMiddleware,
+    ...app.locals.middlewares.invitationExists,
   ];
 
+  interface Middlewares {
+    isInvitationUsable: express.RequestHandler<
+      { courseReference: string; invitationReference: string },
+      any,
+      {},
+      {},
+      IsInvitationUsableMiddlewareLocals
+    >[];
+  }
   interface IsInvitationUsableMiddlewareLocals
     extends InvitationExistsMiddlewareLocals,
       Partial<IsAuthenticatedMiddlewareLocals> {}
-
-  const isInvitationUsableMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    IsInvitationUsableMiddlewareLocals
-  >[] = [
-    ...invitationExistsMiddleware,
+  app.locals.middlewares.isInvitationUsable = [
+    ...app.locals.middlewares.invitationExists,
     (req, res, next) => {
       if (
         res.locals.invitation.usedAt !== null ||
@@ -2503,6 +2509,11 @@ export default async function courselore(
     },
   ];
 
+  interface Helpers {
+    sendInvitationEmail(
+      invitation: InvitationExistsMiddlewareLocals["invitation"]
+    ): void;
+  }
   function sendInvitationEmail(
     invitation: InvitationExistsMiddlewareLocals["invitation"]
   ): void {
@@ -3574,7 +3585,7 @@ export default async function courselore(
     MayManageInvitationMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...mayManageInvitationMiddleware,
+    ...app.locals.middlewares.mayManageInvitation,
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("validation");
 
@@ -3630,7 +3641,7 @@ export default async function courselore(
     MayManageInvitationMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...mayManageInvitationMiddleware,
+    ...app.locals.middlewares.mayManageInvitation,
     asyncHandler(async (req, res, next) => {
       if (
         res.locals.invitation.email !== null ||
@@ -3720,7 +3731,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
         app.locals.layouts.main(
@@ -3755,7 +3766,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isAuthenticated,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
         app.locals.layouts.main(
@@ -3791,7 +3802,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isAuthenticated,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       app.locals.database.run(
         sql`
@@ -3829,7 +3840,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isUnauthenticated,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
         app.locals.layouts.main(
