@@ -569,11 +569,10 @@ export default async function courselore(
                 display: none !important;
               }
 
-              /* FIXME: Try ‘.full-width.full-width’ instead of ‘!important’ */
-              .full-width {
-                box-sizing: border-box !important;
-                width: 100% !important;
-                display: block !important;
+              .full-width.full-width {
+                box-sizing: border-box;
+                width: 100%;
+                display: block;
               }
 
               .hint {
