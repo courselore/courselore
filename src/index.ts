@@ -1144,9 +1144,6 @@ export default async function courselore(
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
-  app.use(cookieParser());
-  app.use(express.urlencoded({ extended: true }));
-
   interface Settings {
     cookieOptions: () => express.CookieOptions;
   }
@@ -1160,6 +1157,8 @@ export default async function courselore(
       sameSite: true,
     };
   };
+  app.use(cookieParser());
+  app.use(express.urlencoded({ extended: true }));
 
   function newAuthenticationNonce(email: string): string {
     app.locals.database.run(
