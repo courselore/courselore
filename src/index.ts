@@ -932,7 +932,6 @@ export default async function courselore(
     );
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  // FIXME: A browser exception is thrown when the eventSource isn’t necessary. Is this an issue?
   const eventSources = new Set<express.Response<any, Record<string, any>>>();
 
   interface Middlewares {
