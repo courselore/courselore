@@ -46,11 +46,12 @@ export default async function courselore(
   const app = express() as App;
 
   interface AppLocals {
-    settings: {
-      url: string;
-      administrator: string;
-      demonstration: boolean;
-    };
+    settings: Settings;
+  }
+  interface Settings {
+    url: string;
+    administrator: string;
+    demonstration: boolean;
   }
   app.locals.settings.url = "http://localhost:4000";
   app.locals.settings.administrator =
