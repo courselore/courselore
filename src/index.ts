@@ -51,12 +51,14 @@ export default async function courselore(
     demonstration: boolean;
     middlewares: Middlewares;
     layouts: Layouts;
+    partials: Partials;
   }
   app.locals.url = "http://localhost:4000";
   app.locals.administrator = "mailto:demonstration-development@courselore.org";
   app.locals.demonstration = true;
   app.locals.middlewares = {} as Middlewares;
   app.locals.layouts = {} as Layouts;
+  app.locals.partials = {} as Partials;
 
   type Role = typeof ROLES[number];
   const ROLES = ["student", "staff"] as const;
@@ -924,7 +926,7 @@ export default async function courselore(
               margin: 0 auto;
             `}"
           >
-            <header>$${logoAndMenu(req, res)}</header>
+            <header>$${app.locals.partials.logoAndMenu(req, res)}</header>
             <main>$${body}</main>
           </div>
         </div>
@@ -960,16 +962,19 @@ export default async function courselore(
     },
   ];
 
-  const logoAndMenu = (
-    req: express.Request<
-      {},
-      HTML,
-      {},
-      {},
-      Partial<IsEnrolledInCourseMiddlewareLocals>
-    >,
-    res: express.Response<HTML, Partial<IsEnrolledInCourseMiddlewareLocals>>
-  ): HTML => html`
+  interface Partials {
+    logoAndMenu: (
+      req: express.Request<
+        {},
+        HTML,
+        {},
+        {},
+        Partial<IsEnrolledInCourseMiddlewareLocals>
+      >,
+      res: express.Response<HTML, Partial<IsEnrolledInCourseMiddlewareLocals>>
+    ) => HTML;
+  }
+  app.locals.partials.logoAndMenu = (req, res) => html`
     <div
       style="${css`
         display: flex;
@@ -991,7 +996,21 @@ export default async function courselore(
             }
           `}"
         >
-          $${logo}
+          <svg width="30" height="30">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#83769c" />
+                <stop offset="100%" stop-color="#ff77a8" />
+              </linearGradient>
+            </defs>
+            <polyline
+              stroke="url(#gradient)"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+              points="1.875 1.875 5.625 5.625 5.625 1.875 1.875 5.625 9.375 1.875 13.125 5.625 9.375 5.625 13.125 1.875 9.375 9.375 13.125 13.125 9.375 13.125 13.125 9.375 5.625 13.125 1.875 9.375 1.875 13.125 5.625 9.375 1.875 16.875 5.625 20.625 1.875 20.625 5.625 16.875 1.875 24.375 5.625 28.125 5.625 24.375 1.875 28.125 9.375 24.375 13.125 28.125 13.125 24.375 9.375 28.125 13.125 20.625 9.375 16.875 13.125 16.875 9.375 20.625 16.875 16.875 20.625 20.625 16.875 20.625 20.625 16.875 16.875 24.375 20.625 28.125 20.625 24.375 16.875 28.125 24.375 24.375 28.125 28.125 28.125 24.375 24.375 28.125 28.125 20.625 24.375 16.875 28.125 16.875 24.375 20.625 28.125 13.125 24.375 9.375 24.375 13.125 28.125 9.375 20.625 13.125 16.875 9.375 20.625 9.375 16.875 13.125 20.625 5.625 16.875 1.875 20.625 1.875 16.875 5.625 24.375 1.875 28.125 5.625 28.125 1.875 24.375 5.625"
+            />
+          </svg>
           <span>CourseLore</span>
         </a>
         <script>
@@ -1071,11 +1090,6 @@ export default async function courselore(
           `}
     </div>
   `;
-
-  const logo = await fs.readFile(
-    path.join(__dirname, "../public/logo.svg"),
-    "utf-8"
-  );
 
   // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
   // TODO: Extract this into a library?
@@ -3893,7 +3907,7 @@ export default async function courselore(
                 padding: 0 1rem;
               `}"
             >
-              $${logoAndMenu(req, res)}
+              $${app.locals.partials.logoAndMenu(req, res)}
               <nav>
                 <p
                   style="${css`
@@ -5381,9 +5395,15 @@ export default async function courselore(
             }
           `}"
         >
-          $${logo
-            .replace(`id="gradient"`, `id="${id}"`)
-            .replace("#gradient", `#${id}`)}
+          <svg width="30" height="30">
+            <polyline
+              stroke="url(#gradient)"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+              points="1.875 1.875 5.625 5.625 5.625 1.875 1.875 5.625 9.375 1.875 13.125 5.625 9.375 5.625 13.125 1.875 9.375 9.375 13.125 13.125 9.375 13.125 13.125 9.375 5.625 13.125 1.875 9.375 1.875 13.125 5.625 9.375 1.875 16.875 5.625 20.625 1.875 20.625 5.625 16.875 1.875 24.375 5.625 28.125 5.625 24.375 1.875 28.125 9.375 24.375 13.125 28.125 13.125 24.375 9.375 28.125 13.125 20.625 9.375 16.875 13.125 16.875 9.375 20.625 16.875 16.875 20.625 20.625 16.875 20.625 20.625 16.875 16.875 24.375 20.625 28.125 20.625 24.375 16.875 28.125 24.375 24.375 28.125 28.125 28.125 24.375 24.375 28.125 28.125 20.625 24.375 16.875 28.125 16.875 24.375 20.625 28.125 13.125 24.375 9.375 24.375 13.125 28.125 9.375 20.625 13.125 16.875 9.375 20.625 9.375 16.875 13.125 20.625 5.625 16.875 1.875 20.625 1.875 16.875 5.625 24.375 1.875 28.125 5.625 28.125 1.875 24.375 5.625"
+            />
+          </svg>
           <strong>Loading…</strong>
         </div>
         <script>
