@@ -1097,9 +1097,15 @@ export default async function courselore(
     </div>
   `;
 
+  // TODO: Would making this async speed things up in any way?
   // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
   // TODO: Extract this into a library?
-  const textProcessor = unified()
+  interface AppLocals {
+    textProcessor: (text: string) => HTML;
+  }
+  app.locals.textProcessor = (text) =>
+    textProcessorConfiguration.processSync(text).toString();
+  const textProcessorConfiguration = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
@@ -1126,12 +1132,6 @@ export default async function courselore(
     })
     .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
     .use(rehypeStringify);
-  interface AppLocals {
-    textProcessor: (text: string) => HTML;
-  }
-  // FIXME: Would making this async speed things up in any way?
-  app.locals.textProcessor = (text) =>
-    textProcessor.processSync(text).toString();
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
