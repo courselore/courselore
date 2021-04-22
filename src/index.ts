@@ -63,13 +63,13 @@ export default async function courselore(
     middlewares: Middlewares;
     layouts: Layouts;
     partials: Partials;
-    // helpers: Helpers;
+    helpers: Helpers;
   }
   app.locals.constants = {} as Constants;
   app.locals.middlewares = {} as Middlewares;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
-  // app.locals.helpers = {} as Helpers;
+  app.locals.helpers = {} as Helpers;
 
   interface Constants {
     roles: Role[];
@@ -1160,7 +1160,13 @@ export default async function courselore(
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
 
-  function newAuthenticationNonce(email: string): string {
+  interface Helpers {
+    authenticationNonce: {
+      new: (email: string) => string;
+      verify: (nonce: string) => string | undefined;
+    };
+  }
+  app.locals.helpers.authenticationNonce.new = (email) => {
     app.locals.database.run(
       sql`DELETE FROM "authenticationNonces" WHERE "email" = ${email}`
     );
@@ -1174,9 +1180,9 @@ export default async function courselore(
       `
     );
     return nonce;
-  }
+  };
 
-  function verifyAuthenticationNonce(nonce: string): string | undefined {
+  app.locals.helpers.authenticationNonce.verify = (nonce) => {
     const authenticationNonce = app.locals.database.get<{
       email: string;
     }>(
@@ -1191,7 +1197,7 @@ export default async function courselore(
       sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
     );
     return authenticationNonce?.email;
-  }
+  };
 
   function openSession(
     req: express.Request<{}, any, {}, {}, {}>,
@@ -1554,7 +1560,9 @@ export default async function courselore(
 
       const magicAuthenticationLink = `${
         app.locals.settings.url
-      }/authenticate/${newAuthenticationNonce(req.body.email)}?${qs.stringify({
+      }/authenticate/${app.locals.helpers.authenticationNonce.new(
+        req.body.email
+      )}?${qs.stringify({
         redirect: req.query.redirect,
         email: req.query.email,
         name: req.query.name,
@@ -1622,7 +1630,9 @@ export default async function courselore(
     "/authenticate/:nonce",
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
-      const email = verifyAuthenticationNonce(req.params.nonce);
+      const email = app.locals.helpers.authenticationNonce.verify(
+        req.params.nonce
+      );
       if (email === undefined)
         return res.send(
           app.locals.layouts.main(
@@ -1686,7 +1696,7 @@ export default async function courselore(
                   <input
                     type="hidden"
                     name="nonce"
-                    value="${newAuthenticationNonce(email)}"
+                    value="${app.locals.helpers.authenticationNonce.new(email)}"
                   />
                   <p>
                     <label>
@@ -1738,7 +1748,7 @@ export default async function courselore(
     )
       return next("validation");
 
-    const email = verifyAuthenticationNonce(req.body.nonce);
+    const email = app.locals.helpers.authenticationNonce.verify(req.body.nonce);
     if (
       email === undefined ||
       app.locals.database.get<{ exists: number }>(
@@ -1799,7 +1809,9 @@ export default async function courselore(
     "/authenticate/:nonce",
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
-      const otherUserEmail = verifyAuthenticationNonce(req.params.nonce);
+      const otherUserEmail = app.locals.helpers.authenticationNonce.verify(
+        req.params.nonce
+      );
       const isSelf = otherUserEmail === res.locals.user.email;
       const otherUser =
         otherUserEmail === undefined || isSelf
@@ -1848,7 +1860,7 @@ export default async function courselore(
                   <form
                     method="POST"
                     action="${app.locals.settings
-                      .url}/authenticate/${newAuthenticationNonce(
+                      .url}/authenticate/${app.locals.helpers.authenticationNonce.new(
                       otherUserEmail
                     )}?_method=PUT&${qs.stringify({
                       redirect: req.query.redirect,
