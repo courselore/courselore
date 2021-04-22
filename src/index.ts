@@ -1084,7 +1084,7 @@ export default async function courselore(
                   action="${app.locals.settings
                     .url}/authenticate?_method=DELETE"
                 >
-                  <p><button>Sign Out</button></p>
+                  <p><button class="full-width">Sign Out</button></p>
                 </form>
                 <p>
                   <a href="${app.locals.settings.url}/settings"
