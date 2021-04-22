@@ -117,7 +117,7 @@ export default async function courselore(
     id: null,
     user: { id: null, email: null, name: "Anonymous" },
     role: null,
-  } as const;
+  };
 
   interface AppLocals {
     database: Database;
