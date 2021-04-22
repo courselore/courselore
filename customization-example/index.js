@@ -191,7 +191,7 @@ module.exports = (require) => {
                   }
                 `}"
               >
-                $${app.locals.textProcessor(
+                $${app.locals.partials.textProcessor(
                   // prettier-ignore
                   markdown`
 # What Will CourseLore Be?
