@@ -21,7 +21,7 @@ module.exports = async (require) => {
   reverseProxy.use(customization(app));
   reverseProxy.use(app);
 
-  reverseProxy.listen(new URL(app.locals.url).port, () => {
-    console.log(`Server started at ${app.locals.url}`);
+  reverseProxy.listen(new URL(app.locals.settings.url).port, () => {
+    console.log(`Server started at ${app.locals.settings.url}`);
   });
 };

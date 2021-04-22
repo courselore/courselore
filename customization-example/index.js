@@ -257,7 +257,7 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
 
 # I’m Interested! How Do I Participate?
 
-**Try our [super-early development demos](${app.locals.url}/authenticate)!**
+**Try our [super-early development demos](${app.locals.settings.url}/authenticate)!**
 
 **Educators & Students:** We want to hear [your feedback](mailto:feedback@courselore.com).
 
