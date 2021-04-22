@@ -2306,16 +2306,18 @@ export default async function courselore(
           </details>
         `;
 
+  interface Middlewares {
+    isCourseStaff: express.RequestHandler<
+      { courseReference: string },
+      any,
+      {},
+      {},
+      IsCourseStaffMiddlewareLocals
+    >[];
+  }
   interface IsCourseStaffMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {}
-
-  const isCourseStaffMiddleware: express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    IsCourseStaffMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isCourseStaff = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (res.locals.enrollment.role === "staff") return next();
@@ -2471,7 +2473,10 @@ export default async function courselore(
     {},
     {},
     MayManageInvitationMiddlewareLocals
-  >[] = [...isCourseStaffMiddleware, ...invitationExistsMiddleware];
+  >[] = [
+    ...app.locals.middlewares.isCourseStaff,
+    ...invitationExistsMiddleware,
+  ];
 
   interface IsInvitationUsableMiddlewareLocals
     extends InvitationExistsMiddlewareLocals,
@@ -2542,7 +2547,7 @@ export default async function courselore(
     {},
     MayManageEnrollmentMiddlewareLocals
   >[] = [
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       const managedEnrollment = app.locals.database.get<{
         id: number;
@@ -3427,7 +3432,7 @@ export default async function courselore(
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/invitations",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
@@ -5150,7 +5155,7 @@ export default async function courselore(
     IsCourseStaffMiddlewareLocals & IsThreadAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     ...isThreadAccessibleMiddleware,
     (req, res) => {
       app.locals.database.run(
@@ -5258,7 +5263,7 @@ export default async function courselore(
     IsCourseStaffMiddlewareLocals & PostExistsMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     ...postExistsMiddleware,
     (req, res, next) => {
       if (res.locals.post.reference === "1") return next("validation");
