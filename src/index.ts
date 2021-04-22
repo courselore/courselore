@@ -1142,44 +1142,6 @@ export default async function courselore(
     </div>
   `;
 
-  // TODO: Would making this async speed things up in any way?
-  // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
-  // TODO: Extract this into a library?
-  interface Partials {
-    textProcessor: (text: string) => HTML;
-  }
-  app.locals.partials.textProcessor = await (async () => {
-    const textProcessor = unified()
-      .use(remarkParse)
-      .use(remarkGfm)
-      .use(remarkMath)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(
-        rehypeSanitize,
-        deepMerge<hastUtilSanitize.Schema>(
-          require("hast-util-sanitize/lib/github.json"),
-          {
-            attributes: {
-              code: ["className"],
-              span: [["className", "math-inline"]],
-              div: [["className", "math-display"]],
-            },
-          }
-        )
-      )
-      .use(rehypeShiki, {
-        highlighter: {
-          light: await shiki.getHighlighter({ theme: "light-plus" }),
-          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
-        },
-      })
-      .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
-      .use(rehypeStringify);
-
-    return (text: string) => textProcessor.processSync(text).toString();
-  })();
-
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
   app.use(express.urlencoded({ extended: true }));
@@ -4268,6 +4230,44 @@ export default async function courselore(
       <div class="preview" hidden></div>
     </div>
   `;
+
+  // TODO: Would making this async speed things up in any way?
+  // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
+  // TODO: Extract this into a library?
+  interface Partials {
+    textProcessor: (text: string) => HTML;
+  }
+  app.locals.partials.textProcessor = await (async () => {
+    const textProcessor = unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkMath)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(
+        rehypeSanitize,
+        deepMerge<hastUtilSanitize.Schema>(
+          require("hast-util-sanitize/lib/github.json"),
+          {
+            attributes: {
+              code: ["className"],
+              span: [["className", "math-inline"]],
+              div: [["className", "math-display"]],
+            },
+          }
+        )
+      )
+      .use(rehypeShiki, {
+        highlighter: {
+          light: await shiki.getHighlighter({ theme: "light-plus" }),
+          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+        },
+      })
+      .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
+      .use(rehypeStringify);
+
+    return (text: string) => textProcessor.processSync(text).toString();
+  })();
 
   app.post<{}, any, { content?: string }, {}, IsAuthenticatedMiddlewareLocals>(
     "/preview",
