@@ -67,8 +67,21 @@ export default async function courselore(
   app.locals.roles = ["student", "staff"];
 
   // https://pico-8.fandom.com/wiki/Palette
-  type AccentColor = typeof ACCENT_COLORS[number];
-  const ACCENT_COLORS = [
+  type AccentColor =
+    | "#83769c"
+    | "#ff77a8"
+    | "#29adff"
+    | "#ffa300"
+    | "#ff004d"
+    | "#7e2553"
+    | "#008751"
+    | "#ab5236"
+    | "#1d2b53"
+    | "#5f574f";
+  interface AppLocals {
+    accentColors: AccentColor[];
+  }
+  app.locals.accentColors = [
     "#83769c",
     "#ff77a8",
     "#29adff",
@@ -79,10 +92,17 @@ export default async function courselore(
     "#ab5236",
     "#1d2b53",
     "#5f574f",
-  ] as const;
+  ];
 
-  type AnonymousEnrollment = typeof ANONYMOUS_ENROLLMENT;
-  const ANONYMOUS_ENROLLMENT = {
+  interface AnonymousEnrollment {
+    id: null;
+    user: { id: null; email: null; name: "Anonymous" };
+    role: null;
+  }
+  interface AppLocals {
+    anonymousEnrollment: AnonymousEnrollment;
+  }
+  app.locals.anonymousEnrollment = {
     id: null,
     user: { id: null, email: null, name: "Anonymous" },
     role: null,
@@ -2125,7 +2145,7 @@ export default async function courselore(
     const accentColorsInUse = new Set<AccentColor>(
       enrollments.map((enrollment) => enrollment.accentColor)
     );
-    let accentColorsAvailable = new Set<AccentColor>(ACCENT_COLORS);
+    let accentColorsAvailable = new Set<AccentColor>(app.locals.accentColors);
     for (const accentColorInUse of accentColorsInUse) {
       accentColorsAvailable.delete(accentColorInUse);
       if (accentColorsAvailable.size === 1) break;
@@ -2257,7 +2277,7 @@ export default async function courselore(
                     },
                     role: firstPost.authorEnrollmentRole,
                   }
-                : ANONYMOUS_ENROLLMENT,
+                : app.locals.anonymousEnrollment,
             postsCount,
             likesCount: firstPost.likesCount,
           };
@@ -3286,7 +3306,7 @@ export default async function courselore(
                 margin-top: -1rem;
               `}"
             >
-              $${ACCENT_COLORS.map(
+              $${app.locals.accentColors.map(
                 (accentColor) =>
                   html`
                     <form
@@ -3360,7 +3380,7 @@ export default async function courselore(
       }
 
       if (typeof req.body.accentColor === "string") {
-        if (!ACCENT_COLORS.includes(req.body.accentColor))
+        if (!app.locals.accentColors.includes(req.body.accentColor))
           return next("validation");
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
@@ -4427,7 +4447,7 @@ export default async function courselore(
                   },
                   role: post.authorEnrollmentRole,
                 }
-              : ANONYMOUS_ENROLLMENT,
+              : app.locals.anonymousEnrollment,
           content: post.content,
           // FIXME: Try to get rid of this n+1 query.
           likes: app.locals.database
@@ -4469,7 +4489,7 @@ export default async function courselore(
                       },
                       role: like.enrollmentRole,
                     }
-                  : ANONYMOUS_ENROLLMENT,
+                  : app.locals.anonymousEnrollment,
             })),
         }));
 
