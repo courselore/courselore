@@ -2104,6 +2104,16 @@ export default async function courselore(
     return [...accentColorsAvailable][0];
   };
 
+  // FIXME: Create another middleware that loads threads, because this middleware is also used in pages like /settings, which don’t need threads.
+  interface Middlewares {
+    isEnrolledInCourse: express.RequestHandler<
+      { courseReference: string },
+      any,
+      {},
+      {},
+      IsEnrolledInCourseMiddlewareLocals
+    >[];
+  }
   interface IsEnrolledInCourseMiddlewareLocals
     extends IsAuthenticatedMiddlewareLocals {
     course: IsAuthenticatedMiddlewareLocals["enrollments"][number]["course"];
@@ -2127,15 +2137,7 @@ export default async function courselore(
       likesCount: number;
     }[];
   }
-
-  // FIXME: Create another middleware that loads threads, because this middleware is also used in pages like /settings, which don’t need threads.
-  const isEnrolledInCourseMiddleware: express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isEnrolledInCourse = [
     ...app.locals.middlewares.isAuthenticated,
     (req, res, next) => {
       res.locals.otherEnrollments = [];
@@ -2311,7 +2313,7 @@ export default async function courselore(
     {},
     IsCourseStaffMiddlewareLocals
   >[] = [
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (res.locals.enrollment.role === "staff") return next();
       next("route");
@@ -2326,7 +2328,7 @@ export default async function courselore(
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       if (res.locals.threads.length === 0)
         return res.send(
@@ -2577,7 +2579,7 @@ export default async function courselore(
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
         app.locals.layouts.main(
@@ -3383,7 +3385,7 @@ export default async function courselore(
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
         typeof req.body.name === "string" &&
@@ -3709,7 +3711,7 @@ export default async function courselore(
     IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
@@ -4314,7 +4316,7 @@ export default async function courselore(
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/threads/new",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
@@ -4370,7 +4372,7 @@ export default async function courselore(
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/threads",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
         typeof req.body.title !== "string" ||
@@ -4447,7 +4449,7 @@ export default async function courselore(
     {},
     IsThreadAccessibleMiddlewareLocals
   >[] = [
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       const thread = res.locals.threads.find(
         (thread) => thread.reference === req.params.threadReference
