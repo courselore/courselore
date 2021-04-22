@@ -1138,7 +1138,10 @@ export default async function courselore(
   app.use(methodOverride("_method"));
   app.use(express.urlencoded({ extended: true }));
 
-  const cookieOptions = (): express.CookieOptions => {
+  interface AppLocals {
+    cookieOptions: () => express.CookieOptions;
+  }
+  app.locals.cookieOptions = () => {
     const url = new URL(app.locals.url);
     return {
       domain: url.hostname,
@@ -1196,7 +1199,10 @@ export default async function courselore(
         VALUES (${expiresAt.toISOString()}, ${token}, ${userId})
       `
     );
-    res.cookie("session", token, { ...cookieOptions(), expires: expiresAt });
+    res.cookie("session", token, {
+      ...app.locals.cookieOptions(),
+      expires: expiresAt,
+    });
   }
 
   function closeSession(
@@ -1206,7 +1212,7 @@ export default async function courselore(
     app.locals.database.run(
       sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
     );
-    res.clearCookie("session", cookieOptions());
+    res.clearCookie("session", app.locals.cookieOptions());
   }
 
   interface Middlewares {
