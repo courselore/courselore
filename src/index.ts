@@ -121,14 +121,14 @@ export default async function courselore(
 
   interface AppLocals {
     database: Database;
-    databaseMigrations: (() => void)[];
   }
   await fs.ensureDir(rootDirectory);
   app.locals.database = new Database(path.join(rootDirectory, "courselore.db"));
-  app.locals.databaseMigrations = [
-    () => {
-      app.locals.database.execute(
-        sql`
+  app.locals.database.executeTransaction(() => {
+    const migrations = [
+      () => {
+        app.locals.database.execute(
+          sql`
           CREATE TABLE "authenticationNonces" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -223,19 +223,16 @@ export default async function courselore(
             "body" TEXT NOT NULL
           );
         `
-      );
-    },
-  ];
-  app.locals.database.executeTransaction(() => {
-    for (const migration of app.locals.databaseMigrations.slice(
+        );
+      },
+    ];
+    for (const migration of migrations.slice(
       app.locals.database.pragma("user_version", {
         simple: true,
       })
     ))
       migration();
-    app.locals.database.pragma(
-      `user_version = ${app.locals.databaseMigrations.length}`
-    );
+    app.locals.database.pragma(`user_version = ${migrations.length}`);
   });
 
   interface Layouts {
@@ -1148,39 +1145,40 @@ export default async function courselore(
   // TODO: Would making this async speed things up in any way?
   // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
   // TODO: Extract this into a library?
-  interface AppLocals {
+  interface Partials {
     textProcessor: (text: string) => HTML;
-    textProcessorConfiguration: unified.Processor;
   }
-  app.locals.textProcessor = (text) =>
-    app.locals.textProcessorConfiguration.processSync(text).toString();
-  app.locals.textProcessorConfiguration = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkMath)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeRaw)
-    .use(
-      rehypeSanitize,
-      deepMerge<hastUtilSanitize.Schema>(
-        require("hast-util-sanitize/lib/github.json"),
-        {
-          attributes: {
-            code: ["className"],
-            span: [["className", "math-inline"]],
-            div: [["className", "math-display"]],
-          },
-        }
+  app.locals.partials.textProcessor = await (async () => {
+    const textProcessor = unified()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkMath)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeRaw)
+      .use(
+        rehypeSanitize,
+        deepMerge<hastUtilSanitize.Schema>(
+          require("hast-util-sanitize/lib/github.json"),
+          {
+            attributes: {
+              code: ["className"],
+              span: [["className", "math-inline"]],
+              div: [["className", "math-display"]],
+            },
+          }
+        )
       )
-    )
-    .use(rehypeShiki, {
-      highlighter: {
-        light: await shiki.getHighlighter({ theme: "light-plus" }),
-        dark: await shiki.getHighlighter({ theme: "dark-plus" }),
-      },
-    })
-    .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
-    .use(rehypeStringify);
+      .use(rehypeShiki, {
+        highlighter: {
+          light: await shiki.getHighlighter({ theme: "light-plus" }),
+          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+        },
+      })
+      .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
+      .use(rehypeStringify);
+
+    return (text: string) => textProcessor.processSync(text).toString();
+  })();
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
@@ -4281,7 +4279,7 @@ export default async function courselore(
       )
         return next("validation");
 
-      res.send(app.locals.textProcessor(req.body.content));
+      res.send(app.locals.partials.textProcessor(req.body.content));
     }
   );
 
@@ -4932,7 +4930,7 @@ export default async function courselore(
                     </div>
 
                     <div class="show">
-                      $${app.locals.textProcessor(post.content)}
+                      $${app.locals.partials.textProcessor(post.content)}
 
                       <!-- TODO: Say “you” when you have liked the post. -->
                       <form
