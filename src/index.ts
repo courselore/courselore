@@ -808,7 +808,10 @@ export default async function courselore(
                 return "Enter an email address";
 
               if (element.matches("input.datetime")) {
-                if (!element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}))
+                if (
+                  element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}) ===
+                  null
+                )
                   return "Match the pattern YYYY-MM-DD HH:MM";
                 const date = new Date(element.value.replace(" ", "T"));
                 if (isNaN(date.getTime())) return "Invalid datetime";
@@ -2501,7 +2504,7 @@ export default async function courselore(
     (req, res, next) => {
       if (
         res.locals.invitation.usedAt !== null ||
-        isExpired(res.locals.invitation.expiresAt) ||
+        app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
         (res.locals.invitation.email !== null &&
           res.locals.user !== undefined &&
           res.locals.invitation.email !== res.locals.user.email)
@@ -2744,7 +2747,9 @@ export default async function courselore(
                                               <time>${invitation.usedAt}</time>
                                             </span>
                                           `
-                                        : isExpired(invitation.expiresAt)
+                                        : app.locals.helpers.isExpired(
+                                            invitation.expiresAt
+                                          )
                                         ? html`
                                             <span class="red">
                                               Expired
@@ -2763,7 +2768,9 @@ export default async function courselore(
                                   </summary>
 
                                   $${invitation.email === null &&
-                                  !isExpired(invitation.expiresAt)
+                                  !app.locals.helpers.isExpired(
+                                    invitation.expiresAt
+                                  )
                                     ? html`
                                         <p>
                                           <a href="${link}"
@@ -2781,7 +2788,9 @@ export default async function courselore(
                                       `
                                     : html`
                                         $${invitation.email === null ||
-                                        isExpired(invitation.expiresAt)
+                                        app.locals.helpers.isExpired(
+                                          invitation.expiresAt
+                                        )
                                           ? html``
                                           : html`
                                               <form
@@ -2846,7 +2855,7 @@ export default async function courselore(
                                                           invitation.role
                                                             ? `checked`
                                                             : ``}
-                                                          ${isExpired(
+                                                          ${app.locals.helpers.isExpired(
                                                             invitation.expiresAt
                                                           )
                                                             ? `disabled`
@@ -2858,7 +2867,7 @@ export default async function courselore(
                                                       </label>
                                                     `
                                                 )}
-                                                $${isExpired(
+                                                $${app.locals.helpers.isExpired(
                                                   invitation.expiresAt
                                                 )
                                                   ? html``
@@ -2873,7 +2882,9 @@ export default async function courselore(
                                                     `}
                                               </span>
                                             </p>
-                                            $${isExpired(invitation.expiresAt)
+                                            $${app.locals.helpers.isExpired(
+                                              invitation.expiresAt
+                                            )
                                               ? html`
                                                   <p class="hint">
                                                     You may not change the role
@@ -2954,7 +2965,9 @@ export default async function courselore(
                                               </p>
                                             </form>
 
-                                            $${isExpired(invitation.expiresAt)
+                                            $${app.locals.helpers.isExpired(
+                                              invitation.expiresAt
+                                            )
                                               ? html``
                                               : html`
                                                   <form
@@ -3452,8 +3465,8 @@ export default async function courselore(
         !app.locals.constants.roles.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
-            !isDate(req.body.expiresAt) ||
-            isExpired(req.body.expiresAt))) ||
+            !app.locals.helpers.isDate(req.body.expiresAt) ||
+            app.locals.helpers.isExpired(req.body.expiresAt))) ||
         typeof req.body.sharing !== "string" ||
         !["link", "emails"].includes(req.body.sharing)
       )
@@ -3610,8 +3623,8 @@ export default async function courselore(
         if (
           req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
-            !isDate(req.body.expiresAt) ||
-            isExpired(req.body.expiresAt))
+            !app.locals.helpers.isDate(req.body.expiresAt) ||
+            app.locals.helpers.isExpired(req.body.expiresAt))
         )
           return next("validation");
 
@@ -3647,7 +3660,7 @@ export default async function courselore(
     asyncHandler(async (req, res, next) => {
       if (
         res.locals.invitation.email !== null ||
-        isExpired(res.locals.invitation.expiresAt)
+        app.locals.helpers.isExpired(res.locals.invitation.expiresAt)
       )
         return next();
 
@@ -5587,16 +5600,18 @@ export default async function courselore(
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
-  function isDate(dateString: string) {
-    return (
-      dateString.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) &&
-      !isNaN(new Date(dateString).getTime())
-    );
+  interface Helpers {
+    isDate: (dateString: string) => boolean;
   }
+  app.locals.helpers.isDate = (string) =>
+    string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
+    !isNaN(new Date(string).getTime());
 
-  function isExpired(expiresAt: string | null): boolean {
-    return expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
+  interface Helpers {
+    isExpired: (expiresAt: string | null) => boolean;
   }
+  app.locals.helpers.isExpired = (expiresAt) =>
+    expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 
   return app;
 }
