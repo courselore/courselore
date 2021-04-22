@@ -1181,7 +1181,6 @@ export default async function courselore(
     );
     return nonce;
   };
-
   app.locals.helpers.authenticationNonce.verify = (nonce) => {
     const authenticationNonce = app.locals.database.get<{
       email: string;
@@ -1199,11 +1198,20 @@ export default async function courselore(
     return authenticationNonce?.email;
   };
 
-  function openSession(
-    req: express.Request<{}, any, {}, {}, {}>,
-    res: express.Response<any, {}>,
-    userId: number
-  ): void {
+  interface Helpers {
+    session: {
+      open: (
+        req: express.Request<{}, any, {}, {}, {}>,
+        res: express.Response<any, {}>,
+        userId: number
+      ) => void;
+      close: (
+        req: express.Request<{}, any, {}, {}, {}>,
+        res: express.Response<any, {}>
+      ) => void;
+    };
+  }
+  app.locals.helpers.session.open = (req, res, userId) => {
     const expiresAt = new Date();
     expiresAt.setMonth(expiresAt.getMonth() + 2);
     const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
@@ -1217,17 +1225,13 @@ export default async function courselore(
       ...app.locals.settings.cookieOptions(),
       expires: expiresAt,
     });
-  }
-
-  function closeSession(
-    req: express.Request<{}, any, {}, {}, {}>,
-    res: express.Response<any, {}>
-  ): void {
+  };
+  app.locals.helpers.session.close = (req, res) => {
     app.locals.database.run(
       sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
     );
     res.clearCookie("session", app.locals.settings.cookieOptions());
-  }
+  };
 
   interface Middlewares {
     isUnauthenticated: express.RequestHandler<
@@ -1254,7 +1258,7 @@ export default async function courselore(
           `
         )!.exists === 0
       ) {
-        closeSession(req, res);
+        app.locals.helpers.session.close(req, res);
         return next();
       }
       return next("route");
@@ -1310,15 +1314,15 @@ export default async function courselore(
         `
       );
       if (session === undefined) {
-        closeSession(req, res);
+        app.locals.helpers.session.close(req, res);
         return next("route");
       }
       if (
         new Date(session.expiresAt).getTime() - Date.now() <
         30 * 24 * 60 * 60 * 1000
       ) {
-        closeSession(req, res);
-        openSession(req, res, session.userId);
+        app.locals.helpers.session.close(req, res);
+        app.locals.helpers.session.open(req, res, session.userId);
       }
       res.locals.user = {
         id: session.userId,
@@ -1728,7 +1732,7 @@ export default async function courselore(
             `
           )
         );
-      openSession(req, res, user.id);
+      app.locals.helpers.session.open(req, res, user.id);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
     }
   );
@@ -1786,7 +1790,7 @@ export default async function courselore(
         sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${req.body.name})`
       ).lastInsertRowid
     );
-    openSession(req, res, userId);
+    app.locals.helpers.session.open(req, res, userId);
     res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
   });
 
@@ -1794,7 +1798,7 @@ export default async function courselore(
     "/authenticate",
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
-      closeSession(req, res);
+      app.locals.helpers.session.close(req, res);
       res.redirect(`${app.locals.settings.url}/`);
     }
   );
@@ -1903,7 +1907,7 @@ export default async function courselore(
     "/authenticate/:nonce",
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
-      closeSession(req, res);
+      app.locals.helpers.session.close(req, res);
       res.redirect(
         `${app.locals.settings.url}/authenticate/${
           req.params.nonce
