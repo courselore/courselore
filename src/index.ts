@@ -49,24 +49,30 @@ export default async function courselore(
     url: string;
     administrator: string;
     demonstration: boolean;
-    middlewares: Middlewares;
-    layouts: Layouts;
-    partials: Partials;
   }
   app.locals.url = "http://localhost:4000";
   app.locals.administrator = "mailto:demonstration-development@courselore.org";
   app.locals.demonstration = true;
+
+  interface AppLocals {
+    middlewares: Middlewares;
+    layouts: Layouts;
+    partials: Partials;
+  }
   app.locals.middlewares = {} as Middlewares;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
 
-  type Role = "student" | "staff";
   interface AppLocals {
     roles: Role[];
   }
+  type Role = "student" | "staff";
   app.locals.roles = ["student", "staff"];
 
   // https://pico-8.fandom.com/wiki/Palette
+  interface AppLocals {
+    accentColors: AccentColor[];
+  }
   type AccentColor =
     | "#83769c"
     | "#ff77a8"
@@ -78,9 +84,6 @@ export default async function courselore(
     | "#ab5236"
     | "#1d2b53"
     | "#5f574f";
-  interface AppLocals {
-    accentColors: AccentColor[];
-  }
   app.locals.accentColors = [
     "#83769c",
     "#ff77a8",
@@ -94,13 +97,13 @@ export default async function courselore(
     "#5f574f",
   ];
 
+  interface AppLocals {
+    anonymousEnrollment: AnonymousEnrollment;
+  }
   interface AnonymousEnrollment {
     id: null;
     user: { id: null; email: null; name: "Anonymous" };
     role: null;
-  }
-  interface AppLocals {
-    anonymousEnrollment: AnonymousEnrollment;
   }
   app.locals.anonymousEnrollment = {
     id: null,
@@ -110,11 +113,11 @@ export default async function courselore(
 
   interface AppLocals {
     database: Database;
-    migrations: (() => void)[];
+    databaseMigrations: (() => void)[];
   }
   await fs.ensureDir(rootDirectory);
   app.locals.database = new Database(path.join(rootDirectory, "courselore.db"));
-  app.locals.migrations = [
+  app.locals.databaseMigrations = [
     () => {
       app.locals.database.execute(
         sql`
@@ -216,14 +219,14 @@ export default async function courselore(
     },
   ];
   app.locals.database.executeTransaction(() => {
-    for (const migration of app.locals.migrations.slice(
+    for (const migration of app.locals.databaseMigrations.slice(
       app.locals.database.pragma("user_version", {
         simple: true,
       })
     ))
       migration();
     app.locals.database.pragma(
-      `user_version = ${app.locals.migrations.length}`
+      `user_version = ${app.locals.databaseMigrations.length}`
     );
   });
 
