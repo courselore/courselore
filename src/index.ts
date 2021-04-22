@@ -60,8 +60,11 @@ export default async function courselore(
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
 
-  type Role = typeof ROLES[number];
-  const ROLES = ["student", "staff"] as const;
+  type Role = "student" | "staff";
+  interface AppLocals {
+    roles: Role[];
+  }
+  app.locals.roles = ["student", "staff"];
 
   // https://pico-8.fandom.com/wiki/Palette
   type AccentColor = typeof ACCENT_COLORS[number];
@@ -2771,7 +2774,7 @@ export default async function courselore(
                                                   }
                                                 `}"
                                               >
-                                                $${ROLES.map(
+                                                $${app.locals.roles.map(
                                                   (role) =>
                                                     html`
                                                       <label>
@@ -2955,7 +2958,7 @@ export default async function courselore(
                               }
                             `}"
                           >
-                            $${ROLES.map(
+                            $${app.locals.roles.map(
                               (role, index) =>
                                 html`
                                   <label>
@@ -3131,7 +3134,7 @@ export default async function courselore(
                                             }
                                           `}"
                                         >
-                                          $${ROLES.map(
+                                          $${app.locals.roles.map(
                                             (role) =>
                                               html`
                                                 <label>
@@ -3387,7 +3390,7 @@ export default async function courselore(
     (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
-        !ROLES.includes(req.body.role) ||
+        !app.locals.roles.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             !isDate(req.body.expiresAt) ||
@@ -3536,7 +3539,8 @@ export default async function courselore(
       }
 
       if (req.body.role !== undefined) {
-        if (!ROLES.includes(req.body.role)) return next("validation");
+        if (!app.locals.roles.includes(req.body.role))
+          return next("validation");
 
         app.locals.database.run(
           sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
@@ -3831,7 +3835,8 @@ export default async function courselore(
     ...mayManageEnrollmentMiddleware,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
-        if (!ROLES.includes(req.body.role)) return next("validation");
+        if (!app.locals.roles.includes(req.body.role))
+          return next("validation");
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
