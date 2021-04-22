@@ -87,10 +87,11 @@ export default async function courselore(
 
   interface AppLocals {
     database: Database;
+    migrations: (() => void)[];
   }
   await fs.ensureDir(rootDirectory);
   app.locals.database = new Database(path.join(rootDirectory, "courselore.db"));
-  const migrations = [
+  app.locals.migrations = [
     () => {
       app.locals.database.execute(
         sql`
@@ -192,13 +193,15 @@ export default async function courselore(
     },
   ];
   app.locals.database.executeTransaction(() => {
-    for (const migration of migrations.slice(
+    for (const migration of app.locals.migrations.slice(
       app.locals.database.pragma("user_version", {
         simple: true,
       })
     ))
       migration();
-    app.locals.database.pragma(`user_version = ${migrations.length}`);
+    app.locals.database.pragma(
+      `user_version = ${app.locals.migrations.length}`
+    );
   });
 
   interface Layouts {
