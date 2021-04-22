@@ -1166,36 +1166,39 @@ export default async function courselore(
       verify: (nonce: string) => string | undefined;
     };
   }
-  app.locals.helpers.authenticationNonce.new = (email) => {
-    app.locals.database.run(
-      sql`DELETE FROM "authenticationNonces" WHERE "email" = ${email}`
-    );
-    const nonce = cryptoRandomString({ length: 40, type: "numeric" });
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-    app.locals.database.run(
-      sql`
+  app.locals.helpers.authenticationNonce = {
+    new(email) {
+      app.locals.database.run(
+        sql`DELETE FROM "authenticationNonces" WHERE "email" = ${email}`
+      );
+      const nonce = cryptoRandomString({ length: 40, type: "numeric" });
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+      app.locals.database.run(
+        sql`
         INSERT INTO "authenticationNonces" ("expiresAt", "nonce", "email")
         VALUES (${expiresAt.toISOString()}, ${nonce}, ${email})
       `
-    );
-    return nonce;
-  };
-  app.locals.helpers.authenticationNonce.verify = (nonce) => {
-    const authenticationNonce = app.locals.database.get<{
-      email: string;
-    }>(
-      sql`
+      );
+      return nonce;
+    },
+
+    verify(nonce) {
+      const authenticationNonce = app.locals.database.get<{
+        email: string;
+      }>(
+        sql`
         SELECT "email"
         FROM "authenticationNonces"
         WHERE "nonce" = ${nonce} AND
               datetime(${new Date().toISOString()}) < datetime("expiresAt")
       `
-    );
-    app.locals.database.run(
-      sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
-    );
-    return authenticationNonce?.email;
+      );
+      app.locals.database.run(
+        sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
+      );
+      return authenticationNonce?.email;
+    },
   };
 
   interface Helpers {
@@ -1211,26 +1214,29 @@ export default async function courselore(
       ) => void;
     };
   }
-  app.locals.helpers.session.open = (req, res, userId) => {
-    const expiresAt = new Date();
-    expiresAt.setMonth(expiresAt.getMonth() + 2);
-    const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
-    app.locals.database.run(
-      sql`
+  app.locals.helpers.session = {
+    open(req, res, userId) {
+      const expiresAt = new Date();
+      expiresAt.setMonth(expiresAt.getMonth() + 2);
+      const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
+      app.locals.database.run(
+        sql`
         INSERT INTO "sessions" ("expiresAt", "token", "user")
         VALUES (${expiresAt.toISOString()}, ${token}, ${userId})
       `
-    );
-    res.cookie("session", token, {
-      ...app.locals.settings.cookieOptions(),
-      expires: expiresAt,
-    });
-  };
-  app.locals.helpers.session.close = (req, res) => {
-    app.locals.database.run(
-      sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
-    );
-    res.clearCookie("session", app.locals.settings.cookieOptions());
+      );
+      res.cookie("session", token, {
+        ...app.locals.settings.cookieOptions(),
+        expires: expiresAt,
+      });
+    },
+
+    close(req, res) {
+      app.locals.database.run(
+        sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
+      );
+      res.clearCookie("session", app.locals.settings.cookieOptions());
+    },
   };
 
   interface Middlewares {
