@@ -2071,7 +2071,7 @@ export default async function courselore(
             ${newCourseId},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${"staff"},
-            ${defaultAccentColor(res.locals.enrollments)}
+            ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
@@ -2079,9 +2079,12 @@ export default async function courselore(
     }
   );
 
-  function defaultAccentColor(
-    enrollments: IsAuthenticatedMiddlewareLocals["enrollments"]
-  ): AccentColor {
+  interface Helpers {
+    defaultAccentColor: (
+      enrollments: IsAuthenticatedMiddlewareLocals["enrollments"]
+    ) => AccentColor;
+  }
+  app.locals.helpers.defaultAccentColor = (enrollments) => {
     const accentColorsInUse = new Set<AccentColor>(
       enrollments.map((enrollment) => enrollment.accentColor)
     );
@@ -2093,7 +2096,7 @@ export default async function courselore(
       if (accentColorsAvailable.size === 1) break;
     }
     return [...accentColorsAvailable][0];
-  }
+  };
 
   interface IsEnrolledInCourseMiddlewareLocals
     extends IsAuthenticatedMiddlewareLocals {
@@ -3782,7 +3785,7 @@ export default async function courselore(
             ${res.locals.invitation.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.invitation.role},
-            ${defaultAccentColor(res.locals.enrollments)}
+            ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
