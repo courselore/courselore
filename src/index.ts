@@ -2512,10 +2512,11 @@ export default async function courselore(
   ];
 
   interface Helpers {
-    sendInvitationEmail(
+    sendInvitationEmail: (
       invitation: InvitationExistsMiddlewareLocals["invitation"]
-    ): void;
+    ) => void;
   }
+
   function sendInvitationEmail(
     invitation: InvitationExistsMiddlewareLocals["invitation"]
   ): void {
@@ -5500,7 +5501,7 @@ export default async function courselore(
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
-  // FIXME: Include this as a ‘<template>’ in the layout and then ‘.cloneNode()’ it when necessary.
+  // FIXME: !!!!!!INLINE THIS!!!!!
   const loading = (() => {
     let counter = 0;
     return (): HTML => {
