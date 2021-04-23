@@ -752,8 +752,8 @@ export default async function courselore(
             for (const element of document.querySelectorAll("input.datetime")) {
               if (element.dataset.local === "true") continue;
               element.dataset.local = "true";
-              const date = new Date(element.value);
-              element.value =
+              const date = new Date(element.defaultValue);
+              element.defaultValue =
                 String(date.getFullYear()) +
                 "-" +
                 String(date.getMonth() + 1).padStart(2, "0") +
@@ -765,6 +765,20 @@ export default async function courselore(
                 String(date.getMinutes()).padStart(2, "0");
             }
           });
+
+          function isModified(element) {
+            const elementsToCheck = [...element.querySelectorAll("*"), element];
+            for (const element of elementsToCheck) {
+              if (["radio", "checkbox"].includes(element.type)) {
+                if (element.checked !== element.defaultChecked) return true;
+              } else if (
+                typeof element.value === "string" &&
+                typeof element.defaultValue === "string"
+              )
+                if (element.value !== element.defaultValue) return true;
+            }
+            return false;
+          }
 
           function isValid(element) {
             const elementsToValidate = [
@@ -780,10 +794,10 @@ export default async function courselore(
               )
                 continue;
 
-              const originalValue = element.value;
+              const valueInputByUser = element.value;
               const customValidity = validate(element);
-              if (element.value !== originalValue)
-                elementsToReset.push({ element, originalValue });
+              if (element.value !== valueInputByUser)
+                elementsToReset.push({ element, valueInputByUser });
 
               if (typeof customValidity === "string") {
                 element.setCustomValidity(customValidity);
@@ -797,8 +811,8 @@ export default async function courselore(
               }
 
               if (!element.reportValidity()) {
-                for (const { element, originalValue } of elementsToReset)
-                  element.value = originalValue;
+                for (const { element, valueInputByUser } of elementsToReset)
+                  element.value = valueInputByUser;
                 return false;
               }
             }
@@ -830,14 +844,12 @@ export default async function courselore(
             }
           }
 
-          const modifiedInputs = new Set();
           (() => {
-            document.addEventListener("input", (event) => {
-              modifiedInputs.add(event.target);
-            });
-
             document.addEventListener("submit", (event) => {
-              if (!isValid(event.target)) return event.preventDefault();
+              if (!isValid(event.target)) {
+                event.preventDefault();
+                return;
+              }
               window.removeEventListener("beforeunload", beforeUnloadHandler);
               for (const button of event.target.querySelectorAll(
                 'button:not([type="button"])'
@@ -846,7 +858,7 @@ export default async function courselore(
             });
 
             const beforeUnloadHandler = (event) => {
-              if (modifiedInputs.size === 0) return;
+              if (!isModified(document)) return;
               event.preventDefault();
               event.returnValue = "";
             };
@@ -4185,9 +4197,9 @@ export default async function courselore(
     );
 
   interface Partials {
-    textEditor: () => HTML;
+    textEditor: (value?: string) => HTML;
   }
-  app.locals.partials.textEditor = (): HTML => html`
+  app.locals.partials.textEditor = (value = ""): HTML => html`
     <div class="text-editor">
       <p
         style="${css`
@@ -4277,7 +4289,9 @@ export default async function courselore(
                 this.closest("form").querySelector('button:not([type="button"])').click();
               }
             `}"
-          ></textarea>
+          >
+${value}</textarea
+          >
         </p>
         <p
           class="hint"
@@ -4828,9 +4842,6 @@ export default async function courselore(
                               const edit = title.querySelector(".edit");
                               edit.hidden = false;
                               const input = edit.querySelector('[name="title"]');
-                              input.value = ${JSON.stringify(
-                                res.locals.thread.title
-                              )};
                               input.focus();
                               input.setSelectionRange(0, 0);
                             `}"
@@ -4905,6 +4916,7 @@ export default async function courselore(
                           <input
                             type="text"
                             name="title"
+                            value="${res.locals.thread.title}"
                             autocomplete="off"
                             required
                             class="full-width"
@@ -4913,15 +4925,16 @@ export default async function courselore(
                         <p>
                           <button class="green">Change Title</button>
                           <button
-                            type="button"
+                            type="reset"
                             onclick="${javascript`
-                              if (!confirm("Discard changes?")) return;
                               const title = this.closest(".title");
+                              if (isModified(title) && !confirm("Discard changes?")) {
+                                event.preventDefault();
+                                return;
+                              }
                               title.querySelector(".show").hidden = false;
                               const edit = title.querySelector(".edit");
                               edit.hidden = true;
-                              for (const element of edit.querySelectorAll("*"))
-                                modifiedInputs.delete(element);
                             `}"
                           >
                             Cancel
@@ -5035,9 +5048,6 @@ export default async function courselore(
                                   const edit = post.querySelector(".edit");
                                   edit.hidden = false;
                                   const textarea = edit.querySelector('[name="content"]');
-                                  textarea.value = ${JSON.stringify(
-                                    post.content
-                                  )};
                                   textarea.focus();
                                   textarea.setSelectionRange(0, 0);
                                   this.hidden = true;
@@ -5181,22 +5191,23 @@ export default async function courselore(
                             hidden
                             class="edit"
                           >
-                            $${app.locals.partials.textEditor()}
+                            $${app.locals.partials.textEditor(post.content)}
                             <p
                               style="${css`
                                 text-align: right;
                               `}"
                             >
                               <button
-                                type="button"
+                                type="reset"
                                 onclick="${javascript`
-                                  if (!confirm("Discard changes?")) return;
                                   const post = this.closest(".post");
+                                  if (isModified(post) && !confirm("Discard changes?")) {
+                                    event.preventDefault();
+                                    return;
+                                  }
                                   post.querySelector(".show").hidden = false;
                                   const edit = post.querySelector(".edit");
                                   edit.hidden = true;
-                                  for (const element of edit.querySelectorAll("*"))
-                                    modifiedInputs.delete(element);
                                   post.querySelector(".edit-button").hidden = false;
                                 `}"
                               >
