@@ -8,7 +8,6 @@ import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import { asyncHandler } from "@leafac/express-async-handler";
 import qs from "qs";
-import validator from "validator";
 import emailAddresses from "email-addresses";
 
 import { Database, sql } from "@leafac/sqlite";
@@ -683,8 +682,6 @@ export default async function courselore(
       res,
       html`
         <script src="${app.locals.settings
-            .url}/node_modules/validator/validator.min.js"></script>
-        <script src="${app.locals.settings
             .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
         <script>
@@ -825,7 +822,7 @@ export default async function courselore(
 
               if (
                 element.matches('[type="email"]') &&
-                !validator.isEmail(element.value)
+                !$${app.locals.constants.emailRegExp}.test(element.value)
               )
                 return "Enter an email address";
 
@@ -1526,7 +1523,7 @@ export default async function courselore(
     (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
-        !validator.isEmail(req.body.email)
+        !app.locals.constants.emailRegExp.test(req.body.email)
       )
         return next("validation");
 
@@ -3159,7 +3156,7 @@ export default async function courselore(
                               emails === null ||
                               emails.find(
                                 (email) =>
-                                  email.type !== "mailbox" || !validator.isEmail(email.address)
+                                  email.type !== "mailbox" || !${app.locals.constants.emailRegExp}.test(email.address)
                               ) !== undefined
                             )
                               return "Match the requested format";
@@ -3523,7 +3520,8 @@ export default async function courselore(
             emails === null ||
             emails.find(
               (email) =>
-                email.type !== "mailbox" || !validator.isEmail(email.address)
+                email.type !== "mailbox" ||
+                !app.locals.constants.emailRegExp.test(email.address)
             ) !== undefined
           )
             return next("validation");
@@ -5643,6 +5641,11 @@ ${value}</textarea
       )
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
+
+  interface Constants {
+    emailRegExp: RegExp;
+  }
+  app.locals.constants.emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
   interface Helpers {
     isDate: (dateString: string) => boolean;
