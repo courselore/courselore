@@ -769,6 +769,7 @@ export default async function courselore(
           function isModified(element) {
             const elementsToCheck = [...element.querySelectorAll("*"), element];
             for (const element of elementsToCheck) {
+              if (element.dataset.skipIsModified === "true") continue;
               if (["radio", "checkbox"].includes(element.type)) {
                 if (element.checked !== element.defaultChecked) return true;
               } else if (
@@ -855,6 +856,7 @@ export default async function courselore(
                 'button:not([type="button"])'
               ))
                 button.disabled = true;
+              event.target.dispatchEvent(new CustomEvent("successfulSubmit"));
             });
 
             const beforeUnloadHandler = (event) => {
@@ -5243,6 +5245,40 @@ ${value}</textarea
                 .reference}/threads/${res.locals.thread.reference}/posts"
             >
               $${app.locals.partials.textEditor()}
+              <script>
+                (() => {
+                  const textarea = document.currentScript.previousElementSibling.querySelector(
+                    "textarea"
+                  );
+                  textarea.defaultValue =
+                    JSON.parse(
+                      localStorage.getItem("threadsTextareas") ?? "{}"
+                    )[window.location.pathname] ?? "";
+                  textarea.dataset.skipIsModified = "true";
+                  textarea.addEventListener("input", function () {
+                    const threadsTextareas = JSON.parse(
+                      localStorage.getItem("threadsTextareas") ?? "{}"
+                    );
+                    threadsTextareas[window.location.pathname] = this.value;
+                    localStorage.setItem(
+                      "threadsTextareas",
+                      JSON.stringify(threadsTextareas)
+                    );
+                  });
+                  textarea
+                    .closest("form")
+                    .addEventListener("successfulSubmit", function () {
+                      const threadsTextareas = JSON.parse(
+                        localStorage.getItem("threadsTextareas") ?? "{}"
+                      );
+                      delete threadsTextareas[window.location.pathname];
+                      localStorage.setItem(
+                        "threadsTextareas",
+                        JSON.stringify(threadsTextareas)
+                      );
+                    });
+                })();
+              </script>
               <p
                 style="${css`
                   text-align: right;
