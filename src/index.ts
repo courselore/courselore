@@ -4463,6 +4463,16 @@ export default async function courselore(
     }
   );
 
+  interface Helpers {
+    emitCourseRefresh: (courseId: number) => void;
+  }
+  app.locals.helpers.emitCourseRefresh = (courseId) => {
+    for (const eventSource of [...app.locals.eventSources].filter(
+      (eventSource) => eventSource.locals.course?.id === courseId
+    ))
+      eventSource.write(`event: refresh\ndata:\n\n`);
+  };
+
   app.post<
     { courseReference: string },
     HTML,
@@ -4513,10 +4523,7 @@ export default async function courselore(
         `
       );
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.course.nextThreadReference}`
@@ -5257,10 +5264,7 @@ export default async function courselore(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.thread.id}`
           );
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}`
@@ -5283,10 +5287,7 @@ export default async function courselore(
         sql`DELETE FROM "threads" WHERE "id" = ${res.locals.thread.id}`
       );
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}`
@@ -5329,10 +5330,7 @@ export default async function courselore(
         `
       );
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.thread.nextPostReference}`
@@ -5365,10 +5363,7 @@ export default async function courselore(
         `
       );
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
@@ -5393,10 +5388,7 @@ export default async function courselore(
         sql`DELETE FROM "posts" WHERE "id" = ${res.locals.post.id}`
       );
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}`
@@ -5425,10 +5417,7 @@ export default async function courselore(
         sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.post.id}, ${res.locals.enrollment.id})`
       );
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
@@ -5453,10 +5442,7 @@ export default async function courselore(
 
       app.locals.database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
 
-      for (const eventSource of [...app.locals.eventSources].filter(
-        (eventSource) => eventSource.locals.course?.id === res.locals.course.id
-      ))
-        eventSource.write(`event: refresh\ndata:\n\n`);
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
