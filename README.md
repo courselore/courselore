@@ -397,6 +397,11 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Improvements
 
+#### Make It Work on Mobile
+
+- Responsive design.
+- Mobile app may not be necessary, as web applications are capable of some “native” things.
+
 #### Tests
 
 - Approaches:
