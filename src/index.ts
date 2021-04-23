@@ -5255,11 +5255,11 @@ ${value}</textarea
                       localStorage.getItem("threadsTextareas") ?? "{}"
                     )[window.location.pathname] ?? "";
                   textarea.dataset.skipIsModified = "true";
-                  textarea.addEventListener("input", function () {
+                  textarea.addEventListener("input", () => {
                     const threadsTextareas = JSON.parse(
                       localStorage.getItem("threadsTextareas") ?? "{}"
                     );
-                    threadsTextareas[window.location.pathname] = this.value;
+                    threadsTextareas[window.location.pathname] = textarea.value;
                     localStorage.setItem(
                       "threadsTextareas",
                       JSON.stringify(threadsTextareas)
@@ -5267,7 +5267,7 @@ ${value}</textarea
                   });
                   textarea
                     .closest("form")
-                    .addEventListener("successfulSubmit", function () {
+                    .addEventListener("successfulSubmit", () => {
                       const threadsTextareas = JSON.parse(
                         localStorage.getItem("threadsTextareas") ?? "{}"
                       );
