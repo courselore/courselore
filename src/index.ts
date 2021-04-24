@@ -150,7 +150,7 @@ export default async function courselore(
               "token" TEXT NOT NULL UNIQUE,
               "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
             );
-      
+
             CREATE TABLE "courses" (
               "id" INTEGER PRIMARY KEY AUTOINCREMENT,
               "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -158,7 +158,7 @@ export default async function courselore(
               "name" TEXT NOT NULL,
               "nextThreadReference" INTEGER NOT NULL DEFAULT 1
             );
-      
+
             CREATE TABLE "invitations" (
               "id" INTEGER PRIMARY KEY AUTOINCREMENT,
               "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -171,7 +171,7 @@ export default async function courselore(
               "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
               UNIQUE ("course", "reference")
             );
-      
+
             CREATE TABLE "enrollments" (
               "id" INTEGER PRIMARY KEY AUTOINCREMENT,
               "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -183,7 +183,7 @@ export default async function courselore(
               UNIQUE ("user", "course"),
               UNIQUE ("course", "reference")
             );
-      
+
             CREATE TABLE "threads" (
               "id" INTEGER PRIMARY KEY AUTOINCREMENT,
               "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
@@ -192,7 +192,7 @@ export default async function courselore(
               "nextPostReference" INTEGER NOT NULL DEFAULT 1,
               UNIQUE ("course", "reference")
             );
-      
+
             CREATE TABLE "posts" (
               "id" INTEGER PRIMARY KEY AUTOINCREMENT,
               "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -201,9 +201,10 @@ export default async function courselore(
               "reference" TEXT NOT NULL,
               "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
               "content" TEXT NOT NULL,
+              "tags" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("tags")),
               UNIQUE ("thread", "reference")
             );
-      
+
             CREATE TABLE "likes" (
               "id" INTEGER PRIMARY KEY AUTOINCREMENT,
               "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -211,7 +212,7 @@ export default async function courselore(
               "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
               UNIQUE ("post", "enrollment")
             );
-      
+
             CREATE TABLE "emailsQueue" (
               "id" INTEGER PRIMARY KEY AUTOINCREMENT,
               "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -360,6 +361,7 @@ export default async function courselore(
 
               input[type="text"],
               input[type="email"],
+              input[type="search"],
               input[type="radio"],
               input[type="checkbox"],
               textarea,
@@ -387,6 +389,7 @@ export default async function courselore(
 
               input[type="text"],
               input[type="email"],
+              input[type="search"],
               textarea,
               select,
               button {
@@ -409,8 +412,13 @@ export default async function courselore(
 
               input[type="text"],
               input[type="email"],
+              input[type="search"],
               textarea {
                 cursor: text;
+              }
+
+              input[type="search"]::-webkit-search-decoration {
+                -webkit-appearance: none;
               }
 
               input[type="radio"],
@@ -2157,6 +2165,7 @@ export default async function courselore(
             role: Role;
           }
         | AnonymousEnrollment;
+      tags: string[];
       postsCount: number;
       likesCount: number;
     }[];
@@ -2191,23 +2200,25 @@ export default async function courselore(
         )
         .map((thread) => {
           // FIXME: Try to get rid of these n+1 queries.
-          const firstPost = app.locals.database.get<{
+          const originalPost = app.locals.database.get<{
             createdAt: string;
             authorEnrollmentId: number | null;
             authorUserId: number | null;
             authorUserEmail: string | null;
             authorUserName: string | null;
             authorEnrollmentRole: Role | null;
+            tags: string;
             likesCount: number;
           }>(
             sql`
               SELECT "posts"."createdAt",
-                    "authorEnrollment"."id" AS "authorEnrollmentId",
-                    "authorUser"."id" AS "authorUserId",
-                    "authorUser"."email" AS "authorUserEmail",
-                    "authorUser"."name" AS "authorUserName",
-                    "authorEnrollment"."role" AS "authorEnrollmentRole",
-                    COUNT("likes"."id") AS "likesCount"
+                     "authorEnrollment"."id" AS "authorEnrollmentId",
+                     "authorUser"."id" AS "authorUserId",
+                     "authorUser"."email" AS "authorUserEmail",
+                     "authorUser"."name" AS "authorUserName",
+                     "authorEnrollment"."role" AS "authorEnrollmentRole",
+                     "posts"."tags",
+                     COUNT("likes"."id") AS "likesCount"
               FROM "posts"
               LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
               LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
@@ -2237,26 +2248,27 @@ export default async function courselore(
             reference: thread.reference,
             title: thread.title,
             nextPostReference: thread.nextPostReference,
-            createdAt: firstPost.createdAt,
+            createdAt: originalPost.createdAt,
             updatedAt: mostRecentlyUpdatedPost.updatedAt,
             authorEnrollment:
-              firstPost.authorEnrollmentId !== null &&
-              firstPost.authorUserId !== null &&
-              firstPost.authorUserEmail !== null &&
-              firstPost.authorUserName !== null &&
-              firstPost.authorEnrollmentRole !== null
+              originalPost.authorEnrollmentId !== null &&
+              originalPost.authorUserId !== null &&
+              originalPost.authorUserEmail !== null &&
+              originalPost.authorUserName !== null &&
+              originalPost.authorEnrollmentRole !== null
                 ? {
-                    id: firstPost.authorEnrollmentId,
+                    id: originalPost.authorEnrollmentId,
                     user: {
-                      id: firstPost.authorUserId,
-                      email: firstPost.authorUserEmail,
-                      name: firstPost.authorUserName,
+                      id: originalPost.authorUserId,
+                      email: originalPost.authorUserEmail,
+                      name: originalPost.authorUserName,
                     },
-                    role: firstPost.authorEnrollmentRole,
+                    role: originalPost.authorEnrollmentRole,
                   }
                 : app.locals.constants.anonymousEnrollment,
+            tags: JSON.parse(originalPost.tags),
             postsCount,
-            likesCount: firstPost.likesCount,
+            likesCount: originalPost.likesCount,
           };
         });
 
@@ -3972,7 +3984,7 @@ export default async function courselore(
         { courseReference: string; threadReference?: string },
         HTML,
         {},
-        {},
+        { search?: string },
         IsEnrolledInCourseMiddlewareLocals &
           Partial<IsThreadAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
@@ -3987,8 +3999,16 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.thread = (req, res, head, body) =>
-    app.locals.layouts.application(
+  app.locals.layouts.thread = (req, res, head, body) => {
+    let threads = res.locals.threads;
+    const searchTags = [
+      ...(req.query.search ?? "").matchAll(/"tag:(.*?)"/g),
+    ].map((match) => match[1]);
+    if (searchTags.length > 0)
+      threads = threads.filter((thread) =>
+        thread.tags.find((tag) => searchTags.includes(tag))
+      );
+    return app.locals.layouts.application(
       req,
       res,
       head,
@@ -4038,6 +4058,7 @@ export default async function courselore(
               </nav>
               $${app.locals.partials.courseSwitcher(req, res)}
             </header>
+
             <div
               style="${css`
                 flex: 1;
@@ -4056,8 +4077,32 @@ export default async function courselore(
                   >Create a new thread</a
                 >
               </p>
+
+              <form>
+                <p
+                  style="${css`
+                    display: flex;
+
+                    & > * + * {
+                      margin-left: 0.5rem;
+                    }
+                  `}"
+                >
+                  <input
+                    type="search"
+                    name="search"
+                    value="${req.query.search ?? ""}"
+                    style="${css`
+                      flex: 1 !important;
+                    `}"
+                    data-skip-is-modified="true"
+                  />
+                  <button>Search</button>
+                </p>
+              </form>
+
               <nav id="threads">
-                $${res.locals.threads.map(
+                $${threads.map(
                   (thread) =>
                     html`
                       <a
@@ -4156,6 +4201,11 @@ export default async function courselore(
                                     ${thread.likesCount}
                                   </span>
                                 `}
+                            $${thread.tags.map(
+                              (tag) =>
+                                // FIXME: Make these links.
+                                html`<span>${tag}</span>`
+                            )}
                           </span>
                         </p>
                       </a>
@@ -4195,6 +4245,7 @@ export default async function courselore(
         </div>
       `
     );
+  };
 
   interface Partials {
     textEditor: (value?: string) => HTML;
@@ -4465,9 +4516,21 @@ ${value}</textarea
               $${app.locals.partials.textEditor()}
               <p
                 style="${css`
-                  text-align: right;
+                  display: flex;
+
+                  & > * + * {
+                    margin-left: 1rem;
+                  }
                 `}"
               >
+                <input
+                  type="text"
+                  name="tags"
+                  placeholder="Tags (comma-separated, for example, “Homework 5, Question”)"
+                  style="${css`
+                    flex: 1 !important;
+                  `}"
+                />
                 <button>Create Thread</button>
               </p>
             </form>
@@ -4490,7 +4553,7 @@ ${value}</textarea
   app.post<
     { courseReference: string },
     HTML,
-    { title?: string; content?: string },
+    { title?: string; content?: string; tags?: string },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
@@ -4527,12 +4590,18 @@ ${value}</textarea
       ).lastInsertRowid;
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
+          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content", "tags")
           VALUES (
             ${threadId},
             ${"1"},
             ${res.locals.enrollment.id},
-            ${req.body.content}
+            ${req.body.content},
+            ${JSON.stringify(
+              (req.body.tags ?? "")
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter((tag) => tag !== "")
+            )}
           )
         `
       );
@@ -4564,6 +4633,7 @@ ${value}</textarea
       reference: string;
       authorEnrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
       content: string;
+      tags: string[];
       likes: {
         id: number;
         enrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
@@ -4590,6 +4660,7 @@ ${value}</textarea
           authorUserName: string | null;
           authorEnrollmentRole: Role | null;
           content: string;
+          tags: string;
         }>(
           sql`
             SELECT "posts"."id",
@@ -4601,7 +4672,8 @@ ${value}</textarea
                    "authorUser"."email" AS "authorUserEmail",
                    "authorUser"."name" AS "authorUserName",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
-                   "posts"."content"
+                   "posts"."content",
+                   "posts"."tags"
             FROM "posts"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
@@ -4631,6 +4703,7 @@ ${value}</textarea
                 }
               : app.locals.constants.anonymousEnrollment,
           content: post.content,
+          tags: JSON.parse(post.tags),
           // FIXME: Try to get rid of this n+1 query.
           likes: app.locals.database
             .all<{
@@ -5114,17 +5187,6 @@ ${value}</textarea
                         ) === undefined
                           ? ""
                           : "?_method=DELETE"}"
-                        title="${post.likes.length === 0
-                          ? "Be the first to like this"
-                          : post.likes.length === 1
-                          ? `${post.likes[0].enrollment.user.name} liked this`
-                          : post.likes.length === 2
-                          ? `${post.likes[0].enrollment.user.name} and ${post.likes[1].enrollment.user.name} liked this`
-                          : post.likes.length === 3
-                          ? `${post.likes[0].enrollment.user.name}, ${post.likes[1].enrollment.user.name}, and 1 other liked this`
-                          : `${post.likes[0].enrollment.user.name}, ${
-                              post.likes[1].enrollment.user.name
-                            }, and ${post.likes.length - 2} others liked this`}"
                         onsubmit="${javascript`
                           event.preventDefault();
                           fetch(this.action, { method: this.method });
@@ -5135,8 +5197,28 @@ ${value}</textarea
                             margin-top: -0.5rem;
                           `}"
                         >
-                          <span class="hint">
+                          <span
+                            class="hint"
+                            style="${css`
+                              & > * + * {
+                                margin-left: 0.5rem;
+                              }
+                            `}"
+                          >
                             <button
+                              title="${post.likes.length === 0
+                                ? "Be the first to like this"
+                                : post.likes.length === 1
+                                ? `${post.likes[0].enrollment.user.name} liked this`
+                                : post.likes.length === 2
+                                ? `${post.likes[0].enrollment.user.name} and ${post.likes[1].enrollment.user.name} liked this`
+                                : post.likes.length === 3
+                                ? `${post.likes[0].enrollment.user.name}, ${post.likes[1].enrollment.user.name}, and 1 other liked this`
+                                : `${post.likes[0].enrollment.user.name}, ${
+                                    post.likes[1].enrollment.user.name
+                                  }, and ${
+                                    post.likes.length - 2
+                                  } others liked this`}"
                               style="${css`
                                 &,
                                 &:active {
@@ -5175,6 +5257,21 @@ ${value}</textarea
                                 ? ""
                                 : post.likes.length}
                             </button>
+
+                            $${post.tags.map(
+                              (tag) =>
+                                html`
+                                  <span>
+                                    <a
+                                      href="?${qs.stringify({
+                                        search: `"tag:${tag}"`,
+                                      })}"
+                                      title="See only threads tagged with “${tag}”"
+                                      >${tag}</a
+                                    >
+                                  </span>
+                                `
+                            )}
                           </span>
                         </p>
                       </form>
@@ -5279,9 +5376,21 @@ ${value}</textarea
               </script>
               <p
                 style="${css`
-                  text-align: right;
+                  display: flex;
+
+                  & > * + * {
+                    margin-left: 1rem;
+                  }
                 `}"
               >
+                <input
+                  type="text"
+                  name="tags"
+                  placeholder="Tags (comma-separated, for example, “Answer, Attention Required”)"
+                  style="${css`
+                    flex: 1 !important;
+                  `}"
+                />
                 <button>Post</button>
               </p>
             </form>
@@ -5343,7 +5452,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; threadReference: string },
     HTML,
-    { content?: string },
+    { content?: string; tags?: string },
     {},
     IsThreadAccessibleMiddlewareLocals
   >(
@@ -5365,12 +5474,18 @@ ${value}</textarea
       );
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
+          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content", "tags")
           VALUES (
             ${res.locals.thread.id},
             ${String(res.locals.thread.nextPostReference)},
             ${res.locals.enrollment.id},
-            ${req.body.content}
+            ${req.body.content},
+            ${JSON.stringify(
+              (req.body.tags ?? "")
+                .split(",")
+                .map((tag) => tag.trim())
+                .filter((tag) => tag !== "")
+            )}
           )
         `
       );
