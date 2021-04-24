@@ -598,6 +598,30 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-04-24</summary>
+
+- Progress:
+  - Live update posts, and counts (of posts & likes).
+  - Reply to.
+  - Only ask for confirmation if actually going go to lose data.
+  - Save the content of a new post textarea in localStorage.
+  - Tags.
+  - Introduced types to layouts, middlewares, and so forth.
+- Next week:
+  - Tags.
+    - Question & Answer.
+    - Instructor likes → Endorsed.
+    - Don’t let students create tags.
+    - Force students to tag.
+    - Tag creation is a separate step under Course Settings.
+    - Tags that only staff sees.
+    - Pinning.
+    - Attributes on tags.
+  - Search.
+
+</details>
+
+<details>
 <summary>2021-04-17</summary>
 
 - Progress:
