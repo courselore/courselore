@@ -65,7 +65,8 @@ CourseLore has been designed to be a welcoming project for people who are new to
 - [Visual Studio Code](https://code.visualstudio.com) and the following Visual Studio Code extensions:
   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
   - [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html)
-  - [vscode-styled-components](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components) / [es6-string-css](https://marketplace.visualstudio.com/items?itemName=bashmish.es6-string-css)
+  - [es6-string-css](https://marketplace.visualstudio.com/items?itemName=bashmish.es6-string-css) / [vscode-styled-components](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components)
+  - [es6-string-javascript](https://marketplace.visualstudio.com/items?itemName=zjcompt.es6-string-javascript)
   - [es6-string-markdown](https://marketplace.visualstudio.com/items?itemName=jeoht.es6-string-markdown)
 - [Git](https://git-scm.com)
 

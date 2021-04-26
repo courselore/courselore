@@ -5049,16 +5049,26 @@ ${value}</textarea
                             const newPost = document.querySelector("#new-post");
                             newPost.querySelector(".write").click();
                             const newPostContent = newPost.querySelector('[name="content"]');
-                            newPostContent.value += (newPostContent.value === "" ? "" : "\\n\\n") + "> @" + ${JSON.stringify(
-                              post.authorEnrollment.user.name
-                            )} + "\\n>\\n" + ${JSON.stringify(
-                            post.content
-                              .split("\n")
-                              .map((line) => `> ${line}`)
-                              .join("\n")
-                          )} + "\\n\\n";
+                            const quote = ((newPostContent.selectionStart > 0) ? "\\n\\n" : "") +
+                            ${JSON.stringify(
+                              `> **In response to #${
+                                res.locals.thread.reference
+                              }/${post.reference} by ${
+                                post.authorEnrollment.user.name
+                              }**\n>\n${post.content
+                                .split("\n")
+                                .map((line) => `> ${line}`)
+                                .join("\n")}\n\n`
+                            )};
+                            const selectionStart = newPostContent.selectionStart + quote.length;
+                            const selectionEnd = newPostContent.selectionEnd + quote.length;
+                            newPostContent.value =
+                              newPostContent.value.slice(0, newPostContent.selectionStart) +
+                              quote +
+                              newPostContent.value.slice(newPostContent.selectionStart);
+                            newPostContent.dispatchEvent(new Event("input"));
                             newPostContent.focus();
-                            newPostContent.setSelectionRange(newPostContent.value.length, newPostContent.value.length);
+                            newPostContent.setSelectionRange(selectionStart, selectionEnd);
                           `}"
                         >
                           <svg width="16" height="16">
