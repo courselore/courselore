@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import path from "path";
+// FIXME: When @types/node catches up with Node.js 15+, change this to ‘import assert from "assert/strict"’
 import { strict as assert } from "assert";
 
 import express from "express";
@@ -771,20 +772,15 @@ export default async function courselore(
             }
           });
 
-          function isModified(element) {
-            const elementsToCheck = [...element.querySelectorAll("*"), element];
-            for (const element of elementsToCheck) {
-              if (element.dataset.skipIsModified === "true") continue;
-              if (["radio", "checkbox"].includes(element.type)) {
-                if (element.checked !== element.defaultChecked) return true;
-              } else if (
-                typeof element.value === "string" &&
-                typeof element.defaultValue === "string"
-              )
-                if (element.value !== element.defaultValue) return true;
-            }
-            return false;
-          }
+          document.addEventListener(
+            "submit",
+            (event) => {
+              if (isValid(event.target)) return;
+              event.preventDefault();
+              event.stopPropagation();
+            },
+            true
+          );
 
           function isValid(element) {
             const elementsToValidate = [
@@ -851,26 +847,38 @@ export default async function courselore(
           }
 
           (() => {
-            document.addEventListener("submit", (event) => {
-              if (!isValid(event.target)) {
-                event.preventDefault();
-                return;
-              }
-              window.removeEventListener("beforeunload", beforeUnloadHandler);
-              for (const button of event.target.querySelectorAll(
-                'button:not([type="button"])'
-              ))
-                button.disabled = true;
-              event.target.dispatchEvent(new CustomEvent("successfulSubmit"));
-            });
-
             const beforeUnloadHandler = (event) => {
               if (!isModified(document)) return;
               event.preventDefault();
               event.returnValue = "";
             };
             window.addEventListener("beforeunload", beforeUnloadHandler);
+            document.addEventListener("submit", (event) => {
+              window.removeEventListener("beforeunload", beforeUnloadHandler);
+            });
           })();
+
+          function isModified(element) {
+            const elementsToCheck = [...element.querySelectorAll("*"), element];
+            for (const element of elementsToCheck) {
+              if (element.dataset.skipIsModified === "true") continue;
+              if (["radio", "checkbox"].includes(element.type)) {
+                if (element.checked !== element.defaultChecked) return true;
+              } else if (
+                typeof element.value === "string" &&
+                typeof element.defaultValue === "string"
+              )
+                if (element.value !== element.defaultValue) return true;
+            }
+            return false;
+          }
+
+          document.addEventListener("submit", (event) => {
+            for (const button of event.target.querySelectorAll(
+              'button:not([type="button"])'
+            ))
+              button.disabled = true;
+          });
         </script>
 
         $${res.locals.eventSource
@@ -5360,18 +5368,16 @@ ${value}</textarea
                       JSON.stringify(threadsTextareas)
                     );
                   });
-                  textarea
-                    .closest("form")
-                    .addEventListener("successfulSubmit", () => {
-                      const threadsTextareas = JSON.parse(
-                        localStorage.getItem("threadsTextareas") ?? "{}"
-                      );
-                      delete threadsTextareas[window.location.pathname];
-                      localStorage.setItem(
-                        "threadsTextareas",
-                        JSON.stringify(threadsTextareas)
-                      );
-                    });
+                  textarea.closest("form").addEventListener("submit", () => {
+                    const threadsTextareas = JSON.parse(
+                      localStorage.getItem("threadsTextareas") ?? "{}"
+                    );
+                    delete threadsTextareas[window.location.pathname];
+                    localStorage.setItem(
+                      "threadsTextareas",
+                      JSON.stringify(threadsTextareas)
+                    );
+                  });
                 })();
               </script>
               <p
