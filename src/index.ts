@@ -1214,9 +1214,9 @@ export default async function courselore(
       expiresAt.setMinutes(expiresAt.getMinutes() + 10);
       app.locals.database.run(
         sql`
-        INSERT INTO "authenticationNonces" ("expiresAt", "nonce", "email")
-        VALUES (${expiresAt.toISOString()}, ${nonce}, ${email})
-      `
+          INSERT INTO "authenticationNonces" ("expiresAt", "nonce", "email")
+          VALUES (${expiresAt.toISOString()}, ${nonce}, ${email})
+        `
       );
       return nonce;
     },
@@ -1226,11 +1226,11 @@ export default async function courselore(
         email: string;
       }>(
         sql`
-        SELECT "email"
-        FROM "authenticationNonces"
-        WHERE "nonce" = ${nonce} AND
-              datetime(${new Date().toISOString()}) < datetime("expiresAt")
-      `
+          SELECT "email"
+          FROM "authenticationNonces"
+          WHERE "nonce" = ${nonce} AND
+                datetime(${new Date().toISOString()}) < datetime("expiresAt")
+        `
       );
       app.locals.database.run(
         sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
@@ -1259,9 +1259,9 @@ export default async function courselore(
       const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
       app.locals.database.run(
         sql`
-        INSERT INTO "sessions" ("expiresAt", "token", "user")
-        VALUES (${expiresAt.toISOString()}, ${token}, ${userId})
-      `
+          INSERT INTO "sessions" ("expiresAt", "token", "user")
+          VALUES (${expiresAt.toISOString()}, ${token}, ${userId})
+        `
       );
       res.cookie("session", token, {
         ...app.locals.settings.cookieOptions(),
@@ -1305,7 +1305,7 @@ export default async function courselore(
         app.locals.helpers.session.close(req, res);
         return next();
       }
-      return next("route");
+      next("route");
     },
   ];
 
@@ -1909,7 +1909,7 @@ export default async function courselore(
     (req, res) => {
       switch (res.locals.enrollments.length) {
         case 0:
-          return res.send(
+          res.send(
             app.locals.layouts.main(
               req,
               res,
@@ -1934,14 +1934,16 @@ export default async function courselore(
               `
             )
           );
+          break;
 
         case 1:
-          return res.redirect(
+          res.redirect(
             `${app.locals.settings.url}/courses/${res.locals.enrollments[0].course.reference}`
           );
+          break;
 
         default:
-          return res.send(
+          res.send(
             app.locals.layouts.main(
               req,
               res,
@@ -1966,8 +1968,7 @@ export default async function courselore(
                                 fill="${enrollment.accentColor}"
                               />
                             </svg>
-                            <strong>${enrollment.course.name}</strong>
-                            (${enrollment.role})</a
+                            <strong>${enrollment.course.name}</strong></a
                           >
                         </p>
                       `
@@ -1976,6 +1977,7 @@ export default async function courselore(
               `
             )
           );
+          break;
       }
     }
   );
@@ -2144,7 +2146,6 @@ export default async function courselore(
     return [...accentColorsAvailable][0];
   };
 
-  // FIXME: Create another middleware that loads threads, because this middleware is also used in pages like /settings, which don’t need threads.
   interface Middlewares {
     isEnrolledInCourse: express.RequestHandler<
       { courseReference: string },
@@ -2340,8 +2341,7 @@ export default async function courselore(
                           fill="${otherEnrollment.accentColor}"
                         />
                       </svg>
-                      <strong>${otherEnrollment.course.name}</strong>
-                      (${otherEnrollment.role})</a
+                      <strong>${otherEnrollment.course.name}</strong></a
                     >
                   </p>
                 `
