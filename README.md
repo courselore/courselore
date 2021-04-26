@@ -351,6 +351,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - http://sqlite.1065341.n5.nabble.com/SQLite-is-perfect-for-FILE-based-MESSAGE-QUEUE-td57343.html
   - https://rdrr.io/cran/liteq/man/liteq.html
   - https://github.com/kd0kfo/smq/wiki/About-SMQ
+  - https://github.com/damoclark/node-persistent-queue
 
 #### Error Pages
 
@@ -591,6 +592,8 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://gitea.io/
   - https://gogs.io/
   - https://hub.balena.io
+  - https://github.com/awesome-selfhosted/awesome-selfhosted
+  - https://selfhosted.show
 - <https://github.com/npm/roadmap/projects/1>: A meta-reference on how to present the roadmap moving forward.
 
 </details>
