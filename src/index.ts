@@ -628,7 +628,7 @@ export default async function courselore(
                 display: block;
               }
 
-              .hint {
+              .secondary {
                 font-size: 0.75rem;
                 font-weight: normal;
                 line-height: 1.3;
@@ -1112,7 +1112,7 @@ export default async function courselore(
                 `}"
               >
                 <p><strong>${res.locals.user.name}</strong></p>
-                <p class="hint">${res.locals.user.email}</p>
+                <p class="secondary">${res.locals.user.email}</p>
                 <form
                   method="POST"
                   action="${app.locals.settings
@@ -1457,7 +1457,7 @@ export default async function courselore(
                   `}"
                 >
                   <h1>Sign in</h1>
-                  <p class="hint">Returning user</p>
+                  <p class="secondary">Returning user</p>
                 </div>
                 <p
                   style="${css`
@@ -1494,7 +1494,7 @@ export default async function courselore(
                   `}"
                 >
                   <h1>Sign up</h1>
-                  <p class="hint">New user</p>
+                  <p class="secondary">New user</p>
                 </div>
                 <p
                   style="${css`
@@ -1511,7 +1511,7 @@ export default async function courselore(
                       required
                       class="full-width"
                     /><br />
-                    <small class="full-width hint">
+                    <small class="full-width secondary">
                       We suggest using the email address you use at your
                       educational institution.
                     </small>
@@ -2035,7 +2035,7 @@ export default async function courselore(
                   disabled
                   class="full-width"
                 /><br />
-                <small class="full-width hint">
+                <small class="full-width secondary">
                   Your email is your identity in CourseLore and can’t be
                   changed.
                 </small>
@@ -2298,7 +2298,7 @@ export default async function courselore(
       ? html``
       : html`
           <details class="dropdown">
-            <summary class="no-marker hint">
+            <summary class="no-marker secondary">
               <p
                 style="${css`
                   display: flex;
@@ -2772,7 +2772,7 @@ export default async function courselore(
                                       : html`${invitation.name}
                                         ${`<${invitation.email}>`}`}
 
-                                    <small class="hint">
+                                    <small class="secondary">
                                       ${lodash.capitalize(invitation.role)} ·
                                       $${invitation.usedAt !== null
                                         ? html`
@@ -2920,7 +2920,7 @@ export default async function courselore(
                                               invitation.expiresAt
                                             )
                                               ? html`
-                                                  <p class="hint">
+                                                  <p class="secondary">
                                                     You may not change the role
                                                     of an expired invitation.
                                                   </p>
@@ -3178,7 +3178,7 @@ export default async function courselore(
                           `}"
                         ></textarea>
                         <br />
-                        <small class="full-width hint">
+                        <small class="full-width secondary">
                           Emails must be separated by commas and may include
                           names.
                           <br />
@@ -3202,7 +3202,7 @@ export default async function courselore(
                             <summary>
                               ${enrollment.userName}
                               ${`<${enrollment.userEmail}>`}
-                              <small class="hint">
+                              <small class="secondary">
                                 ${lodash.capitalize(enrollment.role)}
                               </small>
                             </summary>
@@ -3379,7 +3379,7 @@ export default async function courselore(
                 })()}
 
             <p><strong>Accent color</strong></p>
-            <p class="hint">
+            <p class="secondary">
               A bar of this color appears at the top of your screen to help you
               tell courses apart.
               $${res.locals.enrollment.role !== "staff"
@@ -3717,7 +3717,7 @@ export default async function courselore(
               >
             </h1>
             <nav>
-              <p class="hint">
+              <p class="secondary">
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/settings"
@@ -3757,7 +3757,7 @@ export default async function courselore(
             </p>
 
             <p><strong>QR Code</strong></p>
-            <p class="hint">
+            <p class="secondary">
               People may point their phone camera at the image below to follow
               the invitation link.
             </p>
@@ -4127,7 +4127,7 @@ export default async function courselore(
                           <strong>${thread.title}</strong>
                         </p>
                         <p
-                          class="hint"
+                          class="secondary"
                           style="${css`
                             margin-bottom: 0;
                           `}"
@@ -4334,7 +4334,7 @@ ${value}</textarea
           >
         </p>
         <p
-          class="hint"
+          class="secondary"
           style="${css`
             text-align: right;
           `}"
@@ -4859,7 +4859,7 @@ ${value}</textarea
                       href="${app.locals.settings.url}/courses/${res.locals
                         .course.reference}/threads/${res.locals.thread
                         .reference}"
-                      class="hint"
+                      class="secondary"
                       >#${res.locals.thread.reference}</a
                     >
                   </h1>
@@ -5013,7 +5013,7 @@ ${value}</textarea
                         `}"
                       >
                         <strong>${post.authorEnrollment.user.name}</strong>
-                        <span class="hint">
+                        <span class="secondary">
                           said
                           <time>${post.createdAt}</time>
                           $${post.updatedAt !== post.createdAt
@@ -5179,7 +5179,7 @@ ${value}</textarea
                               `}"
                             >
                               <span
-                                class="hint"
+                                class="secondary"
                                 style="${css`
                                   & > * + * {
                                     margin-left: 0.5rem;
@@ -5583,7 +5583,7 @@ ${value}</textarea
               <details>
                 <summary>
                   <strong>${email.subject}</strong>
-                  <span class="hint"
+                  <span class="secondary"
                     >${email.to} · <time>${email.createdAt}</time></span
                   >
                 </summary>
