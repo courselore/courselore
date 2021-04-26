@@ -202,7 +202,6 @@ export default async function courselore(
               "reference" TEXT NOT NULL,
               "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
               "content" TEXT NOT NULL,
-              "tags" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("tags")),
               UNIQUE ("thread", "reference")
             );
 
@@ -2174,7 +2173,6 @@ export default async function courselore(
             role: Role;
           }
         | AnonymousEnrollment;
-      tags: string[];
       postsCount: number;
       likesCount: number;
     }[];
@@ -2216,7 +2214,6 @@ export default async function courselore(
             authorUserEmail: string | null;
             authorUserName: string | null;
             authorEnrollmentRole: Role | null;
-            tags: string;
             likesCount: number;
           }>(
             sql`
@@ -2226,7 +2223,6 @@ export default async function courselore(
                      "authorUser"."email" AS "authorUserEmail",
                      "authorUser"."name" AS "authorUserName",
                      "authorEnrollment"."role" AS "authorEnrollmentRole",
-                     "posts"."tags",
                      COUNT("likes"."id") AS "likesCount"
               FROM "posts"
               LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
@@ -2275,7 +2271,6 @@ export default async function courselore(
                     role: originalPost.authorEnrollmentRole,
                   }
                 : app.locals.constants.anonymousEnrollment,
-            tags: JSON.parse(originalPost.tags),
             postsCount,
             likesCount: originalPost.likesCount,
           };
@@ -4007,16 +4002,8 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.thread = (req, res, head, body) => {
-    let threads = res.locals.threads;
-    const searchTags = [
-      ...(req.query.search ?? "").matchAll(/"tag:(.*?)"/g),
-    ].map((match) => match[1]);
-    if (searchTags.length > 0)
-      threads = threads.filter((thread) =>
-        thread.tags.find((tag) => searchTags.includes(tag))
-      );
-    return app.locals.layouts.application(
+  app.locals.layouts.thread = (req, res, head, body) =>
+    app.locals.layouts.application(
       req,
       res,
       head,
@@ -4110,7 +4097,7 @@ export default async function courselore(
               </form>
 
               <nav id="threads">
-                $${threads.map(
+                $${res.locals.threads.map(
                   (thread) =>
                     html`
                       <a
@@ -4209,11 +4196,6 @@ export default async function courselore(
                                     ${thread.likesCount}
                                   </span>
                                 `}
-                            $${thread.tags.map(
-                              (tag) =>
-                                // FIXME: Make these links.
-                                html`<span>${tag}</span>`
-                            )}
                           </span>
                         </p>
                       </a>
@@ -4253,7 +4235,6 @@ export default async function courselore(
         </div>
       `
     );
-  };
 
   interface Partials {
     textEditor: (value?: string) => HTML;
@@ -4524,21 +4505,9 @@ ${value}</textarea
               $${app.locals.partials.textEditor()}
               <p
                 style="${css`
-                  display: flex;
-
-                  & > * + * {
-                    margin-left: 1rem;
-                  }
+                  text-align: right;
                 `}"
               >
-                <input
-                  type="text"
-                  name="tags"
-                  placeholder="Tags (comma-separated, for example, “Homework 5, Question”)"
-                  style="${css`
-                    flex: 1 !important;
-                  `}"
-                />
                 <button>Create Thread</button>
               </p>
             </form>
@@ -4561,7 +4530,7 @@ ${value}</textarea
   app.post<
     { courseReference: string },
     HTML,
-    { title?: string; content?: string; tags?: string },
+    { title?: string; content?: string },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
@@ -4598,18 +4567,12 @@ ${value}</textarea
       ).lastInsertRowid;
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content", "tags")
+          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
           VALUES (
             ${threadId},
             ${"1"},
             ${res.locals.enrollment.id},
-            ${req.body.content},
-            ${JSON.stringify(
-              (req.body.tags ?? "")
-                .split(",")
-                .map((tag) => tag.trim())
-                .filter((tag) => tag !== "")
-            )}
+            ${req.body.content}
           )
         `
       );
@@ -4641,7 +4604,6 @@ ${value}</textarea
       reference: string;
       authorEnrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
       content: string;
-      tags: string[];
       likes: {
         id: number;
         enrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
@@ -4668,7 +4630,6 @@ ${value}</textarea
           authorUserName: string | null;
           authorEnrollmentRole: Role | null;
           content: string;
-          tags: string;
         }>(
           sql`
             SELECT "posts"."id",
@@ -4680,8 +4641,7 @@ ${value}</textarea
                    "authorUser"."email" AS "authorUserEmail",
                    "authorUser"."name" AS "authorUserName",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
-                   "posts"."content",
-                   "posts"."tags"
+                   "posts"."content"
             FROM "posts"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
@@ -4711,7 +4671,6 @@ ${value}</textarea
                 }
               : app.locals.constants.anonymousEnrollment,
           content: post.content,
-          tags: JSON.parse(post.tags),
           // FIXME: Try to get rid of this n+1 query.
           likes: app.locals.database
             .all<{
@@ -5265,21 +5224,6 @@ ${value}</textarea
                                 ? ""
                                 : post.likes.length}
                             </button>
-
-                            $${post.tags.map(
-                              (tag) =>
-                                html`
-                                  <span>
-                                    <a
-                                      href="?${qs.stringify({
-                                        search: `"tag:${tag}"`,
-                                      })}"
-                                      title="See only threads tagged with “${tag}”"
-                                      >${tag}</a
-                                    >
-                                  </span>
-                                `
-                            )}
                           </span>
                         </p>
                       </form>
@@ -5382,21 +5326,9 @@ ${value}</textarea
               </script>
               <p
                 style="${css`
-                  display: flex;
-
-                  & > * + * {
-                    margin-left: 1rem;
-                  }
+                  text-align: right;
                 `}"
               >
-                <input
-                  type="text"
-                  name="tags"
-                  placeholder="Tags (comma-separated, for example, “Answer, Attention Required”)"
-                  style="${css`
-                    flex: 1 !important;
-                  `}"
-                />
                 <button>Post</button>
               </p>
             </form>
@@ -5458,7 +5390,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; threadReference: string },
     HTML,
-    { content?: string; tags?: string },
+    { content?: string },
     {},
     IsThreadAccessibleMiddlewareLocals
   >(
@@ -5480,18 +5412,12 @@ ${value}</textarea
       );
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content", "tags")
+          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
           VALUES (
             ${res.locals.thread.id},
             ${String(res.locals.thread.nextPostReference)},
             ${res.locals.enrollment.id},
-            ${req.body.content},
-            ${JSON.stringify(
-              (req.body.tags ?? "")
-                .split(",")
-                .map((tag) => tag.trim())
-                .filter((tag) => tag !== "")
-            )}
+            ${req.body.content}
           )
         `
       );
