@@ -190,6 +190,7 @@ export default async function courselore(
               "reference" TEXT NOT NULL,
               "title" TEXT NOT NULL,
               "nextPostReference" INTEGER NOT NULL DEFAULT 1,
+              "pinnedAt" TEXT NULL,
               UNIQUE ("course", "reference")
             );
 
@@ -2163,6 +2164,7 @@ export default async function courselore(
       reference: string;
       title: string;
       nextPostReference: number;
+      pinnedAt: string | null;
       createdAt: string;
       updatedAt: string;
       authorEnrollment:
@@ -2193,12 +2195,14 @@ export default async function courselore(
           reference: string;
           title: string;
           nextPostReference: number;
+          pinnedAt: string | null;
         }>(
           sql`
             SELECT "threads"."id",
                    "threads"."reference",
                    "threads"."title",
-                   "threads"."nextPostReference"
+                   "threads"."nextPostReference",
+                   "threads"."pinnedAt"
             FROM "threads"
             WHERE "threads"."course" = ${res.locals.course.id}
             ORDER BY "threads"."id" DESC
@@ -2252,6 +2256,7 @@ export default async function courselore(
             reference: thread.reference,
             title: thread.title,
             nextPostReference: thread.nextPostReference,
+            pinnedAt: thread.pinnedAt,
             createdAt: originalPost.createdAt,
             updatedAt: mostRecentlyUpdatedPost.updatedAt,
             authorEnrollment:
@@ -4073,8 +4078,15 @@ export default async function courselore(
               </p>
 
               <nav id="threads">
-                $${res.locals.threads.map(
-                  (thread) =>
+                $${(() => {
+                  const [pinnedThreads, otherThreads] = lodash.partition(
+                    res.locals.threads,
+                    (thread) => thread.pinnedAt !== null
+                  );
+
+                  const threadPartial = (
+                    thread: typeof res.locals.threads[number]
+                  ): HTML =>
                     html`
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
@@ -4167,8 +4179,57 @@ export default async function courselore(
                           </span>
                         </p>
                       </a>
-                    `
-                )}
+                    `;
+
+                  return html`
+                    $${pinnedThreads.length > 0
+                      ? html`
+                          <p
+                            style="${css`
+                              font-size: 0.56rem;
+                              font-weight: bold;
+                              text-transform: uppercase;
+                              letter-spacing: 2px;
+                              margin: 0;
+                            `}"
+                          >
+                            <svg
+                              viewBox="0 0 16 16"
+                              width="8"
+                              height="8"
+                              style="${css`
+                                transform: translateY(1px);
+                              `}"
+                            >
+                              <path
+                                d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
+                              ></path>
+                            </svg>
+                            Pinned
+                          </p>
+
+                          $${pinnedThreads.map(threadPartial)}
+                        `
+                      : html``}
+                    $${pinnedThreads.length > 0 && otherThreads.length > 0
+                      ? html`
+                          <hr />
+                          <p
+                            style="${css`
+                              font-size: 0.56rem;
+                              font-weight: bold;
+                              text-transform: uppercase;
+                              letter-spacing: 2px;
+                              margin: 0;
+                            `}"
+                          >
+                            Unpinned
+                          </p>
+                        `
+                      : html``}
+                    $${otherThreads.map(threadPartial)}
+                  `;
+                })()}
               </nav>
               <script>
                 (() => {
@@ -4474,8 +4535,29 @@ ${value}</textarea
               <p
                 style="${css`
                   text-align: right;
+
+                  & > * + * {
+                    margin-left: 1rem;
+                  }
                 `}"
               >
+                <span>
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <label
+                          title="Pinned threads appear first on the list of threads"
+                        >
+                          <input type="checkbox" name="isPinned" />
+                          <svg width="16" height="16">
+                            <path
+                              d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
+                            ></path>
+                          </svg>
+                          Pin
+                        </label>
+                      `
+                    : html``}
+                </span>
                 <button>Create Thread</button>
               </p>
             </form>
@@ -4498,7 +4580,7 @@ ${value}</textarea
   app.post<
     { courseReference: string },
     HTML,
-    { title?: string; content?: string },
+    { title?: string; content?: string; isPinned?: boolean },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
@@ -4509,7 +4591,8 @@ ${value}</textarea
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
         typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
+        req.body.content.trim() === "" ||
+        (req.body.isPinned && res.locals.enrollment.role !== "staff")
       )
         return next("validation");
 
@@ -4524,12 +4607,13 @@ ${value}</textarea
       );
       const threadId = app.locals.database.run(
         sql`
-          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference")
+          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference", "pinnedAt")
           VALUES (
             ${res.locals.course.id},
             ${String(res.locals.course.nextThreadReference)},
             ${req.body.title},
-            ${"2"}
+            ${"2"},
+            ${req.body.isPinned ? new Date().toISOString() : null}
           )
         `
       ).lastInsertRowid;
@@ -4832,6 +4916,45 @@ ${value}</textarea
                     >
                   </h1>
 
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${app.locals.settings.url}/courses/${res
+                            .locals.course.reference}/threads/${res.locals
+                            .thread.reference}?_method=PATCH"
+                        >
+                          <input
+                            type="hidden"
+                            name="isPinned"
+                            value="${res.locals.thread.pinnedAt === null
+                              ? "true"
+                              : "false"}"
+                          />
+                          <p>
+                            <button
+                              title="$${res.locals.thread.pinnedAt === null
+                                ? "Pin"
+                                : "Unpin"}"
+                              style="${css`
+                                &,
+                                &:active {
+                                  all: unset;
+                                }
+                              `}"
+                            >
+                              <svg width="16" height="16">
+                                <path
+                                  d="$${res.locals.thread.pinnedAt === null
+                                    ? "M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
+                                    : "M 4.456,0.734 C 5.3169091,-0.12659833 6.7716703,0.13284953 7.282,1.238 l 0.613,1.327 c 0.3959355,0.8586347 1.1642046,1.4879223 2.084,1.707 l 2.454,0.584 c 1.332,0.317 1.8,1.972 0.832,2.94 L 11.06,10 l 3.72,3.72 c 0.731556,0.707236 -0.354454,1.792222 -1.061,1.06 L 10,11.06 7.796,13.265 c -0.968,0.968 -2.623,0.5 -2.94,-0.832 L 4.272,9.979 C 4.0529223,9.0592046 3.4236347,8.2909355 2.565,7.895 L 1.238,7.282 C 0.13284953,6.7716703 -0.12659833,5.3169091 0.734,4.456 Z"}"
+                                ></path>
+                              </svg>
+                            </button>
+                          </p>
+                        </form>
+                      `
+                    : html``}
                   $${app.locals.helpers.mayEditThread(req, res)
                     ? html`
                         <p>
@@ -5302,7 +5425,7 @@ ${value}</textarea
   app.patch<
     { courseReference: string; threadReference: string },
     HTML,
-    { title?: string },
+    { title?: string; isPinned?: "true" | "false" },
     {},
     IsThreadAccessibleMiddlewareLocals
   >(
@@ -5315,6 +5438,26 @@ ${value}</textarea
         else
           app.locals.database.run(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.thread.id}`
+          );
+
+      if (typeof req.body.isPinned === "string")
+        if (
+          !["true", "false"].includes(req.body.isPinned) ||
+          res.locals.enrollment.role !== "staff" ||
+          (req.body.isPinned === "true" &&
+            res.locals.thread.pinnedAt !== null) ||
+          (req.body.isPinned === "false" && res.locals.thread.pinnedAt === null)
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "threads"
+              SET "pinnedAt" = ${
+                req.body.isPinned === "true" ? new Date().toISOString() : null
+              }
+              WHERE "id" = ${res.locals.thread.id}
+            `
           );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
