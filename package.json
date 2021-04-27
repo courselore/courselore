@@ -63,7 +63,7 @@
     "@types/jsdom": "^16.2.6",
     "@types/lodash": "^4.14.168",
     "@types/method-override": "^0.0.31",
-    "@types/node": "^14.14.21",
+    "@types/node": "^15.0.0",
     "@types/qrcode": "^1.4.0",
     "@types/tough-cookie": "^4.0.0",
     "caxa": "^1.0.0",

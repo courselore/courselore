@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import path from "path";
-// FIXME: When @types/node catches up with Node.js 15+, change this to ‘import assert from "assert/strict"’
-import { strict as assert } from "assert";
+import assert from "assert/strict";
 
 import express from "express";
 import methodOverride from "method-override";
