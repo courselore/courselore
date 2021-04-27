@@ -613,13 +613,13 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Introduced types to layouts, middlewares, and so forth.
 - Next week:
   - Tags.
-    - Question & Answer.
-    - Instructor likes → Endorsed.
-    - Don’t let students create tags.
-    - Force students to tag.
-    - Tag creation is a separate step under Course Settings.
-    - Tags that only staff sees.
     - Pinning.
+    - Question & Answer.
+    - Tag creation is a separate step under Course Settings.
+      - Private tags: Tags that only staff sees.
+      - Don’t let students create tags.
+      - Force students to tag the threads they initiate.
+    - Instructor likes → Endorsed.
     - Attributes on tags.
   - Search.
 
