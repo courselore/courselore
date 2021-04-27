@@ -191,6 +191,7 @@ export default async function courselore(
               "title" TEXT NOT NULL,
               "nextPostReference" INTEGER NOT NULL DEFAULT 1,
               "pinnedAt" TEXT NULL,
+              "questionAt" TEXT NULL,
               UNIQUE ("course", "reference")
             );
 
@@ -202,6 +203,7 @@ export default async function courselore(
               "reference" TEXT NOT NULL,
               "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
               "content" TEXT NOT NULL,
+              "answerAt" TEXT NULL,
               UNIQUE ("thread", "reference")
             );
 
@@ -2165,6 +2167,7 @@ export default async function courselore(
       title: string;
       nextPostReference: number;
       pinnedAt: string | null;
+      questionAt: string | null;
       createdAt: string;
       updatedAt: string;
       authorEnrollment:
@@ -2196,13 +2199,15 @@ export default async function courselore(
           title: string;
           nextPostReference: number;
           pinnedAt: string | null;
+          questionAt: string | null;
         }>(
           sql`
             SELECT "threads"."id",
                    "threads"."reference",
                    "threads"."title",
                    "threads"."nextPostReference",
-                   "threads"."pinnedAt"
+                   "threads"."pinnedAt",
+                   "threads"."questionAt"
             FROM "threads"
             WHERE "threads"."course" = ${res.locals.course.id}
             ORDER BY "threads"."id" DESC
@@ -2257,6 +2262,7 @@ export default async function courselore(
             title: thread.title,
             nextPostReference: thread.nextPostReference,
             pinnedAt: thread.pinnedAt,
+            questionAt: thread.questionAt,
             createdAt: originalPost.createdAt,
             updatedAt: mostRecentlyUpdatedPost.updatedAt,
             authorEnrollment:
@@ -4142,6 +4148,25 @@ export default async function courselore(
                               }
                             `}"
                           >
+                            $${thread.questionAt !== null
+                              ? html`
+                                  <span>
+                                    <svg
+                                      viewBox="0 0 16 16"
+                                      width="10"
+                                      height="10"
+                                      style="${css`
+                                        transform: translateY(1px);
+                                      `}"
+                                    >
+                                      <path
+                                        d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004a7.728 7.728 0 00-.313.195 2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.863-1.725A2.76 2.76 0 008 4c-.631 0-1.155.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 101.342.67z"
+                                      ></path>
+                                    </svg>
+                                    Question
+                                  </span>
+                                `
+                              : html``}
                             <span>
                               <svg
                                 viewBox="0 0 16 16"
@@ -4541,29 +4566,46 @@ ${value}</textarea
                   }
                 `}"
               >
-                <span>
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <label
-                          title="Pinned threads appear first on the list of threads"
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <label
+                        title="Pinned threads appear first on the list of threads"
+                      >
+                        <input type="checkbox" name="isPinned" />
+                        <svg
+                          width="16"
+                          height="16"
+                          style="${css`
+                            transform: translateY(3px);
+                          `}"
                         >
-                          <input type="checkbox" name="isPinned" />
-                          <svg
-                            width="16"
-                            height="16"
-                            style="${css`
-                              transform: translateY(3px);
-                            `}"
-                          >
-                            <path
-                              d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
-                            ></path>
-                          </svg>
-                          Pin
-                        </label>
-                      `
-                    : html``}
-                </span>
+                          <path
+                            d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
+                          ></path>
+                        </svg>
+                        Pin
+                      </label>
+                    `
+                  : html``}
+                <label>
+                  <input
+                    type="checkbox"
+                    name="isQuestion"
+                    $${res.locals.enrollment.role === "staff" ? `` : `checked`}
+                  />
+                  <svg
+                    width="16"
+                    height="16"
+                    style="${css`
+                      transform: translateY(3px);
+                    `}"
+                  >
+                    <path
+                      d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004a7.728 7.728 0 00-.313.195 2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.863-1.725A2.76 2.76 0 008 4c-.631 0-1.155.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 101.342.67z"
+                    ></path>
+                  </svg>
+                  Question
+                </label>
                 <button>Create Thread</button>
               </p>
             </form>
@@ -4586,7 +4628,12 @@ ${value}</textarea
   app.post<
     { courseReference: string },
     HTML,
-    { title?: string; content?: string; isPinned?: boolean },
+    {
+      title?: string;
+      content?: string;
+      isPinned?: boolean;
+      isQuestion?: boolean;
+    },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
@@ -4613,13 +4660,14 @@ ${value}</textarea
       );
       const threadId = app.locals.database.run(
         sql`
-          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference", "pinnedAt")
+          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference", "pinnedAt", "questionAt")
           VALUES (
             ${res.locals.course.id},
             ${String(res.locals.course.nextThreadReference)},
             ${req.body.title},
             ${"2"},
-            ${req.body.isPinned ? new Date().toISOString() : null}
+            ${req.body.isPinned ? new Date().toISOString() : null},
+            ${req.body.isQuestion ? new Date().toISOString() : null}
           )
         `
       ).lastInsertRowid;
@@ -4963,6 +5011,42 @@ ${value}</textarea
                     : html``}
                   $${app.locals.helpers.mayEditThread(req, res)
                     ? html`
+                        <form
+                          method="POST"
+                          action="${app.locals.settings.url}/courses/${res
+                            .locals.course.reference}/threads/${res.locals
+                            .thread.reference}?_method=PATCH"
+                        >
+                          <input
+                            type="hidden"
+                            name="isQuestion"
+                            value="${res.locals.thread.questionAt === null
+                              ? "true"
+                              : "false"}"
+                          />
+                          <p>
+                            <button
+                              title="$${res.locals.thread.questionAt === null
+                                ? "Set as question"
+                                : "Set as not a question"}"
+                              style="${css`
+                                &,
+                                &:active {
+                                  all: unset;
+                                }
+                              `}"
+                            >
+                              <svg width="16" height="16">
+                                <path
+                                  d="$${res.locals.thread.questionAt === null
+                                    ? "M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004a7.728 7.728 0 00-.313.195 2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.863-1.725A2.76 2.76 0 008 4c-.631 0-1.155.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 101.342.67z"
+                                    : "M 0,8 C 0,3.581719 3.5817221,3.4729399e-6 8,3.4729399e-6 12.418278,3.4729399e-6 16,3.581719 16,8 16,12.418281 12.418278,15.999997 8,15.999997 3.5817221,15.999997 0,12.418281 0,8 Z m 7,3 c 0,1.333333 2,1.333333 2,0 C 9,9.6666672 7,9.6666672 7,11 Z M 6.92,6.085 C 7.001,5.925 7.11,5.786 7.26,5.687 7.405,5.59 7.631,5.5 8,5.5 8.28,5.5 8.553,5.587 8.738,5.725 8.908853,5.8441251 9.0075291,6.0418538 9,6.25 9,6.427 8.96,6.514 8.923,6.568 8.8474925,6.6669168 8.7533991,6.7501402 8.646,6.813 8.57,6.864 8.488,6.913 8.388,6.974 L 8.381,6.978 C 8.2751304,7.040501 8.1707674,7.1055195 8.068,7.173 7.7955677,7.3449894 7.5602863,7.5697307 7.376,7.834 6.8364472,8.6629338 8.0663506,9.4828694 8.624,8.666 8.6992138,8.5671821 8.7929603,8.4839651 8.9,8.421 8.9853615,8.3655743 9.0720536,8.3122253 9.16,8.261 L 9.166,8.257 C 9.259,8.2 9.37,8.134 9.479,8.062 9.701,7.913 9.966,7.707 10.171,7.4 10.385,7.08 10.5,6.698 10.5,6.25 10.5,5.49 10.14,4.902 9.637,4.525 9.1611392,4.1801889 8.587643,3.9962637 8,4 7.369,4 6.845,4.16 6.428,4.438 6.015,4.714 5.748,5.076 5.579,5.415 5.1218371,6.3131493 6.4778575,6.990149 6.921,6.085 Z"}"
+                                ></path>
+                              </svg>
+                            </button>
+                          </p>
+                        </form>
+
                         <p>
                           <button
                             title="Edit Title"
@@ -5431,7 +5515,11 @@ ${value}</textarea
   app.patch<
     { courseReference: string; threadReference: string },
     HTML,
-    { title?: string; isPinned?: "true" | "false" },
+    {
+      title?: string;
+      isPinned?: "true" | "false";
+      isQuestion?: "true" | "false";
+    },
     {},
     IsThreadAccessibleMiddlewareLocals
   >(
@@ -5461,6 +5549,26 @@ ${value}</textarea
               UPDATE "threads"
               SET "pinnedAt" = ${
                 req.body.isPinned === "true" ? new Date().toISOString() : null
+              }
+              WHERE "id" = ${res.locals.thread.id}
+            `
+          );
+
+      if (typeof req.body.isQuestion === "string")
+        if (
+          !["true", "false"].includes(req.body.isQuestion) ||
+          (req.body.isQuestion === "true" &&
+            res.locals.thread.questionAt !== null) ||
+          (req.body.isQuestion === "false" &&
+            res.locals.thread.questionAt === null)
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "threads"
+              SET "questionAt" = ${
+                req.body.isQuestion === "true" ? new Date().toISOString() : null
               }
               WHERE "id" = ${res.locals.thread.id}
             `
