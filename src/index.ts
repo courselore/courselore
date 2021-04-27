@@ -4587,6 +4587,7 @@ ${value}</textarea
                       </label>
                     `
                   : html``}
+
                 <label>
                   <input
                     type="checkbox"
@@ -4606,6 +4607,7 @@ ${value}</textarea
                   </svg>
                   Question
                 </label>
+
                 <button>Create Thread</button>
               </p>
             </form>
@@ -4710,6 +4712,7 @@ ${value}</textarea
       reference: string;
       authorEnrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
       content: string;
+      answerAt: string | null;
       likes: {
         id: number;
         enrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
@@ -4736,6 +4739,7 @@ ${value}</textarea
           authorUserName: string | null;
           authorEnrollmentRole: Role | null;
           content: string;
+          answerAt: string | null;
         }>(
           sql`
             SELECT "posts"."id",
@@ -4747,7 +4751,8 @@ ${value}</textarea
                    "authorUser"."email" AS "authorUserEmail",
                    "authorUser"."name" AS "authorUserName",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
-                   "posts"."content"
+                   "posts"."content",
+                   "posts"."answerAt"
             FROM "posts"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
@@ -4777,6 +4782,7 @@ ${value}</textarea
                 }
               : app.locals.constants.anonymousEnrollment,
           content: post.content,
+          answerAt: post.answerAt,
           // FIXME: Try to get rid of this n+1 query.
           likes: app.locals.database
             .all<{
@@ -5332,9 +5338,123 @@ ${value}</textarea
                     </div>
 
                     <div class="show">
-                      $${post.likes.find(
-                        (like) => like.enrollment.role === "staff"
-                      ) !== undefined
+                      $${post.answerAt !== null &&
+                      post.authorEnrollment.role === "staff"
+                        ? html`
+                            <p class="secondary green">
+                              <svg
+                                viewBox="0 0 16 16"
+                                width="12"
+                                height="12"
+                                style="${css`
+                                  transform: translateY(2px);
+                                `}"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.78-1.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"
+                                ></path>
+                              </svg>
+                              Answered by staff
+                            </p>
+                          `
+                        : post.answerAt !== null &&
+                          post.likes.find(
+                            (like) => like.enrollment.role === "staff"
+                          ) !== undefined &&
+                          post.likes.find(
+                            (like) =>
+                              like.enrollment.id ===
+                              res.locals.posts[0].authorEnrollment.id
+                          ) !== undefined
+                        ? html`
+                            <p class="secondary green">
+                              <svg
+                                viewBox="0 0 16 16"
+                                width="12"
+                                height="12"
+                                style="${css`
+                                  transform: translateY(2px);
+                                `}"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.78-1.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"
+                                ></path>
+                              </svg>
+                              Answer endorsed by staff and the person who asked
+                              the question
+                            </p>
+                          `
+                        : post.answerAt !== null &&
+                          post.likes.find(
+                            (like) => like.enrollment.role === "staff"
+                          ) !== undefined
+                        ? html`
+                            <p class="secondary green">
+                              <svg
+                                viewBox="0 0 16 16"
+                                width="12"
+                                height="12"
+                                style="${css`
+                                  transform: translateY(2px);
+                                `}"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.78-1.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"
+                                ></path>
+                              </svg>
+                              Answer endorsed by staff
+                            </p>
+                          `
+                        : post.answerAt !== null &&
+                          post.likes.find(
+                            (like) =>
+                              like.enrollment.id ===
+                              res.locals.posts[0].authorEnrollment.id
+                          ) !== undefined
+                        ? html`
+                            <p class="secondary green">
+                              <svg
+                                viewBox="0 0 16 16"
+                                width="12"
+                                height="12"
+                                style="${css`
+                                  transform: translateY(2px);
+                                `}"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.78-1.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"
+                                ></path>
+                              </svg>
+                              Answer endorsed by the person who asked the
+                              question
+                            </p>
+                          `
+                        : post.answerAt !== null
+                        ? html`
+                            <p class="secondary">
+                              <svg
+                                viewBox="0 0 16 16"
+                                width="12"
+                                height="12"
+                                style="${css`
+                                  transform: translateY(2px);
+                                `}"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.78-1.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"
+                                ></path>
+                              </svg>
+                              Answer
+                            </p>
+                          `
+                        : post.likes.find(
+                            (like) => like.enrollment.role === "staff"
+                          ) !== undefined
                         ? html`
                             <p class="secondary green">
                               <svg
@@ -5522,8 +5642,39 @@ ${value}</textarea
               <p
                 style="${css`
                   text-align: right;
+
+                  & > * + * {
+                    margin-left: 1rem;
+                  }
                 `}"
               >
+                $${res.locals.thread.questionAt !== null
+                  ? html`
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="isAnswer"
+                          $${res.locals.enrollment.role === "staff"
+                            ? `checked`
+                            : ``}
+                        />
+                        <svg
+                          width="16"
+                          height="16"
+                          style="${css`
+                            transform: translateY(3px);
+                          `}"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.78-1.72a.75.75 0 00-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5z"
+                          ></path>
+                        </svg>
+                        Answer
+                      </label>
+                    `
+                  : html``}
+
                 <button>Post</button>
               </p>
             </form>
@@ -5629,7 +5780,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; threadReference: string },
     HTML,
-    { content?: string },
+    { content?: string; isAnswer?: boolean },
     {},
     IsThreadAccessibleMiddlewareLocals
   >(
@@ -5638,7 +5789,8 @@ ${value}</textarea
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
+        req.body.content.trim() === "" ||
+        (req.body.isAnswer && res.locals.thread.questionAt === null)
       )
         return next("validation");
 
@@ -5651,12 +5803,13 @@ ${value}</textarea
       );
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
+          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content", "answerAt")
           VALUES (
             ${res.locals.thread.id},
             ${String(res.locals.thread.nextPostReference)},
             ${res.locals.enrollment.id},
-            ${req.body.content}
+            ${req.body.content},
+            ${req.body.isAnswer ? new Date().toISOString() : null}
           )
         `
       );
