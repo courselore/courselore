@@ -319,7 +319,10 @@ export default async function courselore(
 
               :focus:focus {
                 outline: none;
-                box-shadow: 0 0 0 2px #29adff;
+                box-shadow: 0 0 0 1px white, 0 0 0 3px #ff77a8;
+                @media (prefers-color-scheme: dark) {
+                  box-shadow: 0 0 0 1px #1e1e1e, 0 0 0 3px #ff77a8;
+                }
               }
 
               img,
