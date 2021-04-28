@@ -2234,7 +2234,8 @@ export default async function courselore(
                    "threads"."questionAt"
             FROM "threads"
             WHERE "threads"."course" = ${res.locals.course.id}
-            ORDER BY "threads"."id" DESC
+            ORDER BY "threads"."pinnedAt" IS NOT NULL DESC,
+                     "threads"."id" DESC
           `
         )
         .map((thread) => {
@@ -5127,6 +5128,126 @@ ${value}</textarea
                   : html``}
               </div>
 
+              $${(() => {
+                const content: HTML[] = [];
+                switch (res.locals.enrollment.role) {
+                  case "staff":
+                    content.push(html`
+                      <form
+                        method="POST"
+                        action="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/threads/${res.locals.thread
+                          .reference}?_method=PATCH"
+                      >
+                        <input
+                          type="hidden"
+                          name="isPinned"
+                          value="${res.locals.thread.pinnedAt === null
+                            ? "true"
+                            : "false"}"
+                        />
+                        <p
+                          style="${css`
+                            & > * + * {
+                              margin-left: 0.5rem;
+                            }
+                          `}"
+                        >
+                          $${res.locals.thread.pinnedAt === null
+                            ? html`
+                                <button>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 16 16"
+                                    width="12"
+                                    height="12"
+                                    style="${css`
+                                      transform: translateY(2px);
+                                    `}"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
+                                    ></path>
+                                  </svg>
+                                  Pin
+                                </button>
+                              `
+                            : html`
+                                <span>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 16 16"
+                                    width="12"
+                                    height="12"
+                                    style="${css`
+                                      transform: translateY(2px);
+                                    `}"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
+                                    ></path>
+                                  </svg>
+                                  Pinned
+                                </span>
+                                <button>Unpin</button>
+                              `}
+                        </p>
+                      </form>
+                    `);
+                    break;
+
+                  case "student":
+                    if (res.locals.thread.pinnedAt !== null)
+                      content.push(html`
+                        <p
+                          style="${css`
+                            & > * + * {
+                              margin-left: 0.5rem;
+                            }
+                          `}"
+                        >
+                          <span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 16 16"
+                              width="12"
+                              height="12"
+                              style="${css`
+                                transform: translateY(2px);
+                              `}"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
+                              ></path>
+                            </svg>
+                            Pinned
+                          </span>
+                        </p>
+                      `);
+                    break;
+                }
+
+                return content.length === 0
+                  ? html``
+                  : html`
+                      <div
+                        class="secondary"
+                        style="${css`
+                          margin-top: -1.5rem;
+                          display: flex;
+
+                          & > * + * {
+                            margin-left: 1rem;
+                          }
+                        `}"
+                      >
+                        $${content}
+                      </div>
+                    `;
+              })()}
               $${res.locals.posts.map(
                 (post) => html`
                   <section
