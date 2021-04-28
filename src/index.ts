@@ -317,6 +317,11 @@ export default async function courselore(
                 background-color: #ff77a8;
               }
 
+              :focus:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px #29adff;
+              }
+
               img,
               svg {
                 max-width: 100%;
@@ -376,10 +381,6 @@ export default async function courselore(
                 }
                 box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
 
-                &:focus {
-                  border-color: #ff77a8;
-                }
-
                 &:disabled {
                   background-color: whitesmoke;
                   @media (prefers-color-scheme: dark) {
@@ -427,6 +428,11 @@ export default async function courselore(
                 width: 12px;
                 height: 12px;
                 margin-bottom: -2px;
+
+                &:checked {
+                  background: #ff77a8 center center no-repeat;
+                  border-color: #ff77a8;
+                }
               }
 
               input[type="radio"] {
@@ -437,10 +443,15 @@ export default async function courselore(
                     html`
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="12"
-                        height="12"
+                        viewBox="0 0 16 16"
+                        width="10"
+                        height="10"
                       >
-                        <circle cx="6" cy="6" r="3" fill="#ff77a8" />
+                        <path
+                          fill="white"
+                          fill-rule="evenodd"
+                          d="M8 4a4 4 0 100 8 4 4 0 000-8z"
+                        ></path>
                       </svg>
                     `
                   ).toString("base64")}");
@@ -455,13 +466,15 @@ export default async function courselore(
                     html`
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="12"
-                        height="12"
+                        viewBox="0 0 16 16"
+                        width="16"
+                        height="16"
                       >
                         <path
-                          d="M10.548 1.559a1.315 1.315 0 00-.921.378.652.652 0 00-.003 0L4.258 7.303 2.363 5.408a.652.652 0 00-.013-.01c-.485-.463-1.342-.455-1.817.02C.057 5.89.046 6.75.508 7.237a.652.652 0 00.009.012l2.82 2.82a.652.652 0 00.003 0c.481.48 1.354.48 1.836 0a.652.652 0 00.003 0l6.287-6.287c.484-.483.484-1.364 0-1.846a1.315 1.315 0 00-.915-.378z"
-                          fill="#ff77a8"
-                        />
+                          fill="white"
+                          fill-rule="evenodd"
+                          d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"
+                        ></path>
                       </svg>
                     `
                   ).toString("base64")}");
@@ -481,10 +494,12 @@ export default async function courselore(
                     html`
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
                         width="16"
                         height="16"
                       >
                         <path
+                          fill-rule="evenodd"
                           d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
                         ></path>
                       </svg>
@@ -496,12 +511,14 @@ export default async function courselore(
                     html`
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
                         width="16"
                         height="16"
                       >
                         <path
-                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
                           fill="#d4d4d4"
+                          fill-rule="evenodd"
+                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
                         ></path>
                       </svg>
                     `
@@ -513,12 +530,14 @@ export default async function courselore(
                     html`
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
                         width="16"
                         height="16"
                       >
                         <path
-                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
                           fill="gray"
+                          fill-rule="evenodd"
+                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
                         ></path>
                       </svg>
                     `
@@ -528,12 +547,14 @@ export default async function courselore(
                       html`
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 16 16"
                           width="16"
                           height="16"
                         >
                           <path
-                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
                             fill="whitesmoke"
+                            fill-rule="evenodd"
+                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
                           ></path>
                         </svg>
                       `
