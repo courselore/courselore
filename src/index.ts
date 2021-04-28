@@ -5291,9 +5291,7 @@ ${value}</textarea
                                   </svg>
                                   Question
                                 </span>
-                                <button class="red">
-                                  Mark as Not a Question
-                                </button>
+                                <button>Mark as Not a Question</button>
                               `}
                         </p>
                       </form>
