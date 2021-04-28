@@ -604,7 +604,6 @@ export default async function courselore(
               }
 
               summary {
-                outline: none;
                 cursor: default;
 
                 &:hover,
