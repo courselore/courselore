@@ -642,6 +642,11 @@ export default async function courselore(
                 display: none !important;
               }
 
+              .reset,
+              .reset:active {
+                all: unset;
+              }
+
               .full-width.full-width {
                 box-sizing: border-box;
                 width: 100%;
@@ -3438,14 +3443,7 @@ export default async function courselore(
                         value="${accentColor}"
                       />
                       <p>
-                        <button
-                          style="${css`
-                            &,
-                            &:active {
-                              all: unset;
-                            }
-                          `}"
-                        >
+                        <button class="reset">
                           <svg width="30" height="30">
                             <circle
                               cx="15"
@@ -5014,12 +5012,7 @@ ${value}</textarea
                           <button
                             title="Edit Title"
                             type="button"
-                            style="${css`
-                              &,
-                              &:active {
-                                all: unset;
-                              }
-                            `}"
+                            class="reset"
                             onclick="${javascript`
                               const title = this.closest(".title");
                               title.querySelector(".show").hidden = true;
@@ -5056,13 +5049,7 @@ ${value}</textarea
                           <p>
                             <button
                               title="Remove Thread"
-                              class="red"
-                              style="${css`
-                                &,
-                                &:active {
-                                  all: unset;
-                                }
-                              `}"
+                              class="reset red"
                               onclick="${javascript`
                                 if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
                                   event.preventDefault();
@@ -5194,12 +5181,7 @@ ${value}</textarea
                         <button
                           title="Reply"
                           type="button"
-                          style="${css`
-                            &,
-                            &:active {
-                              all: unset;
-                            }
-                          `}"
+                          class="reset"
                           onclick="${javascript`
                             const newPost = document.querySelector("#new-post");
                             newPost.querySelector(".write").click();
@@ -5246,13 +5228,7 @@ ${value}</textarea
                               <button
                                 title="Edit Post"
                                 type="button"
-                                class="edit-button"
-                                style="${css`
-                                  &,
-                                  &:active {
-                                    all: unset;
-                                  }
-                                `}"
+                                class="reset edit-button"
                                 onclick="${javascript`
                                   const post = this.closest(".post");
                                   post.querySelector(".show").hidden = true;
@@ -5292,13 +5268,7 @@ ${value}</textarea
                               <p>
                                 <button
                                   title="Remove Post"
-                                  class="red"
-                                  style="${css`
-                                    &,
-                                    &:active {
-                                      all: unset;
-                                    }
-                                  `}"
+                                  class="reset red"
                                   onclick="${javascript`
                                     if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
                                       event.preventDefault();
@@ -5361,13 +5331,7 @@ ${value}</textarea
                                   `}"
                                 >
                                   <button
-                                    class="${isLiked ? "green" : ""}"
-                                    style="${css`
-                                      &,
-                                      &:active {
-                                        all: unset;
-                                      }
-                                    `}"
+                                    class="reset ${isLiked ? "green" : ""}"
                                   >
                                     <svg
                                       viewBox="0 0 16 16"
