@@ -5397,7 +5397,7 @@ ${value}</textarea
                               <button
                                 title="Edit Post"
                                 type="button"
-                                class="reset edit-button"
+                                class="reset"
                                 onclick="${javascript`
                                   const post = this.closest(".post");
                                   post.querySelector(".show").hidden = true;
@@ -5406,7 +5406,6 @@ ${value}</textarea
                                   const textarea = edit.querySelector('[name="content"]');
                                   textarea.focus();
                                   textarea.setSelectionRange(0, 0);
-                                  this.hidden = true;
                                 `}"
                               >
                                 <svg
@@ -5569,7 +5568,6 @@ ${value}</textarea
                                   post.querySelector(".show").hidden = false;
                                   const edit = post.querySelector(".edit");
                                   edit.hidden = true;
-                                  post.querySelector(".edit-button").hidden = false;
                                 `}"
                               >
                                 Cancel
