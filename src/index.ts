@@ -4568,9 +4568,7 @@ ${value}</textarea
               >
                 $${res.locals.enrollment.role === "staff"
                   ? html`
-                      <label
-                        title="Pinned threads appear first on the list of threads"
-                      >
+                      <label>
                         <input type="checkbox" name="isPinned" />
                         <svg
                           width="16"
@@ -4584,6 +4582,10 @@ ${value}</textarea
                           ></path>
                         </svg>
                         Pin
+                        <span class="secondary"
+                          >Pinned threads appear first on the list of
+                          threads</span
+                        >
                       </label>
                     `
                   : html``}
