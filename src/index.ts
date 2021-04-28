@@ -304,7 +304,6 @@ export default async function courselore(
 
                 @media (prefers-color-scheme: dark) {
                   color: #d4d4d4;
-                  fill: #d4d4d4;
                   background-color: #1e1e1e;
                 }
               }
@@ -315,7 +314,6 @@ export default async function courselore(
 
               ::selection {
                 color: white;
-                fill: white;
                 background-color: #ff77a8;
               }
 
@@ -328,6 +326,10 @@ export default async function courselore(
               img {
                 border-radius: 10px;
                 background-color: white;
+              }
+
+              svg {
+                fill: currentColor;
               }
 
               h1 {
@@ -348,11 +350,9 @@ export default async function courselore(
 
               a {
                 color: inherit;
-                fill: inherit;
 
                 &:hover {
                   color: #ff77a8 !important;
-                  fill: #ff77a8 !important;
                 }
 
                 h1 &,
@@ -404,10 +404,8 @@ export default async function courselore(
 
                 &:disabled {
                   color: gray;
-                  fill: gray;
                   @media (prefers-color-scheme: dark) {
                     color: whitesmoke;
-                    fill: whitesmoke;
                   }
                 }
               }
@@ -554,7 +552,6 @@ export default async function courselore(
 
                 &:active {
                   color: white;
-                  fill: white;
                   background-color: #ff77a8;
                 }
               }
@@ -592,7 +589,6 @@ export default async function courselore(
                 &:hover,
                 details[open] > & {
                   color: #ff77a8;
-                  fill: #ff77a8;
                 }
 
                 &.no-marker {
@@ -614,7 +610,6 @@ export default async function courselore(
 
               blockquote {
                 color: gray;
-                fill: gray;
                 padding-left: 0.5rem;
                 border-left: 3px solid gray;
                 margin: 1rem 0;
@@ -635,22 +630,18 @@ export default async function courselore(
                 font-weight: normal;
                 line-height: 1.3;
                 color: gray;
-                fill: gray;
                 margin-top: -0.8rem;
               }
 
               .green:not(:active) {
                 color: #008751;
-                fill: #008751;
                 @media (prefers-color-scheme: dark) {
                   color: #00e436;
-                  fill: #00e436;
                 }
               }
 
               .red:not(:active) {
                 color: #ff004d;
-                fill: #ff004d;
               }
 
               @media (prefers-color-scheme: light) {
@@ -937,7 +928,6 @@ export default async function courselore(
                   text-transform: uppercase;
                   letter-spacing: 2px;
                   color: white;
-                  fill: white;
                   background-color: #83769c;
                   padding: 0.1rem 1rem;
                   border-top-left-radius: 5px;
@@ -4304,19 +4294,16 @@ export default async function courselore(
           & > button {
             all: unset;
             color: gray;
-            fill: gray;
             cursor: default;
             transition: font-weight 0.2s, color 0.2s;
 
             &:hover {
               color: #ff77a8;
-              fill: #ff77a8;
             }
 
             &:disabled {
               font-weight: bold;
               color: inherit;
-              fill: inherit;
             }
           }
 
