@@ -4393,8 +4393,26 @@ export default async function courselore(
 
       <div class="write">
         <p
+          class="secondary"
           style="${css`
-            margin-top: -0.8rem;
+            text-align: right;
+            margin-top: -2rem;
+          `}"
+        >
+          <a
+            href="https://guides.github.com/features/mastering-markdown/"
+            target="_blank"
+            >Markdown</a
+          >
+          &
+          <a href="https://katex.org/docs/supported.html" target="_blank"
+            >LaTeX</a
+          >
+          are supported
+        </p>
+        <p
+          style="${css`
+            margin-top: -0.6rem;
           `}"
         >
           <textarea
@@ -4410,23 +4428,6 @@ export default async function courselore(
           >
 ${value}</textarea
           >
-        </p>
-        <p
-          class="secondary"
-          style="${css`
-            text-align: right;
-          `}"
-        >
-          <a
-            href="https://guides.github.com/features/mastering-markdown/"
-            target="_blank"
-            >Markdown</a
-          >
-          &
-          <a href="https://katex.org/docs/supported.html" target="_blank"
-            >LaTeX</a
-          >
-          are supported
         </p>
       </div>
 
