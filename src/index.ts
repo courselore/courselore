@@ -190,8 +190,8 @@ export default async function courselore(
               "reference" TEXT NOT NULL,
               "title" TEXT NOT NULL,
               "nextPostReference" INTEGER NOT NULL DEFAULT 1,
-              "questionAt" TEXT NULL,
               "pinnedAt" TEXT NULL,
+              "questionAt" TEXT NULL,
               UNIQUE ("course", "reference")
             );
 
@@ -441,7 +441,7 @@ export default async function courselore(
                 display: inline-block;
                 width: 12px;
                 height: 12px;
-                margin-bottom: -2px;
+                vertical-align: -0.1em;
 
                 &:checked {
                   background: #ff77a8 center center no-repeat;
@@ -454,20 +454,9 @@ export default async function courselore(
 
                 &:checked {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    html`
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width="10"
-                        height="10"
-                      >
-                        <path
-                          fill="white"
-                          fill-rule="evenodd"
-                          d="M8 4a4 4 0 100 8 4 4 0 000-8z"
-                        ></path>
-                      </svg>
-                    `
+                    app.locals.icons["circle-fill"]
+                      .replace("currentColor", "white")
+                      .replaceAll("1em", "6px")
                   ).toString("base64")}");
                 }
               }
@@ -477,20 +466,7 @@ export default async function courselore(
 
                 &:checked {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    html`
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        height="16"
-                      >
-                        <path
-                          fill="white"
-                          fill-rule="evenodd"
-                          d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"
-                        ></path>
-                      </svg>
-                    `
+                    app.locals.icons["check"].replace("currentColor", "white")
                   ).toString("base64")}");
                 }
               }
@@ -505,73 +481,32 @@ export default async function courselore(
               select {
                 padding-right: 1.5rem;
                 background: url("data:image/svg+xml;base64,${Buffer.from(
-                    html`
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        height="16"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                        ></path>
-                      </svg>
-                    `
+                    app.locals.icons["caret-down-fill"]
                   ).toString("base64")}")
-                  center right 0.3rem no-repeat;
+                  top 0.45rem right 0.5rem no-repeat;
+                background-size: 0.8em 0.8em;
                 @media (prefers-color-scheme: dark) {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    html`
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        height="16"
-                      >
-                        <path
-                          fill="#d4d4d4"
-                          fill-rule="evenodd"
-                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                        ></path>
-                      </svg>
-                    `
+                    app.locals.icons["caret-down-fill"].replace(
+                      "currentColor",
+                      "#d4d4d4"
+                    )
                   ).toString("base64")}");
                 }
 
                 &:disabled {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    html`
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        width="16"
-                        height="16"
-                      >
-                        <path
-                          fill="gray"
-                          fill-rule="evenodd"
-                          d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                        ></path>
-                      </svg>
-                    `
+                    app.locals.icons["caret-down-fill"].replace(
+                      "currentColor",
+                      "gray"
+                    )
                   ).toString("base64")}");
                   @media (prefers-color-scheme: dark) {
                     background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                      html`
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 16 16"
-                          width="16"
-                          height="16"
-                        >
-                          <path
-                            fill="whitesmoke"
-                            fill-rule="evenodd"
-                            d="M12.78 6.22a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06 0L3.22 7.28a.75.75 0 011.06-1.06L8 9.94l3.72-3.72a.75.75 0 011.06 0z"
-                          ></path>
-                        </svg>
-                      `
+                      app.locals.icons["caret-down-fill"].replace(
+                        "currentColor",
+                        "whitesmoke"
+                      )
                     ).toString("base64")}");
                   }
                 }
@@ -1130,19 +1065,7 @@ export default async function courselore(
         ? html``
         : html`
             <details class="dropdown">
-              <summary class="no-marker">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  width="16"
-                  height="16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z"
-                  ></path>
-                </svg>
-              </summary>
+              <summary class="no-marker">$${app.locals.icons["list"]}</summary>
               <nav
                 style="${css`
                   transform: translate(calc(-100% + 1rem));
@@ -1996,14 +1919,14 @@ export default async function courselore(
                           <a
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
-                            ><svg width="10" height="10">
-                              <circle
-                                cx="5"
-                                cy="5"
-                                r="5"
-                                fill="${enrollment.accentColor}"
-                              />
-                            </svg>
+                            ><span
+                              style="${css`
+                                font-size: 0.6rem;
+                                color: ${enrollment.accentColor};
+                              `}"
+                            >
+                              $${app.locals.icons["circle-fill"]}
+                            </span>
                             <strong>${enrollment.course.name}</strong></a
                           >
                         </p>
@@ -2201,8 +2124,8 @@ export default async function courselore(
       reference: string;
       title: string;
       nextPostReference: number;
-      questionAt: string | null;
       pinnedAt: string | null;
+      questionAt: string | null;
       createdAt: string;
       updatedAt: string;
       authorEnrollment:
@@ -2233,16 +2156,16 @@ export default async function courselore(
           reference: string;
           title: string;
           nextPostReference: number;
-          questionAt: string | null;
           pinnedAt: string | null;
+          questionAt: string | null;
         }>(
           sql`
             SELECT "threads"."id",
                    "threads"."reference",
                    "threads"."title",
                    "threads"."nextPostReference",
-                   "threads"."questionAt",
-                   "threads"."pinnedAt"
+                   "threads"."pinnedAt",
+                   "threads"."questionAt"
             FROM "threads"
             WHERE "threads"."course" = ${res.locals.course.id}
             ORDER BY "threads"."pinnedAt" IS NOT NULL DESC,
@@ -2297,8 +2220,8 @@ export default async function courselore(
             reference: thread.reference,
             title: thread.title,
             nextPostReference: thread.nextPostReference,
-            questionAt: thread.questionAt,
             pinnedAt: thread.pinnedAt,
+            questionAt: thread.questionAt,
             createdAt: originalPost.createdAt,
             updatedAt: mostRecentlyUpdatedPost.updatedAt,
             authorEnrollment:
@@ -2346,20 +2269,12 @@ export default async function courselore(
           <details class="dropdown">
             <summary class="no-marker secondary">
               <p>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  width="16"
-                  height="16"
+                <span
                   style="${css`
-                    margin-top: -4px;
-                    transform: translateY(4px);
+                    vertical-align: -0.1em;
                   `}"
+                  >$${app.locals.icons["arrow-left-right"]}</span
                 >
-                  <path
-                    d="M5.22 14.78a.75.75 0 001.06-1.06L4.56 12h8.69a.75.75 0 000-1.5H4.56l1.72-1.72a.75.75 0 00-1.06-1.06l-3 3a.75.75 0 000 1.06l3 3zm5.56-6.5a.75.75 0 11-1.06-1.06l1.72-1.72H2.75a.75.75 0 010-1.5h8.69L9.72 2.28a.75.75 0 011.06-1.06l3 3a.75.75 0 010 1.06l-3 3z"
-                  ></path>
-                </svg>
                 <span>Switch to another course</span>
               </p>
             </summary>
@@ -2374,14 +2289,14 @@ export default async function courselore(
                     <a
                       href="${app.locals.settings.url}/courses/${otherEnrollment
                         .course.reference}${path}"
-                      ><svg width="10" height="10">
-                        <circle
-                          cx="5"
-                          cy="5"
-                          r="5"
-                          fill="${otherEnrollment.accentColor}"
-                        />
-                      </svg>
+                      ><span
+                        style="${css`
+                          font-size: 0.6rem;
+                          color: ${otherEnrollment.accentColor};
+                        `}"
+                      >
+                        $${app.locals.icons["circle-fill"]}
+                      </span>
                       <strong>${otherEnrollment.course.name}</strong></a
                     >
                   </p>
@@ -3434,8 +3349,11 @@ export default async function courselore(
             </p>
             <div
               style="${css`
-                margin-left: -5px;
                 margin-top: -1rem;
+
+                & > * + * {
+                  margin-left: 0.5rem;
+                }
               `}"
             >
               $${app.locals.constants.accentColors.map(
@@ -3455,23 +3373,16 @@ export default async function courselore(
                         value="${accentColor}"
                       />
                       <p>
-                        <button class="reset">
-                          <svg width="30" height="30">
-                            <circle
-                              cx="15"
-                              cy="15"
-                              r="10"
-                              fill="${accentColor}"
-                            />
-                            $${accentColor === res.locals.enrollment.accentColor
-                              ? html`<circle
-                                  cx="15"
-                                  cy="15"
-                                  r="3"
-                                  fill="white"
-                                />`
-                              : html``}
-                          </svg>
+                        <button
+                          class="reset"
+                          style="${css`
+                            font-size: 1rem;
+                            color: ${accentColor};
+                          `}"
+                        >
+                          $${accentColor === res.locals.enrollment.accentColor
+                            ? app.locals.icons["record-circle-fill"]
+                            : app.locals.icons["circle-fill"]}
                         </button>
                       </p>
                     </form>
@@ -3760,21 +3671,12 @@ export default async function courselore(
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/settings"
-                  ><svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    width="16"
-                    height="16"
+                  ><span
                     style="${css`
-                      margin-top: -4px;
-                      transform: translateY(4px);
+                      vertical-align: -0.2em;
                     `}"
+                    >$${app.locals.icons["arrow-left"]}</span
                   >
-                    <path
-                      fill-rule="evenodd"
-                      d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"
-                    ></path>
-                  </svg>
                   Return to Course Settings</a
                 >
               </p>
@@ -4119,187 +4021,121 @@ export default async function courselore(
               </p>
 
               <nav id="threads">
-                $${(() => {
-                  const [pinnedThreads, otherThreads] = lodash.partition(
-                    res.locals.threads,
-                    (thread) => thread.pinnedAt !== null
-                  );
+                $${res.locals.threads.map(
+                  (thread) => html`
+                    <a
+                      href="${app.locals.settings.url}/courses/${res.locals
+                        .course.reference}/threads/${thread.reference}"
+                      style="${css`
+                        line-height: 1.3;
+                        display: block;
+                        padding: 0.5rem 1rem;
+                        margin: 0 -1rem;
 
-                  const threadPartial = (
-                    thread: typeof res.locals.threads[number]
-                  ): HTML =>
-                    html`
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/threads/${thread.reference}"
+                        ${thread.id === res.locals.thread?.id
+                          ? css`
+                              background-color: whitesmoke;
+                              @media (prefers-color-scheme: dark) {
+                                background-color: #464646;
+                              }
+                            `
+                          : css``}
+                      `}"
+                    >
+                      <p
                         style="${css`
-                          line-height: 1.3;
-                          display: block;
-                          padding: 0.5rem 1rem;
-                          margin: 0 -1rem;
-
-                          ${thread.id === res.locals.thread?.id
-                            ? css`
-                                background-color: whitesmoke;
-                                @media (prefers-color-scheme: dark) {
-                                  background-color: #464646;
-                                }
-                              `
-                            : css``}
+                          margin-top: 0;
                         `}"
                       >
-                        <p
+                        <strong>${thread.title}</strong>
+                      </p>
+                      <p
+                        class="secondary"
+                        style="${css`
+                          margin-bottom: 0;
+                        `}"
+                      >
+                        #${thread.reference} created
+                        <time>${thread.createdAt}</time> by
+                        ${thread.authorEnrollment.user.name}
+                        $${thread.updatedAt !== thread.createdAt
+                          ? html`
+                              <br />
+                              and last updated
+                              <time>${thread.updatedAt}</time>
+                            `
+                          : html``}
+                        <br />
+                        <span
                           style="${css`
-                            margin-top: 0;
+                            & > * {
+                              display: inline-block;
+                            }
+
+                            & > * + * {
+                              margin-left: 0.5rem;
+                            }
                           `}"
                         >
-                          <strong>${thread.title}</strong>
-                        </p>
-                        <p
-                          class="secondary"
-                          style="${css`
-                            margin-bottom: 0;
-                          `}"
-                        >
-                          #${thread.reference} created
-                          <time>${thread.createdAt}</time> by
-                          ${thread.authorEnrollment.user.name}
-                          $${thread.updatedAt !== thread.createdAt
+                          $${thread.pinnedAt !== null
                             ? html`
-                                <br />
-                                and last updated
-                                <time>${thread.updatedAt}</time>
+                                <span>
+                                  <span
+                                    style="${css`
+                                      vertical-align: -0.2em;
+                                    `}"
+                                  >
+                                    $${app.locals.icons["pin"]}
+                                  </span>
+                                  Pinned
+                                </span>
                               `
                             : html``}
-                          <br />
-                          <span
-                            style="${css`
-                              & > * {
-                                display: inline-block;
-                              }
-
-                              & > * + * {
-                                margin-left: 0.5rem;
-                              }
-                            `}"
-                          >
-                            $${thread.questionAt !== null
-                              ? html`
-                                  <span>
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 16 16"
-                                      width="10"
-                                      height="10"
-                                      style="${css`
-                                        transform: translateY(1px);
-                                      `}"
-                                    >
-                                      <path
-                                        fill-rule="evenodd"
-                                        d="M6.415.52a2.678 2.678 0 013.17 0l.928.68c.153.113.33.186.518.215l1.138.175a2.678 2.678 0 012.241 2.24l.175 1.138c.029.187.102.365.215.518l.68.928a2.678 2.678 0 010 3.17l-.68.928a1.179 1.179 0 00-.215.518l-.175 1.138a2.678 2.678 0 01-2.241 2.241l-1.138.175a1.179 1.179 0 00-.518.215l-.928.68a2.678 2.678 0 01-3.17 0l-.928-.68a1.179 1.179 0 00-.518-.215L3.83 14.41a2.678 2.678 0 01-2.24-2.24l-.175-1.138a1.179 1.179 0 00-.215-.518l-.68-.928a2.678 2.678 0 010-3.17l.68-.928a1.17 1.17 0 00.215-.518l.175-1.14a2.678 2.678 0 012.24-2.24l1.138-.175c.187-.029.365-.102.518-.215l.928-.68zm2.282 1.209a1.178 1.178 0 00-1.394 0l-.928.68a2.678 2.678 0 01-1.18.489l-1.136.174a1.178 1.178 0 00-.987.987l-.174 1.137a2.678 2.678 0 01-.489 1.18l-.68.927c-.305.415-.305.98 0 1.394l.68.928c.256.348.423.752.489 1.18l.174 1.136c.078.51.478.909.987.987l1.137.174c.427.066.831.233 1.18.489l.927.68c.415.305.98.305 1.394 0l.928-.68a2.678 2.678 0 011.18-.489l1.136-.174c.51-.078.909-.478.987-.987l.174-1.137c.066-.427.233-.831.489-1.18l.68-.927c.305-.415.305-.98 0-1.394l-.68-.928a2.678 2.678 0 01-.489-1.18l-.174-1.136a1.178 1.178 0 00-.987-.987l-1.137-.174a2.678 2.678 0 01-1.18-.489l-.927-.68zM9 11a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004c-.093.056-.204.122-.313.195a2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.862-1.725A2.76 2.76 0 008 4c-.631 0-1.154.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 001.342.67z"
-                                      ></path>
-                                    </svg>
-                                    Question
+                          $${thread.questionAt !== null
+                            ? html`
+                                <span>
+                                  <span
+                                    style="${css`
+                                      vertical-align: -0.1em;
+                                    `}"
+                                  >
+                                    $${app.locals.icons["question-diamond"]}
                                   </span>
-                                `
-                              : html``}
-                            <span>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 16 16"
-                                width="10"
-                                height="10"
-                                style="${css`
-                                  transform: translateY(2px);
-                                `}"
-                              >
-                                <path
-                                  fill-rule="evenodd"
-                                  d="M2.75 2.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 01.75.75v2.19l2.72-2.72a.75.75 0 01.53-.22h4.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25H2.75zM1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0113.25 12H9.06l-2.573 2.573A1.457 1.457 0 014 13.543V12H2.75A1.75 1.75 0 011 10.25v-7.5z"
-                                ></path>
-                              </svg>
-                              ${thread.postsCount}
-                              post${thread.postsCount === 1 ? "" : "s"}
-                            </span>
-
-                            $${thread.likesCount === 0
-                              ? html``
-                              : html`
-                                  <span>
-                                    <svg
-                                      viewBox="0 0 16 16"
-                                      width="10"
-                                      height="10"
-                                      style="${css`
-                                        transform: translateY(1px);
-                                      `}"
-                                    >
-                                      <path
-                                        fill-rule="evenodd"
-                                        d="M8.834.066C7.494-.087 6.5 1.048 6.5 2.25v.5c0 1.329-.647 2.124-1.318 2.614-.328.24-.66.403-.918.508A1.75 1.75 0 002.75 5h-1A1.75 1.75 0 000 6.75v7.5C0 15.216.784 16 1.75 16h1a1.75 1.75 0 001.662-1.201c.525.075 1.067.229 1.725.415.152.043.31.088.475.133 1.154.32 2.54.653 4.388.653 1.706 0 2.97-.153 3.722-1.14.353-.463.537-1.042.668-1.672.118-.56.208-1.243.313-2.033l.04-.306c.25-1.869.265-3.318-.188-4.316a2.418 2.418 0 00-1.137-1.2C13.924 5.085 13.353 5 12.75 5h-1.422l.015-.113c.07-.518.157-1.17.157-1.637 0-.922-.151-1.719-.656-2.3-.51-.589-1.247-.797-2.01-.884zM4.5 13.3c.705.088 1.39.284 2.072.478l.441.125c1.096.305 2.334.598 3.987.598 1.794 0 2.28-.223 2.528-.549.147-.193.276-.505.394-1.07.105-.502.188-1.124.295-1.93l.04-.3c.25-1.882.189-2.933-.068-3.497a.922.922 0 00-.442-.48c-.208-.104-.52-.174-.997-.174H11c-.686 0-1.295-.577-1.206-1.336.023-.192.05-.39.076-.586.065-.488.13-.97.13-1.328 0-.809-.144-1.15-.288-1.316-.137-.158-.402-.304-1.048-.378C8.357 1.521 8 1.793 8 2.25v.5c0 1.922-.978 3.128-1.933 3.825a5.861 5.861 0 01-1.567.81V13.3zM2.75 6.5a.25.25 0 01.25.25v7.5a.25.25 0 01-.25.25h-1a.25.25 0 01-.25-.25v-7.5a.25.25 0 01.25-.25h1z"
-                                      ></path>
-                                    </svg>
-                                    ${thread.likesCount}
-                                    like${thread.likesCount === 1 ? "" : "s"}
-                                  </span>
-                                `}
-                          </span>
-                        </p>
-                      </a>
-                    `;
-
-                  return html`
-                    $${pinnedThreads.length > 0
-                      ? html`
-                          <p
-                            style="${css`
-                              font-size: 0.56rem;
-                              font-weight: bold;
-                              text-transform: uppercase;
-                              letter-spacing: 2px;
-                              margin: 0;
-                            `}"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 16 16"
-                              width="8"
-                              height="8"
+                                  Question
+                                </span>
+                              `
+                            : html``}
+                          <span>
+                            <span
                               style="${css`
-                                transform: translateY(1px);
+                                vertical-align: -0.1em;
                               `}"
                             >
-                              <path
-                                fill-rule="evenodd"
-                                d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
-                              ></path>
-                            </svg>
-                            Pinned
-                          </p>
-
-                          $${pinnedThreads.map(threadPartial)}
-                        `
-                      : html``}
-                    $${pinnedThreads.length > 0 && otherThreads.length > 0
-                      ? html`
-                          <hr />
-                          <p
-                            style="${css`
-                              font-size: 0.56rem;
-                              font-weight: bold;
-                              text-transform: uppercase;
-                              letter-spacing: 2px;
-                              margin: 0;
-                            `}"
-                          >
-                            Unpinned
-                          </p>
-                        `
-                      : html``}
-                    $${otherThreads.map(threadPartial)}
-                  `;
-                })()}
+                              $${app.locals.icons["chat"]}
+                            </span>
+                            ${thread.postsCount}
+                            post${thread.postsCount === 1 ? "" : "s"}
+                          </span>
+                          $${thread.likesCount === 0
+                            ? html``
+                            : html`
+                                <span>
+                                  <span
+                                    style="${css`
+                                      vertical-align: -0.1em;
+                                    `}"
+                                  >
+                                    $${app.locals.icons["hand-thumbs-up"]}
+                                  </span>
+                                  ${thread.likesCount}
+                                  like${thread.likesCount === 1 ? "" : "s"}
+                                </span>
+                              `}
+                        </span>
+                      </p>
+                    </a>
+                  `
+                )}
               </nav>
               <script>
                 (() => {
@@ -4408,18 +4244,29 @@ export default async function courselore(
           style="${css`
             text-align: right;
             margin-top: -2rem;
+
+            & > * + * {
+              margin-left: 0.5rem;
+            }
           `}"
         >
           <a
             href="https://guides.github.com/features/mastering-markdown/"
             target="_blank"
-            >Markdown</a
+            >$${app.locals.icons["markdown"]}</a
           >
-          &
-          <a href="https://katex.org/docs/supported.html" target="_blank"
-            >LaTeX</a
+          <a
+            href="https://katex.org/docs/supported.html"
+            target="_blank"
+            style="${css`
+              font-size: 0.7em;
+              vertical-align: 0.3em;
+            `}"
+            >$${app.locals.partials
+              .textProcessor(`$\\LaTeX$`)
+              .replace("<p>", "")
+              .replace("</p>", "")}</a
           >
-          are supported
         </p>
         <p
           style="${css`
@@ -4607,6 +4454,51 @@ ${value}</textarea
                     }
                   `}"
                 >
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="isPinned"
+                            style="${css`
+                              &&,
+                              &&:checked {
+                                all: unset;
+                                display: inline-block;
+                                width: 1em;
+                                height: 1em;
+                                background-repeat: no-repeat;
+                                background-size: contain;
+                                vertical-align: -0.1em;
+                              }
+
+                              && {
+                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                  app.locals.icons["pin-angle"]
+                                ).toString("base64")}");
+                              }
+
+                              &&:checked {
+                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                  app.locals.icons["pin-fill"]
+                                ).toString("base64")}");
+                              }
+
+                              &:not(:checked) + * + *,
+                              &:checked + * {
+                                display: none !important;
+                              }
+                            `}"
+                          />
+                          <span>Unpinned</span>
+                          <span>Pinned</span>
+                          <span class="secondary">
+                            Pinned threads appear first on the list of threads
+                          </span>
+                        </label>
+                      `
+                    : html``}
+
                   <label>
                     <input
                       type="checkbox"
@@ -4614,49 +4506,39 @@ ${value}</textarea
                       $${res.locals.enrollment.role === "staff"
                         ? ``
                         : `checked`}
-                    />
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      width="14"
-                      height="14"
                       style="${css`
-                        transform: translateY(2px);
-                      `}"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M6.415.52a2.678 2.678 0 013.17 0l.928.68c.153.113.33.186.518.215l1.138.175a2.678 2.678 0 012.241 2.24l.175 1.138c.029.187.102.365.215.518l.68.928a2.678 2.678 0 010 3.17l-.68.928a1.179 1.179 0 00-.215.518l-.175 1.138a2.678 2.678 0 01-2.241 2.241l-1.138.175a1.179 1.179 0 00-.518.215l-.928.68a2.678 2.678 0 01-3.17 0l-.928-.68a1.179 1.179 0 00-.518-.215L3.83 14.41a2.678 2.678 0 01-2.24-2.24l-.175-1.138a1.179 1.179 0 00-.215-.518l-.68-.928a2.678 2.678 0 010-3.17l.68-.928a1.17 1.17 0 00.215-.518l.175-1.14a2.678 2.678 0 012.24-2.24l1.138-.175c.187-.029.365-.102.518-.215l.928-.68zm2.282 1.209a1.178 1.178 0 00-1.394 0l-.928.68a2.678 2.678 0 01-1.18.489l-1.136.174a1.178 1.178 0 00-.987.987l-.174 1.137a2.678 2.678 0 01-.489 1.18l-.68.927c-.305.415-.305.98 0 1.394l.68.928c.256.348.423.752.489 1.18l.174 1.136c.078.51.478.909.987.987l1.137.174c.427.066.831.233 1.18.489l.927.68c.415.305.98.305 1.394 0l.928-.68a2.678 2.678 0 011.18-.489l1.136-.174c.51-.078.909-.478.987-.987l.174-1.137c.066-.427.233-.831.489-1.18l.68-.927c.305-.415.305-.98 0-1.394l-.68-.928a2.678 2.678 0 01-.489-1.18l-.174-1.136a1.178 1.178 0 00-.987-.987l-1.137-.174a2.678 2.678 0 01-1.18-.489l-.927-.68zM9 11a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004c-.093.056-.204.122-.313.195a2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.862-1.725A2.76 2.76 0 008 4c-.631 0-1.154.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 001.342.67z"
-                      ></path>
-                    </svg>
-                    Question
-                  </label>
+                        &&,
+                        &&:checked {
+                          all: unset;
+                          display: inline-block;
+                          width: 1em;
+                          height: 1em;
+                          background-repeat: no-repeat;
+                          background-size: contain;
+                          vertical-align: -0.1em;
+                        }
 
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <label>
-                          <input type="checkbox" name="isPinned" />
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            width="14"
-                            height="14"
-                            style="${css`
-                              transform: translateY(2px);
-                            `}"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
-                            ></path>
-                          </svg>
-                          Pin
-                          <span class="secondary">
-                            Pinned threads appear first on the list of threads
-                          </span>
-                        </label>
-                      `
-                    : html``}
+                        && {
+                          background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                            app.locals.icons["question-diamond"]
+                          ).toString("base64")}");
+                        }
+
+                        &&:checked {
+                          background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                            app.locals.icons["question-diamond-fill"]
+                          ).toString("base64")}");
+                        }
+
+                        &:not(:checked) + * + *,
+                        &:checked + * {
+                          display: none !important;
+                        }
+                      `}"
+                    />
+                    <span>Not a question</span>
+                    <span>Question</span>
+                  </label>
                 </span>
 
                 <button>Create Thread</button>
@@ -4684,8 +4566,8 @@ ${value}</textarea
     {
       title?: string;
       content?: string;
-      isQuestion?: boolean;
       isPinned?: boolean;
+      isQuestion?: boolean;
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -4713,14 +4595,14 @@ ${value}</textarea
       );
       const threadId = app.locals.database.run(
         sql`
-          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference", "questionAt", "pinnedAt")
+          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference", "pinnedAt", "questionAt")
           VALUES (
             ${res.locals.course.id},
             ${String(res.locals.course.nextThreadReference)},
             ${req.body.title},
             ${"2"},
-            ${req.body.isQuestion ? new Date().toISOString() : null},
-            ${req.body.isPinned ? new Date().toISOString() : null}
+            ${req.body.isPinned ? new Date().toISOString() : null},
+            ${req.body.isQuestion ? new Date().toISOString() : null}
           )
         `
       ).lastInsertRowid;
@@ -5044,17 +4926,7 @@ ${value}</textarea
                                   event.preventDefault();
                               `}"
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 16 16"
-                                width="16"
-                                height="16"
-                              >
-                                <path
-                                  fill-rule="evenodd"
-                                  d="M6.5 1.75a.25.25 0 01.25-.25h2.5a.25.25 0 01.25.25V3h-3V1.75zm4.5 0V3h2.25a.75.75 0 010 1.5H2.75a.75.75 0 010-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675a.75.75 0 10-1.492.15l.66 6.6A1.75 1.75 0 005.405 15h5.19c.9 0 1.652-.681 1.741-1.576l.66-6.6a.75.75 0 00-1.492-.149l-.66 6.6a.25.25 0 01-.249.225h-5.19a.25.25 0 01-.249-.225l-.66-6.6z"
-                                ></path>
-                              </svg>
+                              $${app.locals.icons["trash"]}
                             </button>
                           </p>
                         </form>
@@ -5077,17 +4949,7 @@ ${value}</textarea
                                 input.setSelectionRange(0, 0);
                               `}"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 16 16"
-                              width="16"
-                              height="16"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"
-                              ></path>
-                            </svg>
+                            $${app.locals.icons["pencil"]}
                           </button>
                         </p>
                       `
@@ -5151,10 +5013,7 @@ ${value}</textarea
               $${(() => {
                 const content: HTML[] = [];
 
-                if (
-                  res.locals.thread.questionAt === null &&
-                  res.locals.enrollment.role === "staff"
-                )
+                if (res.locals.enrollment.role === "staff")
                   content.push(html`
                     <form
                       method="POST"
@@ -5162,73 +5021,48 @@ ${value}</textarea
                         .course.reference}/threads/${res.locals.thread
                         .reference}?_method=PATCH"
                     >
-                      <input type="hidden" name="isQuestion" value="true" />
+                      <input
+                        type="hidden"
+                        name="isPinned"
+                        value="${res.locals.thread.pinnedAt === null
+                          ? "true"
+                          : "false"}"
+                      />
                       <p>
-                        <button>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            width="12"
-                            height="12"
+                        <button class="reset">
+                          <span
                             style="${css`
-                              transform: translateY(2px);
+                              vertical-align: -0.2em;
                             `}"
                           >
-                            <path
-                              fill-rule="evenodd"
-                              d="M6.415.52a2.678 2.678 0 013.17 0l.928.68c.153.113.33.186.518.215l1.138.175a2.678 2.678 0 012.241 2.24l.175 1.138c.029.187.102.365.215.518l.68.928a2.678 2.678 0 010 3.17l-.68.928a1.179 1.179 0 00-.215.518l-.175 1.138a2.678 2.678 0 01-2.241 2.241l-1.138.175a1.179 1.179 0 00-.518.215l-.928.68a2.678 2.678 0 01-3.17 0l-.928-.68a1.179 1.179 0 00-.518-.215L3.83 14.41a2.678 2.678 0 01-2.24-2.24l-.175-1.138a1.179 1.179 0 00-.215-.518l-.68-.928a2.678 2.678 0 010-3.17l.68-.928a1.17 1.17 0 00.215-.518l.175-1.14a2.678 2.678 0 012.24-2.24l1.138-.175c.187-.029.365-.102.518-.215l.928-.68zm2.282 1.209a1.178 1.178 0 00-1.394 0l-.928.68a2.678 2.678 0 01-1.18.489l-1.136.174a1.178 1.178 0 00-.987.987l-.174 1.137a2.678 2.678 0 01-.489 1.18l-.68.927c-.305.415-.305.98 0 1.394l.68.928c.256.348.423.752.489 1.18l.174 1.136c.078.51.478.909.987.987l1.137.174c.427.066.831.233 1.18.489l.927.68c.415.305.98.305 1.394 0l.928-.68a2.678 2.678 0 011.18-.489l1.136-.174c.51-.078.909-.478.987-.987l.174-1.137c.066-.427.233-.831.489-1.18l.68-.927c.305-.415.305-.98 0-1.394l-.68-.928a2.678 2.678 0 01-.489-1.18l-.174-1.136a1.178 1.178 0 00-.987-.987l-1.137-.174a2.678 2.678 0 01-1.18-.489l-.927-.68zM9 11a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004c-.093.056-.204.122-.313.195a2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.862-1.725A2.76 2.76 0 008 4c-.631 0-1.154.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 001.342.67z"
-                            ></path>
-                          </svg>
-                          Mark as Question
+                            $${app.locals.icons[
+                              res.locals.thread.pinnedAt === null
+                                ? "pin-angle"
+                                : "pin-fill"
+                            ]}
+                          </span>
+                          ${res.locals.thread.pinnedAt === null
+                            ? "Unpinned"
+                            : "Pinned"}
                         </button>
                       </p>
                     </form>
                   `);
-
-                if (res.locals.thread.questionAt !== null)
+                else if (res.locals.thread.pinnedAt !== null)
                   content.push(html`
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/${res.locals.thread
-                        .reference}?_method=PATCH"
-                    >
-                      <input type="hidden" name="isQuestion" value="false" />
-                      <p
+                    <p>
+                      <span
                         style="${css`
-                          & > * + * {
-                            margin-left: 0.5rem;
-                          }
+                          vertical-align: -0.2em;
                         `}"
                       >
-                        <span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            width="12"
-                            height="12"
-                            style="${css`
-                              transform: translateY(2px);
-                            `}"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M6.415.52a2.678 2.678 0 013.17 0l.928.68c.153.113.33.186.518.215l1.138.175a2.678 2.678 0 012.241 2.24l.175 1.138c.029.187.102.365.215.518l.68.928a2.678 2.678 0 010 3.17l-.68.928a1.179 1.179 0 00-.215.518l-.175 1.138a2.678 2.678 0 01-2.241 2.241l-1.138.175a1.179 1.179 0 00-.518.215l-.928.68a2.678 2.678 0 01-3.17 0l-.928-.68a1.179 1.179 0 00-.518-.215L3.83 14.41a2.678 2.678 0 01-2.24-2.24l-.175-1.138a1.179 1.179 0 00-.215-.518l-.68-.928a2.678 2.678 0 010-3.17l.68-.928a1.17 1.17 0 00.215-.518l.175-1.14a2.678 2.678 0 012.24-2.24l1.138-.175c.187-.029.365-.102.518-.215l.928-.68zm2.282 1.209a1.178 1.178 0 00-1.394 0l-.928.68a2.678 2.678 0 01-1.18.489l-1.136.174a1.178 1.178 0 00-.987.987l-.174 1.137a2.678 2.678 0 01-.489 1.18l-.68.927c-.305.415-.305.98 0 1.394l.68.928c.256.348.423.752.489 1.18l.174 1.136c.078.51.478.909.987.987l1.137.174c.427.066.831.233 1.18.489l.927.68c.415.305.98.305 1.394 0l.928-.68a2.678 2.678 0 011.18-.489l1.136-.174c.51-.078.909-.478.987-.987l.174-1.137c.066-.427.233-.831.489-1.18l.68-.927c.305-.415.305-.98 0-1.394l-.68-.928a2.678 2.678 0 01-.489-1.18l-.174-1.136a1.178 1.178 0 00-.987-.987l-1.137-.174a2.678 2.678 0 01-1.18-.489l-.927-.68zM9 11a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .177-.04.264-.077.318a.956.956 0 01-.277.245c-.076.051-.158.1-.258.161l-.007.004c-.093.056-.204.122-.313.195a2.416 2.416 0 00-.692.661.75.75 0 001.248.832.956.956 0 01.276-.245 6.3 6.3 0 01.26-.16l.006-.004c.093-.057.204-.123.313-.195.222-.149.487-.355.692-.662.214-.32.329-.702.329-1.15 0-.76-.36-1.348-.862-1.725A2.76 2.76 0 008 4c-.631 0-1.154.16-1.572.438-.413.276-.68.638-.849.977a.75.75 0 001.342.67z"
-                            ></path>
-                          </svg>
-                          Question
-                        </span>
-                        $${res.locals.enrollment.role === "staff"
-                          ? html`<button>Mark as Not a Question</button>`
-                          : html``}
-                      </p>
-                    </form>
+                        $${app.locals.icons["pin-fill"]}
+                      </span>
+                      Pinned
+                    </p>
                   `);
 
-                if (
-                  res.locals.thread.pinnedAt === null &&
-                  res.locals.enrollment.role === "staff"
-                )
+                if (res.locals.enrollment.role === "staff")
                   content.push(html`
                     <form
                       method="POST"
@@ -5236,67 +5070,45 @@ ${value}</textarea
                         .course.reference}/threads/${res.locals.thread
                         .reference}?_method=PATCH"
                     >
-                      <input type="hidden" name="isPinned" value="true" />
+                      <input
+                        type="hidden"
+                        name="isQuestion"
+                        value="${res.locals.thread.questionAt === null
+                          ? "true"
+                          : "false"}"
+                      />
                       <p>
-                        <button>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            width="12"
-                            height="12"
+                        <button class="reset">
+                          <span
                             style="${css`
-                              transform: translateY(2px);
+                              vertical-align: -0.2em;
                             `}"
                           >
-                            <path
-                              fill-rule="evenodd"
-                              d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
-                            ></path>
-                          </svg>
-                          Pin
+                            $${app.locals.icons[
+                              res.locals.thread.questionAt === null
+                                ? "question-diamond"
+                                : "question-diamond-fill"
+                            ]}
+                          </span>
+                          ${res.locals.thread.questionAt === null
+                            ? "Not a Question"
+                            : "Question"}
                         </button>
                       </p>
                     </form>
                   `);
-
-                if (res.locals.thread.pinnedAt !== null)
+                else if (res.locals.thread.questionAt !== null)
                   content.push(html`
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/${res.locals.thread
-                        .reference}?_method=PATCH"
-                    >
-                      <input type="hidden" name="isPinned" value="false" />
-                      <p
+                    <p>
+                      <span
                         style="${css`
-                          & > * + * {
-                            margin-left: 0.5rem;
-                          }
+                          vertical-align: -0.2em;
                         `}"
                       >
-                        <span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            width="12"
-                            height="12"
-                            style="${css`
-                              transform: translateY(2px);
-                            `}"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"
-                            ></path>
-                          </svg>
-                          Pinned
-                        </span>
-                        $${res.locals.enrollment.role === "staff"
-                          ? html`<button>Unpin</button>`
-                          : html``}
-                      </p>
-                    </form>
+                        $${app.locals.icons["question-diamond-filled"]}
+                      </span>
+                      Question
+                    </p>
                   `);
 
                 return content.length === 0
@@ -5309,7 +5121,7 @@ ${value}</textarea
                           display: flex;
 
                           & > * + * {
-                            margin-left: 1.5rem;
+                            margin-left: 1rem;
                           }
                         `}"
                       >
@@ -5386,17 +5198,7 @@ ${value}</textarea
                                       event.preventDefault();
                                   `}"
                                 >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 16 16"
-                                    width="16"
-                                    height="16"
-                                  >
-                                    <path
-                                      fill-rule="evenodd"
-                                      d="M6.5 1.75a.25.25 0 01.25-.25h2.5a.25.25 0 01.25.25V3h-3V1.75zm4.5 0V3h2.25a.75.75 0 010 1.5H2.75a.75.75 0 010-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675a.75.75 0 10-1.492.15l.66 6.6A1.75 1.75 0 005.405 15h5.19c.9 0 1.652-.681 1.741-1.576l.66-6.6a.75.75 0 00-1.492-.149l-.66 6.6a.25.25 0 01-.249.225h-5.19a.25.25 0 01-.249-.225l-.66-6.6z"
-                                    ></path>
-                                  </svg>
+                                  $${app.locals.icons["trash"]}
                                 </button>
                               </p>
                             </form>
@@ -5419,17 +5221,7 @@ ${value}</textarea
                                   textarea.setSelectionRange(0, 0);
                                 `}"
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  viewBox="0 0 16 16"
-                                  width="16"
-                                  height="16"
-                                >
-                                  <path
-                                    fill-rule="evenodd"
-                                    d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"
-                                  ></path>
-                                </svg>
+                                $${app.locals.icons["pencil"]}
                               </button>
                             </p>
                           `
@@ -5466,17 +5258,7 @@ ${value}</textarea
                             newPostContent.setSelectionRange(selectionStart, selectionEnd);
                           `}"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            width="16"
-                            height="16"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M6.78 1.97a.75.75 0 010 1.06L3.81 6h6.44A4.75 4.75 0 0115 10.75v2.5a.75.75 0 01-1.5 0v-2.5a3.25 3.25 0 00-3.25-3.25H3.81l2.97 2.97a.75.75 0 11-1.06 1.06L1.47 7.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0z"
-                            ></path>
-                          </svg>
+                          $${app.locals.icons["reply"]}
                         </button>
                       </p>
                     </div>
@@ -5522,26 +5304,24 @@ ${value}</textarea
                                   <button
                                     class="reset ${isLiked ? "green" : ""}"
                                   >
-                                    <svg
-                                      viewBox="0 0 16 16"
-                                      width="12"
-                                      height="12"
+                                    <span
                                       style="${css`
-                                        transform: translateY(1px);
+                                        vertical-align: -0.05em;
                                       `}"
                                     >
-                                      <path
-                                        fill-rule="evenodd"
-                                        d="M8.834.066C7.494-.087 6.5 1.048 6.5 2.25v.5c0 1.329-.647 2.124-1.318 2.614-.328.24-.66.403-.918.508A1.75 1.75 0 002.75 5h-1A1.75 1.75 0 000 6.75v7.5C0 15.216.784 16 1.75 16h1a1.75 1.75 0 001.662-1.201c.525.075 1.067.229 1.725.415.152.043.31.088.475.133 1.154.32 2.54.653 4.388.653 1.706 0 2.97-.153 3.722-1.14.353-.463.537-1.042.668-1.672.118-.56.208-1.243.313-2.033l.04-.306c.25-1.869.265-3.318-.188-4.316a2.418 2.418 0 00-1.137-1.2C13.924 5.085 13.353 5 12.75 5h-1.422l.015-.113c.07-.518.157-1.17.157-1.637 0-.922-.151-1.719-.656-2.3-.51-.589-1.247-.797-2.01-.884zM4.5 13.3c.705.088 1.39.284 2.072.478l.441.125c1.096.305 2.334.598 3.987.598 1.794 0 2.28-.223 2.528-.549.147-.193.276-.505.394-1.07.105-.502.188-1.124.295-1.93l.04-.3c.25-1.882.189-2.933-.068-3.497a.922.922 0 00-.442-.48c-.208-.104-.52-.174-.997-.174H11c-.686 0-1.295-.577-1.206-1.336.023-.192.05-.39.076-.586.065-.488.13-.97.13-1.328 0-.809-.144-1.15-.288-1.316-.137-.158-.402-.304-1.048-.378C8.357 1.521 8 1.793 8 2.25v.5c0 1.922-.978 3.128-1.933 3.825a5.861 5.861 0 01-1.567.81V13.3zM2.75 6.5a.25.25 0 01.25.25v7.5a.25.25 0 01-.25.25h-1a.25.25 0 01-.25-.25v-7.5a.25.25 0 01.25-.25h1z"
-                                      ></path>
-                                    </svg>
-                                    $${isLiked
-                                      ? html`Liked · ${likesCount}
-                                        like${likesCount === 1 ? "" : "s"}`
-                                      : likesCount === 0
-                                      ? html`Like`
-                                      : html`${likesCount}
-                                        like${likesCount === 1 ? "" : "s"}`}
+                                      $${app.locals.icons[
+                                        isLiked
+                                          ? "hand-thumbs-up-fill"
+                                          : "hand-thumbs-up"
+                                      ]}
+                                    </span>
+                                    $${isLiked ? html`Liked` : html`Like`}
+                                    $${likesCount > 0
+                                      ? html`
+                                          · ${likesCount}
+                                          like${likesCount === 1 ? "" : "s"}
+                                        `
+                                      : html``}
                                   </button>
                                 </span>
                               </p>
@@ -5668,22 +5448,38 @@ ${value}</textarea
                             $${res.locals.enrollment.role === "staff"
                               ? `checked`
                               : ``}
-                          />
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            width="14"
-                            height="14"
                             style="${css`
-                              transform: translateY(2px);
+                              &&,
+                              &&:checked {
+                                all: unset;
+                                display: inline-block;
+                                width: 1em;
+                                height: 1em;
+                                background-repeat: no-repeat;
+                                background-size: contain;
+                                vertical-align: -0.1em;
+                              }
+
+                              && {
+                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                  app.locals.icons["patch-check"]
+                                ).toString("base64")}");
+                              }
+
+                              &&:checked {
+                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                  app.locals.icons["patch-check-fill"]
+                                ).toString("base64")}");
+                              }
+
+                              &:not(:checked) + * + *,
+                              &:checked + * {
+                                display: none !important;
+                              }
                             `}"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M9.585.52a2.678 2.678 0 00-3.17 0l-.928.68a1.178 1.178 0 01-.518.215L3.83 1.59a2.678 2.678 0 00-2.24 2.24l-.175 1.14a1.178 1.178 0 01-.215.518l-.68.928a2.678 2.678 0 000 3.17l.68.928c.113.153.186.33.215.518l.175 1.138a2.678 2.678 0 002.24 2.24l1.138.175c.187.029.365.102.518.215l.928.68a2.678 2.678 0 003.17 0l.928-.68a1.17 1.17 0 01.518-.215l1.138-.175a2.678 2.678 0 002.241-2.241l.175-1.138c.029-.187.102-.365.215-.518l.68-.928a2.678 2.678 0 000-3.17l-.68-.928a1.179 1.179 0 01-.215-.518L14.41 3.83a2.678 2.678 0 00-2.24-2.24l-1.138-.175a1.179 1.179 0 01-.518-.215L9.585.52zM7.303 1.728c.415-.305.98-.305 1.394 0l.928.68c.348.256.752.423 1.18.489l1.136.174c.51.078.909.478.987.987l.174 1.137c.066.427.233.831.489 1.18l.68.927c.305.415.305.98 0 1.394l-.68.928a2.678 2.678 0 00-.489 1.18l-.174 1.136a1.178 1.178 0 01-.987.987l-1.137.174a2.678 2.678 0 00-1.18.489l-.927.68c-.415.305-.98.305-1.394 0l-.928-.68a2.678 2.678 0 00-1.18-.489l-1.136-.174a1.178 1.178 0 01-.987-.987l-.174-1.137a2.678 2.678 0 00-.489-1.18l-.68-.927a1.178 1.178 0 010-1.394l.68-.928c.256-.348.423-.752.489-1.18l.174-1.136c.078-.51.478-.909.987-.987l1.137-.174a2.678 2.678 0 001.18-.489l.927-.68zM11.28 6.78a.75.75 0 00-1.06-1.06L7 8.94 5.78 7.72a.75.75 0 00-1.06 1.06l1.75 1.75a.75.75 0 001.06 0l3.75-3.75z"
-                            ></path>
-                          </svg>
-                          Answer
+                          />
+                          <span>Not an Answer</span>
+                          <span>Answer</span>
                         </label>
                       `
                     : html``}
@@ -5703,8 +5499,8 @@ ${value}</textarea
     HTML,
     {
       title?: string;
-      isQuestion?: "true" | "false";
       isPinned?: "true" | "false";
+      isQuestion?: "true" | "false";
     },
     {},
     IsThreadAccessibleMiddlewareLocals
@@ -5718,6 +5514,26 @@ ${value}</textarea
         else
           app.locals.database.run(
             sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.thread.id}`
+          );
+
+      if (typeof req.body.isPinned === "string")
+        if (
+          !["true", "false"].includes(req.body.isPinned) ||
+          res.locals.enrollment.role !== "staff" ||
+          (req.body.isPinned === "true" &&
+            res.locals.thread.pinnedAt !== null) ||
+          (req.body.isPinned === "false" && res.locals.thread.pinnedAt === null)
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "threads"
+              SET "pinnedAt" = ${
+                req.body.isPinned === "true" ? new Date().toISOString() : null
+              }
+              WHERE "id" = ${res.locals.thread.id}
+            `
           );
 
       if (typeof req.body.isQuestion === "string")
@@ -5738,26 +5554,6 @@ ${value}</textarea
               }
               WHERE "id" = ${res.locals.thread.id}
             `
-          );
-
-      if (typeof req.body.isPinned === "string")
-        if (
-          !["true", "false"].includes(req.body.isPinned) ||
-          res.locals.enrollment.role !== "staff" ||
-          (req.body.isPinned === "true" &&
-            res.locals.thread.pinnedAt !== null) ||
-          (req.body.isPinned === "false" && res.locals.thread.pinnedAt === null)
-        )
-          return next("validation");
-        else
-          app.locals.database.run(
-            sql`
-                UPDATE "threads"
-                SET "pinnedAt" = ${
-                  req.body.isPinned === "true" ? new Date().toISOString() : null
-                }
-                WHERE "id" = ${res.locals.thread.id}
-              `
           );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
