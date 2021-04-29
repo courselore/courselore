@@ -4253,13 +4253,17 @@ export default async function courselore(
           <a
             href="https://guides.github.com/features/mastering-markdown/"
             target="_blank"
+            style="${css`
+              font-size: 1.3em;
+              vertical-align: 0em;
+            `}"
             >$${app.locals.icons["markdown"]}</a
           >
           <a
             href="https://katex.org/docs/supported.html"
             target="_blank"
             style="${css`
-              font-size: 0.7em;
+              font-size: 0.9em;
               vertical-align: 0.3em;
             `}"
             >$${app.locals.partials
