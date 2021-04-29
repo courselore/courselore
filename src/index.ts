@@ -4479,7 +4479,7 @@ ${value}</textarea
                           <span>Unpinned</span>
                           <span>Pinned</span>
                           <span class="secondary">
-                            Pinned threads appear first on the list of threads
+                            Pinned threads are listed first
                           </span>
                         </label>
                       `
