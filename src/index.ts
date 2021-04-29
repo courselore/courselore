@@ -237,6 +237,21 @@ export default async function courselore(
     app.locals.database.pragma(`user_version = ${migrations.length}`);
   });
 
+  interface AppLocals {
+    icons: { [icon: string]: HTML };
+  }
+  app.locals.icons = {};
+  await (async () => {
+    const directory = path.join(
+      __dirname,
+      "../node_modules/bootstrap-icons/icons/"
+    );
+    for (const file of await fs.readdir(directory))
+      app.locals.icons[path.basename(file, ".svg")] = (
+        await fs.readFile(path.join(directory, file), "utf-8")
+      ).replaceAll(`"16"`, `"1em"`);
+  })();
+
   interface Layouts {
     base: (
       req: express.Request<{}, any, {}, {}, {}>,
@@ -334,10 +349,6 @@ export default async function courselore(
               img {
                 border-radius: 10px;
                 background-color: white;
-              }
-
-              svg {
-                fill: currentColor;
               }
 
               h1 {
