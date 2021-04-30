@@ -474,19 +474,19 @@ export default async function courselore(
                 }
               }
 
-              textarea {
+              textarea:not(.undecorated) {
                 min-height: 10rem;
                 padding: 0.5rem 1rem;
                 resize: vertical;
                 white-space: pre-wrap;
               }
 
-              select {
+              select:not(.undecorated) {
                 padding-right: 1.5rem;
                 background: url("data:image/svg+xml;base64,${Buffer.from(
                     app.locals.icons["caret-down-fill"]
                   ).toString("base64")}")
-                  top 0.45rem right 0.5rem no-repeat;
+                  top 0.45rem right 0.3rem no-repeat;
                 @media (prefers-color-scheme: dark) {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
                     app.locals.icons["caret-down-fill"].replace(
@@ -845,6 +845,7 @@ export default async function courselore(
           ? html`
               <script>
                 const eventSource = new EventSource(window.location.href);
+                let refreshCount = 0;
                 eventSource.addEventListener("refresh", async () => {
                   const response = await fetch(window.location.href);
                   switch (response.status) {
@@ -853,6 +854,21 @@ export default async function courselore(
                         await response.text(),
                         "text/html"
                       );
+                      refreshCount++;
+                      for (const element of refreshedDocument.querySelectorAll(
+                        '[id^="leafac-css--"]'
+                      ))
+                        element.id = element.id.replace(
+                          "leafac-css--",
+                          "leafac-css--" + String(refreshCount) + "--"
+                        );
+                      for (const element of refreshedDocument.querySelectorAll(
+                        "head style"
+                      ))
+                        element.textContent = element.textContent.replaceAll(
+                          "#leafac-css--",
+                          "#leafac-css--" + String(refreshCount) + "--"
+                        );
                       document
                         .querySelector("head")
                         .append(
