@@ -391,42 +391,34 @@ export default async function courselore(
               select,
               button {
                 all: unset;
-                background-color: white;
-                @media (prefers-color-scheme: dark) {
-                  background-color: #5a5a5a;
-                }
-                border: 1px solid gainsboro;
-                @media (prefers-color-scheme: dark) {
-                  border-color: dimgray;
-                }
-                box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-
-                &:disabled {
-                  background-color: whitesmoke;
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #333333;
-                  }
-                  cursor: not-allowed;
-                }
-              }
-
-              input[type="text"],
-              input[type="email"],
-              input[type="search"],
-              textarea,
-              select,
-              button {
-                padding: 0.1rem 1rem;
-                border-radius: 5px;
 
                 @supports (-webkit-touch-callout: none) {
                   font-size: 16px;
                 }
 
-                &:disabled {
-                  color: gray;
+                &:not(button.undecorated) {
+                  background-color: white;
                   @media (prefers-color-scheme: dark) {
-                    color: whitesmoke;
+                    background-color: #5a5a5a;
+                  }
+                  padding: 0.1rem 1rem;
+                  border: 1px solid gainsboro;
+                  border-radius: 5px;
+                  @media (prefers-color-scheme: dark) {
+                    border-color: dimgray;
+                  }
+                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
+
+                  &:disabled {
+                    color: gray;
+                    @media (prefers-color-scheme: dark) {
+                      color: whitesmoke;
+                    }
+                    background-color: whitesmoke;
+                    @media (prefers-color-scheme: dark) {
+                      background-color: #333333;
+                    }
+                    cursor: not-allowed;
                   }
                 }
               }
@@ -524,7 +516,7 @@ export default async function courselore(
                 text-align: center;
                 cursor: default;
 
-                &:active {
+                &:not(.undecorated):active {
                   color: white;
                   background-color: #ff77a8;
                 }
@@ -590,11 +582,6 @@ export default async function courselore(
 
               [hidden] {
                 display: none !important;
-              }
-
-              .reset,
-              .reset:active {
-                all: unset;
               }
 
               .full-width {
@@ -956,14 +943,12 @@ export default async function courselore(
       head,
       html`
         <div
-          style="${css`
-            ${res.locals.enrollment === undefined
-              ? css``
-              : css`
-                  box-sizing: border-box;
-                  border-top: 10px solid ${res.locals.enrollment.accentColor};
-                `}
-          `}"
+          style="${res.locals.enrollment === undefined
+            ? css``
+            : css`
+                box-sizing: border-box;
+                border-top: 10px solid ${res.locals.enrollment.accentColor};
+              `}"
         >
           <div
             style="${css`
@@ -1967,7 +1952,7 @@ export default async function courselore(
                       value="${res.locals.user.name}"
                       class="full-width"
                       style="${css`
-                        flex: 1 !important;
+                        flex: 1;
                       `}"
                     />
                     <button>Change Name</button>
@@ -2638,11 +2623,11 @@ export default async function courselore(
                   }>(
                     sql`
                       SELECT "enrollments"."id",
-                              "users"."id" AS "userId",
-                              "users"."email" AS "userEmail",
-                              "users"."name" AS "userName",
-                              "enrollments"."reference",
-                              "enrollments"."role"
+                             "users"."id" AS "userId",
+                             "users"."email" AS "userEmail",
+                             "users"."name" AS "userName",
+                             "enrollments"."reference",
+                             "enrollments"."role"
                       FROM "enrollments"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
                       WHERE "enrollments"."course" = ${res.locals.course.id}
@@ -2676,7 +2661,7 @@ export default async function courselore(
                               value="${res.locals.course.name}"
                               class="full-width"
                               style="${css`
-                                flex: 1 !important;
+                                flex: 1;
                               `}"
                             />
                             <button>Change Name</button>
@@ -2899,7 +2884,7 @@ export default async function courselore(
                                                       align-items: baseline;
 
                                                       & > * + * {
-                                                        margin-left: 0.5rem !important;
+                                                        margin-left: 0.5rem;
                                                       }
                                                     `}"
                                                   >
@@ -2937,7 +2922,7 @@ export default async function courselore(
                                                       `}"
                                                       class="full-width datetime"
                                                       style="${css`
-                                                        flex: 1 !important;
+                                                        flex: 1;
                                                       `}"
                                                     />
                                                   </span>
@@ -3042,7 +3027,7 @@ export default async function courselore(
                                 align-items: baseline;
 
                                 & > * + * {
-                                  margin-left: 0.5rem !important;
+                                  margin-left: 0.5rem;
                                 }
                               `}"
                             >
@@ -3072,7 +3057,7 @@ export default async function courselore(
                                 `}"
                                 class="full-width datetime"
                                 style="${css`
-                                  flex: 1 !important;
+                                  flex: 1;
                                 `}"
                               />
                             </span>
@@ -3364,7 +3349,7 @@ export default async function courselore(
                       />
                       <p>
                         <button
-                          class="reset"
+                          class="undecorated"
                           style="${css`
                             font-size: 1rem;
                             color: ${accentColor};
@@ -4169,9 +4154,7 @@ export default async function courselore(
       <p
         style="${css`
           & > button {
-            all: unset;
             color: gray;
-            cursor: default;
 
             &:disabled {
               font-weight: bold;
@@ -4186,7 +4169,7 @@ export default async function courselore(
       >
         <button
           type="button"
-          class="write"
+          class="write undecorated"
           disabled
           onclick="${javascript`
             const textEditor = this.closest("div.text-editor");
@@ -4201,7 +4184,7 @@ export default async function courselore(
         </button>
         <button
           type="button"
-          class="preview"
+          class="preview undecorated"
           onclick="${javascript`
             (async () => {
               const textEditor = this.closest("div.text-editor");
@@ -4905,7 +4888,7 @@ ${value}</textarea
                           <p>
                             <button
                               title="Remove Thread"
-                              class="reset red"
+                              class="undecorated red"
                               onclick="${javascript`
                                 if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
                                   event.preventDefault();
@@ -4923,7 +4906,7 @@ ${value}</textarea
                           <button
                             title="Edit Title"
                             type="button"
-                            class="reset"
+                            class="undecorated"
                             onclick="${javascript`
                                 const title = this.closest(".title");
                                 title.querySelector(".show").hidden = true;
@@ -4975,7 +4958,7 @@ ${value}</textarea
                         <p>
                           <button class="green">Change Title</button>
                           <button
-                            type="reset"
+                            type="undecorated"
                             onclick="${javascript`
                               const title = this.closest(".title");
                               if (isModified(title) && !confirm("Discard changes?")) {
@@ -5014,7 +4997,7 @@ ${value}</textarea
                           : "false"}"
                       />
                       <p>
-                        <button class="reset">
+                        <button class="undecorated">
                           <span
                             style="${css`
                               vertical-align: -0.2em;
@@ -5063,7 +5046,7 @@ ${value}</textarea
                           : "false"}"
                       />
                       <p>
-                        <button class="reset">
+                        <button class="undecorated">
                           <span
                             style="${css`
                               vertical-align: -0.2em;
@@ -5177,7 +5160,7 @@ ${value}</textarea
                               <p>
                                 <button
                                   title="Remove Post"
-                                  class="reset red"
+                                  class="undecorated red"
                                   onclick="${javascript`
                                     if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
                                       event.preventDefault();
@@ -5195,7 +5178,7 @@ ${value}</textarea
                               <button
                                 title="Edit Post"
                                 type="button"
-                                class="reset"
+                                class="undecorated"
                                 onclick="${javascript`
                                   const post = this.closest(".post");
                                   post.querySelector(".show").hidden = true;
@@ -5216,7 +5199,7 @@ ${value}</textarea
                         <button
                           title="Reply"
                           type="button"
-                          class="reset"
+                          class="undecorated"
                           onclick="${javascript`
                             const newPost = document.querySelector("#new-post");
                             newPost.querySelector(".write").click();
@@ -5287,7 +5270,9 @@ ${value}</textarea
                                   `}"
                                 >
                                   <button
-                                    class="reset ${isLiked ? "green" : ""}"
+                                    class="undecorated ${isLiked
+                                      ? "green"
+                                      : ""}"
                                   >
                                     <span
                                       style="${css`
@@ -5334,7 +5319,7 @@ ${value}</textarea
                               `}"
                             >
                               <button
-                                type="reset"
+                                type="undecorated"
                                 onclick="${javascript`
                                   const post = this.closest(".post");
                                   if (isModified(post) && !confirm("Discard changes?")) {
