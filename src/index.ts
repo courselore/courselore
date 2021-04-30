@@ -4163,7 +4163,7 @@ export default async function courselore(
           }
 
           & > * + * {
-            margin-left: 0.5rem !important;
+            margin-left: 0.5rem;
           }
         `}"
       >
