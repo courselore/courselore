@@ -4470,37 +4470,30 @@ ${value}</textarea
                       $${res.locals.enrollment.role === "staff"
                         ? ``
                         : `checked`}
+                      class="undecorated"
                       style="${css`
-                        &&,
-                        &&:checked {
-                          all: unset;
-                          display: inline-block;
-                          width: 1em;
-                          height: 1em;
-                          background-repeat: no-repeat;
-                          background-size: contain;
-                          vertical-align: -0.1em;
-                        }
-
-                        && {
-                          background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                            app.locals.icons["question-diamond"]
-                          ).toString("base64")}");
-                        }
-
-                        &&:checked {
+                        width: 1em;
+                        height: 1em;
+                        background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                          app.locals.icons["question-diamond"].replace(
+                            "currentColor",
+                            "gray"
+                          )
+                        ).toString("base64")}");
+                        &:checked {
                           background-image: url("data:image/svg+xml;base64,${Buffer.from(
                             app.locals.icons["question-diamond-fill"]
                           ).toString("base64")}");
                         }
+                        background-repeat: no-repeat;
+                        background-size: contain;
+                        vertical-align: -0.1em;
 
-                        &:not(:checked) + * + *,
-                        &:checked + * {
-                          display: none !important;
+                        &:not(:checked) + * {
+                          color: gray;
                         }
                       `}"
                     />
-                    <span>Not a question</span>
                     <span>Question</span>
                   </label>
                 </span>
@@ -5414,37 +5407,30 @@ ${value}</textarea
                             $${res.locals.enrollment.role === "staff"
                               ? `checked`
                               : ``}
+                            class="undecorated"
                             style="${css`
-                              &&,
-                              &&:checked {
-                                all: unset;
-                                display: inline-block;
-                                width: 1em;
-                                height: 1em;
-                                background-repeat: no-repeat;
-                                background-size: contain;
-                                vertical-align: -0.1em;
-                              }
-
-                              && {
-                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                  app.locals.icons["patch-check"]
-                                ).toString("base64")}");
-                              }
-
-                              &&:checked {
+                              width: 1em;
+                              height: 1em;
+                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                app.locals.icons["patch-check"].replace(
+                                  "currentColor",
+                                  "gray"
+                                )
+                              ).toString("base64")}");
+                              &:checked {
                                 background-image: url("data:image/svg+xml;base64,${Buffer.from(
                                   app.locals.icons["patch-check-fill"]
                                 ).toString("base64")}");
                               }
+                              background-repeat: no-repeat;
+                              background-size: contain;
+                              vertical-align: -0.1em;
 
-                              &:not(:checked) + * + *,
-                              &:checked + * {
-                                display: none !important;
+                              &:not(:checked) + * {
+                                color: gray;
                               }
                             `}"
                           />
-                          <span>Not an Answer</span>
                           <span>Answer</span>
                         </label>
                       `
