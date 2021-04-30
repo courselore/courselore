@@ -5105,7 +5105,7 @@ ${value}</textarea
               $${res.locals.posts.map(
                 (post) => html`
                   <section
-                    id="${post.reference}"
+                    id="post--${post.reference}"
                     class="post"
                     style="${css`
                       border-bottom: 1px solid silver;
