@@ -247,9 +247,10 @@ export default async function courselore(
       "../node_modules/bootstrap-icons/icons/"
     );
     for (const file of await fs.readdir(directory))
-      app.locals.icons[path.basename(file, ".svg")] = (
-        await fs.readFile(path.join(directory, file), "utf-8")
-      ).replaceAll(`"16"`, `"1em"`);
+      app.locals.icons[path.basename(file, ".svg")] = await fs.readFile(
+        path.join(directory, file),
+        "utf-8"
+      );
     app.locals.icons["logo"] = await fs.readFile(
       path.join(__dirname, "../public/logo.svg"),
       "utf-8"
@@ -338,10 +339,7 @@ export default async function courselore(
 
               :focus:focus {
                 outline: none;
-                box-shadow: 0 0 0 1px white, 0 0 0 3px #ff77a8;
-                @media (prefers-color-scheme: dark) {
-                  box-shadow: 0 0 0 1px #1e1e1e, 0 0 0 3px #ff77a8;
-                }
+                box-shadow: 0 0 0 2px #ff77a8aa;
               }
 
               img,
@@ -353,6 +351,10 @@ export default async function courselore(
               img {
                 border-radius: 10px;
                 background-color: white;
+              }
+
+              .bi {
+                width: 1em;
               }
 
               h1 {
@@ -375,7 +377,7 @@ export default async function courselore(
                 color: inherit;
 
                 &:hover {
-                  color: #ff77a8 !important;
+                  color: #ff77a8;
                 }
 
                 h1 &,
@@ -384,15 +386,15 @@ export default async function courselore(
                 }
               }
 
-              input[type="text"],
-              input[type="email"],
-              input[type="search"],
-              input[type="radio"],
-              input[type="checkbox"],
+              input,
               textarea,
               select,
               button {
                 all: unset;
+                background-color: white;
+                @media (prefers-color-scheme: dark) {
+                  background-color: #5a5a5a;
+                }
                 border: 1px solid gainsboro;
                 @media (prefers-color-scheme: dark) {
                   border-color: dimgray;
@@ -458,10 +460,12 @@ export default async function courselore(
 
                 &:checked {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    app.locals.icons["circle-fill"]
-                      .replace("currentColor", "white")
-                      .replaceAll("1em", "6px")
+                    app.locals.icons["circle-fill"].replace(
+                      "currentColor",
+                      "white"
+                    )
                   ).toString("base64")}");
+                  background-size: 6px 6px;
                 }
               }
 
@@ -518,10 +522,6 @@ export default async function courselore(
 
               button {
                 text-align: center;
-                background-color: white;
-                @media (prefers-color-scheme: dark) {
-                  background-color: #5a5a5a;
-                }
                 cursor: default;
 
                 &:active {
@@ -597,7 +597,7 @@ export default async function courselore(
                 all: unset;
               }
 
-              .full-width.full-width {
+              .full-width {
                 box-sizing: border-box;
                 width: 100%;
                 display: block;
@@ -611,14 +611,14 @@ export default async function courselore(
                 margin-top: -0.8rem;
               }
 
-              .green:not(:active) {
+              .green {
                 color: #008751;
                 @media (prefers-color-scheme: dark) {
                   color: #00e436;
                 }
               }
 
-              .red:not(:active) {
+              .red {
                 color: #ff004d;
               }
 
@@ -4245,7 +4245,6 @@ export default async function courselore(
             target="_blank"
             style="${css`
               font-size: 1.3em;
-              vertical-align: 0em;
             `}"
             >$${app.locals.icons["markdown"]}</a
           >
