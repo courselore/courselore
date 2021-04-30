@@ -396,7 +396,7 @@ export default async function courselore(
                   font-size: 16px;
                 }
 
-                &:not(button.undecorated) {
+                &:not(.undecorated) {
                   background-color: white;
                   @media (prefers-color-scheme: dark) {
                     background-color: #5a5a5a;
@@ -437,17 +437,20 @@ export default async function courselore(
               input[type="radio"],
               input[type="checkbox"] {
                 display: inline-block;
-                width: 12px;
-                height: 12px;
-                vertical-align: -0.1em;
 
-                &:checked {
-                  background: #ff77a8 center center no-repeat;
-                  border-color: #ff77a8;
+                &:not(.undecorated) {
+                  width: 12px;
+                  height: 12px;
+                  vertical-align: -0.1em;
+
+                  &:checked {
+                    background: #ff77a8 center center no-repeat;
+                    border-color: #ff77a8;
+                  }
                 }
               }
 
-              input[type="radio"] {
+              input[type="radio"]:not(.undecorated) {
                 border-radius: 50%;
 
                 &:checked {
@@ -461,7 +464,7 @@ export default async function courselore(
                 }
               }
 
-              input[type="checkbox"] {
+              input[type="checkbox"]:not(.undecorated) {
                 border-radius: 3px;
 
                 &:checked {
@@ -484,7 +487,6 @@ export default async function courselore(
                     app.locals.icons["caret-down-fill"]
                   ).toString("base64")}")
                   top 0.45rem right 0.5rem no-repeat;
-                background-size: 0.8em 0.8em;
                 @media (prefers-color-scheme: dark) {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
                     app.locals.icons["caret-down-fill"].replace(
@@ -493,6 +495,7 @@ export default async function courselore(
                     )
                   ).toString("base64")}");
                 }
+                background-size: 0.8em 0.8em;
 
                 &:disabled {
                   background-image: url("data:image/svg+xml;base64,${Buffer.from(
@@ -4428,38 +4431,31 @@ ${value}</textarea
                           <input
                             type="checkbox"
                             name="isPinned"
+                            class="undecorated"
                             style="${css`
-                              &&,
-                              &&:checked {
-                                all: unset;
-                                display: inline-block;
-                                width: 1em;
-                                height: 1em;
-                                background-repeat: no-repeat;
-                                background-size: contain;
-                                vertical-align: -0.1em;
-                              }
-
-                              && {
-                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                  app.locals.icons["pin-angle"]
-                                ).toString("base64")}");
-                              }
-
-                              &&:checked {
+                              width: 1em;
+                              height: 1em;
+                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                app.locals.icons["pin-angle"].replace(
+                                  "currentColor",
+                                  "gray"
+                                )
+                              ).toString("base64")}");
+                              &:checked {
                                 background-image: url("data:image/svg+xml;base64,${Buffer.from(
                                   app.locals.icons["pin-fill"]
                                 ).toString("base64")}");
                               }
+                              background-repeat: no-repeat;
+                              background-size: contain;
+                              vertical-align: -0.1em;
 
-                              &:not(:checked) + * + *,
-                              &:checked + * {
-                                display: none !important;
+                              &:not(:checked) + * {
+                                color: gray;
                               }
                             `}"
                           />
-                          <span>Unpinned</span>
-                          <span>Pinned</span>
+                          <span>Pin</span>
                           <span class="secondary">
                             Pinned threads are listed first
                           </span>
