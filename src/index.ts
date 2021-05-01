@@ -4963,7 +4963,7 @@ ${value}</textarea
                         <p>
                           <button class="green">Change Title</button>
                           <button
-                            type="undecorated"
+                            type="reset"
                             onclick="${javascript`
                               const title = this.closest(".title");
                               if (isModified(title) && !confirm("Discard changes?")) {
@@ -5324,7 +5324,7 @@ ${value}</textarea
                               `}"
                             >
                               <button
-                                type="undecorated"
+                                type="reset"
                                 onclick="${javascript`
                                   const post = this.closest(".post");
                                   if (isModified(post) && !confirm("Discard changes?")) {
