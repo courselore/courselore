@@ -5053,7 +5053,7 @@ ${value}</textarea
                     </p>
                   `);
 
-                if (res.locals.enrollment.role === "staff")
+                if (app.locals.helpers.mayEditThread(req, res))
                   content.push(html`
                     <form
                       method="POST"
@@ -5257,6 +5257,80 @@ ${value}</textarea
                     </div>
 
                     <div class="show">
+                      $${(() => {
+                        const content: HTML[] = [];
+
+                        if (post.reference !== "1")
+                          if (app.locals.helpers.mayEditPost(req, res, post))
+                            content.push(html`
+                              <form
+                                method="POST"
+                                action="${app.locals.settings.url}/courses/${res
+                                  .locals.course.reference}/threads/${res.locals
+                                  .thread
+                                  .reference}/posts/${post.reference}?_method=PATCH"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="isAnswer"
+                                  value="${post.answerAt === null
+                                    ? "true"
+                                    : "false"}"
+                                />
+                                <p>
+                                  <button>
+                                    <span
+                                      style="${css`
+                                        position: relative;
+                                        top: 0.1em;
+                                      `}"
+                                    >
+                                      $${app.locals.icons[
+                                        post.answerAt === null
+                                          ? "patch-check"
+                                          : "patch-check-fill"
+                                      ]}
+                                    </span>
+                                    ${post.answerAt === null
+                                      ? "Not an Answer"
+                                      : "Answer"}
+                                  </button>
+                                </p>
+                              </form>
+                            `);
+                          else if (post.answerAt !== null)
+                            content.push(html`
+                              <p>
+                                <span
+                                  style="${css`
+                                    position: relative;
+                                    top: 0.1em;
+                                  `}"
+                                >
+                                  $${app.locals.icons["patch-check-fill"]}
+                                </span>
+                                Answer
+                              </p>
+                            `);
+
+                        return content.length === 0
+                          ? html``
+                          : html`
+                              <div
+                                class="secondary"
+                                style="${css`
+                                  margin-top: -1.5rem;
+                                  display: flex;
+
+                                  & > * + * {
+                                    margin-left: 1rem;
+                                  }
+                                `}"
+                              >
+                                $${content}
+                              </div>
+                            `;
+                      })()}
                       $${app.locals.partials.textProcessor(post.content)}
 
                       <div>
@@ -5625,27 +5699,43 @@ ${value}</textarea
   app.patch<
     { courseReference: string; threadReference: string; postReference: string },
     any,
-    { content?: string },
+    { content?: string; isAnswer?: "true" | "false" },
     {},
     MayEditPostMiddlewareLocals
   >(
     "/courses/:courseReference/threads/:threadReference/posts/:postReference",
     ...app.locals.middlewares.mayEditPost,
     (req, res, next) => {
-      if (
-        typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
-      )
-        return next("validation");
+      if (typeof req.body.content === "string")
+        if (req.body.content.trim() === "") return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "posts"
+              SET "content" = ${req.body.content},
+                  "updatedAt" = ${new Date().toISOString()}
+              WHERE "id" = ${res.locals.post.id}
+            `
+          );
 
-      app.locals.database.run(
-        sql`
-          UPDATE "posts"
-          SET "content" = ${req.body.content},
-              "updatedAt" = ${new Date().toISOString()}
-          WHERE "id" = ${res.locals.post.id}
-        `
-      );
+      if (typeof req.body.isAnswer === "string")
+        if (
+          !["true", "false"].includes(req.body.isAnswer) ||
+          res.locals.thread.questionAt === null ||
+          (req.body.isAnswer === "true" && res.locals.post.answerAt !== null) ||
+          (req.body.isAnswer === "false" && res.locals.post.answerAt === null)
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "posts"
+              SET "answerAt" = ${
+                req.body.isAnswer === "true" ? new Date().toISOString() : null
+              }
+              WHERE "id" = ${res.locals.post.id}
+            `
+          );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
