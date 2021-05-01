@@ -602,6 +602,33 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-05-01</summary>
+
+- Progress:
+  - Tags.
+    - Pinning.
+    - Question & Answer.
+  - Keyboard navigation.
+  - Many internal improvements on how icons and CSS are handled.
+- Next week:
+  - On checkboxes that are icons:
+    - Change the text.
+    - Change the cursor.
+  - On buttons that toggle state:
+    - Add a tooltip: Show the tooltip right away, and let them be long if necessary.
+  - Move the “Threads that are pinned” to a tooltip.
+  - Editor helpers for things like **bold**, _italics_, and so forth.
+  - Staff endorsements.
+  - Tag creation is a separate step under Course Settings.
+    - Private tags: Tags that only staff sees.
+    - Don’t let students create tags.
+    - Force students to tag the threads they initiate.
+    - Attributes on tags.
+  - Search.
+
+</details>
+
+<details>
 <summary>2021-04-24</summary>
 
 - Progress:
