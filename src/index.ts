@@ -436,13 +436,14 @@ export default async function courselore(
 
               input[type="radio"],
               input[type="checkbox"] {
-                padding: 0;
                 display: inline-block;
 
                 &:not(.undecorated) {
                   width: 12px;
                   height: 12px;
-                  vertical-align: -0.1em;
+                  padding: 0;
+                  position: relative;
+                  top: 0.15em;
 
                   &:checked {
                     background: #ff77a8 center center no-repeat;
@@ -2266,7 +2267,8 @@ export default async function courselore(
               <p>
                 <span
                   style="${css`
-                    vertical-align: -0.1em;
+                    position: relative;
+                    top: 0.2em;
                   `}"
                   >$${app.locals.icons["arrow-left-right"]}</span
                 >
@@ -3668,7 +3670,8 @@ export default async function courselore(
                     .reference}/settings"
                   ><span
                     style="${css`
-                      vertical-align: -0.2em;
+                      position: relative;
+                      top: 0.2em;
                     `}"
                     >$${app.locals.icons["arrow-left"]}</span
                   >
@@ -4077,7 +4080,8 @@ export default async function courselore(
                                 <span>
                                   <span
                                     style="${css`
-                                      vertical-align: -0.2em;
+                                      position: relative;
+                                      top: 0.2em;
                                     `}"
                                   >
                                     $${app.locals.icons["pin"]}
@@ -4091,7 +4095,8 @@ export default async function courselore(
                                 <span>
                                   <span
                                     style="${css`
-                                      vertical-align: -0.1em;
+                                      position: relative;
+                                      top: 0.1em;
                                     `}"
                                   >
                                     $${app.locals.icons["question-diamond"]}
@@ -4103,7 +4108,8 @@ export default async function courselore(
                           <span>
                             <span
                               style="${css`
-                                vertical-align: -0.1em;
+                                position: relative;
+                                top: 0.1em;
                               `}"
                             >
                               $${app.locals.icons["chat"]}
@@ -4117,7 +4123,8 @@ export default async function courselore(
                                 <span>
                                   <span
                                     style="${css`
-                                      vertical-align: -0.1em;
+                                      position: relative;
+                                      top: 0.1em;
                                     `}"
                                   >
                                     $${app.locals.icons["hand-thumbs-up"]}
@@ -4256,7 +4263,8 @@ export default async function courselore(
             target="_blank"
             style="${css`
               font-size: 0.9em;
-              vertical-align: 0.3em;
+              position: relative;
+              top: -0.3em;
             `}"
             >$${app.locals.partials
               .textProcessor(`$\\LaTeX$`)
@@ -4465,7 +4473,11 @@ ${value}</textarea
                               }
                               background-repeat: no-repeat;
                               background-size: contain;
-                              vertical-align: -0.1em;
+                              position: relative;
+                              top: 0.1em;
+                              &:checked {
+                                top: 0.2em;
+                              }
 
                               &:not(:checked) + * {
                                 color: gray;
@@ -4504,7 +4516,8 @@ ${value}</textarea
                         }
                         background-repeat: no-repeat;
                         background-size: contain;
-                        vertical-align: -0.1em;
+                        position: relative;
+                        top: 0.2em;
 
                         &:not(:checked) + * {
                           color: gray;
@@ -5081,7 +5094,8 @@ ${value}</textarea
                     <p>
                       <span
                         style="${css`
-                          vertical-align: -0.2em;
+                          position: relative;
+                          top: 0.2em;
                         `}"
                       >
                         $${app.locals.icons["question-diamond-fill"]}
@@ -5287,7 +5301,8 @@ ${value}</textarea
                                   >
                                     <span
                                       style="${css`
-                                        vertical-align: -0.05em;
+                                        position: relative;
+                                        top: 0.05em;
                                       `}"
                                     >
                                       $${app.locals.icons[
@@ -5446,7 +5461,8 @@ ${value}</textarea
                               }
                               background-repeat: no-repeat;
                               background-size: contain;
-                              vertical-align: -0.1em;
+                              position: relative;
+                              top: 0.1em;
 
                               &:not(:checked) + * {
                                 color: gray;
