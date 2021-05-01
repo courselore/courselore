@@ -436,6 +436,7 @@ export default async function courselore(
 
               input[type="radio"],
               input[type="checkbox"] {
+                padding: 0;
                 display: inline-block;
 
                 &:not(.undecorated) {
@@ -5002,10 +5003,13 @@ ${value}</textarea
                           : "false"}"
                       />
                       <p>
-                        <button class="undecorated">
+                        <button>
                           <span
                             style="${css`
-                              vertical-align: -0.2em;
+                              position: relative;
+                              top: ${res.locals.thread.pinnedAt === null
+                                ? "0.1em"
+                                : "0.2em"};
                             `}"
                           >
                             $${app.locals.icons[
@@ -5026,7 +5030,8 @@ ${value}</textarea
                     <p>
                       <span
                         style="${css`
-                          vertical-align: -0.2em;
+                          position: relative;
+                          top: 0.2em;
                         `}"
                       >
                         $${app.locals.icons["pin-fill"]}
@@ -5051,10 +5056,11 @@ ${value}</textarea
                           : "false"}"
                       />
                       <p>
-                        <button class="undecorated">
+                        <button>
                           <span
                             style="${css`
-                              vertical-align: -0.2em;
+                              position: relative;
+                              top: 0.2em;
                             `}"
                           >
                             $${app.locals.icons[
@@ -5078,7 +5084,7 @@ ${value}</textarea
                           vertical-align: -0.2em;
                         `}"
                       >
-                        $${app.locals.icons["question-diamond-filled"]}
+                        $${app.locals.icons["question-diamond-fill"]}
                       </span>
                       Question
                     </p>
