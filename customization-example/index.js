@@ -25,187 +25,158 @@ module.exports = (require) => {
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
-            <div
+            <header
               style="${css`
-                @media (max-width: 1279px), (max-height: 699px) {
-                  max-width: 600px;
-                  padding: 0 1rem;
-                  margin: 1rem auto;
-                }
-
-                @media (min-width: 1280px) and (min-height: 700px) {
-                  display: grid;
-                  grid-template-columns: 600px 600px;
-                  column-gap: 40px;
-                  justify-content: center;
-                }
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
               `}"
             >
-              <header>
-                <div
-                  style="${css`
-                    @media (min-width: 1280px) and (min-height: 700px) {
-                      position: fixed;
-                      height: 100vh;
-                      display: flex;
-                      align-items: center;
-                    }
-                  `}"
-                >
-                  <div>
-                    $${app.locals.partials.art.large.replace(
-                      "</svg>",
-                      html`
-                        <g
-                          font-weight="900"
-                          fill="white"
-                          text-anchor="middle"
-                          alignment-baseline="middle"
-                          transform="translate(300, 250) rotate(-2)"
-                        >
-                          <g>
-                            <rect
-                              x="-250"
-                              y="-78"
-                              width="500"
-                              height="100"
-                              rx="10"
-                              fill="#83769c"
-                            />
-                            <text font-size="5rem">CourseLore</text>
-                          </g>
-                          <g transform="translate(0, 100)">
-                            <rect
-                              x="-210"
-                              y="-33"
-                              width="420"
-                              height="50"
-                              rx="10"
-                              fill="#ff77a8"
-                            />
-                            <text font-size="1.5rem"
-                              >The Open-Source Student Forum</text
-                            >
-                          </g>
-                          <g transform="translate(0, 300)">
-                            <rect
-                              x="-140"
-                              y="-20"
-                              width="280"
-                              height="30"
-                              rx="10"
-                              fill="#29adff"
-                            />
-                            <text font-size="0.8rem" letter-spacing="3">
-                              COMING SEPTEMBER 2021!
-                            </text>
-                          </g>
-                        </g>
-                        $&
-                      `
-                    )}
-                    <script>
-                      (() => {
-                        const SPEED = 0.001;
-                        const AMOUNT = 3;
-                        const polyline = document.currentScript.previousElementSibling.querySelector(
-                          "polyline"
-                        );
-                        const points = polyline
-                          .getAttribute("points")
-                          .split(" ")
-                          .map(Number);
-                        window.requestAnimationFrame(function animate(time) {
-                          polyline.setAttribute(
-                            "points",
-                            points
-                              .map(
-                                (coordinate, index) =>
-                                  coordinate +
-                                  Math.sin(time * SPEED + index) * AMOUNT
-                              )
-                              .join(" ")
-                          );
-                          window.requestAnimationFrame(animate);
-                        });
-                      })();
-                    </script>
-                    <nav
-                      style="${css`
-                        text-align: center;
-                      `}"
-                    >
-                      <a
-                        href="https://github.com/courselore"
-                        class="undecorated"
-                        ><i
-                          class="bi bi-github"
-                          role="img"
-                          aria-label="GitHub"
-                        ></i
-                      ></a>
-                      <a
-                        href="https://www.youtube.com/channel/UCIUTEUo5RiGdtaJOJQGTwqw"
-                        class="undecorated"
-                        ><i
-                          class="bi bi-youtube"
-                          role="img"
-                          aria-label="YouTube"
-                        ></i
-                      ></a>
-                      <a
-                        href="https://twitter.com/courselore"
-                        class="undecorated"
-                        ><i
-                          class="bi bi-twitter"
-                          role="img"
-                          aria-label="Twitter"
-                        ></i
-                      ></a>
-                      <a
-                        href="mailto:contact@courselore.org"
-                        class="undecorated"
-                        ><i
-                          class="bi bi-envelope-fill"
-                          role="img"
-                          aria-label="Email"
-                        ></i
-                      ></a>
-                    </nav>
-                  </div>
-                </div>
-              </header>
-
-              <main
+              $${app.locals.partials.art.large.replace(
+                "</svg>",
+                html`
+                  <g
+                    font-weight="bold"
+                    fill="white"
+                    text-anchor="middle"
+                    alignment-baseline="middle"
+                    transform="translate(300, 250) rotate(-2)"
+                  >
+                    <g>
+                      <rect
+                        x="-250"
+                        y="-78"
+                        width="500"
+                        height="100"
+                        rx="10"
+                        fill="#83769c"
+                      />
+                      <text
+                        font-style="italic"
+                        font-family="IBM Plex Serif"
+                        font-size="5.5rem"
+                        >CourseLore</text
+                      >
+                    </g>
+                    <g transform="translate(0, 100)">
+                      <rect
+                        x="-210"
+                        y="-33"
+                        width="420"
+                        height="50"
+                        rx="10"
+                        fill="#ff77a8"
+                      />
+                      <text font-size="1.6rem"
+                        >The Open-Source Student Forum</text
+                      >
+                    </g>
+                    <g transform="translate(0, 300)">
+                      <rect
+                        x="-140"
+                        y="-20"
+                        width="280"
+                        height="30"
+                        rx="10"
+                        fill="#29adff"
+                      />
+                      <text font-size="0.9rem" letter-spacing="3">
+                        COMING SEPTEMBER 2021!
+                      </text>
+                    </g>
+                  </g>
+                  $&
+                `
+              )}
+              <script>
+                (() => {
+                  const SPEED = 0.001;
+                  const AMOUNT = 3;
+                  const polyline = document.currentScript.previousElementSibling.querySelector(
+                    "polyline"
+                  );
+                  const points = polyline
+                    .getAttribute("points")
+                    .split(" ")
+                    .map(Number);
+                  window.requestAnimationFrame(function animate(time) {
+                    polyline.setAttribute(
+                      "points",
+                      points
+                        .map(
+                          (coordinate, index) =>
+                            coordinate + Math.sin(time * SPEED + index) * AMOUNT
+                        )
+                        .join(" ")
+                    );
+                    window.requestAnimationFrame(animate);
+                  });
+                })();
+              </script>
+              <nav
                 style="${css`
-                  #user-content-people > div {
-                    & > p:first-of-type {
-                      text-align: center;
-                      line-height: 1.3;
-
-                      a {
-                        text-decoration: none;
-                      }
-                    }
-
-                    @media (max-width: 599px) {
-                      &:not(:first-of-type) {
-                        margin-top: 3rem;
-                      }
-                    }
-
-                    @media (min-width: 600px) {
-                      display: grid;
-                      grid-template-columns: 200px 1fr;
-                      column-gap: 40px;
-                      align-items: center;
-                    }
+                  text-align: center;
+                  font-size: 2rem;
+                  
+                  & > * + * {
+                    margin-left: 1rem;
                   }
                 `}"
               >
-                $${app.locals.partials.textProcessor(
-                  // prettier-ignore
-                  markdown`
+                <a href="https://github.com/courselore" class="undecorated"
+                  ><i class="bi bi-github" role="img" aria-label="GitHub"></i
+                ></a>
+                <a
+                  href="https://www.youtube.com/channel/UCIUTEUo5RiGdtaJOJQGTwqw"
+                  class="undecorated"
+                  ><i class="bi bi-youtube" role="img" aria-label="YouTube"></i
+                ></a>
+                <a href="https://twitter.com/courselore" class="undecorated"
+                  ><i class="bi bi-twitter" role="img" aria-label="Twitter"></i
+                ></a>
+                <a href="mailto:contact@courselore.org" class="undecorated"
+                  ><i
+                    class="bi bi-envelope-fill"
+                    role="img"
+                    aria-label="Email"
+                  ></i
+                ></a>
+              </nav>
+            </header>
+
+            <main
+              style="${css`
+                #user-content-people > div {
+                  & > p:first-of-type {
+                    text-align: center;
+                    line-height: 1.3;
+
+                    a {
+                      text-decoration: none;
+                    }
+                  }
+
+                  @media (max-width: 599px) {
+                    &:not(:first-of-type) {
+                      margin-top: 3rem;
+                    }
+                  }
+
+                  @media (min-width: 600px) {
+                    display: grid;
+                    grid-template-columns: 200px 1fr;
+                    column-gap: 40px;
+                    align-items: center;
+                  }
+                }
+              `}"
+            >
+              $${app.locals.partials.textProcessor(
+                // prettier-ignore
+                markdown`
 # What Will CourseLore Be?
 
 **A forum for educators & students.**
@@ -277,9 +248,8 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
 
 **Developers & Designers:** Contribute on [GitHub](https://github.com/courselore).
 `
-                )}
-              </main>
-            </div>
+              )}
+            </main>
           `
         )
       );

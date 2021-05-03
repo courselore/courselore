@@ -304,10 +304,12 @@ export default async function courselore(
                 background-color: #ff77a8;
               }
 
+              /*
               :focus:focus {
                 outline: none;
                 box-shadow: 0 0 0 2px #ff77a8aa;
               }
+              */
 
               img,
               svg {
@@ -327,7 +329,7 @@ export default async function courselore(
               h1 {
                 font-size: 1.3rem;
                 line-height: 1.3;
-                font-weight: 800;
+                font-weight: bold;
               }
 
               pre,
@@ -342,8 +344,10 @@ export default async function courselore(
 
               a {
                 color: inherit;
+                transition: color 0.2s;
 
-                &:hover {
+                &:hover,
+                &:focus {
                   color: #ff77a8;
                 }
 
