@@ -280,6 +280,8 @@ export default async function courselore(
         </head>
         <body
           style="${css`
+            /*
+
             @at-root {
               body {
                 font-size: 0.875rem;
@@ -304,12 +306,10 @@ export default async function courselore(
                 background-color: #ff77a8;
               }
 
-              /*
               :focus:focus {
                 outline: none;
                 box-shadow: 0 0 0 2px #ff77a8aa;
               }
-              */
 
               img,
               svg {
@@ -532,6 +532,7 @@ export default async function courselore(
                 }
               }
             }
+            */
           `}"
         >
           $${app.locals.partials.art.gradient} $${body}
