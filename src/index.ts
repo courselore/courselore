@@ -297,12 +297,7 @@ export default async function courselore(
           <link
             rel="stylesheet"
             href="${app.locals.settings
-              .url}/node_modules/typeface-public-sans/index.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.settings
-              .url}/node_modules/typeface-roboto-mono/index.css"
+              .url}/node_modules/@ibm/plex/css/ibm-plex.min.css"
           />
           <link
             rel="stylesheet"
@@ -318,7 +313,7 @@ export default async function courselore(
                 font-size: 0.875rem;
                 -webkit-text-size-adjust: 100%;
                 line-height: 1.5;
-                font-family: "Public Sans", sans-serif;
+                font-family: "IBM Plex Sans", sans-serif;
                 margin: 0;
                 overflow-wrap: break-word;
 
@@ -329,7 +324,7 @@ export default async function courselore(
               }
 
               code {
-                font-family: "Roboto Mono", monospace;
+                font-family: "IBM Plex Mono", monospace;
               }
 
               ::selection {
