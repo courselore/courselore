@@ -142,23 +142,39 @@ module.exports = (require) => {
                       <a
                         href="https://github.com/courselore"
                         class="undecorated"
-                        ><strong>GitHub</strong></a
-                      > ·
+                        ><i
+                          class="bi bi-github"
+                          role="img"
+                          aria-label="GitHub"
+                        ></i
+                      ></a>
                       <a
                         href="https://www.youtube.com/channel/UCIUTEUo5RiGdtaJOJQGTwqw"
                         class="undecorated"
-                        ><strong>YouTube</strong></a
-                      > ·
+                        ><i
+                          class="bi bi-youtube"
+                          role="img"
+                          aria-label="YouTube"
+                        ></i
+                      ></a>
                       <a
                         href="https://twitter.com/courselore"
                         class="undecorated"
-                        ><strong>Twitter</strong></a
-                      > ·
+                        ><i
+                          class="bi bi-twitter"
+                          role="img"
+                          aria-label="Twitter"
+                        ></i
+                      ></a>
                       <a
                         href="mailto:contact@courselore.org"
                         class="undecorated"
-                        ><strong>Email</strong></a
-                      >
+                        ><i
+                          class="bi bi-envelope-fill"
+                          role="img"
+                          aria-label="Email"
+                        ></i
+                      ></a>
                     </nav>
                   </div>
                 </div>

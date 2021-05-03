@@ -289,6 +289,11 @@ export default async function courselore(
           <link
             rel="stylesheet"
             href="${app.locals.settings
+              .url}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${app.locals.settings
               .url}/node_modules/katex/dist/katex.min.css"
           />
           $${head}
