@@ -2,15 +2,11 @@ module.exports = (require) => {
   const path = require("path");
   const express = require("express");
   const cookieParser = require("cookie-parser");
-  const html = require("@leafac/html").default;
-  const css = require("tagged-template-noop");
+  const { html } = require("@leafac/html");
+  const { css } = require("@leafac/css");
   const markdown = require("tagged-template-noop");
 
-  const exports = middleware;
-  exports.art = art;
-  return exports;
-
-  function middleware(app) {
+  return (app) => {
     const router = express.Router();
 
     router.use(cookieParser());
@@ -57,7 +53,7 @@ module.exports = (require) => {
                   `}"
                 >
                   <div>
-                    $${art({ size: 600, order: 6, strokeWidth: 1 }).replace(
+                    $${app.locals.partials.art.large.replace(
                       "</svg>",
                       html`
                         <g
@@ -290,59 +286,5 @@ Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.ed
     });
 
     return router;
-  }
-
-  // https://www.youtube.com/watch?v=dSK-MW-zuAc
-  function art({ size, order, strokeWidth }) {
-    // Hilbert
-    // let points = [
-    //   [1 / 4, 1 / 4],
-    //   [1 / 4, 3 / 4],
-    //   [3 / 4, 3 / 4],
-    //   [3 / 4, 1 / 4],
-    // ];
-    let points = [
-      [1 / 4, 1 / 4],
-      [3 / 4, 3 / 4],
-      [3 / 4, 1 / 4],
-      [1 / 4, 3 / 4],
-    ];
-    for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
-      const upperLeft = [];
-      const lowerLeft = [];
-      const lowerRight = [];
-      const upperRight = [];
-      for (const [x, y] of points) {
-        upperLeft.push([y / 2, x / 2]);
-        lowerLeft.push([x / 2, y / 2 + 1 / 2]);
-        lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
-        upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
-      }
-      points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
-    }
-
-    return html`
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="${size}"
-        height="${size}"
-        viewBox="0 0 ${size} ${size}"
-      >
-        <defs>
-          <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#83769c" />
-            <stop offset="100%" stop-color="#ff77a8" />
-          </linearGradient>
-        </defs>
-        <polyline
-          stroke="url(#gradient)"
-          stroke-width="${strokeWidth}"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          fill="none"
-          points="${points.flatMap(([x, y]) => [x * size, y * size]).join(" ")}"
-        />
-      </svg>
-    `;
-  }
+  };
 };

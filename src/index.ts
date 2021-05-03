@@ -224,26 +224,6 @@ export default async function courselore(
     `
   );
 
-  interface AppLocals {
-    icons: { [icon: string]: HTML };
-  }
-  app.locals.icons = {};
-  await (async () => {
-    const directory = path.join(
-      __dirname,
-      "../node_modules/bootstrap-icons/icons/"
-    );
-    for (const file of await fs.readdir(directory))
-      app.locals.icons[path.basename(file, ".svg")] = await fs.readFile(
-        path.join(directory, file),
-        "utf-8"
-      );
-    app.locals.icons["logo"] = await fs.readFile(
-      path.join(__dirname, "../public/logo.svg"),
-      "utf-8"
-    );
-  })();
-
   interface Layouts {
     base: (
       req: express.Request<{}, any, {}, {}, {}>,
@@ -439,71 +419,6 @@ export default async function courselore(
                 }
               }
 
-              input[type="radio"]:not(.undecorated) {
-                border-radius: 50%;
-
-                &:checked {
-                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    app.locals.icons["circle-fill"].replace(
-                      "currentColor",
-                      "white"
-                    )
-                  ).toString("base64")}");
-                  background-size: 6px 6px;
-                }
-              }
-
-              input[type="checkbox"]:not(.undecorated) {
-                border-radius: 3px;
-
-                &:checked {
-                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    app.locals.icons["check"].replace("currentColor", "white")
-                  ).toString("base64")}");
-                }
-              }
-
-              textarea:not(.undecorated) {
-                min-height: 10rem;
-                padding: 0.5rem 1rem;
-                resize: vertical;
-                white-space: pre-wrap;
-              }
-
-              select:not(.undecorated) {
-                padding-right: 1.5rem;
-                background: url("data:image/svg+xml;base64,${Buffer.from(
-                    app.locals.icons["caret-down-fill"]
-                  ).toString("base64")}")
-                  top 0.45rem right 0.3rem no-repeat;
-                @media (prefers-color-scheme: dark) {
-                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    app.locals.icons["caret-down-fill"].replace(
-                      "currentColor",
-                      "#d4d4d4"
-                    )
-                  ).toString("base64")}");
-                }
-                background-size: 0.8em 0.8em;
-
-                &:disabled {
-                  background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                    app.locals.icons["caret-down-fill"].replace(
-                      "currentColor",
-                      "gray"
-                    )
-                  ).toString("base64")}");
-                  @media (prefers-color-scheme: dark) {
-                    background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                      app.locals.icons["caret-down-fill"].replace(
-                        "currentColor",
-                        "whitesmoke"
-                      )
-                    ).toString("base64")}");
-                  }
-                }
-              }
-
               button {
                 text-align: center;
                 cursor: default;
@@ -615,7 +530,7 @@ export default async function courselore(
             }
           `}"
         >
-          $${body}
+          $${app.locals.partials.art.gradient} $${body}
         </body>
       </html>
     `);
@@ -972,6 +887,83 @@ export default async function courselore(
       `
     );
 
+  // https://www.youtube.com/watch?v=dSK-MW-zuAc
+  interface Partials {
+    art: {
+      gradient: HTML;
+      large: HTML;
+      small: HTML;
+    };
+  }
+  (() => {
+    app.locals.partials.art = {
+      gradient: html`
+        <svg
+          style="${css`
+            position: absolute;
+            left: -999px;
+          `}"
+        >
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#83769c" />
+              <stop offset="100%" stop-color="#ff77a8" />
+            </linearGradient>
+          </defs>
+        </svg>
+      `,
+      large: art({ size: 600, order: 6 }),
+      small: art({ size: 30, order: 3 }),
+    };
+
+    function art(options: { size: number; order: number }): HTML {
+      // Hilbert
+      // let points = [
+      //   [1 / 4, 1 / 4],
+      //   [1 / 4, 3 / 4],
+      //   [3 / 4, 3 / 4],
+      //   [3 / 4, 1 / 4],
+      // ];
+      let points = [
+        [1 / 4, 1 / 4],
+        [3 / 4, 3 / 4],
+        [3 / 4, 1 / 4],
+        [1 / 4, 3 / 4],
+      ];
+      for (let orderIndex = 2; orderIndex <= options.order; orderIndex++) {
+        const upperLeft = [];
+        const lowerLeft = [];
+        const lowerRight = [];
+        const upperRight = [];
+        for (const [x, y] of points) {
+          upperLeft.push([y / 2, x / 2]);
+          lowerLeft.push([x / 2, y / 2 + 1 / 2]);
+          lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
+          upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
+        }
+        points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
+      }
+
+      return html`
+        <svg
+          width="${options.size}"
+          height="${options.size}"
+          viewBox="0 0 ${options.size} ${options.size}"
+        >
+          <polyline
+            stroke="url(#gradient)"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            points="${points
+              .flatMap(([x, y]) => [x * options.size, y * options.size])
+              .join(" ")}"
+          />
+        </svg>
+      `;
+    }
+  })();
+
   interface Partials {
     logoAndMenu: (
       req: express.Request<
@@ -1006,7 +998,7 @@ export default async function courselore(
             }
           `}"
         >
-          $${app.locals.icons["logo"]}
+          $${app.locals.partials.art.small}
           <span>CourseLore</span>
         </a>
         <script>
@@ -1048,7 +1040,7 @@ export default async function courselore(
         ? html``
         : html`
             <details class="dropdown">
-              <summary class="no-marker">$${app.locals.icons["list"]}</summary>
+              <summary class="no-marker"><i class="bi bi-list"></i></summary>
               <nav
                 style="${css`
                   transform: translate(calc(-100% + 1rem));
@@ -1908,7 +1900,7 @@ export default async function courselore(
                                 color: ${enrollment.accentColor};
                               `}"
                             >
-                              $${app.locals.icons["circle-fill"]}
+                              <i class="bi bi-circle-fill"></i>
                             </span>
                             <strong>${enrollment.course.name}</strong></a
                           >
@@ -2257,8 +2249,8 @@ export default async function courselore(
                     position: relative;
                     top: 0.2em;
                   `}"
-                  >$${app.locals.icons["arrow-left-right"]}</span
-                >
+                  ><i class="bi bi-arrow-left-right"></i
+                ></span>
                 <span>Switch to another course</span>
               </p>
             </summary>
@@ -2279,7 +2271,7 @@ export default async function courselore(
                           color: ${otherEnrollment.accentColor};
                         `}"
                       >
-                        $${app.locals.icons["circle-fill"]}
+                        <i class="bi bi-circle-fill"></i>
                       </span>
                       <strong>${otherEnrollment.course.name}</strong></a
                     >
@@ -3365,8 +3357,8 @@ export default async function courselore(
                           `}"
                         >
                           $${accentColor === res.locals.enrollment.accentColor
-                            ? app.locals.icons["record-circle-fill"]
-                            : app.locals.icons["circle-fill"]}
+                            ? html`<i class="bi bi-record-circle-fill"></i>`
+                            : html`<i class="bi bi-circle-fill"></i>`}
                         </button>
                       </p>
                     </form>
@@ -3660,8 +3652,8 @@ export default async function courselore(
                       position: relative;
                       top: 0.2em;
                     `}"
-                    >$${app.locals.icons["arrow-left"]}</span
-                  >
+                    ><i class="bi bi-arrow-left"></i
+                  ></span>
                   Return to Course Settings</a
                 >
               </p>
@@ -4071,7 +4063,7 @@ export default async function courselore(
                                       top: 0.2em;
                                     `}"
                                   >
-                                    $${app.locals.icons["pin"]}
+                                    <i class="bi bi-pin"></i>
                                   </span>
                                   Pinned
                                 </span>
@@ -4086,7 +4078,7 @@ export default async function courselore(
                                       top: 0.1em;
                                     `}"
                                   >
-                                    $${app.locals.icons["question-diamond"]}
+                                    <i class="bi bi-question-diamond"></i>
                                   </span>
                                   Question
                                 </span>
@@ -4099,7 +4091,7 @@ export default async function courselore(
                                 top: 0.1em;
                               `}"
                             >
-                              $${app.locals.icons["chat"]}
+                              <i class="bi bi-chat"></i>
                             </span>
                             ${thread.postsCount}
                             post${thread.postsCount === 1 ? "" : "s"}
@@ -4114,7 +4106,7 @@ export default async function courselore(
                                       top: 0.1em;
                                     `}"
                                   >
-                                    $${app.locals.icons["hand-thumbs-up"]}
+                                    <i class="bi bi-hand-thumbs-up"></i>
                                   </span>
                                   ${thread.likesCount}
                                   like${thread.likesCount === 1 ? "" : "s"}
@@ -4243,8 +4235,8 @@ export default async function courselore(
             style="${css`
               font-size: 1.3em;
             `}"
-            >$${app.locals.icons["markdown"]}</a
-          >
+            ><i class="bi bi-markdown"></i
+          ></a>
           <a
             href="https://katex.org/docs/supported.html"
             target="_blank"
@@ -4294,7 +4286,7 @@ ${value}</textarea
           }
         `}"
       >
-        $${app.locals.icons["logo"].replace(/<defs>.*<\/defs>/s, "")}
+        $${app.locals.partials.art.small}
         <strong>Loading…</strong>
       </div>
       <script>
@@ -4448,14 +4440,16 @@ ${value}</textarea
                               width: 1em;
                               height: 1em;
                               background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                app.locals.icons["pin-angle"].replace(
-                                  "currentColor",
-                                  "gray"
-                                )
+                                "TODO"
+                                // app.locals.icons["pin-angle"].replace(
+                                //   "currentColor",
+                                //   "gray"
+                                // )
                               ).toString("base64")}");
                               &:checked {
                                 background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                  app.locals.icons["pin-fill"]
+                                  "TODO"
+                                  // app.locals.icons["pin-fill"]
                                 ).toString("base64")}");
                               }
                               background-repeat: no-repeat;
@@ -4491,14 +4485,16 @@ ${value}</textarea
                         width: 1em;
                         height: 1em;
                         background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                          app.locals.icons["question-diamond"].replace(
-                            "currentColor",
-                            "gray"
-                          )
+                          "TODO"
+                          // app.locals.icons["question-diamond"].replace(
+                          //   "currentColor",
+                          //   "gray"
+                          // )
                         ).toString("base64")}");
                         &:checked {
                           background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                            app.locals.icons["question-diamond-fill"]
+                            "TODO"
+                            // app.locals.icons["question-diamond-fill"]
                           ).toString("base64")}");
                         }
                         background-repeat: no-repeat;
@@ -4900,7 +4896,7 @@ ${value}</textarea
                                   event.preventDefault();
                               `}"
                             >
-                              $${app.locals.icons["trash"]}
+                              <i class="bi bi-trash"></i>
                             </button>
                           </p>
                         </form>
@@ -4923,7 +4919,7 @@ ${value}</textarea
                                 input.setSelectionRange(0, 0);
                               `}"
                           >
-                            $${app.locals.icons["pencil"]}
+                            <i class="bi bi-pencil"></i>
                           </button>
                         </p>
                       `
@@ -5012,11 +5008,6 @@ ${value}</textarea
                                 : "0.2em"};
                             `}"
                           >
-                            $${app.locals.icons[
-                              res.locals.thread.pinnedAt === null
-                                ? "pin-angle"
-                                : "pin-fill"
-                            ]}
                           </span>
                           ${res.locals.thread.pinnedAt === null
                             ? "Unpinned"
@@ -5034,7 +5025,7 @@ ${value}</textarea
                           top: 0.2em;
                         `}"
                       >
-                        $${app.locals.icons["pin-fill"]}
+                        <i class="bi bi-pin-fill"></i>
                       </span>
                       Pinned
                     </p>
@@ -5063,11 +5054,6 @@ ${value}</textarea
                               top: 0.2em;
                             `}"
                           >
-                            $${app.locals.icons[
-                              res.locals.thread.questionAt === null
-                                ? "question-diamond"
-                                : "question-diamond-fill"
-                            ]}
                           </span>
                           ${res.locals.thread.questionAt === null
                             ? "Not a Question"
@@ -5085,7 +5071,7 @@ ${value}</textarea
                           top: 0.2em;
                         `}"
                       >
-                        $${app.locals.icons["question-diamond-fill"]}
+                        <i class="bi bi-question-diamond-fill"></i>
                       </span>
                       Question
                     </p>
@@ -5178,7 +5164,7 @@ ${value}</textarea
                                       event.preventDefault();
                                   `}"
                                 >
-                                  $${app.locals.icons["trash"]}
+                                  <i class="bi bi-trash"></i>
                                 </button>
                               </p>
                             </form>
@@ -5201,7 +5187,7 @@ ${value}</textarea
                                   textarea.setSelectionRange(0, 0);
                                 `}"
                               >
-                                $${app.locals.icons["pencil"]}
+                                <i class="bi bi-pencil"></i>
                               </button>
                             </p>
                           `
@@ -5238,7 +5224,7 @@ ${value}</textarea
                             newPostContent.setSelectionRange(selectionStart, selectionEnd);
                           `}"
                         >
-                          $${app.locals.icons["reply"]}
+                          <i class="bi bi-reply"></i>
                         </button>
                       </p>
                     </div>
@@ -5272,11 +5258,6 @@ ${value}</textarea
                                         top: 0.1em;
                                       `}"
                                     >
-                                      $${app.locals.icons[
-                                        post.answerAt === null
-                                          ? "patch-check"
-                                          : "patch-check-fill"
-                                      ]}
                                     </span>
                                     ${post.answerAt === null
                                       ? "Not an Answer"
@@ -5294,7 +5275,7 @@ ${value}</textarea
                                     top: 0.1em;
                                   `}"
                                 >
-                                  $${app.locals.icons["patch-check-fill"]}
+                                  <i class="bi bi-patch-check-fill"></i>
                                 </span>
                                 Answer
                               </p>
@@ -5366,11 +5347,6 @@ ${value}</textarea
                                         top: 0.05em;
                                       `}"
                                     >
-                                      $${app.locals.icons[
-                                        isLiked
-                                          ? "hand-thumbs-up-fill"
-                                          : "hand-thumbs-up"
-                                      ]}
                                     </span>
                                     $${isLiked ? html`Liked` : html`Like`}
                                     $${likesCount > 0
@@ -5510,14 +5486,16 @@ ${value}</textarea
                               width: 1em;
                               height: 1em;
                               background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                app.locals.icons["patch-check"].replace(
-                                  "currentColor",
-                                  "gray"
-                                )
+                                "TODO"
+                                // app.locals.icons["patch-check"].replace(
+                                //   "currentColor",
+                                //   "gray"
+                                // )
                               ).toString("base64")}");
                               &:checked {
                                 background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                  app.locals.icons["patch-check-fill"]
+                                  "TODO"
+                                  // app.locals.icons["patch-check-fill"]
                                 ).toString("base64")}");
                               }
                               background-repeat: no-repeat;
