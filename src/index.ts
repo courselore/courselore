@@ -12,8 +12,9 @@ import emailAddresses from "email-addresses";
 
 import { Database, sql } from "@leafac/sqlite";
 import { html, HTML } from "@leafac/html";
-import { css, process as processCSS } from "@leafac/css";
+import { css, process as processCSS, CSS } from "@leafac/css";
 import javascript from "tagged-template-noop";
+import sass from "sass";
 
 import unified from "unified";
 import remarkParse from "remark-parse";
@@ -260,6 +261,10 @@ export default async function courselore(
             rel="shortcut icon"
             type="image/x-icon"
             href="${app.locals.settings.url}/favicon.ico"
+          />
+          <link
+            rel="stylesheet"
+            href="${app.locals.settings.url}/bootstrap.css"
           />
           <link
             rel="stylesheet"
@@ -536,6 +541,16 @@ export default async function courselore(
           `}"
         >
           $${app.locals.partials.art.gradient} $${body}
+          <script src="${app.locals.settings
+              .url}/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const element of document.querySelectorAll(
+                '[data-bs-toggle="tooltip"]'
+              ))
+                new bootstrap.Tooltip(element);
+            });
+          </script>
         </body>
       </html>
     `);
@@ -891,6 +906,22 @@ export default async function courselore(
         </div>
       `
     );
+
+  interface Partials {
+    bootstrap: CSS;
+  }
+  app.locals.partials.bootstrap = sass
+    .renderSync({
+      data: css`
+        $primary: #83769c;
+        $font-family-sans-serif: "IBM Plex Sans";
+        @import "public/node_modules/bootstrap/scss/bootstrap";
+      `,
+    })
+    .css.toString();
+  app.get("/bootstrap.css", (req, res) => {
+    res.type("css").send(app.locals.partials.bootstrap);
+  });
 
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
   interface Partials {

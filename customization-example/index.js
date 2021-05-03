@@ -120,24 +120,34 @@ module.exports = (require) => {
                 style="${css`
                   text-align: center;
                   font-size: 2rem;
-                  
+
                   & > * + * {
                     margin-left: 1rem;
                   }
                 `}"
               >
-                <a href="https://github.com/courselore" class="undecorated"
+                <a
+                  href="https://github.com/courselore"
+                  data-bs-toggle="tooltip"
+                  title="Source code on GitHub"
                   ><i class="bi bi-github" role="img" aria-label="GitHub"></i
                 ></a>
                 <a
                   href="https://www.youtube.com/channel/UCIUTEUo5RiGdtaJOJQGTwqw"
-                  class="undecorated"
+                  data-bs-toggle="tooltip"
+                  title="Demonstration videos on YouTube"
                   ><i class="bi bi-youtube" role="img" aria-label="YouTube"></i
                 ></a>
-                <a href="https://twitter.com/courselore" class="undecorated"
+                <a
+                  href="https://twitter.com/courselore"
+                  data-bs-toggle="tooltip"
+                  title="Updates on Twitter"
                   ><i class="bi bi-twitter" role="img" aria-label="Twitter"></i
                 ></a>
-                <a href="mailto:contact@courselore.org" class="undecorated"
+                <a
+                  href="mailto:contact@courselore.org"
+                  data-bs-toggle="tooltip"
+                  title="Contact via email"
                   ><i
                     class="bi bi-envelope-fill"
                     role="img"
