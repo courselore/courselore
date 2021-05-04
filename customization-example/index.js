@@ -4,7 +4,6 @@ module.exports = (require) => {
   const cookieParser = require("cookie-parser");
   const { html } = require("@leafac/html");
   const { css } = require("@leafac/css");
-  const markdown = require("tagged-template-noop");
 
   return (app) => {
     const router = express.Router();
@@ -18,248 +17,170 @@ module.exports = (require) => {
       }
     );
     router.use(express.static(path.join(__dirname, "public")));
-    router.get("/", (req, res, next) => {
+    router.get("/", (req, res) => {
       res.send(
         app.locals.layouts.base(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
-            <header
-              style="${css`
-                width: 100vw;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-              `}"
-            >
-              $${app.locals.partials.art.large.replace(
-                "</svg>",
-                html`
-                  <g
-                    font-weight="bold"
-                    fill="white"
-                    text-anchor="middle"
-                    alignment-baseline="middle"
-                    transform="translate(300, 250) rotate(-2)"
-                  >
-                    <g>
-                      <rect
-                        x="-250"
-                        y="-78"
-                        width="500"
-                        height="100"
-                        rx="10"
-                        fill="#83769c"
-                      />
-                      <text
-                        font-style="italic"
-                        font-family="IBM Plex Serif"
-                        font-size="5.5rem"
-                        >CourseLore</text
-                      >
-                    </g>
-                    <g transform="translate(0, 100)">
-                      <rect
-                        x="-210"
-                        y="-33"
-                        width="420"
-                        height="50"
-                        rx="10"
-                        fill="#ff77a8"
-                      />
-                      <text font-size="1.6rem"
-                        >The Open-Source Student Forum</text
-                      >
-                    </g>
-                    <g transform="translate(0, 300)">
-                      <rect
-                        x="-140"
-                        y="-20"
-                        width="280"
-                        height="30"
-                        rx="10"
-                        fill="#29adff"
-                      />
-                      <text font-size="0.9rem" letter-spacing="3">
-                        COMING SEPTEMBER 2021!
-                      </text>
-                    </g>
-                  </g>
-                  $&
-                `
-              )}
-              <script>
-                (() => {
-                  const SPEED = 0.001;
-                  const AMOUNT = 3;
-                  const polyline = document.currentScript.previousElementSibling.querySelector(
-                    "polyline"
-                  );
-                  const points = polyline
-                    .getAttribute("points")
-                    .split(" ")
-                    .map(Number);
-                  window.requestAnimationFrame(function animate(time) {
-                    polyline.setAttribute(
-                      "points",
-                      points
-                        .map(
-                          (coordinate, index) =>
-                            coordinate + Math.sin(time * SPEED + index) * AMOUNT
-                        )
-                        .join(" ")
-                    );
-                    window.requestAnimationFrame(animate);
-                  });
-                })();
-              </script>
-              <nav
-                style="${css`
-                  text-align: center;
-                  font-size: 2rem;
+            <div class="text-center">
+              <header class="container mt-3">
+                <p>
+                  $${app.locals.partials.art.large
+                    .replace("<svg", `<svg class="img-fluid"`)
+                    .replace(
+                      "</svg>",
+                      html`
+                        <g
+                          font-weight="bold"
+                          fill="white"
+                          text-anchor="middle"
+                          alignment-baseline="middle"
+                          transform="translate(300, 250) rotate(-2)"
+                        >
+                          <g>
+                            <rect
+                              x="-250"
+                              y="-80"
+                              width="500"
+                              height="100"
+                              rx="10"
+                              fill="#83769c"
+                            />
+                            <text
+                              font-style="italic"
+                              font-family="IBM Plex Serif"
+                              font-size="5.5rem"
+                              >CourseLore</text
+                            >
+                          </g>
+                          <g transform="translate(0, 100)">
+                            <rect
+                              x="-210"
+                              y="-33"
+                              width="420"
+                              height="50"
+                              rx="10"
+                              fill="#ff77a8"
+                            />
+                            <text font-size="1.6rem"
+                              >The Open-Source Student Forum</text
+                            >
+                          </g>
+                          <g transform="translate(0, 300)">
+                            <rect
+                              x="-150"
+                              y="-20"
+                              width="300"
+                              height="30"
+                              rx="10"
+                              fill="#29adff"
+                            />
+                            <text letter-spacing="3">
+                              COMING SEPTEMBER 2021!
+                            </text>
+                          </g>
+                        </g>
+                        $&
+                      `
+                    )}
+                  <script>
+                    (() => {
+                      const SPEED = 0.001;
+                      const AMOUNT = 3;
+                      const polyline = document.currentScript.previousElementSibling.querySelector(
+                        "polyline"
+                      );
+                      const points = polyline
+                        .getAttribute("points")
+                        .split(" ")
+                        .map(Number);
+                      window.requestAnimationFrame(function animate(time) {
+                        polyline.setAttribute(
+                          "points",
+                          points
+                            .map(
+                              (coordinate, index) =>
+                                coordinate +
+                                Math.sin(time * SPEED + index) * AMOUNT
+                            )
+                            .join(" ")
+                        );
+                        window.requestAnimationFrame(animate);
+                      });
+                    })();
+                  </script>
+                </p>
 
-                  & > * + * {
-                    margin-left: 1rem;
-                  }
-                `}"
-              >
-                <a
-                  href="https://github.com/courselore"
-                  data-bs-toggle="tooltip"
-                  title="Source code on GitHub"
-                  ><i class="bi bi-github" role="img" aria-label="GitHub"></i
-                ></a>
-                <a
-                  href="https://www.youtube.com/channel/UCIUTEUo5RiGdtaJOJQGTwqw"
-                  data-bs-toggle="tooltip"
-                  title="Demonstration videos on YouTube"
-                  ><i class="bi bi-youtube" role="img" aria-label="YouTube"></i
-                ></a>
-                <a
-                  href="https://twitter.com/courselore"
-                  data-bs-toggle="tooltip"
-                  title="Updates on Twitter"
-                  ><i class="bi bi-twitter" role="img" aria-label="Twitter"></i
-                ></a>
-                <a
-                  href="mailto:contact@courselore.org"
-                  data-bs-toggle="tooltip"
-                  title="Contact via email"
-                  ><i
-                    class="bi bi-envelope-fill"
-                    role="img"
-                    aria-label="Email"
-                  ></i
-                ></a>
-              </nav>
-            </header>
+                <nav>
+                  <p>
+                    <a
+                      href="$${app.locals.settings.url}/authenticate"
+                      class="btn btn-primary btn-lg me-3"
+                      data-bs-toggle="tooltip"
+                      title="Very early development demo"
+                      >Demo</a
+                    >
 
-            <main
-              style="${css`
-                #user-content-people > div {
-                  & > p:first-of-type {
-                    text-align: center;
-                    line-height: 1.3;
+                    <span class="btn-group">
+                      <a
+                        href="https://github.com/courselore"
+                        class="btn btn-outline-primary btn-lg"
+                        data-bs-toggle="tooltip"
+                        title="Source code on GitHub"
+                        ><i class="bi bi-github"></i
+                      ></a>
 
-                    a {
-                      text-decoration: none;
-                    }
-                  }
+                      <a
+                        href="mailto:contact@courselore.org"
+                        class="btn btn-outline-primary btn-lg"
+                        data-bs-toggle="tooltip"
+                        title="Contact via email"
+                        ><i class="bi bi-envelope-fill"></i
+                      ></a>
+                    </span>
+                  </p>
+                </nav>
+              </header>
 
-                  @media (max-width: 599px) {
-                    &:not(:first-of-type) {
-                      margin-top: 3rem;
-                    }
-                  }
-
-                  @media (min-width: 600px) {
-                    display: grid;
-                    grid-template-columns: 200px 1fr;
-                    column-gap: 40px;
-                    align-items: center;
-                  }
-                }
-              `}"
-            >
-              $${app.locals.partials.textProcessor(
-                // prettier-ignore
-                markdown`
-# What Will CourseLore Be?
-
-**A forum for educators & students.**
-
-CourseLore will support Q&A, announcements, anonymous posting, [Markdown](https://commonmark.org) & [LaTeX](https://www.latex-project.org) rendering, and everything else you’ve come to expect from a modern web application.
-
-# How Will CourseLore Be Different?
-
-**[Open Source](https://github.com/courselore):** You may inspect the CourseLore’s code to guarantee that it meets your standards in terms of quality, privacy, and security. You may learn from the code base (we’re making it very beginner-friendly). You may contribute back to the project.
-
-**Self-Hosted:** You’ll be able to run your own instance of CourseLore on your servers for maximum privacy. It’ll be easy!
-
-**Respect for Privacy:** We’ll never share information about educators & students with third-parties.
-
-**Modern Interface:** CourseLore will look familiar, because we’re basing it on our experience of what works and what doesn’t in other student forums. And it’s 2021, so CourseLore has to look welcoming and modern to educators & students.
-
-**Programmable:** Advanced users will be able to use the CourseLore API to integrate CourseLore with other systems and write automation scripts. Also, you may mount CourseLore as part of a bigger application.
-
-# Who’s behind CourseLore?
-
-<div id="people">
-
-<div>
-
-[<img src="scott.png" alt="Dr. Scott Smith" width="200" />  
-**Dr. Scott Smith**](https://www.cs.jhu.edu/~scott/)  
-<small>
-CEO  
-<scott@courselore.org>
-</small>
-
-Scott is a full professor at the [Johns Hopkins University](https://www.jhu.edu). Over his almost thirty years of experience as an educator, Scott taught courses on the Principles of Programming Languages, Object-Oriented Software Engineering, Functional Programming, and so forth.
-
-</div>
-
-<div>
-
-[<img src="ali.png" alt="Dr. Ali Madooei" width="200" />  
-**Dr. Ali Madooei**](https://www.cs.jhu.edu/faculty/ali-madooei/)  
-<small>
-Consultant  
-<ali@courselore.org>
-</small>
-
-Ali is a lecturer at the [Johns Hopkins University](https://www.jhu.edu). Ali has taught courses in several areas, from Introduction to Programming to Object-Oriented Software Engineering. Ali has classroom experience with many student forums and knows what it takes to make a great one.
-
-</div>
-
-<div>
-
-[<img src="leandro.png" alt="Leandro Facchinetti" width="200" />  
-**Leandro Facchinetti**](https://leafac.com)  
-<small>
-Developer & Designer  
-<leandro@courselore.org>
-</small>
-
-Leandro was a PhD Candidate at the [Johns Hopkins University](https://www.jhu.edu), advised by Scott. He received the **Whiting School of Engineering’s Professor Joel Dean Excellence in Teaching Award** for five years of work as a teaching assistant, and taught a course on [Object-Oriented Software Engineering](https://oose-2019.leafac.com).
-
-</div>
-
-</div>
-
-# I’m Interested! How Do I Participate?
-
-**Try our [super-early development demos](${app.locals.settings.url}/authenticate)!**
-
-**Educators & Students:** We want to hear [your feedback](mailto:feedback@courselore.com).
-
-**Developers & Designers:** Contribute on [GitHub](https://github.com/courselore).
-`
-              )}
-            </main>
+              <main>
+                <div
+                  class="bg-primary"
+                  style="${css`
+                    padding-top: calc(10vw + 1rem);
+                    clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
+                  `}"
+                >
+                  <section class="container">
+                    <h1 class="font-serif fw-bold fst-italic">
+                      A forum for educators & students
+                    </h1>
+                    <div class="row g-5 py-5">
+                      <div class="col-md-4">
+                        <p class="fs-1">
+                          <span class="bg-white text-primary p-2 rounded-3"
+                            ><i class="bi bi-toggles"></i
+                          ></span>
+                        </p>
+                        <h2>Modern</h2>
+                        <p class="text-start">
+                          All the features you’ve come to expect from a forum:
+                          Q&A, announcements, notifications, invitations,
+                          Markdown, LaTeX, syntax highlighting, and much more,
+                          all in an easy-to-use and modern-looking interface.
+                        </p>
+                      </div>
+                      <div class="col-md-4">
+                        <i class="bi bi-code-square fs-1"></i>
+                        <h2>Open-Source</h2>
+                        <p>API</p>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </main>
+            </div>
           `
         )
       );

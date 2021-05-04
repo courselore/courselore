@@ -262,10 +262,7 @@ export default async function courselore(
             type="image/x-icon"
             href="${app.locals.settings.url}/favicon.ico"
           />
-          <link
-            rel="stylesheet"
-            href="${app.locals.settings.url}/bootstrap.css"
-          />
+          <link rel="stylesheet" href="${app.locals.settings.url}/global.css" />
           <link
             rel="stylesheet"
             href="${app.locals.settings
@@ -915,11 +912,31 @@ export default async function courselore(
       data: css`
         $primary: #83769c;
         $font-family-sans-serif: "IBM Plex Sans";
+
         @import "public/node_modules/bootstrap/scss/bootstrap";
+
+        .btn-primary,
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary:checked,
+        .btn-primary:active,
+        .btn-primary:disabled,
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus,
+        .btn-outline-primary:checked,
+        .btn-outline-primary:active,
+        .btn-outline-primary:disabled,
+        .bg-primary {
+          color: white;
+        }
+
+        .font-serif {
+          font-family: "IBM Plex Serif";
+        }
       `,
     })
     .css.toString();
-  app.get("/bootstrap.css", (req, res) => {
+  app.get("/global.css", (req, res) => {
     res.type("css").send(app.locals.partials.bootstrap);
   });
 
@@ -934,12 +951,7 @@ export default async function courselore(
   (() => {
     app.locals.partials.art = {
       gradient: html`
-        <svg
-          style="${css`
-            position: absolute;
-            left: -999px;
-          `}"
-        >
+        <svg class="visually-hidden">
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#83769c" />
