@@ -12,8 +12,10 @@ import emailAddresses from "email-addresses";
 
 import { Database, sql } from "@leafac/sqlite";
 import { html, HTML } from "@leafac/html";
-import { css, process as processCSS, CSS } from "@leafac/css";
+type CSS = string;
+import css from "tagged-template-noop";
 import javascript from "tagged-template-noop";
+import { JSDOM } from "jsdom";
 import sass from "sass";
 
 import unified from "unified";
@@ -233,8 +235,28 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.base = (req, res, head, body) =>
-    processCSS(html`
+  app.locals.layouts.base = (req, res, head, body) => {
+    const document = JSDOM.fragment(
+      html`
+        <body>
+          $${body}
+        </body>
+      `
+    );
+    const styles: CSS[] = [];
+    for (const element of document.querySelectorAll("[style]")) {
+      if (element.id === "") element.id = `style--${styles.length}`;
+      styles.push(
+        css`
+          #${element.id} {
+            ${element.getAttribute("style")!}
+          }
+        `
+      );
+      element.removeAttribute("style");
+    }
+
+    return html`
       <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -278,266 +300,14 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/katex/dist/katex.min.css"
           />
+          <style>
+            $${sass.renderSync({ data: styles.join("") }).css.toString()}
+          </style>
           $${head}
         </head>
-        <body
-          style="${css`
-            /*
-
-            @at-root {
-              body {
-                font-size: 0.875rem;
-                -webkit-text-size-adjust: 100%;
-                line-height: 1.5;
-                font-family: "IBM Plex Sans", sans-serif;
-                margin: 0;
-                overflow-wrap: break-word;
-
-                @media (prefers-color-scheme: dark) {
-                  color: #d4d4d4;
-                  background-color: #1e1e1e;
-                }
-              }
-
-              code {
-                font-family: "IBM Plex Mono", monospace;
-              }
-
-              ::selection {
-                color: white;
-                background-color: #ff77a8;
-              }
-
-              :focus:focus {
-                outline: none;
-                box-shadow: 0 0 0 2px #ff77a8aa;
-              }
-
-              img,
-              svg {
-                max-width: 100%;
-                height: auto;
-              }
-
-              img {
-                border-radius: 10px;
-                background-color: white;
-              }
-
-              .bi {
-                width: 1em;
-              }
-
-              h1 {
-                font-size: 1.3rem;
-                line-height: 1.3;
-                font-weight: bold;
-              }
-
-              pre,
-              div.math-display {
-                overflow: auto;
-                overflow-wrap: normal;
-              }
-
-              pre {
-                line-height: 1.3;
-              }
-
-              a {
-                color: inherit;
-                transition: color 0.2s;
-
-                &:hover,
-                &:focus {
-                  color: #ff77a8;
-                }
-
-                h1 &,
-                nav & {
-                  text-decoration: none;
-                }
-              }
-
-              input,
-              textarea,
-              select,
-              button {
-                all: unset;
-
-                @supports (-webkit-touch-callout: none) {
-                  font-size: 16px;
-                }
-
-                &:not(.undecorated) {
-                  background-color: white;
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #5a5a5a;
-                  }
-                  padding: 0.1rem 1rem;
-                  border: 1px solid gainsboro;
-                  border-radius: 5px;
-                  @media (prefers-color-scheme: dark) {
-                    border-color: dimgray;
-                  }
-                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010;
-
-                  &:disabled {
-                    color: gray;
-                    @media (prefers-color-scheme: dark) {
-                      color: whitesmoke;
-                    }
-                    background-color: whitesmoke;
-                    @media (prefers-color-scheme: dark) {
-                      background-color: #333333;
-                    }
-                    cursor: not-allowed;
-                  }
-                }
-              }
-
-              input[type="text"],
-              input[type="email"],
-              input[type="search"],
-              textarea {
-                cursor: text;
-              }
-
-              input[type="search"]::-webkit-search-decoration {
-                -webkit-appearance: none;
-              }
-
-              input[type="radio"],
-              input[type="checkbox"] {
-                display: inline-block;
-
-                &:not(.undecorated) {
-                  width: 12px;
-                  height: 12px;
-                  padding: 0;
-                  position: relative;
-                  top: 0.15em;
-
-                  &:checked {
-                    background: #ff77a8 center center no-repeat;
-                    border-color: #ff77a8;
-                  }
-                }
-              }
-
-              button {
-                text-align: center;
-                cursor: default;
-
-                &:not(.undecorated):active {
-                  color: white;
-                  background-color: #ff77a8;
-                }
-              }
-
-              details.dropdown {
-                &[open] > summary::before {
-                  content: "";
-                  display: block;
-                  position: absolute;
-                  top: 0;
-                  right: 0;
-                  bottom: 0;
-                  left: 0;
-                }
-
-                & > summary + * {
-                  background-color: whitesmoke;
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #464646;
-                  }
-                  max-width: 300px;
-                  padding: 0 1rem;
-                  border: 1px solid darkgray;
-                  border-radius: 10px;
-                  box-shadow: inset 0 1px 1px #ffffff10, 0 1px 3px #00000010,
-                    0 0 50px -20px black;
-                  position: absolute;
-                }
-              }
-
-              summary {
-                cursor: default;
-
-                &:hover,
-                details[open] > & {
-                  color: #ff77a8;
-                }
-
-                &.no-marker {
-                  list-style: none;
-
-                  &::-webkit-details-marker {
-                    display: none;
-                  }
-                }
-              }
-
-              hr {
-                border: none;
-                border-top: 1px solid silver;
-                @media (prefers-color-scheme: dark) {
-                  border-color: black;
-                }
-              }
-
-              blockquote {
-                color: gray;
-                padding-left: 0.5rem;
-                border-left: 3px solid gray;
-                margin: 1rem 0;
-              }
-
-              [hidden] {
-                display: none !important;
-              }
-
-              .full-width {
-                box-sizing: border-box;
-                width: 100%;
-                display: block;
-              }
-
-              .secondary {
-                font-size: 0.75rem;
-                font-weight: normal;
-                line-height: 1.3;
-                color: gray;
-                margin-top: -0.8rem;
-              }
-
-              .green {
-                color: #008751;
-                @media (prefers-color-scheme: dark) {
-                  color: #00e436;
-                }
-              }
-
-              .red {
-                color: #ff004d;
-              }
-
-              @media (prefers-color-scheme: light) {
-                .dark {
-                  display: none;
-                }
-              }
-
-              @media (prefers-color-scheme: dark) {
-                .light {
-                  display: none;
-                }
-              }
-            }
-            */
-          `}"
-        >
-          $${app.locals.partials.art.gradient} $${body}
+        <body>
+          $${app.locals.partials.art.gradient}
+          $${document.firstElementChild!.innerHTML}
           <script src="${app.locals.settings
               .url}/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
           <script>
@@ -550,7 +320,8 @@ export default async function courselore(
           </script>
         </body>
       </html>
-    `);
+    `.trim();
+  };
 
   interface Layouts {
     application: (
@@ -570,7 +341,40 @@ export default async function courselore(
     app.locals.layouts.base(
       req,
       res,
+      head,
       html`
+        $${body}
+        $${app.locals.settings.demonstration
+          ? html`
+              <p
+                style="${css`
+                  font-size: 0.56rem;
+                  font-weight: bold;
+                  text-transform: uppercase;
+                  letter-spacing: 2px;
+                  color: white;
+                  background-color: #83769c;
+                  padding: 0.1rem 1rem;
+                  border-top-left-radius: 5px;
+                  margin: 0;
+                  position: fixed;
+                  right: 0;
+                  bottom: 0;
+                `}"
+              >
+                <a
+                  href="${app.locals.settings.url}/demonstration-inbox"
+                  title="Go to the Demonstration 
+                    Inbox"
+                  style="${css`
+                    text-decoration: none;
+                  `}"
+                  >Demonstration</a
+                >
+              </p>
+            `
+          : html``}
+
         <script src="${app.locals.settings
             .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
 
@@ -820,40 +624,6 @@ export default async function courselore(
               </script>
             `
           : html``}
-        $${head}
-      `,
-      html`
-        $${body}
-        $${app.locals.settings.demonstration
-          ? html`
-              <p
-                style="${css`
-                  font-size: 0.56rem;
-                  font-weight: bold;
-                  text-transform: uppercase;
-                  letter-spacing: 2px;
-                  color: white;
-                  background-color: #83769c;
-                  padding: 0.1rem 1rem;
-                  border-top-left-radius: 5px;
-                  margin: 0;
-                  position: fixed;
-                  right: 0;
-                  bottom: 0;
-                `}"
-              >
-                <a
-                  href="${app.locals.settings.url}/demonstration-inbox"
-                  title="Go to the Demonstration 
-                    Inbox"
-                  style="${css`
-                    text-decoration: none;
-                  `}"
-                  >Demonstration</a
-                >
-              </p>
-            `
-          : html``}
       `
     );
 
@@ -914,21 +684,6 @@ export default async function courselore(
         $font-family-sans-serif: "IBM Plex Sans";
 
         @import "public/node_modules/bootstrap/scss/bootstrap";
-
-        .btn-primary,
-        .btn-primary:hover,
-        .btn-primary:focus,
-        .btn-primary:checked,
-        .btn-primary:active,
-        .btn-primary:disabled,
-        .btn-outline-primary:hover,
-        .btn-outline-primary:focus,
-        .btn-outline-primary:checked,
-        .btn-outline-primary:active,
-        .btn-outline-primary:disabled,
-        .bg-primary {
-          color: white;
-        }
 
         .font-serif {
           font-family: "IBM Plex Serif";

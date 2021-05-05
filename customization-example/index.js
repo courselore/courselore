@@ -3,7 +3,7 @@ module.exports = (require) => {
   const express = require("express");
   const cookieParser = require("cookie-parser");
   const { html } = require("@leafac/html");
-  const { css } = require("@leafac/css");
+  const css = require("tagged-template-noop");
 
   return (app) => {
     const router = express.Router();
