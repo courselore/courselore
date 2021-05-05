@@ -582,18 +582,18 @@ export default async function courselore(
                       );
                       refreshCount++;
                       for (const element of refreshedDocument.querySelectorAll(
-                        '[id^="leafac-css--"]'
+                        '[id^="style--"]'
                       ))
                         element.id = element.id.replace(
-                          "leafac-css--",
-                          "leafac-css--" + String(refreshCount) + "--"
+                          "style--",
+                          "style--" + String(refreshCount) + "--"
                         );
                       for (const element of refreshedDocument.querySelectorAll(
                         "head style"
                       ))
                         element.textContent = element.textContent.replaceAll(
-                          "#leafac-css--",
-                          "#leafac-css--" + String(refreshCount) + "--"
+                          "#style--",
+                          "#style--" + String(refreshCount) + "--"
                         );
                       document
                         .querySelector("head")
