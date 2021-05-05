@@ -679,8 +679,8 @@ export default async function courselore(
           @import "public/node_modules/bootstrap/scss/functions";
 
           $font-family-sans-serif: "IBM Plex Sans", sans-serif;
-          $font-family-serif: "IBM Plex Serif", serif;
           $font-family-monospace: "IBM Plex Mono", monospace;
+          $font-family-serif: "IBM Plex Serif", serif;
 
           $blue: #29adff;
           $purple: #83769c;

@@ -25,8 +25,8 @@ module.exports = (require) => {
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
             <div class="text-center">
-              <header class="container mt-3">
-                <p>
+              <header class="container">
+                <p class="mt-3">
                   $${app.locals.partials.art.large
                     .replace("<svg", `$& class="img-fluid"`)
                     .replace(
@@ -45,13 +45,13 @@ module.exports = (require) => {
                             `}"
                           >
                             <rect
-                              width="570"
-                              height="100"
-                              x="-285"
-                              y="-85"
-                              rx="10"
                               style="${css`
                                 fill: $purple;
+                                width: 570px;
+                                height: 100px;
+                                x: -285px;
+                                y: -85px;
+                                rx: 10px;
                               `}"
                             />
                             <text
@@ -69,16 +69,19 @@ module.exports = (require) => {
                             `}"
                           >
                             <rect
-                              width="480"
-                              height="50"
-                              x="-240"
-                              y="-35"
-                              rx="10"
                               style="${css`
                                 fill: $pink;
+                                width: 490px;
+                                height: 50px;
+                                x: -245px;
+                                y: -35px;
+                                rx: 10px;
                               `}"
                             />
-                            <text class="fs-2"
+                            <text
+                              style="${css`
+                                font-size: 2rem;
+                              `}"
                               >The Open-Source Student Forum</text
                             >
                           </g>
@@ -89,18 +92,19 @@ module.exports = (require) => {
                             `}"
                           >
                             <rect
-                              width="360"
-                              height="35"
-                              x="-180"
-                              y="-26"
-                              rx="10"
                               style="${css`
                                 fill: $blue;
+                                width: 370px;
+                                height: 35px;
+                                x: -185px;
+                                y: -26px;
+                                rx: 10px;
                               `}"
                             />
                             <text
-                              class="text-uppercase fs-4"
+                              class="text-uppercase"
                               style="${css`
+                                font-size: 1.5rem;
                                 letter-spacing: 2px;
                               `}"
                               >Coming September 2021!</text
@@ -148,10 +152,10 @@ module.exports = (require) => {
                       >Demo</a
                     >
 
-                    <span class="btn-group">
+                    <span class="btn-group btn-group-lg">
                       <a
                         href="https://github.com/courselore"
-                        class="btn btn-outline-primary btn-lg"
+                        class="btn btn-outline-primary"
                         data-bs-toggle="tooltip"
                         title="Source code on GitHub"
                         ><i class="bi bi-github"></i
@@ -159,7 +163,7 @@ module.exports = (require) => {
 
                       <a
                         href="mailto:contact@courselore.org"
-                        class="btn btn-outline-primary btn-lg"
+                        class="btn btn-outline-primary"
                         data-bs-toggle="tooltip"
                         title="Contact via email"
                         ><i class="bi bi-envelope-fill"></i
@@ -171,35 +175,149 @@ module.exports = (require) => {
 
               <main>
                 <div
-                  class="bg-primary"
+                  class="text-white position-relative"
                   style="${css`
-                    padding-top: calc(10vw + 1rem);
+                    background-color: $purple;
                     clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
                   `}"
                 >
-                  <section class="container">
+                  $${app.locals.partials.art.small
+                    .replace(
+                      "<svg",
+                      `$&
+                       preserveAspectRatio="none"
+                       class="position-absolute top-0 start-0 w-100 h-100"
+                       style="${css`
+                         opacity: 40%;
+                         z-index: -1;
+                       `}"`
+                    )
+                    .replace(/viewBox=".*?"/, `viewBox="7 7 15 15"`)}
+                  <script>
+                    (() => {
+                      const SPEED = 0.0001;
+                      const AMOUNT = 3;
+                      const polyline = document.currentScript.previousElementSibling.querySelector(
+                        "polyline"
+                      );
+                      const points = polyline
+                        .getAttribute("points")
+                        .split(" ")
+                        .map(Number);
+                      window.requestAnimationFrame(function animate(time) {
+                        polyline.setAttribute(
+                          "points",
+                          points
+                            .map(
+                              (coordinate, index) =>
+                                coordinate +
+                                Math.sin(time * SPEED + index) * AMOUNT
+                            )
+                            .join(" ")
+                        );
+                        window.requestAnimationFrame(animate);
+                      });
+                    })();
+                  </script>
+
+                  <section
+                    class="container"
+                    style="${css`
+                      padding-top: calc(10vw + 1rem);
+                    `}"
+                  >
                     <h1 class="font-serif fw-bold fst-italic">
                       A forum for educators & students
                     </h1>
-                    <div class="row g-5 py-5">
+
+                    <div class="row py-5 gap-5 gap-md-0">
                       <div class="col-md-4">
-                        <p class="fs-1">
-                          <span class="bg-white text-primary p-2 rounded-3"
-                            ><i class="bi bi-toggles"></i
-                          ></span>
-                        </p>
-                        <h2>Modern</h2>
-                        <p class="text-start">
-                          All the features you’ve come to expect from a forum:
-                          Q&A, announcements, notifications, invitations,
-                          Markdown, LaTeX, syntax highlighting, and much more,
-                          all in an easy-to-use and modern-looking interface.
-                        </p>
+                        <div
+                          class="card h-100"
+                          style="${css`
+                            background-color: #00000055;
+                          `}"
+                        >
+                          <div class="card-header">
+                            <h2>
+                              <span
+                                class="badge bg-white"
+                                style="${css`
+                                  color: $purple;
+                                `}"
+                              >
+                                <i class="bi bi-toggles"></i>
+                              </span>
+                              <br />
+                              Modern
+                            </h2>
+                          </div>
+                          <div class="card-body">
+                            <p class="text-start">
+                              All the features you’ve come to expect from a
+                              forum: Q&A, announcements, notifications,
+                              invitations, Markdown, LaTeX, syntax highlighting,
+                              and much more, all in an easy-to-use and
+                              modern-looking interface.
+                            </p>
+                          </div>
+                        </div>
                       </div>
+
                       <div class="col-md-4">
-                        <i class="bi bi-code-square fs-1"></i>
-                        <h2>Open-Source</h2>
-                        <p>API</p>
+                        <div
+                          class="card h-100"
+                          style="${css`
+                            background-color: #00000066;
+                          `}"
+                        >
+                          <div
+                            class="card-header"
+                            style="${css`
+                              background-color: $blue;
+                            `}"
+                          >
+                            <h2>
+                              <i class="bi bi-code-square"></i><br />Open-Source
+                            </h2>
+                          </div>
+                          <div class="card-body">
+                            <p class="text-start">
+                              All the features you’ve come to expect from a
+                              forum: Q&A, announcements, notifications,
+                              invitations, Markdown, LaTeX, syntax highlighting,
+                              and much more, all in an easy-to-use and
+                              modern-looking interface.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div
+                          class="card h-100"
+                          style="${css`
+                            background-color: #00000066;
+                          `}"
+                        >
+                          <div class="card-header">
+                            <h2>
+                              <span class="badge"
+                                ><i class="bi bi-code-square"></i
+                              ></span>
+                              Open-Source
+                            </h2>
+                          </div>
+                          <div class="card-body">
+                            <p class="text-start">
+                              All the features you’ve come to expect from a
+                              forum: Q&A, announcements, notifications,
+                              invitations, Markdown, LaTeX, syntax highlighting,
+                              and much more, all in an easy-to-use and
+                              modern-looking interface.
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </section>
