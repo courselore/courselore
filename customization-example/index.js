@@ -28,58 +28,83 @@ module.exports = (require) => {
               <header class="container mt-3">
                 <p>
                   $${app.locals.partials.art.large
-                    .replace("<svg", `<svg class="img-fluid"`)
+                    .replace("<svg", `$& class="img-fluid"`)
                     .replace(
                       "</svg>",
                       html`
                         <g
-                          font-weight="bold"
-                          fill="white"
-                          text-anchor="middle"
-                          alignment-baseline="middle"
-                          transform="translate(300, 250) rotate(-2)"
+                          class="fw-bold fst-italic"
+                          style="${css`
+                            fill: $white;
+                            text-anchor: middle;
+                          `}"
                         >
-                          <g>
+                          <g
+                            style="${css`
+                              transform: translate(50%, 50%) rotate(-2deg);
+                            `}"
+                          >
                             <rect
-                              x="-250"
-                              y="-80"
-                              width="500"
+                              width="570"
                               height="100"
+                              x="-285"
+                              y="-85"
                               rx="10"
-                              fill="#83769c"
+                              style="${css`
+                                fill: $purple;
+                              `}"
                             />
                             <text
-                              font-style="italic"
-                              font-family="IBM Plex Serif"
-                              font-size="5.5rem"
+                              class="font-serif"
+                              style="${css`
+                                font-size: 6.5rem;
+                              `}"
                               >CourseLore</text
                             >
                           </g>
-                          <g transform="translate(0, 100)">
+                          <g
+                            style="${css`
+                              transform: translate(50%, calc(50% + 5rem))
+                                rotate(-2deg);
+                            `}"
+                          >
                             <rect
-                              x="-210"
-                              y="-33"
-                              width="420"
+                              width="480"
                               height="50"
+                              x="-240"
+                              y="-35"
                               rx="10"
-                              fill="#ff77a8"
+                              style="${css`
+                                fill: $pink;
+                              `}"
                             />
-                            <text font-size="1.6rem"
+                            <text class="fs-2"
                               >The Open-Source Student Forum</text
                             >
                           </g>
-                          <g transform="translate(0, 300)">
+                          <g
+                            style="${css`
+                              transform: translate(50%, calc(50% + 15rem))
+                                rotate(-2deg);
+                            `}"
+                          >
                             <rect
-                              x="-150"
-                              y="-20"
-                              width="300"
-                              height="30"
+                              width="360"
+                              height="35"
+                              x="-180"
+                              y="-26"
                               rx="10"
-                              fill="#29adff"
+                              style="${css`
+                                fill: $blue;
+                              `}"
                             />
-                            <text letter-spacing="3">
-                              COMING SEPTEMBER 2021!
-                            </text>
+                            <text
+                              class="text-uppercase fs-4"
+                              style="${css`
+                                letter-spacing: 2px;
+                              `}"
+                              >Coming September 2021!</text
+                            >
                           </g>
                         </g>
                         $&

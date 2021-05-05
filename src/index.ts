@@ -678,8 +678,15 @@ export default async function courselore(
         data: css`
           @import "public/node_modules/bootstrap/scss/functions";
 
-          $primary: #83769c;
-          $font-family-sans-serif: "IBM Plex Sans";
+          $font-family-sans-serif: "IBM Plex Sans", sans-serif;
+          $font-family-serif: "IBM Plex Serif", serif;
+          $font-family-monospace: "IBM Plex Mono", monospace;
+
+          $blue: #29adff;
+          $purple: #83769c;
+          $pink: #ff77a8;
+
+          $primary: $purple;
 
           @import "public/node_modules/bootstrap/scss/variables";
           @import "public/node_modules/bootstrap/scss/mixins";
@@ -696,7 +703,15 @@ export default async function courselore(
     @import "public/node_modules/bootstrap/scss/bootstrap";
 
     .font-serif {
-      font-family: "IBM Plex Serif";
+      font-family: $font-family-serif;
+    }
+
+    .btn-primary {
+      @include button-variant($primary, $primary, $white);
+    }
+
+    .btn-outline-primary {
+      @include button-outline-variant($primary, $white);
     }
   `);
   app.get("/global.css", (req, res) => {
