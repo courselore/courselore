@@ -66,14 +66,12 @@ export default async function courselore(
     helpers: Helpers;
     layouts: Layouts;
     partials: Partials;
-    styles: Styles;
   }
   app.locals.constants = {} as Constants;
   app.locals.middlewares = {} as Middlewares;
   app.locals.helpers = {} as Helpers;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
-  app.locals.styles = {} as Styles;
 
   interface Constants {
     roles: Role[];
@@ -303,23 +301,14 @@ export default async function courselore(
               .url}/node_modules/katex/dist/katex.min.css"
           />
           <style>
-            $${sass
-              .renderSync({
-                data: css`
-                  @import "public/node_modules/bootstrap/scss/functions";
-                  ${app.locals.styles.customization.variables}
-                  @import "public/node_modules/bootstrap/scss/variables";
-                  @import "public/node_modules/bootstrap/scss/mixins";
-                  ${styles.join("")}
-                `,
-              })
-              .css.toString()}
+            $${app.locals.helpers.sass(styles.join(""))}
           </style>
           $${head}
         </head>
         <body>
           $${app.locals.partials.art.gradient}
           $${document.firstElementChild!.innerHTML}
+
           <script src="${app.locals.settings
               .url}/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
           <script>
@@ -686,37 +675,38 @@ export default async function courselore(
       `
     );
 
-  interface Styles {
-    customization: { variables: CSS; styles: CSS };
+  interface Helpers {
+    sass: (styles: CSS) => CSS;
   }
-  app.locals.styles.customization = {
-    variables: css`
-      $primary: #83769c;
-      $font-family-sans-serif: "IBM Plex Sans";
-    `,
+  app.locals.helpers.sass = (styles) =>
+    sass
+      .renderSync({
+        data: css`
+          @import "public/node_modules/bootstrap/scss/functions";
 
-    styles: css`
-      .font-serif {
-        font-family: "IBM Plex Serif";
-      }
-    `,
-  };
+          $primary: #83769c;
+          $font-family-sans-serif: "IBM Plex Sans";
 
-  interface Styles {
-    global: CSS;
+          @import "public/node_modules/bootstrap/scss/variables";
+          @import "public/node_modules/bootstrap/scss/mixins";
+
+          ${styles}
+        `,
+      })
+      .css.toString();
+
+  interface Partials {
+    globalCSS: CSS;
   }
-  app.locals.styles.global = sass
-    .renderSync({
-      data: css`
-        @import "public/node_modules/bootstrap/scss/functions";
-        ${app.locals.styles.customization.variables}
-        @import "public/node_modules/bootstrap/scss/bootstrap";
-        ${app.locals.styles.customization.styles}
-      `,
-    })
-    .css.toString();
+  app.locals.partials.globalCSS = app.locals.helpers.sass(css`
+    @import "public/node_modules/bootstrap/scss/bootstrap";
+
+    .font-serif {
+      font-family: "IBM Plex Serif";
+    }
+  `);
   app.get("/global.css", (req, res) => {
-    res.type("css").send(app.locals.styles.global);
+    res.type("css").send(app.locals.partials.globalCSS);
   });
 
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
