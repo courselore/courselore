@@ -236,9 +236,9 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.base = (req, res, head, body) => {
-    const document = JSDOM.fragment(html`<div>$${body}</div>`);
+    const bodyDOM = JSDOM.fragment(html`<div>$${body}</div>`);
     const styles: CSS[] = [];
-    for (const element of document.querySelectorAll("[style]")) {
+    for (const element of bodyDOM.querySelectorAll("[style]")) {
       if (element.id === "") element.id = `style--${styles.length}`;
       styles.push(
         css`
@@ -301,7 +301,7 @@ export default async function courselore(
         </head>
         <body>
           $${app.locals.partials.art.gradient}
-          $${document.firstElementChild!.innerHTML}
+          $${bodyDOM.firstElementChild!.innerHTML}
 
           <script src="${app.locals.settings
               .url}/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
