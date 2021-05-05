@@ -66,12 +66,14 @@ export default async function courselore(
     helpers: Helpers;
     layouts: Layouts;
     partials: Partials;
+    styles: Styles;
   }
   app.locals.constants = {} as Constants;
   app.locals.middlewares = {} as Middlewares;
   app.locals.helpers = {} as Helpers;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
+  app.locals.styles = {} as Styles;
 
   interface Constants {
     roles: Role[];
@@ -301,7 +303,17 @@ export default async function courselore(
               .url}/node_modules/katex/dist/katex.min.css"
           />
           <style>
-            $${sass.renderSync({ data: styles.join("") }).css.toString()}
+            $${sass
+              .renderSync({
+                data: css`
+                  @import "public/node_modules/bootstrap/scss/functions";
+                  ${app.locals.styles.customization.variables}
+                  @import "public/node_modules/bootstrap/scss/variables";
+                  @import "public/node_modules/bootstrap/scss/mixins";
+                  ${styles.join("")}
+                `,
+              })
+              .css.toString()}
           </style>
           $${head}
         </head>
@@ -674,25 +686,37 @@ export default async function courselore(
       `
     );
 
-  interface Partials {
-    bootstrap: CSS;
+  interface Styles {
+    customization: { variables: CSS; styles: CSS };
   }
-  app.locals.partials.bootstrap = sass
+  app.locals.styles.customization = {
+    variables: css`
+      $primary: #83769c;
+      $font-family-sans-serif: "IBM Plex Sans";
+    `,
+
+    styles: css`
+      .font-serif {
+        font-family: "IBM Plex Serif";
+      }
+    `,
+  };
+
+  interface Styles {
+    global: CSS;
+  }
+  app.locals.styles.global = sass
     .renderSync({
       data: css`
-        $primary: #83769c;
-        $font-family-sans-serif: "IBM Plex Sans";
-
+        @import "public/node_modules/bootstrap/scss/functions";
+        ${app.locals.styles.customization.variables}
         @import "public/node_modules/bootstrap/scss/bootstrap";
-
-        .font-serif {
-          font-family: "IBM Plex Serif";
-        }
+        ${app.locals.styles.customization.styles}
       `,
     })
     .css.toString();
   app.get("/global.css", (req, res) => {
-    res.type("css").send(app.locals.partials.bootstrap);
+    res.type("css").send(app.locals.styles.global);
   });
 
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
