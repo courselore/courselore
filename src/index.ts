@@ -236,13 +236,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.base = (req, res, head, body) => {
-    const document = JSDOM.fragment(
-      html`
-        <body>
-          $${body}
-        </body>
-      `
-    );
+    const document = JSDOM.fragment(html`<template>$${body}</template>`);
     const styles: CSS[] = [];
     for (const element of document.querySelectorAll("[style]")) {
       if (element.id === "") element.id = `style--${styles.length}`;
