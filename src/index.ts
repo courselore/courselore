@@ -311,7 +311,7 @@ export default async function courselore(
                 '[data-bs-toggle="popover"]'
               ))
                 new bootstrap.Popover(element, {
-                  sanitize: element.dataset.sanitize !== "false",
+                  sanitize: element.dataset.bsSanitize !== "false",
                 });
               for (const element of document.querySelectorAll(
                 '[data-bs-toggle="tooltip"]'
@@ -4211,7 +4211,7 @@ ${value}</textarea
       .use(rehypeShiki, {
         highlighter: {
           light: await shiki.getHighlighter({ theme: "light-plus" }),
-          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+          // TODO: dark: await shiki.getHighlighter({ theme: "dark-plus" }),
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
