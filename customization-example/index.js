@@ -4,7 +4,7 @@ module.exports = (require) => {
   const cookieParser = require("cookie-parser");
   const { html } = require("@leafac/html");
   const css = require("tagged-template-noop");
-  const markdown = require("tagged-template-noop");
+  const markdown = require("dedent");
 
   return (app) => {
     const router = express.Router();
@@ -129,12 +129,12 @@ module.exports = (require) => {
               .replace(
                 "<svg",
                 `$&
-           preserveAspectRatio="none"
-           class="position-absolute top-0 start-0 w-100 h-100"
-           style="${css`
-             opacity: 40%;
-             z-index: -1;
-           `}"`
+                  preserveAspectRatio="none"
+                  class="position-absolute top-0 start-0 w-100 h-100"
+                  style="${css`
+                    opacity: 40%;
+                    z-index: -1;
+                  `}"`
               )
               .replace(/viewBox=".*?"/, `viewBox="7 7 15 15"`)}
             <script>
@@ -183,14 +183,17 @@ module.exports = (require) => {
                           type="button"
                           class="btn btn-link text-reset p-0"
                           data-bs-toggle="popover"
+                          data-bs-html="true"
+                          data-bs-sanitize="false"
                           data-bs-title="${html`What’s Markdown?`}"
                           data-bs-content="${(() => {
                             const example = markdown`
-Things I’m **loving** about [CourseLore](https://courselore.org):
+                              Things I’m **loving** about
+                              [CourseLore](https://courselore.org):
 
-- It’s easy to install and maintain.
-- It respects my privacy.
-- It looks great.
+                              - It’s easy to install and maintain.
+                              - It respects my privacy.
+                              - It looks great.
                             `;
                             return html`
                               <p>
@@ -200,11 +203,15 @@ Things I’m **loving** about [CourseLore](https://courselore.org):
 
                               <p>For example, your write:</p>
 
-                              <pre><code>$${example}</code></pre>
+                              <div class="card p-3 mb-3">
+                                <pre><code>$${example}</code></pre>
+                              </div>
 
-                              <p>And it the post ends up looking like:</p>
+                              <p>And the post ends up looking like:</p>
 
-                              $${app.locals.partials.textProcessor(example)}
+                              <div class="card p-3 mb-3">
+                                $${app.locals.partials.textProcessor(example)}
+                              </div>
 
                               <p>
                                 Markdown is powerful; it’s capable of much more
@@ -220,7 +227,6 @@ Things I’m **loving** about [CourseLore](https://courselore.org):
                               </p>
                             `;
                           })()}"
-                          data-bs-html="true"
                         >
                           <i class="bi bi-info-circle"></i></button
                         >, LaTeX, syntax highlighting, and much more, all in an

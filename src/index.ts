@@ -310,7 +310,9 @@ export default async function courselore(
               for (const element of document.querySelectorAll(
                 '[data-bs-toggle="popover"]'
               ))
-                new bootstrap.Popover(element);
+                new bootstrap.Popover(element, {
+                  sanitize: element.dataset.sanitize !== "false",
+                });
               for (const element of document.querySelectorAll(
                 '[data-bs-toggle="tooltip"]'
               ))
