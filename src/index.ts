@@ -300,7 +300,7 @@ export default async function courselore(
           $${head}
         </head>
         <body>
-          $${app.locals.partials.art.gradient}
+          $${app.locals.partials.art.preamble}
           $${bodyDOM.firstElementChild!.innerHTML}
 
           <script src="${app.locals.settings
@@ -721,14 +721,14 @@ export default async function courselore(
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
   interface Partials {
     art: {
-      gradient: HTML;
+      preamble: HTML;
       large: HTML;
       small: HTML;
     };
   }
   (() => {
     app.locals.partials.art = {
-      gradient: html`
+      preamble: html`
         <svg class="visually-hidden">
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -737,6 +737,60 @@ export default async function courselore(
             </linearGradient>
           </defs>
         </svg>
+
+        <script>
+          class ArtAnimation {
+            constructor({ element, speed, amount, startupDuration }) {
+              this._element = element;
+              this._polyline = this._element.querySelector("polyline");
+              this._points = this._polyline
+                .getAttribute("points")
+                .split(" ")
+                .map(Number);
+              this._speed = speed;
+              this._amount = amount;
+              this._startupDuration = Math.max(1, startupDuration);
+              this._timeOffset = 0;
+              this._animationFrame = null;
+              this._drawAnimationFrame = this._drawAnimationFrame.bind(this);
+            }
+
+            start() {
+              if (this._animationFrame !== null) return;
+              this._timeOffset += performance.now();
+              this._animationFrame = window.requestAnimationFrame(
+                this._drawAnimationFrame
+              );
+            }
+
+            stop() {
+              if (this._animationFrame === null) return;
+              window.cancelAnimationFrame(this._animationFrame);
+              this._animationFrame = null;
+              this._timeOffset -= performance.now();
+            }
+
+            _drawAnimationFrame(time) {
+              time -= this._timeOffset;
+              this._polyline.setAttribute(
+                "points",
+                this._points
+                  .map(
+                    (coordinate, index) =>
+                      coordinate +
+                      (Math.min(time, this._startupDuration) /
+                        this._startupDuration) *
+                        Math.sin(time * this._speed + index) *
+                        this._amount
+                  )
+                  .join(" ")
+              );
+              this._animationFrame = window.requestAnimationFrame(
+                this._drawAnimationFrame
+              );
+            }
+          }
+        </script>
       `,
       large: art({ size: 600, order: 6 }),
       small: art({ size: 30, order: 3 }),
@@ -830,34 +884,18 @@ export default async function courselore(
         <script>
           (() => {
             const logo = document.currentScript.previousElementSibling;
-            let animationFrame;
-            let timeOffset = 0;
+            const artAnimation = new ArtAnimation({
+              element: logo,
+              speed: 0.005,
+              amount: 1,
+              startupDuration: 200,
+            });
             logo.addEventListener("mouseover", () => {
-              timeOffset += performance.now();
-              animationFrame = window.requestAnimationFrame(animate);
+              artAnimation.start();
             });
             logo.addEventListener("mouseout", () => {
-              timeOffset -= performance.now();
-              window.cancelAnimationFrame(animationFrame);
+              artAnimation.stop();
             });
-            const polyline = logo.querySelector("polyline");
-            const points = polyline
-              .getAttribute("points")
-              .split(" ")
-              .map(Number);
-            function animate(time) {
-              time -= timeOffset;
-              polyline.setAttribute(
-                "points",
-                points
-                  .map(
-                    (coordinate, index) =>
-                      coordinate + Math.sin(time * 0.0005 * (index % 7))
-                  )
-                  .join(" ")
-              );
-              animationFrame = window.requestAnimationFrame(animate);
-            }
           })();
         </script>
       </h1>
@@ -4118,28 +4156,19 @@ ${value}</textarea
       <script>
         (() => {
           const loading = document.currentScript.previousElementSibling;
-          let animationFrame;
+          const artAnimation = new ArtAnimation({
+            element: document.currentScript.previousElementSibling,
+            speed: 0.005,
+            amount: 1,
+            startupDuration: 0,
+          });
           new MutationObserver(() => {
-            if (loading.hidden) window.cancelAnimationFrame(animationFrame);
-            else animationFrame = window.requestAnimationFrame(animate);
+            if (!loading.hidden) artAnimation.start();
+            else artAnimation.stop();
           }).observe(loading, {
             attributes: true,
             attributeFilter: ["hidden"],
           });
-          const polyline = loading.querySelector("polyline");
-          const points = polyline.getAttribute("points").split(" ").map(Number);
-          function animate(time) {
-            polyline.setAttribute(
-              "points",
-              points
-                .map(
-                  (coordinate, index) =>
-                    coordinate + Math.sin(time * 0.005 + index)
-                )
-                .join(" ")
-            );
-            animationFrame = window.requestAnimationFrame(animate);
-          }
         })();
       </script>
 

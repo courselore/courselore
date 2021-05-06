@@ -85,30 +85,12 @@ module.exports = (require) => {
                       `
                     )}
                   <script>
-                    (() => {
-                      const SPEED = 0.001;
-                      const AMOUNT = 3;
-                      const polyline = document.currentScript.previousElementSibling.querySelector(
-                        "polyline"
-                      );
-                      const points = polyline
-                        .getAttribute("points")
-                        .split(" ")
-                        .map(Number);
-                      window.requestAnimationFrame(function animate(time) {
-                        polyline.setAttribute(
-                          "points",
-                          points
-                            .map(
-                              (coordinate, index) =>
-                                coordinate +
-                                Math.sin(time * SPEED + index) * AMOUNT
-                            )
-                            .join(" ")
-                        );
-                        window.requestAnimationFrame(animate);
-                      });
-                    })();
+                    new ArtAnimation({
+                      element: document.currentScript.previousElementSibling,
+                      speed: 0.001,
+                      amount: 3,
+                      startupDuration: 0,
+                    }).start();
                   </script>
                 </p>
 
@@ -164,30 +146,12 @@ module.exports = (require) => {
                     )
                     .replace(/viewBox=".*?"/, `viewBox="7 7 15 15"`)}
                   <script>
-                    (() => {
-                      const SPEED = 0.0001;
-                      const AMOUNT = 3;
-                      const polyline = document.currentScript.previousElementSibling.querySelector(
-                        "polyline"
-                      );
-                      const points = polyline
-                        .getAttribute("points")
-                        .split(" ")
-                        .map(Number);
-                      window.requestAnimationFrame(function animate(time) {
-                        polyline.setAttribute(
-                          "points",
-                          points
-                            .map(
-                              (coordinate, index) =>
-                                coordinate +
-                                Math.sin(time * SPEED + index) * AMOUNT
-                            )
-                            .join(" ")
-                        );
-                        window.requestAnimationFrame(animate);
-                      });
-                    })();
+                    new ArtAnimation({
+                      element: document.currentScript.previousElementSibling,
+                      speed: 0.0001,
+                      amount: 10,
+                      startupDuration: 0,
+                    }).start();
                   </script>
 
                   <section
