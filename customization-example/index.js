@@ -203,8 +203,8 @@ module.exports = (require) => {
                           aria-label="More information"
                         >
                           <i class="bi bi-question-circle"></i></button
-                        >, and much more, all in an easy-to-use and
-                        modern-looking interface.
+                        >, and much more, all in an easy-to-use and modern
+                        interface.
                       </p>
                     </div>
                   </div>
