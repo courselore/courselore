@@ -182,164 +182,25 @@ module.exports = (require) => {
                         Markdown <button
                           type="button"
                           class="btn btn-link text-reset p-0"
-                          data-bs-toggle="popover"
-                          data-bs-html="true"
-                          data-bs-sanitize="false"
-                          data-bs-title="${html`What’s Markdown?`}"
-                          data-bs-content="${(() => {
-                            const example = markdown`
-                              Things I’m **loving** about
-                              [CourseLore](https://courselore.org):
-
-                              - It’s easy to install.
-                              - It respects my privacy.
-                              - It looks great.
-                            `;
-                            return html`
-                              <p>
-                                Markdown is a simple way to include rich-text
-                                formatting in your posts.
-                              </p>
-
-                              <p>For example, you write:</p>
-
-                              <div class="card mb-3">
-                                <div class="card-body pb-0">
-                                  <pre><code>$${example}</code></pre>
-                                </div>
-                              </div>
-
-                              <p>And your post ends up looking like:</p>
-
-                              <div class="card mb-3">
-                                <div class="card-body pb-0">
-                                  $${app.locals.partials.textProcessor(example)}
-                                </div>
-                              </div>
-
-                              <p class="mb-0">
-                                Markdown is much more powerful than this simple
-                                example shows, it’s
-                                <a
-                                  href="https://guides.github.com/features/mastering-markdown/"
-                                  >easy to learn</a
-                                >, and it’s used by many popular forums
-                                including
-                                <a href="https://www.reddit.com">Reddit</a>,
-                                <a href="https://stackoverflow.com/"
-                                  >Stack Overflow</a
-                                >,
-                                <a href="https://github.com/">GitHub Issues</a>,
-                                and so forth.
-                              </p>
-                            `;
-                          })()}"
+                          data-bs-toggle="modal"
+                          data-bs-target="#markdown-modal"
+                          aria-label="More information"
                         >
                           <i class="bi bi-question-circle"></i></button
                         >, LaTeX <button
                           type="button"
                           class="btn btn-link text-reset p-0"
-                          data-bs-toggle="popover"
-                          data-bs-html="true"
-                          data-bs-sanitize="false"
-                          data-bs-title="${html`What’s LaTeX?`}"
-                          data-bs-content="${(() => {
-                            const example = markdown`
-                              There’s an $e^{ix}$ in
-                              Euler’s formula:
-
-                              $$
-                              e^{ix} = \cos x + i \sin x
-                              $$
-                            `;
-                            return html`
-                              <p>
-                                LaTeX is a simple way to include mathematical
-                                formulas in your posts.
-                              </p>
-
-                              <p>For example, you write:</p>
-
-                              <div class="card mb-3">
-                                <div class="card-body pb-0">
-                                  <pre><code>$${example}</code></pre>
-                                </div>
-                              </div>
-
-                              <p>And your post ends up looking like:</p>
-
-                              <div class="card mb-3">
-                                <div class="card-body pb-0">
-                                  $${app.locals.partials.textProcessor(example)}
-                                </div>
-                              </div>
-
-                              <p class="mb-0">
-                                LaTeX is much more powerful than this simple
-                                example shows, it’s
-                                <a href="https://katex.org/docs/supported.html"
-                                  >easy to learn</a
-                                >, and it’s used by many people in academia.
-                              </p>
-                            `;
-                          })()}"
+                          data-bs-toggle="modal"
+                          data-bs-target="#markdown-modal"
+                          aria-label="More information"
                         >
                           <i class="bi bi-question-circle"></i></button
                         >, syntax highlighting <button
                           type="button"
                           class="btn btn-link text-reset p-0"
-                          data-bs-toggle="popover"
-                          data-bs-html="true"
-                          data-bs-sanitize="false"
-                          data-bs-title="${html`What’s Syntax Highlighting?`}"
-                          data-bs-content="${(() => {
-                            const example =
-                              // prettier-ignore
-                              markdown`
-                                Calculate the position with
-                                the following JavaScript
-                                function:
-
-                                \`\`\`javascript
-                                function position(time) {
-                                  return time * 0.25;
-                                }
-                                \`\`\`
-                              `;
-                            return html`
-                              <p>
-                                Syntax highlighting is coloring code snippets to
-                                make them easier to read in your posts.
-                              </p>
-
-                              <p>For example, you write:</p>
-
-                              <div class="card mb-3">
-                                <div class="card-body pb-0">
-                                  <pre><code>$${example}</code></pre>
-                                </div>
-                              </div>
-
-                              <p>And your post ends up looking like:</p>
-
-                              <div class="card mb-3">
-                                <div class="card-body pb-0">
-                                  $${app.locals.partials.textProcessor(example)}
-                                </div>
-                              </div>
-
-                              <p class="mb-0">
-                                CourseLore uses
-                                <a href="https://shiki.matsu.io/"
-                                  >the most powerful syntax highlighter</a
-                                >, which is powered by
-                                <a href="https://code.visualstudio.com/"
-                                  >Visual Studio Code</a
-                                >; it supports all popular programming languages
-                                so your posts will always look awesome.
-                              </p>
-                            `;
-                          })()}"
+                          data-bs-toggle="modal"
+                          data-bs-target="#syntax-highlighting-modal"
+                          aria-label="More information"
                         >
                           <i class="bi bi-question-circle"></i></button
                         >, and much more, all in an easy-to-use and
@@ -406,6 +267,213 @@ module.exports = (require) => {
             </section>
           </div>
         </main>
+      </div>
+
+      <div
+        class="modal fade"
+        id="markdown-modal"
+        tabindex="-1"
+        aria-labelledby="markdown-modal-label"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="markdown-modal-label">
+                What’s Markdown?
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              $${(() => {
+                const example = markdown`
+                  Things I’m **loving** about
+                  [CourseLore](https://courselore.org):
+
+                  - It’s easy to install.
+                  - It respects my privacy.
+                  - It looks great.
+                `;
+                return html`
+                  <p>
+                    Markdown is a simple way to include rich-text formatting in
+                    your posts.
+                  </p>
+
+                  <p>For example, you write:</p>
+
+                  <div class="card mb-3">
+                    <div class="card-body pb-0">
+                      <pre><code>$${example}</code></pre>
+                    </div>
+                  </div>
+
+                  <p>And your post ends up looking like:</p>
+
+                  <div class="card mb-3">
+                    <div class="card-body pb-0">
+                      $${app.locals.partials.textProcessor(example)}
+                    </div>
+                  </div>
+
+                  <p class="mb-0">
+                    Markdown is much more powerful than this simple example
+                    shows, it’s
+                    <a
+                      href="https://guides.github.com/features/mastering-markdown/"
+                      >easy to learn</a
+                    >, and it’s used by many popular forums including
+                    <a href="https://www.reddit.com">Reddit</a>,
+                    <a href="https://stackoverflow.com/">Stack Overflow</a>,
+                    <a href="https://github.com/">GitHub Issues</a>, and so
+                    forth.
+                  </p>
+                `;
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="latex-modal"
+        tabindex="-1"
+        aria-labelledby="latex-modal-label"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="latex-modal-label">What’s LaTeX?</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              ${(() => {
+                const example = markdown`
+                  There’s an $e^{ix}$ in
+                  Euler’s formula:
+
+                  $$
+                  e^{ix} = \cos x + i \sin x
+                  $$
+                `;
+                return html`
+                  <p>
+                    LaTeX is a simple way to include mathematical formulas in
+                    your posts.
+                  </p>
+
+                  <p>For example, you write:</p>
+
+                  <div class="card mb-3">
+                    <div class="card-body pb-0">
+                      <pre><code>$${example}</code></pre>
+                    </div>
+                  </div>
+
+                  <p>And your post ends up looking like:</p>
+
+                  <div class="card mb-3">
+                    <div class="card-body pb-0">
+                      $${app.locals.partials.textProcessor(example)}
+                    </div>
+                  </div>
+
+                  <p class="mb-0">
+                    LaTeX is much more powerful than this simple example shows,
+                    it’s
+                    <a href="https://katex.org/docs/supported.html"
+                      >easy to learn</a
+                    >, and it’s used by many people in academia.
+                  </p>
+                `;
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="syntax-highlighting-modal"
+        tabindex="-1"
+        aria-labelledby="syntax-highlighting-modal-label"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="syntax-highlighting-modal-label">
+                What’s Syntax Highlighting?
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              $${(() => {
+                const example =
+                  // prettier-ignore
+                  markdown`
+                  Calculate the position:
+
+                  \`\`\`javascript
+                  function position(time) {
+                    return time * 0.25;
+                  }
+                  \`\`\`
+                `;
+                return html`
+                  <p>
+                    Syntax highlighting is coloring code snippets to make them
+                    easier to read in your posts.
+                  </p>
+
+                  <p>For example, you write:</p>
+
+                  <div class="card mb-3">
+                    <div class="card-body pb-0">
+                      <pre><code>$${example}</code></pre>
+                    </div>
+                  </div>
+
+                  <p>And your post ends up looking like:</p>
+
+                  <div class="card mb-3">
+                    <div class="card-body pb-0">
+                      $${app.locals.partials.textProcessor(example)}
+                    </div>
+                  </div>
+
+                  <p class="mb-0">
+                    CourseLore uses
+                    <a href="https://shiki.matsu.io/"
+                      >the most powerful syntax highlighter</a
+                    >, which is powered by
+                    <a href="https://code.visualstudio.com/"
+                      >Visual Studio Code</a
+                    >; it supports all popular programming languages so your
+                    posts will always look awesome.
+                  </p>
+                `;
+              })()}
+            </div>
+          </div>
+        </div>
       </div>
     `;
     router.get("/", (req, res) =>
