@@ -183,15 +183,23 @@ module.exports = (require) => {
                           data-bs-target="#markdown-modal"
                           aria-label="More information"
                         >
-                          <i class="bi bi-question-circle"></i></button
+                          <i
+                            class="bi bi-question-circle-fill"
+                            data-bs-toggle="tooltip"
+                            title="What’s Markdown?"
+                          ></i></button
                         >, LaTeX <button
                           type="button"
                           class="btn btn-link text-reset p-0"
                           data-bs-toggle="modal"
-                          data-bs-target="#markdown-modal"
+                          data-bs-target="#latex-modal"
                           aria-label="More information"
                         >
-                          <i class="bi bi-question-circle"></i></button
+                          <i
+                            class="bi bi-question-circle-fill"
+                            data-bs-toggle="tooltip"
+                            title="What’s LaTeX?"
+                          ></i></button
                         >, syntax highlighting <button
                           type="button"
                           class="btn btn-link text-reset p-0"
@@ -199,7 +207,11 @@ module.exports = (require) => {
                           data-bs-target="#syntax-highlighting-modal"
                           aria-label="More information"
                         >
-                          <i class="bi bi-question-circle"></i></button
+                          <i
+                            class="bi bi-question-circle-fill"
+                            data-bs-toggle="tooltip"
+                            title="What’s Syntax Highlighting?"
+                          ></i></button
                         >, and much more, all in an easy-to-use and modern
                         interface.
                       </p>
@@ -304,7 +316,7 @@ module.exports = (require) => {
               ></button>
             </div>
             <div class="modal-body">
-              ${(() => {
+              $${(() => {
                 const example = markdown`
                   There’s an $e^{ix}$ in
                   Euler’s formula:
