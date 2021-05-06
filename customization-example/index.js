@@ -207,59 +207,7 @@ module.exports = (require) => {
                   </div>
                 </div>
 
-                <div class="col-md-4">
-                  <div
-                    class="card h-100"
-                    style="${css`
-                      background-color: #00000066;
-                    `}"
-                  >
-                    <div
-                      class="card-header"
-                      style="${css`
-                        background-color: $blue;
-                      `}"
-                    >
-                      <h2>
-                        <i class="bi bi-code-square"></i><br />Open-Source
-                      </h2>
-                    </div>
-                    <div class="card-body">
-                      <p class="text-start">
-                        All the features you’ve come to expect from a forum:
-                        Q&A, announcements, notifications, invitations,
-                        Markdown, LaTeX, syntax highlighting, and much more, all
-                        in an easy-to-use and modern-looking interface.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div
-                    class="card h-100"
-                    style="${css`
-                      background-color: #00000066;
-                    `}"
-                  >
-                    <div class="card-header">
-                      <h2>
-                        <span class="badge"
-                          ><i class="bi bi-code-square"></i
-                        ></span>
-                        Open-Source
-                      </h2>
-                    </div>
-                    <div class="card-body">
-                      <p class="text-start">
-                        All the features you’ve come to expect from a forum:
-                        Q&A, announcements, notifications, invitations,
-                        Markdown, LaTeX, syntax highlighting, and much more, all
-                        in an easy-to-use and modern-looking interface.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <!-- bi-code-square Open-Source -->
               </div>
             </section>
           </div>

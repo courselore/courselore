@@ -308,12 +308,6 @@ export default async function courselore(
           <script>
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
-                '[data-bs-toggle="popover"]'
-              ))
-                new bootstrap.Popover(element, {
-                  sanitize: element.dataset.bsSanitize !== "false",
-                });
-              for (const element of document.querySelectorAll(
                 '[data-bs-toggle="tooltip"]'
               ))
                 new bootstrap.Tooltip(element);
