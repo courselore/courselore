@@ -170,10 +170,7 @@ module.exports = (require) => {
                     `}"
                   >
                     <div class="card-header">
-                      <h2>
-                        <i class="bi bi-toggles"></i>
-                        Fully-Featured
-                      </h2>
+                      <h2><i class="bi bi-toggles"></i> Fully-Featured</h2>
                     </div>
                     <div class="card-body text-start">
                       <p class="card-text">
