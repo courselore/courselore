@@ -33,82 +33,52 @@ module.exports = (require) => {
                       "</svg>",
                       html`
                         <g
-                          class="fw-bold fst-italic"
-                          style="${css`
-                            fill: $white;
-                            text-anchor: middle;
-                          `}"
+                          font-weight="bold"
+                          font-style="italic"
+                          fill="white"
+                          text-anchor="middle"
                         >
-                          <g
-                            style="${css`
-                              transform: translate(50%, 50%) rotate(-2deg);
-                            `}"
-                          >
+                          <g transform="translate(300, 250) rotate(-2)">
                             <rect
-                              style="${css`
-                                fill: $purple;
-                                width: 570px;
-                                height: 100px;
-                                x: -285px;
-                                y: -85px;
-                                rx: 10px;
-                              `}"
+                              fill="#83769c"
+                              width="570"
+                              height="100"
+                              x="-285"
+                              y="-85"
+                              rx="10"
                             />
                             <text
-                              class="font-serif"
-                              style="${css`
-                                font-size: 6.5rem;
-                              `}"
-                              >CourseLore</text
+                              font-family="IBM Plex Serif"
+                              font-size="6.5rem"
                             >
+                              CourseLore
+                            </text>
                           </g>
-                          <g
-                            style="${css`
-                              transform: translate(50%, calc(50% + 5rem))
-                                rotate(-2deg);
-                            `}"
-                          >
+                          <g transform="translate(300, 350) rotate(-2)">
                             <rect
-                              style="${css`
-                                fill: $pink;
-                                width: 490px;
-                                height: 50px;
-                                x: -245px;
-                                y: -35px;
-                                rx: 10px;
-                              `}"
+                              fill="#ff77a8"
+                              x="-245"
+                              y="-35"
+                              width="490"
+                              height="50"
+                              rx="10"
                             />
-                            <text
-                              style="${css`
-                                font-size: 2rem;
-                              `}"
-                              >The Open-Source Student Forum</text
-                            >
+                            <text font-size="2rem">
+                              The Open-Source Student Forum
+                            </text>
                           </g>
-                          <g
-                            style="${css`
-                              transform: translate(50%, calc(50% + 15rem))
-                                rotate(-2deg);
-                            `}"
-                          >
+                          <g transform="translate(300, 550) rotate(-2)">
                             <rect
-                              style="${css`
-                                fill: $blue;
-                                width: 370px;
-                                height: 35px;
-                                x: -185px;
-                                y: -26px;
-                                rx: 10px;
-                              `}"
+                              fill="#29adff"
+                              width="370"
+                              height="35"
+                              x="-185"
+                              y="-26"
+                              rx="10"
                             />
-                            <text
-                              class="text-uppercase"
-                              style="${css`
-                                font-size: 1.5rem;
-                                letter-spacing: 2px;
-                              `}"
-                              >Coming September 2021!</text
-                            >
+                            <text font-size="1.5rem" letter-spacing="2">
+                              COMING SEPTEMBER 2021!
+                            </text>
                           </g>
                         </g>
                         $&
