@@ -676,7 +676,10 @@ export default async function courselore(
     sass
       .renderSync({
         data: css`
-          @import "public/node_modules/bootstrap/scss/functions";
+          @import "${path.join(
+            __dirname,
+            ".."
+          )}/public/node_modules/bootstrap/scss/functions";
 
           $font-family-sans-serif: "IBM Plex Sans", sans-serif;
           $font-family-monospace: "IBM Plex Mono", monospace;
@@ -688,8 +691,14 @@ export default async function courselore(
 
           $primary: $purple;
 
-          @import "public/node_modules/bootstrap/scss/variables";
-          @import "public/node_modules/bootstrap/scss/mixins";
+          @import "${path.join(
+            __dirname,
+            ".."
+          )}/public/node_modules/bootstrap/scss/variables";
+          @import "${path.join(
+            __dirname,
+            ".."
+          )}/public/node_modules/bootstrap/scss/mixins";
 
           ${styles}
         `,
@@ -700,7 +709,10 @@ export default async function courselore(
     globalCSS: CSS;
   }
   app.locals.partials.globalCSS = app.locals.helpers.compileSass(css`
-    @import "public/node_modules/bootstrap/scss/bootstrap";
+    @import "${path.join(
+      __dirname,
+      ".."
+    )}/public/node_modules/bootstrap/scss/bootstrap";
 
     .font-serif {
       font-family: $font-family-serif;
