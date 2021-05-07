@@ -154,7 +154,7 @@ module.exports = (require) => {
               `}"
             >
               <h1
-                class="font-serif fw-bold fst-italic"
+                class="font-serif fw-bold fst-italic mb-3"
                 style="${css`
                   text-shadow: 2px 2px $purple-600;
                 `}"
@@ -162,7 +162,7 @@ module.exports = (require) => {
                 A forum for educators & students
               </h1>
 
-              <div class="card-group shadow-lg">
+              <div class="card-group">
                 <div
                   class="card"
                   style="${css`
@@ -266,9 +266,10 @@ module.exports = (require) => {
                   - It looks great.
                 `;
                 return html`
-                  <p>
-                    Markdown is a simple way to include rich-text formatting in
-                    your posts.
+                  <p class="card-text">
+                    Markdown is a simple way to include bold text, links, lists,
+                    and many other forms of rich-text formatting in your posts,
+                    for example:
                   </p>
 
                   <div class="card-group">
@@ -280,10 +281,9 @@ module.exports = (require) => {
                         <pre><code>$${example}</code></pre>
                       </div>
                     </div>
-
                     <div class="card mb-3">
                       <div class="card-header text-center fw-bold">
-                        Your post looks like
+                        and your post looks like
                       </div>
                       <div class="card-body pb-0">
                         $${app.locals.partials.textProcessor(example)}
@@ -291,7 +291,7 @@ module.exports = (require) => {
                     </div>
                   </div>
 
-                  <p class="mb-0">
+                  <p class="card-text">
                     Markdown is much more powerful than this simple example
                     shows, it’s
                     <a
@@ -317,7 +317,7 @@ module.exports = (require) => {
         aria-labelledby="latex-modal-label"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="latex-modal-label">What’s LaTeX?</h5>
@@ -339,28 +339,31 @@ module.exports = (require) => {
                   $$
                 `;
                 return html`
-                  <p>
+                  <p class="card-text">
                     LaTeX is a simple way to include mathematical formulas in
-                    your posts.
+                    your posts, for example:
                   </p>
 
-                  <p>For example, you write:</p>
-
-                  <div class="card mb-3">
-                    <div class="card-body pb-0">
-                      <pre><code>$${example}</code></pre>
+                  <div class="card-group">
+                    <div class="card mb-3">
+                      <div class="card-header text-center fw-bold">
+                        You write
+                      </div>
+                      <div class="card-body pb-0">
+                        <pre><code>$${example}</code></pre>
+                      </div>
+                    </div>
+                    <div class="card mb-3">
+                      <div class="card-header text-center fw-bold">
+                        and your post looks like
+                      </div>
+                      <div class="card-body pb-0">
+                        $${app.locals.partials.textProcessor(example)}
+                      </div>
                     </div>
                   </div>
 
-                  <p>And your post ends up looking like:</p>
-
-                  <div class="card mb-3">
-                    <div class="card-body pb-0">
-                      $${app.locals.partials.textProcessor(example)}
-                    </div>
-                  </div>
-
-                  <p class="mb-0">
+                  <p class="card-text">
                     LaTeX is much more powerful than this simple example shows,
                     it’s
                     <a href="https://katex.org/docs/supported.html"
@@ -381,7 +384,7 @@ module.exports = (require) => {
         aria-labelledby="syntax-highlighting-modal-label"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="syntax-highlighting-modal-label">
@@ -408,35 +411,35 @@ module.exports = (require) => {
                   \`\`\`
                 `;
                 return html`
-                  <p>
-                    Syntax highlighting is coloring code snippets to make them
-                    easier to read in your posts.
+                  <p class="card-text">
+                    Syntax highlighting is coloring code snippets in your posts
+                    to make them easier to read, for example:
                   </p>
 
-                  <p>For example, you write:</p>
-
-                  <div class="card mb-3">
-                    <div class="card-body pb-0">
-                      <pre><code>$${example}</code></pre>
+                  <div class="card-group">
+                    <div class="card mb-3">
+                      <div class="card-header text-center fw-bold">
+                        You write
+                      </div>
+                      <div class="card-body pb-0">
+                        <pre><code>$${example}</code></pre>
+                      </div>
+                    </div>
+                    <div class="card mb-3">
+                      <div class="card-header text-center fw-bold">
+                        and your post looks like
+                      </div>
+                      <div class="card-body pb-0">
+                        $${app.locals.partials.textProcessor(example)}
+                      </div>
                     </div>
                   </div>
 
-                  <p>And your post ends up looking like:</p>
-
-                  <div class="card mb-3">
-                    <div class="card-body pb-0">
-                      $${app.locals.partials.textProcessor(example)}
-                    </div>
-                  </div>
-
-                  <p class="mb-0">
+                  <p class="card-text">
                     CourseLore uses
                     <a href="https://shiki.matsu.io/"
-                      >the most powerful syntax highlighter</a
-                    >, which is powered by
-                    <a href="https://code.visualstudio.com/"
-                      >Visual Studio Code</a
-                    >; it supports all popular programming languages so your
+                      >the same syntax highlighter as Visual Studio Code</a
+                    >, which supports all popular programming languages so your
                     posts will always look awesome.
                   </p>
                 `;
