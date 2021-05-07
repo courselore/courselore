@@ -233,7 +233,7 @@ module.exports = (require) => {
         aria-labelledby="markdown-modal-label"
         aria-hidden="true"
       >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="markdown-modal-label">
@@ -262,19 +262,23 @@ module.exports = (require) => {
                     your posts.
                   </p>
 
-                  <p>For example, you write:</p>
-
-                  <div class="card mb-3">
-                    <div class="card-body pb-0">
-                      <pre><code>$${example}</code></pre>
+                  <div class="card-group">
+                    <div class="card mb-3">
+                      <div class="card-header text-center fw-bold">
+                        You write
+                      </div>
+                      <div class="card-body pb-0">
+                        <pre><code>$${example}</code></pre>
+                      </div>
                     </div>
-                  </div>
 
-                  <p>And your post ends up looking like:</p>
-
-                  <div class="card mb-3">
-                    <div class="card-body pb-0">
-                      $${app.locals.partials.textProcessor(example)}
+                    <div class="card mb-3">
+                      <div class="card-header text-center fw-bold">
+                        Your post looks like
+                      </div>
+                      <div class="card-body pb-0">
+                        $${app.locals.partials.textProcessor(example)}
+                      </div>
                     </div>
                   </div>
 
