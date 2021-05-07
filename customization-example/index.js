@@ -170,12 +170,15 @@ module.exports = (require) => {
                   `}"
                 >
                   <div class="card-header">
-                    <h2><i class="bi bi-toggles"></i> Fully-Featured</h2>
+                    <h5 class="mb-0">
+                      <i class="bi bi-toggles"></i> Fully-Featured
+                    </h5>
                   </div>
                   <div class="card-body text-start">
                     <p class="card-text">
-                      All the features you’ve come to expect from a forum: Q&A,
-                      announcements, notifications, invitations, Markdown <span
+                      All the features you’ve come to expect from a forum,
+                      including Q&A, announcements, notifications, invitations,
+                      Markdown <span
                         data-bs-toggle="tooltip"
                         title="What’s Markdown?"
                       >
@@ -227,7 +230,50 @@ module.exports = (require) => {
                       interface.
                     </p>
                   </div>
-                  <!-- bi-code-square Open-Source -->
+                </div>
+
+                <div
+                  class="card"
+                  style="${css`
+                    background-color: $purple-600;
+                  `}"
+                >
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <i class="bi bi-code-square"></i> Open-Source
+                    </h5>
+                  </div>
+                  <div class="card-body text-start">
+                    <p class="card-text">
+                      We’re building CourseLore in the open. You may inspect
+                      CourseLore’s source code to build your trust on the
+                      software that you use, and you may collaborate on the
+                      development. We welcome contributions of all forms,
+                      including feature requests, bug reports, documentation,
+                      design, code, and so forth.
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  class="card"
+                  style="${css`
+                    background-color: $purple-600;
+                  `}"
+                >
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <i class="bi bi-shield-lock"></i> Self-Hosted
+                    </h5>
+                  </div>
+                  <div class="card-body text-start">
+                    <p class="card-text">
+                      CourseLore is easy to run on your own server. This means
+                      you know exactly where your data is and who owns it: you.
+                      Utmost respect for educators & students’ privacy is at the
+                      core of what we do.
+                    </p>
+                  </div>
                 </div>
               </div>
             </section>
