@@ -1217,8 +1217,18 @@ export default async function courselore(
     {},
     { redirect?: string; email?: string; name?: string },
     IsUnauthenticatedMiddlewareLocals
+  >("/", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
+    res.redirect(`${app.locals.settings.url}/authenticate`);
+  });
+
+  app.get<
+    {},
+    HTML,
+    {},
+    { redirect?: string; email?: string; name?: string },
+    IsUnauthenticatedMiddlewareLocals
   >(
-    ["/", "/authenticate"],
+    "/authenticate",
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.send(
