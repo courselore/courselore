@@ -147,7 +147,7 @@ module.exports = (require) => {
             </script>
 
             <section
-              class="container"
+              class="container pb-3"
               style="${css`
                 padding-top: calc(10vw + 1rem);
               `}"
@@ -161,65 +161,62 @@ module.exports = (require) => {
                 A forum for educators & students
               </h1>
 
-              <div class="row py-5">
-                <div class="col-md-4 mb-3 mb-md-0">
-                  <div
-                    class="card h-100 shadow-lg"
-                    style="${css`
-                      background-color: $purple-600;
-                    `}"
-                  >
-                    <div class="card-header">
-                      <h2><i class="bi bi-toggles"></i> Fully-Featured</h2>
-                    </div>
-                    <div class="card-body text-start">
-                      <p class="card-text">
-                        All the features you’ve come to expect from a forum:
-                        Q&A, announcements, notifications, invitations,
-                        Markdown <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#markdown-modal"
-                          aria-label="More information"
-                        >
-                          <i
-                            class="bi bi-question-circle-fill"
-                            data-bs-toggle="tooltip"
-                            title="What’s Markdown?"
-                          ></i></button
-                        >, LaTeX <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#latex-modal"
-                          aria-label="More information"
-                        >
-                          <i
-                            class="bi bi-question-circle-fill"
-                            data-bs-toggle="tooltip"
-                            title="What’s LaTeX?"
-                          ></i></button
-                        >, syntax highlighting <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#syntax-highlighting-modal"
-                          aria-label="More information"
-                        >
-                          <i
-                            class="bi bi-question-circle-fill"
-                            data-bs-toggle="tooltip"
-                            title="What’s Syntax Highlighting?"
-                          ></i></button
-                        >, and much more, all in an easy-to-use and modern
-                        interface.
-                      </p>
-                    </div>
+              <div class="card-group shadow-lg">
+                <div
+                  class="card"
+                  style="${css`
+                    background-color: $purple-600;
+                  `}"
+                >
+                  <div class="card-header">
+                    <h2><i class="bi bi-toggles"></i> Fully-Featured</h2>
                   </div>
+                  <div class="card-body text-start">
+                    <p class="card-text">
+                      All the features you’ve come to expect from a forum: Q&A,
+                      announcements, notifications, invitations,
+                      Markdown <button
+                        type="button"
+                        class="btn btn-link text-reset p-0"
+                        data-bs-toggle="modal"
+                        data-bs-target="#markdown-modal"
+                        aria-label="More information"
+                      >
+                        <i
+                          class="bi bi-question-circle-fill"
+                          data-bs-toggle="tooltip"
+                          title="What’s Markdown?"
+                        ></i></button
+                      >, LaTeX <button
+                        type="button"
+                        class="btn btn-link text-reset p-0"
+                        data-bs-toggle="modal"
+                        data-bs-target="#latex-modal"
+                        aria-label="More information"
+                      >
+                        <i
+                          class="bi bi-question-circle-fill"
+                          data-bs-toggle="tooltip"
+                          title="What’s LaTeX?"
+                        ></i></button
+                      >, syntax highlighting <button
+                        type="button"
+                        class="btn btn-link text-reset p-0"
+                        data-bs-toggle="modal"
+                        data-bs-target="#syntax-highlighting-modal"
+                        aria-label="More information"
+                      >
+                        <i
+                          class="bi bi-question-circle-fill"
+                          data-bs-toggle="tooltip"
+                          title="What’s Syntax Highlighting?"
+                        ></i></button
+                      >, and much more, all in an easy-to-use and modern
+                      interface.
+                    </p>
+                  </div>
+                  <!-- bi-code-square Open-Source -->
                 </div>
-
-                <!-- bi-code-square Open-Source -->
               </div>
             </section>
           </div>
