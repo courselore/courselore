@@ -123,7 +123,12 @@ module.exports = (require) => {
             class="text-white position-relative"
             style="${css`
               background-color: $purple;
-              clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
+              clip-path: polygon(
+                0 10vw,
+                100% 0,
+                100% calc(100% - 10vw),
+                0 100%
+              );
             `}"
           >
             $${app.locals.partials.art.small
@@ -137,20 +142,21 @@ module.exports = (require) => {
                     z-index: -1;
                   `}"`
               )
-              .replace(/viewBox=".*?"/, `viewBox="7 7 15 15"`)}
+              .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
             <script>
               new ArtAnimation({
                 element: document.currentScript.previousElementSibling,
                 speed: 0.0001,
-                amount: 10,
+                amount: 5,
                 startupDuration: 0,
               }).start();
             </script>
 
             <section
-              class="container pb-3"
+              class="container"
               style="${css`
                 padding-top: calc(10vw + 1rem);
+                padding-bottom: 13vw;
               `}"
             >
               <h1
@@ -259,6 +265,168 @@ module.exports = (require) => {
                   class="card"
                   style="${css`
                     background-color: $purple-600;
+                  `}"
+                >
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <i class="bi bi-shield-lock"></i> Self-Hosted
+                    </h5>
+                  </div>
+                  <div class="card-body text-start">
+                    <p class="card-text">
+                      CourseLore is easy to run on your own server. This means
+                      you know exactly where your data is and who owns it: you.
+                      Utmost respect for educators & students’ privacy is at the
+                      core of what we do.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div
+            class="text-white position-relative"
+            style="${css`
+              background-color: $pink;
+              clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
+              margin-top: -5vw;
+            `}"
+          >
+            $${app.locals.partials.art.small
+              .replace(
+                "<svg",
+                `$&
+                  preserveAspectRatio="none"
+                  class="position-absolute top-0 start-0 w-100 h-100"
+                  style="${css`
+                    opacity: 40%;
+                    z-index: -1;
+                  `}"`
+              )
+              .replace(/viewBox=".*?"/, `viewBox="10 10 20 20"`)}
+            <script>
+              new ArtAnimation({
+                element: document.currentScript.previousElementSibling,
+                speed: 0.0001,
+                amount: 5,
+                startupDuration: 0,
+              }).start();
+            </script>
+
+            <section
+              class="container"
+              style="${css`
+                padding-top: calc(10vw + 1rem);
+                padding-bottom: 5vw;
+              `}"
+            >
+              <h1
+                class="font-serif fw-bold fst-italic mb-3"
+                style="${css`
+                  text-shadow: 2px 2px $pink-600;
+                `}"
+              >
+                A forum for educators & students
+              </h1>
+
+              <div class="card-group">
+                <div
+                  class="card"
+                  style="${css`
+                    background-color: $pink-600;
+                  `}"
+                >
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <i class="bi bi-toggles"></i> Fully-Featured
+                    </h5>
+                  </div>
+                  <div class="card-body text-start">
+                    <p class="card-text">
+                      All the features you’ve come to expect from a forum,
+                      including Q&A, announcements, notifications, invitations,
+                      Markdown <span
+                        data-bs-toggle="tooltip"
+                        title="What’s Markdown?"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-link text-reset p-0"
+                          data-bs-toggle="modal"
+                          data-bs-target="#markdown-modal"
+                          aria-label="More information"
+                          onclick="${javascript`
+                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                          `}"
+                        >
+                          <i class="bi bi-question-circle-fill"></i>
+                        </button> </span
+                      >, LaTeX <span
+                        data-bs-toggle="tooltip"
+                        title="What’s LaTeX?"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-link text-reset p-0"
+                          data-bs-toggle="modal"
+                          data-bs-target="#latex-modal"
+                          aria-label="More information"
+                          onclick="${javascript`
+                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                          `}"
+                        >
+                          <i class="bi bi-question-circle-fill"></i>
+                        </button> </span
+                      >, syntax highlighting <span
+                        data-bs-toggle="tooltip"
+                        title="What’s Syntax Highlighting?"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-link text-reset p-0"
+                          data-bs-toggle="modal"
+                          data-bs-target="#syntax-highlighting-modal"
+                          aria-label="More information"
+                          onclick="${javascript`
+                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                          `}"
+                        >
+                          <i class="bi bi-question-circle-fill"></i>
+                        </button> </span
+                      >, and much more, all in an easy-to-use and modern
+                      interface.
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  class="card"
+                  style="${css`
+                    background-color: $pink-600;
+                  `}"
+                >
+                  <div class="card-header">
+                    <h5 class="mb-0">
+                      <i class="bi bi-code-square"></i> Open-Source
+                    </h5>
+                  </div>
+                  <div class="card-body text-start">
+                    <p class="card-text">
+                      We’re building CourseLore in the open. You may inspect
+                      CourseLore’s source code to build your trust on the
+                      software that you use, and you may collaborate on the
+                      development. We welcome contributions of all forms,
+                      including feature requests, bug reports, documentation,
+                      design, code, and so forth.
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  class="card"
+                  style="${css`
+                    background-color: $pink-600;
                   `}"
                 >
                   <div class="card-header">
