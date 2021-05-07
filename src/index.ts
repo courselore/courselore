@@ -295,7 +295,7 @@ export default async function courselore(
               .url}/node_modules/katex/dist/katex.min.css"
           />
           <style>
-            $${app.locals.helpers.sass(styles.join(""))}
+            $${app.locals.helpers.compileSass(styles.join(""))}
           </style>
           $${head}
         </head>
@@ -670,9 +670,9 @@ export default async function courselore(
     );
 
   interface Helpers {
-    sass: (styles: CSS) => CSS;
+    compileSass: (styles: CSS) => CSS;
   }
-  app.locals.helpers.sass = (styles) =>
+  app.locals.helpers.compileSass = (styles) =>
     sass
       .renderSync({
         data: css`
@@ -699,7 +699,7 @@ export default async function courselore(
   interface Partials {
     globalCSS: CSS;
   }
-  app.locals.partials.globalCSS = app.locals.helpers.sass(css`
+  app.locals.partials.globalCSS = app.locals.helpers.compileSass(css`
     @import "public/node_modules/bootstrap/scss/bootstrap";
 
     .font-serif {
