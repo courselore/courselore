@@ -336,7 +336,7 @@ module.exports = (require) => {
                     background-color: $pink-600;
                   `}"
                 >
-                  <div class="card-header">
+                  <div class="card-header pt-3">
                     <a
                       href="https://www.cs.jhu.edu/~scott/"
                       class="stretched-link"
@@ -366,7 +366,7 @@ module.exports = (require) => {
                     background-color: $pink-600;
                   `}"
                 >
-                  <div class="card-header">
+                  <div class="card-header pt-3">
                     <a
                       href="https://www.cs.jhu.edu/faculty/ali-madooei/"
                       class="stretched-link"
@@ -396,7 +396,7 @@ module.exports = (require) => {
                     background-color: $pink-600;
                   `}"
                 >
-                  <div class="card-header">
+                  <div class="card-header pt-3">
                     <a href="https://leafac.com" class="stretched-link"
                       ><img
                         src="${app.locals.settings.url}/leandro.png"
@@ -463,7 +463,7 @@ module.exports = (require) => {
                   <div class="card-group">
                     <div class="card mb-3">
                       <div class="card-header text-center fw-bold">
-                        You write
+                        You write…
                       </div>
                       <div class="card-body pb-0">
                         <pre><code>$${example}</code></pre>
@@ -471,7 +471,7 @@ module.exports = (require) => {
                     </div>
                     <div class="card mb-3">
                       <div class="card-header text-center fw-bold">
-                        and your post looks like
+                        …and your post looks like
                       </div>
                       <div class="card-body pb-0">
                         $${app.locals.partials.textProcessor(example)}
@@ -535,7 +535,7 @@ module.exports = (require) => {
                   <div class="card-group">
                     <div class="card mb-3">
                       <div class="card-header text-center fw-bold">
-                        You write
+                        You write…
                       </div>
                       <div class="card-body pb-0">
                         <pre><code>$${example}</code></pre>
@@ -543,7 +543,7 @@ module.exports = (require) => {
                     </div>
                     <div class="card mb-3">
                       <div class="card-header text-center fw-bold">
-                        and your post looks like
+                        …and your post looks like
                       </div>
                       <div class="card-body pb-0">
                         $${app.locals.partials.textProcessor(example)}
@@ -600,14 +600,14 @@ module.exports = (require) => {
                 `;
                 return html`
                   <p class="card-text">
-                    Syntax highlighting is coloring code snippets in your posts
-                    to make them easier to read, for example:
+                    Syntax highlighting is adding color to code snippets in your
+                    posts to make them easier to read, for example:
                   </p>
 
                   <div class="card-group">
                     <div class="card mb-3">
                       <div class="card-header text-center fw-bold">
-                        You write
+                        You write…
                       </div>
                       <div class="card-body pb-0">
                         <pre><code>$${example}</code></pre>
@@ -615,7 +615,7 @@ module.exports = (require) => {
                     </div>
                     <div class="card mb-3">
                       <div class="card-header text-center fw-bold">
-                        and your post looks like
+                        …and your post looks like
                       </div>
                       <div class="card-body pb-0">
                         $${app.locals.partials.textProcessor(example)}
