@@ -1232,47 +1232,56 @@ export default async function courselore(
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.base(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
-            <div
-              style="${css`
-                display: flex;
-
-                & > * {
-                  flex: 1;
-                }
-
-                & > * + * {
-                  margin-left: 3rem;
-                }
-              `}"
-            >
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/authenticate?${qs.stringify({
-                  redirect: req.query.redirect,
-                  email: req.query.email,
-                  name: req.query.name,
-                })}"
+            <div class="text-center">
+              <div
+                class="vw-100 vh-100 d-flex justify-content-center align-items-center bg-primary"
               >
                 <div
+                  class="card flex-fill"
                   style="${css`
-                    text-align: center;
+                    background-color: $purple-600;
+                    max-width: 35ch;
                   `}"
                 >
-                  <h1>Sign in</h1>
-                  <p class="secondary">Returning user</p>
+                  <div class="card-header text-white">
+                    <h5 class="mb-0">Authenticate</h5>
+                  </div>
+                  <div class="card-body">
+                    <form
+                      method="POST"
+                      action="${app.locals.settings
+                        .url}/authenticate?${qs.stringify({
+                        redirect: req.query.redirect,
+                        email: req.query.email,
+                        name: req.query.name,
+                      })}"
+                    >
+                      <div class="form-floating mb-3">
+                        <input
+                          type="email"
+                          name="email"
+                          value="${req.query.email ?? ""}"
+                          class="form-control"
+                          id="email"
+                          placeholder="name@example.com"
+                        />
+                        <label for="email">Email</label>
+                      </div>
+                      <button type="submit" class="btn btn-primary w-100">
+                        Continue
+                      </button>
+                    </form>
+                  </div>
                 </div>
-                <p
-                  style="${css`
-                    height: 5rem;
-                  `}"
-                >
-                  <label>
-                    <strong>Email</strong><br />
+              </div>
+            </div>
+          `
+          /*
                     <input
                       type="email"
                       name="email"
@@ -1328,6 +1337,7 @@ export default async function courselore(
               </form>
             </div>
           `
+          */
         )
       );
     }
