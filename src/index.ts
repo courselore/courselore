@@ -1291,7 +1291,6 @@ export default async function courselore(
                     </h1>
                   </div>
                   <div class="card-body text-white">
-                    <h5 class="card-title mb-3">Authenticate</h5>
                     <form
                       method="POST"
                       action="${app.locals.settings
