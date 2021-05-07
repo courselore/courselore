@@ -1239,7 +1239,7 @@ export default async function courselore(
           html`
             <div class="text-center">
               <div
-                class="vw-100 vh-100 d-flex justify-content-center align-items-center bg-primary"
+                class="position-absolute top-0 end-0 bottom-0 start-0 d-flex justify-content-center align-items-center bg-primary"
               >
                 <div
                   class="card flex-fill"
@@ -1248,10 +1248,50 @@ export default async function courselore(
                     max-width: 35ch;
                   `}"
                 >
-                  <div class="card-header text-white">
-                    <h5 class="mb-0">Authenticate</h5>
+                  <div
+                    class="card-header text-white"
+                    style="${css`
+                      * {
+                        stroke: white;
+                      }
+                    `}"
+                  >
+                    <h1 class="mb-0">
+                      <a
+                        href="$${app.locals.settings.url}/"
+                        class="d-inline-flex align-items-center text-reset text-decoration-none"
+                      >
+                        <span
+                          class="d-inline-flex justify-items-center align-items-center me-2"
+                        >
+                          $${app.locals.partials.art.small}
+                        </span>
+                        <span class="font-serif fw-bold fst-italic"
+                          >CourseLore</span
+                        >
+                      </a>
+                      <script>
+                        (() => {
+                          const logo =
+                            document.currentScript.previousElementSibling;
+                          const artAnimation = new ArtAnimation({
+                            element: logo,
+                            speed: 0.001,
+                            amount: 1,
+                            startupDuration: 500,
+                          });
+                          logo.addEventListener("mouseover", () => {
+                            artAnimation.start();
+                          });
+                          logo.addEventListener("mouseout", () => {
+                            artAnimation.stop();
+                          });
+                        })();
+                      </script>
+                    </h1>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body text-white">
+                    <h5 class="card-title mb-3">Authenticate</h5>
                     <form
                       method="POST"
                       action="${app.locals.settings
@@ -1261,7 +1301,7 @@ export default async function courselore(
                         name: req.query.name,
                       })}"
                     >
-                      <div class="form-floating mb-3">
+                      <div class="form-floating mb-3 text-body">
                         <input
                           type="email"
                           name="email"
