@@ -4,6 +4,7 @@ module.exports = (require) => {
   const cookieParser = require("cookie-parser");
   const { html } = require("@leafac/html");
   const css = require("tagged-template-noop");
+  const javascript = require("tagged-template-noop");
   const markdown = require("dedent");
 
   return (app) => {
@@ -174,43 +175,54 @@ module.exports = (require) => {
                   <div class="card-body text-start">
                     <p class="card-text">
                       All the features you’ve come to expect from a forum: Q&A,
-                      announcements, notifications, invitations,
-                      Markdown <button
-                        type="button"
-                        class="btn btn-link text-reset p-0"
-                        data-bs-toggle="modal"
-                        data-bs-target="#markdown-modal"
-                        aria-label="More information"
+                      announcements, notifications, invitations, Markdown <span
+                        data-bs-toggle="tooltip"
+                        title="What’s Markdown?"
                       >
-                        <i
-                          class="bi bi-question-circle-fill"
-                          data-bs-toggle="tooltip"
-                          title="What’s Markdown?"
-                        ></i></button
-                      >, LaTeX <button
-                        type="button"
-                        class="btn btn-link text-reset p-0"
-                        data-bs-toggle="modal"
-                        data-bs-target="#latex-modal"
-                        aria-label="More information"
+                        <button
+                          type="button"
+                          class="btn btn-link text-reset p-0"
+                          data-bs-toggle="modal"
+                          data-bs-target="#markdown-modal"
+                          aria-label="More information"
+                          onclick="${javascript`
+                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                          `}"
+                        >
+                          <i class="bi bi-question-circle-fill"></i>
+                        </button> </span
+                      >, LaTeX <span
+                        data-bs-toggle="tooltip"
+                        title="What’s LaTeX?"
                       >
-                        <i
-                          class="bi bi-question-circle-fill"
-                          data-bs-toggle="tooltip"
-                          title="What’s LaTeX?"
-                        ></i></button
-                      >, syntax highlighting <button
-                        type="button"
-                        class="btn btn-link text-reset p-0"
-                        data-bs-toggle="modal"
-                        data-bs-target="#syntax-highlighting-modal"
-                        aria-label="More information"
+                        <button
+                          type="button"
+                          class="btn btn-link text-reset p-0"
+                          data-bs-toggle="modal"
+                          data-bs-target="#latex-modal"
+                          aria-label="More information"
+                          onclick="${javascript`
+                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                          `}"
+                        >
+                          <i class="bi bi-question-circle-fill"></i>
+                        </button> </span
+                      >, syntax highlighting <span
+                        data-bs-toggle="tooltip"
+                        title="What’s Syntax Highlighting?"
                       >
-                        <i
-                          class="bi bi-question-circle-fill"
-                          data-bs-toggle="tooltip"
-                          title="What’s Syntax Highlighting?"
-                        ></i></button
+                        <button
+                          type="button"
+                          class="btn btn-link text-reset p-0"
+                          data-bs-toggle="modal"
+                          data-bs-target="#syntax-highlighting-modal"
+                          aria-label="More information"
+                          onclick="${javascript`
+                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                          `}"
+                        >
+                          <i class="bi bi-question-circle-fill"></i>
+                        </button> </span
                       >, and much more, all in an easy-to-use and modern
                       interface.
                     </p>
