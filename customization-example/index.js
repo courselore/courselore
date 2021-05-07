@@ -253,10 +253,9 @@ module.exports = (require) => {
                     <p class="card-text">
                       We’re building CourseLore in the open. You may inspect
                       CourseLore’s source code to build your trust on the
-                      software that you use, and you may collaborate on the
-                      development. We welcome contributions of all forms,
-                      including feature requests, bug reports, documentation,
-                      design, code, and so forth.
+                      software that you use, you may build other tools on top of
+                      the CourseLore API, and you may collaborate on the
+                      development.
                     </p>
                   </div>
                 </div>
@@ -327,7 +326,7 @@ module.exports = (require) => {
                   text-shadow: 2px 2px $pink-600;
                 `}"
               >
-                A forum for educators & students
+                Team
               </h1>
 
               <div class="card-group">
@@ -338,64 +337,24 @@ module.exports = (require) => {
                   `}"
                 >
                   <div class="card-header">
-                    <h5 class="mb-0">
-                      <i class="bi bi-toggles"></i> Fully-Featured
-                    </h5>
+                    <img
+                      src="${app.locals.settings.url}/scott.png"
+                      alt="Dr. Scott Smith"
+                      width="200"
+                      class="card-title img-thumbnail rounded-circle"
+                    />
+                    <h5 class="card-title mb-0">Dr. Scott Smith</h5>
+                    <p class="card-subtitle">CEO</p>
                   </div>
+
                   <div class="card-body text-start">
                     <p class="card-text">
-                      All the features you’ve come to expect from a forum,
-                      including Q&A, announcements, notifications, invitations,
-                      Markdown <span
-                        data-bs-toggle="tooltip"
-                        title="What’s Markdown?"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#markdown-modal"
-                          aria-label="More information"
-                          onclick="${javascript`
-                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                          `}"
-                        >
-                          <i class="bi bi-question-circle-fill"></i>
-                        </button> </span
-                      >, LaTeX <span
-                        data-bs-toggle="tooltip"
-                        title="What’s LaTeX?"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#latex-modal"
-                          aria-label="More information"
-                          onclick="${javascript`
-                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                          `}"
-                        >
-                          <i class="bi bi-question-circle-fill"></i>
-                        </button> </span
-                      >, syntax highlighting <span
-                        data-bs-toggle="tooltip"
-                        title="What’s Syntax Highlighting?"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#syntax-highlighting-modal"
-                          aria-label="More information"
-                          onclick="${javascript`
-                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                          `}"
-                        >
-                          <i class="bi bi-question-circle-fill"></i>
-                        </button> </span
-                      >, and much more, all in an easy-to-use and modern
-                      interface.
+                      We’re building CourseLore in the open. You may inspect
+                      CourseLore’s source code to build your trust on the
+                      software that you use, and you may collaborate on the
+                      development. We welcome contributions of all forms,
+                      including feature requests, bug reports, documentation,
+                      design, code, and so forth.
                     </p>
                   </div>
                 </div>
