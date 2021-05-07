@@ -337,24 +337,25 @@ module.exports = (require) => {
                   `}"
                 >
                   <div class="card-header">
-                    <img
-                      src="${app.locals.settings.url}/scott.png"
-                      alt="Dr. Scott Smith"
-                      width="200"
-                      class="card-title img-thumbnail rounded-circle"
-                    />
+                    <a
+                      href="https://www.cs.jhu.edu/~scott/"
+                      class="stretched-link"
+                      ><img
+                        src="${app.locals.settings.url}/scott.png"
+                        alt="Dr. Scott Smith"
+                        width="200"
+                        class="card-title img-thumbnail rounded-circle"
+                    /></a>
                     <h5 class="card-title mb-0">Dr. Scott Smith</h5>
                     <p class="card-subtitle">CEO</p>
                   </div>
-
                   <div class="card-body text-start">
                     <p class="card-text">
-                      We’re building CourseLore in the open. You may inspect
-                      CourseLore’s source code to build your trust on the
-                      software that you use, and you may collaborate on the
-                      development. We welcome contributions of all forms,
-                      including feature requests, bug reports, documentation,
-                      design, code, and so forth.
+                      Scott is a full professor at the Johns Hopkins University.
+                      Over his thirty years of experience as an educator, Scott
+                      taught courses on the Principles of Programming Languages,
+                      Object-Oriented Software Engineering, Functional
+                      Programming, and so forth.
                     </p>
                   </div>
                 </div>
@@ -366,18 +367,25 @@ module.exports = (require) => {
                   `}"
                 >
                   <div class="card-header">
-                    <h5 class="mb-0">
-                      <i class="bi bi-code-square"></i> Open-Source
-                    </h5>
+                    <a
+                      href="https://www.cs.jhu.edu/faculty/ali-madooei/"
+                      class="stretched-link"
+                      ><img
+                        src="${app.locals.settings.url}/ali.png"
+                        alt="Dr. Ali Madooei"
+                        width="200"
+                        class="card-title img-thumbnail rounded-circle"
+                    /></a>
+                    <h5 class="card-title mb-0">Dr. Ali Madooei</h5>
+                    <p class="card-subtitle">Consultant</p>
                   </div>
                   <div class="card-body text-start">
                     <p class="card-text">
-                      We’re building CourseLore in the open. You may inspect
-                      CourseLore’s source code to build your trust on the
-                      software that you use, and you may collaborate on the
-                      development. We welcome contributions of all forms,
-                      including feature requests, bug reports, documentation,
-                      design, code, and so forth.
+                      Ali is a lecturer at the Johns Hopkins University. Ali has
+                      taught courses in several areas, from Introduction to
+                      Programming to Object-Oriented Software Engineering. Ali
+                      has classroom experience with many student forums and
+                      knows what it takes to make a great one.
                     </p>
                   </div>
                 </div>
@@ -389,16 +397,23 @@ module.exports = (require) => {
                   `}"
                 >
                   <div class="card-header">
-                    <h5 class="mb-0">
-                      <i class="bi bi-shield-lock"></i> Self-Hosted
-                    </h5>
+                    <a href="https://leafac.com" class="stretched-link"
+                      ><img
+                        src="${app.locals.settings.url}/leandro.png"
+                        alt="Leandro Facchinetti"
+                        width="200"
+                        class="card-title img-thumbnail rounded-circle"
+                    /></a>
+                    <h5 class="card-title mb-0">Leandro Facchinetti</h5>
+                    <p class="card-subtitle">Developer & Designer</p>
                   </div>
                   <div class="card-body text-start">
                     <p class="card-text">
-                      CourseLore is easy to run on your own server. This means
-                      you know exactly where your data is and who owns it: you.
-                      Utmost respect for educators & students’ privacy is at the
-                      core of what we do.
+                      Leandro was a PhD Candidate at the Johns Hopkins
+                      University. He received the Whiting School of
+                      Engineering’s Professor Joel Dean Excellence in Teaching
+                      Award for five years of work as a teaching assistant, and
+                      taught a course on Object-Oriented Software Engineering.
                     </p>
                   </div>
                 </div>
