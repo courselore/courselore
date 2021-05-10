@@ -1254,20 +1254,17 @@ export default async function courselore(
                 class="position-absolute top-0 end-0 bottom-0 start-0 d-flex justify-content-center align-items-center bg-primary"
               >
                 <div
-                  class="card flex-fill"
+                  class="card flex-fill text-white"
                   style="${css`
                     background-color: $purple-600;
                     max-width: 35ch;
-                  `}"
-                >
-                  <div
-                    class="card-header text-white"
-                    style="${css`
+
                       * {
                         stroke: white;
                       }
                     `}"
                   >
+                  <div class="card-header">
                     <h1 class="mb-0">
                       <a
                         href="$${app.locals.settings.url}/"
@@ -1302,7 +1299,7 @@ export default async function courselore(
                       </script>
                     </h1>
                   </div>
-                  <div class="card-body text-white">
+                  <div class="card-body">
                     <form
                       method="POST"
                       action="${app.locals.settings
@@ -1312,18 +1309,30 @@ export default async function courselore(
                         name: req.query.name,
                       })}"
                     >
-                      <div class="form-floating mb-3 text-body">
+                      <div class="form-floating text-body">
                         <input
                           type="email"
+                          id="email"
                           name="email"
                           value="${req.query.email ?? ""}"
+                          placeholder="name@educational-email.edu"
+                          required
+                          autofocus
                           class="form-control"
-                          id="email"
-                          placeholder="name@example.com"
+                          aria-describedby="email-help"
                         />
                         <label for="email">Email</label>
                       </div>
-                      <button type="submit" class="btn btn-primary w-100">
+                      <div id="email-help" class="form-text text-white mb-3">
+                        We recommend using the email address you use at your
+                        educational institution.
+                      </div>
+                      <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                        data-bs-toggle="tooltip"
+                        title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
+                      >
                         Continue
                       </button>
                     </form>
@@ -1332,63 +1341,6 @@ export default async function courselore(
               </div>
             </div>
           `
-          /*
-                    <input
-                      type="email"
-                      name="email"
-                      value="${req.query.email ?? ""}"
-                      placeholder="name@educational-email.edu"
-                      required
-                      autofocus
-                      class="full-width"
-                    />
-                  </label>
-                </p>
-                <p><button class="full-width">Continue</button></p>
-              </form>
-
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/authenticate?${qs.stringify({
-                  redirect: req.query.redirect,
-                  email: req.query.email,
-                  name: req.query.name,
-                })}"
-              >
-                <div
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <h1>Sign up</h1>
-                  <p class="secondary">New user</p>
-                </div>
-                <p
-                  style="${css`
-                    height: 5rem;
-                  `}"
-                >
-                  <label>
-                    <strong>Email</strong><br />
-                    <input
-                      type="email"
-                      name="email"
-                      value="${req.query.email ?? ""}"
-                      placeholder="name@educational-email.edu"
-                      required
-                      class="full-width"
-                    /><br />
-                    <small class="full-width secondary">
-                      We suggest using the email address you use at your
-                      educational institution.
-                    </small>
-                  </label>
-                </p>
-                <p><button class="full-width">Continue</button></p>
-              </form>
-            </div>
-          `
-          */
         )
       );
     }
