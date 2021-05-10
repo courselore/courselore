@@ -168,116 +168,122 @@ module.exports = (require) => {
                 A forum for educators & students
               </h1>
 
-              <div class="card-group">
-                <div
-                  class="card"
-                  style="${css`
-                    background-color: $purple-600;
-                  `}"
-                >
-                  <div class="card-header">
-                    <h5 class="mb-0">
-                      <i class="bi bi-toggles"></i> Fully-Featured
-                    </h5>
-                  </div>
-                  <div class="card-body text-start">
-                    <p class="card-text">
-                      All the features you’ve come to expect from a forum,
-                      including Q&A, announcements, notifications, invitations,
-                      Markdown <span
-                        data-bs-toggle="tooltip"
-                        title="What’s Markdown?"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#markdown-modal"
-                          aria-label="More information"
-                          onclick="${javascript`
+              <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0 d-flex">
+                  <div
+                    class="card shadow-lg"
+                    style="${css`
+                      background-color: $purple-600;
+                    `}"
+                  >
+                    <div class="card-header">
+                      <h5 class="mb-0">
+                        <i class="bi bi-toggles"></i> Fully-Featured
+                      </h5>
+                    </div>
+                    <div class="card-body text-start">
+                      <p class="card-text">
+                        All the features you’ve come to expect from a forum,
+                        including Q&A, announcements, notifications,
+                        invitations, Markdown <span
+                          data-bs-toggle="tooltip"
+                          title="What’s Markdown?"
+                        >
+                          <button
+                            type="button"
+                            class="btn btn-link text-reset p-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#markdown-modal"
+                            aria-label="More information"
+                            onclick="${javascript`
                             bootstrap.Tooltip.getInstance(this.parentElement).hide();
                           `}"
+                          >
+                            <i class="bi bi-question-circle-fill"></i>
+                          </button> </span
+                        >, LaTeX <span
+                          data-bs-toggle="tooltip"
+                          title="What’s LaTeX?"
                         >
-                          <i class="bi bi-question-circle-fill"></i>
-                        </button> </span
-                      >, LaTeX <span
-                        data-bs-toggle="tooltip"
-                        title="What’s LaTeX?"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#latex-modal"
-                          aria-label="More information"
-                          onclick="${javascript`
+                          <button
+                            type="button"
+                            class="btn btn-link text-reset p-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#latex-modal"
+                            aria-label="More information"
+                            onclick="${javascript`
                             bootstrap.Tooltip.getInstance(this.parentElement).hide();
                           `}"
+                          >
+                            <i class="bi bi-question-circle-fill"></i>
+                          </button> </span
+                        >, syntax highlighting <span
+                          data-bs-toggle="tooltip"
+                          title="What’s Syntax Highlighting?"
                         >
-                          <i class="bi bi-question-circle-fill"></i>
-                        </button> </span
-                      >, syntax highlighting <span
-                        data-bs-toggle="tooltip"
-                        title="What’s Syntax Highlighting?"
-                      >
-                        <button
-                          type="button"
-                          class="btn btn-link text-reset p-0"
-                          data-bs-toggle="modal"
-                          data-bs-target="#syntax-highlighting-modal"
-                          aria-label="More information"
-                          onclick="${javascript`
+                          <button
+                            type="button"
+                            class="btn btn-link text-reset p-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#syntax-highlighting-modal"
+                            aria-label="More information"
+                            onclick="${javascript`
                             bootstrap.Tooltip.getInstance(this.parentElement).hide();
                           `}"
-                        >
-                          <i class="bi bi-question-circle-fill"></i>
-                        </button> </span
-                      >, and much more, all in an easy-to-use and modern
-                      interface.
-                    </p>
+                          >
+                            <i class="bi bi-question-circle-fill"></i>
+                          </button> </span
+                        >, and much more, all in an easy-to-use and modern
+                        interface.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div
-                  class="card"
-                  style="${css`
-                    background-color: $purple-600;
-                  `}"
-                >
-                  <div class="card-header">
-                    <h5 class="mb-0">
-                      <i class="bi bi-code-square"></i> Open-Source
-                    </h5>
-                  </div>
-                  <div class="card-body text-start">
-                    <p class="card-text">
-                      We’re building CourseLore in the open. You may inspect
-                      CourseLore’s source code to build your trust on the
-                      software that you use, you may build other tools on top of
-                      the CourseLore API, and you may collaborate on the
-                      development.
-                    </p>
+                <div class="col-md-4 mb-3 mb-md-0 d-flex">
+                  <div
+                    class="card shadow-lg"
+                    style="${css`
+                      background-color: $purple-600;
+                    `}"
+                  >
+                    <div class="card-header">
+                      <h5 class="mb-0">
+                        <i class="bi bi-code-square"></i> Open-Source
+                      </h5>
+                    </div>
+                    <div class="card-body text-start">
+                      <p class="card-text">
+                        We’re building CourseLore in the open. You may inspect
+                        CourseLore’s source code to build your trust on the
+                        software that you use, you may build other tools on top
+                        of the CourseLore API, and you may collaborate on the
+                        development.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div
-                  class="card"
-                  style="${css`
-                    background-color: $purple-600;
-                  `}"
-                >
-                  <div class="card-header">
-                    <h5 class="mb-0">
-                      <i class="bi bi-shield-lock"></i> Self-Hosted
-                    </h5>
-                  </div>
-                  <div class="card-body text-start">
-                    <p class="card-text">
-                      CourseLore is easy to run on your own server. This means
-                      you know exactly where your data is and who owns it: you.
-                      Utmost respect for educators & students’ privacy is at the
-                      core of what we do.
-                    </p>
+                <div class="col-md-4 d-flex">
+                  <div
+                    class="card shadow-lg"
+                    style="${css`
+                      background-color: $purple-600;
+                    `}"
+                  >
+                    <div class="card-header">
+                      <h5 class="mb-0">
+                        <i class="bi bi-shield-lock"></i> Self-Hosted
+                      </h5>
+                    </div>
+                    <div class="card-body text-start">
+                      <p class="card-text">
+                        CourseLore is easy to run on your own server. This means
+                        you know exactly where your data is and who owns it:
+                        you. Utmost respect for educators & students’ privacy is
+                        at the core of what we do.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -329,92 +335,99 @@ module.exports = (require) => {
                 Team
               </h1>
 
-              <div class="card-group">
-                <div
-                  class="card"
-                  style="${css`
-                    background-color: $pink-600;
-                  `}"
-                >
-                  <div class="card-header pt-3">
-                    <a
-                      href="https://www.cs.jhu.edu/~scott/"
-                      class="stretched-link"
-                      ><img
-                        src="${app.locals.settings.url}/scott.png"
-                        alt="Dr. Scott Smith"
-                        width="200"
-                        class="card-title img-thumbnail rounded-circle"
-                    /></a>
-                    <h5 class="card-title mb-0">Dr. Scott Smith</h5>
-                    <p class="card-subtitle">CEO</p>
-                  </div>
-                  <div class="card-body text-start">
-                    <p class="card-text">
-                      Scott is a full professor at the Johns Hopkins University.
-                      Over his thirty years of experience as an educator, Scott
-                      taught courses on the Principles of Programming Languages,
-                      Object-Oriented Software Engineering, Functional
-                      Programming, and so forth.
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  class="card"
-                  style="${css`
-                    background-color: $pink-600;
-                  `}"
-                >
-                  <div class="card-header pt-3">
-                    <a
-                      href="https://www.cs.jhu.edu/faculty/ali-madooei/"
-                      class="stretched-link"
-                      ><img
-                        src="${app.locals.settings.url}/ali.png"
-                        alt="Dr. Ali Madooei"
-                        width="200"
-                        class="card-title img-thumbnail rounded-circle"
-                    /></a>
-                    <h5 class="card-title mb-0">Dr. Ali Madooei</h5>
-                    <p class="card-subtitle">Consultant</p>
-                  </div>
-                  <div class="card-body text-start">
-                    <p class="card-text">
-                      Ali is a lecturer at the Johns Hopkins University. Ali has
-                      taught courses in several areas, from Introduction to
-                      Programming to Object-Oriented Software Engineering. Ali
-                      has classroom experience with many student forums and
-                      knows what it takes to make a great one.
-                    </p>
+              <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0 d-flex">
+                  <div
+                    class="card shadow-lg"
+                    style="${css`
+                      background-color: $pink-600;
+                    `}"
+                  >
+                    <div class="card-header pt-3">
+                      <a
+                        href="https://www.cs.jhu.edu/~scott/"
+                        class="stretched-link"
+                        ><img
+                          src="${app.locals.settings.url}/scott.png"
+                          alt="Dr. Scott Smith"
+                          width="200"
+                          class="card-title img-thumbnail rounded-circle"
+                      /></a>
+                      <h5 class="card-title mb-0">Dr. Scott Smith</h5>
+                      <p class="card-subtitle">CEO</p>
+                    </div>
+                    <div class="card-body text-start">
+                      <p class="card-text">
+                        Scott is a full professor at the Johns Hopkins
+                        University. Over his thirty years of experience as an
+                        educator, Scott taught courses on the Principles of
+                        Programming Languages, Object-Oriented Software
+                        Engineering, Functional Programming, and so forth.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div
-                  class="card"
-                  style="${css`
-                    background-color: $pink-600;
-                  `}"
-                >
-                  <div class="card-header pt-3">
-                    <a href="https://leafac.com" class="stretched-link"
-                      ><img
-                        src="${app.locals.settings.url}/leandro.png"
-                        alt="Leandro Facchinetti"
-                        width="200"
-                        class="card-title img-thumbnail rounded-circle"
-                    /></a>
-                    <h5 class="card-title mb-0">Leandro Facchinetti</h5>
-                    <p class="card-subtitle">Developer & Designer</p>
+                <div class="col-md-4 mb-3 mb-md-0 d-flex">
+                  <div
+                    class="card shadow-lg"
+                    style="${css`
+                      background-color: $pink-600;
+                    `}"
+                  >
+                    <div class="card-header pt-3">
+                      <a
+                        href="https://www.cs.jhu.edu/faculty/ali-madooei/"
+                        class="stretched-link"
+                        ><img
+                          src="${app.locals.settings.url}/ali.png"
+                          alt="Dr. Ali Madooei"
+                          width="200"
+                          class="card-title img-thumbnail rounded-circle"
+                      /></a>
+                      <h5 class="card-title mb-0">Dr. Ali Madooei</h5>
+                      <p class="card-subtitle">Consultant</p>
+                    </div>
+                    <div class="card-body text-start">
+                      <p class="card-text">
+                        Ali is a lecturer at the Johns Hopkins University. Ali
+                        has taught courses in several areas, from Introduction
+                        to Programming to Object-Oriented Software Engineering.
+                        Ali has classroom experience with many student forums
+                        and knows what it takes to make a great one.
+                      </p>
+                    </div>
                   </div>
-                  <div class="card-body text-start">
-                    <p class="card-text">
-                      Leandro was a PhD Candidate at the Johns Hopkins
-                      University. He received the Whiting School of
-                      Engineering’s Professor Joel Dean Excellence in Teaching
-                      Award for five years of work as a teaching assistant, and
-                      taught a course on Object-Oriented Software Engineering.
-                    </p>
+                </div>
+
+                <div class="col-md-4 mb-3 mb-md-0 d-flex">
+                  <div
+                    class="card shadow-lg"
+                    style="${css`
+                      background-color: $pink-600;
+                    `}"
+                  >
+                    <div class="card-header pt-3">
+                      <a href="https://leafac.com" class="stretched-link"
+                        ><img
+                          src="${app.locals.settings.url}/leandro.png"
+                          alt="Leandro Facchinetti"
+                          width="200"
+                          class="card-title img-thumbnail rounded-circle"
+                      /></a>
+                      <h5 class="card-title mb-0">Leandro Facchinetti</h5>
+                      <p class="card-subtitle">Developer & Designer</p>
+                    </div>
+                    <div class="card-body text-start">
+                      <p class="card-text">
+                        Leandro was a PhD Candidate at the Johns Hopkins
+                        University. He received the Whiting School of
+                        Engineering’s Professor Joel Dean Excellence in Teaching
+                        Award for five years of work as a teaching assistant,
+                        and taught a course on Object-Oriented Software
+                        Engineering.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
