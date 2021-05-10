@@ -1233,12 +1233,12 @@ export default async function courselore(
               $${app.locals.settings.demonstration
                 ? html`
                     <nav
-                      class="navbar navbar-expand-lg navbar-dark bg-danger border-bottom"
+                      class="container-fluid py-1 text-white bg-danger border-bottom text-center"
                     >
-                      <div class="container-fluid">
+                      <small>
                         <a
                           role="button"
-                          class="navbar-brand"
+                          class="text-reset text-decoration-none me-3"
                           data-bs-toggle="popover"
                           data-bs-trigger="focus"
                           data-bs-content="${html`
@@ -1257,40 +1257,20 @@ export default async function courselore(
                           tabindex="0"
                           ><i class="bi bi-easel"></i> Demonstration Mode</a
                         >
-                        <button
-                          class="navbar-toggler"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#demonstration-mode"
-                          aria-controls="demonstration-mode"
-                          aria-expanded="false"
-                          aria-label="Toggle navigation"
+
+                        <a
+                          href="${app.locals.settings.url}/demonstration-inbox"
+                          class="text-reset text-decoration-none"
+                          ><i class="bi bi-inbox"></i> Demonstration Inbox</a
                         >
-                          <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div
-                          class="collapse navbar-collapse"
-                          id="demonstration-mode"
-                        >
-                          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                              <a
-                                href="${app.locals.settings
-                                  .url}/demonstration-inbox"
-                                class="nav-link"
-                                ><i class="bi bi-inbox"></i> Inbox</a
-                              >
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
+                      </small>
                     </nav>
                   `
                 : html``}
 
-              <div class="flex-fill overflow-auto">
+              <div class="flex-fill overflow-auto d-flex">
                 <div
-                  class="h-100 bg-primary d-flex justify-content-center align-items-center"
+                  class="flex-fill bg-primary d-flex justify-content-center align-items-center"
                 >
                   <div
                     class="card flex-fill text-white shadow-lg"
