@@ -1232,26 +1232,58 @@ export default async function courselore(
             >
               $${app.locals.settings.demonstration
                 ? html`
-                    <nav class="container-fluid py-1 bg-danger border-bottom">
-                      <small class="row">
+                    <nav
+                      class="navbar navbar-expand-lg navbar-dark bg-danger border-bottom"
+                    >
+                      <div class="container-fluid">
                         <a
                           role="button"
-                          class="col-auto text-white text-decoration-none"
+                          class="navbar-brand"
                           data-bs-toggle="popover"
                           data-bs-trigger="focus"
-                          data-bs-content="CourseLore is running in Demonstration Mode. All the data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the <a href='${app
-                            .locals.settings
-                            .url}/demonstration-inbox'>Demonstration Inbox</a> instead."
+                          data-bs-content="${html`
+                            CourseLore is running in Demonstration Mode. All the
+                            data may be lost, including courses, threads, posts,
+                            users, and so forth. Also, no emails are actually
+                            sent; they show up in the
+                            <a
+                              href="${app.locals.settings
+                                .url}/demonstration-inbox"
+                              >Demonstration Inbox</a
+                            >
+                            instead.
+                          `}"
                           data-bs-html="true"
                           tabindex="0"
                           ><i class="bi bi-easel"></i> Demonstration Mode</a
                         >
-                        <a
-                          href="${app.locals.settings.url}/demonstration-inbox"
-                          class="col-auto text-white text-decoration-none"
-                          ><i class="bi bi-inbox"></i> Inbox</a
+                        <button
+                          class="navbar-toggler"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#demonstration-mode"
+                          aria-controls="demonstration-mode"
+                          aria-expanded="false"
+                          aria-label="Toggle navigation"
                         >
-                      </small>
+                          <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div
+                          class="collapse navbar-collapse"
+                          id="demonstration-mode"
+                        >
+                          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                              <a
+                                href="${app.locals.settings
+                                  .url}/demonstration-inbox"
+                                class="nav-link"
+                                ><i class="bi bi-inbox"></i> Inbox</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
                     </nav>
                   `
                 : html``}
