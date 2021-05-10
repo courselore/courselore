@@ -1233,10 +1233,10 @@ export default async function courselore(
               $${app.locals.settings.demonstration
                 ? html`
                     <nav class="container-fluid py-1 bg-danger border-bottom">
-                      <small>
+                      <small class="row">
                         <a
                           role="button"
-                          class="text-white text-decoration-none me-3"
+                          class="col-auto text-white text-decoration-none"
                           data-bs-toggle="popover"
                           data-bs-trigger="focus"
                           data-bs-content="CourseLore is running in Demonstration Mode. All the data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the <a href='${app
@@ -1248,7 +1248,7 @@ export default async function courselore(
                         >
                         <a
                           href="${app.locals.settings.url}/demonstration-inbox"
-                          class="text-white text-decoration-none"
+                          class="col-auto text-white text-decoration-none"
                           ><i class="bi bi-inbox"></i> Inbox</a
                         >
                       </small>
@@ -1256,92 +1256,94 @@ export default async function courselore(
                   `
                 : html``}
 
-              <div
-                class="flex-fill text-center bg-primary d-flex justify-content-center align-items-center"
-              >
+              <div class="flex-fill overflow-auto">
                 <div
-                  class="card flex-fill text-white shadow-lg"
-                  style="${css`
-                    background-color: $purple-600;
-                    max-width: 35ch;
-
-                    * {
-                      stroke: white;
-                    }
-                  `}"
+                  class="h-100 bg-primary d-flex justify-content-center align-items-center"
                 >
-                  <div class="card-header">
-                    <h1 class="mb-0">
-                      <a
-                        href="$${app.locals.settings.url}/"
-                        class="d-inline-flex align-items-center text-reset text-decoration-none"
-                      >
-                        <span
-                          class="d-inline-flex justify-items-center align-items-center me-2"
+                  <div
+                    class="card flex-fill text-white shadow-lg"
+                    style="${css`
+                      background-color: $purple-600;
+                      max-width: 35ch;
+
+                      * {
+                        stroke: white;
+                      }
+                    `}"
+                  >
+                    <div class="card-header">
+                      <h1 class="mb-0 text-center">
+                        <a
+                          href="$${app.locals.settings.url}/"
+                          class="d-inline-flex align-items-center text-reset text-decoration-none"
                         >
-                          $${app.locals.partials.art.small}
-                        </span>
-                        <span class="font-serif fw-bold fst-italic"
-                          >CourseLore</span
-                        >
-                      </a>
-                      <script>
-                        (() => {
-                          const logo =
-                            document.currentScript.previousElementSibling;
-                          const artAnimation = new ArtAnimation({
-                            element: logo,
-                            speed: 0.001,
-                            amount: 1,
-                            startupDuration: 500,
-                          });
-                          logo.addEventListener("mouseover", () => {
-                            artAnimation.start();
-                          });
-                          logo.addEventListener("mouseout", () => {
-                            artAnimation.stop();
-                          });
-                        })();
-                      </script>
-                    </h1>
-                  </div>
-                  <div class="card-body">
-                    <form
-                      method="POST"
-                      action="${app.locals.settings
-                        .url}/authenticate?${qs.stringify({
-                        redirect: req.query.redirect,
-                        email: req.query.email,
-                        name: req.query.name,
-                      })}"
-                    >
-                      <div class="form-floating text-body">
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value="${req.query.email ?? ""}"
-                          placeholder="name@educational-email.edu"
-                          required
-                          autofocus
-                          class="form-control"
-                          aria-describedby="email-help"
-                        />
-                        <label for="email">Email</label>
-                      </div>
-                      <div id="email-help" class="form-text text-white mb-3">
-                        We recommend using the email address you use at your
-                        educational institution.
-                      </div>
-                      <button
-                        type="submit"
-                        class="btn btn-primary w-100"
-                        data-bs-toggle="tooltip"
-                        title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
+                          <span
+                            class="d-inline-flex justify-items-center align-items-center me-2"
+                          >
+                            $${app.locals.partials.art.small}
+                          </span>
+                          <span class="font-serif fw-bold fst-italic"
+                            >CourseLore</span
+                          >
+                        </a>
+                        <script>
+                          (() => {
+                            const logo =
+                              document.currentScript.previousElementSibling;
+                            const artAnimation = new ArtAnimation({
+                              element: logo,
+                              speed: 0.001,
+                              amount: 1,
+                              startupDuration: 500,
+                            });
+                            logo.addEventListener("mouseover", () => {
+                              artAnimation.start();
+                            });
+                            logo.addEventListener("mouseout", () => {
+                              artAnimation.stop();
+                            });
+                          })();
+                        </script>
+                      </h1>
+                    </div>
+                    <div class="card-body">
+                      <form
+                        method="POST"
+                        action="${app.locals.settings
+                          .url}/authenticate?${qs.stringify({
+                          redirect: req.query.redirect,
+                          email: req.query.email,
+                          name: req.query.name,
+                        })}"
                       >
-                        Continue
-                      </button>
-                    </form>
+                        <div class="form-floating text-body">
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="${req.query.email ?? ""}"
+                            placeholder="name@educational-email.edu"
+                            required
+                            autofocus
+                            class="form-control"
+                            aria-describedby="email-help"
+                          />
+                          <label for="email">Email</label>
+                        </div>
+                        <div id="email-help" class="form-text text-white mb-3">
+                          We recommend using the email address you use at your
+                          educational institution.
+                        </div>
+                        <button
+                          type="submit"
+                          class="btn btn-primary w-100"
+                          data-bs-toggle="tooltip"
+                          title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
+                        >
+                          Continue
+                        </button>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
