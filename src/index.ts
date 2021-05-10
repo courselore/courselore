@@ -1271,6 +1271,13 @@ export default async function courselore(
               <div class="flex-fill overflow-auto d-flex">
                 <div
                   class="flex-fill bg-primary d-flex justify-content-center align-items-center"
+                  style="${css`
+                    background-image: linear-gradient(
+                      135deg,
+                      $purple 0%,
+                      $pink 100%
+                    );
+                  `}"
                 >
                   <div
                     class="card flex-fill text-white shadow-lg"
