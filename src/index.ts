@@ -691,6 +691,9 @@ export default async function courselore(
 
           $primary: $purple;
 
+          $enable-shadows: true;
+          $enable-gradients: true;
+
           @import "${path.join(
             __dirname,
             ".."
@@ -1254,16 +1257,16 @@ export default async function courselore(
                 class="position-absolute top-0 end-0 bottom-0 start-0 d-flex justify-content-center align-items-center bg-primary"
               >
                 <div
-                  class="card flex-fill text-white"
+                  class="card flex-fill text-white shadow-lg"
                   style="${css`
                     background-color: $purple-600;
                     max-width: 35ch;
 
-                      * {
-                        stroke: white;
-                      }
-                    `}"
-                  >
+                    * {
+                      stroke: white;
+                    }
+                  `}"
+                >
                   <div class="card-header">
                     <h1 class="mb-0">
                       <a
