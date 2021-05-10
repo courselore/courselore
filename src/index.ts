@@ -343,36 +343,6 @@ export default async function courselore(
       head,
       html`
         $${body}
-        $${app.locals.settings.demonstration
-          ? html`
-              <p
-                style="${css`
-                  font-size: 0.56rem;
-                  font-weight: bold;
-                  text-transform: uppercase;
-                  letter-spacing: 2px;
-                  color: white;
-                  background-color: #83769c;
-                  padding: 0.1rem 1rem;
-                  border-top-left-radius: 5px;
-                  margin: 0;
-                  position: fixed;
-                  right: 0;
-                  bottom: 0;
-                `}"
-              >
-                <a
-                  href="${app.locals.settings.url}/demonstration-inbox"
-                  title="Go to the Demonstration 
-                    Inbox"
-                  style="${css`
-                    text-decoration: none;
-                  `}"
-                  >Demonstration</a
-                >
-              </p>
-            `
-          : html``}
 
         <script src="${app.locals.settings
             .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
@@ -1252,7 +1222,7 @@ export default async function courselore(
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.base(
+        app.locals.layouts.application(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
@@ -1260,25 +1230,31 @@ export default async function courselore(
             <div
               class="position-absolute top-0 end-0 bottom-0 start-0 d-flex flex-column"
             >
-              <nav class="container-fluid py-1 bg-danger border-bottom">
-                <a
-                  role="button"
-                  class="text-white text-decoration-none me-3"
-                  data-bs-toggle="popover"
-                  data-bs-trigger="focus"
-                  data-bs-content="CourseLore is running in Demonstration Mode. All the data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the <a href='${app
-                    .locals.settings
-                    .url}/demonstration-inbox'>Demonstration Inbox</a> instead."
-                  data-bs-html="true"
-                  tabindex="0"
-                  ><i class="bi bi-easel"></i> Demonstration Mode</a
-                >
-                <a
-                  href="${app.locals.settings.url}/demonstration-inbox"
-                  class="text-white text-decoration-none"
-                  ><i class="bi bi-inbox"></i> Inbox</a
-                >
-              </nav>
+              $${app.locals.settings.demonstration
+                ? html`
+                    <nav class="container-fluid py-1 bg-danger border-bottom">
+                      <small>
+                        <a
+                          role="button"
+                          class="text-white text-decoration-none me-3"
+                          data-bs-toggle="popover"
+                          data-bs-trigger="focus"
+                          data-bs-content="CourseLore is running in Demonstration Mode. All the data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the <a href='${app
+                            .locals.settings
+                            .url}/demonstration-inbox'>Demonstration Inbox</a> instead."
+                          data-bs-html="true"
+                          tabindex="0"
+                          ><i class="bi bi-easel"></i> Demonstration Mode</a
+                        >
+                        <a
+                          href="${app.locals.settings.url}/demonstration-inbox"
+                          class="text-white text-decoration-none"
+                          ><i class="bi bi-inbox"></i> Inbox</a
+                        >
+                      </small>
+                    </nav>
+                  `
+                : html``}
 
               <div
                 class="flex-fill text-center bg-primary d-flex justify-content-center align-items-center"
