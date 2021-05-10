@@ -311,6 +311,10 @@ export default async function courselore(
                 '[data-bs-toggle="tooltip"]'
               ))
                 new bootstrap.Tooltip(element);
+              for (const element of document.querySelectorAll(
+                '[data-bs-toggle="popover"]'
+              ))
+                new bootstrap.Popover(element);
             });
           </script>
         </body>
@@ -692,7 +696,6 @@ export default async function courselore(
           $primary: $purple;
 
           $enable-shadows: true;
-          $enable-gradients: true;
 
           @import "${path.join(
             __dirname,
@@ -1252,6 +1255,32 @@ export default async function courselore(
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
+            <nav
+              class="container-fluid py-1"
+              style="${css`
+                background-color: $pink;
+              `}"
+            >
+              <a
+                role="button"
+                class="text-white text-decoration-none me-3"
+                data-bs-toggle="popover"
+                data-bs-trigger="focus"
+                data-bs-content="CourseLore is running in Demonstration Mode. All the data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the <a href='${app
+                  .locals.settings
+                  .url}/demonstration-inbox'>Demonstration Inbox</a> instead."
+                data-bs-html="true"
+                tabindex="0"
+                ><i class="bi bi-easel"></i> Demonstration Mode</a
+              >
+              <a
+                href="${app.locals.settings.url}/demonstration-inbox"
+                class="text-white text-decoration-none"
+                ><i class="bi bi-inbox"></i> Inbox</a
+              >
+            </nav>
+
+            <!--
             <div class="text-center">
               <div
                 class="position-absolute top-0 end-0 bottom-0 start-0 d-flex justify-content-center align-items-center bg-primary"
@@ -1259,13 +1288,13 @@ export default async function courselore(
                 <div
                   class="card flex-fill text-white shadow-lg"
                   style="${css`
-                    background-color: $purple-600;
-                    max-width: 35ch;
+              background-color: $purple-600;
+              max-width: 35ch;
 
-                    * {
-                      stroke: white;
-                    }
-                  `}"
+              * {
+                stroke: white;
+              }
+            `}"
                 >
                   <div class="card-header">
                     <h1 class="mb-0">
@@ -1306,11 +1335,11 @@ export default async function courselore(
                     <form
                       method="POST"
                       action="${app.locals.settings
-                        .url}/authenticate?${qs.stringify({
-                        redirect: req.query.redirect,
-                        email: req.query.email,
-                        name: req.query.name,
-                      })}"
+              .url}/authenticate?${qs.stringify({
+              redirect: req.query.redirect,
+              email: req.query.email,
+              name: req.query.name,
+            })}"
                     >
                       <div class="form-floating text-body">
                         <input
@@ -1343,6 +1372,7 @@ export default async function courselore(
                 </div>
               </div>
             </div>
+            -->
           `
         )
       );
