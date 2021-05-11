@@ -742,12 +742,10 @@ export default async function courselore(
 
           $primary: $purple;
 
-          $border-radius: 0.3125rem;
-          $border-radius-lg: 0.625rem;
-
           $enable-shadows: true;
 
-          $card-border-radius: $border-radius-lg;
+          $card-border-radius: 0.625rem;
+          $modal-content-border-radius: 0.625rem;
 
           @import "${path.join(
             __dirname,
