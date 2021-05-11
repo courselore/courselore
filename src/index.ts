@@ -220,6 +220,7 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
+        "reference" TEXT NOT NULL,
         "to" TEXT NOT NULL,
         "subject" TEXT NOT NULL,
         "body" TEXT NOT NULL
@@ -5897,7 +5898,15 @@ ${value}</textarea
   }
   app.locals.helpers.sendEmail = ({ to, subject, body }) => {
     app.locals.database.run(
-      sql`INSERT INTO "emailsQueue" ("to", "subject", "body") VALUES (${to}, ${subject}, ${body})`
+      sql`
+        INSERT INTO "emailsQueue" ("reference", "to", "subject", "body")
+        VALUES (
+          ${cryptoRandomString({ length: 10, type: "numeric" })},
+          ${to},
+          ${subject},
+          ${body}
+        )
+      `
     );
     // TODO: The worker that sends emails on non-demonstration mode. Kick the worker to wake up from here (as well as periodically just in case…)
   };
@@ -5907,11 +5916,12 @@ ${value}</textarea
 
     const emails = app.locals.database.all<{
       createdAt: string;
+      reference: string;
       to: string;
       subject: string;
       body: string;
     }>(
-      sql`SELECT "createdAt", "to", "subject", "body" FROM "emailsQueue" ORDER BY "id" DESC`
+      sql`SELECT "createdAt", "reference", "to", "subject", "body" FROM "emailsQueue" ORDER BY "id" DESC`
     );
 
     res.send(
@@ -5924,28 +5934,66 @@ ${value}</textarea
           </title>
         `,
         html`
-          <h1>Demonstration Inbox</h1>
+          <div
+            style="${css`
+              max-width: 80ch;
+              padding: 1rem;
+              margin: 0 auto;
+            `}"
+          >
+            <h1>Demonstration Inbox</h1>
 
-          <p>
-            CourseLore doesn’t send emails in demonstration mode.
+            <p>
+              CourseLore doesn’t send emails in demonstration mode.
+              $${emails.length === 0
+                ? html`Emails that would have been sent will show up here
+                  instead.`
+                : html`Here are the emails that would have been sent:`}
+            </p>
+
             $${emails.length === 0
-              ? html`Emails that would have been sent will show up here instead.`
-              : html`Here are the emails that would have been sent:`}
-          </p>
-
-          $${emails.map(
-            (email) => html`
-              <details>
-                <summary>
-                  <strong>${email.subject}</strong>
-                  <span class="secondary"
-                    >${email.to} · <time>${email.createdAt}</time></span
-                  >
-                </summary>
-                $${email.body}
-              </details>
-            `
-          )}
+              ? html``
+              : html`
+                  <div class="accordion">
+                    $${emails.map(
+                      (email) => html`
+                        <div class="accordion-item">
+                          <h2
+                            class="accordion-header"
+                            id="email-heading--${email.reference}"
+                          >
+                            <button
+                              class="accordion-button collapsed"
+                              type="button"
+                              data-bs-toggle="collapse"
+                              data-bs-target="#email-collapse--${email.reference}"
+                              aria-expanded="false"
+                              aria-controls="email-collapse--${email.reference}"
+                            >
+                              <strong>${email.subject}</strong>
+                              <span
+                                class="text-muted"
+                                style="${css`
+                                  margin-left: 1rem;
+                                `}"
+                                >${email.to} ·
+                                <time>${email.createdAt}</time></span
+                              >
+                            </button>
+                          </h2>
+                          <div
+                            id="email-collapse--${email.reference}"
+                            class="accordion-collapse collapse"
+                            aria-labelledby="email-heading--${email.reference}"
+                          >
+                            <div class="accordion-body">$${email.body}</div>
+                          </div>
+                        </div>
+                      `
+                    )}
+                  </div>
+                `}
+          </div>
         `
       )
     );
