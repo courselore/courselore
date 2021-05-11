@@ -353,7 +353,7 @@ export default async function courselore(
             flex-direction: column;
           `}"
         >
-          <header>
+          <div>
             $${app.locals.settings.demonstration
               ? html`
                   <nav
@@ -402,16 +402,16 @@ export default async function courselore(
                   </nav>
                 `
               : html``}
-          </header>
+          </div>
 
-          <main
+          <div
             style="${css`
               flex: 1;
               overflow: auto;
             `}"
           >
             $${body}
-          </main>
+          </div>
         </div>
 
         <script src="${app.locals.settings
