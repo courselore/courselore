@@ -342,7 +342,77 @@ export default async function courselore(
       res,
       head,
       html`
-        $${body}
+        <div
+          style="${css`
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+          `}"
+        >
+          <header>
+            $${app.locals.settings.demonstration
+              ? html`
+                  <nav
+                    style="${css`
+                      font-size: $font-size-sm;
+                      text-align: center;
+                      color: white;
+                      background-color: $red;
+                      padding: 0.5rem 1rem;
+                      border-bottom: 1px solid white;
+                      display: flex;
+                      gap: 1rem;
+                      justify-content: center;
+
+                      a {
+                        color: inherit;
+                        text-decoration: none;
+                        &:hover,
+                        &:focus {
+                          color: $red-100;
+                        }
+                      }
+                    `}"
+                  >
+                    <a
+                      role="button"
+                      data-bs-toggle="popover"
+                      data-bs-trigger="focus"
+                      data-bs-content="${html`
+                        CourseLore is running in Demonstration Mode. All data
+                        may be lost, including courses, threads, posts, users,
+                        and so forth. Also, no emails are actually sent; they
+                        show up in the
+                        <a href="${app.locals.settings.url}/demonstration-inbox"
+                          >Demonstration Inbox</a
+                        >
+                        instead.
+                      `}"
+                      data-bs-html="true"
+                      tabindex="0"
+                      ><i class="bi bi-easel"></i> Demonstration Mode</a
+                    >
+                    <a href="${app.locals.settings.url}/demonstration-inbox"
+                      ><i class="bi bi-inbox"></i> Demonstration Inbox</a
+                    >
+                  </nav>
+                `
+              : html``}
+          </header>
+
+          <main
+            style="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+          >
+            $${body}
+          </main>
+        </div>
 
         <script src="${app.locals.settings
             .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
@@ -1239,199 +1309,127 @@ export default async function courselore(
           html`
             <div
               style="${css`
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
-                left: 0;
+                min-height: 100%;
+                background-image: linear-gradient(
+                  135deg,
+                  $purple 0%,
+                  $pink 100%
+                );
                 display: flex;
-                flex-direction: column;
+                justify-content: center;
+                align-items: center;
               `}"
             >
-              <header>
-                $${app.locals.settings.demonstration
-                  ? html`
-                      <nav
-                        style="${css`
-                          font-size: $font-size-sm;
-                          text-align: center;
-                          color: white;
-                          background-color: $red;
-                          padding: 0.5rem 1rem;
-                          border-bottom: 1px solid white;
-                          display: flex;
-                          gap: 1rem;
-                          justify-content: center;
-
-                          a {
-                            color: inherit;
-                            text-decoration: none;
-                            &:hover,
-                            &:focus {
-                              color: $red-100;
-                            }
-                          }
-                        `}"
-                      >
-                        <a
-                          role="button"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="focus"
-                          data-bs-content="${html`
-                            CourseLore is running in Demonstration Mode. All
-                            data may be lost, including courses, threads, posts,
-                            users, and so forth. Also, no emails are actually
-                            sent; they show up in the
-                            <a
-                              href="${app.locals.settings
-                                .url}/demonstration-inbox"
-                              >Demonstration Inbox</a
-                            >
-                            instead.
-                          `}"
-                          data-bs-html="true"
-                          tabindex="0"
-                          ><i class="bi bi-easel"></i> Demonstration Mode</a
-                        >
-                        <a href="${app.locals.settings.url}/demonstration-inbox"
-                          ><i class="bi bi-inbox"></i> Demonstration Inbox</a
-                        >
-                      </nav>
-                    `
-                  : html``}
-              </header>
-
-              <main
+              <div
+                class="card shadow-lg"
                 style="${css`
-                  flex: 1;
-                  overflow: auto;
+                  color: white;
+                  background-color: $purple-600;
+                  max-width: 35ch;
                 `}"
               >
-                <div
-                  style="${css`
-                    min-height: 100%;
-                    background-image: linear-gradient(
-                      135deg,
-                      $purple 0%,
-                      $pink 100%
-                    );
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  `}"
-                >
-                  <div
-                    class="card shadow-lg"
+                <div class="card-header">
+                  <h1
+                    class="card-text"
                     style="${css`
-                      color: white;
-                      background-color: $purple-600;
-                      max-width: 35ch;
+                      text-align: center;
                     `}"
                   >
-                    <div class="card-header">
-                      <h1
-                        class="card-text"
-                        style="${css`
-                          text-align: center;
-                        `}"
-                      >
-                        <a
-                          href="$${app.locals.settings.url}/"
-                          style="${css`
-                            font-family: $font-family-serif;
-                            font-weight: bold;
-                            font-style: italic;
-                            text-decoration: none;
-                            color: inherit;
-                            * {
-                              stroke: white;
-                            }
-                            &:hover,
-                            &:focus {
-                              color: $purple-100;
-                            }
-                            display: inline-flex;
-                            gap: 0.5rem;
-                            align-items: center;
-                          `}"
-                        >
-                          $${app.locals.partials.art.small}
-                          <span>CourseLore</span>
-                        </a>
-                        <script>
-                          (() => {
-                            const logo =
-                              document.currentScript.previousElementSibling;
-                            const artAnimation = new ArtAnimation({
-                              element: logo,
-                              speed: 0.001,
-                              amount: 1,
-                              startupDuration: 500,
-                            });
-                            logo.addEventListener("mouseover", () => {
-                              artAnimation.start();
-                            });
-                            logo.addEventListener("mouseout", () => {
-                              artAnimation.stop();
-                            });
-                          })();
-                        </script>
-                      </h1>
-                    </div>
-                    <div class="card-body">
-                      <form
-                        method="POST"
-                        action="${app.locals.settings
-                          .url}/authenticate?${qs.stringify({
-                          redirect: req.query.redirect,
-                          email: req.query.email,
-                          name: req.query.name,
-                        })}"
-                        style="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: 1rem;
-                        `}"
-                      >
-                        <div>
-                          <div class="form-floating text-body">
-                            <input
-                              type="email"
-                              id="email"
-                              name="email"
-                              value="${req.query.email ?? ""}"
-                              placeholder="name@educational-email.edu"
-                              required
-                              autofocus
-                              class="form-control"
-                              aria-describedby="email-help"
-                            />
-                            <label for="email">Email</label>
-                          </div>
-                          <div
-                            id="email-help"
-                            class="form-text"
-                            style="${css`
-                              color: inherit;
-                            `}"
-                          >
-                            We recommend using the email address you use at your
-                            educational institution.
-                          </div>
-                        </div>
-                        <button
-                          type="submit"
-                          class="btn btn-primary"
-                          data-bs-toggle="tooltip"
-                          title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
-                        >
-                          Continue
-                        </button>
-                      </form>
-                    </div>
-                  </div>
+                    <a
+                      href="$${app.locals.settings.url}/"
+                      style="${css`
+                        font-family: $font-family-serif;
+                        font-weight: bold;
+                        font-style: italic;
+                        text-decoration: none;
+                        color: inherit;
+                        * {
+                          stroke: white;
+                        }
+                        &:hover,
+                        &:focus {
+                          color: $purple-100;
+                        }
+                        display: inline-flex;
+                        gap: 0.5rem;
+                        align-items: center;
+                      `}"
+                    >
+                      $${app.locals.partials.art.small}
+                      <span>CourseLore</span>
+                    </a>
+                    <script>
+                      (() => {
+                        const logo =
+                          document.currentScript.previousElementSibling;
+                        const artAnimation = new ArtAnimation({
+                          element: logo,
+                          speed: 0.001,
+                          amount: 1,
+                          startupDuration: 500,
+                        });
+                        logo.addEventListener("mouseover", () => {
+                          artAnimation.start();
+                        });
+                        logo.addEventListener("mouseout", () => {
+                          artAnimation.stop();
+                        });
+                      })();
+                    </script>
+                  </h1>
                 </div>
-              </main>
+                <div class="card-body">
+                  <form
+                    method="POST"
+                    action="${app.locals.settings
+                      .url}/authenticate?${qs.stringify({
+                      redirect: req.query.redirect,
+                      email: req.query.email,
+                      name: req.query.name,
+                    })}"
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: 1rem;
+                    `}"
+                  >
+                    <div>
+                      <div class="form-floating text-body">
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value="${req.query.email ?? ""}"
+                          placeholder="name@educational-email.edu"
+                          required
+                          autofocus
+                          class="form-control"
+                          aria-describedby="email-help"
+                        />
+                        <label for="email">Email</label>
+                      </div>
+                      <div
+                        id="email-help"
+                        class="form-text"
+                        style="${css`
+                          color: inherit;
+                        `}"
+                      >
+                        We recommend using the email address you use at your
+                        educational institution.
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      data-bs-toggle="tooltip"
+                      title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
+                    >
+                      Continue
+                    </button>
+                  </form>
+                </div>
+              </div>
             </div>
           `
         )
