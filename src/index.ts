@@ -353,56 +353,66 @@ export default async function courselore(
             flex-direction: column;
           `}"
         >
-          <div>
-            $${app.locals.settings.demonstration
-              ? html`
-                  <nav
-                    style="${css`
-                      font-size: $font-size-sm;
-                      text-align: center;
-                      color: white;
-                      background-color: $red;
-                      padding: 0.5rem 1rem;
-                      border-bottom: 1px solid white;
-                      display: flex;
-                      gap: 1rem;
-                      justify-content: center;
+          $${app.locals.settings.demonstration
+            ? html`
+                <nav
+                  style="${css`
+                    font-size: $font-size-sm;
+                    text-align: center;
+                    color: white;
+                    background-color: $red;
+                    padding: 0.5rem 1rem;
+                    border-bottom: 1px solid white;
+                    display: flex;
+                    gap: 1rem;
+                    justify-content: center;
 
-                      a {
-                        color: inherit;
-                        text-decoration: none;
-                        &:hover,
-                        &:focus {
-                          color: $red-100;
-                        }
+                    a {
+                      text-decoration: none;
+                      color: inherit;
+                      &:hover,
+                      &:focus {
+                        color: $red-100;
                       }
+                      transition: $btn-transition;
+                    }
+                  `}"
+                >
+                  <a
+                    role="button"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="focus"
+                    data-bs-content="${html`
+                      CourseLore is running in Demonstration Mode. All data may
+                      be lost, including courses, threads, posts, users, and so
+                      forth. Also, no emails are actually sent; they show up in
+                      the
+                      <a href="${app.locals.settings.url}/demonstration-inbox"
+                        >Demonstration Inbox</a
+                      >
+                      instead.
                     `}"
+                    data-bs-html="true"
+                    tabindex="0"
+                    ><i class="bi bi-easel"></i> Demonstration Mode</a
                   >
-                    <a
-                      role="button"
-                      data-bs-toggle="popover"
-                      data-bs-trigger="focus"
-                      data-bs-content="${html`
-                        CourseLore is running in Demonstration Mode. All data
-                        may be lost, including courses, threads, posts, users,
-                        and so forth. Also, no emails are actually sent; they
-                        show up in the
-                        <a href="${app.locals.settings.url}/demonstration-inbox"
-                          >Demonstration Inbox</a
-                        >
-                        instead.
-                      `}"
-                      data-bs-html="true"
-                      tabindex="0"
-                      ><i class="bi bi-easel"></i> Demonstration Mode</a
-                    >
-                    <a href="${app.locals.settings.url}/demonstration-inbox"
-                      ><i class="bi bi-inbox"></i> Demonstration Inbox</a
-                    >
-                  </nav>
-                `
-              : html``}
-          </div>
+                  <a
+                    href="${app.locals.settings.url}/demonstration-inbox"
+                    style="${req.path === "/demonstration-inbox"
+                      ? css`
+                          font-weight: bold;
+                        `
+                      : css``}"
+                    ><i
+                      class="bi ${req.path === "/demonstration-inbox"
+                        ? "bi-inbox-fill"
+                        : "bi-inbox"}"
+                    ></i
+                    > Demonstration Inbox</a
+                  >
+                </nav>
+              `
+            : html``}
 
           <div
             style="${css`
@@ -696,7 +706,13 @@ export default async function courselore(
       res,
       head,
       html`
-        <div>
+        <div
+          style="${css`
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          `}"
+        >
           <header>
             <nav
               class="navbar navbar-expand-lg navbar-dark"
@@ -823,7 +839,14 @@ export default async function courselore(
             </nav>
           </header>
 
-          <main>$${body}</main>
+          <main
+            style="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+          >
+            $${body}
+          </main>
         </div>
       `
     );
