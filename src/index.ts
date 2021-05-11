@@ -696,24 +696,134 @@ export default async function courselore(
       res,
       head,
       html`
-        <div
-          style="${res.locals.enrollment === undefined
-            ? css``
-            : css`
-                box-sizing: border-box;
-                border-top: 10px solid ${res.locals.enrollment.accentColor};
+        <div>
+          <header>
+            <nav
+              class="navbar navbar-expand-lg navbar-dark"
+              style="${css`
+                background-color: $purple;
               `}"
-        >
-          <div
-            style="${css`
-              max-width: 600px;
-              padding: 0 1rem;
-              margin: 0 auto;
-            `}"
-          >
-            <header>$${app.locals.partials.logoAndMenu(req, res)}</header>
-            <main>$${body}</main>
-          </div>
+            >
+              <div class="container-fluid">
+                <a
+                  href="$${app.locals.settings.url}/"
+                  class="navbar-brand"
+                  style="${css`
+                    font-family: $font-family-serif;
+                    font-weight: bold;
+                    font-style: italic;
+                    text-decoration: none;
+                    color: white;
+                    * {
+                      stroke: white;
+                    }
+                    &:hover,
+                    &:focus {
+                      color: $purple-100;
+                    }
+                    display: inline-flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    transition: $btn-transition;
+                  `}"
+                >
+                  $${app.locals.partials.art.small}
+                  <span>CourseLore</span>
+                </a>
+                <script>
+                  (() => {
+                    const logo = document.currentScript.previousElementSibling;
+                    const artAnimation = new ArtAnimation({
+                      element: logo,
+                      speed: 0.001,
+                      amount: 1,
+                      startupDuration: 500,
+                    });
+                    logo.addEventListener("mouseover", () => {
+                      artAnimation.start();
+                    });
+                    logo.addEventListener("mouseout", () => {
+                      artAnimation.stop();
+                    });
+                  })();
+                </script>
+                <!--
+                <button
+                  class="navbar-toggler"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#menu"
+                  aria-controls="menu"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation"
+                >
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="menu">
+                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="#"
+                        >Home</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                      <a
+                        class="nav-link dropdown-toggle"
+                        href="#"
+                        id="navbarDropdown"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        Dropdown
+                      </a>
+                      <ul
+                        class="dropdown-menu"
+                        aria-labelledby="navbarDropdown"
+                      >
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li>
+                          <a class="dropdown-item" href="#">Another action</a>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                          <a class="dropdown-item" href="#"
+                            >Something else here</a
+                          >
+                        </li>
+                      </ul>
+                    </li>
+                    <li class="nav-item">
+                      <a
+                        class="nav-link disabled"
+                        href="#"
+                        tabindex="-1"
+                        aria-disabled="true"
+                        >Disabled</a
+                      >
+                    </li>
+                  </ul>
+                  <form class="d-flex">
+                    <input
+                      class="form-control me-2"
+                      type="search"
+                      placeholder="Search"
+                      aria-label="Search"
+                    />
+                    <button class="btn btn-outline-success" type="submit">
+                      Search
+                    </button>
+                  </form>
+                </div>
+                -->
+              </div>
+            </nav>
+          </header>
+
+          <main>$${body}</main>
         </div>
       `
     );
@@ -769,10 +879,6 @@ export default async function courselore(
       __dirname,
       ".."
     )}/public/node_modules/bootstrap/scss/bootstrap";
-
-    .font-serif {
-      font-family: $font-family-serif;
-    }
 
     .btn-primary {
       @include button-variant($primary, $primary, $white);
@@ -1351,6 +1457,7 @@ export default async function courselore(
                         display: inline-flex;
                         gap: 0.5rem;
                         align-items: center;
+                        transition: $btn-transition;
                       `}"
                     >
                       $${app.locals.partials.art.small}
