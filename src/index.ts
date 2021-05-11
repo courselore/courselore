@@ -530,8 +530,13 @@ export default async function courselore(
           document.addEventListener("submit", (event) => {
             for (const button of event.target.querySelectorAll(
               'button:not([type="button"])'
-            ))
+            )) {
               button.disabled = true;
+              button.insertAdjacentHTML(
+                "afterbegin",
+                '<div class="spinner-border spinner-border-sm"></div>'
+              );
+            }
           });
         </script>
 
@@ -1268,7 +1273,7 @@ export default async function courselore(
                           data-bs-toggle="popover"
                           data-bs-trigger="focus"
                           data-bs-content="${html`
-                            CourseLore is running in Demonstration Mode. All the
+                            CourseLore is running in Demonstration Mode. All
                             data may be lost, including courses, threads, posts,
                             users, and so forth. Also, no emails are actually
                             sent; they show up in the
