@@ -719,6 +719,7 @@ export default async function courselore(
               color: white;
               background-color: $purple-600;
               max-width: 40ch;
+              flex: 1;
             `}"
           >
             <div class="card-header">
@@ -1749,17 +1750,22 @@ export default async function courselore(
             res,
             html`<title>Authenticate · CourseLore</title>`,
             html`
-              <p>
+              <p class="card-text">
                 This magic authentication link is invalid or has expired.
+              </p>
+              <p class="card-text">
                 <a
                   href="${app.locals.settings.url}/authenticate?${qs.stringify({
                     redirect: req.query.redirect,
                     email: req.query.email,
                     name: req.query.name,
                   })}"
-                  class="link-light"
+                  class="btn btn-primary"
+                  style="${css`
+                    width: 100%;
+                  `}"
                   >Start over</a
-                >.
+                >
               </p>
             `
           )
@@ -1769,67 +1775,67 @@ export default async function courselore(
       );
       if (user === undefined)
         return res.send(
-          app.locals.layouts.main(
+          app.locals.layouts.box(
             req,
             res,
             html`<title>Sign up · CourseLore</title>`,
             html`
-              <div
+              <p
                 style="${css`
-                  max-width: 300px;
-                  margin: 0 auto;
+                  text-align: center;
                 `}"
               >
-                <h1
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  Welcome to CourseLore!
-                </h1>
+                Welcome to CourseLore!
+              </p>
 
-                <form
-                  method="POST"
-                  action="${app.locals.settings.url}/users?${qs.stringify({
-                    redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
-                  })}"
-                >
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/users?${qs.stringify({
+                  redirect: req.query.redirect,
+                  email: req.query.email,
+                  name: req.query.name,
+                })}"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: 1rem;
+                `}"
+              >
+                <input
+                  type="hidden"
+                  name="nonce"
+                  value="${app.locals.helpers.authenticationNonce.create(
+                    email
+                  )}"
+                />
+                <div class="form-floating text-body">
                   <input
-                    type="hidden"
-                    name="nonce"
-                    value="${app.locals.helpers.authenticationNonce.create(
-                      email
-                    )}"
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="${req.query.name ?? ""}"
+                    required
+                    autofocus
+                    class="form-control"
                   />
-                  <p>
-                    <label>
-                      <strong>Name</strong><br />
-                      <input
-                        type="text"
-                        name="name"
-                        value="${req.query.name ?? ""}"
-                        required
-                        autofocus
-                        class="full-width"
-                      />
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <strong>Email</strong><br />
-                      <input
-                        type="email"
-                        value="${email}"
-                        disabled
-                        class="full-width"
-                      />
-                    </label>
-                  </p>
-                  <p><button class="full-width">Create Account</button></p>
-                </form>
-              </div>
+                  <label for="name">Name</label>
+                </div>
+
+                <div class="form-floating text-body">
+                  <input
+                    type="email"
+                    id="email"
+                    value="${email}"
+                    disabled
+                    class="form-control"
+                  />
+                  <label for="email">Email</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                  Create Account
+                </button>
+              </form>
             `
           )
         );
