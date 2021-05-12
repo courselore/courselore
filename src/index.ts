@@ -358,7 +358,7 @@ export default async function courselore(
             ? html`
                 <nav
                   style="${css`
-                    font-size: $font-size-sm;
+                    @include font-size($font-size-sm);
                     text-align: center;
                     color: white;
                     background-color: $red;
@@ -728,8 +728,10 @@ export default async function courselore(
                   class="navbar-brand"
                   style="${css`
                     font-family: $font-family-serif;
+                    font-size: 1.5rem;
                     font-weight: bold;
                     font-style: italic;
+                    line-height: 1;
                     text-decoration: none;
                     color: white;
                     * {
