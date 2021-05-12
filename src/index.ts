@@ -707,6 +707,7 @@ export default async function courselore(
           style="${css`
             min-height: 100%;
             background-image: linear-gradient(135deg, $purple 0%, $pink 100%);
+            padding: 1rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -717,7 +718,7 @@ export default async function courselore(
             style="${css`
               color: white;
               background-color: $purple-600;
-              max-width: 35ch;
+              max-width: 40ch;
             `}"
           >
             <div class="card-header">
@@ -1018,6 +1019,14 @@ export default async function courselore(
 
     .btn-outline-primary {
       @include button-outline-variant($primary, $white);
+    }
+
+    .btn-danger {
+      @include button-variant($danger, $danger, $white);
+    }
+
+    .btn-outline-danger {
+      @include button-outline-variant($danger, $white);
     }
   `);
   app.get("/global.css", (req, res) => {
@@ -1690,14 +1699,27 @@ export default async function courselore(
                         font-size: 2rem;
                       `}"
                     ></i>
-                    <p class="card-text">
-                      CourseLore doesn’t send emails in demonstration mode.
+                    <div
+                      style="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: 1rem;
+                      `}"
+                    >
+                      <span>
+                        CourseLore doesn’t send emails in demonstration mode.
+                      </span>
+                      <a
+                        href="${magicAuthenticationLink}"
+                        class="btn btn-outline-dark"
+                        >Follow Magic Authentication Link</a
+                      >
                       <a
                         href="${app.locals.settings.url}/demonstration-inbox"
-                        class="alert-link"
+                        class="btn btn-outline-dark"
                         >Go to the Demonstration Inbox</a
-                      >.
-                    </p>
+                      >
+                    </div>
                   </div>
                 `
               : html``}
@@ -1722,29 +1744,23 @@ export default async function courselore(
       );
       if (email === undefined)
         return res.send(
-          app.locals.layouts.main(
+          app.locals.layouts.box(
             req,
             res,
             html`<title>Authenticate · CourseLore</title>`,
             html`
-              <div
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                <p>
-                  This magic authentication link is invalid or has expired.
-                  <a
-                    href="${app.locals.settings
-                      .url}/authenticate?${qs.stringify({
-                      redirect: req.query.redirect,
-                      email: req.query.email,
-                      name: req.query.name,
-                    })}"
-                    >Start over</a
-                  >.
-                </p>
-              </div>
+              <p>
+                This magic authentication link is invalid or has expired.
+                <a
+                  href="${app.locals.settings.url}/authenticate?${qs.stringify({
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
+                  })}"
+                  class="link-light"
+                  >Start over</a
+                >.
+              </p>
             `
           )
         );
