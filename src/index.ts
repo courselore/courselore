@@ -905,6 +905,11 @@ export default async function courselore(
       ".."
     )}/public/node_modules/bootstrap/scss/bootstrap";
 
+    // FIXME: https://github.com/twbs/bootstrap/pull/33954
+    body {
+      overflow-wrap: break-word;
+    }
+
     .btn-primary {
       @include button-variant($primary, $primary, $white);
     }
@@ -5971,15 +5976,21 @@ ${value}</textarea
                               aria-expanded="false"
                               aria-controls="email-collapse--${email.reference}"
                             >
-                              <strong>${email.subject}</strong>
-                              <span
-                                class="text-muted"
-                                style="${css`
-                                  margin-left: 1rem;
-                                `}"
-                                >${email.to} ·
-                                <time>${email.createdAt}</time></span
-                              >
+                              <span>
+                                <strong>${email.subject}</strong><br />
+                                <span
+                                  style="${css`
+                                    color: $gray-600;
+                                  `}"
+                                  >${email.to} ·
+                                  <time
+                                    style="${css`
+                                      display: inline-block;
+                                    `}"
+                                    >${email.createdAt}</time
+                                  ></span
+                                >
+                              </span>
                             </button>
                           </h2>
                           <div
