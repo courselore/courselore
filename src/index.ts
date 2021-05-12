@@ -556,8 +556,9 @@ export default async function courselore(
             return true;
 
             function validate(element) {
-              if (element.matches("[required]") && element.value.trim() === "")
-                return "Fill out this field";
+              if (element.value.trim() === "")
+                if (element.matches("[required]")) return "Fill out this field";
+                else return;
 
               if (
                 element.matches('[type="email"]') &&
