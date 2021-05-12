@@ -5972,13 +5972,15 @@ ${value}</textarea
                               class="accordion-button collapsed"
                               type="button"
                               data-bs-toggle="collapse"
-                              data-bs-target="#email-collapse--${email.reference}"
+                              data-bs-target="#email-collapse--${
+                                email.reference
+                              }"
                               aria-expanded="false"
                               aria-controls="email-collapse--${email.reference}"
                             >
                               <span>
                                 <strong>${email.subject}</strong><br />
-                                <span
+                                <small
                                   style="${css`
                                     color: $gray-600;
                                   `}"
@@ -5990,7 +5992,7 @@ ${value}</textarea
                                     >${email.createdAt}</time
                                   ></span
                                 >
-                              </span>
+                              </small>
                             </button>
                           </h2>
                           <div
