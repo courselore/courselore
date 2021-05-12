@@ -863,78 +863,82 @@ export default async function courselore(
                     });
                   })();
                 </script>
-                <!--
-                <button
-                  class="navbar-toggler"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#menu"
-                  aria-controls="menu"
-                  aria-expanded="false"
-                  aria-label="Toggle navigation"
-                >
-                  <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="menu">
-                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                      <a class="nav-link active" aria-current="page" href="#"
-                        >Home</a
-                      >
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                      <a
-                        class="nav-link dropdown-toggle"
-                        href="#"
-                        id="navbarDropdown"
-                        role="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        Dropdown
-                      </a>
-                      <ul
-                        class="dropdown-menu"
-                        aria-labelledby="navbarDropdown"
-                      >
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li>
-                          <a class="dropdown-item" href="#">Another action</a>
-                        </li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li>
-                          <a class="dropdown-item" href="#"
-                            >Something else here</a
+
+                $${res.locals.user === undefined
+                  ? html``
+                  : html`
+                      <div class="dropdown">
+                        <a
+                          class="nav-link link-light"
+                          role="button"
+                          id="menu"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          aria-label="Menu"
+                        >
+                          <i class="bi bi-person-circle"></i>
+                        </a>
+                        <div
+                          class="dropdown-menu dropdown-menu-end"
+                          aria-labelledby="menu"
+                        >
+                          <div
+                            style="${css`
+                              padding: 0 1rem;
+                            `}"
                           >
-                        </li>
-                      </ul>
-                    </li>
-                    <li class="nav-item">
-                      <a
-                        class="nav-link disabled"
-                        href="#"
-                        tabindex="-1"
-                        aria-disabled="true"
-                        >Disabled</a
-                      >
-                    </li>
-                  </ul>
-                  <form class="d-flex">
-                    <input
-                      class="form-control me-2"
-                      type="search"
-                      placeholder="Search"
-                      aria-label="Search"
-                    />
-                    <button class="btn btn-outline-success" type="submit">
-                      Search
-                    </button>
-                  </form>
-                </div>
-                -->
+                            <strong>${res.locals.user.name}</strong><br />
+                            <small
+                              style="${css`
+                                color: $text-muted;
+                              `}"
+                              >${res.locals.user.email}</small
+                            >
+                          </div>
+                          <hr class="dropdown-divider" />
+                          <a
+                            class="dropdown-item"
+                            href="${app.locals.settings.url}/settings"
+                            style="${css`
+                              display: flex;
+                              gap: 0.5rem;
+                            `}"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            <span>Settings</span>
+                          </a>
+                          <a
+                            class="dropdown-item"
+                            href="${app.locals.settings.url}/courses/new"
+                            style="${css`
+                              display: flex;
+                              gap: 0.5rem;
+                            `}"
+                          >
+                            <i class="bi bi-plus-square"></i>
+                            <span>New Course</span>
+                          </a>
+                          <hr class="dropdown-divider" />
+                          <form
+                            method="POST"
+                            action="${app.locals.settings
+                              .url}/authenticate?_method=DELETE"
+                          >
+                            <button
+                              class="dropdown-item"
+                              style="${css`
+                                display: flex;
+                                gap: 0.5rem;
+                              `}"
+                            >
+                              <i class="bi bi-box-arrow-right"></i>
+                              <span>Sign Out</span>
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    `}
               </div>
             </nav>
           </header>
@@ -1158,6 +1162,7 @@ export default async function courselore(
     small: app.locals.partials.artGenerator({ size: 30, order: 3 }),
   };
 
+  // TODO: This should be removed by the end of adding Bootstrap.
   interface Partials {
     logoAndMenu: (
       req: express.Request<
