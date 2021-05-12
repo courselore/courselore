@@ -1634,41 +1634,37 @@ export default async function courselore(
       });
 
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>Authenticate · CourseLore</title>`,
           html`
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
+            <p>
+              To continue, check ${req.body.email} and click on the magic
+              authentication link.
+            </p>
+            <form method="POST">
+              <input type="hidden" name="email" value="${req.body.email}" />
               <p>
-                To continue, check ${req.body.email} and click on the magic
-                authentication link.
+                Didn’t receive the email? Already checked the spam folder?
+                <button>Resend</button>
               </p>
-              <form method="POST">
-                <input type="hidden" name="email" value="${req.body.email}" />
-                <p>
-                  Didn’t receive the email? Already checked the spam folder?
-                  <button>Resend</button>
-                </p>
-              </form>
+            </form>
 
-              $${app.locals.settings.demonstration
-                ? html`
-                    <p>
-                      <strong>
-                        CourseLore doesn’t send emails in demonstration mode.
-                        <a href="${app.locals.settings.url}/demonstration-inbox"
-                          >Go to the Demonstration Inbox</a
-                        >.
-                      </strong>
-                    </p>
-                  `
-                : html``}
-            </div>
+            $${app.locals.settings.demonstration
+              ? html`
+                  <p>
+                    <strong>
+                      CourseLore doesn’t send emails in demonstration mode.
+                      <a
+                        href="${app.locals.settings.url}/demonstration-inbox"
+                        class="link-light"
+                        >Go to the Demonstration Inbox</a
+                      >.
+                    </strong>
+                  </p>
+                `
+              : html``}
           `
         )
       );
