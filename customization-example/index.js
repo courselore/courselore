@@ -56,9 +56,9 @@ module.exports = (require) => {
                 <g transform="translate(300, 350) rotate(-2)">
                   <rect
                     fill="#ff77a8"
-                    x="-245"
+                    x="-250"
                     y="-35"
-                    width="490"
+                    width="500"
                     height="50"
                     rx="10"
                   />
@@ -309,10 +309,11 @@ module.exports = (require) => {
                 </div>
                 <div class="card-body">
                   <p class="card-text">
-                    We’re building CourseLore in the open. You may inspect
-                    CourseLore’s source code to build your trust on the software
-                    that you use, you may build other tools on top of the
-                    CourseLore API, and you may collaborate on the development.
+                    We’re developing CourseLore in the open. You may inspect the
+                    source code to increase your trust on the software that you
+                    use, you may build other tools on top of the CourseLore API,
+                    and you may collaborate on the development of CourseLore
+                    itself.
                   </p>
                 </div>
               </div>
