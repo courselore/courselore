@@ -174,6 +174,7 @@ module.exports = (require) => {
             <h1
               style="${css`
                 font-family: $font-family-serif;
+                font-size: 3rem;
                 font-weight: bold;
                 font-style: italic;
                 text-align: center;
@@ -393,6 +394,7 @@ module.exports = (require) => {
             <h1
               style="${css`
                 font-family: $font-family-serif;
+                font-size: 3rem;
                 font-weight: bold;
                 font-style: italic;
                 text-align: center;

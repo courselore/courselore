@@ -869,6 +869,12 @@ export default async function courselore(
           $font-family-monospace: "IBM Plex Mono", monospace;
           $font-family-serif: "IBM Plex Serif", serif;
 
+          $h1-font-size: 1.5rem;
+          $h2-font-size: 1.25rem;
+          $h3-font-size: 1.25rem;
+          $h4-font-size: 1.25rem;
+          $h5-font-size: 1.25rem;
+
           $purple: #83769c;
           $pink: #ff77a8;
           $blue: #29adff;
@@ -1466,6 +1472,7 @@ export default async function courselore(
                   <h1
                     class="card-text"
                     style="${css`
+                      font-size: 2rem;
                       text-align: center;
                     `}"
                   >
@@ -5982,7 +5989,7 @@ ${value}</textarea
                                 <strong>${email.subject}</strong><br />
                                 <small
                                   style="${css`
-                                    color: $gray-600;
+                                    color: $text-muted;
                                   `}"
                                   >${email.to} ·
                                   <time
