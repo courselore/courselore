@@ -1639,30 +1639,66 @@ export default async function courselore(
           res,
           html`<title>Authenticate · CourseLore</title>`,
           html`
-            <p>
+            <p class="card-text">
               To continue, check ${req.body.email} and click on the magic
               authentication link.
             </p>
-            <form method="POST">
+            <p class="card-text">
+              If you’re a new user, you’ll sign up for a new account. If you’re
+              a returning user, you’ll sign in to your existing account.
+            </p>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/authenticate?${qs.stringify({
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
+              })}"
+            >
               <input type="hidden" name="email" value="${req.body.email}" />
-              <p>
+              <p class="card-text">
                 Didn’t receive the email? Already checked the spam folder?
-                <button>Resend</button>
+                <button
+                  type="submit"
+                  class="btn btn-link link-light"
+                  style="${css`
+                    padding: 0;
+                    border: 0;
+                    vertical-align: baseline;
+                  `}"
+                >
+                  Resend</button
+                >.
               </p>
             </form>
 
             $${app.locals.settings.demonstration
               ? html`
-                  <p>
-                    <strong>
+                  <div
+                    role="alert"
+                    class="alert alert-danger card-text"
+                    style="${css`
+                      display: flex;
+                      gap: 1rem;
+                      align-items: center;
+                      margin-top: 1rem;
+                    `}"
+                  >
+                    <i
+                      class="bi bi-exclamation-triangle"
+                      style="${css`
+                        font-size: 2rem;
+                      `}"
+                    ></i>
+                    <p class="card-text">
                       CourseLore doesn’t send emails in demonstration mode.
                       <a
                         href="${app.locals.settings.url}/demonstration-inbox"
-                        class="link-light"
+                        class="alert-link"
                         >Go to the Demonstration Inbox</a
                       >.
-                    </strong>
-                  </p>
+                    </p>
+                  </div>
                 `
               : html``}
           `
@@ -3886,6 +3922,7 @@ export default async function courselore(
           html`
             <h1>Welcome to ${res.locals.invitation.course.name}!</h1>
 
+            <!-- FIXME: Add explicit ‘action’ -->
             <form method="POST">
               <p>
                 <button>
