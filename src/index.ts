@@ -684,6 +684,100 @@ export default async function courselore(
     );
 
   interface Layouts {
+    box: (
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<EventSourceMiddlewareLocals>
+      >,
+      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>,
+      head: HTML,
+      body: HTML
+    ) => HTML;
+  }
+  app.locals.layouts.box = (req, res, head, body) =>
+    app.locals.layouts.application(
+      req,
+      res,
+      head,
+      html`
+        <div
+          style="${css`
+            min-height: 100%;
+            background-image: linear-gradient(135deg, $purple 0%, $pink 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}"
+        >
+          <div
+            class="card shadow-lg"
+            style="${css`
+              color: white;
+              background-color: $purple-600;
+              max-width: 35ch;
+            `}"
+          >
+            <div class="card-header">
+              <h1
+                class="card-text"
+                style="${css`
+                  font-size: 2rem;
+                  text-align: center;
+                `}"
+              >
+                <a
+                  href="$${app.locals.settings.url}/"
+                  style="${css`
+                    font-family: $font-family-serif;
+                    font-weight: bold;
+                    font-style: italic;
+                    text-decoration: none;
+                    color: inherit;
+                    * {
+                      stroke: white;
+                    }
+                    &:hover,
+                    &:focus {
+                      color: $purple-100;
+                    }
+                    display: inline-flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    transition: $btn-transition;
+                  `}"
+                >
+                  $${app.locals.partials.art.small}
+                  <span>CourseLore</span>
+                </a>
+                <script>
+                  (() => {
+                    const logo = document.currentScript.previousElementSibling;
+                    const artAnimation = new ArtAnimation({
+                      element: logo,
+                      speed: 0.001,
+                      amount: 1,
+                      startupDuration: 500,
+                    });
+                    logo.addEventListener("mouseover", () => {
+                      artAnimation.start();
+                    });
+                    logo.addEventListener("mouseout", () => {
+                      artAnimation.stop();
+                    });
+                  })();
+                </script>
+              </h1>
+            </div>
+            <div class="card-body">$${body}</div>
+          </div>
+        </div>
+      `
+    );
+
+  interface Layouts {
     main: (
       req: express.Request<
         {},
@@ -1444,137 +1538,59 @@ export default async function courselore(
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.application(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
-            <div
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/authenticate?${qs.stringify({
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
+              })}"
               style="${css`
-                min-height: 100%;
-                background-image: linear-gradient(
-                  135deg,
-                  $purple 0%,
-                  $pink 100%
-                );
                 display: flex;
-                justify-content: center;
-                align-items: center;
+                flex-direction: column;
+                gap: 1rem;
               `}"
             >
-              <div
-                class="card shadow-lg"
-                style="${css`
-                  color: white;
-                  background-color: $purple-600;
-                  max-width: 35ch;
-                `}"
-              >
-                <div class="card-header">
-                  <h1
-                    class="card-text"
-                    style="${css`
-                      font-size: 2rem;
-                      text-align: center;
-                    `}"
-                  >
-                    <a
-                      href="$${app.locals.settings.url}/"
-                      style="${css`
-                        font-family: $font-family-serif;
-                        font-weight: bold;
-                        font-style: italic;
-                        text-decoration: none;
-                        color: inherit;
-                        * {
-                          stroke: white;
-                        }
-                        &:hover,
-                        &:focus {
-                          color: $purple-100;
-                        }
-                        display: inline-flex;
-                        gap: 0.5rem;
-                        align-items: center;
-                        transition: $btn-transition;
-                      `}"
-                    >
-                      $${app.locals.partials.art.small}
-                      <span>CourseLore</span>
-                    </a>
-                    <script>
-                      (() => {
-                        const logo =
-                          document.currentScript.previousElementSibling;
-                        const artAnimation = new ArtAnimation({
-                          element: logo,
-                          speed: 0.001,
-                          amount: 1,
-                          startupDuration: 500,
-                        });
-                        logo.addEventListener("mouseover", () => {
-                          artAnimation.start();
-                        });
-                        logo.addEventListener("mouseout", () => {
-                          artAnimation.stop();
-                        });
-                      })();
-                    </script>
-                  </h1>
+              <div>
+                <div class="form-floating text-body">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="${req.query.email ?? ""}"
+                    placeholder="name@educational-email.edu"
+                    required
+                    autofocus
+                    class="form-control"
+                    aria-describedby="email-help"
+                  />
+                  <label for="email">Email</label>
                 </div>
-                <div class="card-body">
-                  <form
-                    method="POST"
-                    action="${app.locals.settings
-                      .url}/authenticate?${qs.stringify({
-                      redirect: req.query.redirect,
-                      email: req.query.email,
-                      name: req.query.name,
-                    })}"
-                    style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: 1rem;
-                    `}"
-                  >
-                    <div>
-                      <div class="form-floating text-body">
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value="${req.query.email ?? ""}"
-                          placeholder="name@educational-email.edu"
-                          required
-                          autofocus
-                          class="form-control"
-                          aria-describedby="email-help"
-                        />
-                        <label for="email">Email</label>
-                      </div>
-                      <div
-                        id="email-help"
-                        class="form-text"
-                        style="${css`
-                          color: inherit;
-                        `}"
-                      >
-                        We recommend using the email address you use at your
-                        educational institution.
-                      </div>
-                    </div>
-                    <button
-                      type="submit"
-                      class="btn btn-primary"
-                      data-bs-toggle="tooltip"
-                      title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
-                    >
-                      Continue
-                    </button>
-                  </form>
+                <div
+                  id="email-help"
+                  class="form-text"
+                  style="${css`
+                    color: inherit;
+                  `}"
+                >
+                  We recommend using the email address you use at your
+                  educational institution.
                 </div>
               </div>
-            </div>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                data-bs-toggle="tooltip"
+                title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
+              >
+                Continue
+              </button>
+            </form>
           `
         )
       );
