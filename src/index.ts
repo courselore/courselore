@@ -1655,8 +1655,8 @@ export default async function courselore(
           html`<title>Authenticate · CourseLore</title>`,
           html`
             <p class="card-text">
-              To continue, check ${req.body.email} and click on the magic
-              authentication link.
+              To continue, follow the magic authentication link we sent to
+              ${req.body.email}.
             </p>
             <p class="card-text">
               If you’re a new user, you’ll sign up for a new account. If you’re
