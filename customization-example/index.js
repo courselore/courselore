@@ -217,17 +217,8 @@ module.exports = (require) => {
                     Markdown <span
                       data-bs-toggle="tooltip"
                       title="What’s Markdown?"
-                      ><button
-                        type="button"
-                        class="btn btn-link"
-                        style="${css`
-                          padding: 0;
-                          color: white;
-                          &:hover,
-                          &:focus {
-                            color: $purple-100;
-                          }
-                        `}"
+                      ><a
+                        role="button"
                         data-bs-toggle="modal"
                         data-bs-target="#markdown-modal"
                         aria-label="More information"
@@ -235,23 +226,12 @@ module.exports = (require) => {
                           bootstrap.Tooltip.getInstance(this.parentElement).hide();
                         `}"
                       >
-                        <i
-                          class="bi bi-question-circle-fill"
-                        ></i></button></span
+                        <i class="bi bi-question-circle-fill"></i></a></span
                     >, LaTeX <span
                       data-bs-toggle="tooltip"
                       title="What’s LaTeX?"
-                      ><button
-                        type="button"
-                        class="btn btn-link"
-                        style="${css`
-                          padding: 0;
-                          color: white;
-                          &:hover,
-                          &:focus {
-                            color: $purple-100;
-                          }
-                        `}"
+                      ><a
+                        role="button"
                         data-bs-toggle="modal"
                         data-bs-target="#latex-modal"
                         aria-label="More information"
@@ -259,23 +239,12 @@ module.exports = (require) => {
                           bootstrap.Tooltip.getInstance(this.parentElement).hide();
                         `}"
                       >
-                        <i
-                          class="bi bi-question-circle-fill"
-                        ></i></button></span
+                        <i class="bi bi-question-circle-fill"></i></a></span
                     >, syntax highlighting <span
                       data-bs-toggle="tooltip"
                       title="What’s Syntax Highlighting?"
-                      ><button
-                        type="button"
-                        class="btn btn-link"
-                        style="${css`
-                          padding: 0;
-                          color: white;
-                          &:hover,
-                          &:focus {
-                            color: $purple-100;
-                          }
-                        `}"
+                      ><a
+                        role="button"
                         data-bs-toggle="modal"
                         data-bs-target="#syntax-highlighting-modal"
                         aria-label="More information"
@@ -283,9 +252,7 @@ module.exports = (require) => {
                           bootstrap.Tooltip.getInstance(this.parentElement).hide();
                         `}"
                       >
-                        <i
-                          class="bi bi-question-circle-fill"
-                        ></i></button></span
+                        <i class="bi bi-question-circle-fill"></i></a></span
                     >, and much more, all in an easy-to-use and modern
                     interface.
                   </p>
