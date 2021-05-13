@@ -1436,6 +1436,70 @@ export default async function courselore(
                   })();
                 </script>
 
+                $${res.locals.course === undefined
+                  ? html``
+                  : html`
+                      <div
+                        class="dropdown"
+                        style="${css`
+                          display: flex;
+                          gap: 0.5rem;
+                          @include media-breakpoint-down(md) {
+                            display: none;
+                          }
+                        `}"
+                      >
+                        <div
+                          class="text-truncate"
+                          style="${css`
+                            color: white;
+                            max-width: 40ch;
+                          `}"
+                        >
+                          ${res.locals.course.name}
+                        </div>
+                        $${res.locals.otherEnrollments!.length === 0
+                          ? html``
+                          : html`
+                              <a
+                                role="button"
+                                class="link-light"
+                                id="course-switcher-up-md"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                aria-label="Switch to Another Course"
+                                ><span
+                                  data-bs-toggle="tooltip"
+                                  title="Switch to Another Course"
+                                  ><i class="bi bi-arrow-left-right"></i></span
+                              ></a>
+                              <div
+                                class="dropdown-menu dropdown-menu-end"
+                                aria-labelledby="course-switcher-up-md"
+                                style="${css`
+                                  min-width: 40ch;
+                                `}"
+                              >
+                                $${res.locals.otherEnrollments!.map(
+                                  (otherEnrollment) => html`
+                                    <a
+                                      href="${app.locals.settings
+                                        .url}/courses/${otherEnrollment.course
+                                        .reference}"
+                                      class="dropdown-item"
+                                      style="${css`
+                                        display: flex;
+                                        gap: 0.5rem;
+                                        white-space: normal;
+                                      `}"
+                                      >${otherEnrollment.course.name}</a
+                                    >
+                                  `
+                                )}
+                              </div>
+                            `}
+                      </div>
+                    `}
                 $${res.locals.user === undefined
                   ? html``
                   : html`
@@ -1562,9 +1626,21 @@ export default async function courselore(
             $${res.locals.course === undefined
               ? html``
               : html`
-                  <nav class="navbar navbar-light bg-light">
+                  <nav
+                    class="navbar navbar-light bg-light"
+                    style="${css`
+                      @include media-breakpoint-up(md) {
+                        display: none;
+                      }
+                    `}"
+                  >
                     <div class="container-fluid">
-                      <span class="navbar-brand">
+                      <span
+                        class="navbar-brand"
+                        style="${css`
+                          white-space: normal;
+                        `}"
+                      >
                         ${res.locals.course.name}
                       </span>
                       $${res.locals.otherEnrollments!.length === 0
