@@ -1702,7 +1702,15 @@ export default async function courselore(
                 data-bs-toggle="tooltip"
                 title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
               >
-                Continue
+                <div
+                  style="${css`
+                    display: inline-flex;
+                    gap: 0.5rem;
+                  `}"
+                >
+                  <span>Continue</span>
+                  <i class="bi bi-chevron-right"></i>
+                </div>
               </button>
             </form>
           `
@@ -2160,30 +2168,34 @@ export default async function courselore(
                     data-bs-target="#enroll-in-an-existing-course-modal"
                     style="${css`
                       flex: 1;
-                      display: flex;
-                      gap: 0.5rem;
-                      @include media-breakpoint-up(md) {
-                        justify-content: center;
-                      }
                     `}"
                   >
-                    <i class="bi bi-journal-arrow-down"></i>
-                    <span>Enroll in an Existing Course</span>
+                    <div
+                      style="${css`
+                        display: inline-flex;
+                        gap: 0.5rem;
+                      `}"
+                    >
+                      <i class="bi bi-journal-arrow-down"></i>
+                      <span>Enroll in an Existing Course</span>
+                    </div>
                   </button>
                   <a
                     href="${app.locals.settings.url}/courses/new"
                     class="btn btn-outline-primary"
                     style="${css`
                       flex: 1;
-                      display: flex;
-                      gap: 0.5rem;
-                      @include media-breakpoint-up(md) {
-                        justify-content: center;
-                      }
                     `}"
                   >
-                    <i class="bi bi-journal-plus"></i>
-                    <span>Create a New Course</span>
+                    <div
+                      style="${css`
+                        display: inline-flex;
+                        gap: 0.5rem;
+                      `}"
+                    >
+                      <i class="bi bi-journal-plus"></i>
+                      <span>Create a New Course</span>
+                    </div>
                   </a>
                 </div>
               `
@@ -2357,16 +2369,20 @@ export default async function courselore(
                   type="submit"
                   class="btn btn-primary"
                   style="${css`
-                    display: flex;
-                    gap: 0.5rem;
                     @include media-breakpoint-down(md) {
                       width: 100%;
-                      justify-content: center;
                     }
                   `}"
                 >
-                  <i class="bi bi-journal-plus"></i>
-                  <span>Create Course</span>
+                  <div
+                    style="${css`
+                      display: inline-flex;
+                      gap: 0.5rem;
+                    `}"
+                  >
+                    <i class="bi bi-journal-plus"></i>
+                    <span>Create Course</span>
+                  </div>
                 </button>
               </div>
             </form>
