@@ -2329,21 +2329,41 @@ export default async function courselore(
           html`
             <h1>Create a New Course</h1>
 
-            <form method="POST" action="${app.locals.settings.url}/courses">
-              <p>
-                <label>
-                  <strong>Name</strong><br />
-                  <input
-                    type="text"
-                    name="name"
-                    autocomplete="off"
-                    required
-                    autofocus
-                    class="full-width"
-                  />
-                </label>
-              </p>
-              <p><button>Create Course</button></p>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses"
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              `}"
+            >
+              <div class="form-floating">
+                <input
+                  type="text"
+                  name="name"
+                  autocomplete="off"
+                  required
+                  autofocus
+                  class="form-control"
+                  id="name"
+                  placeholder="name@example.com"
+                />
+                <label for="name">Name</label>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="${css`
+                    display: flex;
+                    gap: 0.5rem;
+                  `}"
+                >
+                  <i class="bi bi-journal-plus"></i>
+                  <span>Create Course</span>
+                </button>
+              </div>
             </form>
           `
         )
