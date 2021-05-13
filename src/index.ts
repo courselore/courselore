@@ -1769,7 +1769,7 @@ export default async function courselore(
                   style="${css`
                     width: 100%;
                   `}"
-                  >Start over</a
+                  >Start Over</a
                 >
               </p>
             `
@@ -1872,28 +1872,26 @@ export default async function courselore(
       )!.exists === 1
     )
       return res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.unauthenticated(
           req,
           res,
           html`<title>Sign up · CourseLore</title>`,
           html`
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
-              <p>
-                Something went wrong in your sign up.
-                <a
-                  href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                    redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
-                  })}"
-                  >Start over</a
-                >.
-              </p>
-            </div>
+            <p class="card-text">Something went wrong in your sign up.</p>
+            <p class="card-text">
+              <a
+                href="${app.locals.settings.url}/authenticate?${qs.stringify({
+                  redirect: req.query.redirect,
+                  email: req.query.email,
+                  name: req.query.name,
+                })}"
+                class="btn btn-primary"
+                style="${css`
+                  width: 100%;
+                `}"
+                >Start Over</a
+              >
+            </p>
           `
         )
       );
