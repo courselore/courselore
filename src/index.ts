@@ -1578,7 +1578,9 @@ export default async function courselore(
                               aria-controls="course-switcher-down-md"
                               aria-expanded="false"
                               aria-label="Switch to Another Course"
-                              style="${css`padding: 0;`}"
+                              style="${css`
+                                padding: 0;
+                              `}"
                             >
                               <span
                                 data-bs-toggle="tooltip"
