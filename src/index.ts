@@ -1675,7 +1675,7 @@ export default async function courselore(
                                   (otherEnrollment) => html`
                                     <li class="nav-item">
                                       <a
-                                        class="nav-link link-dark"
+                                        class="nav-link link-dark active"
                                         href="${app.locals.settings
                                           .url}/courses/${otherEnrollment.course
                                           .reference}"
