@@ -2768,64 +2768,6 @@ export default async function courselore(
     },
   ];
 
-  interface Partials {
-    courseSwitcher: (
-      req: express.Request<
-        { courseReference: string },
-        HTML,
-        {},
-        {},
-        IsEnrolledInCourseMiddlewareLocals
-      >,
-      res: express.Response<HTML, IsEnrolledInCourseMiddlewareLocals>,
-      path?: string
-    ) => HTML;
-  }
-  app.locals.partials.courseSwitcher = (req, res, path = "") =>
-    res.locals.otherEnrollments.length === 0
-      ? html``
-      : html`
-          <details class="dropdown">
-            <summary class="no-marker secondary">
-              <p>
-                <span
-                  style="${css`
-                    position: relative;
-                    top: 0.2em;
-                  `}"
-                  ><i class="bi bi-arrow-left-right"></i
-                ></span>
-                <span>Switch to another course</span>
-              </p>
-            </summary>
-            <nav
-              style="${css`
-                transform: translateY(-0.5rem);
-              `}"
-            >
-              $${res.locals.otherEnrollments.map(
-                (otherEnrollment) => html`
-                  <p>
-                    <a
-                      href="${app.locals.settings.url}/courses/${otherEnrollment
-                        .course.reference}${path}"
-                      ><span
-                        style="${css`
-                          font-size: 0.6rem;
-                          color: ${otherEnrollment.accentColor};
-                        `}"
-                      >
-                        <i class="bi bi-circle-fill"></i>
-                      </span>
-                      <strong>${otherEnrollment.course.name}</strong></a
-                    >
-                  </p>
-                `
-              )}
-            </nav>
-          </details>
-        `;
-
   interface Middlewares {
     isCourseStaff: express.RequestHandler<
       { courseReference: string },
@@ -2862,7 +2804,6 @@ export default async function courselore(
             res,
             html`<title>${res.locals.course.name} · CourseLore</title>`,
             html`
-              $${app.locals.partials.courseSwitcher(req, res)}
               $${res.locals.enrollment.role === "staff"
                 ? html`
                     <div
@@ -3173,7 +3114,6 @@ export default async function courselore(
                 >${res.locals.course.name}</a
               >
             </h1>
-            $${app.locals.partials.courseSwitcher(req, res, "/settings")}
             $${res.locals.enrollment.role !== "staff"
               ? html``
               : (() => {
@@ -4555,7 +4495,6 @@ export default async function courselore(
                   >
                 </p>
               </nav>
-              $${app.locals.partials.courseSwitcher(req, res)}
             </header>
 
             <div
