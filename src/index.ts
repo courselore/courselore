@@ -2038,7 +2038,15 @@ export default async function courselore(
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                  Create Account
+                  <span
+                    style="${css`
+                      display: inline-flex;
+                      gap: 0.5rem;
+                    `}"
+                  >
+                    <i class="bi bi-person-plus"></i>
+                    <span>Create Account</span>
+                  </span>
                 </button>
               </form>
             `
@@ -2251,9 +2259,6 @@ export default async function courselore(
               res,
               html`<title>CourseLore</title>`,
               html`
-                <h1>Hi ${res.locals.user.name},</h1>
-
-                <p><strong>Welcome to CourseLore!</strong></p>
                 <div
                   style="${css`
                     display: flex;
@@ -2781,8 +2786,6 @@ export default async function courselore(
             res,
             html`<title>${res.locals.course.name} · CourseLore</title>`,
             html`
-              <h1>Welcome to ${res.locals.course.name}!</h1>
-
               $${app.locals.partials.courseSwitcher(req, res)}
               $${res.locals.enrollment.role === "staff"
                 ? html`
