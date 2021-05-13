@@ -1447,13 +1447,20 @@ export default async function courselore(
                         <div class="dropdown">
                           <a
                             role="button"
-                            class="nav-link link-light dropdown-toggle"
+                            class="nav-link link-light"
                             id="add-menu"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             aria-label="Add Menu"
                           >
-                            <i class="bi bi-plus-circle"></i>
+                            <span
+                              class="dropdown-toggle"
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="left"
+                              title="Add Course"
+                            >
+                              <i class="bi bi-plus-circle"></i>
+                            </span>
                           </a>
                           <div
                             class="dropdown-menu dropdown-menu-end"
@@ -1489,13 +1496,20 @@ export default async function courselore(
                         <div class="dropdown">
                           <a
                             role="button"
-                            class="nav-link link-light dropdown-toggle"
+                            class="nav-link link-light"
                             id="user-menu"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             aria-label="User Menu"
                           >
-                            <i class="bi bi-person-circle"></i>
+                            <span
+                              class="dropdown-toggle"
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="left"
+                              title="${res.locals.user.name}"
+                            >
+                              <i class="bi bi-person-circle"></i>
+                            </span>
                           </a>
                           <div
                             class="dropdown-menu dropdown-menu-end"
@@ -1548,6 +1562,58 @@ export default async function courselore(
                     `}
               </div>
             </nav>
+            $${res.locals.course === undefined
+              ? html``
+              : html`
+                  <nav class="navbar navbar-light bg-light">
+                    <div class="container-fluid">
+                      <span class="navbar-brand">
+                        ${res.locals.course.name}
+                      </span>
+                      $${res.locals.otherEnrollments!.length === 0
+                        ? html``
+                        : html`
+                            <button
+                              class="btn"
+                              type="button"
+                              data-bs-toggle="collapse"
+                              data-bs-target="#course-switcher-down-md"
+                              aria-controls="course-switcher-down-md"
+                              aria-expanded="false"
+                              aria-label="Switch to Another Course"
+                            >
+                              <span
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="left"
+                                title="Switch to Another Course"
+                              >
+                                <i class="bi bi-arrow-left-right"></i>
+                              </span>
+                            </button>
+                            <div
+                              class="collapse navbar-collapse"
+                              id="course-switcher-down-md"
+                            >
+                              <ul class="navbar-nav">
+                                $${res.locals.otherEnrollments!.map(
+                                  (otherEnrollment) => html`
+                                    <li class="nav-item">
+                                      <a
+                                        class="nav-link link-dark"
+                                        href="${app.locals.settings
+                                          .url}/courses/${otherEnrollment.course
+                                          .reference}"
+                                        >${otherEnrollment.course.name}</a
+                                      >
+                                    </li>
+                                  `
+                                )}
+                              </ul>
+                            </div>
+                          `}
+                    </div>
+                  </nav>
+                `}
           </header>
 
           <main
