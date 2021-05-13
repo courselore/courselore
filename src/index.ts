@@ -1442,26 +1442,25 @@ export default async function courselore(
                       <div
                         style="${css`
                           display: flex;
+                          gap: 1rem;
+                          align-items: center;
                         `}"
                       >
                         <div class="dropdown">
                           <a
                             role="button"
-                            class="nav-link link-light"
+                            class="link-light"
                             id="add-menu"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             aria-label="Add Menu"
-                          >
-                            <span
+                            ><span
                               class="dropdown-toggle"
                               data-bs-toggle="tooltip"
                               data-bs-placement="left"
                               title="Add Course"
-                            >
-                              <i class="bi bi-plus-circle"></i>
-                            </span>
-                          </a>
+                              ><i class="bi bi-plus-circle"></i></span
+                          ></a>
                           <div
                             class="dropdown-menu dropdown-menu-end"
                             aria-labelledby="add-menu"
@@ -1496,20 +1495,18 @@ export default async function courselore(
                         <div class="dropdown">
                           <a
                             role="button"
-                            class="nav-link link-light"
+                            class="link-light"
                             id="user-menu"
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             aria-label="User Menu"
-                          >
-                            <span
+                            ><span
                               class="dropdown-toggle"
                               data-bs-toggle="tooltip"
                               data-bs-placement="left"
                               title="${res.locals.user.name}"
-                            >
-                              <i class="bi bi-person-circle"></i>
-                            </span>
+                              ><i class="bi bi-person-circle"></i
+                            ></span>
                           </a>
                           <div
                             class="dropdown-menu dropdown-menu-end"
@@ -1581,6 +1578,7 @@ export default async function courselore(
                               aria-controls="course-switcher-down-md"
                               aria-expanded="false"
                               aria-label="Switch to Another Course"
+                              style="${css`padding: 0;`}"
                             >
                               <span
                                 data-bs-toggle="tooltip"
