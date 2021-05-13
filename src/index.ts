@@ -1262,14 +1262,8 @@ export default async function courselore(
 
   interface Layouts {
     unauthenticated: (
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        Partial<EventSourceMiddlewareLocals>
-      >,
-      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>,
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
       head: HTML,
       body: HTML
     ) => HTML;
@@ -1363,13 +1357,13 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
+        Partial<EventSourceMiddlewareLocals> &
+          Partial<IsEnrolledInCourseMiddlewareLocals>
       >,
       res: express.Response<
         any,
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
+        Partial<EventSourceMiddlewareLocals> &
+          Partial<IsEnrolledInCourseMiddlewareLocals>
       >,
       head: HTML,
       body: HTML
