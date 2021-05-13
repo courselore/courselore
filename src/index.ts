@@ -704,6 +704,7 @@ export default async function courselore(
           $h3-font-size: 1.25rem;
           $h4-font-size: 1.25rem;
           $h5-font-size: 1.25rem;
+          $headings-margin-bottom: 1rem;
 
           $purple: #83769c;
           $pink: #ff77a8;
@@ -2358,6 +2359,10 @@ export default async function courselore(
                   style="${css`
                     display: flex;
                     gap: 0.5rem;
+                    @include media-breakpoint-down(md) {
+                      width: 100%;
+                      justify-content: center;
+                    }
                   `}"
                 >
                   <i class="bi bi-journal-plus"></i>

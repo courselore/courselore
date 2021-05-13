@@ -179,7 +179,6 @@ module.exports = (require) => {
                 font-style: italic;
                 text-align: center;
                 text-shadow: 2px 2px $purple-600;
-                margin-bottom: 1rem;
               `}"
             >
               A forum for educators & students
@@ -366,7 +365,6 @@ module.exports = (require) => {
                 font-style: italic;
                 text-align: center;
                 text-shadow: 2px 2px $pink-600;
-                margin-bottom: 1rem;
               `}"
             >
               Team
