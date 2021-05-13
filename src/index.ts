@@ -2732,14 +2732,27 @@ export default async function courselore(
                     </div>
                   `
                 : html`
-                    <p>
-                      This is a new course.
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/threads/new"
-                        ><strong>Create the first thread</strong></a
-                      >.
-                    </p>
+                    <p>This is a new course.</p>
+                    <a
+                      href="${app.locals.settings.url}/courses/${res.locals
+                        .course.reference}/threads/new"
+                      class="btn btn-primary"
+                      style="${css`
+                        @include media-breakpoint-down(md) {
+                          width: 100%;
+                        }
+                      `}"
+                    >
+                      <div
+                        style="${css`
+                          display: inline-flex;
+                          gap: 0.5rem;
+                        `}"
+                      >
+                        <i class="bi bi-node-plus"></i>
+                        <span>Create the First Thread</span>
+                      </div>
+                    </a>
                   `}
             `
           )
