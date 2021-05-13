@@ -1438,75 +1438,110 @@ export default async function courselore(
                 $${res.locals.user === undefined
                   ? html``
                   : html`
-                      <div class="dropdown">
-                        <a
-                          class="nav-link link-light"
-                          role="button"
-                          id="menu"
-                          role="button"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                          aria-label="Menu"
-                        >
-                          <i class="bi bi-person-circle"></i>
-                        </a>
-                        <div
-                          class="dropdown-menu dropdown-menu-end"
-                          aria-labelledby="menu"
-                        >
+                      <div
+                        style="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <div class="dropdown">
+                          <a
+                            role="button"
+                            class="nav-link link-light dropdown-toggle"
+                            id="add-menu"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="Add Menu"
+                          >
+                            <i class="bi bi-plus-circle"></i>
+                          </a>
                           <div
-                            style="${css`
-                              padding: 0 1rem;
-                            `}"
-                          >
-                            <strong>${res.locals.user.name}</strong><br />
-                            <small
-                              style="${css`
-                                color: $text-muted;
-                              `}"
-                              >${res.locals.user.email}</small
-                            >
-                          </div>
-                          <hr class="dropdown-divider" />
-                          <a
-                            class="dropdown-item"
-                            href="${app.locals.settings.url}/settings"
-                            style="${css`
-                              display: flex;
-                              gap: 0.5rem;
-                            `}"
-                          >
-                            <i class="bi bi-sliders"></i>
-                            <span>Settings</span>
-                          </a>
-                          <a
-                            class="dropdown-item"
-                            href="${app.locals.settings.url}/courses/new"
-                            style="${css`
-                              display: flex;
-                              gap: 0.5rem;
-                            `}"
-                          >
-                            <i class="bi bi-plus-square"></i>
-                            <span>New Course</span>
-                          </a>
-                          <hr class="dropdown-divider" />
-                          <form
-                            method="POST"
-                            action="${app.locals.settings
-                              .url}/authenticate?_method=DELETE"
+                            class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="add-menu"
                           >
                             <button
+                              type="button"
+                              class="dropdown-item"
+                              data-bs-toggle="modal"
+                              data-bs-target="#enroll-in-an-existing-course-modal"
+                              style="${css`
+                                display: flex;
+                                gap: 0.5rem;
+                              `}"
+                            >
+                              <i class="bi bi-journal-arrow-down"></i>
+                              <span>Enroll in an Existing Course</span>
+                            </button>
+                            <a
+                              href="${app.locals.settings.url}/courses/new"
                               class="dropdown-item"
                               style="${css`
                                 display: flex;
                                 gap: 0.5rem;
                               `}"
                             >
-                              <i class="bi bi-box-arrow-right"></i>
-                              <span>Sign Out</span>
-                            </button>
-                          </form>
+                              <i class="bi bi-journal-plus"></i>
+                              <span>Create a New Course</span>
+                            </a>
+                          </div>
+                        </div>
+
+                        <div class="dropdown">
+                          <a
+                            role="button"
+                            class="nav-link link-light dropdown-toggle"
+                            id="user-menu"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="User Menu"
+                          >
+                            <i class="bi bi-person-circle"></i>
+                          </a>
+                          <div
+                            class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="user-menu"
+                          >
+                            <div
+                              style="${css`
+                                padding: 0 1rem;
+                              `}"
+                            >
+                              <strong>${res.locals.user.name}</strong><br />
+                              <small
+                                style="${css`
+                                  color: $text-muted;
+                                `}"
+                                >${res.locals.user.email}</small
+                              >
+                            </div>
+                            <hr class="dropdown-divider" />
+                            <a
+                              class="dropdown-item"
+                              href="${app.locals.settings.url}/settings"
+                              style="${css`
+                                display: flex;
+                                gap: 0.5rem;
+                              `}"
+                            >
+                              <i class="bi bi-sliders"></i>
+                              <span>Settings</span>
+                            </a>
+                            <form
+                              method="POST"
+                              action="${app.locals.settings
+                                .url}/authenticate?_method=DELETE"
+                            >
+                              <button
+                                class="dropdown-item"
+                                style="${css`
+                                  display: flex;
+                                  gap: 0.5rem;
+                                `}"
+                              >
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                              </button>
+                            </form>
+                          </div>
                         </div>
                       </div>
                     `}
@@ -1522,6 +1557,38 @@ export default async function courselore(
           >
             $${body}
           </main>
+        </div>
+
+        <div
+          class="modal fade"
+          id="enroll-in-an-existing-course-modal"
+          tabindex="-1"
+          aria-labelledby="enroll-in-an-existing-course-modal-label"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5
+                  class="modal-title"
+                  id="enroll-in-an-existing-course-modal-label"
+                >
+                  Enroll in an Existing Course
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                To enroll in an existing course you either have to follow an
+                invitation link or be invited via email. Contact your course
+                staff for more information.
+              </div>
+            </div>
+          </div>
         </div>
       `
     );
