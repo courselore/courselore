@@ -1873,7 +1873,7 @@ export default async function courselore(
                     `}"
                   >
                     <i
-                      class="bi bi-exclamation-triangle"
+                      class="bi bi-easel"
                       style="${css`
                         font-size: 2rem;
                       `}"
@@ -1891,13 +1891,31 @@ export default async function courselore(
                       <a
                         href="${magicAuthenticationLink}"
                         class="btn btn-outline-dark"
-                        >Follow Magic Authentication Link</a
                       >
+                        <span
+                          style="${css`
+                            display: inline-flex;
+                            gap: 0.5rem;
+                          `}"
+                        >
+                          <i class="bi bi-box-arrow-in-right"></i>
+                          <span>Follow Magic Authentication Link</span>
+                        </span>
+                      </a>
                       <a
                         href="${app.locals.settings.url}/demonstration-inbox"
                         class="btn btn-outline-dark"
-                        >Go to the Demonstration Inbox</a
                       >
+                        <span
+                          style="${css`
+                            display: inline-flex;
+                            gap: 0.5rem;
+                          `}"
+                        >
+                          <i class="bi bi-inbox"></i>
+                          <span>Go to the Demonstration Inbox</span>
+                        </span>
+                      </a>
                     </div>
                   </div>
                 `
@@ -1942,8 +1960,17 @@ export default async function courselore(
                   style="${css`
                     width: 100%;
                   `}"
-                  >Start Over</a
                 >
+                  <span
+                    style="${css`
+                      display: inline-flex;
+                      gap: 0.5rem;
+                    `}"
+                  >
+                    <i class="bi bi-chevron-left"></i>
+                    <span>Start Over</span>
+                  </span>
+                </a>
               </p>
             `
           )
@@ -2062,8 +2089,17 @@ export default async function courselore(
                 style="${css`
                   width: 100%;
                 `}"
-                >Start Over</a
               >
+                <span
+                  style="${css`
+                    display: inline-flex;
+                    gap: 0.5rem;
+                  `}"
+                >
+                  <i class="bi bi-chevron-left"></i>
+                  <span>Start Over</span>
+                </span>
+              </a>
             </p>
           `
         )
