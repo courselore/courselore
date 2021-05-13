@@ -1261,14 +1261,14 @@ export default async function courselore(
   ];
 
   interface Layouts {
-    unauthenticated: (
+    box: (
       req: express.Request<{}, any, {}, {}, {}>,
       res: express.Response<any, {}>,
       head: HTML,
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.unauthenticated = (req, res, head, body) =>
+  app.locals.layouts.box = (req, res, head, body) =>
     app.locals.layouts.application(
       req,
       res,
@@ -1351,7 +1351,7 @@ export default async function courselore(
     );
 
   interface Layouts {
-    authenticated: (
+    main: (
       req: express.Request<
         {},
         any,
@@ -1369,7 +1369,7 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.authenticated = (req, res, head, body) =>
+  app.locals.layouts.main = (req, res, head, body) =>
     app.locals.layouts.application(
       req,
       res,
@@ -1547,7 +1547,7 @@ export default async function courselore(
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.unauthenticated(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
@@ -1643,7 +1643,7 @@ export default async function courselore(
       });
 
       res.send(
-        app.locals.layouts.unauthenticated(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>Authenticate · CourseLore</title>`,
@@ -1744,7 +1744,7 @@ export default async function courselore(
       );
       if (email === undefined)
         return res.send(
-          app.locals.layouts.unauthenticated(
+          app.locals.layouts.box(
             req,
             res,
             html`<title>Authenticate · CourseLore</title>`,
@@ -1774,7 +1774,7 @@ export default async function courselore(
       );
       if (user === undefined)
         return res.send(
-          app.locals.layouts.unauthenticated(
+          app.locals.layouts.box(
             req,
             res,
             html`<title>Sign up · CourseLore</title>`,
@@ -1866,7 +1866,7 @@ export default async function courselore(
       )!.exists === 1
     )
       return res.send(
-        app.locals.layouts.unauthenticated(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>Sign up · CourseLore</title>`,
@@ -1939,7 +1939,7 @@ export default async function courselore(
           ? html`<strong>${otherUserEmail}</strong>`
           : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>Magic Authentication Link · CourseLore</title>`,
@@ -2031,7 +2031,7 @@ export default async function courselore(
       switch (res.locals.enrollments.length) {
         case 0:
           res.send(
-            app.locals.layouts.authenticated(
+            app.locals.layouts.main(
               req,
               res,
               html`<title>CourseLore</title>`,
@@ -2065,7 +2065,7 @@ export default async function courselore(
 
         default:
           res.send(
-            app.locals.layouts.authenticated(
+            app.locals.layouts.main(
               req,
               res,
               html`<title>CourseLore</title>`,
@@ -2108,7 +2108,7 @@ export default async function courselore(
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>User Settings · CourseLore</title>`,
@@ -2189,7 +2189,7 @@ export default async function courselore(
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>Create a New Course · CourseLore</title>`,
@@ -2500,7 +2500,7 @@ export default async function courselore(
     (req, res) => {
       if (res.locals.threads.length === 0)
         return res.send(
-          app.locals.layouts.authenticated(
+          app.locals.layouts.main(
             req,
             res,
             html`<title>${res.locals.course.name} · CourseLore</title>`,
@@ -2764,7 +2764,7 @@ export default async function courselore(
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3814,7 +3814,7 @@ export default async function courselore(
 
       const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3895,7 +3895,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -3930,7 +3930,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -4005,7 +4005,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`
@@ -6008,7 +6008,7 @@ ${value}</textarea
     );
 
     res.send(
-      app.locals.layouts.authenticated(
+      app.locals.layouts.main(
         req,
         res,
         html`
@@ -6095,7 +6095,7 @@ ${value}</textarea
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
@@ -6120,7 +6120,7 @@ ${value}</textarea
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.authenticated(
+        app.locals.layouts.main(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
@@ -6154,7 +6154,7 @@ ${value}</textarea
     const isValidation = err === "validation";
     const message = isValidation ? "Validation" : "Server";
     res.status(isValidation ? 422 : 500).send(
-      app.locals.layouts.authenticated(
+      app.locals.layouts.main(
         req,
         res,
         html`<title>${message} Error · CourseLore</title>`,
