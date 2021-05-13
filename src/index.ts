@@ -1351,7 +1351,7 @@ export default async function courselore(
     );
 
   interface Layouts {
-    main: (
+    applicationWithHeader: (
       req: express.Request<
         {},
         any,
@@ -1369,7 +1369,7 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.main = (req, res, head, body) =>
+  app.locals.layouts.applicationWithHeader = (req, res, head, body) =>
     app.locals.layouts.application(
       req,
       res,
@@ -1522,6 +1522,43 @@ export default async function courselore(
           >
             $${body}
           </main>
+        </div>
+      `
+    );
+
+  interface Layouts {
+    main: (
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      res: express.Response<
+        any,
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      head: HTML,
+      body: HTML
+    ) => HTML;
+  }
+  app.locals.layouts.main = (req, res, head, body) =>
+    app.locals.layouts.applicationWithHeader(
+      req,
+      res,
+      head,
+      html`
+        <div
+          style="${css`
+            max-width: 80ch;
+            padding: 1rem;
+            margin: 0 auto;
+          `}"
+        >
+          $${body}
         </div>
       `
     );
@@ -6017,29 +6054,21 @@ ${value}</textarea
           </title>
         `,
         html`
-          <div
-            style="${css`
-              max-width: 80ch;
-              padding: 1rem;
-              margin: 0 auto;
-            `}"
-          >
-            <h1>Demonstration Inbox</h1>
+          <h1>Demonstration Inbox</h1>
 
-            <p>
-              CourseLore doesn’t send emails in demonstration mode.
-              $${emails.length === 0
-                ? html`Emails that would have been sent will show up here
-                  instead.`
-                : html`Here are the emails that would have been sent:`}
-            </p>
-
+          <p>
+            CourseLore doesn’t send emails in demonstration mode.
             $${emails.length === 0
-              ? html``
-              : html`
-                  <div class="accordion">
-                    $${emails.map(
-                      (email) => html`
+              ? html`Emails that would have been sent will show up here instead.`
+              : html`Here are the emails that would have been sent:`}
+          </p>
+
+          $${emails.length === 0
+            ? html``
+            : html`
+                <div class="accordion">
+                  $${emails.map(
+                    (email) => html`
                         <div class="accordion-item">
                           <h2
                             class="accordion-header"
@@ -6081,10 +6110,9 @@ ${value}</textarea
                           </div>
                         </div>
                       `
-                    )}
-                  </div>
-                `}
-          </div>
+                  )}
+                </div>
+              `}
         `
       )
     );
