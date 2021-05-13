@@ -2143,19 +2143,48 @@ export default async function courselore(
                 <h1>Hi ${res.locals.user.name},</h1>
 
                 <p><strong>Welcome to CourseLore!</strong></p>
-                <p>
-                  To <strong>enroll in an existing course</strong> you either
-                  have to follow an invitation link or be invited via email.
-                  Contact your course staff for more information.
-                </p>
-                <p>
-                  Or
-                  <strong
-                    ><a href="${app.locals.settings.url}/courses/new"
-                      >create a new course</a
-                    ></strong
-                  >.
-                </p>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: 1rem;
+                    @include media-breakpoint-down(md) {
+                      flex-direction: column;
+                    }
+                  `}"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#enroll-in-an-existing-course-modal"
+                    style="${css`
+                      flex: 1;
+                      display: flex;
+                      gap: 0.5rem;
+                      @include media-breakpoint-up(md) {
+                        justify-content: center;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-journal-arrow-down"></i>
+                    <span>Enroll in an Existing Course</span>
+                  </button>
+                  <a
+                    href="${app.locals.settings.url}/courses/new"
+                    class="btn btn-outline-primary"
+                    style="${css`
+                      flex: 1;
+                      display: flex;
+                      gap: 0.5rem;
+                      @include media-breakpoint-up(md) {
+                        justify-content: center;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-journal-plus"></i>
+                    <span>Create a New Course</span>
+                  </a>
+                </div>
               `
             )
           );
