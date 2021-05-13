@@ -683,278 +683,6 @@ export default async function courselore(
       `
     );
 
-  interface Layouts {
-    box: (
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        Partial<EventSourceMiddlewareLocals>
-      >,
-      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>,
-      head: HTML,
-      body: HTML
-    ) => HTML;
-  }
-  app.locals.layouts.box = (req, res, head, body) =>
-    app.locals.layouts.application(
-      req,
-      res,
-      head,
-      html`
-        <div
-          style="${css`
-            min-height: 100%;
-            background-image: linear-gradient(135deg, $purple 0%, $pink 100%);
-            padding: 1rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          `}"
-        >
-          <div
-            class="card shadow-lg"
-            style="${css`
-              color: white;
-              background-color: $purple-600;
-              max-width: 40ch;
-              flex: 1;
-            `}"
-          >
-            <div class="card-header">
-              <h1
-                class="card-text"
-                style="${css`
-                  font-size: 2rem;
-                  text-align: center;
-                `}"
-              >
-                <a
-                  href="$${app.locals.settings.url}/"
-                  style="${css`
-                    font-family: $font-family-serif;
-                    font-weight: bold;
-                    font-style: italic;
-                    text-decoration: none;
-                    color: inherit;
-                    * {
-                      stroke: white;
-                    }
-                    &:hover,
-                    &:focus {
-                      color: $purple-100;
-                    }
-                    display: inline-flex;
-                    gap: 0.5rem;
-                    align-items: center;
-                    transition: $btn-transition;
-                  `}"
-                >
-                  $${app.locals.partials.art.small}
-                  <span>CourseLore</span>
-                </a>
-                <script>
-                  (() => {
-                    const logo = document.currentScript.previousElementSibling;
-                    const artAnimation = new ArtAnimation({
-                      element: logo,
-                      speed: 0.001,
-                      amount: 1,
-                      startupDuration: 500,
-                    });
-                    logo.addEventListener("mouseover", () => {
-                      artAnimation.start();
-                    });
-                    logo.addEventListener("mouseout", () => {
-                      artAnimation.stop();
-                    });
-                  })();
-                </script>
-              </h1>
-            </div>
-            <div class="card-body">$${body}</div>
-          </div>
-        </div>
-      `
-    );
-
-  interface Layouts {
-    main: (
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >,
-      res: express.Response<
-        any,
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >,
-      head: HTML,
-      body: HTML
-    ) => HTML;
-  }
-  app.locals.layouts.main = (req, res, head, body) =>
-    app.locals.layouts.application(
-      req,
-      res,
-      head,
-      html`
-        <div
-          style="${css`
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-          `}"
-        >
-          <header>
-            <nav
-              class="navbar navbar-expand-lg navbar-dark"
-              style="${css`
-                background-color: $purple;
-              `}"
-            >
-              <div class="container-fluid">
-                <a
-                  href="$${app.locals.settings.url}/"
-                  class="navbar-brand"
-                  style="${css`
-                    font-family: $font-family-serif;
-                    font-size: 1.5rem;
-                    font-weight: bold;
-                    font-style: italic;
-                    line-height: 1;
-                    text-decoration: none;
-                    color: white;
-                    * {
-                      stroke: white;
-                    }
-                    &:hover,
-                    &:focus {
-                      color: $purple-100;
-                    }
-                    display: inline-flex;
-                    gap: 0.5rem;
-                    align-items: center;
-                    transition: $btn-transition;
-                  `}"
-                >
-                  $${app.locals.partials.art.small}
-                  <span>CourseLore</span>
-                </a>
-                <script>
-                  (() => {
-                    const logo = document.currentScript.previousElementSibling;
-                    const artAnimation = new ArtAnimation({
-                      element: logo,
-                      speed: 0.001,
-                      amount: 1,
-                      startupDuration: 500,
-                    });
-                    logo.addEventListener("mouseover", () => {
-                      artAnimation.start();
-                    });
-                    logo.addEventListener("mouseout", () => {
-                      artAnimation.stop();
-                    });
-                  })();
-                </script>
-
-                $${res.locals.user === undefined
-                  ? html``
-                  : html`
-                      <div class="dropdown">
-                        <a
-                          class="nav-link link-light"
-                          role="button"
-                          id="menu"
-                          role="button"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                          aria-label="Menu"
-                        >
-                          <i class="bi bi-person-circle"></i>
-                        </a>
-                        <div
-                          class="dropdown-menu dropdown-menu-end"
-                          aria-labelledby="menu"
-                        >
-                          <div
-                            style="${css`
-                              padding: 0 1rem;
-                            `}"
-                          >
-                            <strong>${res.locals.user.name}</strong><br />
-                            <small
-                              style="${css`
-                                color: $text-muted;
-                              `}"
-                              >${res.locals.user.email}</small
-                            >
-                          </div>
-                          <hr class="dropdown-divider" />
-                          <a
-                            class="dropdown-item"
-                            href="${app.locals.settings.url}/settings"
-                            style="${css`
-                              display: flex;
-                              gap: 0.5rem;
-                            `}"
-                          >
-                            <i class="bi bi-sliders"></i>
-                            <span>Settings</span>
-                          </a>
-                          <a
-                            class="dropdown-item"
-                            href="${app.locals.settings.url}/courses/new"
-                            style="${css`
-                              display: flex;
-                              gap: 0.5rem;
-                            `}"
-                          >
-                            <i class="bi bi-plus-square"></i>
-                            <span>New Course</span>
-                          </a>
-                          <hr class="dropdown-divider" />
-                          <form
-                            method="POST"
-                            action="${app.locals.settings
-                              .url}/authenticate?_method=DELETE"
-                          >
-                            <button
-                              class="dropdown-item"
-                              style="${css`
-                                display: flex;
-                                gap: 0.5rem;
-                              `}"
-                            >
-                              <i class="bi bi-box-arrow-right"></i>
-                              <span>Sign Out</span>
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    `}
-              </div>
-            </nav>
-          </header>
-
-          <main
-            style="${css`
-              flex: 1;
-              overflow: auto;
-            `}"
-          >
-            $${body}
-          </main>
-        </div>
-      `
-    );
-
   interface Helpers {
     compileSass: (styles: CSS) => CSS;
   }
@@ -1532,6 +1260,278 @@ export default async function courselore(
     },
   ];
 
+  interface Layouts {
+    unauthenticated: (
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<EventSourceMiddlewareLocals>
+      >,
+      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>,
+      head: HTML,
+      body: HTML
+    ) => HTML;
+  }
+  app.locals.layouts.unauthenticated = (req, res, head, body) =>
+    app.locals.layouts.application(
+      req,
+      res,
+      head,
+      html`
+        <div
+          style="${css`
+            min-height: 100%;
+            background-image: linear-gradient(135deg, $purple 0%, $pink 100%);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}"
+        >
+          <div
+            class="card shadow-lg"
+            style="${css`
+              color: white;
+              background-color: $purple-600;
+              max-width: 40ch;
+              flex: 1;
+            `}"
+          >
+            <div class="card-header">
+              <h1
+                class="card-text"
+                style="${css`
+                  font-size: 2rem;
+                  text-align: center;
+                `}"
+              >
+                <a
+                  href="$${app.locals.settings.url}/"
+                  style="${css`
+                    font-family: $font-family-serif;
+                    font-weight: bold;
+                    font-style: italic;
+                    text-decoration: none;
+                    color: inherit;
+                    * {
+                      stroke: white;
+                    }
+                    &:hover,
+                    &:focus {
+                      color: $purple-100;
+                    }
+                    display: inline-flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    transition: $btn-transition;
+                  `}"
+                >
+                  $${app.locals.partials.art.small}
+                  <span>CourseLore</span>
+                </a>
+                <script>
+                  (() => {
+                    const logo = document.currentScript.previousElementSibling;
+                    const artAnimation = new ArtAnimation({
+                      element: logo,
+                      speed: 0.001,
+                      amount: 1,
+                      startupDuration: 500,
+                    });
+                    logo.addEventListener("mouseover", () => {
+                      artAnimation.start();
+                    });
+                    logo.addEventListener("mouseout", () => {
+                      artAnimation.stop();
+                    });
+                  })();
+                </script>
+              </h1>
+            </div>
+            <div class="card-body">$${body}</div>
+          </div>
+        </div>
+      `
+    );
+
+  interface Layouts {
+    authenticated: (
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      res: express.Response<
+        any,
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      head: HTML,
+      body: HTML
+    ) => HTML;
+  }
+  app.locals.layouts.authenticated = (req, res, head, body) =>
+    app.locals.layouts.application(
+      req,
+      res,
+      head,
+      html`
+        <div
+          style="${css`
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          `}"
+        >
+          <header>
+            <nav
+              class="navbar navbar-expand-lg navbar-dark"
+              style="${css`
+                background-color: $purple;
+              `}"
+            >
+              <div class="container-fluid">
+                <a
+                  href="$${app.locals.settings.url}/"
+                  class="navbar-brand"
+                  style="${css`
+                    font-family: $font-family-serif;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    font-style: italic;
+                    line-height: 1;
+                    text-decoration: none;
+                    color: white;
+                    * {
+                      stroke: white;
+                    }
+                    &:hover,
+                    &:focus {
+                      color: $purple-100;
+                    }
+                    display: inline-flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                    transition: $btn-transition;
+                  `}"
+                >
+                  $${app.locals.partials.art.small}
+                  <span>CourseLore</span>
+                </a>
+                <script>
+                  (() => {
+                    const logo = document.currentScript.previousElementSibling;
+                    const artAnimation = new ArtAnimation({
+                      element: logo,
+                      speed: 0.001,
+                      amount: 1,
+                      startupDuration: 500,
+                    });
+                    logo.addEventListener("mouseover", () => {
+                      artAnimation.start();
+                    });
+                    logo.addEventListener("mouseout", () => {
+                      artAnimation.stop();
+                    });
+                  })();
+                </script>
+
+                $${res.locals.user === undefined
+                  ? html``
+                  : html`
+                      <div class="dropdown">
+                        <a
+                          class="nav-link link-light"
+                          role="button"
+                          id="menu"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          aria-label="Menu"
+                        >
+                          <i class="bi bi-person-circle"></i>
+                        </a>
+                        <div
+                          class="dropdown-menu dropdown-menu-end"
+                          aria-labelledby="menu"
+                        >
+                          <div
+                            style="${css`
+                              padding: 0 1rem;
+                            `}"
+                          >
+                            <strong>${res.locals.user.name}</strong><br />
+                            <small
+                              style="${css`
+                                color: $text-muted;
+                              `}"
+                              >${res.locals.user.email}</small
+                            >
+                          </div>
+                          <hr class="dropdown-divider" />
+                          <a
+                            class="dropdown-item"
+                            href="${app.locals.settings.url}/settings"
+                            style="${css`
+                              display: flex;
+                              gap: 0.5rem;
+                            `}"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            <span>Settings</span>
+                          </a>
+                          <a
+                            class="dropdown-item"
+                            href="${app.locals.settings.url}/courses/new"
+                            style="${css`
+                              display: flex;
+                              gap: 0.5rem;
+                            `}"
+                          >
+                            <i class="bi bi-plus-square"></i>
+                            <span>New Course</span>
+                          </a>
+                          <hr class="dropdown-divider" />
+                          <form
+                            method="POST"
+                            action="${app.locals.settings
+                              .url}/authenticate?_method=DELETE"
+                          >
+                            <button
+                              class="dropdown-item"
+                              style="${css`
+                                display: flex;
+                                gap: 0.5rem;
+                              `}"
+                            >
+                              <i class="bi bi-box-arrow-right"></i>
+                              <span>Sign Out</span>
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    `}
+              </div>
+            </nav>
+          </header>
+
+          <main
+            style="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+          >
+            $${body}
+          </main>
+        </div>
+      `
+    );
+
   app.get<
     {},
     HTML,
@@ -1553,7 +1553,7 @@ export default async function courselore(
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.unauthenticated(
           req,
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
@@ -1649,7 +1649,7 @@ export default async function courselore(
       });
 
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.unauthenticated(
           req,
           res,
           html`<title>Authenticate · CourseLore</title>`,
@@ -1750,7 +1750,7 @@ export default async function courselore(
       );
       if (email === undefined)
         return res.send(
-          app.locals.layouts.box(
+          app.locals.layouts.unauthenticated(
             req,
             res,
             html`<title>Authenticate · CourseLore</title>`,
@@ -1780,7 +1780,7 @@ export default async function courselore(
       );
       if (user === undefined)
         return res.send(
-          app.locals.layouts.box(
+          app.locals.layouts.unauthenticated(
             req,
             res,
             html`<title>Sign up · CourseLore</title>`,
@@ -1872,7 +1872,7 @@ export default async function courselore(
       )!.exists === 1
     )
       return res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`<title>Sign up · CourseLore</title>`,
@@ -1947,7 +1947,7 @@ export default async function courselore(
           ? html`<strong>${otherUserEmail}</strong>`
           : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`<title>Magic Authentication Link · CourseLore</title>`,
@@ -2039,7 +2039,7 @@ export default async function courselore(
       switch (res.locals.enrollments.length) {
         case 0:
           res.send(
-            app.locals.layouts.main(
+            app.locals.layouts.authenticated(
               req,
               res,
               html`<title>CourseLore</title>`,
@@ -2073,7 +2073,7 @@ export default async function courselore(
 
         default:
           res.send(
-            app.locals.layouts.main(
+            app.locals.layouts.authenticated(
               req,
               res,
               html`<title>CourseLore</title>`,
@@ -2116,7 +2116,7 @@ export default async function courselore(
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`<title>User Settings · CourseLore</title>`,
@@ -2197,7 +2197,7 @@ export default async function courselore(
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`<title>Create a New Course · CourseLore</title>`,
@@ -2508,7 +2508,7 @@ export default async function courselore(
     (req, res) => {
       if (res.locals.threads.length === 0)
         return res.send(
-          app.locals.layouts.main(
+          app.locals.layouts.authenticated(
             req,
             res,
             html`<title>${res.locals.course.name} · CourseLore</title>`,
@@ -2772,7 +2772,7 @@ export default async function courselore(
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`
@@ -3822,7 +3822,7 @@ export default async function courselore(
 
       const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`
@@ -3903,7 +3903,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`
@@ -3938,7 +3938,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`
@@ -4013,7 +4013,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`
@@ -6016,7 +6016,7 @@ ${value}</textarea
     );
 
     res.send(
-      app.locals.layouts.main(
+      app.locals.layouts.authenticated(
         req,
         res,
         html`
@@ -6103,7 +6103,7 @@ ${value}</textarea
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
@@ -6128,7 +6128,7 @@ ${value}</textarea
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.main(
+        app.locals.layouts.authenticated(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
@@ -6162,7 +6162,7 @@ ${value}</textarea
     const isValidation = err === "validation";
     const message = isValidation ? "Validation" : "Server";
     res.status(isValidation ? 422 : 500).send(
-      app.locals.layouts.main(
+      app.locals.layouts.authenticated(
         req,
         res,
         html`<title>${message} Error · CourseLore</title>`,
