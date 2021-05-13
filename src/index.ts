@@ -1357,13 +1357,13 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<EventSourceMiddlewareLocals> &
-          Partial<IsEnrolledInCourseMiddlewareLocals>
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
       >,
       res: express.Response<
         any,
-        Partial<EventSourceMiddlewareLocals> &
-          Partial<IsEnrolledInCourseMiddlewareLocals>
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
       >,
       head: HTML,
       body: HTML
