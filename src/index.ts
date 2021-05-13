@@ -2679,33 +2679,57 @@ export default async function courselore(
             res,
             html`<title>${res.locals.course.name} · CourseLore</title>`,
             html`
-              <h1>
-                Welcome to
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}"
-                  >${res.locals.course.name}</a
-                >!
-              </h1>
+              <h1>Welcome to ${res.locals.course.name}!</h1>
 
               $${app.locals.partials.courseSwitcher(req, res)}
               $${res.locals.enrollment.role === "staff"
                 ? html`
-                    <p>
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: 1rem;
+                        @include media-breakpoint-down(md) {
+                          flex-direction: column;
+                        }
+                      `}"
+                    >
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings#invitations"
-                        ><strong>Invite other people to the course</strong></a
-                      >.
-                    </p>
-                    <p>
-                      Or
+                          .course.reference}/settings"
+                        class="btn btn-primary"
+                        style="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <div
+                          style="${css`
+                            display: inline-flex;
+                            gap: 0.5rem;
+                          `}"
+                        >
+                          <i class="bi bi-person-plus"></i>
+                          <span>Invite Other People to the Course</span>
+                        </div>
+                      </a>
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/threads/new"
-                        ><strong>create the first thread</strong></a
-                      >.
-                    </p>
+                        class="btn btn-outline-primary"
+                        style="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <div
+                          style="${css`
+                            display: inline-flex;
+                            gap: 0.5rem;
+                          `}"
+                        >
+                          <i class="bi bi-node-plus"></i>
+                          <span>Create the First Thread</span>
+                        </div>
+                      </a>
+                    </div>
                   `
                 : html`
                     <p>
