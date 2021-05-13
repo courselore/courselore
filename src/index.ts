@@ -1390,7 +1390,13 @@ export default async function courselore(
                 background-color: $purple;
               `}"
             >
-              <div class="container-fluid">
+              <div
+                class="container-fluid"
+                style="${css`
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 1fr;
+                `}"
+              >
                 <a
                   href="$${app.locals.settings.url}/"
                   class="navbar-brand"
@@ -1442,6 +1448,7 @@ export default async function courselore(
                       <div
                         class="dropdown"
                         style="${css`
+                          justify-self: center;
                           display: flex;
                           gap: 0.5rem;
                           @include media-breakpoint-down(md) {
@@ -1505,6 +1512,8 @@ export default async function courselore(
                   : html`
                       <div
                         style="${css`
+                          grid-area: 1 / 3;
+                          justify-self: end;
                           display: flex;
                           gap: 1rem;
                           align-items: center;
