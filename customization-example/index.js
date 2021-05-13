@@ -94,6 +94,9 @@ module.exports = (require) => {
           style="${css`
             display: flex;
             gap: 1rem;
+            @include media-breakpoint-down(md) {
+              flex-direction: column;
+            }
           `}"
         >
           <a
@@ -101,8 +104,17 @@ module.exports = (require) => {
             class="btn btn-primary btn-lg"
             data-bs-toggle="tooltip"
             title="Very early development demo"
-            >Demo</a
           >
+            <div
+              style="${css`
+                display: inline-flex;
+                gap: 0.5rem;
+              `}"
+            >
+              <i class="bi bi-easel"></i>
+              <span>Demo</span>
+            </div>
+          </a>
 
           <span class="btn-group btn-group-lg">
             <a
@@ -110,16 +122,34 @@ module.exports = (require) => {
               class="btn btn-outline-primary"
               data-bs-toggle="tooltip"
               title="Source code on GitHub"
-              ><i class="bi bi-github"></i
-            ></a>
+            >
+              <div
+                style="${css`
+                  display: inline-flex;
+                  gap: 0.5rem;
+                `}"
+              >
+                <i class="bi bi-github"></i>
+                <span>Source Code</span>
+              </div>
+            </a>
 
             <a
               href="mailto:contact@courselore.org"
               class="btn btn-outline-primary"
               data-bs-toggle="tooltip"
               title="Contact via email"
-              ><i class="bi bi-envelope-fill"></i
-            ></a>
+            >
+              <div
+                style="${css`
+                  display: inline-flex;
+                  gap: 0.5rem;
+                `}"
+              >
+                <i class="bi bi-envelope-fill"></i>
+                <span>Contact</span>
+              </div>
+            </a>
           </span>
         </nav>
       </header>

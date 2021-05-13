@@ -1450,24 +1450,30 @@ export default async function courselore(
                         style="${css`
                           justify-self: center;
                           display: flex;
-                          gap: 0.5rem;
+                          gap: 1rem;
+                          align-items: baseline;
                           @include media-breakpoint-down(md) {
                             display: none;
                           }
                         `}"
                       >
-                        <div
+                        <h2
                           class="text-truncate"
                           style="${css`
                             color: white;
                             max-width: 40ch;
+                            margin-bottom: 0;
                           `}"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="bottom"
+                          title="${res.locals.course.name}"
                         >
                           ${res.locals.course.name}
-                        </div>
+                        </h2>
                         $${res.locals.otherEnrollments!.length === 0
                           ? html``
                           : html`
+                              <!-- TODO: btn-outline? -->
                               <a
                                 role="button"
                                 class="link-light"
@@ -1475,6 +1481,15 @@ export default async function courselore(
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                                 aria-label="Switch to Another Course"
+                                style="${css`
+                                  border: 1px solid white;
+                                  border-radius: $border-radius;
+                                  width: 1.5rem;
+                                  height: 1.5rem;
+                                  display: flex;
+                                  justify-content: center;
+                                  align-items: center;
+                                `}"
                                 ><span
                                   data-bs-toggle="tooltip"
                                   title="Switch to Another Course"
@@ -1636,18 +1651,21 @@ export default async function courselore(
               ? html``
               : html`
                   <nav
-                    class="navbar navbar-light bg-light"
+                    class="navbar navbar-light"
                     style="${css`
+                      background-color: $gray-300;
                       @include media-breakpoint-up(md) {
                         display: none;
                       }
                     `}"
                   >
                     <div class="container-fluid">
+                      <!-- TODO: text-truncate -->
                       <span
                         class="navbar-brand"
                         style="${css`
                           white-space: normal;
+                          font-weight: 500;
                         `}"
                       >
                         ${res.locals.course.name}
@@ -1655,6 +1673,7 @@ export default async function courselore(
                       $${res.locals.otherEnrollments!.length === 0
                         ? html``
                         : html`
+                            <!-- TODO: btn-outline? -->
                             <button
                               class="btn"
                               type="button"
@@ -1665,6 +1684,13 @@ export default async function courselore(
                               aria-label="Switch to Another Course"
                               style="${css`
                                 padding: 0;
+                                border: 1px solid black;
+                                border-radius: $border-radius;
+                                width: 1.5rem;
+                                height: 1.5rem;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
                               `}"
                             >
                               <span
@@ -2856,7 +2882,7 @@ export default async function courselore(
                             gap: 0.5rem;
                           `}"
                         >
-                          <i class="bi bi-node-plus"></i>
+                          <i class="bi bi-chat-left-text"></i>
                           <span>Create the First Thread</span>
                         </div>
                       </a>
@@ -2880,7 +2906,7 @@ export default async function courselore(
                           gap: 0.5rem;
                         `}"
                       >
-                        <i class="bi bi-node-plus"></i>
+                        <i class="bi bi-chat-left-text"></i>
                         <span>Create the First Thread</span>
                       </div>
                     </a>
