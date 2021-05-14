@@ -1464,6 +1464,7 @@ export default async function courselore(
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         style="${css`
+                          white-space: normal;
                           padding: 0 0.2rem;
                           font-weight: 500;
                           &:hover,
