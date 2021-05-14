@@ -2235,32 +2235,63 @@ export default async function courselore(
               html`
                 <div
                   style="${css`
-                    display: flex;
-                    gap: 1rem;
-                    @include media-breakpoint-down(md) {
-                      flex-direction: column;
-                    }
-                    & > * {
-                      flex: 1;
-                    }
+                    text-align: center;
                   `}"
                 >
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#enroll-in-an-existing-course-modal"
+                  <h1
+                    style="${css`
+                      font-family: $font-family-serif;
+                      font-size: 2rem;
+                      font-weight: bold;
+                      font-style: italic;
+                      background: linear-gradient(
+                        135deg,
+                        $purple 0%,
+                        $pink 100%
+                      );
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                    `}"
                   >
-                    <i class="bi bi-journal-arrow-down"></i>
-                    Enroll in an Existing Course
-                  </button>
-                  <a
-                    href="${app.locals.settings.url}/courses/new"
-                    class="btn btn-outline-primary"
+                    Welcome to CourseLore!
+                  </h1>
+                  <p
+                    style="${css`
+                      color: $text-muted;
+                    `}"
                   >
-                    <i class="bi bi-journal-plus"></i>
-                    Create a New Course
-                  </a>
+                    Get started by enrolling in an existing course or creating a
+                    new course.
+                  </p>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: 1rem;
+                      @include media-breakpoint-down(md) {
+                        flex-direction: column;
+                      }
+                      & > * {
+                        flex: 1;
+                      }
+                    `}"
+                  >
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#enroll-in-an-existing-course-modal"
+                    >
+                      <i class="bi bi-journal-arrow-down"></i>
+                      Enroll in an Existing Course
+                    </button>
+                    <a
+                      href="${app.locals.settings.url}/courses/new"
+                      class="btn btn-outline-primary"
+                    >
+                      <i class="bi bi-journal-plus"></i>
+                      Create a New Course
+                    </a>
+                  </div>
                 </div>
               `
             )
@@ -2678,57 +2709,76 @@ export default async function courselore(
             res,
             html`<title>${res.locals.course.name} · CourseLore</title>`,
             html`
-              $${res.locals.enrollment.role === "staff"
-                ? html`
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: 1rem;
-                        @include media-breakpoint-down(md) {
-                          flex-direction: column;
-                        }
-                      `}"
-                    >
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings"
-                        class="btn btn-primary"
-                        style="${css`
-                          flex: 1;
-                        `}"
-                      >
-                        <i class="bi bi-person-plus"></i>
-                        Invite Other People to the Course
-                      </a>
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/threads/new"
-                        class="btn btn-outline-primary"
-                        style="${css`
-                          flex: 1;
-                        `}"
-                      >
-                        <i class="bi bi-chat-left-text"></i>
-                        Create the First Thread
-                      </a>
-                    </div>
-                  `
-                : html`
-                    <p>This is a new course.</p>
-                    <a
-                      href="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/new"
-                      class="btn btn-primary"
-                      style="${css`
-                        @include media-breakpoint-down(md) {
-                          width: 100%;
-                        }
-                      `}"
-                    >
-                      <i class="bi bi-chat-left-text"></i>
-                      Create the First Thread
-                    </a>
-                  `}
+              <div
+                style="${css`
+                  text-align: center;
+                `}"
+              >
+                <h1
+                  style="${css`
+                    font-family: $font-family-serif;
+                    font-size: 2rem;
+                    font-weight: bold;
+                    font-style: italic;
+                    background: linear-gradient(135deg, $purple 0%, $pink 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                  `}"
+                >
+                  Welcome to ${res.locals.course.name}!
+                </h1>
+
+                <p
+                  style="${css`
+                    color: $text-muted;
+                  `}"
+                >
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        Get started by inviting other people to the course or by
+                        creating the first thread.
+                      `
+                    : html`
+                        This is a new course. Be the first to create a thread.
+                      `}
+                </p>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: 1rem;
+                    @include media-breakpoint-down(md) {
+                      flex-direction: column;
+                    }
+                  `}"
+                >
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}/settings"
+                          class="btn btn-primary"
+                          style="${css`
+                            flex: 1;
+                          `}"
+                        >
+                          <i class="bi bi-person-plus"></i>
+                          Invite Other People to the Course
+                        </a>
+                      `
+                    : html``}
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/threads/new"
+                    class="btn btn-outline-primary"
+                    style="${css`
+                      flex: 1;
+                    `}"
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Create the First Thread
+                  </a>
+                </div>
+              </div>
             `
           )
         );
