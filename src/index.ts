@@ -2359,51 +2359,56 @@ export default async function courselore(
             <form
               method="POST"
               action="${app.locals.settings.url}/settings?_method=PATCH"
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              `}"
             >
-              <p>
-                <label>
-                  <strong>Name</strong><br />
-                  <span
-                    style="${css`
-                      display: flex;
-
-                      & > * + * {
-                        margin-left: 1rem;
-                      }
-                    `}"
-                  >
-                    <input
-                      type="text"
-                      name="name"
-                      autocomplete="off"
-                      required
-                      value="${res.locals.user.name}"
-                      class="full-width"
-                      style="${css`
-                        flex: 1;
-                      `}"
-                    />
-                    <button>Change Name</button>
-                  </span>
-                </label>
-              </p>
-            </form>
-
-            <p>
-              <label>
-                <strong>Email</strong><br />
+              <div class="form-floating">
                 <input
-                  type="email"
-                  value="${res.locals.user.email}"
-                  disabled
-                  class="full-width"
-                /><br />
-                <small class="full-width secondary">
+                  type="text"
+                  id="name"
+                  name="name"
+                  autocomplete="off"
+                  required
+                  value="${res.locals.user.name}"
+                  class="form-control"
+                />
+                <label for="name">Name</label>
+              </div>
+              <div>
+                <div class="form-floating">
+                  <input
+                    type="email"
+                    id="email"
+                    value="${res.locals.user.email}"
+                    class="form-control"
+                    disabled
+                    aria-describedby="email-help"
+                  />
+                  <label for="email">Email</label>
+                </div>
+                <div id="email-help" class="form-text">
                   Your email is your identity in CourseLore and can’t be
                   changed.
-                </small>
-              </label>
-            </p>
+                </div>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="${css`
+                    @include media-breakpoint-down(md) {
+                      width: 100%;
+                    }
+                  `}"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update User Settings
+                </button>
+              </div>
+            </form>
           `
         )
       );
