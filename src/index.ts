@@ -1558,24 +1558,16 @@ export default async function courselore(
                               class="dropdown-item"
                               data-bs-toggle="modal"
                               data-bs-target="#enroll-in-an-existing-course-modal"
-                              style="${css`
-                                display: flex;
-                                gap: 0.5rem;
-                              `}"
                             >
                               <i class="bi bi-journal-arrow-down"></i>
-                              <span>Enroll in an Existing Course</span>
+                              Enroll in an Existing Course
                             </button>
                             <a
                               href="${app.locals.settings.url}/courses/new"
                               class="dropdown-item"
-                              style="${css`
-                                display: flex;
-                                gap: 0.5rem;
-                              `}"
                             >
                               <i class="bi bi-journal-plus"></i>
-                              <span>Create a New Course</span>
+                              Create a New Course
                             </a>
                           </div>
                         </div>
@@ -1617,28 +1609,18 @@ export default async function courselore(
                             <a
                               class="dropdown-item"
                               href="${app.locals.settings.url}/settings"
-                              style="${css`
-                                display: flex;
-                                gap: 0.5rem;
-                              `}"
                             >
                               <i class="bi bi-sliders"></i>
-                              <span>Settings</span>
+                              Settings
                             </a>
                             <form
                               method="POST"
                               action="${app.locals.settings
                                 .url}/authenticate?_method=DELETE"
                             >
-                              <button
-                                class="dropdown-item"
-                                style="${css`
-                                  display: flex;
-                                  gap: 0.5rem;
-                                `}"
-                              >
+                              <button class="dropdown-item">
                                 <i class="bi bi-box-arrow-right"></i>
-                                <span>Sign Out</span>
+                                Sign Out
                               </button>
                             </form>
                           </div>
@@ -2525,15 +2507,8 @@ export default async function courselore(
                     }
                   `}"
                 >
-                  <div
-                    style="${css`
-                      display: inline-flex;
-                      gap: 0.5rem;
-                    `}"
-                  >
-                    <i class="bi bi-journal-plus"></i>
-                    <span>Create Course</span>
-                  </div>
+                  <i class="bi bi-journal-plus"></i>
+                  Create Course
                 </button>
               </div>
             </form>
@@ -2791,15 +2766,8 @@ export default async function courselore(
                           flex: 1;
                         `}"
                       >
-                        <div
-                          style="${css`
-                            display: inline-flex;
-                            gap: 0.5rem;
-                          `}"
-                        >
                           <i class="bi bi-person-plus"></i>
-                          <span>Invite Other People to the Course</span>
-                        </div>
+                          Invite Other People to the Course
                       </a>
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
@@ -2809,15 +2777,8 @@ export default async function courselore(
                           flex: 1;
                         `}"
                       >
-                        <div
-                          style="${css`
-                            display: inline-flex;
-                            gap: 0.5rem;
-                          `}"
-                        >
                           <i class="bi bi-chat-left-text"></i>
-                          <span>Create the First Thread</span>
-                        </div>
+                          Create the First Thread
                       </a>
                     </div>
                   `
@@ -2833,15 +2794,8 @@ export default async function courselore(
                         }
                       `}"
                     >
-                      <div
-                        style="${css`
-                          display: inline-flex;
-                          gap: 0.5rem;
-                        `}"
-                      >
                         <i class="bi bi-chat-left-text"></i>
-                        <span>Create the First Thread</span>
-                      </div>
+                        Create the First Thread
                     </a>
                   `}
             `
