@@ -1460,7 +1460,7 @@ export default async function courselore(
                       <a
                         role="button"
                         class="btn link-light dropdown-toggle"
-                        id="course-switcher-up-md"
+                        id="course-menu"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         style="${css`
@@ -1474,10 +1474,7 @@ export default async function courselore(
                       >
                         ${res.locals.course.name}
                       </a>
-                      <div
-                        class="dropdown-menu"
-                        aria-labelledby="course-switcher-up-md"
-                      >
+                      <div class="dropdown-menu" aria-labelledby="course-menu">
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}/settings"
