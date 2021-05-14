@@ -389,7 +389,7 @@ export default async function courselore(
                     `}"
                   >
                     <i class="bi bi-easel"></i>
-                    Demonstration Mode
+                    Demonstration Mode
                   </a>
                   <a
                     href="${app.locals.settings.url}/demonstration-inbox"
@@ -406,12 +406,8 @@ export default async function courselore(
                         : css``}
                     `}"
                   >
-                    <i
-                      class="bi ${req.path === "/demonstration-inbox"
-                        ? "bi-inbox-fill"
-                        : "bi-inbox"}"
-                    ></i>
-                    Demonstration Inbox
+                    <i class="bi bi-inbox"></i>
+                    Demonstration Inbox
                   </a>
                 </nav>
               `
@@ -2022,7 +2018,7 @@ export default async function courselore(
           app.locals.layouts.box(
             req,
             res,
-            html`<title>Authenticate · CourseLore</title>`,
+            html`<title>Authenticate · CourseLore</title>`,
             html`
               <p class="card-text">
                 This magic authentication link is invalid or has expired.
@@ -2054,7 +2050,7 @@ export default async function courselore(
           app.locals.layouts.box(
             req,
             res,
-            html`<title>Sign up · CourseLore</title>`,
+            html`<title>Sign up · CourseLore</title>`,
             html`
               <form
                 method="POST"
@@ -2139,7 +2135,7 @@ export default async function courselore(
         app.locals.layouts.box(
           req,
           res,
-          html`<title>Sign up · CourseLore</title>`,
+          html`<title>Sign up · CourseLore</title>`,
           html`
             <p class="card-text">Something went wrong in your sign up.</p>
             <p class="card-text">
@@ -2214,7 +2210,7 @@ export default async function courselore(
         app.locals.layouts.main(
           req,
           res,
-          html`<title>Magic Authentication Link · CourseLore</title>`,
+          html`<title>Magic Authentication Link · CourseLore</title>`,
           html`
             <h1>Magic Authentication Link</h1>
 
@@ -6407,7 +6403,7 @@ ${value}</textarea
       app.locals.layouts.main(
         req,
         res,
-        html`<title>${message} Error · CourseLore</title>`,
+        html`<title>${message} Error · CourseLore</title>`,
         html`
           <h1>${message} Error</h1>
 
