@@ -1879,15 +1879,8 @@ export default async function courselore(
                 data-bs-toggle="tooltip"
                 title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
               >
-                <div
-                  style="${css`
-                    display: inline-flex;
-                    gap: 0.5rem;
-                  `}"
-                >
-                  <span>Continue</span>
-                  <i class="bi bi-chevron-right"></i>
-                </div>
+                Continue
+                <i class="bi bi-chevron-right"></i>
               </button>
             </form>
           `
@@ -2003,29 +1996,15 @@ export default async function courselore(
                         href="${magicAuthenticationLink}"
                         class="btn btn-outline-dark"
                       >
-                        <span
-                          style="${css`
-                            display: inline-flex;
-                            gap: 0.5rem;
-                          `}"
-                        >
-                          <i class="bi bi-box-arrow-in-right"></i>
-                          <span>Follow Magic Authentication Link</span>
-                        </span>
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Follow Magic Authentication Link
                       </a>
                       <a
                         href="${app.locals.settings.url}/demonstration-inbox"
                         class="btn btn-outline-dark"
                       >
-                        <span
-                          style="${css`
-                            display: inline-flex;
-                            gap: 0.5rem;
-                          `}"
-                        >
-                          <i class="bi bi-inbox"></i>
-                          <span>Go to the Demonstration Inbox</span>
-                        </span>
+                        <i class="bi bi-inbox"></i>
+                        Go to the Demonstration Inbox
                       </a>
                     </div>
                   </div>
@@ -2072,15 +2051,8 @@ export default async function courselore(
                     width: 100%;
                   `}"
                 >
-                  <span
-                    style="${css`
-                      display: inline-flex;
-                      gap: 0.5rem;
-                    `}"
-                  >
-                    <i class="bi bi-chevron-left"></i>
-                    <span>Start Over</span>
-                  </span>
+                  <i class="bi bi-chevron-left"></i>
+                  Start Over
                 </a>
               </p>
             `
@@ -2096,14 +2068,6 @@ export default async function courselore(
             res,
             html`<title>Sign up · CourseLore</title>`,
             html`
-              <p
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                Welcome to CourseLore!
-              </p>
-
               <form
                 method="POST"
                 action="${app.locals.settings.url}/users?${qs.stringify({
@@ -2149,15 +2113,8 @@ export default async function courselore(
                 </div>
 
                 <button type="submit" class="btn btn-primary">
-                  <span
-                    style="${css`
-                      display: inline-flex;
-                      gap: 0.5rem;
-                    `}"
-                  >
-                    <i class="bi bi-person-plus"></i>
-                    <span>Create Account</span>
-                  </span>
+                  <i class="bi bi-person-plus"></i>
+                  Create Account
                 </button>
               </form>
             `
@@ -2209,15 +2166,8 @@ export default async function courselore(
                   width: 100%;
                 `}"
               >
-                <span
-                  style="${css`
-                    display: inline-flex;
-                    gap: 0.5rem;
-                  `}"
-                >
-                  <i class="bi bi-chevron-left"></i>
-                  <span>Start Over</span>
-                </span>
+                <i class="bi bi-chevron-left"></i>
+                Start Over
               </a>
             </p>
           `
@@ -2377,6 +2327,9 @@ export default async function courselore(
                     @include media-breakpoint-down(md) {
                       flex-direction: column;
                     }
+                    & > * {
+                      flex: 1;
+                    }
                   `}"
                 >
                   <button
@@ -2384,36 +2337,16 @@ export default async function courselore(
                     class="btn btn-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#enroll-in-an-existing-course-modal"
-                    style="${css`
-                      flex: 1;
-                    `}"
                   >
-                    <div
-                      style="${css`
-                        display: inline-flex;
-                        gap: 0.5rem;
-                      `}"
-                    >
-                      <i class="bi bi-journal-arrow-down"></i>
-                      <span>Enroll in an Existing Course</span>
-                    </div>
+                    <i class="bi bi-journal-arrow-down"></i>
+                    Enroll in an Existing Course
                   </button>
                   <a
                     href="${app.locals.settings.url}/courses/new"
                     class="btn btn-outline-primary"
-                    style="${css`
-                      flex: 1;
-                    `}"
                   >
-                    <div
-                      style="${css`
-                        display: inline-flex;
-                        gap: 0.5rem;
-                      `}"
-                    >
-                      <i class="bi bi-journal-plus"></i>
-                      <span>Create a New Course</span>
-                    </div>
+                    <i class="bi bi-journal-plus"></i>
+                    Create a New Course
                   </a>
                 </div>
               `

@@ -43,13 +43,13 @@ module.exports = (require) => {
                 <g transform="translate(300, 250) rotate(-2)">
                   <rect
                     fill="#83769c"
-                    width="570"
+                    width="550"
                     height="100"
-                    x="-285"
+                    x="-275"
                     y="-85"
                     rx="10"
                   />
-                  <text font-family="IBM Plex Serif" font-size="6.5rem">
+                  <text font-family="IBM Plex Serif" font-size="6.3rem">
                     CourseLore
                   </text>
                 </g>
@@ -105,15 +105,8 @@ module.exports = (require) => {
             data-bs-toggle="tooltip"
             title="Very early development demo"
           >
-            <div
-              style="${css`
-                display: inline-flex;
-                gap: 0.5rem;
-              `}"
-            >
-              <i class="bi bi-easel"></i>
-              <span>Demo</span>
-            </div>
+            <i class="bi bi-easel"></i>
+            Demo
           </a>
 
           <span class="btn-group btn-group-lg">
@@ -123,15 +116,8 @@ module.exports = (require) => {
               data-bs-toggle="tooltip"
               title="Source code on GitHub"
             >
-              <div
-                style="${css`
-                  display: inline-flex;
-                  gap: 0.5rem;
-                `}"
-              >
-                <i class="bi bi-github"></i>
-                <span>Source Code</span>
-              </div>
+              <i class="bi bi-github"></i>
+              Source Code
             </a>
 
             <a
@@ -140,15 +126,8 @@ module.exports = (require) => {
               data-bs-toggle="tooltip"
               title="Contact via email"
             >
-              <div
-                style="${css`
-                  display: inline-flex;
-                  gap: 0.5rem;
-                `}"
-              >
-                <i class="bi bi-envelope-fill"></i>
-                <span>Contact</span>
-              </div>
+              <i class="bi bi-envelope-fill"></i>
+              Contact
             </a>
           </span>
         </nav>
