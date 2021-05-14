@@ -1288,7 +1288,7 @@ export default async function courselore(
             style="${css`
               color: white;
               background-color: $purple-600;
-              max-width: 40ch;
+              max-width: 45ch;
               flex: 1;
             `}"
           >
