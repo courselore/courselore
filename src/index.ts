@@ -358,25 +358,10 @@ export default async function courselore(
             ? html`
                 <nav
                   style="${css`
-                    @include font-size($font-size-sm);
                     text-align: center;
-                    color: white;
                     background-color: $red;
-                    padding: 0.5rem 1rem;
+                    padding: 0.2rem 1rem;
                     border-bottom: 1px solid white;
-                    display: flex;
-                    gap: 1rem;
-                    justify-content: center;
-
-                    a {
-                      text-decoration: none;
-                      color: inherit;
-                      &:hover,
-                      &:focus {
-                        color: $red-100;
-                      }
-                      transition: $btn-transition;
-                    }
                   `}"
                 >
                   <a
@@ -395,22 +380,39 @@ export default async function courselore(
                     `}"
                     data-bs-html="true"
                     tabindex="0"
-                    ><i class="bi bi-easel"></i> Demonstration Mode</a
+                    class="btn btn-sm link-light"
+                    style="${css`
+                      &:hover,
+                      &:focus {
+                        background-color: $red-600;
+                      }
+                    `}"
                   >
+                    <i class="bi bi-easel"></i>
+                    Demonstration Mode
+                  </a>
                   <a
                     href="${app.locals.settings.url}/demonstration-inbox"
-                    style="${req.path === "/demonstration-inbox"
-                      ? css`
-                          font-weight: bold;
-                        `
-                      : css``}"
-                    ><i
+                    class="btn btn-sm link-light"
+                    style="${css`
+                      &:hover,
+                      &:focus {
+                        background-color: $red-600;
+                      }
+                      ${req.path === "/demonstration-inbox"
+                        ? css`
+                            background-color: $red-600;
+                          `
+                        : css``}
+                    `}"
+                  >
+                    <i
                       class="bi ${req.path === "/demonstration-inbox"
                         ? "bi-inbox-fill"
                         : "bi-inbox"}"
-                    ></i
-                    > Demonstration Inbox</a
-                  >
+                    ></i>
+                    Demonstration Inbox
+                  </a>
                 </nav>
               `
             : html``}
@@ -1298,29 +1300,32 @@ export default async function courselore(
               <h1
                 class="card-text"
                 style="${css`
-                  font-size: 2rem;
                   text-align: center;
                 `}"
               >
                 <a
-                  href="$${app.locals.settings.url}/"
+                  href="${app.locals.settings.url}/"
+                  class="btn link-light"
                   style="${css`
                     font-family: $font-family-serif;
+                    font-size: 2rem;
                     font-weight: bold;
                     font-style: italic;
-                    text-decoration: none;
-                    color: inherit;
+                    padding: 0;
+                    display: inline-flex;
+                    gap: 0.5rem;
+                    align-items: center;
                     * {
                       stroke: white;
+                      transition: stroke 0.15s ease-in-out;
                     }
                     &:hover,
                     &:focus {
                       color: $purple-100;
+                      * {
+                        stroke: $purple-100;
+                      }
                     }
-                    display: inline-flex;
-                    gap: 0.5rem;
-                    align-items: center;
-                    transition: $btn-transition;
                   `}"
                 >
                   $${app.locals.partials.art.small}
@@ -1385,40 +1390,38 @@ export default async function courselore(
         >
           <header>
             <nav
-              class="navbar navbar-expand-lg navbar-dark"
               style="${css`
                 background-color: $purple;
+                padding: 0.5rem 1rem;
+                display: grid;
+                grid-template-columns: 1fr 2fr 1fr;
               `}"
             >
-              <div
-                class="container-fluid"
-                style="${css`
-                  display: grid;
-                  grid-template-columns: 1fr 1fr 1fr;
-                `}"
-              >
+              <div>
                 <a
-                  href="$${app.locals.settings.url}/"
-                  class="navbar-brand"
+                  href="${app.locals.settings.url}/"
+                  class="btn link-light"
                   style="${css`
                     font-family: $font-family-serif;
                     font-size: 1.5rem;
                     font-weight: bold;
                     font-style: italic;
                     line-height: 1;
-                    text-decoration: none;
-                    color: white;
+                    padding: 0;
+                    display: inline-flex;
+                    gap: 0.5rem;
+                    align-items: center;
                     * {
                       stroke: white;
+                      transition: stroke 0.15s ease-in-out;
                     }
                     &:hover,
                     &:focus {
                       color: $purple-100;
+                      * {
+                        stroke: $purple-100;
+                      }
                     }
-                    display: inline-flex;
-                    gap: 0.5rem;
-                    align-items: center;
-                    transition: $btn-transition;
                   `}"
                 >
                   $${app.locals.partials.art.small}
@@ -1441,269 +1444,272 @@ export default async function courselore(
                     });
                   })();
                 </script>
+              </div>
 
-                $${res.locals.course === undefined
-                  ? html``
-                  : html`
-                      <div
-                        class="dropdown"
+              $${res.locals.course === undefined
+                ? html``
+                : html`
+                    <div
+                      class="dropdown"
+                      style="${css`
+                        justify-self: center;
+                        @include media-breakpoint-down(md) {
+                          display: none;
+                        }
+                      `}"
+                    >
+                      <a
+                        role="button"
+                        class="btn link-light dropdown-toggle"
+                        id="course-switcher-up-md"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
                         style="${css`
-                          justify-self: center;
-                          display: flex;
-                          gap: 1rem;
-                          align-items: baseline;
-                          @include media-breakpoint-down(md) {
-                            display: none;
+                          padding: 0 0.2rem;
+                          font-weight: 500;
+                          &:hover,
+                          &:focus {
+                            background-color: $purple-600;
                           }
                         `}"
                       >
-                        <h2
-                          class="text-truncate"
-                          style="${css`
-                            color: white;
-                            max-width: 40ch;
-                            margin-bottom: 0;
-                          `}"
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="bottom"
-                          title="${res.locals.course.name}"
+                        ${res.locals.course.name}
+                      </a>
+                      <div
+                        class="dropdown-menu"
+                        aria-labelledby="course-switcher-up-md"
+                      >
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}/settings"
+                          class="dropdown-item"
                         >
-                          ${res.locals.course.name}
-                        </h2>
+                          <i class="bi bi-sliders"></i>
+                          Course Settings
+                        </a>
                         $${res.locals.otherEnrollments!.length === 0
                           ? html``
                           : html`
-                              <!-- TODO: btn-outline? -->
-                              <a
-                                role="button"
-                                class="link-light"
-                                id="course-switcher-up-md"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                                aria-label="Switch to Another Course"
-                                style="${css`
-                                  border: 1px solid white;
-                                  border-radius: $border-radius;
-                                  width: 1.5rem;
-                                  height: 1.5rem;
-                                  display: flex;
-                                  justify-content: center;
-                                  align-items: center;
-                                `}"
-                                ><span
-                                  data-bs-toggle="tooltip"
-                                  title="Switch to Another Course"
-                                  ><i class="bi bi-arrow-left-right"></i></span
-                              ></a>
-                              <div
-                                class="dropdown-menu dropdown-menu-end"
-                                aria-labelledby="course-switcher-up-md"
-                                style="${css`
-                                  min-width: 40ch;
-                                `}"
-                              >
-                                $${res.locals.otherEnrollments!.map(
-                                  (otherEnrollment) => html`
-                                    <a
-                                      href="${app.locals.settings
-                                        .url}/courses/${otherEnrollment.course
-                                        .reference}"
-                                      class="dropdown-item"
-                                      style="${css`
-                                        display: flex;
-                                        gap: 0.5rem;
-                                        white-space: normal;
-                                      `}"
-                                      >${otherEnrollment.course.name}</a
-                                    >
-                                  `
-                                )}
-                              </div>
+                              <hr class="dropdown-divider" />
+                              <h6 class="dropdown-header">
+                                <i class="bi bi-arrow-left-right"></i>
+                                Switch to Another Course
+                              </h6>
+                              $${res.locals.otherEnrollments!.map(
+                                (otherEnrollment) => html`
+                                  <a
+                                    href="${app.locals.settings
+                                      .url}/courses/${otherEnrollment.course
+                                      .reference}"
+                                    class="dropdown-item"
+                                    style="${css`
+                                      display: flex;
+                                      gap: 0.5rem;
+                                      white-space: normal;
+                                    `}"
+                                    >${otherEnrollment.course.name}</a
+                                  >
+                                `
+                              )}
                             `}
                       </div>
-                    `}
-                $${res.locals.user === undefined
-                  ? html``
-                  : html`
-                      <div
-                        style="${css`
-                          grid-area: 1 / 3;
-                          justify-self: end;
-                          display: flex;
-                          gap: 1rem;
-                          align-items: center;
-                        `}"
-                      >
-                        <div class="dropdown">
-                          <a
-                            role="button"
-                            class="link-light"
-                            id="add-menu"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            aria-label="Add Menu"
-                            ><span
-                              class="dropdown-toggle"
-                              data-bs-toggle="tooltip"
-                              data-bs-placement="left"
-                              title="Add Course"
-                              ><i class="bi bi-plus-circle"></i></span
-                          ></a>
-                          <div
-                            class="dropdown-menu dropdown-menu-end"
-                            aria-labelledby="add-menu"
+                    </div>
+                  `}
+              $${res.locals.user === undefined
+                ? html``
+                : html`
+                    <div
+                      style="${css`
+                        grid-area: 1 / 3;
+                        justify-self: end;
+                        margin-right: -0.2rem;
+                        display: flex;
+                        gap: 0.5rem;
+                        align-items: center;
+                      `}"
+                    >
+                      <div class="dropdown">
+                        <a
+                          role="button"
+                          class="btn link-light"
+                          id="add-menu"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          aria-label="Add Menu"
+                          style="${css`
+                            padding: 0;
+                            &:hover,
+                            &:focus {
+                              background-color: $purple-600;
+                            }
+                          `}"
+                        >
+                          <span
+                            class="dropdown-toggle"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="left"
+                            title="Add Course"
+                            style="${css`
+                              padding: 0.2rem;
+                            `}"
                           >
-                            <button
-                              type="button"
-                              class="dropdown-item"
-                              data-bs-toggle="modal"
-                              data-bs-target="#enroll-in-an-existing-course-modal"
-                            >
-                              <i class="bi bi-journal-arrow-down"></i>
-                              Enroll in an Existing Course
-                            </button>
-                            <a
-                              href="${app.locals.settings.url}/courses/new"
-                              class="dropdown-item"
-                            >
-                              <i class="bi bi-journal-plus"></i>
-                              Create a New Course
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="dropdown">
+                            <i class="bi bi-plus-circle"></i>
+                          </span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="add-menu">
+                          <button
+                            type="button"
+                            class="dropdown-item"
+                            data-bs-toggle="modal"
+                            data-bs-target="#enroll-in-an-existing-course-modal"
+                          >
+                            <i class="bi bi-journal-arrow-down"></i>
+                            Enroll in an Existing Course
+                          </button>
                           <a
-                            role="button"
-                            class="link-light"
-                            id="user-menu"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            aria-label="User Menu"
-                            ><span
-                              class="dropdown-toggle"
-                              data-bs-toggle="tooltip"
-                              data-bs-placement="left"
-                              title="${res.locals.user.name}"
-                              ><i class="bi bi-person-circle"></i
-                            ></span>
+                            href="${app.locals.settings.url}/courses/new"
+                            class="dropdown-item"
+                          >
+                            <i class="bi bi-journal-plus"></i>
+                            Create a New Course
                           </a>
-                          <div
-                            class="dropdown-menu dropdown-menu-end"
-                            aria-labelledby="user-menu"
-                          >
-                            <div
-                              style="${css`
-                                padding: 0 1rem;
-                              `}"
-                            >
-                              <strong>${res.locals.user.name}</strong><br />
-                              <small
-                                style="${css`
-                                  color: $text-muted;
-                                `}"
-                                >${res.locals.user.email}</small
-                              >
-                            </div>
-                            <hr class="dropdown-divider" />
-                            <a
-                              class="dropdown-item"
-                              href="${app.locals.settings.url}/settings"
-                            >
-                              <i class="bi bi-sliders"></i>
-                              Settings
-                            </a>
-                            <form
-                              method="POST"
-                              action="${app.locals.settings
-                                .url}/authenticate?_method=DELETE"
-                            >
-                              <button class="dropdown-item">
-                                <i class="bi bi-box-arrow-right"></i>
-                                Sign Out
-                              </button>
-                            </form>
-                          </div>
                         </div>
                       </div>
-                    `}
-              </div>
+
+                      <div class="dropdown">
+                        <a
+                          role="button"
+                          class="btn link-light"
+                          id="user-menu"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          aria-label="User Menu"
+                          style="${css`
+                            padding: 0;
+                            &:hover,
+                            &:focus {
+                              background-color: $purple-600;
+                            }
+                          `}"
+                        >
+                          <span
+                            class="dropdown-toggle"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="left"
+                            title="${res.locals.user.name}"
+                            style="${css`
+                              padding: 0.2rem;
+                            `}"
+                          >
+                            <i class="bi bi-person-circle"></i>
+                          </span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="user-menu">
+                          <div
+                            style="${css`
+                              padding: 0 1rem;
+                            `}"
+                          >
+                            <strong>${res.locals.user.name}</strong><br />
+                            <small
+                              style="${css`
+                                color: $text-muted;
+                              `}"
+                              >${res.locals.user.email}</small
+                            >
+                          </div>
+                          <hr class="dropdown-divider" />
+                          <a
+                            class="dropdown-item"
+                            href="${app.locals.settings.url}/settings"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            User Settings
+                          </a>
+                          <form
+                            method="POST"
+                            action="${app.locals.settings
+                              .url}/authenticate?_method=DELETE"
+                          >
+                            <button class="dropdown-item">
+                              <i class="bi bi-box-arrow-right"></i>
+                              Sign Out
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  `}
             </nav>
+
             $${res.locals.course === undefined
               ? html``
               : html`
                   <nav
-                    class="navbar navbar-light"
                     style="${css`
-                      background-color: $gray-300;
+                      background-color: $purple-600;
+                      padding: 0.5rem 1rem;
                       @include media-breakpoint-up(md) {
                         display: none;
                       }
                     `}"
                   >
-                    <div class="container-fluid">
-                      <!-- TODO: text-truncate -->
-                      <span
-                        class="navbar-brand"
+                    <div class="dropdown">
+                      <a
+                        role="button"
+                        class="btn link-light dropdown-toggle"
+                        id="course-switcher-up-md"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
                         style="${css`
-                          white-space: normal;
+                          padding: 0 0.2rem;
                           font-weight: 500;
+                          &:hover,
+                          &:focus {
+                            background-color: $purple-700;
+                          }
                         `}"
                       >
                         ${res.locals.course.name}
-                      </span>
-                      $${res.locals.otherEnrollments!.length === 0
-                        ? html``
-                        : html`
-                            <!-- TODO: btn-outline? -->
-                            <button
-                              class="btn"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#course-switcher-down-md"
-                              aria-controls="course-switcher-down-md"
-                              aria-expanded="false"
-                              aria-label="Switch to Another Course"
-                              style="${css`
-                                padding: 0;
-                                border: 1px solid black;
-                                border-radius: $border-radius;
-                                width: 1.5rem;
-                                height: 1.5rem;
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                              `}"
-                            >
-                              <span
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="left"
-                                title="Switch to Another Course"
-                              >
+                      </a>
+                      <div
+                        class="dropdown-menu"
+                        aria-labelledby="course-switcher-up-md"
+                      >
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}/settings"
+                          class="dropdown-item"
+                        >
+                          <i class="bi bi-sliders"></i>
+                          Course Settings
+                        </a>
+                        $${res.locals.otherEnrollments!.length === 0
+                          ? html``
+                          : html`
+                              <hr class="dropdown-divider" />
+                              <h6 class="dropdown-header">
                                 <i class="bi bi-arrow-left-right"></i>
-                              </span>
-                            </button>
-                            <div
-                              class="collapse navbar-collapse"
-                              id="course-switcher-down-md"
-                            >
-                              <ul class="navbar-nav">
-                                $${res.locals.otherEnrollments!.map(
-                                  (otherEnrollment) => html`
-                                    <li class="nav-item">
-                                      <a
-                                        class="nav-link link-dark active"
-                                        href="${app.locals.settings
-                                          .url}/courses/${otherEnrollment.course
-                                          .reference}"
-                                        >${otherEnrollment.course.name}</a
-                                      >
-                                    </li>
-                                  `
-                                )}
-                              </ul>
-                            </div>
-                          `}
+                                Switch to Another Course
+                              </h6>
+                              $${res.locals.otherEnrollments!.map(
+                                (otherEnrollment) => html`
+                                  <a
+                                    href="${app.locals.settings
+                                      .url}/courses/${otherEnrollment.course
+                                      .reference}"
+                                    class="dropdown-item"
+                                    style="${css`
+                                      display: flex;
+                                      gap: 0.5rem;
+                                      white-space: normal;
+                                    `}"
+                                    >${otherEnrollment.course.name}</a
+                                  >
+                                `
+                              )}
+                            `}
+                      </div>
                     </div>
                   </nav>
                 `}
@@ -2766,8 +2772,8 @@ export default async function courselore(
                           flex: 1;
                         `}"
                       >
-                          <i class="bi bi-person-plus"></i>
-                          Invite Other People to the Course
+                        <i class="bi bi-person-plus"></i>
+                        Invite Other People to the Course
                       </a>
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
@@ -2777,8 +2783,8 @@ export default async function courselore(
                           flex: 1;
                         `}"
                       >
-                          <i class="bi bi-chat-left-text"></i>
-                          Create the First Thread
+                        <i class="bi bi-chat-left-text"></i>
+                        Create the First Thread
                       </a>
                     </div>
                   `
@@ -2794,8 +2800,8 @@ export default async function courselore(
                         }
                       `}"
                     >
-                        <i class="bi bi-chat-left-text"></i>
-                        Create the First Thread
+                      <i class="bi bi-chat-left-text"></i>
+                      Create the First Thread
                     </a>
                   `}
             `
