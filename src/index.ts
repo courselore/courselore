@@ -4399,7 +4399,7 @@ export default async function courselore(
               }
               @include media-breakpoint-up(md) {
                 display: block;
-                width: 40ch;
+                width: 35ch;
               }
             `}"
           >
