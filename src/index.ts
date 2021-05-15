@@ -4427,76 +4427,77 @@ export default async function courselore(
                     style="${css`
                       text-decoration: none;
                       color: inherit;
+                      display: block;
+                      border-top: 1px solid $purple-700;
+                      transition: $btn-transition;
+                      line-height: 1.3;
+                      padding: 0.5rem 1rem;
+                      &:hover,
+                      &:active {
+                        background-color: $purple-700;
+                      }
+                      ${thread.id === res.locals.thread?.id
+                        ? css`
+                            background-color: $purple-700;
+                          `
+                        : css``}
                     `}"
                   >
+                    <div>${thread.title}</div>
                     <div
                       style="${css`
-                        line-height: 1.3;
-                        padding: 0.5rem 1rem;
-                        border-top: 1px solid $purple-700;
-                        ${thread.id === res.locals.thread?.id
-                          ? css`
-                              background-color: $purple-700;
-                            `
-                          : css``}
+                        color: $purple-100;
+                        font-size: $small-font-size;
                       `}"
                     >
-                      <div>${thread.title}</div>
+                      #${thread.reference} created
+                      <time>${thread.createdAt}</time> by
+                      ${thread.authorEnrollment.user.name}
+                      $${thread.updatedAt !== thread.createdAt
+                        ? html`
+                            <br />
+                            and last updated
+                            <time>${thread.updatedAt}</time>
+                          `
+                        : html``}
+                      <br />
                       <div
                         style="${css`
-                          color: $purple-100;
-                          font-size: $small-font-size;
+                          display: flex;
+                          gap: 0.5rem;
+                          align-items: baseline;
                         `}"
                       >
-                        #${thread.reference} created
-                        <time>${thread.createdAt}</time> by
-                        ${thread.authorEnrollment.user.name}
-                        $${thread.updatedAt !== thread.createdAt
+                        $${thread.pinnedAt !== null
                           ? html`
-                              <br />
-                              and last updated
-                              <time>${thread.updatedAt}</time>
+                              <div>
+                                <i class="bi bi-pin"></i>
+                                Pinned
+                              </div>
                             `
                           : html``}
-                        <br />
-                        <div
-                          style="${css`
-                            display: flex;
-                            gap: 0.5rem;
-                            align-items: baseline;
-                          `}"
-                        >
-                          $${thread.pinnedAt !== null
-                            ? html`
-                                <div>
-                                  <i class="bi bi-pin"></i>
-                                  Pinned
-                                </div>
-                              `
-                            : html``}
-                          $${thread.questionAt !== null
-                            ? html`
-                                <div>
-                                  <i class="bi bi-question-diamond"></i>
-                                  Question
-                                </div>
-                              `
-                            : html``}
-                          <div>
-                            <i class="bi bi-chat-left"></i>
-                            ${thread.postsCount}
-                            post${thread.postsCount === 1 ? "" : "s"}
-                          </div>
-                          $${thread.likesCount === 0
-                            ? html``
-                            : html`
-                                <div>
-                                  <i class="bi bi-hand-thumbs-up"></i>
-                                  ${thread.likesCount}
-                                  like${thread.likesCount === 1 ? "" : "s"}
-                                </div>
-                              `}
+                        $${thread.questionAt !== null
+                          ? html`
+                              <div>
+                                <i class="bi bi-question-diamond"></i>
+                                Question
+                              </div>
+                            `
+                          : html``}
+                        <div>
+                          <i class="bi bi-chat-left"></i>
+                          ${thread.postsCount}
+                          post${thread.postsCount === 1 ? "" : "s"}
                         </div>
+                        $${thread.likesCount === 0
+                          ? html``
+                          : html`
+                              <div>
+                                <i class="bi bi-hand-thumbs-up"></i>
+                                ${thread.likesCount}
+                                like${thread.likesCount === 1 ? "" : "s"}
+                              </div>
+                            `}
                       </div>
                     </div>
                   </a>
@@ -4802,27 +4803,6 @@ ${value}</textarea
           `,
           html`
             <h1>Create a New Thread</h1>
-            <!--
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
-            <h1>Create a New Thread</h1>
 
             <form
               method="POST"
@@ -4942,7 +4922,6 @@ ${value}</textarea
                 <button>Create Thread</button>
               </p>
             </form>
-            -->
           `
         )
       );
