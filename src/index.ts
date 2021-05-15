@@ -4374,9 +4374,17 @@ export default async function courselore(
         <div
           style="${css`
             height: 100%;
-            display: flex;
+            & > * {
+              overflow: auto;
+            }
             @include media-breakpoint-down(md) {
-              flex-direction: column;
+              display: grid;
+              & > * {
+                grid-area: 1 / 1;
+              }
+            }
+            @include media-breakpoint-up(md) {
+              display: flex;
             }
           `}"
         >
@@ -4386,7 +4394,9 @@ export default async function courselore(
             style="${css`
               background-color: $purple-600;
               color: white;
-              overflow: auto;
+              @include media-breakpoint-down(md) {
+                z-index: 1;
+              }
               @include media-breakpoint-up(md) {
                 display: block;
                 width: 40ch;
@@ -4538,8 +4548,9 @@ export default async function courselore(
           </div>
           <div
             style="${css`
-              flex: 1;
-              overflow: auto;
+              @include media-breakpoint-up(md) {
+                flex: 1;
+              }
             `}"
           >
             <div
@@ -4823,11 +4834,32 @@ ${value}</textarea
           `,
           html`
             <h1>Create a New Thread</h1>
+            <!--
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
+            <h1>Create a New Thread</h1>
 
             <form
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/threads"
+              .reference}/threads"
             >
               <p>
                 <label>
@@ -4845,76 +4877,31 @@ ${value}</textarea
               $${app.locals.partials.textEditor()}
               <p
                 style="${css`
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: baseline;
-                `}"
+              display: flex;
+              justify-content: space-between;
+              align-items: baseline;
+            `}"
               >
                 <span
                   style="${css`
-                    & > * + * {
-                      margin-left: 1rem;
-                    }
-                  `}"
+              & > * + * {
+                margin-left: 1rem;
+              }
+            `}"
                 >
                   $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="isPinned"
-                            class="undecorated"
-                            style="${css`
-                              width: 1em;
-                              height: 1em;
-                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                "TODO"
-                                // app.locals.icons["pin-angle"].replace(
-                                //   "currentColor",
-                                //   "gray"
-                                // )
-                              ).toString("base64")}");
-                              &:checked {
-                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                  "TODO"
-                                  // app.locals.icons["pin-fill"]
-                                ).toString("base64")}");
-                              }
-                              background-repeat: no-repeat;
-                              background-size: contain;
-                              position: relative;
-                              top: 0.1em;
-                              &:checked {
-                                top: 0.2em;
-                              }
-
-                              &:not(:checked) + * {
-                                color: gray;
-                              }
-                            `}"
-                          />
-                          <span>Pin</span>
-                          <span class="secondary">
-                            Pinned threads are listed first
-                          </span>
-                        </label>
-                      `
-                    : html``}
-
+              ? html`
                   <label>
                     <input
                       type="checkbox"
-                      name="isQuestion"
-                      $${res.locals.enrollment.role === "staff"
-                        ? ``
-                        : `checked`}
+                      name="isPinned"
                       class="undecorated"
                       style="${css`
                         width: 1em;
                         height: 1em;
                         background-image: url("data:image/svg+xml;base64,${Buffer.from(
                           "TODO"
-                          // app.locals.icons["question-diamond"].replace(
+                          // app.locals.icons["pin-angle"].replace(
                           //   "currentColor",
                           //   "gray"
                           // )
@@ -4922,18 +4909,63 @@ ${value}</textarea
                         &:checked {
                           background-image: url("data:image/svg+xml;base64,${Buffer.from(
                             "TODO"
-                            // app.locals.icons["question-diamond-fill"]
+                            // app.locals.icons["pin-fill"]
                           ).toString("base64")}");
                         }
                         background-repeat: no-repeat;
                         background-size: contain;
                         position: relative;
-                        top: 0.2em;
+                        top: 0.1em;
+                        &:checked {
+                          top: 0.2em;
+                        }
 
                         &:not(:checked) + * {
                           color: gray;
                         }
                       `}"
+                    />
+                    <span>Pin</span>
+                    <span class="secondary">
+                      Pinned threads are listed first
+                    </span>
+                  </label>
+                `
+              : html``}
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="isQuestion"
+                      $${res.locals.enrollment.role === "staff"
+              ? ``
+              : `checked`}
+                      class="undecorated"
+                      style="${css`
+              width: 1em;
+              height: 1em;
+              background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                "TODO"
+                // app.locals.icons["question-diamond"].replace(
+                //   "currentColor",
+                //   "gray"
+                // )
+              ).toString("base64")}");
+              &:checked {
+                background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                  "TODO"
+                  // app.locals.icons["question-diamond-fill"]
+                ).toString("base64")}");
+              }
+              background-repeat: no-repeat;
+              background-size: contain;
+              position: relative;
+              top: 0.2em;
+
+              &:not(:checked) + * {
+                color: gray;
+              }
+            `}"
                     />
                     <span>Question</span>
                   </label>
@@ -4942,6 +4974,7 @@ ${value}</textarea
                 <button>Create Thread</button>
               </p>
             </form>
+            -->
           `
         )
       );
