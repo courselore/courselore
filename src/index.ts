@@ -4396,37 +4396,17 @@ export default async function courselore(
             <div
               style="${css`
                 padding: 0.5rem 1rem;
+                text-align: center;
               `}"
             >
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
-              <h1>THREADS</h1>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/threads/new"
+                class="btn btn-outline-light"
+              >
+                <i class="bi bi-chat-left-text"></i>
+                Create a New Thread
+              </a>
             </div>
           </div>
           <div
