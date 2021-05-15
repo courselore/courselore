@@ -4546,35 +4546,15 @@ export default async function courselore(
               overflow: auto;
             `}"
           >
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
-            <h1>MAIN CONTENT</h1>
+            <div
+              style="${css`
+                max-width: 80ch;
+                margin: 0 auto;
+                padding: 0.5rem 1rem;
+              `}"
+            >
+              $${body}
+            </div>
           </div>
         </div>
       `,
