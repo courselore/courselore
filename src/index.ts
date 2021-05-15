@@ -1368,10 +1368,17 @@ export default async function courselore(
           Partial<EventSourceMiddlewareLocals>
       >,
       head: HTML,
-      body: HTML
+      body: HTML,
+      extraMenu?: HTML
     ) => HTML;
   }
-  app.locals.layouts.applicationWithHeader = (req, res, head, body) =>
+  app.locals.layouts.applicationWithHeader = (
+    req,
+    res,
+    head,
+    body,
+    extraMenu = html``
+  ) =>
     app.locals.layouts.application(
       req,
       res,
@@ -1392,6 +1399,7 @@ export default async function courselore(
                 display: grid;
                 align-items: center;
                 grid-template-columns: 1fr 2fr 1fr;
+                row-gap: 0.5rem;
               `}"
             >
               <div>
@@ -1450,7 +1458,7 @@ export default async function courselore(
                       class="dropdown"
                       style="${css`
                         @include media-breakpoint-down(md) {
-                          grid-area: 2 / 1 / 2 / 4;
+                          grid-area: 2 / 1 / 2 / 3;
                           margin-left: -0.2rem;
                         }
                         @include media-breakpoint-up(md) {
@@ -1639,6 +1647,7 @@ export default async function courselore(
                       </div>
                     </div>
                   `}
+              $${extraMenu}
             </nav>
           </header>
 
@@ -4372,34 +4381,23 @@ export default async function courselore(
           `}"
         >
           <div
+            id="threads"
+            class="collapse"
             style="${css`
               background-color: $purple-600;
               color: white;
-              width: 40ch;
               overflow: auto;
-              padding: 0.5rem 1rem;
+              @include media-breakpoint-up(md) {
+                display: block;
+                width: 40ch;
+              }
             `}"
           >
-            <button
-              type="button"
-              class="btn link-light dropdown-toggle"
-              data-bs-toggle="collapse"
-              data-bs-target="#threads"
-              aria-expanded="false"
-              aria-controls="threads"
+            <div
               style="${css`
-                padding: 0 0.2rem;
-                margin-left: -0.2rem;
-                &:hover,
-                &:focus {
-                  background-color: $purple-700;
-                }
+                padding: 0.5rem 1rem;
               `}"
             >
-              <i class="bi bi-chat-left-text"></i>
-              Threads
-            </button>
-            <div id="threads" class="collapse">
               <h1>THREADS</h1>
               <h1>THREADS</h1>
               <h1>THREADS</h1>
@@ -4468,6 +4466,39 @@ export default async function courselore(
             <h1>MAIN CONTENT</h1>
             <h1>MAIN CONTENT</h1>
           </div>
+        </div>
+      `,
+      html`
+        <div
+          style="${css`
+            @include media-breakpoint-down(md) {
+              grid-area: 2 / 3 / 2 / 4;
+              justify-self: end;
+              margin-right: -0.2rem;
+            }
+            @include media-breakpoint-up(md) {
+              display: none;
+            }
+          `}"
+        >
+          <button
+            type="button"
+            class="btn link-light dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#threads"
+            aria-expanded="false"
+            aria-controls="threads"
+            style="${css`
+              padding: 0 0.2rem;
+              &:hover,
+              &:focus {
+                background-color: $purple-700;
+              }
+            `}"
+          >
+            <i class="bi bi-chat-left-text"></i>
+            Threads
+          </button>
         </div>
       `
     );
