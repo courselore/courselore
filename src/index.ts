@@ -4399,7 +4399,37 @@ export default async function courselore(
               <i class="bi bi-chat-left-text"></i>
               Threads
             </button>
-            <div id="threads" class="collapse">HELLO</div>
+            <div id="threads" class="collapse">
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+              <h1>THREADS</h1>
+            </div>
           </div>
           <div
             style="${css`
