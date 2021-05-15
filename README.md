@@ -602,6 +602,18 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-05-15</summary>
+
+- Progress:
+  - Started a user-interface overhaul: Responsive design, accessibility, fancier components for a bit of a “wow factor”, and so forth.
+  - Started using Bootstrap. Not Tailwind because Bootstrap has components, as opposed to just utilities. We’re continuing to use @leafac/css instead of utilities. We aren’t using many things from Bootstrap, for example, the grid system, because CSS Grid is better for our case.
+- Next week:
+  - Finish the following screens: Threads, course settings, and invitations.
+  - Return to posts tags.
+
+</details>
+
+<details>
 <summary>2021-05-01</summary>
 
 - Progress:
