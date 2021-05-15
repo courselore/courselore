@@ -4415,116 +4415,112 @@ export default async function courselore(
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/threads/${thread.reference}"
                     style="${css`
-                      line-height: 1.3;
-                      display: block;
-                      padding: 0.5rem 1rem;
-                      margin: 0 -1rem;
-
-                      ${thread.id === res.locals.thread?.id
-                        ? css`
-                            background-color: whitesmoke;
-                            @media (prefers-color-scheme: dark) {
-                              background-color: #464646;
-                            }
-                          `
-                        : css``}
+                      text-decoration: none;
+                      color: inherit;
                     `}"
                   >
-                    <p
+                    <div
                       style="${css`
-                        margin-top: 0;
+                        line-height: 1.3;
+                        padding: 0.5rem 1rem;
+                        border-top: 1px solid $purple-700;
+                        ${thread.id === res.locals.thread?.id
+                          ? css`
+                              background-color: $purple-700;
+                            `
+                          : css``}
                       `}"
                     >
-                      <strong>${thread.title}</strong>
-                    </p>
-                    <p
-                      class="secondary"
-                      style="${css`
-                        margin-bottom: 0;
-                      `}"
-                    >
-                      #${thread.reference} created
-                      <time>${thread.createdAt}</time> by
-                      ${thread.authorEnrollment.user.name}
-                      $${thread.updatedAt !== thread.createdAt
-                        ? html`
-                            <br />
-                            and last updated
-                            <time>${thread.updatedAt}</time>
-                          `
-                        : html``}
-                      <br />
-                      <span
+                      <p><strong>${thread.title}</strong></p>
+                      <p
+                        class="secondary"
                         style="${css`
-                          & > * {
-                            display: inline-block;
-                          }
-
-                          & > * + * {
-                            margin-left: 0.5rem;
-                          }
+                          margin-bottom: 0;
                         `}"
                       >
-                        $${thread.pinnedAt !== null
+                        #${thread.reference} created
+                        <time>${thread.createdAt}</time> by
+                        ${thread.authorEnrollment.user.name}
+                        $${thread.updatedAt !== thread.createdAt
                           ? html`
-                              <span>
-                                <span
-                                  style="${css`
-                                    position: relative;
-                                    top: 0.2em;
-                                  `}"
-                                >
-                                  <i class="bi bi-pin"></i>
-                                </span>
-                                Pinned
-                              </span>
+                              <br />
+                              and last updated
+                              <time>${thread.updatedAt}</time>
                             `
                           : html``}
-                        $${thread.questionAt !== null
-                          ? html`
-                              <span>
-                                <span
-                                  style="${css`
-                                    position: relative;
-                                    top: 0.1em;
-                                  `}"
-                                >
-                                  <i class="bi bi-question-diamond"></i>
+                        <br />
+                        <span
+                          style="${css`
+                            & > * {
+                              display: inline-block;
+                            }
+
+                            & > * + * {
+                              margin-left: 0.5rem;
+                            }
+                          `}"
+                        >
+                          $${thread.pinnedAt !== null
+                            ? html`
+                                <span>
+                                  <span
+                                    style="${css`
+                                      position: relative;
+                                      top: 0.2em;
+                                    `}"
+                                  >
+                                    <i class="bi bi-pin"></i>
+                                  </span>
+                                  Pinned
                                 </span>
-                                Question
-                              </span>
-                            `
-                          : html``}
-                        <span>
-                          <span
-                            style="${css`
-                              position: relative;
-                              top: 0.1em;
-                            `}"
-                          >
-                            <i class="bi bi-chat"></i>
+                              `
+                            : html``}
+                          $${thread.questionAt !== null
+                            ? html`
+                                <span>
+                                  <span
+                                    style="${css`
+                                      position: relative;
+                                      top: 0.1em;
+                                    `}"
+                                  >
+                                    <i class="bi bi-question-diamond"></i>
+                                  </span>
+                                  Question
+                                </span>
+                              `
+                            : html``}
+                          <span>
+                            <span
+                              style="${css`
+                                position: relative;
+                                top: 0.1em;
+                              `}"
+                            >
+                              <i class="bi bi-chat"></i>
+                            </span>
+                            ${thread.postsCount}
+                            post${thread.postsCount === 1 ? "" : "s"}
                           </span>
-                          ${thread.postsCount}
-                          post${thread.postsCount === 1 ? "" : "s"}
-                        </span>
-                        $${thread.likesCount === 0
-                          ? html``
-                          : html`
-                              <span>
-                                <span
-                                  style="${css`
-                                    position: relative;
-                                    top: 0.1em;
-                                  `}"
-                                >
-                                  <i class="bi bi-hand-thumbs-up"></i>
+                          $${thread.likesCount === 0
+                            ? html``
+                            : html`
+                                <span>
+                                  <span
+                                    style="${css`
+                                      position: relative;
+                                      top: 0.1em;
+                                    `}"
+                                  >
+                                    <i class="bi bi-hand-thumbs-up"></i>
+                                  </span>
+                                  ${thread.likesCount}
+                                  like${thread.likesCount === 1 ? "" : "s"}
                                 </span>
-                                ${thread.likesCount}
-                                like${thread.likesCount === 1 ? "" : "s"}
-                              </span>
-                            `}
-                      </span>
-                    </p>
+                              `}
+                        </span>
+                      </p>
+                    </div>
                   </a>
                 `
               )}
