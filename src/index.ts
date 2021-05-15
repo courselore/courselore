@@ -4441,11 +4441,11 @@ export default async function courselore(
                           : css``}
                       `}"
                     >
-                      <p><strong>${thread.title}</strong></p>
-                      <p
-                        class="secondary"
+                      <div>${thread.title}</div>
+                      <div
                         style="${css`
-                          margin-bottom: 0;
+                          color: $purple-100;
+                          font-size: $small-font-size;
                         `}"
                       >
                         #${thread.reference} created
@@ -4459,77 +4459,45 @@ export default async function courselore(
                             `
                           : html``}
                         <br />
-                        <span
+                        <div
                           style="${css`
-                            & > * {
-                              display: inline-block;
-                            }
-
-                            & > * + * {
-                              margin-left: 0.5rem;
-                            }
+                            display: flex;
+                            gap: 0.5rem;
+                            align-items: baseline;
                           `}"
                         >
                           $${thread.pinnedAt !== null
                             ? html`
-                                <span>
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.2em;
-                                    `}"
-                                  >
-                                    <i class="bi bi-pin"></i>
-                                  </span>
+                                <div>
+                                  <i class="bi bi-pin"></i>
                                   Pinned
-                                </span>
+                                </div>
                               `
                             : html``}
                           $${thread.questionAt !== null
                             ? html`
-                                <span>
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.1em;
-                                    `}"
-                                  >
-                                    <i class="bi bi-question-diamond"></i>
-                                  </span>
+                                <div>
+                                  <i class="bi bi-question-diamond"></i>
                                   Question
-                                </span>
+                                </div>
                               `
                             : html``}
-                          <span>
-                            <span
-                              style="${css`
-                                position: relative;
-                                top: 0.1em;
-                              `}"
-                            >
-                              <i class="bi bi-chat"></i>
-                            </span>
+                          <div>
+                            <i class="bi bi-chat-left"></i>
                             ${thread.postsCount}
                             post${thread.postsCount === 1 ? "" : "s"}
-                          </span>
+                          </div>
                           $${thread.likesCount === 0
                             ? html``
                             : html`
-                                <span>
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.1em;
-                                    `}"
-                                  >
-                                    <i class="bi bi-hand-thumbs-up"></i>
-                                  </span>
+                                <div>
+                                  <i class="bi bi-hand-thumbs-up"></i>
                                   ${thread.likesCount}
                                   like${thread.likesCount === 1 ? "" : "s"}
-                                </span>
+                                </div>
                               `}
-                        </span>
-                      </p>
+                        </div>
+                      </div>
                     </div>
                   </a>
                 `
