@@ -1451,6 +1451,7 @@ export default async function courselore(
                       style="${css`
                         @include media-breakpoint-down(md) {
                           grid-area: 2 / 1 / 2 / 4;
+                          margin-left: -0.2rem;
                         }
                         @include media-breakpoint-up(md) {
                           justify-self: center;
@@ -1473,6 +1474,7 @@ export default async function courselore(
                           }
                         `}"
                       >
+                        <i class="bi bi-journal-text"></i>
                         ${res.locals.course.name}
                       </a>
                       <div class="dropdown-menu" aria-labelledby="course-menu">
@@ -4355,226 +4357,87 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.thread = (req, res, head, body) =>
-    app.locals.layouts.application(
+    app.locals.layouts.applicationWithHeader(
       req,
       res,
       head,
       html`
         <div
           style="${css`
-            box-sizing: border-box;
-            height: 100vh;
-            border-top: 10px solid ${res.locals.enrollment.accentColor};
+            height: 100%;
             display: flex;
+            @include media-breakpoint-down(md) {
+              flex-direction: column;
+            }
           `}"
         >
           <div
             style="${css`
-              width: 400px;
-              border-right: 1px solid silver;
-              @media (prefers-color-scheme: dark) {
-                border-color: black;
-              }
-              display: flex;
-              flex-direction: column;
+              background-color: $purple-600;
+              color: white;
+              width: 40ch;
+              overflow: auto;
+              padding: 0.5rem 1rem;
             `}"
           >
-            <header
+            <button
+              type="button"
+              class="btn link-light dropdown-toggle"
+              data-bs-toggle="collapse"
+              data-bs-target="#threads"
+              aria-expanded="false"
+              aria-controls="threads"
               style="${css`
-                border-bottom: 1px solid silver;
-                @media (prefers-color-scheme: dark) {
-                  border-color: black;
+                padding: 0 0.2rem;
+                margin-left: -0.2rem;
+                &:hover,
+                &:focus {
+                  background-color: $purple-700;
                 }
-                padding: 0 1rem;
               `}"
             >
-              $${app.locals.partials.logoAndMenu(req, res)}
-              <nav>
-                <p
-                  style="${css`
-                    margin-top: 0;
-                  `}"
-                >
-                  <a
-                    href="${app.locals.settings.url}/courses/${res.locals.course
-                      .reference}"
-                    ><strong>${res.locals.course.name}</strong> (${res.locals
-                      .enrollment.role})</a
-                  >
-                </p>
-              </nav>
-            </header>
-
-            <div
-              style="${css`
-                flex: 1;
-                padding: 0 1rem;
-                overflow: auto;
-              `}"
-            >
-              <p
-                style="${css`
-                  text-align: center;
-                `}"
-              >
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/threads/new"
-                  >Create a new thread</a
-                >
-              </p>
-
-              <nav id="threads">
-                $${res.locals.threads.map(
-                  (thread) => html`
-                    <a
-                      href="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/${thread.reference}"
-                      style="${css`
-                        line-height: 1.3;
-                        display: block;
-                        padding: 0.5rem 1rem;
-                        margin: 0 -1rem;
-
-                        ${thread.id === res.locals.thread?.id
-                          ? css`
-                              background-color: whitesmoke;
-                              @media (prefers-color-scheme: dark) {
-                                background-color: #464646;
-                              }
-                            `
-                          : css``}
-                      `}"
-                    >
-                      <p
-                        style="${css`
-                          margin-top: 0;
-                        `}"
-                      >
-                        <strong>${thread.title}</strong>
-                      </p>
-                      <p
-                        class="secondary"
-                        style="${css`
-                          margin-bottom: 0;
-                        `}"
-                      >
-                        #${thread.reference} created
-                        <time>${thread.createdAt}</time> by
-                        ${thread.authorEnrollment.user.name}
-                        $${thread.updatedAt !== thread.createdAt
-                          ? html`
-                              <br />
-                              and last updated
-                              <time>${thread.updatedAt}</time>
-                            `
-                          : html``}
-                        <br />
-                        <span
-                          style="${css`
-                            & > * {
-                              display: inline-block;
-                            }
-
-                            & > * + * {
-                              margin-left: 0.5rem;
-                            }
-                          `}"
-                        >
-                          $${thread.pinnedAt !== null
-                            ? html`
-                                <span>
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.2em;
-                                    `}"
-                                  >
-                                    <i class="bi bi-pin"></i>
-                                  </span>
-                                  Pinned
-                                </span>
-                              `
-                            : html``}
-                          $${thread.questionAt !== null
-                            ? html`
-                                <span>
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.1em;
-                                    `}"
-                                  >
-                                    <i class="bi bi-question-diamond"></i>
-                                  </span>
-                                  Question
-                                </span>
-                              `
-                            : html``}
-                          <span>
-                            <span
-                              style="${css`
-                                position: relative;
-                                top: 0.1em;
-                              `}"
-                            >
-                              <i class="bi bi-chat"></i>
-                            </span>
-                            ${thread.postsCount}
-                            post${thread.postsCount === 1 ? "" : "s"}
-                          </span>
-                          $${thread.likesCount === 0
-                            ? html``
-                            : html`
-                                <span>
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.1em;
-                                    `}"
-                                  >
-                                    <i class="bi bi-hand-thumbs-up"></i>
-                                  </span>
-                                  ${thread.likesCount}
-                                  like${thread.likesCount === 1 ? "" : "s"}
-                                </span>
-                              `}
-                        </span>
-                      </p>
-                    </a>
-                  `
-                )}
-              </nav>
-              <script>
-                (() => {
-                  const id = document.currentScript.previousElementSibling.id;
-                  eventSource.addEventListener("refreshed", (event) => {
-                    document
-                      .querySelector("#" + id)
-                      .replaceWith(
-                        event.detail.document.querySelector("#" + id)
-                      );
-                  });
-                })();
-              </script>
-            </div>
+              <i class="bi bi-chat-left-text"></i>
+              Threads
+            </button>
+            <div id="threads" class="collapse">HELLO</div>
           </div>
-          <main
+          <div
             style="${css`
+              background-color: $light;
               flex: 1;
               overflow: auto;
             `}"
           >
-            <div
-              style="${css`
-                max-width: 800px;
-                padding: 0 1rem;
-                margin: 0 auto;
-              `}"
-            >
-              $${body}
-            </div>
-          </main>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+            <h1>MAIN CONTENT</h1>
+          </div>
         </div>
       `
     );
