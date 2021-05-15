@@ -103,7 +103,7 @@ module.exports = (require) => {
             href="$${app.locals.settings.url}/authenticate"
             class="btn btn-primary btn-lg"
             data-bs-toggle="tooltip"
-            title="Very early and rough demonstration"
+            title="Very rough early demonstration"
           >
             <i class="bi bi-easel"></i>
             Demonstration

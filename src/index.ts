@@ -2260,8 +2260,8 @@ export default async function courselore(
                       color: $text-muted;
                     `}"
                   >
-                    Get started by enrolling in an existing course or creating a
-                    new course.
+                    Get started by enrolling in an existing course or by
+                    creating a new course.
                   </p>
                   <div
                     style="${css`
