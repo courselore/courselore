@@ -2150,19 +2150,30 @@ export default async function courselore(
           ? html`<strong>${otherUserEmail}</strong>`
           : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>Magic Authentication Link · CourseLore</title>`,
           html`
-            <h1>Magic Authentication Link</h1>
-
-            <p>
+            <p class="card-text">
               You’re already signed in as $${currentUserHTML} and you tried to
               use
               $${otherUserEmail === undefined
                 ? html`an invalid or expired magic authentication link`
                 : html`a magic authentication link for $${otherUserHTML}`}.
+            </p>
+
+            <p class="card-text">
+              <a
+                href="${app.locals.settings.url}/"
+                class="btn btn-primary"
+                style="${css`
+                  width: 100%;
+                `}"
+              >
+                Continue Signed in as $${currentUserHTML}
+                <i class="bi bi-chevron-right"></i>
+              </a>
             </p>
 
             $${otherUserEmail === undefined || isSelf
@@ -2171,8 +2182,20 @@ export default async function courselore(
                     method="POST"
                     action="${app.locals.settings
                       .url}/authenticate?_method=DELETE"
+                    class="card-text"
                   >
-                    <p><button>Sign Out</button></p>
+                    <p>
+                      <button
+                        type="submit"
+                        class="btn btn-outline-light"
+                        style="${css`
+                          width: 100%;
+                        `}"
+                      >
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Sign Out
+                      </button>
+                    </p>
                   </form>
                 `
               : html`
@@ -2187,23 +2210,39 @@ export default async function courselore(
                       name: req.query.name,
                     })}"
                   >
-                    <p>
-                      Sign out as $${currentUserHTML} and sign
-                      ${otherUser === undefined ? "up" : "in"} as
-                      $${otherUserHTML}:<br />
-                      <button>Switch Users</button>
+                    <p class="card-text">
+                      <button
+                        type="submit"
+                        class="btn btn-outline-light"
+                        style="${css`
+                          width: 100%;
+                        `}"
+                      >
+                        <i class="bi bi-arrow-left-right"></i>
+                        Sign out as $${currentUserHTML} and Sign
+                        ${otherUser === undefined ? "up" : "in"} as
+                        $${otherUserHTML}
+                      </button>
                     </p>
                   </form>
                 `}
             $${req.query.redirect === undefined
               ? html``
               : html`
-                  <p>
-                    Continue as $${currentUserHTML} and visit the page to which
-                    the magic authentication link would have redirected you:<br />
-                    <a href="${app.locals.settings.url}${req.query.redirect}"
-                      >${app.locals.settings.url}${req.query.redirect}</a
+                  <p class="card-text">
+                    <a
+                      href="${app.locals.settings.url}${req.query.redirect}"
+                      class="btn btn-outline-light"
+                      style="${css`
+                        width: 100%;
+                      `}"
                     >
+                      Continue Signed in as $${currentUserHTML} and Visit the
+                      Page to Which the Magic Authentication Link Would Have
+                      Redirected You:
+                      ${app.locals.settings.url}${req.query.redirect}
+                      <i class="bi bi-chevron-right"></i>
+                    </a>
                   </p>
                 `}
           `
