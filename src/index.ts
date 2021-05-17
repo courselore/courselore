@@ -3002,7 +3002,7 @@ export default async function courselore(
                     ? html`
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
-                            .course.reference}/settings"
+                            .course.reference}/settings/invitations"
                           class="btn btn-primary"
                           style="${css`
                             flex: 1;
@@ -3247,7 +3247,7 @@ export default async function courselore(
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.applicationWithHeaderAndSidebar(
           req,
           res,
           html`
@@ -4034,6 +4034,11 @@ export default async function courselore(
                   `
               )}
             </div>
+          `,
+          html`<h1>Hello</h1>`,
+          html`
+            <i class="bi bi-sliders"></i>
+            Course Settings
           `
         )
       );
