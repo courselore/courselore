@@ -153,6 +153,13 @@ export default async function courselore(
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
       );
 
+      CREATE TABLE "flashes" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "nonce" TEXT NOT NULL UNIQUE,
+        "content" TEXT NOT NULL
+      );
+
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -1072,6 +1079,7 @@ export default async function courselore(
                   `}
               $${extraMenu}
             </nav>
+            $${app.locals.helpers.flash.get(req, res) ?? html``}
           </header>
 
           <main
@@ -1186,6 +1194,7 @@ export default async function courselore(
             $green: #008751;
 
             $primary: $purple;
+            $success: $green;
 
             $enable-shadows: true;
 
@@ -1517,6 +1526,51 @@ export default async function courselore(
       res.type("text/event-stream").write("");
     },
   ];
+
+  interface Helpers {
+    flash: {
+      set: (
+        req: express.Request<{}, any, {}, {}, {}>,
+        res: express.Response<any, {}>,
+        content: HTML
+      ) => void;
+      get: (
+        req: express.Request<{}, any, {}, {}, {}>,
+        res: express.Response<any, {}>
+      ) => HTML | undefined;
+    };
+  }
+  app.locals.helpers.flash = {
+    set(req, res, content) {
+      const nonce = cryptoRandomString({ length: 10, type: "alphanumeric" });
+      app.locals.database.run(
+        sql`
+          INSERT INTO "flashes" ("nonce", "content") VALUES (${nonce}, ${content})
+        `
+      );
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 5);
+      res.cookie("flash", nonce, {
+        ...app.locals.settings.cookieOptions(),
+        expires: expiresAt,
+      });
+    },
+
+    get(req, res) {
+      const flash = app.locals.database.get<{
+        content: HTML;
+      }>(
+        sql`
+          SELECT "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}
+        `
+      );
+      app.locals.database.run(
+        sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
+      );
+      res.clearCookie("flash", app.locals.settings.cookieOptions());
+      return flash?.content;
+    },
+  };
 
   interface Helpers {
     authenticationNonce: {
@@ -2468,6 +2522,29 @@ export default async function courselore(
         return next("validation");
       app.locals.database.run(
         sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
+      );
+
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            style="${css`
+              text-align: center;
+              border-radius: 0;
+            `}"
+            role="alert"
+          >
+            User settings updated successfully.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        `
       );
 
       res.redirect(`${app.locals.settings.url}/settings`);
