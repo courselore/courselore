@@ -3236,6 +3236,7 @@ export default async function courselore(
     },
   ];
 
+  // TODO: Student version of settings.
   app.get<
     { courseReference: string },
     HTML,
@@ -4035,7 +4036,82 @@ export default async function courselore(
               )}
             </div>
           `,
-          html`<h1>Hello</h1>`,
+          html`
+            <div
+              style="${css`
+                a {
+                  text-decoration: none;
+                  color: inherit;
+                  display: block;
+                  border-top: 1px solid $purple-700;
+                  transition: $btn-transition;
+                  line-height: 1.3;
+                  padding: 0.5rem 1rem;
+                  &:hover,
+                  &:active {
+                    background-color: $purple-700;
+                  }
+                }
+              `}"
+            >
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings"
+                style="${css`
+                  ${req.path.endsWith("/settings")
+                    ? css`
+                        background-color: $purple-700;
+                      `
+                    : css``}
+                `}"
+              >
+                <i class="bi bi-sliders"></i>
+                Course Settings
+              </a>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/invitations"
+                style="${css`
+                  ${req.path.endsWith("/settings/invitations")
+                    ? css`
+                        background-color: $purple-700;
+                      `
+                    : css``}
+                `}"
+              >
+                <i class="bi bi-person-plus"></i>
+                Invitations
+              </a>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/enrollments"
+                style="${css`
+                  ${req.path.endsWith("/settings/enrollments")
+                    ? css`
+                        background-color: $purple-700;
+                      `
+                    : css``}
+                `}"
+              >
+                <i class="bi bi-people"></i>
+                Enrollments
+              </a>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/enrollment"
+                style="${css`
+                  ${req.path.endsWith("/settings/enrollment")
+                    ? css`
+                        background-color: $purple-700;
+                      `
+                    : css``}
+                `}"
+              >
+                <i class="bi bi-person"></i>
+                Your Enrollment
+              </a>
+            </div>
+          `,
           html`
             <i class="bi bi-sliders"></i>
             Course Settings
@@ -4608,119 +4684,117 @@ export default async function courselore(
       head,
       body,
       html`
-        <div>
-          <div
-            style="${css`
-              padding: 1rem;
-              text-align: center;
-            `}"
+        <div
+          style="${css`
+            padding: 1rem;
+            text-align: center;
+          `}"
+        >
+          <a
+            href="${app.locals.settings.url}/courses/${res.locals.course
+              .reference}/threads/new"
+            class="btn btn-outline-light"
           >
-            <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/threads/new"
-              class="btn btn-outline-light"
-            >
-              <i class="bi bi-chat-left-text"></i>
-              Create a New Thread
-            </a>
-          </div>
-          <div id="threads">
-            $${res.locals.threads.map(
-              (thread) => html`
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/threads/${thread.reference}"
+            <i class="bi bi-chat-left-text"></i>
+            Create a New Thread
+          </a>
+        </div>
+        <div id="threads">
+          $${res.locals.threads.map(
+            (thread) => html`
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/threads/${thread.reference}"
+                style="${css`
+                  text-decoration: none;
+                  color: inherit;
+                  display: block;
+                  border-top: 1px solid $purple-700;
+                  transition: $btn-transition;
+                  line-height: 1.3;
+                  padding: 0.5rem 1rem;
+                  &:hover,
+                  &:active {
+                    background-color: $purple-700;
+                  }
+                  ${thread.id === res.locals.thread?.id
+                    ? css`
+                        background-color: $purple-700;
+                      `
+                    : css``}
+                `}"
+              >
+                <div>${thread.title}</div>
+                <div
                   style="${css`
-                    text-decoration: none;
-                    color: inherit;
-                    display: block;
-                    border-top: 1px solid $purple-700;
-                    transition: $btn-transition;
-                    line-height: 1.3;
-                    padding: 0.5rem 1rem;
-                    &:hover,
-                    &:active {
-                      background-color: $purple-700;
-                    }
-                    ${thread.id === res.locals.thread?.id
-                      ? css`
-                          background-color: $purple-700;
-                        `
-                      : css``}
+                    color: $purple-100;
+                    font-size: $small-font-size;
                   `}"
                 >
-                  <div>${thread.title}</div>
+                  #${thread.reference} created
+                  <time>${thread.createdAt}</time> by
+                  ${thread.authorEnrollment.user.name}
+                  $${thread.updatedAt !== thread.createdAt
+                    ? html`
+                        <br />
+                        and last updated
+                        <time>${thread.updatedAt}</time>
+                      `
+                    : html``}
+                  <br />
                   <div
                     style="${css`
-                      color: $purple-100;
-                      font-size: $small-font-size;
+                      display: flex;
+                      gap: 0.5rem;
+                      align-items: baseline;
                     `}"
                   >
-                    #${thread.reference} created
-                    <time>${thread.createdAt}</time> by
-                    ${thread.authorEnrollment.user.name}
-                    $${thread.updatedAt !== thread.createdAt
+                    $${thread.pinnedAt !== null
                       ? html`
-                          <br />
-                          and last updated
-                          <time>${thread.updatedAt}</time>
+                          <div>
+                            <i class="bi bi-pin"></i>
+                            Pinned
+                          </div>
                         `
                       : html``}
-                    <br />
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: 0.5rem;
-                        align-items: baseline;
-                      `}"
-                    >
-                      $${thread.pinnedAt !== null
-                        ? html`
-                            <div>
-                              <i class="bi bi-pin"></i>
-                              Pinned
-                            </div>
-                          `
-                        : html``}
-                      $${thread.questionAt !== null
-                        ? html`
-                            <div>
-                              <i class="bi bi-question-diamond"></i>
-                              Question
-                            </div>
-                          `
-                        : html``}
-                      <div>
-                        <i class="bi bi-chat-left"></i>
-                        ${thread.postsCount}
-                        post${thread.postsCount === 1 ? "" : "s"}
-                      </div>
-                      $${thread.likesCount === 0
-                        ? html``
-                        : html`
-                            <div>
-                              <i class="bi bi-hand-thumbs-up"></i>
-                              ${thread.likesCount}
-                              like${thread.likesCount === 1 ? "" : "s"}
-                            </div>
-                          `}
+                    $${thread.questionAt !== null
+                      ? html`
+                          <div>
+                            <i class="bi bi-question-diamond"></i>
+                            Question
+                          </div>
+                        `
+                      : html``}
+                    <div>
+                      <i class="bi bi-chat-left"></i>
+                      ${thread.postsCount}
+                      post${thread.postsCount === 1 ? "" : "s"}
                     </div>
+                    $${thread.likesCount === 0
+                      ? html``
+                      : html`
+                          <div>
+                            <i class="bi bi-hand-thumbs-up"></i>
+                            ${thread.likesCount}
+                            like${thread.likesCount === 1 ? "" : "s"}
+                          </div>
+                        `}
                   </div>
-                </a>
-              `
-            )}
-          </div>
-          <script>
-            (() => {
-              const id = document.currentScript.previousElementSibling.id;
-              eventSource.addEventListener("refreshed", (event) => {
-                document
-                  .querySelector("#" + id)
-                  .replaceWith(event.detail.document.querySelector("#" + id));
-              });
-            })();
-          </script>
+                </div>
+              </a>
+            `
+          )}
         </div>
+        <script>
+          (() => {
+            const id = document.currentScript.previousElementSibling.id;
+            eventSource.addEventListener("refreshed", (event) => {
+              document
+                .querySelector("#" + id)
+                .replaceWith(event.detail.document.querySelector("#" + id));
+            });
+          })();
+        </script>
       `,
       html`
         <i class="bi bi-chat-left-text"></i>
