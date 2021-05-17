@@ -2302,8 +2302,8 @@ export default async function courselore(
                         $purple 0%,
                         $pink 100%
                       );
-                      -webkit-background-clip: text;
-                      -webkit-text-fill-color: transparent;
+                      background-clip: text;
+                      color: transparent;
                     `}"
                   >
                     Welcome to CourseLore!
@@ -2779,8 +2779,8 @@ export default async function courselore(
                     font-weight: bold;
                     font-style: italic;
                     background: linear-gradient(135deg, $purple 0%, $pink 100%);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    color: transparent;
                   `}"
                 >
                   Welcome to ${res.locals.course.name}!
