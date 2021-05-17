@@ -222,45 +222,43 @@ module.exports = (require) => {
                   <p class="card-text">
                     All the features you’ve come to expect from a forum,
                     including Q&A, announcements, notifications, invitations,
-                    Markdown <span
-                      data-bs-toggle="tooltip"
-                      title="What’s Markdown?"
-                      ><a
-                        role="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#markdown-modal"
-                        aria-label="More information"
-                        onclick="${javascript`
-                          bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                    <a
+                      role="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#markdown-modal"
+                      aria-label="More information"
+                      onclick="${javascript`
+                        bootstrap.Tooltip.getInstance(this.querySelector("abbr")).hide();
+                      `}"
+                      ><abbr data-bs-toggle="tooltip" title="What’s Markdown?"
+                        >Markdown</abbr
+                      ></a
+                    >,
+                    <a
+                      role="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#latex-modal"
+                      aria-label="More information"
+                      onclick="${javascript`
+                          bootstrap.Tooltip.getInstance(this.querySelector("abbr")).hide();
                         `}"
-                      >
-                        <i class="bi bi-question-circle-fill"></i></a></span
-                    >, LaTeX <span
-                      data-bs-toggle="tooltip"
-                      title="What’s LaTeX?"
-                      ><a
-                        role="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#latex-modal"
-                        aria-label="More information"
-                        onclick="${javascript`
-                          bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                      ><abbr data-bs-toggle="tooltip" title="What’s LaTeX?"
+                        >LaTeX</abbr
+                      ></a
+                    >,
+                    <a
+                      role="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#syntax-highlighting-modal"
+                      aria-label="More information"
+                      onclick="${javascript`
+                          bootstrap.Tooltip.getInstance(this.querySelector("abbr")).hide();
                         `}"
-                      >
-                        <i class="bi bi-question-circle-fill"></i></a></span
-                    >, syntax highlighting <span
-                      data-bs-toggle="tooltip"
-                      title="What’s Syntax Highlighting?"
-                      ><a
-                        role="button"
-                        data-bs-toggle="modal"
-                        data-bs-target="#syntax-highlighting-modal"
-                        aria-label="More information"
-                        onclick="${javascript`
-                          bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                        `}"
-                      >
-                        <i class="bi bi-question-circle-fill"></i></a></span
+                      ><abbr
+                        data-bs-toggle="tooltip"
+                        title="What’s Syntax Highlighting?"
+                        >syntax highlighting</abbr
+                      ></a
                     >, and much more, all in an easy-to-use and modern
                     interface.
                   </p>

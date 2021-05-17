@@ -17,6 +17,8 @@ import css from "tagged-template-noop";
 import javascript from "tagged-template-noop";
 import { JSDOM } from "jsdom";
 import sass from "sass";
+import postcss from "postcss";
+import autoprefixer from "autoprefixer";
 
 import unified from "unified";
 import remarkParse from "remark-parse";
@@ -685,51 +687,53 @@ export default async function courselore(
     compileSass: (styles: CSS) => CSS;
   }
   app.locals.helpers.compileSass = (styles) =>
-    sass
-      .renderSync({
-        data: css`
-          @import "${path.join(
-            __dirname,
-            ".."
-          )}/public/node_modules/bootstrap/scss/functions";
+    postcss([autoprefixer]).process(
+      sass
+        .renderSync({
+          data: css`
+            @import "${path.join(
+              __dirname,
+              ".."
+            )}/public/node_modules/bootstrap/scss/functions";
 
-          $font-family-sans-serif: "IBM Plex Sans", sans-serif;
-          $font-family-monospace: "IBM Plex Mono", monospace;
-          $font-family-serif: "IBM Plex Serif", serif;
+            $font-family-sans-serif: "IBM Plex Sans", sans-serif;
+            $font-family-monospace: "IBM Plex Mono", monospace;
+            $font-family-serif: "IBM Plex Serif", serif;
 
-          $h1-font-size: 1.5rem;
-          $h2-font-size: 1.25rem;
-          $h3-font-size: 1.25rem;
-          $h4-font-size: 1.25rem;
-          $h5-font-size: 1.25rem;
-          $headings-margin-bottom: 1rem;
+            $h1-font-size: 1.5rem;
+            $h2-font-size: 1.25rem;
+            $h3-font-size: 1.25rem;
+            $h4-font-size: 1.25rem;
+            $h5-font-size: 1.25rem;
+            $headings-margin-bottom: 1rem;
 
-          $purple: #83769c;
-          $pink: #ff77a8;
-          $blue: #29adff;
-          $red: #ff004d;
-          $green: #008751;
+            $purple: #83769c;
+            $pink: #ff77a8;
+            $blue: #29adff;
+            $red: #ff004d;
+            $green: #008751;
 
-          $primary: $purple;
+            $primary: $purple;
 
-          $enable-shadows: true;
+            $enable-shadows: true;
 
-          $card-border-radius: 0.625rem;
-          $modal-content-border-radius: 0.625rem;
+            $card-border-radius: 0.625rem;
+            $modal-content-border-radius: 0.625rem;
 
-          @import "${path.join(
-            __dirname,
-            ".."
-          )}/public/node_modules/bootstrap/scss/variables";
-          @import "${path.join(
-            __dirname,
-            ".."
-          )}/public/node_modules/bootstrap/scss/mixins";
+            @import "${path.join(
+              __dirname,
+              ".."
+            )}/public/node_modules/bootstrap/scss/variables";
+            @import "${path.join(
+              __dirname,
+              ".."
+            )}/public/node_modules/bootstrap/scss/mixins";
 
-          ${styles}
-        `,
-      })
-      .css.toString();
+            ${styles}
+          `,
+        })
+        .css.toString()
+    ).css;
 
   interface Partials {
     globalCSS: CSS;
@@ -4807,7 +4811,7 @@ ${value}</textarea
             <form
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
-              .reference}/threads"
+                .reference}/threads"
             >
               <p>
                 <label>
@@ -4825,31 +4829,76 @@ ${value}</textarea
               $${app.locals.partials.textEditor()}
               <p
                 style="${css`
-              display: flex;
-              justify-content: space-between;
-              align-items: baseline;
-            `}"
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                `}"
               >
                 <span
                   style="${css`
-              & > * + * {
-                margin-left: 1rem;
-              }
-            `}"
+                    & > * + * {
+                      margin-left: 1rem;
+                    }
+                  `}"
                 >
                   $${res.locals.enrollment.role === "staff"
-              ? html`
+                    ? html`
+                        <label>
+                          <input
+                            type="checkbox"
+                            name="isPinned"
+                            class="undecorated"
+                            style="${css`
+                              width: 1em;
+                              height: 1em;
+                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                "TODO"
+                                // app.locals.icons["pin-angle"].replace(
+                                //   "currentColor",
+                                //   "gray"
+                                // )
+                              ).toString("base64")}");
+                              &:checked {
+                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                  "TODO"
+                                  // app.locals.icons["pin-fill"]
+                                ).toString("base64")}");
+                              }
+                              background-repeat: no-repeat;
+                              background-size: contain;
+                              position: relative;
+                              top: 0.1em;
+                              &:checked {
+                                top: 0.2em;
+                              }
+
+                              &:not(:checked) + * {
+                                color: gray;
+                              }
+                            `}"
+                          />
+                          <span>Pin</span>
+                          <span class="secondary">
+                            Pinned threads are listed first
+                          </span>
+                        </label>
+                      `
+                    : html``}
+
                   <label>
                     <input
                       type="checkbox"
-                      name="isPinned"
+                      name="isQuestion"
+                      $${res.locals.enrollment.role === "staff"
+                        ? ``
+                        : `checked`}
                       class="undecorated"
                       style="${css`
                         width: 1em;
                         height: 1em;
                         background-image: url("data:image/svg+xml;base64,${Buffer.from(
                           "TODO"
-                          // app.locals.icons["pin-angle"].replace(
+                          // app.locals.icons["question-diamond"].replace(
                           //   "currentColor",
                           //   "gray"
                           // )
@@ -4857,63 +4906,18 @@ ${value}</textarea
                         &:checked {
                           background-image: url("data:image/svg+xml;base64,${Buffer.from(
                             "TODO"
-                            // app.locals.icons["pin-fill"]
+                            // app.locals.icons["question-diamond-fill"]
                           ).toString("base64")}");
                         }
                         background-repeat: no-repeat;
                         background-size: contain;
                         position: relative;
-                        top: 0.1em;
-                        &:checked {
-                          top: 0.2em;
-                        }
+                        top: 0.2em;
 
                         &:not(:checked) + * {
                           color: gray;
                         }
                       `}"
-                    />
-                    <span>Pin</span>
-                    <span class="secondary">
-                      Pinned threads are listed first
-                    </span>
-                  </label>
-                `
-              : html``}
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="isQuestion"
-                      $${res.locals.enrollment.role === "staff"
-              ? ``
-              : `checked`}
-                      class="undecorated"
-                      style="${css`
-              width: 1em;
-              height: 1em;
-              background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                "TODO"
-                // app.locals.icons["question-diamond"].replace(
-                //   "currentColor",
-                //   "gray"
-                // )
-              ).toString("base64")}");
-              &:checked {
-                background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                  "TODO"
-                  // app.locals.icons["question-diamond-fill"]
-                ).toString("base64")}");
-              }
-              background-repeat: no-repeat;
-              background-size: contain;
-              position: relative;
-              top: 0.2em;
-
-              &:not(:checked) + * {
-                color: gray;
-              }
-            `}"
                     />
                     <span>Question</span>
                   </label>
