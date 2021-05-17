@@ -1163,6 +1163,127 @@ export default async function courselore(
       `
     );
 
+  interface Layouts {
+    applicationWithHeaderAndSidebar: (
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      res: express.Response<
+        any,
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      head: HTML,
+      body: HTML,
+      sidebar: HTML,
+      sidebarButton: HTML
+    ) => HTML;
+  }
+  app.locals.layouts.applicationWithHeaderAndSidebar = (
+    req,
+    res,
+    head,
+    body,
+    sidebar,
+    sidebarButton
+  ) =>
+    app.locals.layouts.applicationWithHeader(
+      req,
+      res,
+      head,
+      html`
+        <div
+          style="${css`
+            height: 100%;
+            & > * {
+              overflow: auto;
+            }
+            @include media-breakpoint-down(md) {
+              display: grid;
+              & > * {
+                grid-area: 1 / 1;
+              }
+            }
+            @include media-breakpoint-up(md) {
+              display: flex;
+            }
+          `}"
+        >
+          <div
+            id="sidebar"
+            class="collapse"
+            style="${css`
+              background-color: $purple-600;
+              color: white;
+              @include media-breakpoint-down(md) {
+                z-index: 1;
+              }
+              @include media-breakpoint-up(md) {
+                display: block;
+                width: 35ch;
+              }
+            `}"
+          >
+            $${sidebar}
+          </div>
+          <div
+            style="${css`
+              @include media-breakpoint-up(md) {
+                flex: 1;
+              }
+            `}"
+          >
+            <div
+              style="${css`
+                max-width: 80ch;
+                margin: 0 auto;
+                padding: 0.5rem 1rem;
+              `}"
+            >
+              $${body}
+            </div>
+          </div>
+        </div>
+      `,
+      html`
+        <div
+          style="${css`
+            @include media-breakpoint-down(md) {
+              grid-area: 2 / 3 / 2 / 4;
+              justify-self: end;
+              margin-right: -0.2rem;
+            }
+            @include media-breakpoint-up(md) {
+              display: none;
+            }
+          `}"
+        >
+          <button
+            type="button"
+            class="btn link-light dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#sidebar"
+            aria-expanded="false"
+            aria-controls="sidebar"
+            style="${css`
+              padding: 0 0.2rem;
+              &:hover,
+              &:focus {
+                background-color: $purple-700;
+              }
+            `}"
+          >
+            $${sidebarButton}
+          </button>
+        </div>
+      `
+    );
+
   interface Helpers {
     compileSass: (styles: CSS) => CSS;
   }
@@ -4476,206 +4597,129 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.thread = (req, res, head, body) =>
-    app.locals.layouts.applicationWithHeader(
+    app.locals.layouts.applicationWithHeaderAndSidebar(
       req,
       res,
       head,
+      body,
       html`
-        <div
-          style="${css`
-            height: 100%;
-            & > * {
-              overflow: auto;
-            }
-            @include media-breakpoint-down(md) {
-              display: grid;
-              & > * {
-                grid-area: 1 / 1;
-              }
-            }
-            @include media-breakpoint-up(md) {
-              display: flex;
-            }
-          `}"
-        >
+        <div>
           <div
-            id="threads"
-            class="collapse"
             style="${css`
-              background-color: $purple-600;
-              color: white;
-              @include media-breakpoint-down(md) {
-                z-index: 1;
-              }
-              @include media-breakpoint-up(md) {
-                display: block;
-                width: 35ch;
-              }
+              padding: 1rem;
+              text-align: center;
             `}"
           >
-            <div
-              style="${css`
-                padding: 0.5rem 1rem;
-                text-align: center;
-              `}"
+            <a
+              href="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/threads/new"
+              class="btn btn-outline-light"
             >
-              <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/threads/new"
-                class="btn btn-outline-light"
-              >
-                <i class="bi bi-chat-left-text"></i>
-                Create a New Thread
-              </a>
-            </div>
-            <div id="threads-list">
-              $${res.locals.threads.map(
-                (thread) => html`
-                  <a
-                    href="${app.locals.settings.url}/courses/${res.locals.course
-                      .reference}/threads/${thread.reference}"
+              <i class="bi bi-chat-left-text"></i>
+              Create a New Thread
+            </a>
+          </div>
+          <div id="threads">
+            $${res.locals.threads.map(
+              (thread) => html`
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/threads/${thread.reference}"
+                  style="${css`
+                    text-decoration: none;
+                    color: inherit;
+                    display: block;
+                    border-top: 1px solid $purple-700;
+                    transition: $btn-transition;
+                    line-height: 1.3;
+                    padding: 0.5rem 1rem;
+                    &:hover,
+                    &:active {
+                      background-color: $purple-700;
+                    }
+                    ${thread.id === res.locals.thread?.id
+                      ? css`
+                          background-color: $purple-700;
+                        `
+                      : css``}
+                  `}"
+                >
+                  <div>${thread.title}</div>
+                  <div
                     style="${css`
-                      text-decoration: none;
-                      color: inherit;
-                      display: block;
-                      border-top: 1px solid $purple-700;
-                      transition: $btn-transition;
-                      line-height: 1.3;
-                      padding: 0.5rem 1rem;
-                      &:hover,
-                      &:active {
-                        background-color: $purple-700;
-                      }
-                      ${thread.id === res.locals.thread?.id
-                        ? css`
-                            background-color: $purple-700;
-                          `
-                        : css``}
+                      color: $purple-100;
+                      font-size: $small-font-size;
                     `}"
                   >
-                    <div>${thread.title}</div>
+                    #${thread.reference} created
+                    <time>${thread.createdAt}</time> by
+                    ${thread.authorEnrollment.user.name}
+                    $${thread.updatedAt !== thread.createdAt
+                      ? html`
+                          <br />
+                          and last updated
+                          <time>${thread.updatedAt}</time>
+                        `
+                      : html``}
+                    <br />
                     <div
                       style="${css`
-                        color: $purple-100;
-                        font-size: $small-font-size;
+                        display: flex;
+                        gap: 0.5rem;
+                        align-items: baseline;
                       `}"
                     >
-                      #${thread.reference} created
-                      <time>${thread.createdAt}</time> by
-                      ${thread.authorEnrollment.user.name}
-                      $${thread.updatedAt !== thread.createdAt
+                      $${thread.pinnedAt !== null
                         ? html`
-                            <br />
-                            and last updated
-                            <time>${thread.updatedAt}</time>
+                            <div>
+                              <i class="bi bi-pin"></i>
+                              Pinned
+                            </div>
                           `
                         : html``}
-                      <br />
-                      <div
-                        style="${css`
-                          display: flex;
-                          gap: 0.5rem;
-                          align-items: baseline;
-                        `}"
-                      >
-                        $${thread.pinnedAt !== null
-                          ? html`
-                              <div>
-                                <i class="bi bi-pin"></i>
-                                Pinned
-                              </div>
-                            `
-                          : html``}
-                        $${thread.questionAt !== null
-                          ? html`
-                              <div>
-                                <i class="bi bi-question-diamond"></i>
-                                Question
-                              </div>
-                            `
-                          : html``}
-                        <div>
-                          <i class="bi bi-chat-left"></i>
-                          ${thread.postsCount}
-                          post${thread.postsCount === 1 ? "" : "s"}
-                        </div>
-                        $${thread.likesCount === 0
-                          ? html``
-                          : html`
-                              <div>
-                                <i class="bi bi-hand-thumbs-up"></i>
-                                ${thread.likesCount}
-                                like${thread.likesCount === 1 ? "" : "s"}
-                              </div>
-                            `}
+                      $${thread.questionAt !== null
+                        ? html`
+                            <div>
+                              <i class="bi bi-question-diamond"></i>
+                              Question
+                            </div>
+                          `
+                        : html``}
+                      <div>
+                        <i class="bi bi-chat-left"></i>
+                        ${thread.postsCount}
+                        post${thread.postsCount === 1 ? "" : "s"}
                       </div>
+                      $${thread.likesCount === 0
+                        ? html``
+                        : html`
+                            <div>
+                              <i class="bi bi-hand-thumbs-up"></i>
+                              ${thread.likesCount}
+                              like${thread.likesCount === 1 ? "" : "s"}
+                            </div>
+                          `}
                     </div>
-                  </a>
-                `
-              )}
-            </div>
-            <script>
-              (() => {
-                const id = document.currentScript.previousElementSibling.id;
-                eventSource.addEventListener("refreshed", (event) => {
-                  document
-                    .querySelector("#" + id)
-                    .replaceWith(event.detail.document.querySelector("#" + id));
-                });
-              })();
-            </script>
+                  </div>
+                </a>
+              `
+            )}
           </div>
-          <div
-            style="${css`
-              @include media-breakpoint-up(md) {
-                flex: 1;
-              }
-            `}"
-          >
-            <div
-              style="${css`
-                max-width: 80ch;
-                margin: 0 auto;
-                padding: 0.5rem 1rem;
-              `}"
-            >
-              $${body}
-            </div>
-          </div>
+          <script>
+            (() => {
+              const id = document.currentScript.previousElementSibling.id;
+              eventSource.addEventListener("refreshed", (event) => {
+                document
+                  .querySelector("#" + id)
+                  .replaceWith(event.detail.document.querySelector("#" + id));
+              });
+            })();
+          </script>
         </div>
       `,
       html`
-        <div
-          style="${css`
-            @include media-breakpoint-down(md) {
-              grid-area: 2 / 3 / 2 / 4;
-              justify-self: end;
-              margin-right: -0.2rem;
-            }
-            @include media-breakpoint-up(md) {
-              display: none;
-            }
-          `}"
-        >
-          <button
-            type="button"
-            class="btn link-light dropdown-toggle"
-            data-bs-toggle="collapse"
-            data-bs-target="#threads"
-            aria-expanded="false"
-            aria-controls="threads"
-            style="${css`
-              padding: 0 0.2rem;
-              &:hover,
-              &:focus {
-                background-color: $purple-700;
-              }
-            `}"
-          >
-            <i class="bi bi-chat-left-text"></i>
-            Threads
-          </button>
-        </div>
+        <i class="bi bi-chat-left-text"></i>
+        Threads
       `
     );
 
