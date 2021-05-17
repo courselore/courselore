@@ -2364,31 +2364,23 @@ export default async function courselore(
               res,
               html`<title>CourseLore</title>`,
               html`
-                <h1>Hi ${res.locals.user.name},</h1>
+                <h1>Your Courses</h1>
 
-                <p>Go to one of your courses:</p>
-                <nav>
+                <div class="list-group">
                   $${res.locals.enrollments.map(
                     (enrollment) =>
                       html`
-                        <p>
-                          <a
-                            href="${app.locals.settings
-                              .url}/courses/${enrollment.course.reference}"
-                            ><span
-                              style="${css`
-                                font-size: 0.6rem;
-                                color: ${enrollment.accentColor};
-                              `}"
-                            >
-                              <i class="bi bi-circle-fill"></i>
-                            </span>
-                            <strong>${enrollment.course.name}</strong></a
-                          >
-                        </p>
+                        <a
+                          href="${app.locals.settings.url}/courses/${enrollment
+                            .course.reference}"
+                          class="list-group-item list-group-item-action"
+                        >
+                          <i class="bi bi-journal"></i>
+                          ${enrollment.course.name}
+                        </a>
                       `
                   )}
-                </nav>
+                </div>
               `
             )
           );
@@ -2472,12 +2464,11 @@ export default async function courselore(
     "/settings",
     ...app.locals.middlewares.isAuthenticated,
     (req, res, next) => {
-      if (typeof req.body.name === "string") {
-        if (req.body.name.trim() === "") return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
-        );
-      }
+      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+        return next("validation");
+      app.locals.database.run(
+        sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
+      );
 
       res.redirect(`${app.locals.settings.url}/settings`);
     }
