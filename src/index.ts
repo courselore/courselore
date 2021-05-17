@@ -1415,7 +1415,6 @@ export default async function courselore(
                     font-size: 1.5rem;
                     font-weight: bold;
                     font-style: italic;
-                    line-height: 1;
                     padding: 0;
                     display: inline-flex;
                     gap: 0.5rem;
