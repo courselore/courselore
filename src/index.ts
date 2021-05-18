@@ -3542,7 +3542,7 @@ export default async function courselore(
                     autocomplete="off"
                     required
                     onchange="${css`
-                    document.querySelector("#expiresAt-collapse").classList.add("show");
+                      document.querySelector("#expiresAt-collapse").classList.add("show");
                     `}"
                   />
                   <label class="btn btn-outline-primary" for="isExpiresAt-true">
