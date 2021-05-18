@@ -367,10 +367,13 @@ export default async function courselore(
             ? html`
                 <nav
                   style="${css`
-                    text-align: center;
                     background-color: $red;
                     padding: 0.2rem 1rem;
                     border-bottom: 1px solid white;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 0.5rem;
                   `}"
                 >
                   <a
@@ -391,6 +394,7 @@ export default async function courselore(
                     tabindex="0"
                     class="btn btn-sm link-light"
                     style="${css`
+                      padding: 0 0.2rem;
                       &:hover,
                       &:focus {
                         background-color: $red-600;
@@ -404,6 +408,7 @@ export default async function courselore(
                     href="${app.locals.settings.url}/demonstration-inbox"
                     class="btn btn-sm link-light"
                     style="${css`
+                      padding: 0 0.2rem;
                       &:hover,
                       &:focus {
                         background-color: $red-600;
@@ -826,7 +831,8 @@ export default async function courselore(
             <nav
               style="${css`
                 background-color: $purple;
-                padding: 0.5rem 1rem;
+                padding: 0.2rem 1rem;
+                border-bottom: 1px solid $purple-700;
                 display: grid;
                 align-items: center;
                 grid-template-columns: 1fr 2fr 1fr;
@@ -916,6 +922,14 @@ export default async function courselore(
                         ${res.locals.course.name}
                       </a>
                       <div class="dropdown-menu" aria-labelledby="course-menu">
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}"
+                          class="dropdown-item"
+                        >
+                          <i class="bi bi-chat-left-text"></i>
+                          Threads
+                        </a>
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}/settings"
@@ -1351,20 +1365,21 @@ export default async function courselore(
       overflow-wrap: break-word;
     }
 
-    .btn-primary {
-      @include button-variant($primary, $primary, $white);
-    }
-
-    .btn-outline-primary {
-      @include button-outline-variant($primary, $white);
-    }
-
-    .btn-danger {
-      @include button-variant($danger, $danger, $white);
-    }
-
-    .btn-outline-danger {
-      @include button-outline-variant($danger, $white);
+    .btn-primary,
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-outline-primary:hover,
+    .btn-outline-primary:focus,
+    .btn-check:checked + .btn-outline-primary,
+    .btn-check:active + .btn-outline-primary,
+    .btn-danger,
+    .btn-danger:hover,
+    .btn-danger:focus,
+    .btn-outline-danger:hover,
+    .btn-outline-danger:focus,
+    .btn-check:checked + .btn-outline-danger,
+    .btn-check:active + .btn-outline-danger {
+      color: white;
     }
   `);
   app.get("/global.css", (req, res) => {
@@ -3236,19 +3251,128 @@ export default async function courselore(
     },
   ];
 
-  // TODO: Student version of settings.
+  interface Layouts {
+    courseSettings: (
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        IsEnrolledInCourseMiddlewareLocals &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      res: express.Response<
+        any,
+        IsEnrolledInCourseMiddlewareLocals &
+          Partial<EventSourceMiddlewareLocals>
+      >,
+      head: HTML,
+      body: HTML
+    ) => HTML;
+  }
+  app.locals.layouts.courseSettings = (req, res, head, body) =>
+    app.locals.layouts.applicationWithHeaderAndSidebar(
+      req,
+      res,
+      head,
+      body,
+      html`
+        <div
+          style="${css`
+            a {
+              text-decoration: none;
+              color: inherit;
+              display: block;
+              transition: $btn-transition;
+              line-height: 1.3;
+              padding: 0.5rem 1rem;
+              &:hover,
+              &:active {
+                background-color: $purple-700;
+              }
+            }
+
+            a + a {
+              border-top: 1px solid $purple-700;
+            }
+          `}"
+        >
+          <a
+            href="${app.locals.settings.url}/courses/${res.locals.course
+              .reference}/settings"
+            style="${css`
+              ${req.path.endsWith("/settings")
+                ? css`
+                    background-color: $purple-700;
+                  `
+                : css``}
+            `}"
+          >
+            <i class="bi bi-sliders"></i>
+            Course Settings
+          </a>
+          <a
+            href="${app.locals.settings.url}/courses/${res.locals.course
+              .reference}/settings/invitations"
+            style="${css`
+              ${req.path.endsWith("/settings/invitations")
+                ? css`
+                    background-color: $purple-700;
+                  `
+                : css``}
+            `}"
+          >
+            <i class="bi bi-person-plus"></i>
+            Invitations
+          </a>
+          <a
+            href="${app.locals.settings.url}/courses/${res.locals.course
+              .reference}/settings/enrollments"
+            style="${css`
+              ${req.path.endsWith("/settings/enrollments")
+                ? css`
+                    background-color: $purple-700;
+                  `
+                : css``}
+            `}"
+          >
+            <i class="bi bi-people"></i>
+            Enrollments
+          </a>
+          <a
+            href="${app.locals.settings.url}/courses/${res.locals.course
+              .reference}/settings/enrollment"
+            style="${css`
+              ${req.path.endsWith("/settings/enrollment")
+                ? css`
+                    background-color: $purple-700;
+                  `
+                : css``}
+            `}"
+          >
+            <i class="bi bi-person"></i>
+            Your Enrollment
+          </a>
+        </div>
+      `,
+      html`
+        <i class="bi bi-sliders"></i>
+        Course Settings
+      `
+    );
+
   app.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        app.locals.layouts.applicationWithHeaderAndSidebar(
+        app.locals.layouts.courseSettings(
           req,
           res,
           html`
@@ -3257,33 +3381,268 @@ export default async function courselore(
             </title>
           `,
           html`
-            <h1>
-              Course Settings ·
-              <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}"
-                >${res.locals.course.name}</a
+            <h1>Course Settings</h1>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings?_method=PATCH"
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              `}"
+            >
+              <div class="form-floating">
+                <input
+                  type="text"
+                  name="name"
+                  autocomplete="off"
+                  required
+                  value="${res.locals.course.name}"
+                  class="form-control"
+                  id="name"
+                />
+                <label for="name">Name</label>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="${css`
+                    @include media-breakpoint-down(md) {
+                      width: 100%;
+                    }
+                  `}"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update Course Settings
+                </button>
+              </div>
+            </form>
+          `
+        )
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/invitations",
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res) => {
+      const invitations = app.locals.database.all<{
+        id: number;
+        expiresAt: string | null;
+        usedAt: string | null;
+        reference: string;
+        email: string | null;
+        name: string | null;
+        role: Role;
+      }>(
+        sql`
+          SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
+          FROM "invitations"
+          WHERE "course" = ${res.locals.course.id}
+          ORDER BY "id" DESC
+        `
+      );
+
+      res.send(
+        app.locals.layouts.courseSettings(
+          req,
+          res,
+          html`
+            <title>
+              Invitations · Course Settings · ${res.locals.course.name} ·
+              CourseLore
+            </title>
+          `,
+          html`
+            <h1>Invitations</h1>
+
+            <h6>Create a New Invitation</h6>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings/invitations"
+            >
+              <div
+                style="${css`
+                  display: flex;
+                  gap: 1rem;
+                  flex-direction: column;
+                `}"
               >
-            </h1>
-            $${res.locals.enrollment.role !== "staff"
+                <div class="btn-group" role="group" aria-label="Role">
+                  $${app.locals.constants.roles.map(
+                    (role, index) =>
+                      html`
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="role"
+                          id="${role}"
+                          autocomplete="off"
+                          value="${role}"
+                          required
+                        />
+                        <label class="btn btn-outline-primary" for="${role}">
+                          ${lodash.capitalize(role)}
+                        </label>
+                      `
+                  )}
+                </div>
+
+                <div class="input-group">
+                  <div class="input-group-text">
+                    <input
+                      class="form-check-input"
+                      style="${css`
+                        margin-top: 0;
+                      `}"
+                      type="checkbox"
+                      aria-label="Whether to expire the invitation"
+                      onchange="${javascript`
+                        const expiresAt = this.closest(".input-group").querySelector('[name="expiresAt"]');
+                        expiresAt.disabled = !this.checked;
+                        if (this.checked) {
+                          expiresAt.focus();
+                          expiresAt.setSelectionRange(0, 0);
+                        }
+                      `}"
+                    />
+                  </div>
+                  <div
+                    class="form-floating"
+                    style="${css`
+                      flex: 1;
+                    `}"
+                  >
+                    <input
+                      type="text"
+                      class="form-control datetime"
+                      id="expiration"
+                      name="expiresAt"
+                      value="${new Date().toISOString()}"
+                      required
+                      disabled
+                      style="${css`
+                        border-bottom-left-radius: 0;
+                        border-top-left-radius: 0;
+                      `}"
+                      data-onvalidate="${javascript`
+                        if (new Date(this.value).getTime() <= Date.now())
+                          return "Must be in the future";
+                      `}"
+                    />
+                    <label for="expiration">Expiration</label>
+                  </div>
+                </div>
+
+                <div class="btn-group" role="group" aria-label="Sharing">
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="share"
+                    id="share-link"
+                    autocomplete="off"
+                    required
+                  />
+                  <label class="btn btn-outline-primary" for="share-link">
+                    Share with an invitation link
+                  </label>
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="share"
+                    id="share-link"
+                    autocomplete="off"
+                    required
+                  />
+                  <label class="btn btn-outline-primary" for="share-link">
+                    Share via email
+                  </label>
+                </div>
+              </div>
+
+              <p>
+                <strong>Sharing</strong><br />
+                <label>
+                  <input
+                    type="radio"
+                    name="sharing"
+                    value="link"
+                    required
+                    checked
+                    onchange="${javascript`
+                        this.closest("p").querySelector('[name="emails"]').disabled = true;
+                      `}"
+                  />
+                  With an invitation link
+                </label>
+                <br />
+                <label>
+                  <input
+                    type="radio"
+                    name="sharing"
+                    value="emails"
+                    required
+                    onchange="${javascript`
+                        const emails = this.closest("p").querySelector('[name="emails"]');
+                        emails.disabled = false;
+                        emails.focus();
+                        emails.setSelectionRange(0, 0);
+                      `}"
+                  />
+                  Via email
+                </label>
+                <br />
+                <textarea
+                  name="emails"
+                  required
+                  class="full-width"
+                  disabled
+                  data-onvalidate="${javascript`
+                      const emails = emailAddresses.parseAddressList(this.value);
+                      if (
+                        emails === null ||
+                        emails.find(
+                          (email) =>
+                            email.type !== "mailbox" || !${app.locals.constants.emailRegExp}.test(email.address)
+                        ) !== undefined
+                      )
+                        return "Match the requested format";
+                    `}"
+                ></textarea>
+                <br />
+                <small class="full-width secondary">
+                  Emails must be separated by commas and may include names.
+                  <br />
+                  Example:
+                  <code
+                    >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
+                  >
+                </small>
+              </p>
+              <p><button>Create Invitation</button></p>
+            </form>
+          `
+        )
+      );
+    }
+  );
+
+  /*
+
+  $${res.locals.enrollment.role !== "staff"
               ? html``
               : (() => {
-                  const invitations = app.locals.database.all<{
-                    id: number;
-                    expiresAt: string | null;
-                    usedAt: string | null;
-                    reference: string;
-                    email: string | null;
-                    name: string | null;
-                    role: Role;
-                  }>(
-                    sql`
-                      SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
-                      FROM "invitations"
-                      WHERE "course" = ${res.locals.course.id}
-                      ORDER BY "id" DESC
-                    `
-                  );
+                  
                   const enrollments = app.locals.database.all<{
                     id: number;
                     userId: number;
@@ -3293,57 +3652,21 @@ export default async function courselore(
                     role: Role;
                   }>(
                     sql`
-                      SELECT "enrollments"."id",
-                             "users"."id" AS "userId",
-                             "users"."email" AS "userEmail",
-                             "users"."name" AS "userName",
-                             "enrollments"."reference",
-                             "enrollments"."role"
-                      FROM "enrollments"
-                      JOIN "users" ON "enrollments"."user" = "users"."id"
-                      WHERE "enrollments"."course" = ${res.locals.course.id}
-                      ORDER BY "enrollments"."id" DESC
-                    `
+                SELECT "enrollments"."id",
+                       "users"."id" AS "userId",
+                       "users"."email" AS "userEmail",
+                       "users"."name" AS "userName",
+                       "enrollments"."reference",
+                       "enrollments"."role"
+                FROM "enrollments"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                WHERE "enrollments"."course" = ${res.locals.course.id}
+                ORDER BY "enrollments"."id" DESC
+              `
                   );
 
                   return html`
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/settings?_method=PATCH"
-                    >
-                      <p>
-                        <label>
-                          <strong>Name</strong><br />
-                          <span
-                            style="${css`
-                              display: flex;
-
-                              & > * + * {
-                                margin-left: 1rem;
-                              }
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              name="name"
-                              autocomplete="off"
-                              required
-                              value="${res.locals.course.name}"
-                              class="full-width"
-                              style="${css`
-                                flex: 1;
-                              `}"
-                            />
-                            <button>Change Name</button>
-                          </span>
-                        </label>
-                      </p>
-                    </form>
-
-                    <hr />
-
-                    <p id="invitations"><strong>Invitations</strong></p>
+                    
 
                     $${invitations!.length === 0
                       ? html``
@@ -3567,13 +3890,13 @@ export default async function courselore(
                                                           ? ``
                                                           : `checked`}
                                                         onchange="${javascript`
-                                                          const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                                          expiresAt.disabled = !this.checked;
-                                                          if (this.checked) {
-                                                            expiresAt.focus();
-                                                            expiresAt.setSelectionRange(0, 0);
-                                                          }
-                                                        `}"
+                                                    const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                                    expiresAt.disabled = !this.checked;
+                                                    if (this.checked) {
+                                                      expiresAt.focus();
+                                                      expiresAt.setSelectionRange(0, 0);
+                                                    }
+                                                  `}"
                                                       />
                                                     </span>
                                                     <span>Expires at</span>
@@ -3588,9 +3911,9 @@ export default async function courselore(
                                                         ? `disabled`
                                                         : ``}
                                                       data-onvalidate="${javascript`
-                                                        if (new Date(this.value).getTime() <= Date.now())
-                                                          return "Must be in the future";
-                                                      `}"
+                                                  if (new Date(this.value).getTime() <= Date.now())
+                                                    return "Must be in the future";
+                                                `}"
                                                       class="full-width datetime"
                                                       style="${css`
                                                         flex: 1;
@@ -3641,162 +3964,7 @@ export default async function courselore(
                           <p><strong>Create a New Invitation</strong></p>
                         `}
 
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/invitations"
-                    >
-                      <div
-                        style="${css`
-                          display: flex;
-                          margin: -1rem 0;
-
-                          & > * {
-                            flex: 1;
-                          }
-
-                          & > * + * {
-                            margin-left: 2rem;
-                          }
-                        `}"
-                      >
-                        <p>
-                          <strong>Role</strong><br />
-                          <span
-                            style="${css`
-                              display: flex;
-
-                              & > * + * {
-                                margin-left: 1rem;
-                              }
-                            `}"
-                          >
-                            $${app.locals.constants.roles.map(
-                              (role, index) =>
-                                html`
-                                  <label>
-                                    <input
-                                      type="radio"
-                                      name="role"
-                                      value="${role}"
-                                      required
-                                      $${index === 0 ? `checked` : ``}
-                                    />
-                                    ${lodash.capitalize(role)}
-                                  </label>
-                                `
-                            )}
-                          </span>
-                        </p>
-
-                        <p>
-                          <label>
-                            <strong>Expiration</strong><br />
-                            <span
-                              style="${css`
-                                display: flex;
-                                align-items: baseline;
-
-                                & > * + * {
-                                  margin-left: 0.5rem;
-                                }
-                              `}"
-                            >
-                              <span>
-                                <input
-                                  type="checkbox"
-                                  onchange="${javascript`
-                                    const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                    expiresAt.disabled = !this.checked;
-                                    if (this.checked) {
-                                      expiresAt.focus();
-                                      expiresAt.setSelectionRange(0, 0);
-                                    }
-                                  `}"
-                                />
-                              </span>
-                              <span>Expires at</span>
-                              <input
-                                type="text"
-                                name="expiresAt"
-                                value="${new Date().toISOString()}"
-                                required
-                                disabled
-                                data-onvalidate="${javascript`
-                                  if (new Date(this.value).getTime() <= Date.now())
-                                    return "Must be in the future";
-                                `}"
-                                class="full-width datetime"
-                                style="${css`
-                                  flex: 1;
-                                `}"
-                              />
-                            </span>
-                          </label>
-                        </p>
-                      </div>
-                      <p>
-                        <strong>Sharing</strong><br />
-                        <label>
-                          <input
-                            type="radio"
-                            name="sharing"
-                            value="link"
-                            required
-                            checked
-                            onchange="${javascript`
-                              this.closest("p").querySelector('[name="emails"]').disabled = true;
-                            `}"
-                          />
-                          With an invitation link
-                        </label>
-                        <br />
-                        <label>
-                          <input
-                            type="radio"
-                            name="sharing"
-                            value="emails"
-                            required
-                            onchange="${javascript`
-                              const emails = this.closest("p").querySelector('[name="emails"]');
-                              emails.disabled = false;
-                              emails.focus();
-                              emails.setSelectionRange(0, 0);
-                            `}"
-                          />
-                          Via email
-                        </label>
-                        <br />
-                        <textarea
-                          name="emails"
-                          required
-                          class="full-width"
-                          disabled
-                          data-onvalidate="${javascript`
-                            const emails = emailAddresses.parseAddressList(this.value);
-                            if (
-                              emails === null ||
-                              emails.find(
-                                (email) =>
-                                  email.type !== "mailbox" || !${app.locals.constants.emailRegExp}.test(email.address)
-                              ) !== undefined
-                            )
-                              return "Match the requested format";
-                          `}"
-                        ></textarea>
-                        <br />
-                        <small class="full-width secondary">
-                          Emails must be separated by commas and may include
-                          names.
-                          <br />
-                          Example:
-                          <code
-                            >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
-                          >
-                        </small>
-                      </p>
-                      <p><button>Create Invitation</button></p>
-                    </form>
+                    
 
                     <hr />
 
@@ -3887,9 +4055,9 @@ export default async function courselore(
                                           <button
                                             class="full-width"
                                             onclick="${javascript`
-                                              if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
-                                                event.preventDefault();
-                                            `}"
+                                        if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                          event.preventDefault();
+                                      `}"
                                           >
                                             Remove from Course
                                           </button>
@@ -3946,9 +4114,9 @@ export default async function courselore(
                                           <button
                                             class="full-width"
                                             onclick="${javascript`
-                                              if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
-                                                event.preventDefault();
-                                            `}"
+                                        if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
+                                          event.preventDefault();
+                                      `}"
                                           >
                                             Convert Yourself into Student
                                           </button>
@@ -3965,9 +4133,9 @@ export default async function courselore(
                                           <button
                                             class="full-width"
                                             onclick="${javascript`
-                                              if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
-                                                event.preventDefault();
-                                            `}"
+                                        if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                          event.preventDefault();
+                                      `}"
                                           >
                                             Remove Yourself from Course
                                           </button>
@@ -4035,91 +4203,9 @@ export default async function courselore(
                   `
               )}
             </div>
-          `,
-          html`
-            <div
-              style="${css`
-                a {
-                  text-decoration: none;
-                  color: inherit;
-                  display: block;
-                  border-top: 1px solid $purple-700;
-                  transition: $btn-transition;
-                  line-height: 1.3;
-                  padding: 0.5rem 1rem;
-                  &:hover,
-                  &:active {
-                    background-color: $purple-700;
-                  }
-                }
-              `}"
-            >
-              <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings"
-                style="${css`
-                  ${req.path.endsWith("/settings")
-                    ? css`
-                        background-color: $purple-700;
-                      `
-                    : css``}
-                `}"
-              >
-                <i class="bi bi-sliders"></i>
-                Course Settings
-              </a>
-              <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/invitations"
-                style="${css`
-                  ${req.path.endsWith("/settings/invitations")
-                    ? css`
-                        background-color: $purple-700;
-                      `
-                    : css``}
-                `}"
-              >
-                <i class="bi bi-person-plus"></i>
-                Invitations
-              </a>
-              <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/enrollments"
-                style="${css`
-                  ${req.path.endsWith("/settings/enrollments")
-                    ? css`
-                        background-color: $purple-700;
-                      `
-                    : css``}
-                `}"
-              >
-                <i class="bi bi-people"></i>
-                Enrollments
-              </a>
-              <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/enrollment"
-                style="${css`
-                  ${req.path.endsWith("/settings/enrollment")
-                    ? css`
-                        background-color: $purple-700;
-                      `
-                    : css``}
-                `}"
-              >
-                <i class="bi bi-person"></i>
-                Your Enrollment
-              </a>
-            </div>
-          `,
-          html`
-            <i class="bi bi-sliders"></i>
-            Course Settings
-          `
-        )
-      );
-    }
-  );
+  */
+
+  // TODO: Student version of settings.
 
   app.patch<
     { courseReference: string },
