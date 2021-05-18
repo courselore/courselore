@@ -3507,115 +3507,183 @@ export default async function courselore(
                   )}
                 </div>
 
-                <div
-                  class="btn-group"
-                  role="group"
-                  aria-label="Expiration"
-                  style="${css`
-                    & > * {
-                      flex: 1;
-                    }
-                  `}"
-                >
-                  <input
-                    type="radio"
-                    class="btn-check"
-                    name="isExpiresAt"
-                    id="isExpiresAt-false"
-                    autocomplete="off"
-                    required
-                    onchange="${css`
-                      document.querySelector("#expiresAt-collapse").classList.remove("show");
-                    `}"
-                  />
-                  <label
-                    class="btn btn-outline-primary"
-                    for="isExpiresAt-false"
-                  >
-                    Doesn’t Expire
-                  </label>
-                  <input
-                    type="radio"
-                    class="btn-check"
-                    name="isExpiresAt"
-                    id="isExpiresAt-true"
-                    autocomplete="off"
-                    required
-                    onchange="${css`
-                      document.querySelector("#expiresAt-collapse").classList.add("show");
-                    `}"
-                  />
-                  <label class="btn btn-outline-primary" for="isExpiresAt-true">
-                    Expires
-                  </label>
-                </div>
-
-                <div class="collapse" id="expiresAt-collapse">
+                <div>
                   <div
-                    class="form-floating"
+                    class="btn-group"
+                    role="group"
+                    aria-label="Expiration"
                     style="${css`
-                      flex: 1;
+                      width: 100%;
+                      & > * {
+                        flex: 1;
+                      }
                     `}"
                   >
                     <input
-                      type="text"
-                      class="form-control datetime"
-                      id="expiresAt"
-                      name="expiresAt"
-                      value="${new Date().toISOString()}"
+                      type="radio"
+                      class="btn-check"
+                      name="isExpiresAt"
+                      id="isExpiresAt-false"
+                      autocomplete="off"
                       required
-                      data-onvalidate="${javascript`
-                        if (new Date(this.value).getTime() <= Date.now())
-                          return "Must be in the future";
+                      onchange="${css`
+                        const collapse = document.querySelector("#expiresAt-collapse");
+                        if (!collapse.classList.contains("show")) return;
+                        new bootstrap.Collapse(collapse).hide();
+                        for (const element of collapse.querySelectorAll("*"))
+                          if (element.disabled !== undefined) element.disabled = true;
                       `}"
                     />
-                    <label for="expiresAt">Expires at</label>
+                    <label
+                      class="btn btn-outline-primary"
+                      for="isExpiresAt-false"
+                    >
+                      Doesn’t Expire
+                    </label>
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      name="isExpiresAt"
+                      id="isExpiresAt-true"
+                      autocomplete="off"
+                      required
+                      onchange="${css`
+                        const collapse = document.querySelector("#expiresAt-collapse");
+                        new bootstrap.Collapse(collapse).show();
+                        for (const element of collapse.querySelectorAll("*"))
+                          if (element.disabled !== undefined) element.disabled = false;
+                      `}"
+                    />
+                    <label
+                      class="btn btn-outline-primary"
+                      for="isExpiresAt-true"
+                    >
+                      Expires
+                    </label>
+                  </div>
+
+                  <div class="collapse" id="expiresAt-collapse">
+                    <div
+                      style="${css`
+                        margin-top: 1rem;
+                      `}"
+                    >
+                      <div class="form-floating">
+                        <input
+                          type="text"
+                          class="form-control datetime"
+                          id="expiresAt"
+                          name="expiresAt"
+                          value="${new Date().toISOString()}"
+                          required
+                          disabled
+                          data-onvalidate="${javascript`
+                            if (new Date(this.value).getTime() <= Date.now())
+                              return "Must be in the future";
+                          `}"
+                        />
+                        <label for="expiresAt">Expires at</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div
-                  class="btn-group"
-                  role="group"
-                  aria-label="Type"
-                  style="${css`
-                    & > * {
-                      flex: 1;
-                    }
-                  `}"
-                >
-                  <input
-                    type="radio"
-                    class="btn-check"
-                    name="type"
-                    value="link"
-                    id="type-link"
-                    autocomplete="off"
-                    required
-                    onchange="${javascript`
-                      // this.closest("p").querySelector('[name="emails"]').disabled = true;
+                <div>
+                  <div
+                    class="btn-group"
+                    role="group"
+                    aria-label="Type"
+                    style="${css`
+                      width: 100%;
+                      & > * {
+                        flex: 1;
+                      }
                     `}"
-                  />
-                  <label class="btn btn-outline-primary" for="type-link">
-                    Invite with a Link
-                  </label>
-                  <input
-                    type="radio"
-                    class="btn-check"
-                    name="type"
-                    value="email"
-                    id="type-email"
-                    autocomplete="off"
-                    required
-                    onchange="${javascript`
-                      // const emails = this.closest("p").querySelector('[name="emails"]');
-                      // emails.disabled = false;
-                      // emails.focus();
-                      // emails.setSelectionRange(0, 0);
-                    `}"
-                  />
-                  <label class="btn btn-outline-primary" for="type-email">
-                    Invite via Email
-                  </label>
+                  >
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      name="type"
+                      value="link"
+                      id="type-link"
+                      autocomplete="off"
+                      required
+                      onchange="${javascript`
+                        const collapse = document.querySelector("#type-collapse");
+                        if (!collapse.classList.contains("show")) return;
+                        new bootstrap.Collapse(collapse).hide();
+                        for (const element of collapse.querySelectorAll("*"))
+                          if (element.disabled !== undefined) element.disabled = true;
+                      `}"
+                    />
+                    <label class="btn btn-outline-primary" for="type-link">
+                      Invite with a Link
+                    </label>
+                    <input
+                      type="radio"
+                      class="btn-check"
+                      name="type"
+                      value="email"
+                      id="type-email"
+                      autocomplete="off"
+                      required
+                      onchange="${javascript`
+                        const collapse = document.querySelector("#type-collapse");
+                        new bootstrap.Collapse(collapse).show();
+                        for (const element of collapse.querySelectorAll("*"))
+                          if (element.disabled !== undefined) element.disabled = false;
+                      `}"
+                    />
+                    <label class="btn btn-outline-primary" for="type-email">
+                      Invite via Email
+                    </label>
+                  </div>
+
+                  <div class="collapse" id="type-collapse">
+                    <div
+                      style="${css`
+                        margin-top: 1rem;
+                      `}"
+                    >
+                      <div class="form-floating">
+                        <textarea
+                          type="text"
+                          class="form-control datetime"
+                          id="emails"
+                          name="emails"
+                          value="${new Date().toISOString()}"
+                          required
+                          disabled
+                          aria-describedby="emails-help"
+                          data-onvalidate="${javascript`
+                            const emails = emailAddresses.parseAddressList(this.value);
+                            if (
+                              emails === null ||
+                              emails.find(
+                                (email) =>
+                                  email.type !== "mailbox" || !${app.locals.constants.emailRegExp}.test(email.address)
+                              ) !== undefined
+                            )
+                              return "Match the requested format";
+                          `}"
+                          style="${css`
+                            height: 20ex;
+                          `}"
+                        ></textarea>
+                        <label for="emails">Emails</label>
+                      </div>
+
+                      <div id="emails-help" class="form-text">
+                        Emails must be separated by commas and may include
+                        names.
+                        <br />
+                        Example:
+                        <code
+                          >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
+                        >
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -3633,36 +3701,6 @@ export default async function courselore(
                   </button>
                 </div>
               </div>
-
-              <p>
-                <br />
-                <textarea
-                  name="emails"
-                  required
-                  class="full-width"
-                  disabled
-                  data-onvalidate="${javascript`
-                      const emails = emailAddresses.parseAddressList(this.value);
-                      if (
-                        emails === null ||
-                        emails.find(
-                          (email) =>
-                            email.type !== "mailbox" || !${app.locals.constants.emailRegExp}.test(email.address)
-                        ) !== undefined
-                      )
-                        return "Match the requested format";
-                    `}"
-                ></textarea>
-                <br />
-                <small class="full-width secondary">
-                  Emails must be separated by commas and may include names.
-                  <br />
-                  Example:
-                  <code
-                    >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
-                  >
-                </small>
-              </p>
             </form>
           `
         )
