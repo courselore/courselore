@@ -1235,7 +1235,7 @@ export default async function courselore(
               background-color: $purple-600;
               color: white;
               @include media-breakpoint-down(md) {
-                z-index: 1;
+                z-index: $zindex-modal;
               }
               @include media-breakpoint-up(md) {
                 display: block;
@@ -3507,25 +3507,50 @@ export default async function courselore(
                   )}
                 </div>
 
-                <div class="input-group">
-                  <div class="input-group-text">
-                    <input
-                      class="form-check-input"
-                      style="${css`
-                        margin-top: 0;
-                      `}"
-                      type="checkbox"
-                      aria-label="Whether to expire the invitation"
-                      onchange="${javascript`
-                        const expiresAt = this.closest(".input-group").querySelector('[name="expiresAt"]');
-                        expiresAt.disabled = !this.checked;
-                        if (this.checked) {
-                          expiresAt.focus();
-                          expiresAt.setSelectionRange(0, 0);
-                        }
-                      `}"
-                    />
-                  </div>
+                <div
+                  class="btn-group"
+                  role="group"
+                  aria-label="Expiration"
+                  style="${css`
+                    & > * {
+                      flex: 1;
+                    }
+                  `}"
+                >
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="isExpiresAt"
+                    id="isExpiresAt-false"
+                    autocomplete="off"
+                    required
+                    onchange="${css`
+                      document.querySelector("#expiresAt-collapse").classList.remove("show");
+                    `}"
+                  />
+                  <label
+                    class="btn btn-outline-primary"
+                    for="isExpiresAt-false"
+                  >
+                    Doesn’t Expire
+                  </label>
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="isExpiresAt"
+                    id="isExpiresAt-true"
+                    autocomplete="off"
+                    required
+                    onchange="${css`
+                    document.querySelector("#expiresAt-collapse").classList.add("show");
+                    `}"
+                  />
+                  <label class="btn btn-outline-primary" for="isExpiresAt-true">
+                    Expires
+                  </label>
+                </div>
+
+                <div class="collapse" id="expiresAt-collapse">
                   <div
                     class="form-floating"
                     style="${css`
@@ -3535,21 +3560,16 @@ export default async function courselore(
                     <input
                       type="text"
                       class="form-control datetime"
-                      id="expiration"
+                      id="expiresAt"
                       name="expiresAt"
                       value="${new Date().toISOString()}"
                       required
-                      disabled
-                      style="${css`
-                        border-bottom-left-radius: 0;
-                        border-top-left-radius: 0;
-                      `}"
                       data-onvalidate="${javascript`
                         if (new Date(this.value).getTime() <= Date.now())
                           return "Must be in the future";
                       `}"
                     />
-                    <label for="expiration">Expiration</label>
+                    <label for="expiresAt">Expires at</label>
                   </div>
                 </div>
 
@@ -3576,7 +3596,7 @@ export default async function courselore(
                     `}"
                   />
                   <label class="btn btn-outline-primary" for="type-link">
-                    Invite with a link
+                    Invite with a Link
                   </label>
                   <input
                     type="radio"
@@ -3594,7 +3614,7 @@ export default async function courselore(
                     `}"
                   />
                   <label class="btn btn-outline-primary" for="type-email">
-                    Invite via email
+                    Invite via Email
                   </label>
                 </div>
 
@@ -3608,6 +3628,7 @@ export default async function courselore(
                       }
                     `}"
                   >
+                    <i class="bi bi-person-plus"></i>
                     Create Invitation
                   </button>
                 </div>
