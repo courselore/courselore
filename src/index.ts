@@ -3478,7 +3478,16 @@ export default async function courselore(
                   flex-direction: column;
                 `}"
               >
-                <div class="btn-group" role="group" aria-label="Role">
+                <div
+                  class="btn-group"
+                  role="group"
+                  aria-label="Role"
+                  style="${css`
+                    & > * {
+                      flex: 1;
+                    }
+                  `}"
+                >
                   $${app.locals.constants.roles.map(
                     (role, index) =>
                       html`
@@ -3544,63 +3553,67 @@ export default async function courselore(
                   </div>
                 </div>
 
-                <div class="btn-group" role="group" aria-label="Sharing">
+                <div
+                  class="btn-group"
+                  role="group"
+                  aria-label="Type"
+                  style="${css`
+                    & > * {
+                      flex: 1;
+                    }
+                  `}"
+                >
                   <input
                     type="radio"
                     class="btn-check"
-                    name="share"
-                    id="share-link"
+                    name="type"
+                    value="link"
+                    id="type-link"
                     autocomplete="off"
                     required
+                    onchange="${javascript`
+                      // this.closest("p").querySelector('[name="emails"]').disabled = true;
+                    `}"
                   />
-                  <label class="btn btn-outline-primary" for="share-link">
-                    Share with an invitation link
+                  <label class="btn btn-outline-primary" for="type-link">
+                    Invite with a link
                   </label>
                   <input
                     type="radio"
                     class="btn-check"
-                    name="share"
-                    id="share-link"
+                    name="type"
+                    value="email"
+                    id="type-email"
                     autocomplete="off"
                     required
+                    onchange="${javascript`
+                      // const emails = this.closest("p").querySelector('[name="emails"]');
+                      // emails.disabled = false;
+                      // emails.focus();
+                      // emails.setSelectionRange(0, 0);
+                    `}"
                   />
-                  <label class="btn btn-outline-primary" for="share-link">
-                    Share via email
+                  <label class="btn btn-outline-primary" for="type-email">
+                    Invite via email
                   </label>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    style="${css`
+                      @include media-breakpoint-down(md) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    Create Invitation
+                  </button>
                 </div>
               </div>
 
               <p>
-                <strong>Sharing</strong><br />
-                <label>
-                  <input
-                    type="radio"
-                    name="sharing"
-                    value="link"
-                    required
-                    checked
-                    onchange="${javascript`
-                        this.closest("p").querySelector('[name="emails"]').disabled = true;
-                      `}"
-                  />
-                  With an invitation link
-                </label>
-                <br />
-                <label>
-                  <input
-                    type="radio"
-                    name="sharing"
-                    value="emails"
-                    required
-                    onchange="${javascript`
-                        const emails = this.closest("p").querySelector('[name="emails"]');
-                        emails.disabled = false;
-                        emails.focus();
-                        emails.setSelectionRange(0, 0);
-                      `}"
-                  />
-                  Via email
-                </label>
                 <br />
                 <textarea
                   name="emails"
@@ -3629,7 +3642,6 @@ export default async function courselore(
                   >
                 </small>
               </p>
-              <p><button>Create Invitation</button></p>
             </form>
           `
         )
