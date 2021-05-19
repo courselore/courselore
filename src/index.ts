@@ -437,9 +437,6 @@ export default async function courselore(
           </div>
         </div>
 
-        <script src="${app.locals.settings
-            .url}/node_modules/email-addresses/lib/email-addresses.min.js"></script>
-
         <script>
           (() => {
             const relativizeTimes = () => {
@@ -1330,6 +1327,8 @@ export default async function courselore(
 
             $primary: $purple;
             $success: $green;
+
+            $code-color: inherit;
 
             $enable-shadows: true;
 
@@ -3645,6 +3644,10 @@ export default async function courselore(
                     <div
                       style="${css`
                         margin-top: 1rem;
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
                       `}"
                     >
                       <div class="form-floating">
@@ -3656,8 +3659,8 @@ export default async function courselore(
                           value="${new Date().toISOString()}"
                           required
                           disabled
-                          aria-describedby="emails-help"
                           data-onvalidate="${javascript`
+                            const emails
                             const emails = emailAddresses.parseAddressList(this.value);
                             if (
                               emails === null ||
@@ -3674,13 +3677,39 @@ export default async function courselore(
                         ></textarea>
                         <label for="emails">Emails</label>
                       </div>
-
-                      <div id="emails-help" class="form-text">
-                        Emails must be separated by commas and may include
-                        names, for example:
-                        <code
-                          >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
+                      <div
+                        data-bs-toggle="tooltip"
+                        title="Help"
+                        style="${css`
+                          z-index: $zindex-dropdown;
+                          justify-self: end;
+                          align-self: start;
+                        `}"
+                      >
+                        <a
+                          tabindex="0"
+                          class="btn"
+                          role="button"
+                          data-bs-toggle="popover"
+                          data-bs-trigger="focus"
+                          data-bs-html="true"
+                          data-bs-content="${html`
+                            Emails must be separated by commas or newlines, and
+                            may include names, for example:
+                            <br />
+                            <code>
+                              ${`"John" <john@courselore.org>`}
+                            </code>
+                          `}"
+                          style="${css`
+                            color: $text-muted;
+                          `}"
+                          onclick="${javascript`
+                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                          `}"
                         >
+                          <i class="bi bi-question-circle"></i>
+                        </a>
                       </div>
                     </div>
                   </div>
