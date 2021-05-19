@@ -2049,7 +2049,7 @@ export default async function courselore(
           html`<title>Authenticate · CourseLore</title>`,
           html`
             <p class="card-text">
-              To continue, follow the magic authentication link we sent to
+              To continue, follow the Magic Authentication Link we sent to
               ${req.body.email}.
             </p>
             <p class="card-text">
@@ -2154,7 +2154,7 @@ export default async function courselore(
             html`<title>Authenticate · CourseLore</title>`,
             html`
               <p class="card-text">
-                This magic authentication link is invalid or has expired.
+                This Magic Authentication Link is invalid or has expired.
               </p>
               <p class="card-text">
                 <a
@@ -2218,7 +2218,11 @@ export default async function courselore(
                   <label for="name">Name</label>
                 </div>
 
-                <div class="form-floating text-body">
+                <div
+                  class="form-floating text-body"
+                  data-bs-toggle="tooltip"
+                  title="This is the email you confirmed by having followed the Magic Authentication Link and can’t be changed."
+                >
                   <input
                     type="email"
                     id="email"
@@ -2349,8 +2353,8 @@ export default async function courselore(
               You’re already signed in as $${currentUserHTML} and you tried to
               use
               $${otherUserEmail === undefined
-                ? html`an invalid or expired magic authentication link`
-                : html`a magic authentication link for $${otherUserHTML}`}.
+                ? html`an invalid or expired Magic Authentication Link`
+                : html`a Magic Authentication Link for $${otherUserHTML}`}.
             </p>
 
             <p class="card-text">
@@ -2612,22 +2616,20 @@ export default async function courselore(
                 />
                 <label for="name">Name</label>
               </div>
-              <div>
-                <div class="form-floating">
-                  <input
-                    type="email"
-                    id="email"
-                    value="${res.locals.user.email}"
-                    class="form-control"
-                    disabled
-                    aria-describedby="email-help"
-                  />
-                  <label for="email">Email</label>
-                </div>
-                <div id="email-help" class="form-text">
-                  Your email is your identity in CourseLore and can’t be
-                  changed.
-                </div>
+              <div
+                class="form-floating"
+                data-bs-toggle="tooltip"
+                title="Your email is your identity in CourseLore and can’t be changed."
+              >
+                <input
+                  type="email"
+                  id="email"
+                  value="${res.locals.user.email}"
+                  class="form-control"
+                  disabled
+                  aria-describedby="email-help"
+                />
+                <label for="email">Email</label>
               </div>
               <div>
                 <button
