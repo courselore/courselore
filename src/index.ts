@@ -2220,7 +2220,7 @@ export default async function courselore(
                 <div
                   class="form-floating text-body"
                   data-bs-toggle="tooltip"
-                  title="This is the email you confirmed by having followed the Magic Authentication Link and can’t be changed."
+                  title="This is the email you confirmed by having followed the Magic Authentication Link and may not be changed."
                 >
                   <input
                     type="email"
@@ -2618,7 +2618,7 @@ export default async function courselore(
               <div
                 class="form-floating"
                 data-bs-toggle="tooltip"
-                title="Your email is your identity in CourseLore and can’t be changed."
+                title="Your email is your identity in CourseLore and may not be changed."
               >
                 <input
                   type="email"
@@ -2670,6 +2670,7 @@ export default async function courselore(
             style="${css`
               text-align: center;
               border-radius: 0;
+              margin-bottom: 0;
             `}"
             role="alert"
           >
@@ -3736,33 +3737,200 @@ export default async function courselore(
     }
   );
 
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/enrollments",
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res) => {
+      const enrollments = app.locals.database.all<{
+        id: number;
+        userId: number;
+        userEmail: string;
+        userName: string;
+        reference: string;
+        role: Role;
+      }>(
+        sql`
+          SELECT "enrollments"."id",
+                 "users"."id" AS "userId",
+                 "users"."email" AS "userEmail",
+                 "users"."name" AS "userName",
+                 "enrollments"."reference",
+                 "enrollments"."role"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "enrollments"."course" = ${res.locals.course.id}
+          ORDER BY "enrollments"."id" DESC
+        `
+      );
+
+      res.send(
+        app.locals.layouts.courseSettings(
+          req,
+          res,
+          html`
+            <title>
+              Enrollments · Course Settings · ${res.locals.course.name} ·
+              CourseLore
+            </title>
+          `,
+          html`
+            <h1>Enrollments</h1>
+
+            <table
+              class="table table-striped table-hover table-borderless table-sm"
+            >
+              <tbody>
+                $${enrollments.map((enrollment) => {
+                  const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/enrollments/${enrollment.reference}`;
+                  const isSelf = enrollment.id === res.locals.enrollment.id;
+                  const isOnlyStaff =
+                    isSelf &&
+                    enrollments.filter(
+                      (enrollment) => enrollment.role === "staff"
+                    ).length === 1;
+
+                  return html`
+                    <tr>
+                      <td
+                        style="${css`
+                          font-weight: bold;
+                        `}"
+                      >
+                        ${enrollment.userName}
+                      </td>
+                      <td
+                        style="${css`
+                          color: $text-muted;
+                        `}"
+                      >
+                        ${enrollment.userEmail}
+                      </td>
+                      <td>
+                        <div class="dropdown">
+                          <button
+                            class="btn dropdown-toggle"
+                            type="button"
+                            id="enrollment-role-dropdown--${enrollment.reference}"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            style="${css`
+                              padding: 0;
+                            `}"
+                          >
+                            ${lodash.capitalize(enrollment.role)}
+                          </button>
+                          <div
+                            class="dropdown-menu"
+                            aria-labelledby="enrollment-role-dropdown--${enrollment.reference}"
+                          >
+                            $${app.locals.constants.roles.map((role) =>
+                              role === enrollment.role
+                                ? html``
+                                : html`
+                                    <form
+                                      method="POST"
+                                      action="${link}?_method=PATCH"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="role"
+                                        value="${role}"
+                                      />
+                                      <span
+                                        $${isOnlyStaff
+                                          ? html`
+                                              data-bs-toggle="tooltip"
+                                              title="You may not convert
+                                              yourself into ${role} because
+                                              you’re the only staff member."
+                                            `
+                                          : html``}
+                                      >
+                                        <button
+                                          type="submit"
+                                          class="dropdown-item"
+                                          $${isOnlyStaff
+                                            ? html`disabled`
+                                            : isSelf
+                                            ? html`
+                                                onclick="${javascript`
+                                                  if (!confirm("Convert yourself into ${role}?\\n\\nYou may not undo this action!"))
+                                                    event.preventDefault();
+                                                `}"
+                                              `
+                                            : html``}
+                                        >
+                                          Convert to ${lodash.capitalize(role)}
+                                        </button>
+                                      </span>
+                                    </form>
+                                  `
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td
+                        style="${css`
+                          text-align: right;
+                        `}"
+                      >
+                        <form method="POST" action="${link}?_method=DELETE">
+                          <span
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="left"
+                            title="$${isOnlyStaff
+                              ? `You may not remove yourself from the course because you’re the only staff member.`
+                              : `Remove from the course`}"
+                          >
+                            <button
+                              type="submit"
+                              class="btn btn-outline-danger"
+                              style="${css`
+                                padding: 0 0.2rem;
+                                border: 0;
+                              `}"
+                              $${isOnlyStaff
+                                ? html`disabled`
+                                : html`
+                                    onclick="${javascript`
+                                    if (!confirm("Remove ${
+                                      isSelf
+                                        ? `yourself`
+                                        : `${enrollment.userName} <${enrollment.userEmail}>`
+                                    } from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
+                                      event.preventDefault();
+                                  `}"
+                                  `}
+                            >
+                              <i class="bi bi-person-dash"></i>
+                            </button>
+                          </span>
+                        </form>
+                      </td>
+                    </tr>
+                  `;
+                })}
+              </tbody>
+            </table>
+          `
+        )
+      );
+    }
+  );
+
   /*
 
   $${res.locals.enrollment.role !== "staff"
               ? html``
               : (() => {
                   
-                  const enrollments = app.locals.database.all<{
-                    id: number;
-                    userId: number;
-                    userEmail: string;
-                    userName: string;
-                    reference: string;
-                    role: Role;
-                  }>(
-                    sql`
-                SELECT "enrollments"."id",
-                       "users"."id" AS "userId",
-                       "users"."email" AS "userEmail",
-                       "users"."name" AS "userName",
-                       "enrollments"."reference",
-                       "enrollments"."role"
-                FROM "enrollments"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                WHERE "enrollments"."course" = ${res.locals.course.id}
-                ORDER BY "enrollments"."id" DESC
-              `
-                  );
+                  
 
                   return html`
                     
@@ -4154,7 +4322,7 @@ export default async function courselore(
                                           <button
                                             class="full-width"
                                             onclick="${javascript`
-                                        if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                        if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
                                           event.preventDefault();
                                       `}"
                                           >
@@ -4213,7 +4381,7 @@ export default async function courselore(
                                           <button
                                             class="full-width"
                                             onclick="${javascript`
-                                        if (!confirm("Convert yourself into student?\\n\\nYou can’t undo this action!"))
+                                        if (!confirm("Convert yourself into student?\\n\\nYou may not undo this action!"))
                                           event.preventDefault();
                                       `}"
                                           >
@@ -4232,7 +4400,7 @@ export default async function courselore(
                                           <button
                                             class="full-width"
                                             onclick="${javascript`
-                                        if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou can’t undo this action!"))
+                                        if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
                                           event.preventDefault();
                                       `}"
                                           >
@@ -4333,6 +4501,30 @@ export default async function courselore(
           sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
         );
       }
+
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            style="${css`
+              text-align: center;
+              border-radius: 0;
+              margin-bottom: 0;
+            `}"
+            role="alert"
+          >
+            Course settings updated successfully.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        `
+      );
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
@@ -5718,7 +5910,7 @@ ${value}</textarea
                               title="Remove Thread"
                               class="undecorated red"
                               onclick="${javascript`
-                                if (!confirm("Remove thread?\\n\\nYou can’t undo this action!"))
+                                if (!confirm("Remove thread?\\n\\nYou may not undo this action!"))
                                   event.preventDefault();
                               `}"
                             >
@@ -5986,7 +6178,7 @@ ${value}</textarea
                                   title="Remove Post"
                                   class="undecorated red"
                                   onclick="${javascript`
-                                    if (!confirm("Remove post?\\n\\nYou can’t undo this action!"))
+                                    if (!confirm("Remove post?\\n\\nYou may not undo this action!"))
                                       event.preventDefault();
                                   `}"
                                 >
