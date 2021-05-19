@@ -2557,7 +2557,7 @@ export default async function courselore(
               res,
               html`<title>CourseLore</title>`,
               html`
-                <h1>Your Courses</h1>
+                <h1>Courses</h1>
 
                 <div class="list-group">
                   $${res.locals.enrollments.map(
@@ -3918,6 +3918,120 @@ export default async function courselore(
                 })}
               </tbody>
             </table>
+          `
+        )
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/enrollment",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res) => {
+      res.send(
+        app.locals.layouts.courseSettings(
+          req,
+          res,
+          html`
+            <title>
+              Your Enrollment · Course Settings · ${res.locals.course.name} ·
+              CourseLore
+            </title>
+          `,
+          html`
+            <h1>Your Enrollment</h1>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings/enrollment?_method=PATCH"
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              `}"
+            >
+              <div>
+                <div>
+                  <strong>Accent Color</strong>
+                  <span data-bs-toggle="tooltip" title="Help">
+                    <a
+                      tabindex="0"
+                      class="btn"
+                      role="button"
+                      data-bs-toggle="popover"
+                      data-bs-trigger="focus"
+                      data-bs-content="${html`
+                        The accent color helps you tell your courses apart.
+                      `}"
+                      style="${css`
+                        color: $text-muted;
+                        padding: 0;
+                      `}"
+                    >
+                      <i class="bi bi-question-circle"></i>
+                    </a>
+                  </span>
+                </div>
+                <div
+                  class="btn-group"
+                  role="group"
+                  aria-label="Accent colors"
+                  style="${css`
+                    max-width: 100%;
+                    overflow: auto;
+                  `}"
+                >
+                  $${app.locals.constants.accentColors.map(
+                    (accentColor) => html`
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="accentColor"
+                        id="accentColor--${accentColor.slice(1)}"
+                        autocomplete="off"
+                        $${accentColor === res.locals.enrollment.accentColor
+                          ? html`checked`
+                          : html``}
+                      />
+                      <label
+                        class="btn btn-outline-primary"
+                        for="accentColor--${accentColor.slice(1)}"
+                      >
+                        <span
+                          class="badge rounded-pill"
+                          style="${css`
+                            color: ${accentColor};
+                            background-color: white;
+                          `}"
+                        >
+                          <i class="bi bi-palette-fill"></i>
+                        </span>
+                      </label>
+                    `
+                  )}
+                </div>
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="${css`
+                    @include media-breakpoint-down(md) {
+                      width: 100%;
+                    }
+                  `}"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update Your Enrollment
+                </button>
+              </div>
+            </form>
           `
         )
       );
