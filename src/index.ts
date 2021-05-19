@@ -832,7 +832,6 @@ export default async function courselore(
               style="${css`
                 background-color: $purple;
                 padding: 0.2rem 1rem;
-                border-bottom: 1px solid $purple-700;
                 display: grid;
                 align-items: center;
                 grid-template-columns: 1fr 2fr 1fr;
@@ -1232,8 +1231,9 @@ export default async function courselore(
             id="sidebar"
             class="collapse"
             style="${css`
-              background-color: $purple-600;
               color: white;
+              background-color: $purple-600;
+              border-top: 1px solid $purple-700;
               @include media-breakpoint-down(md) {
                 z-index: $zindex-modal;
               }
@@ -3523,11 +3523,11 @@ export default async function courselore(
                       type="radio"
                       class="btn-check"
                       name="isExpiresAt"
-                      id="isExpiresAt-false"
+                      id="isExpiresAt--false"
                       autocomplete="off"
                       required
                       onchange="${css`
-                        const collapse = document.querySelector("#expiresAt-collapse");
+                        const collapse = document.querySelector("#expiresAt--collapse");
                         if (!collapse.classList.contains("show")) return;
                         new bootstrap.Collapse(collapse).hide();
                         for (const element of collapse.querySelectorAll("*"))
@@ -3536,7 +3536,7 @@ export default async function courselore(
                     />
                     <label
                       class="btn btn-outline-primary"
-                      for="isExpiresAt-false"
+                      for="isExpiresAt--false"
                     >
                       Doesn’t Expire
                     </label>
@@ -3544,11 +3544,11 @@ export default async function courselore(
                       type="radio"
                       class="btn-check"
                       name="isExpiresAt"
-                      id="isExpiresAt-true"
+                      id="isExpiresAt--true"
                       autocomplete="off"
                       required
                       onchange="${css`
-                        const collapse = document.querySelector("#expiresAt-collapse");
+                        const collapse = document.querySelector("#expiresAt--collapse");
                         new bootstrap.Collapse(collapse).show();
                         for (const element of collapse.querySelectorAll("*"))
                           if (element.disabled !== undefined) element.disabled = false;
@@ -3556,13 +3556,13 @@ export default async function courselore(
                     />
                     <label
                       class="btn btn-outline-primary"
-                      for="isExpiresAt-true"
+                      for="isExpiresAt--true"
                     >
                       Expires
                     </label>
                   </div>
 
-                  <div class="collapse" id="expiresAt-collapse">
+                  <div class="collapse" id="expiresAt--collapse">
                     <div
                       style="${css`
                         margin-top: 1rem;
@@ -3605,18 +3605,18 @@ export default async function courselore(
                       class="btn-check"
                       name="type"
                       value="link"
-                      id="type-link"
+                      id="type--link"
                       autocomplete="off"
                       required
                       onchange="${javascript`
-                        const collapse = document.querySelector("#type-collapse");
+                        const collapse = document.querySelector("#type--collapse");
                         if (!collapse.classList.contains("show")) return;
                         new bootstrap.Collapse(collapse).hide();
                         for (const element of collapse.querySelectorAll("*"))
                           if (element.disabled !== undefined) element.disabled = true;
                       `}"
                     />
-                    <label class="btn btn-outline-primary" for="type-link">
+                    <label class="btn btn-outline-primary" for="type--link">
                       Invite with a Link
                     </label>
                     <input
@@ -3624,22 +3624,22 @@ export default async function courselore(
                       class="btn-check"
                       name="type"
                       value="email"
-                      id="type-email"
+                      id="type--email"
                       autocomplete="off"
                       required
                       onchange="${javascript`
-                        const collapse = document.querySelector("#type-collapse");
+                        const collapse = document.querySelector("#type--collapse");
                         new bootstrap.Collapse(collapse).show();
                         for (const element of collapse.querySelectorAll("*"))
                           if (element.disabled !== undefined) element.disabled = false;
                       `}"
                     />
-                    <label class="btn btn-outline-primary" for="type-email">
+                    <label class="btn btn-outline-primary" for="type--email">
                       Invite via Email
                     </label>
                   </div>
 
-                  <div class="collapse" id="type-collapse">
+                  <div class="collapse" id="type--collapse">
                     <div
                       style="${css`
                         margin-top: 1rem;
@@ -3675,9 +3675,7 @@ export default async function courselore(
 
                       <div id="emails-help" class="form-text">
                         Emails must be separated by commas and may include
-                        names.
-                        <br />
-                        Example:
+                        names, for example:
                         <code
                           >${`"Leandro Facchinetti" <leandro@courselore.org>, scott@courselore.org, Ali Madooei <ali@courselore.org>`}</code
                         >
