@@ -571,7 +571,7 @@ export default async function courselore(
 
               if (
                 element.matches('[type="email"]') &&
-                !$${app.locals.constants.emailRegExp}.test(element.value)
+                !element.value.match(${app.locals.constants.emailRegExp})
               )
                 return "Enter an email address";
 
@@ -2017,7 +2017,7 @@ export default async function courselore(
     (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
-        !app.locals.constants.emailRegExp.test(req.body.email)
+        !req.body.email.match(app.locals.constants.emailRegExp)
       )
         return next("validation");
 
@@ -3660,16 +3660,17 @@ export default async function courselore(
                           required
                           disabled
                           data-onvalidate="${javascript`
-                            const emails
-                            const emails = emailAddresses.parseAddressList(this.value);
-                            if (
-                              emails === null ||
-                              emails.find(
-                                (email) =>
-                                  email.type !== "mailbox" || !${app.locals.constants.emailRegExp}.test(email.address)
-                              ) !== undefined
-                            )
-                              return "Match the requested format";
+                            for (let email of this.value.split(${/[,\n]/})) {
+                              email = email.trim();
+                              if (email === "") continue;
+                              let match = email.match(${/^"(?<name>.*)"\s*<(?<email>.*)>$/});
+                              if (match === null) match = email.match(${/^(?<name>.*)\s*<(?<email>.*)>$/});
+                              if (match === null) match = email.match(${/^(?<email>.*)$/});
+                              if (!match.groups.email.match(${
+                                app.locals.constants.emailRegExp
+                              }))
+                                return "Match the requested format";
+                            }
                           `}"
                           style="${css`
                             height: 20ex;
@@ -3697,9 +3698,7 @@ export default async function courselore(
                             Emails must be separated by commas or newlines, and
                             may include names, for example:
                             <br />
-                            <code>
-                              ${`"John" <john@courselore.org>`}
-                            </code>
+                            <code> ${`"John" <john@courselore.org>`} </code>
                           `}"
                           style="${css`
                             color: $text-muted;
@@ -4398,7 +4397,7 @@ export default async function courselore(
             emails.find(
               (email) =>
                 email.type !== "mailbox" ||
-                !app.locals.constants.emailRegExp.test(email.address)
+                !email.address.match(app.locals.constants.emailRegExp)
             ) !== undefined
           )
             return next("validation");
