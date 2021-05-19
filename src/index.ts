@@ -3698,7 +3698,7 @@ export default async function courselore(
                             Emails must be separated by commas or newlines, and
                             may include names, for example:
                             <br />
-                            <code> ${`"John" <john@courselore.org>`} </code>
+                            <code> ${`"Scott" <scott@courselore.org>`} </code>
                           `}"
                           style="${css`
                             color: $text-muted;
