@@ -3899,13 +3899,13 @@ export default async function courselore(
                                 ? html`disabled`
                                 : html`
                                     onclick="${javascript`
-                                    if (!confirm("Remove ${
-                                      isSelf
-                                        ? `yourself`
-                                        : `${enrollment.userName} <${enrollment.userEmail}>`
-                                    } from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
-                                      event.preventDefault();
-                                  `}"
+                                      if (!confirm("Remove ${
+                                        isSelf
+                                          ? `yourself`
+                                          : `${enrollment.userName} <${enrollment.userEmail}>`
+                                      } from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
+                                        event.preventDefault();
+                                    `}"
                                   `}
                             >
                               <i class="bi bi-person-dash"></i>
@@ -3973,6 +3973,9 @@ export default async function courselore(
                         color: $text-muted;
                         padding: 0;
                       `}"
+                      onclick="${javascript`
+                        bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                      `}"
                     >
                       <i class="bi bi-question-circle"></i>
                     </a>
@@ -3983,6 +3986,7 @@ export default async function courselore(
                   role="group"
                   aria-label="Accent colors"
                   style="${css`
+                    padding: 1px;
                     max-width: 100%;
                     overflow: auto;
                   `}"
