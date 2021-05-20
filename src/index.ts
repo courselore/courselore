@@ -3783,6 +3783,147 @@ export default async function courselore(
                 </div>
               </div>
             </form>
+
+            $${invitations.length === 0
+              ? html``
+              : html`
+                  <h6
+                    style="${css`
+                      margin-top: 2rem;
+                    `}"
+                  >
+                    Existing Invitations
+                  </h6>
+
+                  <div
+                    style="${css`
+                      overflow: auto;
+                    `}"
+                  >
+                    <table
+                      class="table table-striped table-hover table-borderless table-sm"
+                    >
+                      <tbody>
+                        $${invitations.map((invitation) => {
+                          const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                          const isExpired = app.locals.helpers.isExpired(
+                            invitation.expiresAt
+                          );
+                          const isUsed = invitation.usedAt !== null;
+
+                          return html`
+                            <tr>
+                              <td
+                                $${invitation.email !== null
+                                  ? html``
+                                  : isExpired
+                                  ? html`
+                                      data-bs-toggle="tooltip" title="This
+                                      invitation has already expired."
+                                    `
+                                  : html`
+                                      data-bs-toggle="tooltip" title="See
+                                      Invitation"
+                                    `}
+                              >
+                                $${invitation.email === null
+                                  ? html`
+                                      <button
+                                        type="button"
+                                        class="btn"
+                                        $${isExpired
+                                          ? html`disabled`
+                                          : html`
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#invitation--${invitation.reference}"
+                                            `}
+                                        style="${css`
+                                          padding: 0;
+                                        `}"
+                                      >
+                                        ${app.locals.settings.url}/courses/${res
+                                          .locals.course
+                                          .reference}/invitations/${"*".repeat(
+                                          6
+                                        )}${invitation.reference.slice(6)}
+                                      </button>
+                                    `
+                                  : html`TODO`}
+                              </td>
+                              <td>
+                                <div class="dropdown">
+                                  <button
+                                    class="btn dropdown-toggle"
+                                    type="button"
+                                    id="invitation-role-dropdown--${invitation.reference}"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style="${css`
+                                      padding: 0;
+                                    `}"
+                                  >
+                                    ${lodash.capitalize(invitation.role)}
+                                  </button>
+                                  <div
+                                    class="dropdown-menu"
+                                    aria-labelledby="invitation-role-dropdown--${invitation.reference}"
+                                  >
+                                    $${app.locals.constants.roles.map((role) =>
+                                      role === invitation.role
+                                        ? html``
+                                        : html`
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="role"
+                                                value="${role}"
+                                              />
+                                              <span
+                                                $${isUsed
+                                                  ? html`
+                                                      data-bs-toggle="tooltip"
+                                                      title="You may not change
+                                                      the role of this
+                                                      invitation because it has
+                                                      already been used."
+                                                    `
+                                                  : isExpired
+                                                  ? html`
+                                                      data-bs-toggle="tooltip"
+                                                      title="You may not change
+                                                      the role of this
+                                                      invitation because it’s
+                                                      expired."
+                                                    `
+                                                  : html``}
+                                              >
+                                                <button
+                                                  type="submit"
+                                                  class="dropdown-item"
+                                                  $${isUsed || isExpired
+                                                    ? html`disabled`
+                                                    : html``}
+                                                >
+                                                  Change Invitation Role to
+                                                  ${lodash.capitalize(role)}
+                                                </button>
+                                              </span>
+                                            </form>
+                                          `
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          `;
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                `}
           `
         )
       );
@@ -3981,7 +4122,7 @@ export default async function courselore(
             >
               <tbody>
                 $${enrollments.map((enrollment) => {
-                  const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/enrollments/${enrollment.reference}`;
+                  const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/enrollments/${enrollment.reference}`;
                   const isSelf = enrollment.id === res.locals.enrollment.id;
                   const isOnlyStaff =
                     isSelf &&
@@ -4029,7 +4170,7 @@ export default async function courselore(
                                 : html`
                                     <form
                                       method="POST"
-                                      action="${link}?_method=PATCH"
+                                      action="${action}?_method=PATCH"
                                     >
                                       <input
                                         type="hidden"
@@ -4074,7 +4215,7 @@ export default async function courselore(
                           text-align: right;
                         `}"
                       >
-                        <form method="POST" action="${link}?_method=DELETE">
+                        <form method="POST" action="${action}?_method=DELETE">
                           <span
                             data-bs-toggle="tooltip"
                             data-bs-placement="left"
