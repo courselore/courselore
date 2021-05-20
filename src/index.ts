@@ -3430,30 +3430,19 @@ export default async function courselore(
   app.patch<
     { courseReference: string },
     HTML,
-    { name?: string; accentColor?: AccentColor },
+    { name?: string },
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
-      if (
-        typeof req.body.name === "string" &&
-        res.locals.enrollment.role === "staff"
-      ) {
-        if (req.body.name.trim() === "") return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
-        );
-      }
+      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+        return next("validation");
 
-      if (typeof req.body.accentColor === "string") {
-        if (!app.locals.constants.accentColors.includes(req.body.accentColor))
-          return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
-        );
-      }
+      app.locals.database.run(
+        sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
+      );
 
       app.locals.helpers.flash.set(
         req,
@@ -3761,6 +3750,12 @@ export default async function courselore(
                           `}"
                           style="${css`
                             color: $text-muted;
+                            padding: 0 0.2rem;
+                            margin: 0.3rem;
+                            &:hover,
+                            &:focus {
+                              background-color: $gray-100;
+                            }
                           `}"
                           onclick="${javascript`
                             bootstrap.Tooltip.getInstance(this.parentElement).hide();
@@ -4029,7 +4024,11 @@ export default async function courselore(
                       `}"
                       style="${css`
                         color: $text-muted;
-                        padding: 0;
+                        padding: 0 0.2rem;
+                        &:hover,
+                        &:focus {
+                          background-color: $gray-100;
+                        }
                       `}"
                       onclick="${javascript`
                         bootstrap.Tooltip.getInstance(this.parentElement).hide();
@@ -4060,6 +4059,7 @@ export default async function courselore(
                         $${accentColor === res.locals.enrollment.accentColor
                           ? html`checked`
                           : html``}
+                        value="${accentColor}"
                       />
                       <label
                         class="btn btn-outline-primary"
@@ -4100,36 +4100,25 @@ export default async function courselore(
     }
   );
 
-  /*
-
-
   app.patch<
     { courseReference: string },
     HTML,
-    { name?: string; accentColor?: AccentColor },
+    { accentColor?: AccentColor },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/settings",
+    "/courses/:courseReference/settings/enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
-        typeof req.body.name === "string" &&
-        res.locals.enrollment.role === "staff"
-      ) {
-        if (req.body.name.trim() === "") return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
-        );
-      }
+        typeof req.body.accentColor !== "string" ||
+        !app.locals.constants.accentColors.includes(req.body.accentColor)
+      )
+        return next("validation");
 
-      if (typeof req.body.accentColor === "string") {
-        if (!app.locals.constants.accentColors.includes(req.body.accentColor))
-          return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
-        );
-      }
+      app.locals.database.run(
+        sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
+      );
 
       app.locals.helpers.flash.set(
         req,
@@ -4144,7 +4133,7 @@ export default async function courselore(
             `}"
             role="alert"
           >
-            Course settings updated successfully.
+            Your enrollment updated successfully.
             <button
               type="button"
               class="btn-close"
@@ -4156,11 +4145,12 @@ export default async function courselore(
       );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollment`
       );
     }
   );
 
+  /*
 
   $${res.locals.enrollment.role !== "staff"
               ? html``
