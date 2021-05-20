@@ -8,7 +8,6 @@ import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import { asyncHandler } from "@leafac/express-async-handler";
 import qs from "qs";
-import emailAddresses from "email-addresses";
 
 import { Database, sql } from "@leafac/sqlite";
 import { html, HTML } from "@leafac/html";
@@ -3790,6 +3789,148 @@ export default async function courselore(
     }
   );
 
+  app.post<
+    { courseReference: string },
+    HTML,
+    {
+      role?: Role;
+      expiresAt?: string;
+      type?: "link" | "emails";
+      emails?: string;
+    },
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/invitations",
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res, next) => {
+      if (
+        typeof req.body.role !== "string" ||
+        !app.locals.constants.roles.includes(req.body.role) ||
+        (req.body.expiresAt !== undefined &&
+          (typeof req.body.expiresAt !== "string" ||
+            !app.locals.helpers.isDate(req.body.expiresAt) ||
+            app.locals.helpers.isExpired(req.body.expiresAt))) ||
+        typeof req.body.type !== "string" ||
+        !["link", "emails"].includes(req.body.type)
+      )
+        return next("validation");
+
+      switch (req.body.type) {
+        case "link":
+          const invitationReference = cryptoRandomString({
+            length: 10,
+            type: "numeric",
+          });
+          app.locals.database.run(
+            sql`
+            INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
+            VALUES (
+              ${req.body.expiresAt},
+              ${res.locals.course.id},
+              ${invitationReference},
+              ${req.body.role}
+            )
+          `
+          );
+          res.redirect(
+            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
+          );
+          break;
+
+        case "emails":
+          // if (typeof req.body.emails !== "string") return next("validation");
+          // const emails = emailAddresses.parseAddressList(req.body.emails);
+          // if (
+          //   emails === null ||
+          //   emails.find(
+          //     (email) =>
+          //       email.type !== "mailbox" ||
+          //       !email.address.match(app.locals.constants.emailRegExp)
+          //   ) !== undefined
+          // )
+          //   return next("validation");
+
+          // for (const email of emails as emailAddresses.ParsedMailbox[]) {
+          //   if (
+          //     app.locals.database.get<{ exists: number }>(
+          //       sql`
+          //       SELECT EXISTS(
+          //         SELECT 1
+          //         FROM "enrollments"
+          //         JOIN "users" ON "enrollments"."user" = "users"."id"
+          //         WHERE "enrollments"."course" = ${res.locals.course.id} AND
+          //               "users"."email" = ${email.address}
+          //       ) AS "exists"
+          //     `
+          //     )!.exists === 1
+          //   )
+          //     continue;
+
+          //   const existingUnusedInvitation = app.locals.database.get<{
+          //     id: number;
+          //     name: string | null;
+          //   }>(
+          //     sql`
+          //     SELECT "id", "name"
+          //     FROM "invitations"
+          //     WHERE "course" = ${res.locals.course.id} AND
+          //           "email" = ${email.address} AND
+          //           "usedAt" IS NULL
+          //   `
+          //   );
+          //   if (existingUnusedInvitation !== undefined) {
+          //     app.locals.database.run(
+          //       sql`
+          //       UPDATE "invitations"
+          //       SET "expiresAt" = ${req.body.expiresAt},
+          //           "name" = ${email.name ?? existingUnusedInvitation.name},
+          //           "role" = ${req.body.role}
+          //       WHERE "id" = ${existingUnusedInvitation.id}
+          //     `
+          //     );
+          //     continue;
+          //   }
+
+          //   const invitation = {
+          //     expiresAt: req.body.expiresAt ?? null,
+          //     usedAt: null,
+          //     reference: cryptoRandomString({ length: 10, type: "numeric" }),
+          //     email: email.address,
+          //     name: email.name,
+          //     role: req.body.role,
+          //   };
+          //   const invitationId = Number(
+          //     app.locals.database.run(
+          //       sql`
+          //       INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
+          //       VALUES (
+          //         ${invitation.expiresAt},
+          //         ${res.locals.course.id},
+          //         ${invitation.reference},
+          //         ${invitation.email},
+          //         ${invitation.name},
+          //         ${invitation.role}
+          //       )
+          //     `
+          //     ).lastInsertRowid
+          //   );
+
+          //   app.locals.helpers.sendInvitationEmail({
+          //     id: invitationId,
+          //     ...invitation,
+          //     course: res.locals.course,
+          //   });
+          // }
+
+          res.redirect(
+            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings#invitations`
+          );
+          break;
+      }
+    }
+  );
+
   app.get<
     { courseReference: string },
     HTML,
@@ -4699,148 +4840,6 @@ export default async function courselore(
   */
 
   // TODO: Student version of settings.
-
-  app.post<
-    { courseReference: string },
-    HTML,
-    {
-      role?: Role;
-      expiresAt?: string;
-      sharing?: "link" | "emails";
-      emails?: string;
-    },
-    {},
-    IsCourseStaffMiddlewareLocals
-  >(
-    "/courses/:courseReference/invitations",
-    ...app.locals.middlewares.isCourseStaff,
-    (req, res, next) => {
-      if (
-        typeof req.body.role !== "string" ||
-        !app.locals.constants.roles.includes(req.body.role) ||
-        (req.body.expiresAt !== undefined &&
-          (typeof req.body.expiresAt !== "string" ||
-            !app.locals.helpers.isDate(req.body.expiresAt) ||
-            app.locals.helpers.isExpired(req.body.expiresAt))) ||
-        typeof req.body.sharing !== "string" ||
-        !["link", "emails"].includes(req.body.sharing)
-      )
-        return next("validation");
-
-      switch (req.body.sharing) {
-        case "link":
-          const invitationReference = cryptoRandomString({
-            length: 10,
-            type: "numeric",
-          });
-          app.locals.database.run(
-            sql`
-              INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
-              VALUES (
-                ${req.body.expiresAt},
-                ${res.locals.course.id},
-                ${invitationReference},
-                ${req.body.role}
-              )
-            `
-          );
-          res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitationReference}`
-          );
-          break;
-
-        case "emails":
-          if (typeof req.body.emails !== "string") return next("validation");
-          const emails = emailAddresses.parseAddressList(req.body.emails);
-          if (
-            emails === null ||
-            emails.find(
-              (email) =>
-                email.type !== "mailbox" ||
-                !email.address.match(app.locals.constants.emailRegExp)
-            ) !== undefined
-          )
-            return next("validation");
-
-          for (const email of emails as emailAddresses.ParsedMailbox[]) {
-            if (
-              app.locals.database.get<{ exists: number }>(
-                sql`
-                  SELECT EXISTS(
-                    SELECT 1
-                    FROM "enrollments"
-                    JOIN "users" ON "enrollments"."user" = "users"."id"
-                    WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                          "users"."email" = ${email.address}
-                  ) AS "exists"
-                `
-              )!.exists === 1
-            )
-              continue;
-
-            const existingUnusedInvitation = app.locals.database.get<{
-              id: number;
-              name: string | null;
-            }>(
-              sql`
-                SELECT "id", "name"
-                FROM "invitations"
-                WHERE "course" = ${res.locals.course.id} AND
-                      "email" = ${email.address} AND
-                      "usedAt" IS NULL
-              `
-            );
-            if (existingUnusedInvitation !== undefined) {
-              app.locals.database.run(
-                sql`
-                  UPDATE "invitations"
-                  SET "expiresAt" = ${req.body.expiresAt},
-                      "name" = ${email.name ?? existingUnusedInvitation.name},
-                      "role" = ${req.body.role}
-                  WHERE "id" = ${existingUnusedInvitation.id}
-                `
-              );
-              continue;
-            }
-
-            const invitation = {
-              expiresAt: req.body.expiresAt ?? null,
-              usedAt: null,
-              reference: cryptoRandomString({ length: 10, type: "numeric" }),
-              email: email.address,
-              name: email.name,
-              role: req.body.role,
-            };
-            const invitationId = Number(
-              app.locals.database.run(
-                sql`
-                  INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
-                  VALUES (
-                    ${invitation.expiresAt},
-                    ${res.locals.course.id},
-                    ${invitation.reference},
-                    ${invitation.email},
-                    ${invitation.name},
-                    ${invitation.role}
-                  )
-                `
-              ).lastInsertRowid
-            );
-
-            app.locals.helpers.sendInvitationEmail({
-              id: invitationId,
-              ...invitation,
-              course: res.locals.course,
-            });
-          }
-
-          res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings#invitations`
-          );
-          break;
-      }
-    }
-  );
 
   app.patch<
     { courseReference: string; invitationReference: string },
