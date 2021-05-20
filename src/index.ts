@@ -3427,6 +3427,64 @@ export default async function courselore(
     }
   );
 
+  app.patch<
+    { courseReference: string },
+    HTML,
+    { name?: string; accentColor?: AccentColor },
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res, next) => {
+      if (
+        typeof req.body.name === "string" &&
+        res.locals.enrollment.role === "staff"
+      ) {
+        if (req.body.name.trim() === "") return next("validation");
+        app.locals.database.run(
+          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
+        );
+      }
+
+      if (typeof req.body.accentColor === "string") {
+        if (!app.locals.constants.accentColors.includes(req.body.accentColor))
+          return next("validation");
+        app.locals.database.run(
+          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
+        );
+      }
+
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            style="${css`
+              text-align: center;
+              border-radius: 0;
+              margin-bottom: 0;
+            `}"
+            role="alert"
+          >
+            Course settings updated successfully.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        `
+      );
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
+      );
+    }
+  );
+
   app.get<
     { courseReference: string },
     HTML,
@@ -4044,6 +4102,66 @@ export default async function courselore(
 
   /*
 
+
+  app.patch<
+    { courseReference: string },
+    HTML,
+    { name?: string; accentColor?: AccentColor },
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res, next) => {
+      if (
+        typeof req.body.name === "string" &&
+        res.locals.enrollment.role === "staff"
+      ) {
+        if (req.body.name.trim() === "") return next("validation");
+        app.locals.database.run(
+          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
+        );
+      }
+
+      if (typeof req.body.accentColor === "string") {
+        if (!app.locals.constants.accentColors.includes(req.body.accentColor))
+          return next("validation");
+        app.locals.database.run(
+          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
+        );
+      }
+
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            style="${css`
+              text-align: center;
+              border-radius: 0;
+              margin-bottom: 0;
+            `}"
+            role="alert"
+          >
+            Course settings updated successfully.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        `
+      );
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
+      );
+    }
+  );
+
+
   $${res.locals.enrollment.role !== "staff"
               ? html``
               : (() => {
@@ -4591,64 +4709,6 @@ export default async function courselore(
   */
 
   // TODO: Student version of settings.
-
-  app.patch<
-    { courseReference: string },
-    HTML,
-    { name?: string; accentColor?: AccentColor },
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isEnrolledInCourse,
-    (req, res, next) => {
-      if (
-        typeof req.body.name === "string" &&
-        res.locals.enrollment.role === "staff"
-      ) {
-        if (req.body.name.trim() === "") return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
-        );
-      }
-
-      if (typeof req.body.accentColor === "string") {
-        if (!app.locals.constants.accentColors.includes(req.body.accentColor))
-          return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
-        );
-      }
-
-      app.locals.helpers.flash.set(
-        req,
-        res,
-        html`
-          <div
-            class="alert alert-success alert-dismissible fade show"
-            style="${css`
-              text-align: center;
-              border-radius: 0;
-              margin-bottom: 0;
-            `}"
-            role="alert"
-          >
-            Course settings updated successfully.
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
-          </div>
-        `
-      );
-
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
-      );
-    }
-  );
 
   app.post<
     { courseReference: string },
