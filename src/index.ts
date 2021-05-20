@@ -3665,6 +3665,7 @@ export default async function courselore(
                       `}"
                     />
                     <label class="btn btn-outline-primary" for="type--link">
+                      <i class="bi bi-link"></i>
                       Invite with a Link
                     </label>
                     <input
@@ -3683,6 +3684,7 @@ export default async function courselore(
                       `}"
                     />
                     <label class="btn btn-outline-primary" for="type--email">
+                      <i class="bi bi-envelope"></i>
                       Invite via Email
                     </label>
                   </div>
@@ -3823,7 +3825,7 @@ export default async function courselore(
                                     `
                                   : html`
                                       data-bs-toggle="tooltip" title="See
-                                      Invitation"
+                                      Invitation Link"
                                     `}
                               >
                                 $${invitation.email === null
@@ -3836,14 +3838,16 @@ export default async function courselore(
                                           : html`
                                               data-bs-toggle="modal"
                                               data-bs-target="#invitation--${invitation.reference}"
+                                              onclick="${javascript`
+                                                bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                                              `}"
                                             `}
                                         style="${css`
                                           padding: 0;
                                         `}"
                                       >
-                                        ${app.locals.settings.url}/courses/${res
-                                          .locals.course
-                                          .reference}/invitations/${"*".repeat(
+                                        <i class="bi bi-link"></i>
+                                        ${"*".repeat(
                                           6
                                         )}${invitation.reference.slice(6)}
                                       </button>
@@ -3923,6 +3927,69 @@ export default async function courselore(
                       </tbody>
                     </table>
                   </div>
+
+                  $${invitations.map((invitation) => {
+                    const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+
+                    return html`
+                      <div
+                        class="modal fade"
+                        id="invitation--${invitation.reference}"
+                        tabindex="-1"
+                        aria-labelledby="invitation--${invitation.reference}--label"
+                        aria-hidden="true"
+                      >
+                        <div class="modal-dialog modal-fullscreen">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5
+                                class="modal-title"
+                                id="invitation--${invitation.reference}--label"
+                              >
+                                Enroll in ${res.locals.course.name} as
+                                ${invitation.role}
+                              </h5>
+                              <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                              ></button>
+                            </div>
+                            <div class="modal-body">
+                              <div class="input-group">
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  readonly
+                                  value="${link}"
+                                  style="${css`
+                                    user-select: all;
+                                  `}"
+                                  id="invitation--${invitation.reference}--link"
+                                />
+                                <button
+                                  class="btn btn-outline-primary"
+                                  type="button"
+                                  data-bs-toggle="tooltip"
+                                  title="Copy"
+                                  onclick="${javascript`
+                                      document.querySelector("#invitation--${invitation.reference}--link").select();
+                                      document.execCommand("copy");
+                                      this.dataset.bsOriginalTitle = "Copied";
+                                      bootstrap.Tooltip.getInstance(this).show();
+                                      this.dataset.bsOriginalTitle = "Copy";
+                                    `}"
+                                >
+                                  <i class="bi bi-clipboard"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  })}
                 `}
           `
         )
