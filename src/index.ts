@@ -3298,48 +3298,52 @@ export default async function courselore(
             }
           `}"
         >
-          <a
-            href="${app.locals.settings.url}/courses/${res.locals.course
-              .reference}/settings"
-            style="${css`
-              ${req.path.endsWith("/settings")
-                ? css`
-                    background-color: $purple-700;
-                  `
-                : css``}
-            `}"
-          >
-            <i class="bi bi-sliders"></i>
-            Course Settings
-          </a>
-          <a
-            href="${app.locals.settings.url}/courses/${res.locals.course
-              .reference}/settings/invitations"
-            style="${css`
-              ${req.path.endsWith("/settings/invitations")
-                ? css`
-                    background-color: $purple-700;
-                  `
-                : css``}
-            `}"
-          >
-            <i class="bi bi-person-plus"></i>
-            Invitations
-          </a>
-          <a
-            href="${app.locals.settings.url}/courses/${res.locals.course
-              .reference}/settings/enrollments"
-            style="${css`
-              ${req.path.endsWith("/settings/enrollments")
-                ? css`
-                    background-color: $purple-700;
-                  `
-                : css``}
-            `}"
-          >
-            <i class="bi bi-people"></i>
-            Enrollments
-          </a>
+          $${res.locals.enrollment.role === "staff"
+            ? html`
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/settings"
+                  style="${css`
+                    ${req.path.endsWith("/settings")
+                      ? css`
+                          background-color: $purple-700;
+                        `
+                      : css``}
+                  `}"
+                >
+                  <i class="bi bi-sliders"></i>
+                  Course Settings
+                </a>
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/settings/invitations"
+                  style="${css`
+                    ${req.path.endsWith("/settings/invitations")
+                      ? css`
+                          background-color: $purple-700;
+                        `
+                      : css``}
+                  `}"
+                >
+                  <i class="bi bi-person-plus"></i>
+                  Invitations
+                </a>
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/settings/enrollments"
+                  style="${css`
+                    ${req.path.endsWith("/settings/enrollments")
+                      ? css`
+                          background-color: $purple-700;
+                        `
+                      : css``}
+                  `}"
+                >
+                  <i class="bi bi-people"></i>
+                  Enrollments
+                </a>
+              `
+            : html``}
           <a
             href="${app.locals.settings.url}/courses/${res.locals.course
               .reference}/settings/enrollment"
@@ -3422,6 +3426,22 @@ export default async function courselore(
             </form>
           `
         )
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res) => {
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollment`
       );
     }
   );
@@ -3955,7 +3975,13 @@ export default async function courselore(
                               ></button>
                             </div>
                             <div class="modal-body">
-                              <div class="input-group">
+                              <div
+                                class="input-group"
+                                style="${css`
+                                  max-width: 70ch;
+                                  margin: 0 auto;
+                                `}"
+                              >
                                 <input
                                   type="text"
                                   class="form-control"
@@ -5042,8 +5068,6 @@ export default async function courselore(
               )}
             </div>
   */
-
-  // TODO: Student version of settings.
 
   app.patch<
     { courseReference: string; invitationReference: string },
