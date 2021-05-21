@@ -4475,7 +4475,7 @@ export default async function courselore(
     {},
     MayManageInvitationMiddlewareLocals
   >(
-    "/courses/:courseReference/invitations/:invitationReference",
+    "/courses/:courseReference/settings/invitations/:invitationReference",
     ...app.locals.middlewares.mayManageInvitation,
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("validation");
