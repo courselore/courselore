@@ -2673,7 +2673,7 @@ export default async function courselore(
             `}"
             role="alert"
           >
-            User settings updated successfully.
+            User settings have been updated successfully.
             <button
               type="button"
               class="btn-close"
@@ -3456,7 +3456,7 @@ export default async function courselore(
             `}"
             role="alert"
           >
-            Course settings updated successfully.
+            Course settings have been updated successfully.
             <button
               type="button"
               class="btn-close"
@@ -3802,9 +3802,7 @@ export default async function courselore(
                       overflow: auto;
                     `}"
                   >
-                    <table
-                      class="table table-striped table-hover table-borderless table-sm"
-                    >
+                    <table class="table table-hover table-sm">
                       <tbody>
                         $${invitations.map((invitation) => {
                           const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
@@ -4132,7 +4130,7 @@ export default async function courselore(
           // }
 
           res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings#invitations`
+            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
           );
           break;
       }
@@ -4184,9 +4182,7 @@ export default async function courselore(
           html`
             <h1>Enrollments</h1>
 
-            <table
-              class="table table-striped table-hover table-borderless table-sm"
-            >
+            <table class="table table-hover table-sm">
               <tbody>
                 $${enrollments.map((enrollment) => {
                   const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/enrollments/${enrollment.reference}`;
@@ -4482,7 +4478,7 @@ export default async function courselore(
             `}"
             role="alert"
           >
-            Your enrollment updated successfully.
+            Your enrollment has been updated successfully.
             <button
               type="button"
               class="btn-close"
@@ -5106,7 +5102,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings#invitations`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -5396,10 +5392,34 @@ export default async function courselore(
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              style="${css`
+                text-align: center;
+                border-radius: 0;
+                margin-bottom: 0;
+              `}"
+              role="alert"
+            >
+              Enrollment has been updated successfully.
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+          `
+        );
       }
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings#enrollments`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -5418,10 +5438,34 @@ export default async function courselore(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            style="${css`
+              text-align: center;
+              border-radius: 0;
+              margin-bottom: 0;
+            `}"
+            role="alert"
+          >
+            The person has been removed from the course successfully.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        `
+      );
+
       if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
         return res.redirect(`${app.locals.settings.url}/`);
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings#enrollments`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
