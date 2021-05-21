@@ -3430,22 +3430,6 @@ export default async function courselore(
     }
   );
 
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isEnrolledInCourse,
-    (req, res) => {
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollment`
-      );
-    }
-  );
-
   app.patch<
     { courseReference: string },
     HTML,
@@ -3489,6 +3473,22 @@ export default async function courselore(
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res) => {
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollment`
       );
     }
   );
@@ -4211,7 +4211,7 @@ export default async function courselore(
             <table class="table table-hover table-sm">
               <tbody>
                 $${enrollments.map((enrollment) => {
-                  const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/enrollments/${enrollment.reference}`;
+                  const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
                   const isSelf = enrollment.id === res.locals.enrollment.id;
                   const isOnlyStaff =
                     isSelf &&
@@ -4344,6 +4344,100 @@ export default async function courselore(
             </table>
           `
         )
+      );
+    }
+  );
+
+  app.patch<
+    { courseReference: string; enrollmentReference: string },
+    HTML,
+    { role?: Role },
+    {},
+    MayManageEnrollmentMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/enrollments/:enrollmentReference",
+    ...app.locals.middlewares.mayManageEnrollment,
+    (req, res, next) => {
+      if (typeof req.body.role === "string") {
+        if (!app.locals.constants.roles.includes(req.body.role))
+          return next("validation");
+        app.locals.database.run(
+          sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
+        );
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              style="${css`
+                text-align: center;
+                border-radius: 0;
+                margin-bottom: 0;
+              `}"
+              role="alert"
+            >
+              Enrollment has been updated successfully.
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+          `
+        );
+      }
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
+      );
+    }
+  );
+
+  app.delete<
+    { courseReference: string; enrollmentReference: string },
+    HTML,
+    {},
+    {},
+    MayManageEnrollmentMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/enrollments/:enrollmentReference",
+    ...app.locals.middlewares.mayManageEnrollment,
+    (req, res) => {
+      app.locals.database.run(
+        sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
+      );
+
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            style="${css`
+              text-align: center;
+              border-radius: 0;
+              margin-bottom: 0;
+            `}"
+            role="alert"
+          >
+            The person has been removed from the course successfully.
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+        `
+      );
+
+      if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
+        return res.redirect(`${app.locals.settings.url}/`);
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -5396,100 +5490,6 @@ export default async function courselore(
             </a>
           `
         )
-      );
-    }
-  );
-
-  app.patch<
-    { courseReference: string; enrollmentReference: string },
-    HTML,
-    { role?: Role },
-    {},
-    MayManageEnrollmentMiddlewareLocals
-  >(
-    "/courses/:courseReference/enrollments/:enrollmentReference",
-    ...app.locals.middlewares.mayManageEnrollment,
-    (req, res, next) => {
-      if (typeof req.body.role === "string") {
-        if (!app.locals.constants.roles.includes(req.body.role))
-          return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
-        );
-
-        app.locals.helpers.flash.set(
-          req,
-          res,
-          html`
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              style="${css`
-                text-align: center;
-                border-radius: 0;
-                margin-bottom: 0;
-              `}"
-              role="alert"
-            >
-              Enrollment has been updated successfully.
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
-            </div>
-          `
-        );
-      }
-
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
-      );
-    }
-  );
-
-  app.delete<
-    { courseReference: string; enrollmentReference: string },
-    HTML,
-    {},
-    {},
-    MayManageEnrollmentMiddlewareLocals
-  >(
-    "/courses/:courseReference/enrollments/:enrollmentReference",
-    ...app.locals.middlewares.mayManageEnrollment,
-    (req, res) => {
-      app.locals.database.run(
-        sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
-      );
-
-      app.locals.helpers.flash.set(
-        req,
-        res,
-        html`
-          <div
-            class="alert alert-success alert-dismissible fade show"
-            style="${css`
-              text-align: center;
-              border-radius: 0;
-              margin-bottom: 0;
-            `}"
-            role="alert"
-          >
-            The person has been removed from the course successfully.
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
-          </div>
-        `
-      );
-
-      if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
-        return res.redirect(`${app.locals.settings.url}/`);
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
