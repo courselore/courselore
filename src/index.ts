@@ -4018,6 +4018,305 @@ export default async function courselore(
           `
         )
       );
+
+      /*
+
+                    $${invitations!.length === 0
+                      ? html``
+                      : html`
+                          <details
+                            style="${css`
+                              margin: 1rem 0;
+                            `}"
+                          >
+                            <summary>
+                              <strong>Existing Invitations</strong>
+                            </summary>
+
+                            $${invitations!.map((invitation) => {
+                              const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+
+                              return html`
+                                <details>
+                                  <summary>
+                                    $${invitation.email === null
+                                      ? html`
+                                          <code>
+                                            ${app.locals.settings
+                                              .url}/courses/${res.locals.course
+                                              .reference}/invitations/${"*".repeat(
+                                              6
+                                            )}${invitation.reference.slice(6)}
+                                          </code>
+                                          <br />
+                                        `
+                                      : invitation.name === null
+                                      ? html`${invitation.email}`
+                                      : html`${invitation.name}
+                                        ${`<${invitation.email}>`}`}
+
+                                    <small class="secondary">
+                                      ${lodash.capitalize(invitation.role)} ·
+                                      $${invitation.usedAt !== null
+                                        ? html`
+                                            <span class="green">
+                                              Used
+                                              <time>${invitation.usedAt}</time>
+                                            </span>
+                                          `
+                                        : app.locals.helpers.isExpired(
+                                            invitation.expiresAt
+                                          )
+                                        ? html`
+                                            <span class="red">
+                                              Expired
+                                              <time
+                                                >${invitation.expiresAt}</time
+                                              >
+                                            </span>
+                                          `
+                                        : invitation.expiresAt !== null
+                                        ? html`
+                                            Expires
+                                            <time>${invitation.expiresAt}</time>
+                                          `
+                                        : html`Doesn’t expire`}
+                                    </small>
+                                  </summary>
+
+                                  $${invitation.email === null &&
+                                  !app.locals.helpers.isExpired(
+                                    invitation.expiresAt
+                                  )
+                                    ? html`
+                                        <p>
+                                          <a href="${link}"
+                                            >See invitation link</a
+                                          >
+                                        </p>
+                                      `
+                                    : html``}
+                                  $${invitation.usedAt !== null
+                                    ? html`
+                                        <p>
+                                          This invitation has already been used
+                                          and may no longer be modified.
+                                        </p>
+                                      `
+                                    : html`
+                                        $${invitation.email === null ||
+                                        app.locals.helpers.isExpired(
+                                          invitation.expiresAt
+                                        )
+                                          ? html``
+                                          : html`
+                                              <form
+                                                method="POST"
+                                                action="${link}?_method=PATCH"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="resend"
+                                                  value="true"
+                                                />
+                                                <p>
+                                                  Invitation email wasn’t
+                                                  received? Already checked the
+                                                  spam folder?<br />
+                                                  <button>
+                                                    Resend Invitation Email
+                                                  </button>
+                                                </p>
+                                              </form>
+                                            `}
+
+                                        <div
+                                          style="${css`
+                                            display: flex;
+
+                                            & > * {
+                                              flex: 1;
+                                            }
+
+                                            & > * + * {
+                                              margin-left: 2rem;
+                                            }
+                                          `}"
+                                        >
+                                          <form
+                                            method="POST"
+                                            action="${link}?_method=PATCH"
+                                          >
+                                            <p>
+                                              <strong>Role</strong><br />
+                                              <span
+                                                style="${css`
+                                                  display: flex;
+                                                  align-items: baseline;
+
+                                                  & > * + * {
+                                                    margin-left: 1rem;
+                                                  }
+                                                `}"
+                                              >
+                                                $${app.locals.constants.roles.map(
+                                                  (role) =>
+                                                    html`
+                                                      <label>
+                                                        <input
+                                                          type="radio"
+                                                          name="role"
+                                                          value="${role}"
+                                                          required
+                                                          ${role ===
+                                                          invitation.role
+                                                            ? `checked`
+                                                            : ``}
+                                                          ${app.locals.helpers.isExpired(
+                                                            invitation.expiresAt
+                                                          )
+                                                            ? `disabled`
+                                                            : ``}
+                                                        />
+                                                        ${lodash.capitalize(
+                                                          role
+                                                        )}
+                                                      </label>
+                                                    `
+                                                )}
+                                                $${app.locals.helpers.isExpired(
+                                                  invitation.expiresAt
+                                                )
+                                                  ? html``
+                                                  : html`
+                                                      <button
+                                                        style="${css`
+                                                          flex: 1;
+                                                        `}"
+                                                      >
+                                                        Change Role
+                                                      </button>
+                                                    `}
+                                              </span>
+                                            </p>
+                                            $${app.locals.helpers.isExpired(
+                                              invitation.expiresAt
+                                            )
+                                              ? html`
+                                                  <p class="secondary">
+                                                    You may not change the role
+                                                    of an expired invitation.
+                                                  </p>
+                                                `
+                                              : html``}
+                                          </form>
+
+                                          <div>
+                                            <form
+                                              method="POST"
+                                              action="${link}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="changeExpiration"
+                                                value="true"
+                                              />
+                                              <p>
+                                                <label>
+                                                  <strong>Expiration</strong
+                                                  ><br />
+                                                  <span
+                                                    style="${css`
+                                                      display: flex;
+                                                      align-items: baseline;
+
+                                                      & > * + * {
+                                                        margin-left: 0.5rem;
+                                                      }
+                                                    `}"
+                                                  >
+                                                    <span>
+                                                      <input
+                                                        type="checkbox"
+                                                        ${invitation.expiresAt ===
+                                                        null
+                                                          ? ``
+                                                          : `checked`}
+                                                        onchange="${javascript`
+                                                    const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
+                                                    expiresAt.disabled = !this.checked;
+                                                    if (this.checked) {
+                                                      expiresAt.focus();
+                                                      expiresAt.setSelectionRange(0, 0);
+                                                    }
+                                                  `}"
+                                                      />
+                                                    </span>
+                                                    <span>Expires at</span>
+                                                    <input
+                                                      type="text"
+                                                      name="expiresAt"
+                                                      value="${invitation.expiresAt ??
+                                                      new Date().toISOString()}"
+                                                      required
+                                                      ${invitation.expiresAt ===
+                                                      null
+                                                        ? `disabled`
+                                                        : ``}
+                                                      data-onvalidate="${javascript`
+                                                  if (new Date(this.value).getTime() <= Date.now())
+                                                    return "Must be in the future";
+                                                `}"
+                                                      class="full-width datetime"
+                                                      style="${css`
+                                                        flex: 1;
+                                                      `}"
+                                                    />
+                                                  </span>
+                                                </label>
+                                              </p>
+                                              <p>
+                                                <button class="full-width">
+                                                  Change Expiration
+                                                </button>
+                                              </p>
+                                            </form>
+
+                                            $${app.locals.helpers.isExpired(
+                                              invitation.expiresAt
+                                            )
+                                              ? html``
+                                              : html`
+                                                  <form
+                                                    method="POST"
+                                                    action="${link}?_method=PATCH"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="expireNow"
+                                                      value="true"
+                                                    />
+                                                    <p>
+                                                      <button
+                                                        class="full-width red"
+                                                      >
+                                                        Expire Invitation Now
+                                                      </button>
+                                                    </p>
+                                                  </form>
+                                                `}
+                                          </div>
+                                        </div>
+                                      `}
+                                </details>
+                              `;
+                            })}
+                            <hr />
+                        `}
+
+                    
+
+  */
     }
   );
 
@@ -4160,6 +4459,68 @@ export default async function courselore(
           );
           break;
       }
+    }
+  );
+
+  app.patch<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {
+      resend?: "true";
+      role?: Role;
+      changeExpiration?: "true";
+      expiresAt?: string;
+      expireNow?: "true";
+    },
+    {},
+    MayManageInvitationMiddlewareLocals
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    ...app.locals.middlewares.mayManageInvitation,
+    (req, res, next) => {
+      if (res.locals.invitation.usedAt !== null) return next("validation");
+
+      if (req.body.resend === "true") {
+        if (res.locals.invitation.email === null) return next("validation");
+
+        app.locals.helpers.sendInvitationEmail(res.locals.invitation);
+      }
+
+      if (req.body.role !== undefined) {
+        if (!app.locals.constants.roles.includes(req.body.role))
+          return next("validation");
+
+        app.locals.database.run(
+          sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
+        );
+      }
+
+      if (req.body.changeExpiration === "true") {
+        if (
+          req.body.expiresAt !== undefined &&
+          (typeof req.body.expiresAt !== "string" ||
+            !app.locals.helpers.isDate(req.body.expiresAt) ||
+            app.locals.helpers.isExpired(req.body.expiresAt))
+        )
+          return next("validation");
+
+        app.locals.database.run(
+          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
+        );
+      }
+
+      if (req.body.expireNow === "true")
+        app.locals.database.run(
+          sql`
+            UPDATE "invitations"
+            SET "expiresAt" = ${new Date().toISOString()}
+            WHERE "id" = ${res.locals.invitation.id}
+          `
+        );
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
+      );
     }
   );
 
@@ -4611,616 +4972,6 @@ export default async function courselore(
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollment`
-      );
-    }
-  );
-
-  /*
-
-  $${res.locals.enrollment.role !== "staff"
-              ? html``
-              : (() => {
-                  
-                  
-
-                  return html`
-                    
-
-                    $${invitations!.length === 0
-                      ? html``
-                      : html`
-                          <details
-                            style="${css`
-                              margin: 1rem 0;
-                            `}"
-                          >
-                            <summary>
-                              <strong>Existing Invitations</strong>
-                            </summary>
-
-                            $${invitations!.map((invitation) => {
-                              const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-
-                              return html`
-                                <details>
-                                  <summary>
-                                    $${invitation.email === null
-                                      ? html`
-                                          <code>
-                                            ${app.locals.settings
-                                              .url}/courses/${res.locals.course
-                                              .reference}/invitations/${"*".repeat(
-                                              6
-                                            )}${invitation.reference.slice(6)}
-                                          </code>
-                                          <br />
-                                        `
-                                      : invitation.name === null
-                                      ? html`${invitation.email}`
-                                      : html`${invitation.name}
-                                        ${`<${invitation.email}>`}`}
-
-                                    <small class="secondary">
-                                      ${lodash.capitalize(invitation.role)} ·
-                                      $${invitation.usedAt !== null
-                                        ? html`
-                                            <span class="green">
-                                              Used
-                                              <time>${invitation.usedAt}</time>
-                                            </span>
-                                          `
-                                        : app.locals.helpers.isExpired(
-                                            invitation.expiresAt
-                                          )
-                                        ? html`
-                                            <span class="red">
-                                              Expired
-                                              <time
-                                                >${invitation.expiresAt}</time
-                                              >
-                                            </span>
-                                          `
-                                        : invitation.expiresAt !== null
-                                        ? html`
-                                            Expires
-                                            <time>${invitation.expiresAt}</time>
-                                          `
-                                        : html`Doesn’t expire`}
-                                    </small>
-                                  </summary>
-
-                                  $${invitation.email === null &&
-                                  !app.locals.helpers.isExpired(
-                                    invitation.expiresAt
-                                  )
-                                    ? html`
-                                        <p>
-                                          <a href="${link}"
-                                            >See invitation link</a
-                                          >
-                                        </p>
-                                      `
-                                    : html``}
-                                  $${invitation.usedAt !== null
-                                    ? html`
-                                        <p>
-                                          This invitation has already been used
-                                          and may no longer be modified.
-                                        </p>
-                                      `
-                                    : html`
-                                        $${invitation.email === null ||
-                                        app.locals.helpers.isExpired(
-                                          invitation.expiresAt
-                                        )
-                                          ? html``
-                                          : html`
-                                              <form
-                                                method="POST"
-                                                action="${link}?_method=PATCH"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="resend"
-                                                  value="true"
-                                                />
-                                                <p>
-                                                  Invitation email wasn’t
-                                                  received? Already checked the
-                                                  spam folder?<br />
-                                                  <button>
-                                                    Resend Invitation Email
-                                                  </button>
-                                                </p>
-                                              </form>
-                                            `}
-
-                                        <div
-                                          style="${css`
-                                            display: flex;
-
-                                            & > * {
-                                              flex: 1;
-                                            }
-
-                                            & > * + * {
-                                              margin-left: 2rem;
-                                            }
-                                          `}"
-                                        >
-                                          <form
-                                            method="POST"
-                                            action="${link}?_method=PATCH"
-                                          >
-                                            <p>
-                                              <strong>Role</strong><br />
-                                              <span
-                                                style="${css`
-                                                  display: flex;
-                                                  align-items: baseline;
-
-                                                  & > * + * {
-                                                    margin-left: 1rem;
-                                                  }
-                                                `}"
-                                              >
-                                                $${app.locals.constants.roles.map(
-                                                  (role) =>
-                                                    html`
-                                                      <label>
-                                                        <input
-                                                          type="radio"
-                                                          name="role"
-                                                          value="${role}"
-                                                          required
-                                                          ${role ===
-                                                          invitation.role
-                                                            ? `checked`
-                                                            : ``}
-                                                          ${app.locals.helpers.isExpired(
-                                                            invitation.expiresAt
-                                                          )
-                                                            ? `disabled`
-                                                            : ``}
-                                                        />
-                                                        ${lodash.capitalize(
-                                                          role
-                                                        )}
-                                                      </label>
-                                                    `
-                                                )}
-                                                $${app.locals.helpers.isExpired(
-                                                  invitation.expiresAt
-                                                )
-                                                  ? html``
-                                                  : html`
-                                                      <button
-                                                        style="${css`
-                                                          flex: 1;
-                                                        `}"
-                                                      >
-                                                        Change Role
-                                                      </button>
-                                                    `}
-                                              </span>
-                                            </p>
-                                            $${app.locals.helpers.isExpired(
-                                              invitation.expiresAt
-                                            )
-                                              ? html`
-                                                  <p class="secondary">
-                                                    You may not change the role
-                                                    of an expired invitation.
-                                                  </p>
-                                                `
-                                              : html``}
-                                          </form>
-
-                                          <div>
-                                            <form
-                                              method="POST"
-                                              action="${link}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="changeExpiration"
-                                                value="true"
-                                              />
-                                              <p>
-                                                <label>
-                                                  <strong>Expiration</strong
-                                                  ><br />
-                                                  <span
-                                                    style="${css`
-                                                      display: flex;
-                                                      align-items: baseline;
-
-                                                      & > * + * {
-                                                        margin-left: 0.5rem;
-                                                      }
-                                                    `}"
-                                                  >
-                                                    <span>
-                                                      <input
-                                                        type="checkbox"
-                                                        ${invitation.expiresAt ===
-                                                        null
-                                                          ? ``
-                                                          : `checked`}
-                                                        onchange="${javascript`
-                                                    const expiresAt = this.closest("p").querySelector('[name="expiresAt"]');
-                                                    expiresAt.disabled = !this.checked;
-                                                    if (this.checked) {
-                                                      expiresAt.focus();
-                                                      expiresAt.setSelectionRange(0, 0);
-                                                    }
-                                                  `}"
-                                                      />
-                                                    </span>
-                                                    <span>Expires at</span>
-                                                    <input
-                                                      type="text"
-                                                      name="expiresAt"
-                                                      value="${invitation.expiresAt ??
-                                                      new Date().toISOString()}"
-                                                      required
-                                                      ${invitation.expiresAt ===
-                                                      null
-                                                        ? `disabled`
-                                                        : ``}
-                                                      data-onvalidate="${javascript`
-                                                  if (new Date(this.value).getTime() <= Date.now())
-                                                    return "Must be in the future";
-                                                `}"
-                                                      class="full-width datetime"
-                                                      style="${css`
-                                                        flex: 1;
-                                                      `}"
-                                                    />
-                                                  </span>
-                                                </label>
-                                              </p>
-                                              <p>
-                                                <button class="full-width">
-                                                  Change Expiration
-                                                </button>
-                                              </p>
-                                            </form>
-
-                                            $${app.locals.helpers.isExpired(
-                                              invitation.expiresAt
-                                            )
-                                              ? html``
-                                              : html`
-                                                  <form
-                                                    method="POST"
-                                                    action="${link}?_method=PATCH"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="expireNow"
-                                                      value="true"
-                                                    />
-                                                    <p>
-                                                      <button
-                                                        class="full-width red"
-                                                      >
-                                                        Expire Invitation Now
-                                                      </button>
-                                                    </p>
-                                                  </form>
-                                                `}
-                                          </div>
-                                        </div>
-                                      `}
-                                </details>
-                              `;
-                            })}
-                            <hr />
-                          </details>
-
-                          <p><strong>Create a New Invitation</strong></p>
-                        `}
-
-                    
-
-                    <hr />
-
-                    <details id="enrollments">
-                      <summary><strong>Enrollments</strong></summary>
-
-                      $${enrollments!.map(
-                        (enrollment) => html`
-                          <details>
-                            <summary>
-                              ${enrollment.userName}
-                              ${`<${enrollment.userEmail}>`}
-                              <small class="secondary">
-                                ${lodash.capitalize(enrollment.role)}
-                              </small>
-                            </summary>
-
-                            $${enrollment.id !== res.locals.enrollment.id
-                              ? html`
-                                  <div
-                                    style="${css`
-                                      display: flex;
-
-                                      & > * {
-                                        flex: 1;
-                                      }
-
-                                      & > * + * {
-                                        margin-left: 2rem;
-                                      }
-                                    `}"
-                                  >
-                                    <form
-                                      method="POST"
-                                      action="${app.locals.settings
-                                        .url}/courses/${res.locals.course
-                                        .reference}/enrollments/${enrollment.reference}?_method=PATCH"
-                                    >
-                                      <p>
-                                        <strong>Role</strong><br />
-                                        <span
-                                          style="${css`
-                                            display: flex;
-                                            align-items: baseline;
-
-                                            & > * + * {
-                                              margin-left: 1rem;
-                                            }
-                                          `}"
-                                        >
-                                          $${app.locals.constants.roles.map(
-                                            (role) =>
-                                              html`
-                                                <label>
-                                                  <input
-                                                    type="radio"
-                                                    name="role"
-                                                    value="${role}"
-                                                    required
-                                                    ${role === enrollment.role
-                                                      ? `checked`
-                                                      : ``}
-                                                  />
-                                                  ${lodash.capitalize(role)}
-                                                </label>
-                                              `
-                                          )}
-                                          <button
-                                            style="${css`
-                                              flex: 1;
-                                            `}"
-                                          >
-                                            Change Role
-                                          </button>
-                                        </span>
-                                      </p>
-                                    </form>
-
-                                    <div>
-                                      <form
-                                        method="POST"
-                                        action="${app.locals.settings
-                                          .url}/courses/${res.locals.course
-                                          .reference}/enrollments/${enrollment.reference}?_method=DELETE"
-                                      >
-                                        <p class="red">
-                                          <strong>Danger Zone</strong><br />
-                                          <button
-                                            class="full-width"
-                                            onclick="${javascript`
-                                        if (!confirm("Remove ${enrollment.userName} <${enrollment.userEmail}> from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
-                                          event.preventDefault();
-                                      `}"
-                                          >
-                                            Remove from Course
-                                          </button>
-                                        </p>
-                                      </form>
-                                    </div>
-                                  </div>
-                                `
-                              : enrollments!.filter(
-                                  (enrollment) => enrollment.role === "staff"
-                                ).length === 1
-                              ? html`
-                                  <p>
-                                    You may not modify the details of your
-                                    enrollment in ${res.locals.course.name}
-                                    because you’re the only staff member.
-                                  </p>
-                                `
-                              : html`
-                                  <div class="red">
-                                    <p
-                                      style="${css`
-                                        margin-bottom: -1rem;
-                                      `}"
-                                    >
-                                      <strong>Danger Zone</strong>
-                                    </p>
-
-                                    <div
-                                      style="${css`
-                                        display: flex;
-
-                                        & > * {
-                                          flex: 1;
-                                        }
-
-                                        & > * + * {
-                                          margin-left: 2rem;
-                                        }
-                                      `}"
-                                    >
-                                      <form
-                                        method="POST"
-                                        action="${app.locals.settings
-                                          .url}/courses/${res.locals.course
-                                          .reference}/enrollments/${enrollment.reference}?_method=PATCH"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="role"
-                                          value="student"
-                                        />
-                                        <p>
-                                          <button
-                                            class="full-width"
-                                            onclick="${javascript`
-                                        if (!confirm("Convert yourself into student?\\n\\nYou may not undo this action!"))
-                                          event.preventDefault();
-                                      `}"
-                                          >
-                                            Convert Yourself into Student
-                                          </button>
-                                        </p>
-                                      </form>
-
-                                      <form
-                                        method="POST"
-                                        action="${app.locals.settings
-                                          .url}/courses/${res.locals.course
-                                          .reference}/enrollments/${enrollment.reference}?_method=DELETE"
-                                      >
-                                        <p>
-                                          <button
-                                            class="full-width"
-                                            onclick="${javascript`
-                                        if (!confirm("Remove yourself from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
-                                          event.preventDefault();
-                                      `}"
-                                          >
-                                            Remove Yourself from Course
-                                          </button>
-                                        </p>
-                                      </form>
-                                    </div>
-                                  </div>
-                                `}
-                          </details>
-                        `
-                      )}
-                    </details>
-
-                    <hr />
-                  `;
-                })()}
-
-            <p><strong>Accent color</strong></p>
-            <p class="secondary">
-              A bar of this color appears at the top of your screen to help you
-              tell courses apart.
-              $${res.locals.enrollment.role !== "staff"
-                ? html``
-                : html`Everyone gets a different color of their choosing.`}
-            </p>
-            <div
-              style="${css`
-                margin-top: -1rem;
-
-                & > * + * {
-                  margin-left: 0.5rem;
-                }
-              `}"
-            >
-              $${app.locals.constants.accentColors.map(
-                (accentColor) =>
-                  html`
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/settings?_method=PATCH"
-                      style="${css`
-                        display: inline-block;
-                      `}"
-                    >
-                      <input
-                        type="hidden"
-                        name="accentColor"
-                        value="${accentColor}"
-                      />
-                      <p>
-                        <button
-                          class="undecorated"
-                          style="${css`
-                            font-size: 1rem;
-                            color: ${accentColor};
-                          `}"
-                        >
-                          $${accentColor === res.locals.enrollment.accentColor
-                            ? html`<i class="bi bi-record-circle-fill"></i>`
-                            : html`<i class="bi bi-circle-fill"></i>`}
-                        </button>
-                      </p>
-                    </form>
-                  `
-              )}
-            </div>
-  */
-
-  app.patch<
-    { courseReference: string; invitationReference: string },
-    HTML,
-    {
-      resend?: "true";
-      role?: Role;
-      changeExpiration?: "true";
-      expiresAt?: string;
-      expireNow?: "true";
-    },
-    {},
-    MayManageInvitationMiddlewareLocals
-  >(
-    "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.mayManageInvitation,
-    (req, res, next) => {
-      if (res.locals.invitation.usedAt !== null) return next("validation");
-
-      if (req.body.resend === "true") {
-        if (res.locals.invitation.email === null) return next("validation");
-
-        app.locals.helpers.sendInvitationEmail(res.locals.invitation);
-      }
-
-      if (req.body.role !== undefined) {
-        if (!app.locals.constants.roles.includes(req.body.role))
-          return next("validation");
-
-        app.locals.database.run(
-          sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
-        );
-      }
-
-      if (req.body.changeExpiration === "true") {
-        if (
-          req.body.expiresAt !== undefined &&
-          (typeof req.body.expiresAt !== "string" ||
-            !app.locals.helpers.isDate(req.body.expiresAt) ||
-            app.locals.helpers.isExpired(req.body.expiresAt))
-        )
-          return next("validation");
-
-        app.locals.database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
-        );
-      }
-
-      if (req.body.expireNow === "true")
-        app.locals.database.run(
-          sql`
-            UPDATE "invitations"
-            SET "expiresAt" = ${new Date().toISOString()}
-            WHERE "id" = ${res.locals.invitation.id}
-          `
-        );
-
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
