@@ -3502,7 +3502,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
-    (req, res) => {
+    asyncHandler(async (req, res) => {
       const invitations = app.locals.database.all<{
         id: number;
         expiresAt: string | null;
@@ -3946,74 +3946,101 @@ export default async function courselore(
                     </table>
                   </div>
 
-                  $${invitations.map((invitation) => {
-                    const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                  $${await Promise.all(
+                    invitations.map(async (invitation) => {
+                      const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
 
-                    return html`
-                      <div
-                        class="modal fade"
-                        id="invitation--${invitation.reference}"
-                        tabindex="-1"
-                        aria-labelledby="invitation--${invitation.reference}--label"
-                        aria-hidden="true"
-                      >
-                        <div class="modal-dialog modal-fullscreen">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5
-                                class="modal-title"
-                                id="invitation--${invitation.reference}--label"
-                              >
-                                Enroll in ${res.locals.course.name} as
-                                ${invitation.role}
-                              </h5>
-                              <button
-                                type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
-                            </div>
-                            <div class="modal-body">
+                      return html`
+                        <div
+                          class="modal fade"
+                          id="invitation--${invitation.reference}"
+                          tabindex="-1"
+                          aria-labelledby="invitation--${invitation.reference}--label"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog modal-fullscreen">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5
+                                  class="modal-title"
+                                  id="invitation--${invitation.reference}--label"
+                                >
+                                  Enroll in ${res.locals.course.name} as
+                                  ${invitation.role}
+                                </h5>
+                                <button
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
                               <div
-                                class="input-group"
+                                class="modal-body"
                                 style="${css`
                                   max-width: 70ch;
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: 5rem;
                                   margin: 0 auto;
+                                  text-align: center;
                                 `}"
                               >
-                                <input
-                                  type="text"
-                                  class="form-control"
-                                  readonly
-                                  value="${link}"
-                                  style="${css`
-                                    user-select: all;
-                                  `}"
-                                  id="invitation--${invitation.reference}--link"
-                                />
-                                <button
-                                  class="btn btn-outline-primary"
-                                  type="button"
-                                  data-bs-toggle="tooltip"
-                                  title="Copy"
-                                  onclick="${javascript`
+                                <div class="input-group">
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    readonly
+                                    value="${link}"
+                                    style="${css`
+                                      user-select: all;
+                                    `}"
+                                    id="invitation--${invitation.reference}--link"
+                                  />
+                                  <button
+                                    class="btn btn-outline-primary"
+                                    type="button"
+                                    data-bs-toggle="tooltip"
+                                    title="Copy"
+                                    onclick="${javascript`
                                       document.querySelector("#invitation--${invitation.reference}--link").select();
                                       document.execCommand("copy");
                                       this.dataset.bsOriginalTitle = "Copied";
                                       bootstrap.Tooltip.getInstance(this).show();
                                       this.dataset.bsOriginalTitle = "Copy";
                                     `}"
-                                >
-                                  <i class="bi bi-clipboard"></i>
-                                </button>
+                                  >
+                                    <i class="bi bi-clipboard"></i>
+                                  </button>
+                                </div>
+
+                                <div>
+                                  <div><strong>QR Code</strong></div>
+                                  <div
+                                    style="${css`
+                                      color: $text-muted;
+                                    `}"
+                                  >
+                                    People may point their phone camera at the
+                                    image below to follow the invitation link.
+                                  </div>
+                                  <div>
+                                    $${(
+                                      await QRCode.toString(link, {
+                                        type: "svg",
+                                      })
+                                    )
+                                      .replace("#000000", "url('#gradient')")
+                                      .replace("#ffffff", "#00000000")}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    `;
-                  })}
+                      `;
+                    })
+                  )}
                 `}
           `
         )
@@ -4317,7 +4344,7 @@ export default async function courselore(
                     
 
   */
-    }
+    })
   );
 
   app.post<
