@@ -5245,7 +5245,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.box(
           req,
           res,
           html`
@@ -5254,15 +5254,30 @@ export default async function courselore(
             </title>
           `,
           html`
-            <h1>Welcome to ${res.locals.invitation.course.name}!</h1>
+            <h6
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              Welcome to ${res.locals.invitation.course.name}!
+            </h6>
 
-            <!-- FIXME: Add explicit ‘action’ -->
-            <form method="POST">
-              <p>
-                <button>
-                  Enroll as ${lodash.capitalize(res.locals.invitation.role)}
-                </button>
-              </p>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.invitation
+                .course.reference}/invitations/${res.locals.invitation
+                .reference}"
+            >
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="${css`
+                  width: 100%;
+                `}"
+              >
+                <i class="bi bi-journal-plus"></i>
+                Enroll as ${lodash.capitalize(res.locals.invitation.role)}
+              </button>
             </form>
           `
         )
@@ -5320,7 +5335,7 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.box(
           req,
           res,
           html`
@@ -5329,33 +5344,36 @@ export default async function courselore(
             </title>
           `,
           html`
-            <div
+            <h6
               style="${css`
                 text-align: center;
               `}"
             >
-              <h1>Welcome to ${res.locals.invitation.course.name}!</h1>
+              Welcome to ${res.locals.invitation.course.name}!
+            </h6>
 
-              <p>
-                To enroll, first you have to
-                <a
-                  href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                    redirect: req.originalUrl,
-                    ...(res.locals.invitation.email === null
-                      ? {}
-                      : {
-                          email: res.locals.invitation.email,
-                        }),
-                    ...(res.locals.invitation.name === null
-                      ? {}
-                      : {
-                          name: res.locals.invitation.name,
-                        }),
-                  })}"
-                  >authenticate</a
-                >.
-              </p>
-            </div>
+            <a
+              href="${app.locals.settings.url}/authenticate?${qs.stringify({
+                redirect: req.originalUrl,
+                ...(res.locals.invitation.email === null
+                  ? {}
+                  : {
+                      email: res.locals.invitation.email,
+                    }),
+                ...(res.locals.invitation.name === null
+                  ? {}
+                  : {
+                      name: res.locals.invitation.name,
+                    }),
+              })}"
+              class="btn btn-primary"
+              style="${css`
+                width: 100%;
+              `}"
+            >
+              Authenticate
+              <i class="bi bi-chevron-right"></i>
+            </a>
           `
         )
       );
