@@ -1330,6 +1330,8 @@ export default async function courselore(
             $code-color: inherit;
 
             $enable-shadows: true;
+            $enable-gradients: true;
+            $enable-grid-classes: false;
 
             $card-border-radius: 0.625rem;
             $modal-content-border-radius: 0.625rem;
