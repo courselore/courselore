@@ -3769,7 +3769,7 @@ export default async function courselore(
                             Emails must be separated by commas or newlines, and
                             may include names, for example:
                             <br />
-                            <code> ${`"Scott" <scott@courselore.org>`} </code>
+                            <code>${`"Scott" <scott@courselore.org>`}</code>
                           `}"
                           style="${css`
                             color: $text-muted;
@@ -3840,7 +3840,7 @@ export default async function courselore(
                                   `
                                 : html`
                                     data-bs-toggle="tooltip" title="See
-                                    Invitation Link"
+                                    Invitation"
                                   `}
                             >
                               $${invitation.email === null
@@ -4386,8 +4386,36 @@ export default async function courselore(
             )
           `
           );
-          res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
+
+          app.locals.helpers.flash.set(
+            req,
+            res,
+            html`
+              <div
+                class="alert alert-success alert-dismissible fade show"
+                style="${css`
+                  text-align: center;
+                  border-radius: 0;
+                  margin-bottom: 0;
+                `}"
+                role="alert"
+              >
+                Invitation created successfully.
+                <a
+                  role="button"
+                  class="link-success"
+                  data-bs-toggle="modal"
+                  data-bs-target="#invitation--${invitationReference}"
+                  >See invitation</a
+                >.
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            `
           );
           break;
 
@@ -4475,12 +4503,12 @@ export default async function courselore(
           //     course: res.locals.course,
           //   });
           // }
-
-          res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
-          );
           break;
       }
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
+      );
     }
   );
 
