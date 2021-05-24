@@ -602,6 +602,19 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-05-22</summary>
+
+- Progress:
+  - Worked fewer hours this week.
+  - Styled most of the Course Settings pages (separated them into multiple pages).
+  - Small usability improvements, for example, flash session messages saying your operation (for example, updating your profile) was successful.
+- Next week:
+  - Finish the following screens: Threads, course settings, and invitations.
+  - Return to posts tags.
+
+</details>
+
+<details>
 <summary>2021-05-15</summary>
 
 - Progress:
