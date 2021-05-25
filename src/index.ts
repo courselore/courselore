@@ -3741,17 +3741,15 @@ export default async function courselore(
                           required
                           disabled
                           data-onvalidate="${javascript`
-                            for (let email of this.value.split(${/[,\n]/})) {
-                              email = email.trim();
-                              if (email === "") continue;
-                              let match = email.match(${/^"(?<name>.*)"\s*<(?<email>.*)>$/});
-                              if (match === null) match = email.match(${/^(?<name>.*)\s*<(?<email>.*)>$/});
-                              if (match === null) match = email.match(${/^(?<email>.*)$/});
-                              if (!match.groups.email.match(${
-                                app.locals.constants.emailRegExp
-                              }))
-                                return "Match the requested format";
-                            }
+                            const emails = this.value
+                              .split(${/[,\n]/})
+                              .map((email) => email.trim())
+                              .filter((email) => email !== "")
+                              .map((email) => email.match(${/^.*<(.*)>$/})?.[1] ?? email);
+                            if (emails.length === 0 || emails.find((email) => !email.match(${
+                              app.locals.constants.emailRegExp
+                            })) !== undefined)
+                              return "Match the requested format";
                           `}"
                           style="${css`
                             height: 20ex;
@@ -4207,7 +4205,7 @@ export default async function courselore(
     {
       role?: Role;
       expiresAt?: string;
-      type?: "link" | "emails";
+      type?: "link" | "email";
       emails?: string;
     },
     {},
@@ -4224,7 +4222,7 @@ export default async function courselore(
             !app.locals.helpers.isDate(req.body.expiresAt) ||
             app.locals.helpers.isExpired(req.body.expiresAt))) ||
         typeof req.body.type !== "string" ||
-        !["link", "emails"].includes(req.body.type)
+        !["link", "email"].includes(req.body.type)
       )
         return next("validation");
 
@@ -4278,90 +4276,120 @@ export default async function courselore(
           );
           break;
 
-        case "emails":
-          // if (typeof req.body.emails !== "string") return next("validation");
-          // const emails = emailAddresses.parseAddressList(req.body.emails);
-          // if (
-          //   emails === null ||
-          //   emails.find(
-          //     (email) =>
-          //       email.type !== "mailbox" ||
-          //       !email.address.match(app.locals.constants.emailRegExp)
-          //   ) !== undefined
-          // )
-          //   return next("validation");
+        case "email":
+          if (typeof req.body.emails !== "string") return next("validation");
+          type Email = string;
+          type Name = string | null;
+          const emails = new Map<Email, Name>();
+          for (const email of req.body.emails
+            .split(/[,\n]/)
+            .map((email) => email.trim())
+            .filter((email) => email !== "")) {
+            let match = email.match(/^(?:"(?<name>.*)"\s*<(?<email>.*)>)$/);
+            if (match === null)
+              match = email.match(/^(?:(?<name>.*)<(?<email>.*)>)$/);
+            if (match === null) match = email.match(/^(?<email>.*)$/);
+            if (!match!.groups!.email.match(app.locals.constants.emailRegExp))
+              return next("validation");
+            emails.set(match!.groups!.email, match!.groups!.name ?? null);
+          }
+          if (emails.size === 0) return next("validation");
 
-          // for (const email of emails as emailAddresses.ParsedMailbox[]) {
-          //   if (
-          //     app.locals.database.get<{ exists: number }>(
-          //       sql`
-          //       SELECT EXISTS(
-          //         SELECT 1
-          //         FROM "enrollments"
-          //         JOIN "users" ON "enrollments"."user" = "users"."id"
-          //         WHERE "enrollments"."course" = ${res.locals.course.id} AND
-          //               "users"."email" = ${email.address}
-          //       ) AS "exists"
-          //     `
-          //     )!.exists === 1
-          //   )
-          //     continue;
+          for (const [email, name] of emails) {
+            if (
+              app.locals.database.get<{ exists: number }>(
+                sql`
+                SELECT EXISTS(
+                  SELECT 1
+                  FROM "enrollments"
+                  JOIN "users" ON "enrollments"."user" = "users"."id"
+                  WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                        "users"."email" = ${email}
+                ) AS "exists"
+              `
+              )!.exists === 1
+            )
+              continue;
 
-          //   const existingUnusedInvitation = app.locals.database.get<{
-          //     id: number;
-          //     name: string | null;
-          //   }>(
-          //     sql`
-          //     SELECT "id", "name"
-          //     FROM "invitations"
-          //     WHERE "course" = ${res.locals.course.id} AND
-          //           "email" = ${email.address} AND
-          //           "usedAt" IS NULL
-          //   `
-          //   );
-          //   if (existingUnusedInvitation !== undefined) {
-          //     app.locals.database.run(
-          //       sql`
-          //       UPDATE "invitations"
-          //       SET "expiresAt" = ${req.body.expiresAt},
-          //           "name" = ${email.name ?? existingUnusedInvitation.name},
-          //           "role" = ${req.body.role}
-          //       WHERE "id" = ${existingUnusedInvitation.id}
-          //     `
-          //     );
-          //     continue;
-          //   }
+            const existingUnusedInvitation = app.locals.database.get<{
+              id: number;
+              name: string | null;
+            }>(
+              sql`
+              SELECT "id", "name"
+              FROM "invitations"
+              WHERE "course" = ${res.locals.course.id} AND
+                    "email" = ${email} AND
+                    "usedAt" IS NULL
+            `
+            );
+            if (existingUnusedInvitation !== undefined) {
+              app.locals.database.run(
+                sql`
+                UPDATE "invitations"
+                SET "expiresAt" = ${req.body.expiresAt},
+                    "name" = ${name ?? existingUnusedInvitation.name},
+                    "role" = ${req.body.role}
+                WHERE "id" = ${existingUnusedInvitation.id}
+              `
+              );
+              continue;
+            }
 
-          //   const invitation = {
-          //     expiresAt: req.body.expiresAt ?? null,
-          //     usedAt: null,
-          //     reference: cryptoRandomString({ length: 10, type: "numeric" }),
-          //     email: email.address,
-          //     name: email.name,
-          //     role: req.body.role,
-          //   };
-          //   const invitationId = Number(
-          //     app.locals.database.run(
-          //       sql`
-          //       INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
-          //       VALUES (
-          //         ${invitation.expiresAt},
-          //         ${res.locals.course.id},
-          //         ${invitation.reference},
-          //         ${invitation.email},
-          //         ${invitation.name},
-          //         ${invitation.role}
-          //       )
-          //     `
-          //     ).lastInsertRowid
-          //   );
+            const invitation = {
+              expiresAt: req.body.expiresAt ?? null,
+              usedAt: null,
+              reference: cryptoRandomString({ length: 10, type: "numeric" }),
+              email,
+              name,
+              role: req.body.role,
+            };
+            const invitationId = Number(
+              app.locals.database.run(
+                sql`
+                INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
+                VALUES (
+                  ${invitation.expiresAt},
+                  ${res.locals.course.id},
+                  ${invitation.reference},
+                  ${invitation.email},
+                  ${invitation.name},
+                  ${invitation.role}
+                )
+              `
+              ).lastInsertRowid
+            );
 
-          //   app.locals.helpers.sendInvitationEmail({
-          //     id: invitationId,
-          //     ...invitation,
-          //     course: res.locals.course,
-          //   });
-          // }
+            app.locals.helpers.sendInvitationEmail({
+              id: invitationId,
+              ...invitation,
+              course: res.locals.course,
+            });
+          }
+
+          app.locals.helpers.flash.set(
+            req,
+            res,
+            html`
+              <div
+                class="alert alert-success alert-dismissible fade show"
+                style="${css`
+                  text-align: center;
+                  border-radius: 0;
+                  margin-bottom: 0;
+                `}"
+                role="alert"
+              >
+                Invitations sent successfully.
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            `
+          );
           break;
       }
 
