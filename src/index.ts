@@ -1067,6 +1067,13 @@ export default async function courselore(
                           <hr class="dropdown-divider" />
                           <a
                             class="dropdown-item"
+                            href="${app.locals.settings.url}/"
+                          >
+                            <i class="bi bi-journal"></i>
+                            Courses
+                          </a>
+                          <a
+                            class="dropdown-item"
                             href="${app.locals.settings.url}/settings"
                           >
                             <i class="bi bi-sliders"></i>
@@ -1323,6 +1330,7 @@ export default async function courselore(
             $blue: #29adff;
             $red: #ff004d;
             $green: #008751;
+            $orange: #ffa300;
 
             $primary: $purple;
             $success: $green;
@@ -3596,7 +3604,7 @@ export default async function courselore(
                       id="isExpiresAt--false"
                       autocomplete="off"
                       required
-                      onchange="${css`
+                      onchange="${javascript`
                         const collapse = document.querySelector("#expiresAt--collapse");
                         if (!collapse.classList.contains("show")) return;
                         new bootstrap.Collapse(collapse).hide();
@@ -3608,6 +3616,7 @@ export default async function courselore(
                       class="btn btn-outline-primary"
                       for="isExpiresAt--false"
                     >
+                      <i class="bi bi-calendar-minus"></i>
                       Doesn’t Expire
                     </label>
                     <input
@@ -3617,7 +3626,7 @@ export default async function courselore(
                       id="isExpiresAt--true"
                       autocomplete="off"
                       required
-                      onchange="${css`
+                      onchange="${javascript`
                         const collapse = document.querySelector("#expiresAt--collapse");
                         new bootstrap.Collapse(collapse).show();
                         for (const element of collapse.querySelectorAll("*"))
@@ -3628,6 +3637,7 @@ export default async function courselore(
                       class="btn btn-outline-primary"
                       for="isExpiresAt--true"
                     >
+                      <i class="bi bi-calendar-plus"></i>
                       Expires
                     </label>
                   </div>
@@ -3820,6 +3830,19 @@ export default async function courselore(
                   </h6>
 
                   <table class="table table-hover table-sm">
+                    <thead>
+                      <tr>
+                        <th>Invitation</th>
+                        <th>Role</th>
+                        <th
+                          style="${css`
+                            text-align: right;
+                          `}"
+                        >
+                          Expiration
+                        </th>
+                      </tr>
+                    </thead>
                     <tbody>
                       $${invitations.map((invitation) => {
                         const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
@@ -3830,42 +3853,42 @@ export default async function courselore(
 
                         return html`
                           <tr>
-                            <td
-                              $${invitation.email !== null
-                                ? html``
-                                : isExpired
-                                ? html`
-                                    data-bs-toggle="tooltip" title="This
-                                    invitation has already expired."
-                                  `
-                                : html`
-                                    data-bs-toggle="tooltip" title="See
-                                    Invitation"
-                                  `}
-                            >
+                            <td>
                               $${invitation.email === null
                                 ? html`
-                                    <button
-                                      type="button"
-                                      class="btn"
+                                    <span
                                       $${isExpired
-                                        ? html`disabled`
+                                        ? html`
+                                            data-bs-toggle="tooltip" title="This
+                                            invitation has already expired."
+                                          `
                                         : html`
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#invitation--${invitation.reference}"
-                                            onclick="${javascript`
+                                            data-bs-toggle="tooltip" title="See
+                                            Invitation"
+                                          `}
+                                    >
+                                      <button
+                                        type="button"
+                                        class="btn"
+                                        $${isExpired
+                                          ? html`disabled`
+                                          : html`
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#invitation--${invitation.reference}"
+                                              onclick="${javascript`
                                                 bootstrap.Tooltip.getInstance(this.parentElement).hide();
                                               `}"
-                                          `}
-                                      style="${css`
-                                        padding: 0;
-                                      `}"
-                                    >
-                                      <i class="bi bi-link"></i>
-                                      ${"*".repeat(
-                                        6
-                                      )}${invitation.reference.slice(6)}
-                                    </button>
+                                            `}
+                                        style="${css`
+                                          padding: 0;
+                                        `}"
+                                      >
+                                        <i class="bi bi-link"></i>
+                                        ${"*".repeat(
+                                          6
+                                        )}${invitation.reference.slice(6)}
+                                      </button>
+                                    </span>
                                   `
                                 : html`TODO`}
                             </td>
@@ -3932,6 +3955,141 @@ export default async function courselore(
                                           </form>
                                         `
                                   )}
+                                </div>
+                              </div>
+                            </td>
+                            <td
+                              style="${css`
+                                text-align: right;
+                              `}"
+                            >
+                              <div class="dropdown">
+                                <button
+                                  class="btn dropdown-toggle"
+                                  type="button"
+                                  id="invitation-expiresAt-dropdown--${invitation.reference}"
+                                  data-bs-toggle="dropdown"
+                                  data-bs-auto-close="outside"
+                                  aria-expanded="false"
+                                  style="${css`
+                                    padding: 0 0.5rem;
+                                    text-transform: capitalize;
+                                    ${isExpired
+                                      ? css`
+                                          color: $red-800;
+                                          background-color: $red-100;
+                                        `
+                                      : invitation.expiresAt !== null
+                                      ? css`
+                                          color: $orange-800;
+                                          background-color: $orange-100;
+                                        `
+                                      : css`
+                                          color: $green-800;
+                                          background-color: $green-100;
+                                        `};
+                                  `}"
+                                >
+                                  $${isExpired
+                                    ? html`
+                                        <time
+                                          >${new Date(
+                                            invitation.expiresAt!
+                                          ).toISOString()}</time
+                                        >
+                                      `
+                                    : invitation.expiresAt !== null
+                                    ? html`
+                                        <time
+                                          >${new Date(
+                                            invitation.expiresAt!
+                                          ).toISOString()}</time
+                                        >
+                                      `
+                                    : html`Doesn’t Expire`}
+                                </button>
+                                <div
+                                  class="dropdown-menu"
+                                  aria-labelledby="invitation-expiresAt-dropdown--${invitation.reference}"
+                                >
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=PATCH"
+                                    style="${css`
+                                      padding: 0 1rem;
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: 0.5rem;
+                                    `}"
+                                  >
+                                    <div class="form-floating">
+                                      <input
+                                        type="text"
+                                        class="form-control datetime"
+                                        id="expiresAt"
+                                        name="expiresAt"
+                                        value="${new Date(
+                                          invitation.expiresAt ?? new Date()
+                                        ).toISOString()}"
+                                        required
+                                        data-onvalidate="${javascript`
+                                          if (new Date(this.value).getTime() <= Date.now())
+                                            return "Must be in the future";
+                                        `}"
+                                      />
+                                      <label for="expiresAt">Expires at</label>
+                                    </div>
+                                    <button
+                                      type="submit"
+                                      class="btn btn-outline-secondary"
+                                    >
+                                      <i class="bi bi-pencil"></i>
+                                      Update Expiration Date
+                                    </button>
+                                  </form>
+                                  <hr class="dropdown-divider" />
+                                  $${invitation.expiresAt === null
+                                    ? html``
+                                    : html`
+                                        <form
+                                          method="POST"
+                                          action="${action}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="doesntExpire"
+                                            value="true"
+                                          />
+                                          <button
+                                            type="submit"
+                                            class="dropdown-item"
+                                          >
+                                            <i class="bi bi-calendar-minus"></i>
+                                            Set Invitation as Non-Expiring
+                                          </button>
+                                        </form>
+                                      `}
+                                  $${isExpired
+                                    ? html``
+                                    : html`
+                                        <form
+                                          method="POST"
+                                          action="${action}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="expireNow"
+                                            value="true"
+                                          />
+                                          <button
+                                            type="submit"
+                                            class="dropdown-item"
+                                          >
+                                            <i class="bi bi-calendar-plus"></i>
+                                            Expire Invitation Now
+                                          </button>
+                                        </form>
+                                      `}
                                 </div>
                               </div>
                             </td>
@@ -4518,8 +4676,8 @@ export default async function courselore(
     {
       resend?: "true";
       role?: Role;
-      changeExpiration?: "true";
       expiresAt?: string;
+      doesntExpire?: "true";
       expireNow?: "true";
     },
     {},
@@ -4534,6 +4692,30 @@ export default async function courselore(
         if (res.locals.invitation.email === null) return next("validation");
 
         app.locals.helpers.sendInvitationEmail(res.locals.invitation);
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              style="${css`
+                text-align: center;
+                border-radius: 0;
+                margin-bottom: 0;
+              `}"
+              role="alert"
+            >
+              Invitation email resent successfully.
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+          `
+        );
       }
 
       if (req.body.role !== undefined) {
@@ -4543,23 +4725,104 @@ export default async function courselore(
         app.locals.database.run(
           sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
         );
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              style="${css`
+                text-align: center;
+                border-radius: 0;
+                margin-bottom: 0;
+              `}"
+              role="alert"
+            >
+              Invitation role updated successfully.
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+          `
+        );
       }
 
-      if (req.body.changeExpiration === "true") {
+      if (req.body.expiresAt !== undefined) {
         if (
-          req.body.expiresAt !== undefined &&
-          (typeof req.body.expiresAt !== "string" ||
-            !app.locals.helpers.isDate(req.body.expiresAt) ||
-            app.locals.helpers.isExpired(req.body.expiresAt))
+          typeof req.body.expiresAt !== "string" ||
+          !app.locals.helpers.isDate(req.body.expiresAt) ||
+          app.locals.helpers.isExpired(req.body.expiresAt)
         )
           return next("validation");
 
         app.locals.database.run(
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              style="${css`
+                text-align: center;
+                border-radius: 0;
+                margin-bottom: 0;
+              `}"
+              role="alert"
+            >
+              Invitation expiration updated successfully.
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+          `
+        );
       }
 
-      if (req.body.expireNow === "true")
+      if (req.body.doesntExpire === "true") {
+        app.locals.database.run(
+          sql`
+            UPDATE "invitations"
+            SET "expiresAt" = ${null}
+            WHERE "id" = ${res.locals.invitation.id}
+          `
+        );
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              style="${css`
+                text-align: center;
+                border-radius: 0;
+                margin-bottom: 0;
+              `}"
+              role="alert"
+            >
+              Invitation set as non-expiring successfully.
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+          `
+        );
+      }
+
+      if (req.body.expireNow === "true") {
         app.locals.database.run(
           sql`
             UPDATE "invitations"
@@ -4567,6 +4830,31 @@ export default async function courselore(
             WHERE "id" = ${res.locals.invitation.id}
           `
         );
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              style="${css`
+                text-align: center;
+                border-radius: 0;
+                margin-bottom: 0;
+              `}"
+              role="alert"
+            >
+              Invitation expired successfully.
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+          `
+        );
+      }
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
