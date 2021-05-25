@@ -4277,25 +4277,32 @@ export default async function courselore(
           break;
 
         case "email":
+          // TODO: Review this logic; extract the RegExps; and share the logic with the frontend.
           if (typeof req.body.emails !== "string") return next("validation");
-          type Email = string;
-          type Name = string | null;
-          const emails = new Map<Email, Name>();
-          for (const email of req.body.emails
-            .split(/[,\n]/)
-            .map((email) => email.trim())
-            .filter((email) => email !== "")) {
+          const emails: { email: string; name: string | null }[] = [];
+          for (let email of req.body.emails.split(/[,\n]/)) {
+            email = email.trim();
+            if (email === "") continue;
             let match = email.match(/^(?:"(?<name>.*)"\s*<(?<email>.*)>)$/);
             if (match === null)
               match = email.match(/^(?:(?<name>.*)<(?<email>.*)>)$/);
             if (match === null) match = email.match(/^(?<email>.*)$/);
-            if (!match!.groups!.email.match(app.locals.constants.emailRegExp))
-              return next("validation");
-            emails.set(match!.groups!.email, match!.groups!.name ?? null);
+            assert(match);
+            assert(match.groups);
+            let name: string | null = match.groups.name;
+            if (typeof name === "string") name = name.trim();
+            if (name === "") name = null;
+            emails.push({ email: match.groups.email, name });
           }
-          if (emails.size === 0) return next("validation");
+          if (
+            emails.length === 0 ||
+            emails.find(
+              ({ email }) => !email.match(app.locals.constants.emailRegExp)
+            ) !== undefined
+          )
+            return next("validation");
 
-          for (const [email, name] of emails) {
+          for (const { email, name } of emails) {
             if (
               app.locals.database.get<{ exists: number }>(
                 sql`
@@ -7194,6 +7201,12 @@ ${value}</textarea
 
   interface Constants {
     emailRegExp: RegExp;
+    emailsRegExps: {
+      separator: RegExp;
+      quotedName: RegExp;
+      unquotedName: RegExp;
+      plainEmail: RegExp;
+    };
   }
   app.locals.constants.emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
