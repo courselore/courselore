@@ -3903,7 +3903,10 @@ export default async function courselore(
                                       </button>
                                     </span>
                                   `
-                                : html`TODO`}
+                                : invitation.name === null
+                                ? html`${invitation.email}`
+                                : html`${invitation.name}
+                                  ${`<${invitation.email}>`}`}
                             </td>
                             <td>
                               <div class="dropdown">
