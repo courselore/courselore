@@ -3741,14 +3741,29 @@ export default async function courselore(
                           required
                           disabled
                           data-onvalidate="${javascript`
-                            const emails = this.value
-                              .split(${/[,\n]/})
-                              .map((email) => email.trim())
-                              .filter((email) => email !== "")
-                              .map((email) => email.match(${/^.*<(.*)>$/})?.[1] ?? email);
-                            if (emails.length === 0 || emails.find((email) => !email.match(${
-                              app.locals.constants.emailRegExp
-                            })) !== undefined)
+                            const emails = [];
+                            for (let email of this.value.split(${/[,\n]/})) {
+                              email = email.trim();
+                              let name = null;
+                              const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                              if (match !== null) {
+                                email = match.groups.email.trim();
+                                name = match.groups.name.trim();
+                                if (name.startsWith('"') && name.endsWith('"'))
+                                  name = name.slice(1, -1);
+                                if (name === "") name = null;
+                              }
+                              if (email === "") continue;
+                              emails.push({ email, name });
+                            }
+                            if (
+                              emails.length === 0 ||
+                              emails.find(
+                                ({ email }) => !email.match(${
+                                  app.locals.constants.emailRegExp
+                                })
+                              ) !== undefined
+                            )
                               return "Match the requested format";
                           `}"
                           style="${css`
@@ -4277,22 +4292,21 @@ export default async function courselore(
           break;
 
         case "email":
-          // TODO: Review this logic; extract the RegExps; and share the logic with the frontend.
           if (typeof req.body.emails !== "string") return next("validation");
           const emails: { email: string; name: string | null }[] = [];
           for (let email of req.body.emails.split(/[,\n]/)) {
             email = email.trim();
+            let name: string | null = null;
+            const match = email.match(/^(?<name>.*)<(?<email>.*)>$/);
+            if (match !== null) {
+              email = match.groups!.email.trim();
+              name = match.groups!.name.trim();
+              if (name.startsWith('"') && name.endsWith('"'))
+                name = name.slice(1, -1);
+              if (name === "") name = null;
+            }
             if (email === "") continue;
-            let match = email.match(/^(?:"(?<name>.*)"\s*<(?<email>.*)>)$/);
-            if (match === null)
-              match = email.match(/^(?:(?<name>.*)<(?<email>.*)>)$/);
-            if (match === null) match = email.match(/^(?<email>.*)$/);
-            assert(match);
-            assert(match.groups);
-            let name: string | null = match.groups.name;
-            if (typeof name === "string") name = name.trim();
-            if (name === "") name = null;
-            emails.push({ email: match.groups.email, name });
+            emails.push({ email, name });
           }
           if (
             emails.length === 0 ||
@@ -7201,12 +7215,6 @@ ${value}</textarea
 
   interface Constants {
     emailRegExp: RegExp;
-    emailsRegExps: {
-      separator: RegExp;
-      quotedName: RegExp;
-      unquotedName: RegExp;
-      plainEmail: RegExp;
-    };
   }
   app.locals.constants.emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
