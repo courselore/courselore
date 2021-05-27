@@ -3503,6 +3503,7 @@ export default async function courselore(
     }
   );
 
+  // TODO: There’s no visual indication of ‘used’, which allows you to even try some forbidden operations, such as trying to change the expiration date of an used invitation. Also, the table layout breaks on small screens.
   app.get<
     { courseReference: string },
     HTML,
@@ -3903,10 +3904,12 @@ export default async function courselore(
                                       </button>
                                     </span>
                                   `
-                                : invitation.name === null
-                                ? html`${invitation.email}`
-                                : html`${invitation.name}
-                                  ${`<${invitation.email}>`}`}
+                                : html`
+                                    <i class="bi bi-envelope"></i>
+                                    ${invitation.name === null
+                                      ? invitation.email
+                                      : `${invitation.name} <${invitation.email}>`}
+                                  `}
                             </td>
                             <td>
                               <div class="dropdown">
@@ -5108,23 +5111,31 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.box(
           req,
           res,
           html`
             <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
           html`
-            <h1>
-              Invitation ·
+            <p>
+              You tried to use an invitation for ${res.locals.course.name} but
+              you’re already enrolled.
+            </p>
+
+            <p>
               <a
                 href="${app.locals.settings.url}/courses/${res.locals.course
                   .reference}"
-                >${res.locals.course.name}</a
+                class="btn btn-primary"
+                style="${css`
+                  width: 100%;
+                `}"
               >
-            </h1>
-
-            <p>You’re already enrolled in ${res.locals.course.name}.</p>
+                Go to ${res.locals.course.name}
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </p>
           `
         )
       );
