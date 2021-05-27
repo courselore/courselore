@@ -376,91 +376,6 @@ export default async function courselore(
       res,
       head,
       html`
-        <div
-          style="${css`
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-          `}"
-        >
-          $${app.locals.settings.demonstration
-            ? html`
-                <nav
-                  style="${css`
-                    background-color: $red;
-                    padding: 0.2rem 1rem;
-                    border-bottom: 1px solid white;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 0.5rem;
-                  `}"
-                >
-                  <a
-                    role="button"
-                    data-bs-toggle="popover"
-                    data-bs-trigger="focus"
-                    data-bs-content="${html`
-                      CourseLore is running in Demonstration Mode. All data may
-                      be lost, including courses, threads, posts, users, and so
-                      forth. Also, no emails are actually sent; they show up in
-                      the
-                      <a href="${app.locals.settings.url}/demonstration-inbox"
-                        >Demonstration Inbox</a
-                      >
-                      instead.
-                    `}"
-                    data-bs-html="true"
-                    tabindex="0"
-                    class="btn btn-sm link-light"
-                    style="${css`
-                      padding: 0 0.2rem;
-                      &:hover,
-                      &:focus {
-                        background-color: $red-600;
-                      }
-                    `}"
-                  >
-                    <i class="bi bi-easel"></i>
-                    Demonstration Mode
-                  </a>
-                  <a
-                    href="${app.locals.settings.url}/demonstration-inbox"
-                    class="btn btn-sm link-light"
-                    style="${css`
-                      padding: 0 0.2rem;
-                      &:hover,
-                      &:focus {
-                        background-color: $red-600;
-                      }
-                      ${req.path === "/demonstration-inbox"
-                        ? css`
-                            background-color: $red-600;
-                          `
-                        : css``}
-                    `}"
-                  >
-                    <i class="bi bi-inbox"></i>
-                    Demonstration Inbox
-                  </a>
-                </nav>
-              `
-            : html``}
-
-          <div
-            style="${css`
-              flex: 1;
-              overflow: auto;
-            `}"
-          >
-            $${body}
-          </div>
-        </div>
-
         <script>
           (() => {
             const relativizeTimes = () => {
@@ -713,6 +628,91 @@ export default async function courselore(
               </script>
             `
           : html``}
+
+        <div
+          style="${css`
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+          `}"
+        >
+          $${app.locals.settings.demonstration
+            ? html`
+                <nav
+                  style="${css`
+                    background-color: $red;
+                    padding: 0.2rem 1rem;
+                    border-bottom: 1px solid white;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 0.5rem;
+                  `}"
+                >
+                  <a
+                    role="button"
+                    data-bs-toggle="popover"
+                    data-bs-trigger="focus"
+                    data-bs-content="${html`
+                      CourseLore is running in Demonstration Mode. All data may
+                      be lost, including courses, threads, posts, users, and so
+                      forth. Also, no emails are actually sent; they show up in
+                      the
+                      <a href="${app.locals.settings.url}/demonstration-inbox"
+                        >Demonstration Inbox</a
+                      >
+                      instead.
+                    `}"
+                    data-bs-html="true"
+                    tabindex="0"
+                    class="btn btn-sm link-light"
+                    style="${css`
+                      padding: 0 0.2rem;
+                      &:hover,
+                      &:focus {
+                        background-color: $red-600;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-easel"></i>
+                    Demonstration Mode
+                  </a>
+                  <a
+                    href="${app.locals.settings.url}/demonstration-inbox"
+                    class="btn btn-sm link-light"
+                    style="${css`
+                      padding: 0 0.2rem;
+                      &:hover,
+                      &:focus {
+                        background-color: $red-600;
+                      }
+                      ${req.path === "/demonstration-inbox"
+                        ? css`
+                            background-color: $red-600;
+                          `
+                        : css``}
+                    `}"
+                  >
+                    <i class="bi bi-inbox"></i>
+                    Demonstration Inbox
+                  </a>
+                </nav>
+              `
+            : html``}
+
+          <div
+            style="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+          >
+            $${body}
+          </div>
+        </div>
       `
     );
 
