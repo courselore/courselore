@@ -7126,7 +7126,7 @@ ${value}</textarea
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.main(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
@@ -7136,7 +7136,7 @@ ${value}</textarea
             <p>
               If you think there should be something here, please contact the
               course staff or the
-              <a href="${app.locals.settings.administrator}"
+              <a href="${app.locals.settings.administrator}" class="link-light"
                 >system administrator</a
               >.
             </p>
@@ -7151,29 +7151,24 @@ ${value}</textarea
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.main(
+        app.locals.layouts.box(
           req,
           res,
           html`<title>404 Not Found · CourseLore</title>`,
           html`
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
-              <h1>404 Not Found</h1>
+            <h1>404 Not Found</h1>
 
-              <p>
-                You may have to
-                <a
-                  href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                    redirect: req.originalUrl,
-                  })}"
-                  >authenticate</a
-                >
-                to see this page.
-              </p>
-            </div>
+            <p>
+              You may have to
+              <a
+                href="${app.locals.settings.url}/authenticate?${qs.stringify({
+                  redirect: req.originalUrl,
+                })}"
+                class="link-light"
+                >authenticate</a
+              >
+              to see this page.
+            </p>
           `
         )
       );
@@ -7185,7 +7180,7 @@ ${value}</textarea
     const isValidation = err === "validation";
     const message = isValidation ? "Validation" : "Server";
     res.status(isValidation ? 422 : 500).send(
-      app.locals.layouts.main(
+      app.locals.layouts.box(
         req,
         res,
         html`<title>${message} Error · CourseLore</title>`,
@@ -7194,7 +7189,9 @@ ${value}</textarea
 
           <p>
             This is an issue in CourseLore; please report to
-            <a href="mailto:issues@courselore.org">issues@courselore.org</a>.
+            <a href="mailto:issues@courselore.org" class="link-light"
+              >issues@courselore.org</a
+            >.
           </p>
         `
       )
