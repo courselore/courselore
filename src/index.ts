@@ -6072,18 +6072,12 @@ ${value}</textarea
                   class="show"
                   style="${css`
                     display: flex;
+                    justify-content: space-between;
                     align-items: baseline;
-
-                    & > * + * {
-                      margin-left: 0.5rem;
-                    }
+                    gap: 1rem;
                   `}"
                 >
-                  <h1
-                    style="${css`
-                      flex: 1;
-                    `}"
-                  >
+                  <h1>
                     ${res.locals.thread.title}
 
                     <a
@@ -6095,37 +6089,49 @@ ${value}</textarea
                     >
                   </h1>
 
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <form
-                          method="POST"
-                          action="${app.locals.settings.url}/courses/${res
-                            .locals.course.reference}/threads/${res.locals
-                            .thread.reference}?_method=DELETE"
-                        >
-                          <p>
-                            <button
-                              title="Remove Thread"
-                              class="undecorated red"
-                              onclick="${javascript`
+                  <div>
+                    <div
+                      class="btn-group btn-group-sm"
+                      role="group"
+                      aria-label="Thread Actions"
+                    >
+                      $${res.locals.enrollment.role === "staff"
+                        ? html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/threads/${res.locals
+                                .thread.reference}?_method=DELETE"
+                              class="btn btn-outline-primary"
+                              style="${css`
+                                padding: 0;
+                              `}"
+                            >
+                              <button
+                                data-bs-toggle="tooltip"
+                                title="Remove Thread"
+                                class="btn btn-sm"
+                                style="${css`
+                                  color: inherit;
+                                `}"
+                                onclick="${javascript`
                                 if (!confirm("Remove thread?\\n\\nYou may not undo this action!"))
                                   event.preventDefault();
                               `}"
-                            >
-                              <i class="bi bi-trash"></i>
-                            </button>
-                          </p>
-                        </form>
-                      `
-                    : html``}
-                  $${app.locals.helpers.mayEditThread(req, res)
-                    ? html`
-                        <p>
-                          <button
-                            title="Edit Title"
-                            type="button"
-                            class="undecorated"
-                            onclick="${javascript`
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </form>
+                          `
+                        : html``}
+                      $${app.locals.helpers.mayEditThread(req, res)
+                        ? html`
+                            <button
+                              data-bs-toggle="tooltip"
+                              title="Edit Title"
+                              type="button"
+                              class="btn btn-outline-primary"
+                              onclick="${javascript`
                                 const title = this.closest(".title");
                                 title.querySelector(".show").hidden = true;
                                 const edit = title.querySelector(".edit");
@@ -6134,12 +6140,13 @@ ${value}</textarea
                                 input.focus();
                                 input.setSelectionRange(0, 0);
                               `}"
-                          >
-                            <i class="bi bi-pencil"></i>
-                          </button>
-                        </p>
-                      `
-                    : html``}
+                            >
+                              <i class="bi bi-pencil"></i>
+                            </button>
+                          `
+                        : html``}
+                    </div>
+                  </div>
                 </div>
 
                 $${app.locals.helpers.mayEditThread(req, res)
