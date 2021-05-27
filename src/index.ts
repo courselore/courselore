@@ -4412,6 +4412,35 @@ export default async function courselore(
                   aria-label="Close"
                 ></button>
               </div>
+              $${app.locals.settings.demonstration
+                ? html`
+                    <div
+                      role="alert"
+                      class="alert alert-danger alert-dismissible fade show"
+                      style="${css`
+                        text-align: center;
+                        border-radius: 0;
+                        margin-bottom: 0;
+                      `}"
+                    >
+                      <span>
+                        CourseLore doesn’t send emails in demonstration mode.
+                      </span>
+                      <a
+                        href="${app.locals.settings.url}/demonstration-inbox"
+                        class="link-danger"
+                      >
+                        Go to the Demonstration Inbox </a
+                      >.
+                      <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"
+                      ></button>
+                    </div>
+                  `
+                : html``}
             `
           );
           break;
