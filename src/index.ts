@@ -310,6 +310,31 @@ export default async function courselore(
         </head>
         <body>
           $${app.locals.partials.art.preamble}
+          <div hidden>
+            <div
+              style="${css`
+                text-align: center;
+              `}"
+            >
+              $${app.locals.partials.art.small}
+              <strong>Loading…</strong>
+            </div>
+          </div>
+          <script>
+            let loading;
+            (() => {
+              const source = document.currentScript.previousElementSibling;
+              loading = (target) => {
+                target.innerHTML = source.innerHTML;
+                new ArtAnimation({
+                  element: target,
+                  speed: 0.005,
+                  amount: 1,
+                  startupDuration: 0,
+                }).start();
+              };
+            })();
+          </script>
           $${bodyDOM.firstElementChild!.innerHTML}
 
           <script src="${app.locals.settings
@@ -5436,113 +5461,97 @@ export default async function courselore(
     );
 
   interface Partials {
-    textEditor: (value?: string) => HTML;
+    textEditor: (id: string, value?: string) => HTML;
   }
-  app.locals.partials.textEditor = (value = ""): HTML => html`
-    <div class="text-editor">
-      <p
+  app.locals.partials.textEditor = (id, value = ""): HTML => html`
+    <div>
+      <div
         style="${css`
-          & > button {
-            color: gray;
-
-            &:disabled {
-              font-weight: bold;
-              color: inherit;
-            }
-          }
-
-          & > * + * {
-            margin-left: 0.5rem;
-          }
+          background-color: $gray-100;
+          padding-top: 0.5rem;
+          border: $nav-tabs-border-width solid $nav-tabs-border-color;
+          border-bottom: none;
+          border-top-left-radius: $nav-tabs-border-radius;
+          border-top-right-radius: $nav-tabs-border-radius;
         `}"
       >
-        <button
-          type="button"
-          class="write undecorated"
-          disabled
-          onclick="${javascript`
-            const textEditor = this.closest("div.text-editor");
-            textEditor.querySelector("div.preview").hidden = true;
-            textEditor.querySelector("div.write").hidden = false;
-            textEditor.querySelector("textarea").focus();
-            this.disabled = true;
-            textEditor.querySelector("button.preview").disabled = false;
-          `}"
-        >
-          Write
-        </button>
-        <button
-          type="button"
-          class="preview undecorated"
-          onclick="${javascript`
-            (async () => {
-              const textEditor = this.closest("div.text-editor");
-              const textarea = textEditor.querySelector("textarea");
-              if (!isValid(textarea)) return;
-              this.disabled = true;
-              const loading = textEditor.querySelector("div.loading");
-              textEditor.querySelector("div.write").hidden = true;
-              loading.hidden = false;
-              const preview = textEditor.querySelector("div.preview");
-              preview.innerHTML = await (
-                await fetch("${app.locals.settings.url}/preview", {
-                  method: "POST",
-                  body: new URLSearchParams({ content: textarea.value }),
-                })
-              ).text();
-              loading.hidden = true;
-              preview.hidden = false;
-              textEditor.querySelector("button.write").disabled = false;
-            })();
-          `}"
-        >
-          Preview
-        </button>
-      </p>
-
-      <div class="write">
-        <p
-          class="secondary"
+        <ul
+          class="nav nav-tabs"
+          id="myTab"
+          role="tablist"
           style="${css`
-            text-align: right;
-            margin-top: -2rem;
-
-            & > * + * {
-              margin-left: 0.5rem;
-            }
+            padding: 0 0.5rem;
           `}"
         >
-          <a
-            href="https://guides.github.com/features/mastering-markdown/"
-            target="_blank"
-            style="${css`
-              font-size: 1.3em;
-            `}"
-            ><i class="bi bi-markdown"></i
-          ></a>
-          <a
-            href="https://katex.org/docs/supported.html"
-            target="_blank"
-            style="${css`
-              font-size: 0.9em;
-              position: relative;
-              top: -0.3em;
-            `}"
-            >$${app.locals.partials
-              .textProcessor(`$\\LaTeX$`)
-              .replace("<p>", "")
-              .replace("</p>", "")}</a
-          >
-        </p>
-        <p
-          style="${css`
-            margin-top: -0.6rem;
-          `}"
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="text-editor-${id}-write-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#text-editor-${id}-write"
+              type="button"
+              role="tab"
+              aria-controls="text-editor-${id}-write"
+              aria-selected="true"
+            >
+              <i class="bi bi-pencil"></i>
+              Write
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="text-editor-${id}-preview-tab"
+              data-bs-target="#text-editor-${id}-preview"
+              type="button"
+              role="tab"
+              aria-controls="text-editor-${id}-preview"
+              aria-selected="false"
+              onclick="${javascript`
+                (async () => {
+                  const write = document.querySelector("#text-editor-${id}-write");
+                  const preview = document.querySelector("#text-editor-${id}-preview");
+                  if (!isValid(write)) return;
+                  loading(preview);
+                  new bootstrap.Tab(this).show();
+                  preview.innerHTML = await (
+                    await fetch("${app.locals.settings.url}/preview", {
+                      method: "POST",
+                      body: new URLSearchParams({ content: write.querySelector("textarea").value }),
+                    })
+                  ).text();
+                })();
+              `}"
+            >
+              <i class="bi bi-eyeglasses"></i>
+              Preview
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div
+        class="tab-content"
+        style="${css`
+          border: $nav-tabs-border-width solid $nav-tabs-border-color;
+          border-top: none;
+          border-bottom-right-radius: $nav-tabs-border-radius;
+          border-bottom-left-radius: $nav-tabs-border-radius;
+        `}"
+      >
+        <div
+          class="tab-pane fade show active"
+          id="text-editor-${id}-write"
+          role="tabpanel"
+          aria-labelledby="text-editor-${id}-write-tab"
         >
           <textarea
+            class="form-control"
             name="content"
             required
-            class="full-width"
+            style="${css`
+              border: none;
+              box-shadow: none;
+            `}"
             onkeydown="${javascript`
               if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
                 event.preventDefault();
@@ -5552,46 +5561,17 @@ export default async function courselore(
           >
 ${value}</textarea
           >
-        </p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="text-editor-${id}-preview"
+          role="tabpanel"
+          aria-labelledby="text-editor-${id}-preview-tab"
+          style="${css`
+            padding: 1rem;
+          `}"
+        ></div>
       </div>
-
-      <div
-        class="loading"
-        hidden
-        style="${css`
-          margin: 3rem 0;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
-          & > * + * {
-            margin-left: 0.5rem;
-          }
-        `}"
-      >
-        $${app.locals.partials.art.small}
-        <strong>Loading…</strong>
-      </div>
-      <script>
-        (() => {
-          const loading = document.currentScript.previousElementSibling;
-          const artAnimation = new ArtAnimation({
-            element: document.currentScript.previousElementSibling,
-            speed: 0.005,
-            amount: 1,
-            startupDuration: 0,
-          });
-          new MutationObserver(() => {
-            if (!loading.hidden) artAnimation.start();
-            else artAnimation.stop();
-          }).observe(loading, {
-            attributes: true,
-            attributeFilter: ["hidden"],
-          });
-        })();
-      </script>
-
-      <div class="preview" hidden></div>
     </div>
   `;
 
@@ -5674,119 +5654,81 @@ ${value}</textarea
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/threads"
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              `}"
             >
-              <p>
-                <label>
-                  <strong>Title</strong><br />
-                  <input
-                    type="text"
-                    name="title"
-                    autocomplete="off"
-                    required
-                    autofocus
-                    class="full-width"
-                  />
-                </label>
-              </p>
-              $${app.locals.partials.textEditor()}
-              <p
+              <div class="form-floating">
+                <input
+                  type="text"
+                  name="title"
+                  autocomplete="off"
+                  required
+                  autofocus
+                  class="form-control"
+                  id="title"
+                  placeholder="Title…"
+                />
+                <label for="title">Title</label>
+              </div>
+              <div
                 style="${css`
                   display: flex;
-                  justify-content: space-between;
-                  align-items: baseline;
+                  gap: 2rem;
                 `}"
               >
-                <span
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <div
+                        class="form-check form-switch"
+                        data-bs-toggle="tooltip"
+                        title="Pinned threads are listed first"
+                      >
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="pin"
+                          name="isPinned"
+                        />
+                        <label class="form-check-label" for="pin">
+                          <i class="bi bi-pin-angle"></i>
+                          Pin
+                        </label>
+                      </div>
+                    `
+                  : html``}
+
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="question"
+                    name="isQuestion"
+                    $${res.locals.enrollment.role === "staff" ? `` : `checked`}
+                  />
+                  <label class="form-check-label" for="question">
+                    <i class="bi bi-patch-question"></i>
+                    Question
+                  </label>
+                </div>
+              </div>
+              $${app.locals.partials.textEditor("new")}
+              <div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
                   style="${css`
-                    & > * + * {
-                      margin-left: 1rem;
+                    @include media-breakpoint-down(md) {
+                      width: 100%;
                     }
                   `}"
                 >
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="isPinned"
-                            class="undecorated"
-                            style="${css`
-                              width: 1em;
-                              height: 1em;
-                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                "TODO"
-                                // app.locals.icons["pin-angle"].replace(
-                                //   "currentColor",
-                                //   "gray"
-                                // )
-                              ).toString("base64")}");
-                              &:checked {
-                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                  "TODO"
-                                  // app.locals.icons["pin-fill"]
-                                ).toString("base64")}");
-                              }
-                              background-repeat: no-repeat;
-                              background-size: contain;
-                              position: relative;
-                              top: 0.1em;
-                              &:checked {
-                                top: 0.2em;
-                              }
-
-                              &:not(:checked) + * {
-                                color: gray;
-                              }
-                            `}"
-                          />
-                          <span>Pin</span>
-                          <span class="secondary">
-                            Pinned threads are listed first
-                          </span>
-                        </label>
-                      `
-                    : html``}
-
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="isQuestion"
-                      $${res.locals.enrollment.role === "staff"
-                        ? ``
-                        : `checked`}
-                      class="undecorated"
-                      style="${css`
-                        width: 1em;
-                        height: 1em;
-                        background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                          "TODO"
-                          // app.locals.icons["question-diamond"].replace(
-                          //   "currentColor",
-                          //   "gray"
-                          // )
-                        ).toString("base64")}");
-                        &:checked {
-                          background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                            "TODO"
-                            // app.locals.icons["question-diamond-fill"]
-                          ).toString("base64")}");
-                        }
-                        background-repeat: no-repeat;
-                        background-size: contain;
-                        position: relative;
-                        top: 0.2em;
-
-                        &:not(:checked) + * {
-                          color: gray;
-                        }
-                      `}"
-                    />
-                    <span>Question</span>
-                  </label>
-                </span>
-
-                <button>Create Thread</button>
-              </p>
+                  <i class="bi bi-chat-left-text"></i>
+                  Create Thread
+                </button>
+              </div>
             </form>
           `
         )
@@ -6649,7 +6591,10 @@ ${value}</textarea
                             hidden
                             class="edit"
                           >
-                            $${app.locals.partials.textEditor(post.content)}
+                            $${app.locals.partials.textEditor(
+                              post.reference,
+                              post.content
+                            )}
                             <p
                               style="${css`
                                 text-align: right;
@@ -6699,7 +6644,7 @@ ${value}</textarea
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/threads/${res.locals.thread.reference}/posts"
             >
-              $${app.locals.partials.textEditor()}
+              $${app.locals.partials.textEditor("new")}
               <script>
                 (() => {
                   const textarea = document.currentScript.previousElementSibling.querySelector(
