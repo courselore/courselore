@@ -6643,7 +6643,61 @@ ${value}</textarea
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/threads/${res.locals.thread.reference}/posts"
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+              `}"
             >
+              <span
+                style="${css`
+                  & > * + * {
+                    margin-left: 1rem;
+                  }
+                `}"
+              >
+                $${res.locals.thread.questionAt !== null
+                  ? html`
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="isAnswer"
+                          $${res.locals.enrollment.role === "staff"
+                            ? `checked`
+                            : ``}
+                          class="undecorated"
+                          style="${css`
+                            width: 1em;
+                            height: 1em;
+                            background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                              "TODO"
+                              // app.locals.icons["patch-check"].replace(
+                              //   "currentColor",
+                              //   "gray"
+                              // )
+                            ).toString("base64")}");
+                            &:checked {
+                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                                "TODO"
+                                // app.locals.icons["patch-check-fill"]
+                              ).toString("base64")}");
+                            }
+                            background-repeat: no-repeat;
+                            background-size: contain;
+                            position: relative;
+                            top: 0.1em;
+
+                            &:not(:checked) + * {
+                              color: gray;
+                            }
+                          `}"
+                        />
+                        <span>Answer</span>
+                      </label>
+                    `
+                  : html``}
+              </span>
+
               $${app.locals.partials.textEditor("new")}
               <script>
                 (() => {
@@ -6677,64 +6731,21 @@ ${value}</textarea
                   });
                 })();
               </script>
-              <p
-                style="${css`
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: baseline;
-                `}"
-              >
-                <span
+
+              <div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
                   style="${css`
-                    & > * + * {
-                      margin-left: 1rem;
+                    @include media-breakpoint-down(md) {
+                      width: 100%;
                     }
                   `}"
                 >
-                  $${res.locals.thread.questionAt !== null
-                    ? html`
-                        <label>
-                          <input
-                            type="checkbox"
-                            name="isAnswer"
-                            $${res.locals.enrollment.role === "staff"
-                              ? `checked`
-                              : ``}
-                            class="undecorated"
-                            style="${css`
-                              width: 1em;
-                              height: 1em;
-                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                "TODO"
-                                // app.locals.icons["patch-check"].replace(
-                                //   "currentColor",
-                                //   "gray"
-                                // )
-                              ).toString("base64")}");
-                              &:checked {
-                                background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                  "TODO"
-                                  // app.locals.icons["patch-check-fill"]
-                                ).toString("base64")}");
-                              }
-                              background-repeat: no-repeat;
-                              background-size: contain;
-                              position: relative;
-                              top: 0.1em;
-
-                              &:not(:checked) + * {
-                                color: gray;
-                              }
-                            `}"
-                          />
-                          <span>Answer</span>
-                        </label>
-                      `
-                    : html``}
-                </span>
-
-                <button>Post</button>
-              </p>
+                  <i class="bi bi-chat-left-text"></i>
+                  Post
+                </button>
+              </div>
             </form>
           `
         )
