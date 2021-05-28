@@ -287,7 +287,6 @@ export default async function courselore(
             type="image/x-icon"
             href="${app.locals.settings.url}/favicon.ico"
           />
-          <link rel="stylesheet" href="${app.locals.settings.url}/global.css" />
           <link
             rel="stylesheet"
             href="${app.locals.settings
@@ -336,21 +335,6 @@ export default async function courselore(
             })();
           </script>
           $${bodyDOM.firstElementChild!.innerHTML}
-
-          <script src="${app.locals.settings
-              .url}/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-          <script>
-            document.addEventListener("DOMContentLoaded", () => {
-              for (const element of document.querySelectorAll(
-                '[data-bs-toggle="tooltip"]'
-              ))
-                new bootstrap.Tooltip(element);
-              for (const element of document.querySelectorAll(
-                '[data-bs-toggle="popover"]'
-              ))
-                new bootstrap.Popover(element);
-            });
-          </script>
         </body>
       </html>
     `.trim();
@@ -1384,41 +1368,6 @@ export default async function courselore(
         .css.toString()
     ).css;
 
-  interface Partials {
-    globalCSS: CSS;
-  }
-  app.locals.partials.globalCSS = app.locals.helpers.compileSass(css`
-    @import "${path.join(
-      __dirname,
-      ".."
-    )}/public/node_modules/bootstrap/scss/bootstrap";
-
-    // FIXME: https://github.com/twbs/bootstrap/pull/33954
-    body {
-      overflow-wrap: break-word;
-    }
-
-    .btn-primary,
-    .btn-primary:hover,
-    .btn-primary:focus,
-    .btn-outline-primary:hover,
-    .btn-outline-primary:focus,
-    .btn-check:checked + .btn-outline-primary,
-    .btn-check:active + .btn-outline-primary,
-    .btn-danger,
-    .btn-danger:hover,
-    .btn-danger:focus,
-    .btn-outline-danger:hover,
-    .btn-outline-danger:focus,
-    .btn-check:checked + .btn-outline-danger,
-    .btn-check:active + .btn-outline-danger {
-      color: white;
-    }
-  `);
-  app.get("/global.css", (req, res) => {
-    res.type("css").send(app.locals.partials.globalCSS);
-  });
-
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
   interface Partials {
     artGenerator: (options: { size: number; order: number }) => HTML;
@@ -1542,109 +1491,6 @@ export default async function courselore(
     large: app.locals.partials.artGenerator({ size: 600, order: 6 }),
     small: app.locals.partials.artGenerator({ size: 30, order: 3 }),
   };
-
-  // TODO: This should be removed by the end of adding Bootstrap.
-  interface Partials {
-    logoAndMenu: (
-      req: express.Request<
-        {},
-        HTML,
-        {},
-        {},
-        Partial<IsEnrolledInCourseMiddlewareLocals>
-      >,
-      res: express.Response<HTML, Partial<IsEnrolledInCourseMiddlewareLocals>>
-    ) => HTML;
-  }
-  app.locals.partials.logoAndMenu = (req, res) => html`
-    <div
-      style="${css`
-        display: flex;
-        align-items: center;
-        justify-content: ${res.locals.user === undefined
-          ? `space-around`
-          : `space-between`};
-      `}"
-    >
-      <h1>
-        <a
-          href="${app.locals.settings.url}/"
-          style="${css`
-            display: inline-flex;
-            align-items: center;
-
-            & > * + * {
-              margin-left: 0.5rem;
-            }
-          `}"
-        >
-          $${app.locals.partials.art.small}
-          <span>CourseLore</span>
-        </a>
-        <script>
-          (() => {
-            const logo = document.currentScript.previousElementSibling;
-            const artAnimation = new ArtAnimation({
-              element: logo,
-              speed: 0.005,
-              amount: 1,
-              startupDuration: 200,
-            });
-            logo.addEventListener("mouseover", () => {
-              artAnimation.start();
-            });
-            logo.addEventListener("mouseout", () => {
-              artAnimation.stop();
-            });
-          })();
-        </script>
-      </h1>
-
-      $${res.locals.user === undefined
-        ? html``
-        : html`
-            <details class="dropdown">
-              <summary class="no-marker"><i class="bi bi-list"></i></summary>
-              <nav
-                style="${css`
-                  transform: translate(calc(-100% + 1rem));
-                `}"
-              >
-                <p><strong>${res.locals.user.name}</strong></p>
-                <p class="secondary">${res.locals.user.email}</p>
-                <form
-                  method="POST"
-                  action="${app.locals.settings
-                    .url}/authenticate?_method=DELETE"
-                >
-                  <p><button class="full-width">Sign Out</button></p>
-                </form>
-                <p>
-                  <a href="${app.locals.settings.url}/settings"
-                    >User Settings</a
-                  >
-                </p>
-                $${res.locals.course === undefined
-                  ? html``
-                  : html`
-                      <p>
-                        <a
-                          href="${app.locals.settings.url}/courses/${res.locals
-                            .course.reference}/settings"
-                          >Course Settings</a
-                        >
-                      </p>
-                    `}
-                <p>
-                  <a href="${app.locals.settings.url}/courses/new"
-                    >New Course</a
-                  >
-                </p>
-              </nav>
-            </details>
-          `}
-    </div>
-  `;
 
   app.use(express.static(path.join(__dirname, "../public")));
   app.use(methodOverride("_method"));
