@@ -54,7 +54,6 @@
     "remark-math": "^4.0.0",
     "remark-parse": "^9.0.0",
     "remark-rehype": "^8.0.0",
-    "sass": "^1.32.12",
     "shiki": "^0.9.0",
     "tagged-template-noop": "^2.1.1",
     "unified": "^9.2.0"
@@ -69,7 +68,6 @@
     "@types/method-override": "^0.0.31",
     "@types/node": "^15.0.0",
     "@types/qrcode": "^1.4.0",
-    "@types/sass": "^1.16.0",
     "@types/tough-cookie": "^4.0.0",
     "caxa": "^1.0.0",
     "got": "^11.8.1",
