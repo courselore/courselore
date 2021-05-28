@@ -368,6 +368,10 @@ export default async function courselore(
                 */
 
                 :root {
+                  --font-family--sans-serif: "IBM Plex Sans", sans-serif;
+                  --font-family--monospace: "IBM Plex Mono", monospace;
+                  --font-family--serif: "IBM Plex Serif", serif;
+
                   --font-size--xs: 0.75rem;
                   --line-height--xs: 1rem;
                   --font-size--sm: 0.875rem;
@@ -448,6 +452,28 @@ export default async function courselore(
                   --border-radius--full: 9999px;
 
                   --transition-duration: 150ms;
+
+                  --color--primary--50: var(--color--purple--50);
+                  --color--primary--100: var(--color--purple--100);
+                  --color--primary--200: var(--color--purple--200);
+                  --color--primary--300: var(--color--purple--300);
+                  --color--primary--400: var(--color--purple--400);
+                  --color--primary--500: var(--color--purple--500);
+                  --color--primary--600: var(--color--purple--600);
+                  --color--primary--700: var(--color--purple--700);
+                  --color--primary--800: var(--color--purple--800);
+                  --color--primary--900: var(--color--purple--900);
+
+                  --color--secondary--50: var(--color--pink--50);
+                  --color--secondary--100: var(--color--pink--100);
+                  --color--secondary--200: var(--color--pink--200);
+                  --color--secondary--300: var(--color--pink--300);
+                  --color--secondary--400: var(--color--pink--400);
+                  --color--secondary--500: var(--color--pink--500);
+                  --color--secondary--600: var(--color--pink--600);
+                  --color--secondary--700: var(--color--pink--700);
+                  --color--secondary--800: var(--color--pink--800);
+                  --color--secondary--900: var(--color--pink--900);
 
                   --color-white: #ffffff;
                   --color-black: #000000;
@@ -707,11 +733,17 @@ export default async function courselore(
 
                 /* GLOBAL STYLES */
 
-                /*
-                $font-family-sans-serif: "IBM Plex Sans", sans-serif;
-                $font-family-monospace: "IBM Plex Mono", monospace;
-                $font-family-serif: "IBM Plex Serif", serif;
-                */
+                body {
+                  font-family: var(--font-family--sans-serif);
+                  font-size: var(--font-size--sm);
+                  line-height: var(--line-height--sm);
+                }
+
+                input,
+                textarea {
+                  font-size: var(--font-size--base);
+                  line-height: var(--line-height--base);
+                }
 
                 /* COMPONENTS */
 
@@ -2011,8 +2043,8 @@ export default async function courselore(
       <svg class="visually-hidden">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#83769c" />
-            <stop offset="100%" stop-color="#ff77a8" />
+            <stop offset="0%" stop-color="#f472b6" />
+            <stop offset="100%" stop-color="#c084fc" />
           </linearGradient>
         </defs>
       </svg>
