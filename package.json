@@ -45,6 +45,7 @@
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "postcss": "^8.2.15",
+    "postcss-nested": "^5.0.5",
     "qrcode": "^1.4.4",
     "rehype-katex": "^4.0.0",
     "rehype-raw": "^5.0.0",
