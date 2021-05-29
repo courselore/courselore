@@ -28,93 +28,91 @@ module.exports = (require) => {
           padding-bottom: 10vw;
           display: flex;
           flex-direction: column;
-          gap: var(--space--4);
-          justify-content: center;
+          gap: var(--space--6);
+          justify-content: space-between;
           align-items: center;
         `}"
       >
-        $${app.locals.partials.art.large
-          .replace("<svg", `$& class="img-fluid"`)
-          .replace(
-            "</svg>",
-            html`
-              <g text-anchor="middle">
-                <g transform="translate(300, 250) rotate(-2)">
-                  <rect
-                    width="550"
-                    height="100"
-                    x="-275"
-                    y="-85"
-                    rx="10"
-                    style="${css`
-                      fill: var(--color--primary--500);
-                    `}"
-                  />
-                  <text
-                    style="${css`
-                      font-family: var(--font-family--serif);
-                      font-size: var(--font-size--8xl);
-                      line-height: var(--line-height--8xl);
-                      font-weight: var(--font-weight--black);
-                      font-style: italic;
-                      fill: var(--color--primary--50);
-                    `}"
-                  >
-                    CourseLore
-                  </text>
-                </g>
-                <g transform="translate(300, 350) rotate(-2)">
-                  <rect
-                    x="-250"
-                    y="-35"
-                    width="500"
-                    height="50"
-                    rx="10"
-                    style="${css`
-                      fill: var(--color--secondary--500);
-                    `}"
-                  />
-                  <text
-                    style="${css`
-                      font-size: var(--font-size--3xl);
-                      line-height: var(--line-height--3xl);
-                      font-weight: var(--font-weight--black);
-                      font-style: italic;
-                      fill: var(--color--secondary--50);
-                    `}"
-                  >
-                    The Open-Source Student Forum
-                  </text>
-                </g>
-                <g transform="translate(300, 550) rotate(-2)">
-                  <rect
-                    width="370"
-                    height="35"
-                    x="-185"
-                    y="-26"
-                    rx="10"
-                    style="${css`
-                      fill: var(--color--blue--500);
-                    `}"
-                  />
-                  <text
-                    style="${css`
-                      font-size: var(--font-size--2xl);
-                      line-height: var(--line-height--2xl);
-                      font-weight: var(--font-weight--black);
-                      font-style: italic;
-                      fill: var(--color--blue--50);
-                      text-transform: uppercase;
-                      letter-spacing: var(--space--0-5);
-                    `}"
-                  >
-                    Coming September 2021!
-                  </text>
-                </g>
+        $${app.locals.partials.art.large.replace(
+          "</svg>",
+          html`
+            <g text-anchor="middle">
+              <g transform="translate(300, 250) rotate(-2)">
+                <rect
+                  width="550"
+                  height="100"
+                  x="-275"
+                  y="-85"
+                  rx="10"
+                  style="${css`
+                    fill: var(--color--primary--500);
+                  `}"
+                />
+                <text
+                  style="${css`
+                    font-family: var(--font-family--serif);
+                    font-size: var(--font-size--8xl);
+                    line-height: var(--line-height--8xl);
+                    font-weight: var(--font-weight--black);
+                    font-style: italic;
+                    fill: var(--color--primary--50);
+                  `}"
+                >
+                  CourseLore
+                </text>
               </g>
-              $&
-            `
-          )}
+              <g transform="translate(300, 350) rotate(-2)">
+                <rect
+                  x="-250"
+                  y="-35"
+                  width="500"
+                  height="50"
+                  rx="10"
+                  style="${css`
+                    fill: var(--color--secondary--500);
+                  `}"
+                />
+                <text
+                  style="${css`
+                    font-size: var(--font-size--3xl);
+                    line-height: var(--line-height--3xl);
+                    font-weight: var(--font-weight--black);
+                    font-style: italic;
+                    fill: var(--color--secondary--50);
+                  `}"
+                >
+                  The Open-Source Student Forum
+                </text>
+              </g>
+              <g transform="translate(300, 550) rotate(-2)">
+                <rect
+                  width="370"
+                  height="35"
+                  x="-185"
+                  y="-26"
+                  rx="10"
+                  style="${css`
+                    fill: var(--color--blue--500);
+                  `}"
+                />
+                <text
+                  style="${css`
+                    font-size: var(--font-size--2xl);
+                    line-height: var(--line-height--2xl);
+                    font-weight: var(--font-weight--black);
+                    font-style: italic;
+                    fill: var(--color--blue--50);
+                    text-transform: uppercase;
+                    letter-spacing: var(--space--0-5);
+                  `}"
+                >
+                  Coming September 2021!
+                </text>
+              </g>
+            </g>
+            $&
+          `
+        )}
         <script>
           new ArtAnimation({
             element: document.currentScript.previousElementSibling,
@@ -128,6 +126,15 @@ module.exports = (require) => {
           style="${css`
             display: flex;
             gap: var(--space--4);
+
+            @media (max-width: 450px) {
+              width: 100%;
+              flex-direction: column;
+            }
+
+            @media (min-width: 451px) {
+              align-items: baseline;
+            }
           `}"
         >
           <a
@@ -139,10 +146,10 @@ module.exports = (require) => {
               background-color: var(--color--primary--500);
               padding: var(--space--2) var(--space--4);
               border-radius: var(--border-radius--md);
-              transition: background-color var(--transition-duration),
-                color var(--transition-duration);
               display: inline-flex;
               gap: var(--space--2);
+              justify-content: center;
+              transition: background-color var(--transition-duration);
 
               &:hover {
                 background-color: var(--color--primary--400);
@@ -159,15 +166,43 @@ module.exports = (require) => {
             `}"
           >
             <i class="bi bi-easel"></i>
-            <span>Demonstration</span>
+            Demonstration
           </a>
 
-          <span class="btn-group btn-group-lg">
+          <div
+            style="${css`
+              display: flex;
+              gap: var(--space--2);
+              justify-content: center;
+            `}"
+          >
             <a
               href="https://github.com/courselore"
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              title="Source code on GitHub"
+              data-tippy-content="Source code on GitHub"
+              style="${css`
+                font-weight: var(--font-weight--bold);
+                color: var(--color--warm-gray--700);
+                background-color: var(--color--warm-gray--50);
+                padding: var(--space--2) var(--space--4);
+                border-radius: var(--border-radius--md);
+                display: inline-flex;
+                gap: var(--space--2);
+                justify-content: center;
+                transition: background-color var(--transition-duration);
+
+                &:hover {
+                  background-color: var(--color--warm-gray--200);
+                }
+
+                &:focus {
+                  box-shadow: var(--space--0) var(--space--0) var(--space--0)
+                    var(--space--1) var(--color--warm-gray--300);
+                }
+
+                &:active {
+                  background-color: var(--color--warm-gray--300);
+                }
+              `}"
             >
               <i class="bi bi-github"></i>
               Source Code
@@ -175,14 +210,36 @@ module.exports = (require) => {
 
             <a
               href="mailto:contact@courselore.org"
-              class="btn btn-outline-primary"
-              data-bs-toggle="tooltip"
-              title="Contact via email"
+              data-tippy-content="Contact via email"
+              style="${css`
+                font-weight: var(--font-weight--bold);
+                color: var(--color--warm-gray--700);
+                background-color: var(--color--warm-gray--50);
+                padding: var(--space--2) var(--space--4);
+                border-radius: var(--border-radius--md);
+                display: inline-flex;
+                gap: var(--space--2);
+                justify-content: center;
+                transition: background-color var(--transition-duration);
+
+                &:hover {
+                  background-color: var(--color--warm-gray--200);
+                }
+
+                &:focus {
+                  box-shadow: var(--space--0) var(--space--0) var(--space--0)
+                    var(--space--1) var(--color--warm-gray--300);
+                }
+
+                &:active {
+                  background-color: var(--color--warm-gray--300);
+                }
+              `}"
             >
               <i class="bi bi-envelope-fill"></i>
               Contact
             </a>
-          </span>
+          </div>
         </nav>
       </header>
 
