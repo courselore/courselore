@@ -178,7 +178,6 @@ module.exports = (require) => {
           >
             <a
               href="https://github.com/courselore"
-              data-tippy-content="Source code on GitHub"
               style="${css`
                 font-weight: var(--font-weight--bold);
                 color: var(--color--warm-gray--700);
@@ -210,7 +209,6 @@ module.exports = (require) => {
 
             <a
               href="mailto:contact@courselore.org"
-              data-tippy-content="Contact via email"
               style="${css`
                 font-weight: var(--font-weight--bold);
                 color: var(--color--warm-gray--700);
