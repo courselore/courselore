@@ -33,101 +33,104 @@ module.exports = (require) => {
           align-items: center;
         `}"
       >
-        $${app.locals.partials.art.large.replace(
-          "</svg>",
-          html`
-            <g text-anchor="middle">
-              <g transform="translate(300, 250) rotate(-2)">
-                <rect
-                  width="550"
-                  height="100"
-                  x="-275"
-                  y="-85"
-                  rx="10"
-                  style="${css`
-                    fill: var(--color--primary--600);
-                  `}"
-                />
-                <text
-                  style="${css`
-                    font-family: var(--font-family--serif);
-                    font-size: var(--font-size--8xl);
-                    line-height: var(--line-height--8xl);
-                    font-weight: var(--font-weight--black);
-                    font-style: italic;
-                    fill: var(--color--primary--50);
-                  `}"
-                >
-                  CourseLore
-                </text>
+        <h1>
+          <span class="visually-hidden">CourseLore</span>
+          $${app.locals.partials.art.large.replace(
+            "</svg>",
+            html`
+              <g text-anchor="middle">
+                <g transform="translate(300, 250) rotate(-2)">
+                  <rect
+                    width="550"
+                    height="100"
+                    x="-275"
+                    y="-85"
+                    rx="10"
+                    style="${css`
+                      fill: var(--color--primary--600);
+                    `}"
+                  />
+                  <text
+                    style="${css`
+                      font-family: var(--font-family--serif);
+                      font-size: var(--font-size--8xl);
+                      line-height: var(--line-height--8xl);
+                      font-weight: var(--font-weight--black);
+                      font-style: italic;
+                      fill: var(--color--primary--50);
+                    `}"
+                  >
+                    CourseLore
+                  </text>
+                </g>
+                <g transform="translate(300, 350) rotate(-2)">
+                  <rect
+                    x="-250"
+                    y="-35"
+                    width="500"
+                    height="50"
+                    rx="10"
+                    style="${css`
+                      fill: var(--color--secondary--500);
+                    `}"
+                  />
+                  <text
+                    style="${css`
+                      font-size: var(--font-size--3xl);
+                      line-height: var(--line-height--3xl);
+                      font-weight: var(--font-weight--black);
+                      font-style: italic;
+                      fill: var(--color--secondary--50);
+                    `}"
+                  >
+                    The Open-Source Student Forum
+                  </text>
+                </g>
+                <g transform="translate(300, 550) rotate(-2)">
+                  <rect
+                    width="370"
+                    height="35"
+                    x="-185"
+                    y="-26"
+                    rx="10"
+                    style="${css`
+                      fill: var(--color--blue--500);
+                    `}"
+                  />
+                  <text
+                    style="${css`
+                      font-size: var(--font-size--2xl);
+                      line-height: var(--line-height--2xl);
+                      font-weight: var(--font-weight--black);
+                      font-style: italic;
+                      fill: var(--color--blue--50);
+                      text-transform: uppercase;
+                      letter-spacing: var(--space--0-5);
+                    `}"
+                  >
+                    Coming September 2021!
+                  </text>
+                </g>
               </g>
-              <g transform="translate(300, 350) rotate(-2)">
-                <rect
-                  x="-250"
-                  y="-35"
-                  width="500"
-                  height="50"
-                  rx="10"
-                  style="${css`
-                    fill: var(--color--secondary--500);
-                  `}"
-                />
-                <text
-                  style="${css`
-                    font-size: var(--font-size--3xl);
-                    line-height: var(--line-height--3xl);
-                    font-weight: var(--font-weight--black);
-                    font-style: italic;
-                    fill: var(--color--secondary--50);
-                  `}"
-                >
-                  The Open-Source Student Forum
-                </text>
-              </g>
-              <g transform="translate(300, 550) rotate(-2)">
-                <rect
-                  width="370"
-                  height="35"
-                  x="-185"
-                  y="-26"
-                  rx="10"
-                  style="${css`
-                    fill: var(--color--blue--500);
-                  `}"
-                />
-                <text
-                  style="${css`
-                    font-size: var(--font-size--2xl);
-                    line-height: var(--line-height--2xl);
-                    font-weight: var(--font-weight--black);
-                    font-style: italic;
-                    fill: var(--color--blue--50);
-                    text-transform: uppercase;
-                    letter-spacing: var(--space--0-5);
-                  `}"
-                >
-                  Coming September 2021!
-                </text>
-              </g>
-            </g>
-            $&
-          `
-        )}
-        <script>
-          new ArtAnimation({
-            element: document.currentScript.previousElementSibling,
-            speed: 0.001,
-            amount: 3,
-            startupDuration: 0,
-          }).start();
-        </script>
+              $&
+            `
+          )}
+          <script>
+            new ArtAnimation({
+              element: document.currentScript.previousElementSibling,
+              speed: 0.001,
+              amount: 3,
+              startupDuration: 0,
+            }).start();
+          </script>
+        </h1>
 
         <nav
           style="${css`
             display: flex;
             gap: var(--space--4);
 
-            @media (max-width: 450px) {
+            @media (max-width: 449px) {
               width: 100%;
               flex-direction: column;
             }
@@ -240,12 +243,14 @@ module.exports = (require) => {
       <main>
         <div
           style="${css`
-            background-color: var(--color--primary--900);
-            padding: calc(10vw + 2rem) var(--space--4);
+            background-color: var(--color--primary--800);
             margin-top: -10vw;
             clip-path: polygon(0 10vw, 100% 0, 100% calc(100% - 10vw), 0 100%);
-            position: relative;
-            overflow: hidden;
+            display: grid;
+
+            & > * {
+              grid-area: 1 / 1;
+            }
           `}"
         >
           $${app.locals.partials.art.small
@@ -253,13 +258,11 @@ module.exports = (require) => {
               "<svg",
               `$&
                 style="${css`
-                  opacity: 40%;
-                  z-index: -1;
-                  position: absolute;
-                  top: 0;
-                  left: 0;
                   min-width: 100%;
-                  min-height: 100%;
+                  min-height: 120%;
+                  position: absolute;
+                  z-index: -1;
+                  opacity: 10%;
                 `}"
               `
             )
@@ -277,146 +280,107 @@ module.exports = (require) => {
 
           <section
             style="${css`
-              max-width: 110ch;
-              margin: 0 auto;
+              padding: calc(10vw + var(--space--8)) var(--space--4);
+              display: flex;
+              justify-items: center;
+              align-items: center;
+              flex-direction: column;
+              gap: var(--space--8);
             `}"
           >
-            <h1
+            <h2
               style="${css`
-                font-family: $font-family-serif;
-                @include font-size(3rem);
-                font-weight: bold;
+                font-family: var(--font-family--serif);
+                font-size: var(--font-size--4xl);
+                line-height: var(--line-height--4xl);
+                font-weight: var(--font-weight--black);
                 font-style: italic;
                 text-align: center;
-                text-shadow: 2px 2px $purple-600;
+                color: var(--color--primary--100);
               `}"
             >
               A forum for educators & students
-            </h1>
+            </h2>
 
             <div
               style="${css`
-                display: grid;
-                gap: 1rem;
-                @include media-breakpoint-up(md) {
-                  grid-auto-flow: column;
+                display: flex;
+                gap: var(--space--4);
+
+                @media (max-width: 1023px) {
+                  flex-direction: column;
+                }
+
+                @media (min-width: 1024px) {
+                  max-width: 110ch;
+                  & > * {
+                    flex: 1;
+                  }
+                }
+
+                & > div {
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  color: var(--color--primary--700);
+                  background-color: var(--color--primary--100);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+
+                  & > h3 {
+                    font-size: var(--font-size--lg);
+                    line-height: var(--line-height--lg);
+                    font-weight: var(--font-weight--bold);
+                    color: var(--color--primary--900);
+                    display: flex;
+                    align-items: center;
+                    gap: var(--space--2);
+
+                    & > i {
+                      background-color: var(--color--primary--200);
+                      width: var(--font-size--4xl);
+                      height: var(--font-size--4xl);
+                      border-radius: 50%;
+                      display: inline-flex;
+                      justify-content: center;
+                      align-items: center;
+                    }
+                  }
                 }
               `}"
             >
-              <div
-                class="card shadow-lg"
-                style="${css`
-                  background-color: $purple-600;
-                `}"
-              >
-                <div
-                  class="card-header"
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <h5 class="card-text">
-                    <i class="bi bi-toggles"></i> Fully-Featured
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <p class="card-text">
-                    All the features you’ve come to expect from a forum,
-                    including Q&A, announcements, notifications, invitations,
-                    <a
-                      role="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#markdown-modal"
-                      aria-label="More information"
-                      onclick="${javascript`
-                        bootstrap.Tooltip.getInstance(this.querySelector("abbr")).hide();
-                      `}"
-                      ><abbr data-bs-toggle="tooltip" title="What’s Markdown?"
-                        >Markdown</abbr
-                      ></a
-                    >,
-                    <a
-                      role="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#latex-modal"
-                      aria-label="More information"
-                      onclick="${javascript`
-                          bootstrap.Tooltip.getInstance(this.querySelector("abbr")).hide();
-                        `}"
-                      ><abbr data-bs-toggle="tooltip" title="What’s LaTeX?"
-                        >LaTeX</abbr
-                      ></a
-                    >,
-                    <a
-                      role="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#syntax-highlighting-modal"
-                      aria-label="More information"
-                      onclick="${javascript`
-                          bootstrap.Tooltip.getInstance(this.querySelector("abbr")).hide();
-                        `}"
-                      ><abbr
-                        data-bs-toggle="tooltip"
-                        title="What’s Syntax Highlighting?"
-                        >syntax highlighting</abbr
-                      ></a
-                    >, and much more, all in an easy-to-use and modern
-                    interface.
-                  </p>
-                </div>
+              <div>
+                <h3><i class="bi bi-toggles"></i> Fully-Featured</h3>
+                <p>
+                  All the features you’ve come to expect from a forum, including
+                  Q&A, announcements, notifications, invitations,
+                  <abbr data-tippy-content="What’s Markdown?">Markdown</abbr>,
+                  <abbr data-tippy-content="What’s LaTeX?">LaTeX</abbr>,
+                  <abbr data-tippy-content="What’s Syntax Highlighting?"
+                    >syntax highlighting</abbr
+                  >, and much more, all in an easy-to-use and modern interface.
+                </p>
               </div>
 
-              <div
-                class="card shadow-lg"
-                style="${css`
-                  background-color: $purple-600;
-                `}"
-              >
-                <div
-                  class="card-header"
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <h5 class="card-text">
-                    <i class="bi bi-code-square"></i> Open-Source
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <p class="card-text">
-                    We’re developing CourseLore in the open. You may inspect the
-                    source code to increase your trust on the software that you
-                    use, you may build other tools on top of the CourseLore API,
-                    and you may collaborate on the development of CourseLore
-                    itself.
-                  </p>
-                </div>
+              <div>
+                <h3><i class="bi bi-code-square"></i> Open-Source</h3>
+                <p>
+                  We’re developing CourseLore in the open. You may inspect the
+                  source code to increase your trust on the software that you
+                  use, you may build other tools on top of the CourseLore API,
+                  and you may collaborate on the development of CourseLore
+                  itself.
+                </p>
               </div>
 
-              <div
-                class="card shadow-lg"
-                style="${css`
-                  background-color: $purple-600;
-                `}"
-              >
-                <div
-                  class="card-header"
-                  style="${css`
-                    text-align: center;
-                  `}"
-                >
-                  <h5 class="card-text">
-                    <i class="bi bi-shield-lock"></i> Self-Hosted
-                  </h5>
-                </div>
-                <div class="card-body">
-                  <p class="card-text">
-                    CourseLore is easy to run on your own server. This means you
-                    know exactly where your data is and who owns it: you. Utmost
-                    respect for educators & students’ privacy is at the core of
-                    what we do.
-                  </p>
-                </div>
+              <div>
+                <h3><i class="bi bi-shield-lock"></i> Self-Hosted</h3>
+                <p>
+                  CourseLore is easy to run on your own server. This means you
+                  know exactly where your data is and who owns it: you. Utmost
+                  respect for educators & students’ privacy is at the core of
+                  what we do.
+                </p>
               </div>
             </div>
           </section>
@@ -520,7 +484,7 @@ module.exports = (require) => {
                   <p class="card-subtitle">CEO</p>
                 </div>
                 <div class="card-body">
-                  <p class="card-text">
+                  <p>
                     Scott is a full professor at the Johns Hopkins University.
                     Over his thirty years of experience as an educator, Scott
                     taught courses on the Principles of Programming Languages,
@@ -563,7 +527,7 @@ module.exports = (require) => {
                   <p class="card-subtitle">Consultant</p>
                 </div>
                 <div class="card-body">
-                  <p class="card-text">
+                  <p>
                     Ali is a lecturer at the Johns Hopkins University. Ali has
                     taught courses in several areas, from Introduction to
                     Programming to Object-Oriented Software Engineering. Ali has
@@ -604,7 +568,7 @@ module.exports = (require) => {
                   <p class="card-subtitle">Developer & Designer</p>
                 </div>
                 <div class="card-body">
-                  <p class="card-text">
+                  <p>
                     Leandro was a PhD Candidate at the Johns Hopkins University.
                     He received the Whiting School of Engineering’s Professor
                     Joel Dean Excellence in Teaching Award for five years of
@@ -649,7 +613,7 @@ module.exports = (require) => {
                   - It looks great.
                 `;
                 return html`
-                  <p class="card-text">
+                  <p>
                     Markdown is a simple way to include bold text, links, lists,
                     and many other forms of rich-text formatting in your posts,
                     for example:
@@ -674,7 +638,7 @@ module.exports = (require) => {
                     </div>
                   </div>
 
-                  <p class="card-text">
+                  <p>
                     Markdown is much more powerful than this simple example
                     shows, it’s
                     <a
@@ -722,7 +686,7 @@ module.exports = (require) => {
                   $$
                 `;
                 return html`
-                  <p class="card-text">
+                  <p>
                     LaTeX is a simple way to include mathematical formulas in
                     your posts, for example:
                   </p>
@@ -746,7 +710,7 @@ module.exports = (require) => {
                     </div>
                   </div>
 
-                  <p class="card-text">
+                  <p>
                     LaTeX is much more powerful than this simple example shows,
                     it’s
                     <a href="https://katex.org/docs/supported.html"
@@ -794,7 +758,7 @@ module.exports = (require) => {
                   \`\`\`
                 `;
                 return html`
-                  <p class="card-text">
+                  <p>
                     Syntax highlighting is adding color to code snippets in your
                     posts to make them easier to read, for example:
                   </p>
@@ -818,7 +782,7 @@ module.exports = (require) => {
                     </div>
                   </div>
 
-                  <p class="card-text">
+                  <p>
                     CourseLore uses
                     <a href="https://shiki.matsu.io/"
                       >the same syntax highlighter as Visual Studio Code</a

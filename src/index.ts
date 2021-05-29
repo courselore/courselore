@@ -383,21 +383,21 @@ export default async function courselore(
                   --font-size--xl: 1.25rem;
                   --line-height--xl: 1.75rem;
                   --font-size--2xl: 1.5rem;
-                  --fine-height--2xl: 2rem;
+                  --line-height--2xl: 2rem;
                   --font-size--3xl: 1.875rem;
-                  --fine-height--3xl: 2.25rem;
+                  --line-height--3xl: 2.25rem;
                   --font-size--4xl: 2.25rem;
-                  --fine-height--4xl: 2.5rem;
+                  --line-height--4xl: 2.5rem;
                   --font-size--5xl: 3rem;
-                  --fine-height--5xl: 1;
+                  --line-height--5xl: 1;
                   --font-size--6xl: 3.75rem;
-                  --fine-height--6xl: 1;
+                  --line-height--6xl: 1;
                   --font-size--7xl: 4.5rem;
-                  --fine-height--7xl: 1;
+                  --line-height--7xl: 1;
                   --font-size--8xl: 6rem;
-                  --fine-height--8xl: 1;
+                  --line-height--8xl: 1;
                   --font-size--9xl: 8rem;
-                  --fine-height--9xl: 1;
+                  --line-height--9xl: 1;
 
                   --space--0: 0px;
                   --space--px: 1px;
@@ -745,6 +745,11 @@ export default async function courselore(
                   font-family: var(--font-family--sans-serif);
                   font-size: var(--font-size--sm);
                   line-height: var(--line-height--sm);
+                }
+
+                abbr {
+                  text-decoration: underline dotted;
+                  cursor: help;
                 }
 
                 input,
