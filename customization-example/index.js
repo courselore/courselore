@@ -241,10 +241,10 @@ module.exports = (require) => {
         <div
           style="${css`
             background-color: var(--color--primary--900);
+            padding: calc(10vw + 2rem) var(--space--4);
             margin-top: -10vw;
             clip-path: polygon(0 10vw, 100% 0, 100% calc(100% - 10vw), 0 100%);
             position: relative;
-            padding: calc(10vw + 2rem) var(--space--4);
             overflow: hidden;
           `}"
         >
