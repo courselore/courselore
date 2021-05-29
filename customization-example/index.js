@@ -132,10 +132,34 @@ module.exports = (require) => {
         >
           <a
             href="$${app.locals.settings.url}/authenticate"
-            title="Very rough early demonstration"
+            data-tippy-content="Very rough early demonstration"
+            style="${css`
+              font-weight: var(--font-weight--bold);
+              color: var(--color--primary--50);
+              background-color: var(--color--primary--500);
+              padding: var(--space--2) var(--space--4);
+              border-radius: var(--border-radius--md);
+              transition: background-color var(--transition-duration),
+                color var(--transition-duration);
+              display: inline-flex;
+              gap: var(--space--2);
+
+              &:hover {
+                background-color: var(--color--primary--400);
+              }
+
+              &:focus {
+                box-shadow: var(--space--0) var(--space--0) var(--space--0)
+                  var(--space--1) var(--color--primary--200);
+              }
+
+              &:active {
+                background-color: var(--color--primary--600);
+              }
+            `}"
           >
             <i class="bi bi-easel"></i>
-            Demonstration
+            <span>Demonstration</span>
           </a>
 
           <span class="btn-group btn-group-lg">

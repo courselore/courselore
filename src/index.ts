@@ -753,6 +753,27 @@ export default async function courselore(
                   line-height: var(--line-height--base);
                 }
 
+                .tippy-box {
+                  color: var(--color--warm-gray--100);
+                  background-color: var(--color--warm-gray--800);
+
+                  &[data-placement^="top"] > .tippy-arrow::before {
+                    border-top-color: var(--color--warm-gray--800);
+                  }
+
+                  &[data-placement^="bottom"] > .tippy-arrow::before {
+                    border-bottom-color: var(--color--warm-gray--800);
+                  }
+
+                  &[data-placement^="left"] > .tippy-arrow::before {
+                    border-left-color: var(--color--warm-gray--800);
+                  }
+
+                  &[data-placement^="right"] > .tippy-arrow::before {
+                    border-right-color: var(--color--warm-gray--800);
+                  }
+                }
+
                 /* COMPONENTS */
 
                 /*
@@ -1016,6 +1037,13 @@ export default async function courselore(
             })();
           </script>
           $${bodyDOM.firstElementChild!.innerHTML}
+          <script src="${app.locals.settings
+              .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="${app.locals.settings
+              .url}/node_modules/tippy.js/dist/tippy-bundle.umd.js"></script>
+          <script>
+            tippy("[data-tippy-content]");
+          </script>
         </body>
       </html>
     `.trim();
