@@ -47,7 +47,7 @@ module.exports = (require) => {
                     y="-85"
                     rx="10"
                     style="${css`
-                      fill: var(--color--primary--600);
+                      fill: var(--color--primary--500);
                     `}"
                   />
                   <text
@@ -94,7 +94,7 @@ module.exports = (require) => {
                     y="-26"
                     rx="10"
                     style="${css`
-                      fill: var(--color--blue--500);
+                      fill: var(--color--blue--400);
                     `}"
                   />
                   <text
