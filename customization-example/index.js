@@ -22,7 +22,7 @@ module.exports = (require) => {
     app.locals.partials.customizedIndex = html`
       <header
         style="${css`
-          background-color: var(--color--warm-gray--50);
+          background-color: var(--color--cool-gray--50);
           min-height: 90vh;
           padding: var(--space--4);
           padding-bottom: 10vw;
@@ -47,7 +47,7 @@ module.exports = (require) => {
                     y="-85"
                     rx="10"
                     style="${css`
-                      fill: var(--color--primary--500);
+                      fill: var(--color--primary--800);
                     `}"
                   />
                   <text
@@ -71,7 +71,7 @@ module.exports = (require) => {
                     height="50"
                     rx="10"
                     style="${css`
-                      fill: var(--color--secondary--500);
+                      fill: var(--color--fuchsia--500);
                     `}"
                   />
                   <text
@@ -80,7 +80,7 @@ module.exports = (require) => {
                       line-height: var(--line-height--3xl);
                       font-weight: var(--font-weight--black);
                       font-style: italic;
-                      fill: var(--color--secondary--50);
+                      fill: var(--color--fuchsia--50);
                     `}"
                   >
                     The Open-Source Student Forum
@@ -142,7 +142,7 @@ module.exports = (require) => {
             style="${css`
               font-weight: var(--font-weight--bold);
               color: var(--color--primary--50);
-              background-color: var(--color--primary--500);
+              background-color: var(--color--primary--700);
               padding: var(--space--2) var(--space--4);
               border-radius: var(--border-radius--md);
               display: inline-flex;
@@ -151,11 +151,11 @@ module.exports = (require) => {
               transition: background-color var(--transition-duration);
 
               &:hover {
-                background-color: var(--color--primary--400);
+                background-color: var(--color--primary--600);
               }
 
               &:active {
-                background-color: var(--color--primary--600);
+                background-color: var(--color--primary--800);
               }
             `}"
           >
@@ -174,9 +174,9 @@ module.exports = (require) => {
               href="https://github.com/courselore"
               style="${css`
                 font-weight: var(--font-weight--bold);
-                color: var(--color--warm-gray--700);
-                background-color: var(--color--warm-gray--50);
-                --color--focus: var(--color--warm-gray--300);
+                color: var(--color--cool-gray--700);
+                background-color: var(--color--cool-gray--50);
+                --color--focus: var(--color--cool-gray--300);
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: inline-flex;
@@ -185,11 +185,11 @@ module.exports = (require) => {
                 transition: background-color var(--transition-duration);
 
                 &:hover {
-                  background-color: var(--color--warm-gray--200);
+                  background-color: var(--color--cool-gray--200);
                 }
 
                 &:active {
-                  background-color: var(--color--warm-gray--300);
+                  background-color: var(--color--cool-gray--300);
                 }
               `}"
             >
@@ -201,9 +201,9 @@ module.exports = (require) => {
               href="mailto:contact@courselore.org"
               style="${css`
                 font-weight: var(--font-weight--bold);
-                color: var(--color--warm-gray--700);
-                background-color: var(--color--warm-gray--50);
-                --color--focus: var(--color--warm-gray--300);
+                color: var(--color--cool-gray--700);
+                background-color: var(--color--cool-gray--50);
+                --color--focus: var(--color--cool-gray--300);
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: inline-flex;
@@ -212,11 +212,11 @@ module.exports = (require) => {
                 transition: background-color var(--transition-duration);
 
                 &:hover {
-                  background-color: var(--color--warm-gray--200);
+                  background-color: var(--color--cool-gray--200);
                 }
 
                 &:active {
-                  background-color: var(--color--warm-gray--300);
+                  background-color: var(--color--cool-gray--300);
                 }
               `}"
             >
@@ -581,8 +581,8 @@ module.exports = (require) => {
       <dialog
         id="modal--markdown"
         style="${css`
-          color: var(--color--warm-gray--700);
-          background-color: var(--color--warm-gray--50);
+          color: var(--color--cool-gray--700);
+          background-color: var(--color--cool-gray--50);
           padding: var(--space--4);
           border-radius: var(--border-radius--lg);
           margin: auto;

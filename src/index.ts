@@ -723,17 +723,6 @@ export default async function courselore(
                   --color--primary--800: var(--color--purple--800);
                   --color--primary--900: var(--color--purple--900);
 
-                  --color--secondary--50: var(--color--pink--50);
-                  --color--secondary--100: var(--color--pink--100);
-                  --color--secondary--200: var(--color--pink--200);
-                  --color--secondary--300: var(--color--pink--300);
-                  --color--secondary--400: var(--color--pink--400);
-                  --color--secondary--500: var(--color--pink--500);
-                  --color--secondary--600: var(--color--pink--600);
-                  --color--secondary--700: var(--color--pink--700);
-                  --color--secondary--800: var(--color--pink--800);
-                  --color--secondary--900: var(--color--pink--900);
-
                   --color--focus: var(--color--primary--200);
                 }
 
@@ -765,7 +754,7 @@ export default async function courselore(
                 }
 
                 ::backdrop {
-                  background-color: #d6d3d1; /* var(--color--warm-gray--300) */
+                  background-color: #d6d3d1; /* TODO: var(--color--warm-gray--300) */
                   opacity: 70%;
                 }
 
@@ -775,23 +764,23 @@ export default async function courselore(
                 }
 
                 .tippy-box {
-                  color: var(--color--warm-gray--100);
-                  background-color: var(--color--warm-gray--800);
+                  color: var(--color--cool-gray--100);
+                  background-color: var(--color--cool-gray--800);
 
                   &[data-placement^="top"] > .tippy-arrow::before {
-                    border-top-color: var(--color--warm-gray--800);
+                    border-top-color: var(--color--cool-gray--800);
                   }
 
                   &[data-placement^="bottom"] > .tippy-arrow::before {
-                    border-bottom-color: var(--color--warm-gray--800);
+                    border-bottom-color: var(--color--cool-gray--800);
                   }
 
                   &[data-placement^="left"] > .tippy-arrow::before {
-                    border-left-color: var(--color--warm-gray--800);
+                    border-left-color: var(--color--cool-gray--800);
                   }
 
                   &[data-placement^="right"] > .tippy-arrow::before {
-                    border-right-color: var(--color--warm-gray--800);
+                    border-right-color: var(--color--cool-gray--800);
                   }
                 }
 
@@ -2100,7 +2089,7 @@ export default async function courselore(
       <svg class="visually-hidden">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#f472b6" />
+            <stop offset="0%" stop-color="#e879f9" />
             <stop offset="100%" stop-color="#c084fc" />
           </linearGradient>
         </defs>
