@@ -733,6 +733,8 @@ export default async function courselore(
                   --color--secondary--700: var(--color--pink--700);
                   --color--secondary--800: var(--color--pink--800);
                   --color--secondary--900: var(--color--pink--900);
+
+                  --color--focus: var(--color--primary--200);
                 }
 
                 @media (prefers-color-scheme: dark) {
@@ -756,6 +758,20 @@ export default async function courselore(
                 textarea {
                   font-size: var(--font-size--base);
                   line-height: var(--line-height--base);
+                }
+
+                button {
+                  cursor: pointer;
+                }
+
+                ::backdrop {
+                  background-color: #d6d3d1; /* var(--color--warm-gray--300) */
+                  opacity: 70%;
+                }
+
+                :focus {
+                  box-shadow: var(--space--0) var(--space--0) var(--space--0)
+                    var(--space--1) var(--color--focus);
                 }
 
                 .tippy-box {

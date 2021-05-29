@@ -154,11 +154,6 @@ module.exports = (require) => {
                 background-color: var(--color--primary--400);
               }
 
-              &:focus {
-                box-shadow: var(--space--0) var(--space--0) var(--space--0)
-                  var(--space--1) var(--color--primary--200);
-              }
-
               &:active {
                 background-color: var(--color--primary--600);
               }
@@ -181,6 +176,7 @@ module.exports = (require) => {
                 font-weight: var(--font-weight--bold);
                 color: var(--color--warm-gray--700);
                 background-color: var(--color--warm-gray--50);
+                --color--focus: var(--color--warm-gray--300);
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: inline-flex;
@@ -190,11 +186,6 @@ module.exports = (require) => {
 
                 &:hover {
                   background-color: var(--color--warm-gray--200);
-                }
-
-                &:focus {
-                  box-shadow: var(--space--0) var(--space--0) var(--space--0)
-                    var(--space--1) var(--color--warm-gray--300);
                 }
 
                 &:active {
@@ -212,6 +203,7 @@ module.exports = (require) => {
                 font-weight: var(--font-weight--bold);
                 color: var(--color--warm-gray--700);
                 background-color: var(--color--warm-gray--50);
+                --color--focus: var(--color--warm-gray--300);
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: inline-flex;
@@ -221,11 +213,6 @@ module.exports = (require) => {
 
                 &:hover {
                   background-color: var(--color--warm-gray--200);
-                }
-
-                &:focus {
-                  box-shadow: var(--space--0) var(--space--0) var(--space--0)
-                    var(--space--1) var(--color--warm-gray--300);
                 }
 
                 &:active {
@@ -323,6 +310,7 @@ module.exports = (require) => {
                   border-radius: var(--border-radius--xl);
                   color: var(--color--primary--700);
                   background-color: var(--color--primary--100);
+                  --color--focus: var(--color--primary--400);
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
@@ -354,8 +342,16 @@ module.exports = (require) => {
                 <p>
                   All the features you’ve come to expect from a forum, including
                   Q&A, announcements, notifications, invitations,
-                  <abbr data-tippy-content="What’s Markdown?">Markdown</abbr>,
-                  <abbr data-tippy-content="What’s LaTeX?">LaTeX</abbr>,
+                  <button
+                    type="button"
+                    onclick="${javascript`
+                      document.querySelector("#modal--markdown").showModal();
+                    `}"
+                  >
+                    <abbr data-tippy-content="What’s Markdown?"
+                      >Markdown</abbr
+                    ></button
+                  >, <abbr data-tippy-content="What’s LaTeX?">LaTeX</abbr>,
                   <abbr data-tippy-content="What’s Syntax Highlighting?"
                     >syntax highlighting</abbr
                   >, and much more, all in an easy-to-use and modern interface.
@@ -582,80 +578,86 @@ module.exports = (require) => {
         </div>
       </main>
 
-      <div
-        class="modal fade"
-        id="markdown-modal"
-        tabindex="-1"
-        aria-labelledby="markdown-modal-label"
-        aria-hidden="true"
+      <dialog
+        id="modal--markdown"
+        style="${css`
+          color: var(--color--warm-gray--700);
+          background-color: var(--color--warm-gray--50);
+          padding: var(--space--4);
+          border-radius: var(--border-radius--lg);
+          margin: auto;
+        `}"
       >
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="markdown-modal-label">
-                What’s Markdown?
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+        <button
+          type="button"
+          style="${css`
+            float: right;
+            transition: color var(--transition-duration);
+            border-radius: 50%;
+            width: var(--font-size--lg);
+            height: var(--font-size--lg);
+
+            &:hover {
+              color: var(--color--primary--400);
+            }
+
+            &:active {
+              color: var(--color--primary--600);
+            }
+          `}"
+          onclick="${javascript`
+            this.closest("dialog").close();
+        `}"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+        <h5>What’s Markdown?</h5>
+        $${(() => {
+          const example = markdown`
+            Things I’m **loving** about
+            [CourseLore](https://courselore.org):
+
+            - It’s easy to install.
+            - It respects my privacy.
+            - It looks great.
+          `;
+          return html`
+            <p>
+              Markdown is a simple way to include bold text, links, lists, and
+              many other forms of rich-text formatting in your posts, for
+              example:
+            </p>
+
+            <div class="card-group">
+              <div class="card mb-3">
+                <div class="card-header text-center fw-bold">You write…</div>
+                <div class="card-body pb-0">
+                  <pre><code>$${example}</code></pre>
+                </div>
+              </div>
+              <div class="card mb-3">
+                <div class="card-header text-center fw-bold">
+                  …and your post looks like
+                </div>
+                <div class="card-body pb-0">
+                  $${app.locals.partials.textProcessor(example)}
+                </div>
+              </div>
             </div>
-            <div class="modal-body">
-              $${(() => {
-                const example = markdown`
-                  Things I’m **loving** about
-                  [CourseLore](https://courselore.org):
 
-                  - It’s easy to install.
-                  - It respects my privacy.
-                  - It looks great.
-                `;
-                return html`
-                  <p>
-                    Markdown is a simple way to include bold text, links, lists,
-                    and many other forms of rich-text formatting in your posts,
-                    for example:
-                  </p>
-
-                  <div class="card-group">
-                    <div class="card mb-3">
-                      <div class="card-header text-center fw-bold">
-                        You write…
-                      </div>
-                      <div class="card-body pb-0">
-                        <pre><code>$${example}</code></pre>
-                      </div>
-                    </div>
-                    <div class="card mb-3">
-                      <div class="card-header text-center fw-bold">
-                        …and your post looks like
-                      </div>
-                      <div class="card-body pb-0">
-                        $${app.locals.partials.textProcessor(example)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p>
-                    Markdown is much more powerful than this simple example
-                    shows, it’s
-                    <a
-                      href="https://guides.github.com/features/mastering-markdown/"
-                      >easy to learn</a
-                    >, and it’s used by many popular forums including
-                    <a href="https://www.reddit.com">Reddit</a>,
-                    <a href="https://stackoverflow.com/">Stack Overflow</a>,
-                    <a href="https://github.com/">GitHub Issues</a>, and so
-                    forth.
-                  </p>
-                `;
-              })()}
-            </div>
-          </div>
-        </div>
-      </div>
+            <p>
+              Markdown is much more powerful than this simple example shows,
+              it’s
+              <a href="https://guides.github.com/features/mastering-markdown/"
+                >easy to learn</a
+              >, and it’s used by many popular forums including
+              <a href="https://www.reddit.com">Reddit</a>,
+              <a href="https://stackoverflow.com/">Stack Overflow</a>,
+              <a href="https://github.com/">GitHub Issues</a>, and so forth.
+            </p>
+          `;
+        })()}
+      </dialog>
 
       <div
         class="modal fade"
