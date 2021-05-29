@@ -233,6 +233,7 @@ module.exports = (require) => {
             background-color: var(--color--primary--800);
             margin-top: -10vw;
             clip-path: polygon(0 10vw, 100% 0, 100% calc(100% - 10vw), 0 100%);
+            position: relative;
             display: grid;
 
             & > * {
@@ -246,7 +247,7 @@ module.exports = (require) => {
               `$&
                 style="${css`
                   min-width: 100%;
-                  min-height: 120%;
+                  min-height: 100%;
                   position: absolute;
                   z-index: -1;
                   opacity: 10%;
