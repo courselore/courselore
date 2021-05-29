@@ -22,10 +22,14 @@ module.exports = (require) => {
     app.locals.partials.customizedIndex = html`
       <header
         style="${css`
-          padding: 1rem;
+          background-color: var(--color--warm-gray--50);
+          min-height: 90vh;
+          padding: var(--space--4);
+          padding-bottom: 10vw;
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: var(--space--4);
+          justify-content: center;
           align-items: center;
         `}"
       >
@@ -34,47 +38,77 @@ module.exports = (require) => {
           .replace(
             "</svg>",
             html`
-              <g
-                font-weight="bold"
-                font-style="italic"
-                fill="white"
-                text-anchor="middle"
-              >
+              <g text-anchor="middle">
                 <g transform="translate(300, 250) rotate(-2)">
                   <rect
-                    fill="#83769c"
                     width="550"
                     height="100"
                     x="-275"
                     y="-85"
                     rx="10"
+                    style="${css`
+                      fill: var(--color--primary--500);
+                    `}"
                   />
-                  <text font-family="IBM Plex Serif" font-size="6.3rem">
+                  <text
+                    style="${css`
+                      font-family: var(--font-family--serif);
+                      font-size: var(--font-size--8xl);
+                      line-height: var(--line-height--8xl);
+                      font-weight: var(--font-weight--black);
+                      font-style: italic;
+                      fill: var(--color--primary--50);
+                    `}"
+                  >
                     CourseLore
                   </text>
                 </g>
                 <g transform="translate(300, 350) rotate(-2)">
                   <rect
-                    fill="#ff77a8"
                     x="-250"
                     y="-35"
                     width="500"
                     height="50"
                     rx="10"
+                    style="${css`
+                      fill: var(--color--secondary--500);
+                    `}"
                   />
-                  <text font-size="2rem"> The Open-Source Student Forum </text>
+                  <text
+                    style="${css`
+                      font-size: var(--font-size--3xl);
+                      line-height: var(--line-height--3xl);
+                      font-weight: var(--font-weight--black);
+                      font-style: italic;
+                      fill: var(--color--secondary--50);
+                    `}"
+                  >
+                    The Open-Source Student Forum
+                  </text>
                 </g>
                 <g transform="translate(300, 550) rotate(-2)">
                   <rect
-                    fill="#29adff"
                     width="370"
                     height="35"
                     x="-185"
                     y="-26"
                     rx="10"
+                    style="${css`
+                      fill: var(--color--blue--500);
+                    `}"
                   />
-                  <text font-size="1.5rem" letter-spacing="2">
-                    COMING SEPTEMBER 2021!
+                  <text
+                    style="${css`
+                      font-size: var(--font-size--2xl);
+                      line-height: var(--line-height--2xl);
+                      font-weight: var(--font-weight--black);
+                      font-style: italic;
+                      fill: var(--color--blue--50);
+                      text-transform: uppercase;
+                      letter-spacing: var(--space--0-5);
+                    `}"
+                  >
+                    Coming September 2021!
                   </text>
                 </g>
               </g>
@@ -93,16 +127,11 @@ module.exports = (require) => {
         <nav
           style="${css`
             display: flex;
-            gap: 1rem;
-            @include media-breakpoint-down(md) {
-              flex-direction: column;
-            }
+            gap: var(--space--4);
           `}"
         >
           <a
             href="$${app.locals.settings.url}/authenticate"
-            class="btn btn-primary btn-lg"
-            data-bs-toggle="tooltip"
             title="Very rough early demonstration"
           >
             <i class="bi bi-easel"></i>

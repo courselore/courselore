@@ -360,7 +360,7 @@ export default async function courselore(
                   clip-path: polygon(0 0);
                 }
 
-                /* DESIGN SYSTEM */
+                /* DESIGN SYSTEM OPTIONS */
 
                 /*
                   https://github.com/tailwindlabs/tailwindcss/blob/e6ea821a7a5a7244dfe2be948f8a4209620924a5/stubs/defaultConfig.stub.js
@@ -399,41 +399,41 @@ export default async function courselore(
                   --font-size--9xl: 8rem;
                   --fine-height--9xl: 1;
 
-                  --spacing--0: 0px;
-                  --spacing--px: 1px;
-                  --spacing--0-5: 0.125rem;
-                  --spacing--1: 0.25rem;
-                  --spacing--1-5: 0.375rem;
-                  --spacing--2: 0.5rem;
-                  --spacing--2-5: 0.625rem;
-                  --spacing--3: 0.75rem;
-                  --spacing--3-5: 0.875rem;
-                  --spacing--4: 1rem;
-                  --spacing--5: 1.25rem;
-                  --spacing--6: 1.5rem;
-                  --spacing--7: 1.75rem;
-                  --spacing--8: 2rem;
-                  --spacing--9: 2.25rem;
-                  --spacing--10: 2.5rem;
-                  --spacing--11: 2.75rem;
-                  --spacing--12: 3rem;
-                  --spacing--14: 3.5rem;
-                  --spacing--16: 4rem;
-                  --spacing--20: 5rem;
-                  --spacing--24: 6rem;
-                  --spacing--28: 7rem;
-                  --spacing--32: 8rem;
-                  --spacing--36: 9rem;
-                  --spacing--40: 10rem;
-                  --spacing--44: 11rem;
-                  --spacing--48: 12rem;
-                  --spacing--52: 13rem;
-                  --spacing--56: 14rem;
-                  --spacing--60: 15rem;
-                  --spacing--64: 16rem;
-                  --spacing--72: 18rem;
-                  --spacing--80: 20rem;
-                  --spacing--96: 24rem;
+                  --space--0: 0px;
+                  --space--px: 1px;
+                  --space--0-5: 0.125rem;
+                  --space--1: 0.25rem;
+                  --space--1-5: 0.375rem;
+                  --space--2: 0.5rem;
+                  --space--2-5: 0.625rem;
+                  --space--3: 0.75rem;
+                  --space--3-5: 0.875rem;
+                  --space--4: 1rem;
+                  --space--5: 1.25rem;
+                  --space--6: 1.5rem;
+                  --space--7: 1.75rem;
+                  --space--8: 2rem;
+                  --space--9: 2.25rem;
+                  --space--10: 2.5rem;
+                  --space--11: 2.75rem;
+                  --space--12: 3rem;
+                  --space--14: 3.5rem;
+                  --space--16: 4rem;
+                  --space--20: 5rem;
+                  --space--24: 6rem;
+                  --space--28: 7rem;
+                  --space--32: 8rem;
+                  --space--36: 9rem;
+                  --space--40: 10rem;
+                  --space--44: 11rem;
+                  --space--48: 12rem;
+                  --space--52: 13rem;
+                  --space--56: 14rem;
+                  --space--60: 15rem;
+                  --space--64: 16rem;
+                  --space--72: 18rem;
+                  --space--80: 20rem;
+                  --space--96: 24rem;
 
                   --border-width--0: 0;
                   --border-width--1: 1px;
@@ -452,28 +452,6 @@ export default async function courselore(
                   --border-radius--full: 9999px;
 
                   --transition-duration: 150ms;
-
-                  --color--primary--50: var(--color--purple--50);
-                  --color--primary--100: var(--color--purple--100);
-                  --color--primary--200: var(--color--purple--200);
-                  --color--primary--300: var(--color--purple--300);
-                  --color--primary--400: var(--color--purple--400);
-                  --color--primary--500: var(--color--purple--500);
-                  --color--primary--600: var(--color--purple--600);
-                  --color--primary--700: var(--color--purple--700);
-                  --color--primary--800: var(--color--purple--800);
-                  --color--primary--900: var(--color--purple--900);
-
-                  --color--secondary--50: var(--color--pink--50);
-                  --color--secondary--100: var(--color--pink--100);
-                  --color--secondary--200: var(--color--pink--200);
-                  --color--secondary--300: var(--color--pink--300);
-                  --color--secondary--400: var(--color--pink--400);
-                  --color--secondary--500: var(--color--pink--500);
-                  --color--secondary--600: var(--color--pink--600);
-                  --color--secondary--700: var(--color--pink--700);
-                  --color--secondary--800: var(--color--pink--800);
-                  --color--secondary--900: var(--color--pink--900);
 
                   --color-white: #ffffff;
                   --color-black: #000000;
@@ -725,6 +703,36 @@ export default async function courselore(
                   :root {
                     --transition-duration: 0;
                   }
+                }
+
+                /* DESIGN SYSTEM */
+
+                :root {
+                  --font-weight--main: 400;
+                  --font-weight--bold: 500;
+                  --font-weight--black: 700;
+
+                  --color--primary--50: var(--color--purple--50);
+                  --color--primary--100: var(--color--purple--100);
+                  --color--primary--200: var(--color--purple--200);
+                  --color--primary--300: var(--color--purple--300);
+                  --color--primary--400: var(--color--purple--400);
+                  --color--primary--500: var(--color--purple--500);
+                  --color--primary--600: var(--color--purple--600);
+                  --color--primary--700: var(--color--purple--700);
+                  --color--primary--800: var(--color--purple--800);
+                  --color--primary--900: var(--color--purple--900);
+
+                  --color--secondary--50: var(--color--pink--50);
+                  --color--secondary--100: var(--color--pink--100);
+                  --color--secondary--200: var(--color--pink--200);
+                  --color--secondary--300: var(--color--pink--300);
+                  --color--secondary--400: var(--color--pink--400);
+                  --color--secondary--500: var(--color--pink--500);
+                  --color--secondary--600: var(--color--pink--600);
+                  --color--secondary--700: var(--color--pink--700);
+                  --color--secondary--800: var(--color--pink--800);
+                  --color--secondary--900: var(--color--pink--900);
                 }
 
                 @media (prefers-color-scheme: dark) {
