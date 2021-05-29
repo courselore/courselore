@@ -45,7 +45,7 @@ module.exports = (require) => {
                   y="-85"
                   rx="10"
                   style="${css`
-                    fill: var(--color--primary--500);
+                    fill: var(--color--primary--600);
                   `}"
                 />
                 <text
@@ -130,10 +130,6 @@ module.exports = (require) => {
             @media (max-width: 450px) {
               width: 100%;
               flex-direction: column;
-            }
-
-            @media (min-width: 451px) {
-              align-items: baseline;
             }
           `}"
         >
@@ -234,24 +230,21 @@ module.exports = (require) => {
                 }
               `}"
             >
-              <i class="bi bi-envelope-fill"></i>
+              <i class="bi bi-envelope"></i>
               Contact
             </a>
           </div>
         </nav>
       </header>
 
-      <main
-        style="${css`
-          color: white;
-        `}"
-      >
+      <main>
         <div
           style="${css`
-            background-color: $purple;
+            background-color: var(--color--primary--900);
+            margin-top: -10vw;
             clip-path: polygon(0 10vw, 100% 0, 100% calc(100% - 10vw), 0 100%);
             position: relative;
-            padding: calc(10vw + 2rem) 1rem;
+            padding: calc(10vw + 2rem) var(--space--4);
             overflow: hidden;
           `}"
         >
