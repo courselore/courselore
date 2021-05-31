@@ -366,9 +366,7 @@ module.exports = (require) => {
                     <button
                       type="button"
                       data-tippy-content="What’s Markdown?"
-                      onclick="${javascript`
-                        document.querySelector("#modal--markdown").showModal();
-                      `}"
+                      data-dialog-show="#modal--markdown"
                     >
                       <i class="bi bi-info-circle"></i>
                     </button>
@@ -651,9 +649,7 @@ module.exports = (require) => {
               color: var(--color--primary--600);
             }
           `}"
-          onclick="${javascript`
-            this.closest("dialog").close();
-        `}"
+          data-dialog-close="true"
         >
           <i class="bi bi-x-lg"></i>
         </button>

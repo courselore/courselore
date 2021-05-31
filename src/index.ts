@@ -312,6 +312,11 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/tippy.js/dist/border.css"
           />
+          <link
+            rel="stylesheet"
+            href="${app.locals.settings
+              .url}/node_modules/dialog-polyfill/dist/dialog-polyfill.css"
+          />
           <style>
             $${postcss([postcssNested, autoprefixer]).process(
               css`
@@ -769,8 +774,19 @@ export default async function courselore(
                   cursor: pointer;
                 }
 
-                ::backdrop {
-                  background-color: #d6d3d1; /* TODO: var(--color--warm-gray--300) */
+                dialog {
+                  position: fixed;
+                  top: 50%;
+                  transform: translate(0, -50%);
+                }
+
+                dialog::backdrop {
+                  background-color: #d8b4fe; /* --color--primary--300 */
+                  opacity: 70%;
+                }
+
+                dialog + .backdrop {
+                  background-color: var(--color--primary--300);
                   opacity: 70%;
                 }
 
@@ -784,8 +800,7 @@ export default async function courselore(
                 .tippy-box {
                   color: var(--color--primary--50);
                   background-color: var(--color--primary--900);
-                  border: var(--border-width--1) solid
-                    var(--color--primary--50);
+                  border: var(--border-width--1) solid var(--color--primary--50);
                   & > .tippy-svg-arrow > svg {
                     &:first-child {
                       fill: var(--color--primary--50);
@@ -1057,6 +1072,7 @@ export default async function courselore(
             })();
           </script>
           $${bodyDOM.firstElementChild!.innerHTML}
+
           <script src="${app.locals.settings
               .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="${app.locals.settings
@@ -1067,6 +1083,27 @@ export default async function courselore(
                 arrow: tippy.roundArrow + tippy.roundArrow,
               });
             });
+          </script>
+
+          <script src="${app.locals.settings
+              .url}/node_modules/dialog-polyfill/dist/dialog-polyfill.js"></script>
+          <script>
+            for (const element of document.querySelectorAll("dialog"))
+              dialogPolyfill.registerDialog(element);
+            for (const element of document.querySelectorAll(
+              "[data-dialog-show]"
+            ))
+              element.addEventListener("click", () => {
+                document.body.style.overflow = "hidden";
+                document.querySelector(element.dataset.dialogShow).showModal();
+              });
+            for (const element of document.querySelectorAll(
+              "[data-dialog-close]"
+            ))
+              element.addEventListener("click", (event) => {
+                document.body.style.overflow = "visible";
+                event.target.closest("dialog").close();
+              });
           </script>
         </body>
       </html>
