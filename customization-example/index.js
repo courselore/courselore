@@ -47,7 +47,7 @@ module.exports = (require) => {
                     y="-85"
                     rx="10"
                     style="${css`
-                      fill: var(--color--primary--800);
+                      fill: var(--color--primary--700);
                     `}"
                   />
                   <text
@@ -94,7 +94,7 @@ module.exports = (require) => {
                     y="-26"
                     rx="10"
                     style="${css`
-                      fill: var(--color--blue--400);
+                      fill: var(--color--pink--500);
                     `}"
                   />
                   <text
@@ -103,7 +103,7 @@ module.exports = (require) => {
                       line-height: var(--line-height--2xl);
                       font-weight: var(--font-weight--black);
                       font-style: italic;
-                      fill: var(--color--blue--50);
+                      fill: var(--color--pink--50);
                       text-transform: uppercase;
                       letter-spacing: var(--space--0-5);
                     `}"
