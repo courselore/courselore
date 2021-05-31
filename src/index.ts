@@ -307,6 +307,11 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/tippy.js/dist/svg-arrow.css"
           />
+          <link
+            rel="stylesheet"
+            href="${app.locals.settings
+              .url}/node_modules/tippy.js/dist/border.css"
+          />
           <style>
             $${postcss([postcssNested, autoprefixer]).process(
               css`
@@ -779,8 +784,15 @@ export default async function courselore(
                 .tippy-box {
                   color: var(--color--primary--50);
                   background-color: var(--color--primary--900);
-                  & > .tippy-svg-arrow {
-                    fill: var(--color--primary--900);
+                  border: var(--border-width--1) solid
+                    var(--color--primary--50);
+                  & > .tippy-svg-arrow > svg {
+                    &:first-child {
+                      fill: var(--color--primary--50);
+                    }
+                    &:last-child {
+                      fill: var(--color--primary--900);
+                    }
                   }
                 }
 
