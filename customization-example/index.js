@@ -22,7 +22,7 @@ module.exports = (require) => {
     app.locals.partials.customizedIndex = html`
       <header
         style="${css`
-          background-color: var(--color--cool-gray--50);
+          background-color: var(--color--primary-gray--50);
           min-height: 90vh;
           padding: var(--space--4);
           padding-bottom: 10vw;
@@ -174,9 +174,9 @@ module.exports = (require) => {
               href="https://github.com/courselore"
               style="${css`
                 font-weight: var(--font-weight--bold);
-                color: var(--color--cool-gray--700);
-                background-color: var(--color--cool-gray--50);
-                --color--focus: var(--color--cool-gray--300);
+                color: var(--color--primary-gray--700);
+                background-color: var(--color--primary-gray--50);
+                --color--focus: var(--color--primary-gray--300);
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: inline-flex;
@@ -185,11 +185,11 @@ module.exports = (require) => {
                 transition: background-color var(--transition-duration);
 
                 &:hover {
-                  background-color: var(--color--cool-gray--200);
+                  background-color: var(--color--primary-gray--200);
                 }
 
                 &:active {
-                  background-color: var(--color--cool-gray--300);
+                  background-color: var(--color--primary-gray--300);
                 }
               `}"
             >
@@ -201,9 +201,9 @@ module.exports = (require) => {
               href="mailto:contact@courselore.org"
               style="${css`
                 font-weight: var(--font-weight--bold);
-                color: var(--color--cool-gray--700);
-                background-color: var(--color--cool-gray--50);
-                --color--focus: var(--color--cool-gray--300);
+                color: var(--color--primary-gray--700);
+                background-color: var(--color--primary-gray--50);
+                --color--focus: var(--color--primary-gray--300);
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: inline-flex;
@@ -212,11 +212,11 @@ module.exports = (require) => {
                 transition: background-color var(--transition-duration);
 
                 &:hover {
-                  background-color: var(--color--cool-gray--200);
+                  background-color: var(--color--primary-gray--200);
                 }
 
                 &:active {
-                  background-color: var(--color--cool-gray--300);
+                  background-color: var(--color--primary-gray--300);
                 }
               `}"
             >
@@ -582,8 +582,8 @@ module.exports = (require) => {
       <dialog
         id="modal--markdown"
         style="${css`
-          color: var(--color--cool-gray--700);
-          background-color: var(--color--cool-gray--50);
+          color: var(--color--primary-gray--700);
+          background-color: var(--color--primary-gray--50);
           padding: var(--space--4);
           border-radius: var(--border-radius--lg);
           margin: auto;

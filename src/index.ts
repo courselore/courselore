@@ -723,6 +723,17 @@ export default async function courselore(
                   --color--primary--800: var(--color--purple--800);
                   --color--primary--900: var(--color--purple--900);
 
+                  --color--primary-gray--50: var(--color--cool-gray--50);
+                  --color--primary-gray--100: var(--color--cool-gray--100);
+                  --color--primary-gray--200: var(--color--cool-gray--200);
+                  --color--primary-gray--300: var(--color--cool-gray--300);
+                  --color--primary-gray--400: var(--color--cool-gray--400);
+                  --color--primary-gray--500: var(--color--cool-gray--500);
+                  --color--primary-gray--600: var(--color--cool-gray--600);
+                  --color--primary-gray--700: var(--color--cool-gray--700);
+                  --color--primary-gray--800: var(--color--cool-gray--800);
+                  --color--primary-gray--900: var(--color--cool-gray--900);
+
                   --color--focus: var(--color--primary--200);
                 }
 
@@ -736,11 +747,6 @@ export default async function courselore(
                   font-family: var(--font-family--sans-serif);
                   font-size: var(--font-size--sm);
                   line-height: var(--line-height--sm);
-                }
-
-                abbr {
-                  text-decoration: underline dotted;
-                  cursor: help;
                 }
 
                 input,
@@ -764,23 +770,23 @@ export default async function courselore(
                 }
 
                 .tippy-box {
-                  color: var(--color--cool-gray--100);
-                  background-color: var(--color--cool-gray--800);
+                  color: var(--color--primary--700);
+                  background-color: var(--color--primary--100);
 
                   &[data-placement^="top"] > .tippy-arrow::before {
-                    border-top-color: var(--color--cool-gray--800);
+                    border-top-color: var(--color--primary--100);
                   }
 
                   &[data-placement^="bottom"] > .tippy-arrow::before {
-                    border-bottom-color: var(--color--cool-gray--800);
+                    border-bottom-color: var(--color--primary--100);
                   }
 
                   &[data-placement^="left"] > .tippy-arrow::before {
-                    border-left-color: var(--color--cool-gray--800);
+                    border-left-color: var(--color--primary--100);
                   }
 
                   &[data-placement^="right"] > .tippy-arrow::before {
-                    border-right-color: var(--color--cool-gray--800);
+                    border-right-color: var(--color--primary--100);
                   }
                 }
 
