@@ -302,6 +302,16 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/katex/dist/katex.min.css"
           />
+          <link
+            rel="stylesheet"
+            href="${app.locals.settings
+              .url}/node_modules/tippy.js/dist/svg-arrow.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${app.locals.settings
+              .url}/node_modules/tippy.js/dist/border.css"
+          />
           <style>
             $${postcss([postcssNested, autoprefixer]).process(
               css`
@@ -769,28 +779,22 @@ export default async function courselore(
                     var(--space--1) var(--color--focus);
                 }
 
+                /* COMPONENTS */
+
                 .tippy-box {
-                  color: var(--color--primary--700);
+                  color: var(--color--primary--900);
                   background-color: var(--color--primary--100);
-
-                  &[data-placement^="top"] > .tippy-arrow::before {
-                    border-top-color: var(--color--primary--100);
-                  }
-
-                  &[data-placement^="bottom"] > .tippy-arrow::before {
-                    border-bottom-color: var(--color--primary--100);
-                  }
-
-                  &[data-placement^="left"] > .tippy-arrow::before {
-                    border-left-color: var(--color--primary--100);
-                  }
-
-                  &[data-placement^="right"] > .tippy-arrow::before {
-                    border-right-color: var(--color--primary--100);
+                  border: var(--border-width--1) solid
+                    var(--color--primary--900);
+                  & > .tippy-svg-arrow > svg {
+                    &:first-child {
+                      fill: var(--color--primary--900);
+                    }
+                    &:last-child {
+                      fill: var(--color--primary--100);
+                    }
                   }
                 }
-
-                /* COMPONENTS */
 
                 /*
               ::selection {
@@ -1058,7 +1062,11 @@ export default async function courselore(
           <script src="${app.locals.settings
               .url}/node_modules/tippy.js/dist/tippy-bundle.umd.js"></script>
           <script>
-            tippy("[data-tippy-content]");
+            document.addEventListener("DOMContentLoaded", () => {
+              tippy("[data-tippy-content]", {
+                arrow: tippy.roundArrow + tippy.roundArrow,
+              });
+            });
           </script>
         </body>
       </html>
