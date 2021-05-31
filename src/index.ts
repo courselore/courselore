@@ -312,11 +312,13 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/tippy.js/dist/border.css"
           />
+          <!--
           <link
             rel="stylesheet"
             href="${app.locals.settings
-              .url}/node_modules/dialog-polyfill/dist/dialog-polyfill.css"
+            .url}/node_modules/dialog-polyfill/dist/dialog-polyfill.css"
           />
+          -->
           <style>
             $${postcss([postcssNested, autoprefixer]).process(
               css`
@@ -778,6 +780,13 @@ export default async function courselore(
                   position: fixed;
                   top: 50%;
                   transform: translate(0, -50%);
+                  max-width: 90%;
+                  max-height: 90%;
+                  overflow: auto;
+                }
+
+                dialog:not([open]) {
+                  display: none;
                 }
 
                 dialog::backdrop {
