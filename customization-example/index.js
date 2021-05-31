@@ -308,7 +308,7 @@ module.exports = (require) => {
                 & > div {
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
-                  color: var(--color--primary--700);
+                  color: var(--color--primary--900);
                   background-color: var(--color--primary--100);
                   --color--focus: var(--color--primary--400);
                   display: flex;
@@ -319,7 +319,6 @@ module.exports = (require) => {
                     font-size: var(--font-size--lg);
                     line-height: var(--line-height--lg);
                     font-weight: var(--font-weight--bold);
-                    color: var(--color--primary--900);
                     display: flex;
                     align-items: center;
                     gap: var(--space--2);
@@ -334,28 +333,75 @@ module.exports = (require) => {
                       align-items: center;
                     }
                   }
+
+                  & > ul {
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--1);
+
+                    & > li {
+                      display: flex;
+                      gap: var(--space--2);
+
+                      & > i,
+                      & > button {
+                        color: var(--color--primary--600);
+                      }
+                    }
+                  }
                 }
               `}"
             >
               <div>
                 <h3><i class="bi bi-toggles"></i> Fully-Featured</h3>
-                <p>
-                  All the features you’ve come to expect from a forum, including
-                  Q&A, announcements, notifications, invitations,
-                  <button
-                    type="button"
-                    onclick="${javascript`
-                      document.querySelector("#modal--markdown").showModal();
-                    `}"
-                  >
-                    <abbr data-tippy-content="What’s Markdown?"
-                      >Markdown</abbr
-                    ></button
-                  >, <abbr data-tippy-content="What’s LaTeX?">LaTeX</abbr>,
-                  <abbr data-tippy-content="What’s Syntax Highlighting?"
-                    >syntax highlighting</abbr
-                  >, and much more, all in an easy-to-use and modern interface.
-                </p>
+                <ul>
+                  <li><i class="bi bi-check-circle-fill"></i> Q&A</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Chat</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Announcements</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Notifications</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Invitations</li>
+                  <li><i class="bi bi-check-circle-fill"></i> Anonymity</li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Markdown
+                    <button
+                      type="button"
+                      data-tippy-content="What’s Markdown?"
+                      onclick="${javascript`
+                        document.querySelector("#modal--markdown").showModal();
+                      `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> LaTeX
+                    <button
+                      type="button"
+                      data-tippy-content="What’s LaTeX?"
+                      onclick="${javascript`
+                        document.querySelector("#modal--latex").showModal();
+                      `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Syntax highlighting
+                    <button
+                      type="button"
+                      data-tippy-content="What’s Syntax Highlighting?"
+                      onclick="${javascript`
+                        document.querySelector("#modal--syntax-highlighting").showModal();
+                      `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i> Easy-to-use and
+                    modern interface
+                  </li>
+                </ul>
               </div>
 
               <div>
