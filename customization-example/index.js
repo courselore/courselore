@@ -38,7 +38,13 @@ module.exports = (require) => {
           $${app.locals.partials.art.large.replace(
             "</svg>",
             html`
-              <g text-anchor="middle">
+              <g
+                text-anchor="middle"
+                style="${css`
+                  font-weight: var(--font-weight--black);
+                  font-style: italic;
+                `}"
+              >
                 <g transform="translate(300, 250) rotate(-2)">
                   <rect
                     width="550"
@@ -55,8 +61,6 @@ module.exports = (require) => {
                       font-family: var(--font-family--serif);
                       font-size: var(--font-size--8xl);
                       line-height: var(--line-height--8xl);
-                      font-weight: var(--font-weight--black);
-                      font-style: italic;
                       fill: var(--color--primary--50);
                     `}"
                   >
@@ -78,8 +82,6 @@ module.exports = (require) => {
                     style="${css`
                       font-size: var(--font-size--3xl);
                       line-height: var(--line-height--3xl);
-                      font-weight: var(--font-weight--black);
-                      font-style: italic;
                       fill: var(--color--fuchsia--50);
                     `}"
                   >
@@ -101,8 +103,6 @@ module.exports = (require) => {
                     style="${css`
                       font-size: var(--font-size--2xl);
                       line-height: var(--line-height--2xl);
-                      font-weight: var(--font-weight--black);
-                      font-style: italic;
                       fill: var(--color--pink--50);
                       text-transform: uppercase;
                       letter-spacing: var(--space--0-5);
@@ -270,7 +270,6 @@ module.exports = (require) => {
             style="${css`
               padding: calc(10vw + var(--space--8)) var(--space--4);
               display: flex;
-              justify-items: center;
               align-items: center;
               flex-direction: column;
               gap: var(--space--8);
