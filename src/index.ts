@@ -814,7 +814,7 @@ export default async function courselore(
                       &.dialog {
                         color: var(--color--primary-gray--700);
                         background-color: var(--color--primary-gray--50);
-                        max-width: 80ch;
+                        max-width: min(90%, 80ch);
                         max-height: 90%;
                         padding: var(--space--4);
                         border-radius: var(--border-radius--lg);
