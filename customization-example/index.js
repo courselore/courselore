@@ -4,7 +4,6 @@ module.exports = (require) => {
   const cookieParser = require("cookie-parser");
   const { html } = require("@leafac/html");
   const css = require("tagged-template-noop");
-  const javascript = require("tagged-template-noop");
   const markdown = require("dedent");
 
   return (app) => {
@@ -371,7 +370,6 @@ module.exports = (require) => {
                   <li>
                     <i class="bi bi-check-circle-fill"></i> Markdown
                     <button
-                      type="button"
                       data-tippy-content="What’s Markdown?"
                       data-tippy-theme="tooltip"
                       data-micromodal-trigger="modal--markdown"
@@ -382,7 +380,6 @@ module.exports = (require) => {
                   <li>
                     <i class="bi bi-check-circle-fill"></i> LaTeX
                     <button
-                      type="button"
                       data-tippy-content="What’s LaTeX?"
                       data-tippy-theme="tooltip"
                       data-micromodal-trigger="modal--latex"
@@ -393,7 +390,6 @@ module.exports = (require) => {
                   <li>
                     <i class="bi bi-check-circle-fill"></i> Syntax highlighting
                     <button
-                      type="button"
                       data-tippy-content="What’s Syntax Highlighting?"
                       data-tippy-theme="tooltip"
                       data-micromodal-trigger="modal--syntax-highlighting"
@@ -629,16 +625,16 @@ module.exports = (require) => {
       </main>
 
       <div id="modal--markdown" class="modal">
-        <div tabindex="-1" data-micromodal-close>
+        <div data-micromodal-close tabindex="-1">
           <div class="dialog">
             <button
-              type="button"
               data-micromodal-close
+              class="bi bi-x-circle"
               style="${css`
+                position: absolute;
+                top: var(--space--2);
+                right: var(--space--2);
                 transition: color var(--transition-duration);
-                border-radius: 50%;
-                width: var(--font-size--lg);
-                height: var(--font-size--lg);
 
                 &:hover {
                   color: var(--color--primary--400);
@@ -648,52 +644,8 @@ module.exports = (require) => {
                   color: var(--color--primary--600);
                 }
               `}"
-              data-dialog-close="true"
-            >
-              <i class="bi bi-x-lg"></i>
-            </button>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
-            <h5>What’s Markdown?</h5>
+            ></button>
+            <h3>What’s Markdown?</h3>
             $${(() => {
               const example = markdown`
                 Things I’m **loving** about

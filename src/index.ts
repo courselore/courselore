@@ -1104,7 +1104,7 @@ export default async function courselore(
               .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
           <script>
             document.addEventListener("DOMContentLoaded", () => {
-              MicroModal.init({ disableScroll: true });
+              MicroModal.init({ disableScroll: true, disableFocus: true });
             });
           </script>
         </body>
