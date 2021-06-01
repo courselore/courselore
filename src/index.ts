@@ -916,7 +916,8 @@ export default async function courselore(
                   }
 
                   p,
-                  ul {
+                  ul,
+                  .rehype-shiki {
                     &:not(:first-child) {
                       margin-top: var(--space--2);
                     }
@@ -928,6 +929,13 @@ export default async function courselore(
                     & > li {
                       list-style: disc;
                     }
+                  }
+
+                  pre {
+                    padding: var(--space--4);
+                    border: var(--border-width--1) solid
+                      var(--color--primary--200);
+                    border-radius: var(--border-radius--lg);
                   }
                 }
 

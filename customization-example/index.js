@@ -688,7 +688,7 @@ module.exports = (require) => {
                 </p>
                 $${textProcessorExample(
                   markdown`
-                    Things I’m **loving** about
+                    Things I **love** about
                     [CourseLore](https://courselore.org):
 
                     - It’s easy to install.
@@ -711,143 +711,76 @@ module.exports = (require) => {
             </div>
           </div>
 
-          <div
-            class="modal fade"
-            id="latex-modal"
-            tabindex="-1"
-            aria-labelledby="latex-modal-label"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="latex-modal-label">
-                    What’s LaTeX?
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  $${(() => {
-                    const example = markdown`
-                      There’s an $e^{ix}$ in
-                      Euler’s formula:
+          <div id="modal--latex" class="modal">
+            <div data-micromodal-close class="close-button">
+              <div
+                class="dialog"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <h3 class="heading--1">What’s LaTeX?</h3>
+                <p>
+                  LaTeX is a simple way to include mathematical formulas in your
+                  posts, for example:
+                </p>
+                $${textProcessorExample(
+                  markdown`
+                    There’s an $e^{ix}$ in
+                    Euler’s formula:
 
-                      $$
-                      e^{ix} = \cos x + i \sin x
-                      $$
-                    `;
-                    return html`
-                      <p>
-                        LaTeX is a simple way to include mathematical formulas
-                        in your posts, for example:
-                      </p>
-
-                      <div class="card-group">
-                        <div class="card mb-3">
-                          <div class="card-header text-center fw-bold">
-                            You write…
-                          </div>
-                          <div class="card-body pb-0">
-                            <pre><code>$${example}</code></pre>
-                          </div>
-                        </div>
-                        <div class="card mb-3">
-                          <div class="card-header text-center fw-bold">
-                            …and your post looks like
-                          </div>
-                          <div class="card-body pb-0">
-                            $${app.locals.partials.textProcessor(example)}
-                          </div>
-                        </div>
-                      </div>
-
-                      <p>
-                        LaTeX is much more powerful than this simple example
-                        shows, it’s
-                        <a href="https://katex.org/docs/supported.html"
-                          >easy to learn</a
-                        >, and it’s used by many people in academia.
-                      </p>
-                    `;
-                  })()}
-                </div>
+                    $$
+                    e^{ix} = \cos x + i \sin x
+                    $$
+                  `
+                )}
+                <p class="text">
+                  LaTeX is much more powerful than this simple example shows,
+                  it’s
+                  <a href="https://katex.org/docs/supported.html"
+                    >easy to learn</a
+                  >, and it’s used by many people in academia.
+                </p>
               </div>
             </div>
           </div>
 
-          <div
-            class="modal fade"
-            id="syntax-highlighting-modal"
-            tabindex="-1"
-            aria-labelledby="syntax-highlighting-modal-label"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="syntax-highlighting-modal-label">
-                    What’s Syntax Highlighting?
-                  </h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  $${(() => {
-                    const example =
-                      // prettier-ignore
-                      markdown`
+          <div id="modal--syntax-highlighting" class="modal">
+            <div data-micromodal-close class="close-button">
+              <div
+                class="dialog"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <h3 class="heading--1">What’s Syntax Highlighting?</h3>
+                <p>
+                  Syntax highlighting is the colors that make code snippets in
+                  your posts easier to read, for example:
+                </p>
+                $${textProcessorExample(
+                  // prettier-ignore
+                  markdown`
                     Calculate the position:
-  
+    
                     \`\`\`javascript
                     function position(time) {
                       return time * 0.25;
                     }
                     \`\`\`
-                  `;
-                    return html`
-                      <p>
-                        Syntax highlighting is adding color to code snippets in
-                        your posts to make them easier to read, for example:
-                      </p>
-
-                      <div class="card-group">
-                        <div class="card mb-3">
-                          <div class="card-header text-center fw-bold">
-                            You write…
-                          </div>
-                          <div class="card-body pb-0">
-                            <pre><code>$${example}</code></pre>
-                          </div>
-                        </div>
-                        <div class="card mb-3">
-                          <div class="card-header text-center fw-bold">
-                            …and your post looks like
-                          </div>
-                          <div class="card-body pb-0">
-                            $${app.locals.partials.textProcessor(example)}
-                          </div>
-                        </div>
-                      </div>
-
-                      <p>
-                        CourseLore uses
-                        <a href="https://shiki.matsu.io/"
-                          >the same syntax highlighter as Visual Studio Code</a
-                        >, which supports all popular programming languages so
-                        your posts will always look awesome.
-                      </p>
-                    `;
-                  })()}
-                </div>
+                  `
+                )}
+                <p class="text">
+                  CourseLore uses
+                  <a href="https://shiki.matsu.io/"
+                    >the same syntax highlighter as Visual Studio Code</a
+                  >, which supports all popular programming languages so your
+                  posts will always look awesome.
+                </p>
               </div>
             </div>
           </div>
