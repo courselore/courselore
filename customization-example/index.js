@@ -313,18 +313,33 @@ module.exports = (require) => {
                     <i class="bi bi-toggles"></i> Fully-Featured
                   </h3>
                   <ul>
-                    <li><i class="bi bi-check-circle-fill"></i> Q&A</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Chat</li>
                     <li>
-                      <i class="bi bi-check-circle-fill"></i> Announcements
+                      <i class="bi bi-check-circle-fill"></i>
+                      Q&A
                     </li>
                     <li>
-                      <i class="bi bi-check-circle-fill"></i> Notifications
+                      <i class="bi bi-check-circle-fill"></i>
+                      Chat
                     </li>
-                    <li><i class="bi bi-check-circle-fill"></i> Invitations</li>
-                    <li><i class="bi bi-check-circle-fill"></i> Anonymity</li>
                     <li>
-                      <i class="bi bi-check-circle-fill"></i> Markdown
+                      <i class="bi bi-check-circle-fill"></i>
+                      Announcements
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Notifications
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Invitations
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Anonymity
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Markdown
                       <button
                         data-tippy-content="What’s Markdown?"
                         data-tippy-theme="tooltip"
@@ -334,7 +349,8 @@ module.exports = (require) => {
                       </button>
                     </li>
                     <li>
-                      <i class="bi bi-check-circle-fill"></i> LaTeX
+                      <i class="bi bi-check-circle-fill"></i>
+                      LaTeX
                       <button
                         data-tippy-content="What’s LaTeX?"
                         data-tippy-theme="tooltip"
@@ -344,8 +360,8 @@ module.exports = (require) => {
                       </button>
                     </li>
                     <li>
-                      <i class="bi bi-check-circle-fill"></i> Syntax
-                      highlighting
+                      <i class="bi bi-check-circle-fill"></i>
+                      Syntax highlighting
                       <button
                         data-tippy-content="What’s Syntax Highlighting?"
                         data-tippy-theme="tooltip"
@@ -355,8 +371,8 @@ module.exports = (require) => {
                       </button>
                     </li>
                     <li>
-                      <i class="bi bi-check-circle-fill"></i> Easy-to-use &
-                      modern interface
+                      <i class="bi bi-check-circle-fill"></i>
+                      Easy-to-use & modern interface
                     </li>
                   </ul>
                 </div>
@@ -365,13 +381,32 @@ module.exports = (require) => {
                   <h3 class="heading--1">
                     <i class="bi bi-code-square"></i> Open-Source
                   </h3>
-                  <p>
-                    We’re developing CourseLore in the open. You may inspect the
-                    source code to increase your trust on the software that you
-                    use, you may build other tools on top of the CourseLore API,
-                    and you may collaborate on the development of CourseLore
-                    itself.
-                  </p>
+                  <ul>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Free for everyone; forever
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Developed in public
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Beginner-friendly code base
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Inspect & trust the software you use
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Accessible programmatically via the CourseLore API
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Collaborate on the development
+                    </li>
+                  </ul>
                 </div>
 
                 <div>
