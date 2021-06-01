@@ -779,6 +779,22 @@ export default async function courselore(
 
                 /* COMPONENTS */
 
+                .heading--display--1 {
+                  font-family: var(--font-family--serif);
+                  font-size: var(--font-size--4xl);
+                  line-height: var(--line-height--4xl);
+                  font-weight: var(--font-weight--black);
+                  font-style: italic;
+                  text-align: center;
+                }
+
+                .heading--1 {
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                  color: var(--color--primary--900);
+                }
+
                 .tippy-box[data-theme~="tooltip"] {
                   color: var(--color--primary--50);
                   background-color: var(--color--primary--900);

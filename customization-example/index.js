@@ -278,13 +278,8 @@ module.exports = (require) => {
               `}"
             >
               <h2
+                class="heading--display--1"
                 style="${css`
-                  font-family: var(--font-family--serif);
-                  font-size: var(--font-size--4xl);
-                  line-height: var(--line-height--4xl);
-                  font-weight: var(--font-weight--black);
-                  font-style: italic;
-                  text-align: center;
                   color: var(--color--primary--100);
                 `}"
               >
@@ -310,7 +305,7 @@ module.exports = (require) => {
                   & > div {
                     padding: var(--space--4);
                     border-radius: var(--border-radius--xl);
-                    color: var(--color--primary--900);
+                    color: var(--color--primary--800);
                     background-color: var(--color--primary--100);
                     --color--focus: var(--color--primary--400);
                     display: flex;
@@ -318,9 +313,6 @@ module.exports = (require) => {
                     gap: var(--space--4);
 
                     & > h3 {
-                      font-size: var(--font-size--lg);
-                      line-height: var(--line-height--lg);
-                      font-weight: var(--font-weight--bold);
                       display: flex;
                       align-items: center;
                       gap: var(--space--2);
@@ -365,7 +357,9 @@ module.exports = (require) => {
                 `}"
               >
                 <div>
-                  <h3><i class="bi bi-toggles"></i> Fully-Featured</h3>
+                  <h3 class="heading--1">
+                    <i class="bi bi-toggles"></i> Fully-Featured
+                  </h3>
                   <ul>
                     <li><i class="bi bi-check-circle-fill"></i> Q&A</li>
                     <li><i class="bi bi-check-circle-fill"></i> Chat</li>
@@ -416,7 +410,9 @@ module.exports = (require) => {
                 </div>
 
                 <div>
-                  <h3><i class="bi bi-code-square"></i> Open-Source</h3>
+                  <h3 class="heading--1">
+                    <i class="bi bi-code-square"></i> Open-Source
+                  </h3>
                   <p>
                     We’re developing CourseLore in the open. You may inspect the
                     source code to increase your trust on the software that you
@@ -427,7 +423,9 @@ module.exports = (require) => {
                 </div>
 
                 <div>
-                  <h3><i class="bi bi-shield-lock"></i> Self-Hosted</h3>
+                  <h3 class="heading--1">
+                    <i class="bi bi-shield-lock"></i> Self-Hosted
+                  </h3>
                   <p>
                     CourseLore is easy to run on your own server. This means you
                     know exactly where your data is and who owns it: you. Utmost
@@ -740,16 +738,7 @@ module.exports = (require) => {
                   gap: var(--space--4);
                 `}"
               >
-                <h3
-                  style="${css`
-                    font-size: var(--font-size--base);
-                    line-height: var(--line-height-base);
-                    font-weight: var(--font-weight--bold);
-                    color: var(--color--primary--800);
-                  `}"
-                >
-                  What’s Markdown?
-                </h3>
+                <h3 class="heading--1">What’s Markdown?</h3>
                 <p>
                   Markdown is a simple way to include bold text, links, lists,
                   and many other forms of rich-text formatting in your posts,
