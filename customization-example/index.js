@@ -344,6 +344,16 @@ module.exports = (require) => {
                       & > button {
                         color: var(--color--primary--600);
                       }
+
+                      & > button {
+                        &:hover {
+                          color: var(--color--primary--500);
+                        }
+
+                        &:active {
+                          color: var(--color--primary--700);
+                        }
+                      }
                     }
                   }
                 }
@@ -623,8 +633,8 @@ module.exports = (require) => {
           <div class="dialog">
             <button
               type="button"
+              data-micromodal-close
               style="${css`
-                float: right;
                 transition: color var(--transition-duration);
                 border-radius: 50%;
                 width: var(--font-size--lg);

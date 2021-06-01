@@ -810,6 +810,7 @@ export default async function courselore(
 
                     & > div {
                       overflow: auto;
+                      position: relative;
 
                       &.dialog {
                         color: var(--color--primary-gray--700);
