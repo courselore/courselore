@@ -363,6 +363,7 @@ module.exports = (require) => {
                     <button
                       type="button"
                       data-tippy-content="What’s Markdown?"
+                      data-tippy-theme="tooltip"
                       data-micromodal-trigger="modal--markdown"
                     >
                       <i class="bi bi-info-circle"></i>
@@ -373,6 +374,7 @@ module.exports = (require) => {
                     <button
                       type="button"
                       data-tippy-content="What’s LaTeX?"
+                      data-tippy-theme="tooltip"
                       data-micromodal-trigger="modal--latex"
                     >
                       <i class="bi bi-info-circle"></i>
@@ -383,6 +385,7 @@ module.exports = (require) => {
                     <button
                       type="button"
                       data-tippy-content="What’s Syntax Highlighting?"
+                      data-tippy-theme="tooltip"
                       data-micromodal-trigger="modal--syntax-highlighting"
                     >
                       <i class="bi bi-info-circle"></i>
