@@ -802,7 +802,18 @@ export default async function courselore(
                     bottom: 0;
                     left: 0;
                     display: flex;
-                    background-color: var(--color--primary--300);
+
+                    &::before {
+                      content: "";
+                      position: absolute;
+                      top: 0;
+                      right: 0;
+                      bottom: 0;
+                      left: 0;
+                      background-color: var(--color--primary--300);
+                      opacity: 70%;
+                      z-index: -1;
+                    }
 
                     & > div {
                       overflow: auto;
