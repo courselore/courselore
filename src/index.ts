@@ -818,6 +818,18 @@ export default async function courselore(
                       z-index: -1;
                     }
 
+                    &.close-button::after {
+                      content: "\\f622";
+                      font-family: bootstrap-icons !important;
+                      font-size: var(--font-size--2xl);
+                      line-height: var(--line-height--2xl);
+                      position: fixed;
+                      top: var(--space--2);
+                      right: var(--space--4);
+                      cursor: pointer;
+                      color: var(--color--primary--900);
+                    }
+
                     & > div {
                       overflow: auto;
                       position: relative;
@@ -826,7 +838,7 @@ export default async function courselore(
                         color: var(--color--primary-gray--700);
                         background-color: var(--color--primary-gray--50);
                         max-width: min(calc(100% - 2 * var(--space--4)), 80ch);
-                        max-height: calc(100% - 2 * var(--space--4));
+                        max-height: calc(100% - 2 * var(--space--12));
                         padding: var(--space--4);
                         border-radius: var(--border-radius--lg);
                         margin: auto;

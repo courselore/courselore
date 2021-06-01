@@ -731,7 +731,7 @@ module.exports = (require) => {
 
         return html`
           <div id="modal--markdown" class="modal">
-            <div data-micromodal-close tabindex="-1">
+            <div data-micromodal-close class="close-button">
               <div
                 class="dialog"
                 style="${css`
@@ -740,24 +740,6 @@ module.exports = (require) => {
                   gap: var(--space--4);
                 `}"
               >
-                <button
-                  data-micromodal-close
-                  class="bi bi-x-circle"
-                  style="${css`
-                    position: absolute;
-                    top: var(--space--4);
-                    right: var(--space--4);
-                    transition: color var(--transition-duration);
-
-                    &:hover {
-                      color: var(--color--primary--400);
-                    }
-
-                    &:active {
-                      color: var(--color--primary--600);
-                    }
-                  `}"
-                ></button>
                 <h3
                   style="${css`
                     font-size: var(--font-size--base);
