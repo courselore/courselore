@@ -626,7 +626,14 @@ module.exports = (require) => {
 
       <div id="modal--markdown" class="modal">
         <div data-micromodal-close tabindex="-1">
-          <div class="dialog">
+          <div
+            class="dialog"
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `}"
+          >
             <button
               data-micromodal-close
               class="bi bi-x-circle"
@@ -645,7 +652,16 @@ module.exports = (require) => {
                 }
               `}"
             ></button>
-            <h3>What’s Markdown?</h3>
+            <h3
+              style="${css`
+                font-size: var(--font-size--base);
+                line-height: var(--line-height-base);
+                font-weight: var(--font-weight--bold);
+                color: var(--color--primary--800);
+              `}"
+            >
+              What’s Markdown?
+            </h3>
             $${(() => {
               const example = markdown`
                 Things I’m **loving** about
@@ -662,22 +678,70 @@ module.exports = (require) => {
                   for example:
                 </p>
 
-                <div class="card-group">
-                  <div class="card mb-3">
-                    <div class="card-header text-center fw-bold">
-                      You write…
-                    </div>
-                    <div class="card-body pb-0">
+                <div
+                  style="${css`
+                    display: flex;
+
+                    & > * {
+                      flex: 1;
+                    }
+
+                    & > div {
+                      display: flex;
+                      flex-direction: column;
+
+                      & > h4 {
+                        font-weight: var(--font-weight--bold);
+                        text-align: center;
+                        color: var(--color--primary--800);
+                        background-color: var(--color--primary--50);
+                        padding: var(--space--2) var(--space--4);
+                      }
+
+                      & > div {
+                        flex: 1;
+                        padding: var(--space--4) var(--space--4);
+                        margin-top: calc(-1 * var(--border-width--1));
+                      }
+
+                      & > * {
+                        border: var(--border-width--1) solid
+                          var(--color--primary--200);
+                      }
+                    }
+
+                    & > :first-child {
+                      & > :first-child {
+                        border-top-left-radius: var(--border-radius--lg);
+                      }
+                      & > :last-child {
+                        border-bottom-left-radius: var(--border-radius--lg);
+                      }
+                    }
+
+                    & > :last-child {
+                      & > :first-child {
+                        border-top-right-radius: var(--border-radius--lg);
+                      }
+                      & > :last-child {
+                        border-bottom-right-radius: var(--border-radius--lg);
+                      }
+                    }
+
+                    & > :not(:first-child) {
+                      margin-left: calc(-1 * var(--border-width--1));
+                    }
+                  `}"
+                >
+                  <div>
+                    <h4>You write…</h4>
+                    <div>
                       <pre><code>$${example}</code></pre>
                     </div>
                   </div>
-                  <div class="card mb-3">
-                    <div class="card-header text-center fw-bold">
-                      …and your post looks like
-                    </div>
-                    <div class="card-body pb-0">
-                      $${app.locals.partials.textProcessor(example)}
-                    </div>
+                  <div>
+                    <h4>…and your post looks like</h4>
+                    <div>$${app.locals.partials.textProcessor(example)}</div>
                   </div>
                 </div>
 

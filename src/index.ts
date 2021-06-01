@@ -752,6 +752,15 @@ export default async function courselore(
                   line-height: var(--line-height--sm);
                 }
 
+                code {
+                  font-family: var(--font-family--monospace);
+                }
+
+                pre {
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                }
+
                 input,
                 textarea {
                   font-size: var(--font-size--base);
