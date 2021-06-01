@@ -639,8 +639,8 @@ module.exports = (require) => {
               class="bi bi-x-circle"
               style="${css`
                 position: absolute;
-                top: var(--space--2);
-                right: var(--space--2);
+                top: var(--space--4);
+                right: var(--space--4);
                 transition: color var(--transition-duration);
 
                 &:hover {
@@ -682,10 +682,6 @@ module.exports = (require) => {
                   style="${css`
                     display: flex;
 
-                    & > * {
-                      flex: 1;
-                    }
-
                     & > div {
                       display: flex;
                       flex-direction: column;
@@ -710,26 +706,50 @@ module.exports = (require) => {
                       }
                     }
 
-                    & > :first-child {
-                      & > :first-child {
-                        border-top-left-radius: var(--border-radius--lg);
-                      }
-                      & > :last-child {
-                        border-bottom-left-radius: var(--border-radius--lg);
-                      }
-                    }
+                    @media (max-width: 767px) {
+                      flex-direction: column;
 
-                    & > :last-child {
-                      & > :first-child {
+                      & > :first-child > :first-child {
+                        border-top-left-radius: var(--border-radius--lg);
                         border-top-right-radius: var(--border-radius--lg);
                       }
-                      & > :last-child {
+
+                      & > :last-child > :last-child {
+                        border-bottom-left-radius: var(--border-radius--lg);
                         border-bottom-right-radius: var(--border-radius--lg);
+                      }
+
+                      & > :not(:first-child) {
+                        margin-top: calc(-1 * var(--border-width--1));
                       }
                     }
 
-                    & > :not(:first-child) {
-                      margin-left: calc(-1 * var(--border-width--1));
+                    @media (min-width: 768px) {
+                      & > * {
+                        flex: 1;
+                      }
+
+                      & > :first-child {
+                        & > :first-child {
+                          border-top-left-radius: var(--border-radius--lg);
+                        }
+                        & > :last-child {
+                          border-bottom-left-radius: var(--border-radius--lg);
+                        }
+                      }
+
+                      & > :last-child {
+                        & > :first-child {
+                          border-top-right-radius: var(--border-radius--lg);
+                        }
+                        & > :last-child {
+                          border-bottom-right-radius: var(--border-radius--lg);
+                        }
+                      }
+
+                      & > :not(:first-child) {
+                        margin-left: calc(-1 * var(--border-width--1));
+                      }
                     }
                   `}"
                 >
