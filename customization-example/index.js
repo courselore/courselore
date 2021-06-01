@@ -355,7 +355,7 @@ module.exports = (require) => {
                       </button>
                     </li>
                     <li>
-                      <i class="bi bi-check-circle-fill"></i> Easy-to-use and
+                      <i class="bi bi-check-circle-fill"></i> Easy-to-use &
                       modern interface
                     </li>
                   </ul>
