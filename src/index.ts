@@ -795,6 +795,41 @@ export default async function courselore(
                   color: var(--color--primary--900);
                 }
 
+                .button {
+                  font-weight: var(--font-weight--bold);
+                  padding: var(--space--2) var(--space--4);
+                  border-radius: var(--border-radius--md);
+                  display: inline-flex;
+                  gap: var(--space--2);
+                  justify-content: center;
+                  transition: background-color var(--transition-duration);
+
+                  &.primary {
+                    color: var(--color--primary--50);
+                    background-color: var(--color--primary--700);
+
+                    &:hover {
+                      background-color: var(--color--primary--600);
+                    }
+
+                    &:active {
+                      background-color: var(--color--primary--800);
+                    }
+                  }
+
+                  &.secondary {
+                    --color--focus: var(--color--primary-gray--300);
+
+                    &:hover {
+                      background-color: var(--color--primary-gray--200);
+                    }
+
+                    &:active {
+                      background-color: var(--color--primary-gray--300);
+                    }
+                  }
+                }
+
                 .tippy-box[data-theme~="tooltip"] {
                   color: var(--color--primary--50);
                   background-color: var(--color--primary--900);

@@ -144,25 +144,7 @@ module.exports = (require) => {
               href="$${app.locals.settings.url}/authenticate"
               data-tippy-content="Very rough early demonstration"
               data-tippy-theme="tooltip"
-              style="${css`
-                font-weight: var(--font-weight--bold);
-                color: var(--color--primary--50);
-                background-color: var(--color--primary--700);
-                padding: var(--space--2) var(--space--4);
-                border-radius: var(--border-radius--md);
-                display: inline-flex;
-                gap: var(--space--2);
-                justify-content: center;
-                transition: background-color var(--transition-duration);
-
-                &:hover {
-                  background-color: var(--color--primary--600);
-                }
-
-                &:active {
-                  background-color: var(--color--primary--800);
-                }
-              `}"
+              class="button primary"
             >
               <i class="bi bi-easel"></i>
               Demonstration
@@ -175,52 +157,12 @@ module.exports = (require) => {
                 justify-content: center;
               `}"
             >
-              <a
-                href="https://github.com/courselore"
-                style="${css`
-                  font-weight: var(--font-weight--bold);
-                  --color--focus: var(--color--primary-gray--300);
-                  padding: var(--space--2) var(--space--4);
-                  border-radius: var(--border-radius--md);
-                  display: inline-flex;
-                  gap: var(--space--2);
-                  justify-content: center;
-                  transition: background-color var(--transition-duration);
-
-                  &:hover {
-                    background-color: var(--color--primary-gray--200);
-                  }
-
-                  &:active {
-                    background-color: var(--color--primary-gray--300);
-                  }
-                `}"
-              >
+              <a href="https://github.com/courselore" class="button secondary">
                 <i class="bi bi-github"></i>
                 Source Code
               </a>
 
-              <a
-                href="mailto:contact@courselore.org"
-                style="${css`
-                  font-weight: var(--font-weight--bold);
-                  --color--focus: var(--color--primary-gray--300);
-                  padding: var(--space--2) var(--space--4);
-                  border-radius: var(--border-radius--md);
-                  display: inline-flex;
-                  gap: var(--space--2);
-                  justify-content: center;
-                  transition: background-color var(--transition-duration);
-
-                  &:hover {
-                    background-color: var(--color--primary-gray--200);
-                  }
-
-                  &:active {
-                    background-color: var(--color--primary-gray--300);
-                  }
-                `}"
-              >
+              <a href="mailto:contact@courselore.org" class="button secondary">
                 <i class="bi bi-envelope"></i>
                 Contact
               </a>
