@@ -636,147 +636,153 @@ module.exports = (require) => {
         </main>
       </div>
 
-      <div id="modal--markdown" class="modal">
-        <div data-micromodal-close tabindex="-1">
-          <div
-            class="dialog"
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            <button
-              data-micromodal-close
-              class="bi bi-x-circle"
+      $${(() => {
+        const textProcessorExample = (text) =>
+          html`
+            <div
               style="${css`
-                position: absolute;
-                top: var(--space--4);
-                right: var(--space--4);
-                transition: color var(--transition-duration);
+                display: flex;
 
-                &:hover {
-                  color: var(--color--primary--400);
+                & > div {
+                  display: flex;
+                  flex-direction: column;
+
+                  & > h4 {
+                    font-weight: var(--font-weight--bold);
+                    text-align: center;
+                    color: var(--color--primary--800);
+                    background-color: var(--color--primary--50);
+                    padding: var(--space--2) var(--space--4);
+                  }
+
+                  & > div {
+                    flex: 1;
+                    padding: var(--space--4) var(--space--4);
+                    margin-top: calc(-1 * var(--border-width--1));
+                  }
+
+                  & > * {
+                    border: var(--border-width--1) solid
+                      var(--color--primary--200);
+                  }
                 }
 
-                &:active {
-                  color: var(--color--primary--600);
+                @media (max-width: 767px) {
+                  flex-direction: column;
+
+                  & > :first-child > :first-child {
+                    border-top-left-radius: var(--border-radius--lg);
+                    border-top-right-radius: var(--border-radius--lg);
+                  }
+
+                  & > :last-child > :last-child {
+                    border-bottom-left-radius: var(--border-radius--lg);
+                    border-bottom-right-radius: var(--border-radius--lg);
+                  }
+
+                  & > :not(:first-child) {
+                    margin-top: calc(-1 * var(--border-width--1));
+                  }
                 }
-              `}"
-            ></button>
-            <h3
-              style="${css`
-                font-size: var(--font-size--base);
-                line-height: var(--line-height-base);
-                font-weight: var(--font-weight--bold);
-                color: var(--color--primary--800);
+
+                @media (min-width: 768px) {
+                  & > * {
+                    flex: 1;
+                  }
+
+                  & > :first-child {
+                    & > :first-child {
+                      border-top-left-radius: var(--border-radius--lg);
+                    }
+                    & > :last-child {
+                      border-bottom-left-radius: var(--border-radius--lg);
+                    }
+                  }
+
+                  & > :last-child {
+                    & > :first-child {
+                      border-top-right-radius: var(--border-radius--lg);
+                    }
+                    & > :last-child {
+                      border-bottom-right-radius: var(--border-radius--lg);
+                    }
+                  }
+
+                  & > :not(:first-child) {
+                    margin-left: calc(-1 * var(--border-width--1));
+                  }
+                }
               `}"
             >
-              What’s Markdown?
-            </h3>
-            $${(() => {
-              const example = markdown`
-                Things I’m **loving** about
-                [CourseLore](https://courselore.org):
+              <div>
+                <h4>You write…</h4>
+                <div>
+                  <pre><code>$${text}</code></pre>
+                </div>
+              </div>
+              <div>
+                <h4>…and your post looks like</h4>
+                <div class="text">
+                  $${app.locals.partials.textProcessor(text)}
+                </div>
+              </div>
+            </div>
+          `;
 
-                - It’s easy to install.
-                - It respects my privacy.
-                - It looks great.
-              `;
-              return html`
+        return html`
+          <div id="modal--markdown" class="modal">
+            <div data-micromodal-close tabindex="-1">
+              <div
+                class="dialog"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <button
+                  data-micromodal-close
+                  class="bi bi-x-circle"
+                  style="${css`
+                    position: absolute;
+                    top: var(--space--4);
+                    right: var(--space--4);
+                    transition: color var(--transition-duration);
+
+                    &:hover {
+                      color: var(--color--primary--400);
+                    }
+
+                    &:active {
+                      color: var(--color--primary--600);
+                    }
+                  `}"
+                ></button>
+                <h3
+                  style="${css`
+                    font-size: var(--font-size--base);
+                    line-height: var(--line-height-base);
+                    font-weight: var(--font-weight--bold);
+                    color: var(--color--primary--800);
+                  `}"
+                >
+                  What’s Markdown?
+                </h3>
                 <p>
                   Markdown is a simple way to include bold text, links, lists,
                   and many other forms of rich-text formatting in your posts,
                   for example:
                 </p>
+                $${textProcessorExample(
+                  markdown`
+                    Things I’m **loving** about
+                    [CourseLore](https://courselore.org):
 
-                <div
-                  style="${css`
-                    display: flex;
-
-                    & > div {
-                      display: flex;
-                      flex-direction: column;
-
-                      & > h4 {
-                        font-weight: var(--font-weight--bold);
-                        text-align: center;
-                        color: var(--color--primary--800);
-                        background-color: var(--color--primary--50);
-                        padding: var(--space--2) var(--space--4);
-                      }
-
-                      & > div {
-                        flex: 1;
-                        padding: var(--space--4) var(--space--4);
-                        margin-top: calc(-1 * var(--border-width--1));
-                      }
-
-                      & > * {
-                        border: var(--border-width--1) solid
-                          var(--color--primary--200);
-                      }
-                    }
-
-                    @media (max-width: 767px) {
-                      flex-direction: column;
-
-                      & > :first-child > :first-child {
-                        border-top-left-radius: var(--border-radius--lg);
-                        border-top-right-radius: var(--border-radius--lg);
-                      }
-
-                      & > :last-child > :last-child {
-                        border-bottom-left-radius: var(--border-radius--lg);
-                        border-bottom-right-radius: var(--border-radius--lg);
-                      }
-
-                      & > :not(:first-child) {
-                        margin-top: calc(-1 * var(--border-width--1));
-                      }
-                    }
-
-                    @media (min-width: 768px) {
-                      & > * {
-                        flex: 1;
-                      }
-
-                      & > :first-child {
-                        & > :first-child {
-                          border-top-left-radius: var(--border-radius--lg);
-                        }
-                        & > :last-child {
-                          border-bottom-left-radius: var(--border-radius--lg);
-                        }
-                      }
-
-                      & > :last-child {
-                        & > :first-child {
-                          border-top-right-radius: var(--border-radius--lg);
-                        }
-                        & > :last-child {
-                          border-bottom-right-radius: var(--border-radius--lg);
-                        }
-                      }
-
-                      & > :not(:first-child) {
-                        margin-left: calc(-1 * var(--border-width--1));
-                      }
-                    }
-                  `}"
-                >
-                  <div>
-                    <h4>You write…</h4>
-                    <div>
-                      <pre><code>$${example}</code></pre>
-                    </div>
-                  </div>
-                  <div>
-                    <h4>…and your post looks like</h4>
-                    <div class="text">$${app.locals.partials.textProcessor(example)}</div>
-                  </div>
-                </div>
-
+                    - It’s easy to install.
+                    - It respects my privacy.
+                    - It looks great.
+                  `
+                )}
                 <p class="text">
                   Markdown is much more powerful than this simple example shows,
                   it’s
@@ -788,150 +794,152 @@ module.exports = (require) => {
                   <a href="https://stackoverflow.com/">Stack Overflow</a>,
                   <a href="https://github.com/">GitHub Issues</a>, and so forth.
                 </p>
-              `;
-            })()}
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="modal fade"
-        id="latex-modal"
-        tabindex="-1"
-        aria-labelledby="latex-modal-label"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="latex-modal-label">What’s LaTeX?</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              $${(() => {
-                const example = markdown`
-                  There’s an $e^{ix}$ in
-                  Euler’s formula:
-
-                  $$
-                  e^{ix} = \cos x + i \sin x
-                  $$
-                `;
-                return html`
-                  <p>
-                    LaTeX is a simple way to include mathematical formulas in
-                    your posts, for example:
-                  </p>
-
-                  <div class="card-group">
-                    <div class="card mb-3">
-                      <div class="card-header text-center fw-bold">
-                        You write…
-                      </div>
-                      <div class="card-body pb-0">
-                        <pre><code>$${example}</code></pre>
-                      </div>
-                    </div>
-                    <div class="card mb-3">
-                      <div class="card-header text-center fw-bold">
-                        …and your post looks like
-                      </div>
-                      <div class="card-body pb-0">
-                        $${app.locals.partials.textProcessor(example)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <p>
-                    LaTeX is much more powerful than this simple example shows,
-                    it’s
-                    <a href="https://katex.org/docs/supported.html"
-                      >easy to learn</a
-                    >, and it’s used by many people in academia.
-                  </p>
-                `;
-              })()}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div
-        class="modal fade"
-        id="syntax-highlighting-modal"
-        tabindex="-1"
-        aria-labelledby="syntax-highlighting-modal-label"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="syntax-highlighting-modal-label">
-                What’s Syntax Highlighting?
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              $${(() => {
-                const example =
-                  // prettier-ignore
-                  markdown`
-                  Calculate the position:
+          <div
+            class="modal fade"
+            id="latex-modal"
+            tabindex="-1"
+            aria-labelledby="latex-modal-label"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="latex-modal-label">
+                    What’s LaTeX?
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  $${(() => {
+                    const example = markdown`
+                      There’s an $e^{ix}$ in
+                      Euler’s formula:
 
-                  \`\`\`javascript
-                  function position(time) {
-                    return time * 0.25;
-                  }
-                  \`\`\`
-                `;
-                return html`
-                  <p>
-                    Syntax highlighting is adding color to code snippets in your
-                    posts to make them easier to read, for example:
-                  </p>
+                      $$
+                      e^{ix} = \cos x + i \sin x
+                      $$
+                    `;
+                    return html`
+                      <p>
+                        LaTeX is a simple way to include mathematical formulas
+                        in your posts, for example:
+                      </p>
 
-                  <div class="card-group">
-                    <div class="card mb-3">
-                      <div class="card-header text-center fw-bold">
-                        You write…
+                      <div class="card-group">
+                        <div class="card mb-3">
+                          <div class="card-header text-center fw-bold">
+                            You write…
+                          </div>
+                          <div class="card-body pb-0">
+                            <pre><code>$${example}</code></pre>
+                          </div>
+                        </div>
+                        <div class="card mb-3">
+                          <div class="card-header text-center fw-bold">
+                            …and your post looks like
+                          </div>
+                          <div class="card-body pb-0">
+                            $${app.locals.partials.textProcessor(example)}
+                          </div>
+                        </div>
                       </div>
-                      <div class="card-body pb-0">
-                        <pre><code>$${example}</code></pre>
-                      </div>
-                    </div>
-                    <div class="card mb-3">
-                      <div class="card-header text-center fw-bold">
-                        …and your post looks like
-                      </div>
-                      <div class="card-body pb-0">
-                        $${app.locals.partials.textProcessor(example)}
-                      </div>
-                    </div>
-                  </div>
 
-                  <p>
-                    CourseLore uses
-                    <a href="https://shiki.matsu.io/"
-                      >the same syntax highlighter as Visual Studio Code</a
-                    >, which supports all popular programming languages so your
-                    posts will always look awesome.
-                  </p>
-                `;
-              })()}
+                      <p>
+                        LaTeX is much more powerful than this simple example
+                        shows, it’s
+                        <a href="https://katex.org/docs/supported.html"
+                          >easy to learn</a
+                        >, and it’s used by many people in academia.
+                      </p>
+                    `;
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+
+          <div
+            class="modal fade"
+            id="syntax-highlighting-modal"
+            tabindex="-1"
+            aria-labelledby="syntax-highlighting-modal-label"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="syntax-highlighting-modal-label">
+                    What’s Syntax Highlighting?
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  $${(() => {
+                    const example =
+                      // prettier-ignore
+                      markdown`
+                    Calculate the position:
+  
+                    \`\`\`javascript
+                    function position(time) {
+                      return time * 0.25;
+                    }
+                    \`\`\`
+                  `;
+                    return html`
+                      <p>
+                        Syntax highlighting is adding color to code snippets in
+                        your posts to make them easier to read, for example:
+                      </p>
+
+                      <div class="card-group">
+                        <div class="card mb-3">
+                          <div class="card-header text-center fw-bold">
+                            You write…
+                          </div>
+                          <div class="card-body pb-0">
+                            <pre><code>$${example}</code></pre>
+                          </div>
+                        </div>
+                        <div class="card mb-3">
+                          <div class="card-header text-center fw-bold">
+                            …and your post looks like
+                          </div>
+                          <div class="card-body pb-0">
+                            $${app.locals.partials.textProcessor(example)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <p>
+                        CourseLore uses
+                        <a href="https://shiki.matsu.io/"
+                          >the same syntax highlighter as Visual Studio Code</a
+                        >, which supports all popular programming languages so
+                        your posts will always look awesome.
+                      </p>
+                    `;
+                  })()}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      })()}
     `;
     router.get("/", (req, res) =>
       res.send(
