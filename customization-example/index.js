@@ -366,7 +366,7 @@ module.exports = (require) => {
                     <button
                       type="button"
                       data-tippy-content="What’s Markdown?"
-                      data-dialog-show="#modal--markdown"
+                      data-micromodal-trigger="modal--markdown"
                     >
                       <i class="bi bi-info-circle"></i>
                     </button>
@@ -622,125 +622,123 @@ module.exports = (require) => {
         </div>
       </main>
 
-      <dialog
-        id="modal--markdown"
-        style="${css`
-          color: var(--color--primary-gray--700);
-          background-color: var(--color--primary-gray--50);
-          padding: var(--space--4);
-          border-radius: var(--border-radius--lg);
-          margin: auto;
-        `}"
-      >
-        <button
-          type="button"
-          style="${css`
-            float: right;
-            transition: color var(--transition-duration);
-            border-radius: 50%;
-            width: var(--font-size--lg);
-            height: var(--font-size--lg);
+      <div id="modal--markdown" class="modal">
+        <div tabindex="-1" data-micromodal-close>
+          <div class="dialog">
+            <button
+              type="button"
+              style="${css`
+                float: right;
+                transition: color var(--transition-duration);
+                border-radius: 50%;
+                width: var(--font-size--lg);
+                height: var(--font-size--lg);
 
-            &:hover {
-              color: var(--color--primary--400);
-            }
+                &:hover {
+                  color: var(--color--primary--400);
+                }
 
-            &:active {
-              color: var(--color--primary--600);
-            }
-          `}"
-          data-dialog-close="true"
-        >
-          <i class="bi bi-x-lg"></i>
-        </button>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        <h5>What’s Markdown?</h5>
-        $${(() => {
-          const example = markdown`
-            Things I’m **loving** about
-            [CourseLore](https://courselore.org):
+                &:active {
+                  color: var(--color--primary--600);
+                }
+              `}"
+              data-dialog-close="true"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            <h5>What’s Markdown?</h5>
+            $${(() => {
+              const example = markdown`
+                Things I’m **loving** about
+                [CourseLore](https://courselore.org):
 
-            - It’s easy to install.
-            - It respects my privacy.
-            - It looks great.
-          `;
-          return html`
-            <p>
-              Markdown is a simple way to include bold text, links, lists, and
-              many other forms of rich-text formatting in your posts, for
-              example:
-            </p>
+                - It’s easy to install.
+                - It respects my privacy.
+                - It looks great.
+              `;
+              return html`
+                <p>
+                  Markdown is a simple way to include bold text, links, lists,
+                  and many other forms of rich-text formatting in your posts,
+                  for example:
+                </p>
 
-            <div class="card-group">
-              <div class="card mb-3">
-                <div class="card-header text-center fw-bold">You write…</div>
-                <div class="card-body pb-0">
-                  <pre><code>$${example}</code></pre>
+                <div class="card-group">
+                  <div class="card mb-3">
+                    <div class="card-header text-center fw-bold">
+                      You write…
+                    </div>
+                    <div class="card-body pb-0">
+                      <pre><code>$${example}</code></pre>
+                    </div>
+                  </div>
+                  <div class="card mb-3">
+                    <div class="card-header text-center fw-bold">
+                      …and your post looks like
+                    </div>
+                    <div class="card-body pb-0">
+                      $${app.locals.partials.textProcessor(example)}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="card mb-3">
-                <div class="card-header text-center fw-bold">
-                  …and your post looks like
-                </div>
-                <div class="card-body pb-0">
-                  $${app.locals.partials.textProcessor(example)}
-                </div>
-              </div>
-            </div>
 
-            <p>
-              Markdown is much more powerful than this simple example shows,
-              it’s
-              <a href="https://guides.github.com/features/mastering-markdown/"
-                >easy to learn</a
-              >, and it’s used by many popular forums including
-              <a href="https://www.reddit.com">Reddit</a>,
-              <a href="https://stackoverflow.com/">Stack Overflow</a>,
-              <a href="https://github.com/">GitHub Issues</a>, and so forth.
-            </p>
-          `;
-        })()}
-      </dialog>
+                <p>
+                  Markdown is much more powerful than this simple example shows,
+                  it’s
+                  <a
+                    href="https://guides.github.com/features/mastering-markdown/"
+                    >easy to learn</a
+                  >, and it’s used by many popular forums including
+                  <a href="https://www.reddit.com">Reddit</a>,
+                  <a href="https://stackoverflow.com/">Stack Overflow</a>,
+                  <a href="https://github.com/">GitHub Issues</a>, and so forth.
+                </p>
+              `;
+            })()}
+          </div>
+        </div>
+      </div>
 
       <div
         class="modal fade"

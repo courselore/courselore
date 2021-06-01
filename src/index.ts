@@ -312,13 +312,6 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/tippy.js/dist/border.css"
           />
-          <!--
-          <link
-            rel="stylesheet"
-            href="${app.locals.settings
-            .url}/node_modules/dialog-polyfill/dist/dialog-polyfill.css"
-          />
-          -->
           <style>
             $${postcss([postcssNested, autoprefixer]).process(
               css`
@@ -776,29 +769,6 @@ export default async function courselore(
                   cursor: pointer;
                 }
 
-                dialog {
-                  position: fixed;
-                  top: 50%;
-                  transform: translate(0, -50%);
-                  max-width: 90%;
-                  max-height: 90%;
-                  overflow: auto;
-                }
-
-                dialog:not([open]) {
-                  display: none;
-                }
-
-                dialog::backdrop {
-                  background-color: #d8b4fe; /* --color--primary--300 */
-                  opacity: 70%;
-                }
-
-                dialog + .backdrop {
-                  background-color: var(--color--primary--300);
-                  opacity: 70%;
-                }
-
                 :focus {
                   box-shadow: var(--space--0) var(--space--0) var(--space--0)
                     var(--space--1) var(--color--focus);
@@ -816,6 +786,36 @@ export default async function courselore(
                     }
                     &:last-child {
                       fill: var(--color--primary--900);
+                    }
+                  }
+                }
+
+                .modal {
+                  &:not(.is-open) {
+                    display: none;
+                  }
+
+                  & > div {
+                    position: fixed;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    display: flex;
+                    background-color: var(--color--primary--300);
+
+                    & > div {
+                      overflow: auto;
+
+                      &.dialog {
+                        color: var(--color--primary-gray--700);
+                        background-color: var(--color--primary-gray--50);
+                        max-width: 80ch;
+                        max-height: 90%;
+                        padding: var(--space--4);
+                        border-radius: var(--border-radius--lg);
+                        margin: auto;
+                      }
                     }
                   }
                 }
@@ -1090,29 +1090,17 @@ export default async function courselore(
             document.addEventListener("DOMContentLoaded", () => {
               tippy("[data-tippy-content]", {
                 arrow: tippy.roundArrow + tippy.roundArrow,
+                touch: "hold",
               });
             });
           </script>
 
           <script src="${app.locals.settings
-              .url}/node_modules/dialog-polyfill/dist/dialog-polyfill.js"></script>
+              .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
           <script>
-            for (const element of document.querySelectorAll("dialog"))
-              dialogPolyfill.registerDialog(element);
-            for (const element of document.querySelectorAll(
-              "[data-dialog-show]"
-            ))
-              element.addEventListener("click", () => {
-                document.body.style.overflow = "hidden";
-                document.querySelector(element.dataset.dialogShow).showModal();
-              });
-            for (const element of document.querySelectorAll(
-              "[data-dialog-close]"
-            ))
-              element.addEventListener("click", (event) => {
-                document.body.style.overflow = "visible";
-                event.target.closest("dialog").close();
-              });
+            document.addEventListener("DOMContentLoaded", () => {
+              MicroModal.init({ disableScroll: true });
+            });
           </script>
         </body>
       </html>
