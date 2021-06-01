@@ -789,8 +789,8 @@ export default async function courselore(
                 }
 
                 .heading--1 {
-                  font-size: var(--font-size--lg);
-                  line-height: var(--line-height--lg);
+                  font-size: var(--font-size--base);
+                  line-height: var(--line-height--base);
                   font-weight: var(--font-weight--bold);
                   color: var(--color--primary--900);
                 }
