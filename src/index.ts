@@ -370,7 +370,7 @@ export default async function courselore(
                   clip-path: polygon(0 0);
                 }
 
-                /* DESIGN SYSTEM OPTIONS */
+                /* DESIGN SYSTEM */
 
                 /*
                   https://github.com/tailwindlabs/tailwindcss/blob/e6ea821a7a5a7244dfe2be948f8a4209620924a5/stubs/defaultConfig.stub.js
@@ -408,6 +408,10 @@ export default async function courselore(
                   --line-height--8xl: 1;
                   --font-size--9xl: 8rem;
                   --line-height--9xl: 1;
+
+                  --font-weight--main: 400;
+                  --font-weight--bold: 500;
+                  --font-weight--black: 700;
 
                   --space--0: 0px;
                   --space--px: 1px;
@@ -462,6 +466,9 @@ export default async function courselore(
                   --border-radius--full: 9999px;
 
                   --transition-duration: 150ms;
+                  @media (prefers-reduced-motion: reduce) {
+                    --transition-duration: 0;
+                  }
 
                   --color-white: #ffffff;
                   --color-black: #000000;
@@ -707,20 +714,6 @@ export default async function courselore(
                   --color--blue-gray--700: #334155;
                   --color--blue-gray--800: #1e293b;
                   --color--blue-gray--900: #0f172a;
-                }
-
-                @media (prefers-reduced-motion: reduce) {
-                  :root {
-                    --transition-duration: 0;
-                  }
-                }
-
-                /* DESIGN SYSTEM */
-
-                :root {
-                  --font-weight--main: 400;
-                  --font-weight--bold: 500;
-                  --font-weight--black: 700;
 
                   --color--primary--50: var(--color--purple--50);
                   --color--primary--100: var(--color--purple--100);
@@ -745,10 +738,10 @@ export default async function courselore(
                   --color--primary-gray--900: var(--color--cool-gray--900);
 
                   --color--focus: var(--color--primary--200);
-                }
 
-                @media (prefers-color-scheme: dark) {
-                  /* TODO */
+                  @media (prefers-color-scheme: dark) {
+                    /* TODO */
+                  }
                 }
 
                 /* GLOBAL STYLES */
