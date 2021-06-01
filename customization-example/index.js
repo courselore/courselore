@@ -139,6 +139,7 @@ module.exports = (require) => {
           <a
             href="$${app.locals.settings.url}/authenticate"
             data-tippy-content="Very rough early demonstration"
+            data-tippy-theme="tooltip"
             style="${css`
               font-weight: var(--font-weight--bold);
               color: var(--color--primary--50);

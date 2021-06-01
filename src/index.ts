@@ -769,7 +769,7 @@ export default async function courselore(
 
                 /* COMPONENTS */
 
-                .tippy-box {
+                .tippy-box[data-theme~="tooltip"] {
                   color: var(--color--primary--50);
                   background-color: var(--color--primary--900);
                   border: var(--border-width--1) solid var(--color--primary--50);
