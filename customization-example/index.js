@@ -773,11 +773,11 @@ module.exports = (require) => {
                   </div>
                   <div>
                     <h4>…and your post looks like</h4>
-                    <div>$${app.locals.partials.textProcessor(example)}</div>
+                    <div class="text">$${app.locals.partials.textProcessor(example)}</div>
                   </div>
                 </div>
 
-                <p>
+                <p class="text">
                   Markdown is much more powerful than this simple example shows,
                   it’s
                   <a

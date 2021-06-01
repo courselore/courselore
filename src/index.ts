@@ -759,6 +759,7 @@ export default async function courselore(
                 pre {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
+                  overflow-y: auto;
                 }
 
                 input,
@@ -824,12 +825,45 @@ export default async function courselore(
                       &.dialog {
                         color: var(--color--primary-gray--700);
                         background-color: var(--color--primary-gray--50);
-                        max-width: min(90%, 80ch);
-                        max-height: 90%;
+                        max-width: min(calc(100% - 2 * var(--space--4)), 80ch);
+                        max-height: calc(100% - 2 * var(--space--4));
                         padding: var(--space--4);
                         border-radius: var(--border-radius--lg);
                         margin: auto;
                       }
+                    }
+                  }
+                }
+
+                .text {
+                  a {
+                    color: var(--color--primary--600);
+                    text-decoration: underline;
+                    transition: color var(--transition-duration);
+
+                    &:hover {
+                      color: var(--color--primary--800);
+                      text-decoration: underline;
+                    }
+                  }
+
+                  strong {
+                    font-weight: var(--font-weight--bold);
+                    color: var(--color--primary-gray--900);
+                  }
+
+                  p,
+                  ul {
+                    &:not(:first-child) {
+                      margin-top: var(--space--2);
+                    }
+                  }
+
+                  ul {
+                    padding-left: var(--space--4);
+
+                    & > li {
+                      list-style: disc;
                     }
                   }
                 }
