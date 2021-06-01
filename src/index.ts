@@ -803,8 +803,8 @@ export default async function courselore(
                     left: 0;
                     display: grid;
 
-                    &::before,
-                    & > * {
+                    & > *,
+                    &::before {
                       grid-area: 1 / 1;
                     }
 
