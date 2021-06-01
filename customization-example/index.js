@@ -120,12 +120,17 @@ module.exports = (require) => {
               `
             )}
             <script>
-              new ArtAnimation({
-                element: document.currentScript.previousElementSibling,
-                speed: 0.001,
-                amount: 3,
-                startupDuration: 0,
-              }).start();
+              (() => {
+                const element = document.currentScript.previousElementSibling;
+                document.addEventListener("DOMContentLoaded", () => {
+                  new ArtAnimation({
+                    element,
+                    speed: 0.001,
+                    amount: 3,
+                    startupDuration: 0,
+                  }).start();
+                });
+              })();
             </script>
           </h1>
 
@@ -202,12 +207,17 @@ module.exports = (require) => {
               .replace(/height=".*?"/, "")
               .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
             <script>
-              new ArtAnimation({
-                element: document.currentScript.previousElementSibling,
-                speed: 0.0001,
-                amount: 5,
-                startupDuration: 0,
-              }).start();
+              (() => {
+                const element = document.currentScript.previousElementSibling;
+                document.addEventListener("DOMContentLoaded", () => {
+                  new ArtAnimation({
+                    element,
+                    speed: 0.0001,
+                    amount: 5,
+                    startupDuration: 0,
+                  }).start();
+                });
+              })();
             </script>
 
             <section
@@ -408,12 +418,17 @@ module.exports = (require) => {
               .replace(/height=".*?"/, "")
               .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
             <script>
-              new ArtAnimation({
-                element: document.currentScript.previousElementSibling,
-                speed: 0.0001,
-                amount: 5,
-                startupDuration: 0,
-              }).start();
+              (() => {
+                const element = document.currentScript.previousElementSibling;
+                document.addEventListener("DOMContentLoaded", () => {
+                  new ArtAnimation({
+                    element,
+                    speed: 0.0001,
+                    amount: 5,
+                    startupDuration: 0,
+                  }).start();
+                });
+              })();
             </script>
 
             <section

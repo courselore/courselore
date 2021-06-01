@@ -1173,7 +1173,9 @@ export default async function courselore(
           $${head}
         </head>
         <body>
+          $${bodyDOM.firstElementChild!.innerHTML}
           $${app.locals.partials.art.preamble}
+
           <div hidden>
             <div
               style="${css`
@@ -1199,7 +1201,6 @@ export default async function courselore(
               };
             })();
           </script>
-          $${bodyDOM.firstElementChild!.innerHTML}
 
           <script src="${app.locals.settings
               .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
