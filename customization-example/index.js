@@ -234,20 +234,16 @@ module.exports = (require) => {
             margin-top: -10vw;
             clip-path: polygon(0 10vw, 100% 0, 100% calc(100% - 10vw), 0 100%);
             position: relative;
-            display: grid;
-
-            & > * {
-              grid-area: 1 / 1;
-            }
           `}"
         >
           $${app.locals.partials.art.small
             .replace(
               "<svg",
               `$&
+                preserveAspectRatio="xMidYMid slice"
                 style="${css`
-                  min-width: 100%;
-                  min-height: 100%;
+                  width: 100%;
+                  height: 100%;
                   position: absolute;
                   z-index: -1;
                   opacity: 10%;
