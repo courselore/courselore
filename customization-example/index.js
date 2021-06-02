@@ -258,11 +258,11 @@ module.exports = (require) => {
                   <div
                     style="${css`
                       & > div {
-                        padding: var(--space--4);
-                        border-radius: var(--border-radius--xl);
                         color: var(--color--primary--800);
                         background-color: var(--color--primary--100);
                         --color--focus: var(--color--primary--400);
+                        padding: var(--space--4);
+                        border-radius: var(--border-radius--xl);
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--4);
@@ -450,6 +450,60 @@ module.exports = (require) => {
                 $${background}
                 <section>
                   <h2 class="heading--display--1">Team</h2>
+
+                  <div
+                    style="${css`
+                      & > a {
+                        display: block;
+
+                        & > div {
+                          & > img {
+                            border-top-left-radius: var(--border-radius--xl);
+                            border-top-right-radius: var(--border-radius--xl);
+                            clip-path: polygon(
+                              0 0,
+                              100% 0,
+                              100% calc(100% - var(--space--8)),
+                              0 100%
+                            );
+                          }
+
+                          & > div {
+                            color: var(--color--fuchsia--800);
+                            background-color: var(--color--fuchsia--100);
+                            --color--focus: var(--color--fuchsia--400);
+                            padding: var(--space--4);
+                            padding-top: var(--space--10);
+                            border-bottom-left-radius: var(--border-radius--xl);
+                            border-bottom-right-radius: var(
+                              --border-radius--xl
+                            );
+                            margin-top: calc(-1 * var(--space--10));
+                          }
+                        }
+                      }
+                    `}"
+                  >
+                    <a href="#"
+                      ><div>
+                        <img src="${app.locals.settings.url}/scott.jpg" />
+                        <div>NAME · POSITION</div>
+                      </div>
+                    </a>
+
+                    <a href="#"
+                      ><div>
+                        <img src="${app.locals.settings.url}/ali.jpg" />
+                        <div>NAME · POSITION</div>
+                      </div>
+                    </a>
+                    <a href="#"
+                      ><div>
+                        <img src="${app.locals.settings.url}/leandro.jpg" />
+                        <div>NAME · POSITION</div>
+                      </div>
+                    </a>
+                  </div>
 
                   <!--
                   <div>
