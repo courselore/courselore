@@ -310,7 +310,8 @@ module.exports = (require) => {
               >
                 <div>
                   <h3 class="heading--1">
-                    <i class="bi bi-toggles"></i> Fully-Featured
+                    <i class="bi bi-toggles"></i>
+                    Fully-Featured
                   </h3>
                   <ul>
                     <li>
@@ -379,12 +380,17 @@ module.exports = (require) => {
 
                 <div>
                   <h3 class="heading--1">
-                    <i class="bi bi-code-square"></i> Open-Source
+                    <i class="bi bi-code-square"></i>
+                    Open-Source
                   </h3>
                   <ul>
                     <li>
                       <i class="bi bi-check-circle-fill"></i>
                       Free for everyone; forever
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Programmable via the CourseLore API
                     </li>
                     <li>
                       <i class="bi bi-check-circle-fill"></i>
@@ -396,29 +402,35 @@ module.exports = (require) => {
                     </li>
                     <li>
                       <i class="bi bi-check-circle-fill"></i>
-                      Inspect & trust the software you use
+                      Welcoming to new collaborators
                     </li>
                     <li>
                       <i class="bi bi-check-circle-fill"></i>
-                      Accessible programmatically via the CourseLore API
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Collaborate on the development
+                      Read the code base and build your trust on the software
+                      that you use
                     </li>
                   </ul>
                 </div>
 
                 <div>
                   <h3 class="heading--1">
-                    <i class="bi bi-shield-lock"></i> Self-Hosted
+                    <i class="bi bi-shield-lock"></i>
+                    Self-Hosted
                   </h3>
-                  <p>
-                    CourseLore is easy to run on your own server. This means you
-                    know exactly where your data is and who owns it: you. Utmost
-                    respect for educators & students’ privacy is at the core of
-                    what we do.
-                  </p>
+                  <ul>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Easy to run on your own server
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Respect educators and students’ privacy
+                    </li>
+                    <li>
+                      <i class="bi bi-check-circle-fill"></i>
+                      Own your data
+                    </li>
+                  </ul>
                 </div>
               </div>
             </section>
