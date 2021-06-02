@@ -661,13 +661,13 @@ module.exports = (require) => {
                   flex-direction: column;
 
                   & > :first-child > :first-child {
-                    border-top-left-radius: var(--border-radius--lg);
-                    border-top-right-radius: var(--border-radius--lg);
+                    border-top-left-radius: var(--border-radius--xl);
+                    border-top-right-radius: var(--border-radius--xl);
                   }
 
                   & > :last-child > :last-child {
-                    border-bottom-left-radius: var(--border-radius--lg);
-                    border-bottom-right-radius: var(--border-radius--lg);
+                    border-bottom-left-radius: var(--border-radius--xl);
+                    border-bottom-right-radius: var(--border-radius--xl);
                   }
 
                   & > :not(:first-child) {
@@ -682,19 +682,19 @@ module.exports = (require) => {
 
                   & > :first-child {
                     & > :first-child {
-                      border-top-left-radius: var(--border-radius--lg);
+                      border-top-left-radius: var(--border-radius--xl);
                     }
                     & > :last-child {
-                      border-bottom-left-radius: var(--border-radius--lg);
+                      border-bottom-left-radius: var(--border-radius--xl);
                     }
                   }
 
                   & > :last-child {
                     & > :first-child {
-                      border-top-right-radius: var(--border-radius--lg);
+                      border-top-right-radius: var(--border-radius--xl);
                     }
                     & > :last-child {
-                      border-bottom-right-radius: var(--border-radius--lg);
+                      border-bottom-right-radius: var(--border-radius--xl);
                     }
                   }
 

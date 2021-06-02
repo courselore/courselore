@@ -891,7 +891,7 @@ export default async function courselore(
                         max-width: min(calc(100% - 2 * var(--space--4)), 80ch);
                         max-height: calc(100% - 2 * var(--space--12));
                         padding: var(--space--4);
-                        border-radius: var(--border-radius--lg);
+                        border-radius: var(--border-radius--xl);
                         margin: auto;
                       }
                     }
@@ -935,7 +935,7 @@ export default async function courselore(
                     padding: var(--space--4);
                     border: var(--border-width--1) solid
                       var(--color--primary--200);
-                    border-radius: var(--border-radius--lg);
+                    border-radius: var(--border-radius--xl);
                   }
                 }
 
