@@ -367,7 +367,8 @@ export default async function courselore(
 
                 .visually-hidden {
                   position: absolute;
-                  clip-path: polygon(0 0);
+                  top: 0;
+                  clip-path: inset(50%);
                 }
 
                 /* DESIGN SYSTEM */
