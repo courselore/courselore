@@ -251,7 +251,6 @@ module.exports = (require) => {
                 `}"
               >
                 $${background}
-
                 <section>
                   <h2 class="heading--display--1">
                     A forum for educators & students
@@ -443,73 +442,18 @@ module.exports = (require) => {
 
               <div
                 style="${css`
+                  color: var(--color--fuchsia--100);
                   background-color: var(--color--fuchsia--800);
                   margin-top: -5vw;
                   clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
                   position: relative;
                 `}"
               >
-                $${app.locals.partials.art.small
-                  .replace(
-                    "<svg",
-                    `$&
-              style="${css`
-                opacity: 40%;
-                z-index: -1;
-                position: absolute;
-                top: 0;
-                left: 0;
-                min-width: 100%;
-                min-height: 100%;
-              `}"
-            `
-                  )
-                  .replace(/width=".*?"/, "")
-                  .replace(/height=".*?"/, "")
-                  .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
-                <script>
-                  (() => {
-                    const element =
-                      document.currentScript.previousElementSibling;
-                    document.addEventListener("DOMContentLoaded", () => {
-                      new ArtAnimation({
-                        element,
-                        speed: 0.0001,
-                        amount: 5,
-                        startupDuration: 0,
-                      }).start();
-                    });
-                  })();
-                </script>
+                $${background}
+                <section>
+                  <h2 class="heading--display--1">Team</h2>
 
-                <section
-                  style="${css`
-                    max-width: 110ch;
-                    margin: 0 auto;
-                  `}"
-                >
-                  <h1
-                    style="${css`
-                      font-family: $font-family-serif;
-                      @include font-size(3rem);
-                      font-weight: bold;
-                      font-style: italic;
-                      text-align: center;
-                      text-shadow: 2px 2px $pink-600;
-                    `}"
-                  >
-                    Team
-                  </h1>
-
-                  <div
-                    style="${css`
-                      display: grid;
-                      gap: 1rem;
-                      @include media-breakpoint-up(md) {
-                        grid-auto-flow: column;
-                      }
-                    `}"
-                  >
+                  <div>
                     <div
                       class="card shadow-lg"
                       style="${css`
@@ -857,6 +801,7 @@ module.exports = (require) => {
         `;
       })()}
     `;
+    // TODO: Turn this into named parameters & make ‘req’ & ‘req’ optional in ‘base’
     router.get("/", (req, res) =>
       res.send(
         app.locals.layouts.base(
