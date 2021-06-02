@@ -176,6 +176,8 @@ module.exports = (require) => {
         <main
           style="${css`
             & > div {
+              position: relative;
+
               & > svg {
                 width: 100%;
                 height: 100%;
@@ -443,7 +445,6 @@ module.exports = (require) => {
                   background-color: var(--color--fuchsia--800);
                   margin-top: -5vw;
                   clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
-                  position: relative;
                 `}"
               >
                 $${background}
