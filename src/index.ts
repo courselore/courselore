@@ -365,10 +365,16 @@ export default async function courselore(
                   display: none !important;
                 }
 
-                .visually-hidden {
+                .visually-hidden:not(:focus):not(:focus-within):not(:active) {
+                  width: 1px;
+                  height: 1px;
+                  padding: 0;
+                  border: 0;
+                  margin: -1px;
                   position: absolute;
-                  top: 0;
+                  overflow: hidden;
                   clip-path: inset(50%);
+                  white-space: nowrap;
                 }
 
                 /* DESIGN SYSTEM */
