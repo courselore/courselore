@@ -365,18 +365,6 @@ export default async function courselore(
                   display: none !important;
                 }
 
-                .visually-hidden:not(:focus):not(:focus-within):not(:active) {
-                  width: 1px;
-                  height: 1px;
-                  padding: 0;
-                  border: 0;
-                  margin: -1px;
-                  position: absolute;
-                  overflow: hidden;
-                  clip-path: inset(50%);
-                  white-space: nowrap;
-                }
-
                 /* DESIGN SYSTEM */
 
                 /*
@@ -944,6 +932,26 @@ export default async function courselore(
                       var(--color--primary--200);
                     border-radius: var(--border-radius--xl);
                   }
+                }
+
+                /*
+                  https://github.com/twbs/bootstrap/blob/7d9adb702d96f9eb4706afb12cd73c9654979575/scss/mixins/_visually-hidden.scss
+                  https://tailwindcss.com/docs/screen-readers
+                  https://www.a11yproject.com/posts/2013-01-11-how-to-hide-content/
+                  https://hugogiraudel.com/2016/10/13/css-hide-and-seek/
+                  https://github.com/twbs/bootstrap/issues/25686
+                  https://accessibility.18f.gov/hidden-content/
+                */
+                .visually-hidden:not(:focus):not(:focus-within):not(:active) {
+                  width: 1px;
+                  height: 1px;
+                  padding: 0;
+                  border: 0;
+                  margin: -1px;
+                  position: absolute;
+                  overflow: hidden;
+                  clip-path: inset(50%);
+                  white-space: nowrap;
                 }
 
                 /*
