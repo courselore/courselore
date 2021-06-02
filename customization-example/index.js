@@ -454,10 +454,20 @@ module.exports = (require) => {
                   <div
                     style="${css`
                       & > a {
+                        color: var(--color--fuchsia--800);
+                        background-color: var(--color--fuchsia--100);
+                        --color--focus: var(--color--fuchsia--400);
                         display: block;
+                        border-radius: var(--border-radius--xl);
+                        transition: transform var(--transition-duration);
+
+                        &:hover {
+                          transform: scale(1.02) rotate(-1deg);
+                        }
 
                         & > div {
                           & > img {
+                            display: block;
                             border-top-left-radius: var(--border-radius--xl);
                             border-top-right-radius: var(--border-radius--xl);
                             clip-path: polygon(
@@ -469,174 +479,99 @@ module.exports = (require) => {
                           }
 
                           & > div {
-                            color: var(--color--fuchsia--800);
-                            background-color: var(--color--fuchsia--100);
-                            --color--focus: var(--color--fuchsia--400);
-                            padding: var(--space--4);
-                            padding-top: var(--space--10);
-                            border-bottom-left-radius: var(--border-radius--xl);
-                            border-bottom-right-radius: var(
-                              --border-radius--xl
-                            );
-                            margin-top: calc(-1 * var(--space--10));
+                            padding: var(--space--2) var(--space--4)
+                              var(--space--4);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+
+                            & > div {
+                              & > h3 {
+                                color: var(--color--fuchsia--900);
+                              }
+
+                              & > h4 {
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                                font-weight: var(--font-weight--bold);
+                                color: var(--color--fuchsia--500);
+                                text-transform: uppercase;
+                                letter-spacing: var(--space--px);
+                              }
+                            }
                           }
                         }
                       }
                     `}"
                   >
-                    <a href="#"
-                      ><div>
-                        <img src="${app.locals.settings.url}/scott.jpg" />
-                        <div>NAME · POSITION</div>
+                    <a href="https://www.cs.jhu.edu/~scott/">
+                      <div>
+                        <img
+                          src="${app.locals.settings.url}/scott.jpg"
+                          alt="Dr. Scott Smith"
+                        />
+                        <div>
+                          <div>
+                            <h3 class="heading--1">Dr. Scott Smith</h3>
+                            <h4>CEO</h4>
+                          </div>
+                          <p>
+                            Scott is a full professor at the Johns Hopkins
+                            University. Over his thirty years of experience as
+                            an educator, Scott taught courses on the Principles
+                            of Programming Languages, Object-Oriented Software
+                            Engineering, Functional Programming, and so forth.
+                          </p>
+                        </div>
                       </div>
                     </a>
 
-                    <a href="#"
-                      ><div>
-                        <img src="${app.locals.settings.url}/ali.jpg" />
-                        <div>NAME · POSITION</div>
+                    <a href="https://www.cs.jhu.edu/faculty/ali-madooei/">
+                      <div>
+                        <img
+                          src="${app.locals.settings.url}/ali.jpg"
+                          alt="Dr. Ali Madooei"
+                        />
+                        <div>
+                          <div>
+                            <h3 class="heading--1">Dr. Ali Madooei</h3>
+                            <h4>Consultant</h4>
+                          </div>
+                          <p>
+                            Ali is a lecturer at the Johns Hopkins University.
+                            Ali has taught courses in several areas, from
+                            Introduction to Programming to Object-Oriented
+                            Software Engineering. Ali has classroom experience
+                            with many student forums and knows what it takes to
+                            make a great one.
+                          </p>
+                        </div>
                       </div>
                     </a>
-                    <a href="#"
-                      ><div>
-                        <img src="${app.locals.settings.url}/leandro.jpg" />
-                        <div>NAME · POSITION</div>
+
+                    <a href="https://leafac.com">
+                      <div>
+                        <img
+                          src="${app.locals.settings.url}/leandro.jpg"
+                          alt="Leandro Facchinetti"
+                        />
+                        <div>
+                          <div>
+                            <h3 class="heading--1">Leandro Facchinetti</h3>
+                            <h4>Developer & Designer</h4>
+                          </div>
+                          <p>
+                            Leandro was a PhD Candidate at the Johns Hopkins
+                            University. He received the Whiting School of
+                            Engineering’s Professor Joel Dean Excellence in
+                            Teaching Award for five years of work as a teaching
+                            assistant, and taught a course on Object-Oriented
+                            Software Engineering.
+                          </p>
+                        </div>
                       </div>
                     </a>
                   </div>
-
-                  <!--
-                  <div>
-                    <div
-                      class="card shadow-lg"
-                      style="${css`
-                    background-color: $pink-600;
-                  `}"
-                    >
-                      <div
-                        class="card-header"
-                        style="${css`
-                    text-align: center;
-                    padding-top: 1rem;
-                  `}"
-                      >
-                        <a
-                          href="https://www.cs.jhu.edu/~scott/"
-                          class="stretched-link"
-                          ><img
-                            src="${app.locals.settings.url}/scott.png"
-                            alt="Dr. Scott Smith"
-                            width="200"
-                            class="card-title img-thumbnail rounded-circle"
-                        /></a>
-                        <h5
-                          class="card-title"
-                          style="${css`
-                    margin-bottom: 0;
-                  `}"
-                        >
-                          Dr. Scott Smith
-                        </h5>
-                        <p class="card-subtitle">CEO</p>
-                      </div>
-                      <div class="card-body">
-                        <p>
-                          Scott is a full professor at the Johns Hopkins
-                          University. Over his thirty years of experience as an
-                          educator, Scott taught courses on the Principles of
-                          Programming Languages, Object-Oriented Software
-                          Engineering, Functional Programming, and so forth.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div
-                      class="card shadow-lg"
-                      style="${css`
-                    background-color: $pink-600;
-                  `}"
-                    >
-                      <div
-                        class="card-header"
-                        style="${css`
-                    text-align: center;
-                    padding-top: 1rem;
-                  `}"
-                      >
-                        <a
-                          href="https://www.cs.jhu.edu/faculty/ali-madooei/"
-                          class="stretched-link"
-                          ><img
-                            src="${app.locals.settings.url}/ali.png"
-                            alt="Dr. Ali Madooei"
-                            width="200"
-                            class="card-title img-thumbnail rounded-circle"
-                        /></a>
-                        <h5
-                          class="card-title"
-                          style="${css`
-                    margin-bottom: 0;
-                  `}"
-                        >
-                          Dr. Ali Madooei
-                        </h5>
-                        <p class="card-subtitle">Consultant</p>
-                      </div>
-                      <div class="card-body">
-                        <p>
-                          Ali is a lecturer at the Johns Hopkins University. Ali
-                          has taught courses in several areas, from Introduction
-                          to Programming to Object-Oriented Software
-                          Engineering. Ali has classroom experience with many
-                          student forums and knows what it takes to make a great
-                          one.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div
-                      class="card shadow-lg"
-                      style="${css`
-                    background-color: $pink-600;
-                  `}"
-                    >
-                      <div
-                        class="card-header"
-                        style="${css`
-                    text-align: center;
-                    padding-top: 1rem;
-                  `}"
-                      >
-                        <a href="https://leafac.com" class="stretched-link"
-                          ><img
-                            src="${app.locals.settings.url}/leandro.png"
-                            alt="Leandro Facchinetti"
-                            width="200"
-                            class="card-title img-thumbnail rounded-circle"
-                        /></a>
-                        <h5
-                          class="card-title"
-                          style="${css`
-                    margin-bottom: 0;
-                  `}"
-                        >
-                          Leandro Facchinetti
-                        </h5>
-                        <p class="card-subtitle">Developer & Designer</p>
-                      </div>
-                      <div class="card-body">
-                        <p>
-                          Leandro was a PhD Candidate at the Johns Hopkins
-                          University. He received the Whiting School of
-                          Engineering’s Professor Joel Dean Excellence in
-                          Teaching Award for five years of work as a teaching
-                          assistant, and taught a course on Object-Oriented
-                          Software Engineering.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  -->
                 </section>
               </div>
             `;
