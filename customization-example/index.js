@@ -37,7 +37,6 @@ module.exports = (require) => {
           `}"
         >
           <h1>
-            <span class="visually-hidden">CourseLore</span>
             $${app.locals.partials.art.large.replace(
               "</svg>",
               html`
