@@ -174,72 +174,29 @@ module.exports = (require) => {
           </nav>
         </header>
 
-        <main>
-          <div
-            style="${css`
-              background-color: var(--color--primary--800);
-              clip-path: polygon(
-                0 10vw,
-                100% 0,
-                100% calc(100% - 10vw),
-                0 100%
-              );
+        <main
+          style="${css`
+            & > div {
               position: relative;
-            `}"
-          >
-            $${app.locals.partials.art.small
-              .replace(
-                "<svg",
-                `$&
-                preserveAspectRatio="xMidYMid slice"
-                style="${css`
-                  width: 100%;
-                  height: 100%;
-                  position: absolute;
-                  z-index: -1;
-                  opacity: 10%;
-                `}"
-              `
-              )
-              .replace(/width=".*?"/, "")
-              .replace(/height=".*?"/, "")
-              .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
-            <script>
-              (() => {
-                const element = document.currentScript.previousElementSibling;
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ArtAnimation({
-                    element,
-                    speed: 0.0001,
-                    amount: 5,
-                    startupDuration: 0,
-                  }).start();
-                });
-              })();
-            </script>
 
-            <section
-              style="${css`
+              & > svg {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                z-index: -1;
+                opacity: 10%;
+              }
+
+              & > section {
                 min-height: 100vh;
                 padding: calc(10vw + var(--space--8)) var(--space--4);
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                flex-direction: column;
                 gap: var(--space--8);
-              `}"
-            >
-              <h2
-                class="heading--display--1"
-                style="${css`
-                  color: var(--color--primary--100);
-                `}"
-              >
-                A forum for educators & students
-              </h2>
 
-              <div
-                style="${css`
+                & > div {
                   display: flex;
                   gap: var(--space--4);
 
@@ -253,201 +210,249 @@ module.exports = (require) => {
                       flex: 1;
                     }
                   }
+                }
+              }
+            }
+          `}"
+        >
+          $${(() => {
+            const background = html`
+              $${app.locals.partials.art.small
+                .replace("<svg", `$& preserveAspectRatio="xMidYMid slice"`)
+                .replace(/width=".*?"/, "")
+                .replace(/height=".*?"/, "")
+                .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
+              <script>
+                (() => {
+                  const element = document.currentScript.previousElementSibling;
+                  document.addEventListener("DOMContentLoaded", () => {
+                    new ArtAnimation({
+                      element,
+                      speed: 0.0001,
+                      amount: 5,
+                      startupDuration: 0,
+                    }).start();
+                  });
+                })();
+              </script>
+            `;
 
-                  & > div {
-                    padding: var(--space--4);
-                    border-radius: var(--border-radius--xl);
-                    color: var(--color--primary--800);
-                    background-color: var(--color--primary--100);
-                    --color--focus: var(--color--primary--400);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-
-                    & > h3 {
-                      display: flex;
-                      align-items: center;
-                      gap: var(--space--2);
-
-                      & > i {
-                        background-color: var(--color--primary--200);
-                        width: var(--font-size--4xl);
-                        height: var(--font-size--4xl);
-                        border-radius: 50%;
-                        display: inline-flex;
-                        justify-content: center;
-                        align-items: center;
-                      }
-                    }
-
-                    & > ul {
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--1);
-
-                      & > li {
-                        display: flex;
-                        gap: var(--space--2);
-
-                        & > i,
-                        & > button {
-                          color: var(--color--primary--600);
-                        }
-
-                        & > button {
-                          &:hover {
-                            color: var(--color--primary--500);
-                          }
-
-                          &:active {
-                            color: var(--color--primary--700);
-                          }
-                        }
-                      }
-                    }
-                  }
+            return html`
+              <div
+                style="${css`
+                  color: var(--color--primary--100);
+                  background-color: var(--color--primary--800);
+                  clip-path: polygon(
+                    0 10vw,
+                    100% 0,
+                    100% calc(100% - 10vw),
+                    0 100%
+                  );
                 `}"
               >
-                <div>
-                  <h3 class="heading--1">
-                    <i class="bi bi-toggles"></i>
-                    Fully-Featured
-                  </h3>
-                  <ul>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Q&A
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Chat
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Announcements
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Notifications
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Invitations
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Anonymity
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Markdown
-                      <button
-                        data-tippy-content="What’s Markdown?"
-                        data-tippy-theme="tooltip"
-                        data-micromodal-trigger="modal--markdown"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      LaTeX
-                      <button
-                        data-tippy-content="What’s LaTeX?"
-                        data-tippy-theme="tooltip"
-                        data-micromodal-trigger="modal--latex"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Syntax highlighting
-                      <button
-                        data-tippy-content="What’s Syntax Highlighting?"
-                        data-tippy-theme="tooltip"
-                        data-micromodal-trigger="modal--syntax-highlighting"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Easy-to-use & modern interface
-                    </li>
-                  </ul>
-                </div>
+                $${background}
 
-                <div>
-                  <h3 class="heading--1">
-                    <i class="bi bi-code-square"></i>
-                    Open-Source
-                  </h3>
-                  <ul>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Free for everyone; forever
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Programmable via the CourseLore API
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Developed in public
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Beginner-friendly code base
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Welcoming to new collaborators
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Read the code base and build your trust on the software
-                      that you use
-                    </li>
-                  </ul>
-                </div>
+                <section>
+                  <h2 class="heading--display--1">
+                    A forum for educators & students
+                  </h2>
 
-                <div>
-                  <h3 class="heading--1">
-                    <i class="bi bi-shield-lock"></i>
-                    Self-Hosted
-                  </h3>
-                  <ul>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Easy to run on your own server
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Respect educators and students’ privacy
-                    </li>
-                    <li>
-                      <i class="bi bi-check-circle-fill"></i>
-                      Own your data
-                    </li>
-                  </ul>
-                </div>
+                  <div
+                    style="${css`
+                      & > div {
+                        padding: var(--space--4);
+                        border-radius: var(--border-radius--xl);
+                        color: var(--color--primary--800);
+                        background-color: var(--color--primary--100);
+                        --color--focus: var(--color--primary--400);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+
+                        & > h3 {
+                          display: flex;
+                          align-items: center;
+                          gap: var(--space--2);
+
+                          & > i {
+                            background-color: var(--color--primary--200);
+                            width: var(--font-size--4xl);
+                            height: var(--font-size--4xl);
+                            border-radius: 50%;
+                            display: inline-flex;
+                            justify-content: center;
+                            align-items: center;
+                          }
+                        }
+
+                        & > ul {
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+
+                          & > li {
+                            display: flex;
+                            gap: var(--space--2);
+
+                            & > i,
+                            & > button {
+                              color: var(--color--primary--600);
+                            }
+
+                            & > button {
+                              &:hover {
+                                color: var(--color--primary--500);
+                              }
+
+                              &:active {
+                                color: var(--color--primary--700);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    `}"
+                  >
+                    <div>
+                      <h3 class="heading--1">
+                        <i class="bi bi-toggles"></i>
+                        Fully-Featured
+                      </h3>
+                      <ul>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Q&A
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Chat
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Announcements
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Notifications
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Invitations
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Anonymity
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Markdown
+                          <button
+                            data-tippy-content="What’s Markdown?"
+                            data-tippy-theme="tooltip"
+                            data-micromodal-trigger="modal--markdown"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          LaTeX
+                          <button
+                            data-tippy-content="What’s LaTeX?"
+                            data-tippy-theme="tooltip"
+                            data-micromodal-trigger="modal--latex"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Syntax highlighting
+                          <button
+                            data-tippy-content="What’s Syntax Highlighting?"
+                            data-tippy-theme="tooltip"
+                            data-micromodal-trigger="modal--syntax-highlighting"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Easy-to-use & modern interface
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 class="heading--1">
+                        <i class="bi bi-code-square"></i>
+                        Open-Source
+                      </h3>
+                      <ul>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Free for everyone; forever
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Programmable via the CourseLore API
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Developed in public
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Beginner-friendly code base
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Welcoming to new collaborators
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Read the code base and build your trust on the
+                          software that you use
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 class="heading--1">
+                        <i class="bi bi-shield-lock"></i>
+                        Self-Hosted
+                      </h3>
+                      <ul>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Easy to run on your own server
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Respect educators and students’ privacy
+                        </li>
+                        <li>
+                          <i class="bi bi-check-circle-fill"></i>
+                          Own your data
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
               </div>
-            </section>
-          </div>
 
-          <div
-            style="${css`
-              background-color: var(--color--fuchsia--800);
-              margin-top: -5vw;
-              clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
-              position: relative;
-            `}"
-          >
-            $${app.locals.partials.art.small
-              .replace(
-                "<svg",
-                `$&
+              <div
+                style="${css`
+                  background-color: var(--color--fuchsia--800);
+                  margin-top: -5vw;
+                  clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
+                  position: relative;
+                `}"
+              >
+                $${app.locals.partials.art.small
+                  .replace(
+                    "<svg",
+                    `$&
               style="${css`
                 opacity: 40%;
                 z-index: -1;
@@ -458,181 +463,186 @@ module.exports = (require) => {
                 min-height: 100%;
               `}"
             `
-              )
-              .replace(/width=".*?"/, "")
-              .replace(/height=".*?"/, "")
-              .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
-            <script>
-              (() => {
-                const element = document.currentScript.previousElementSibling;
-                document.addEventListener("DOMContentLoaded", () => {
-                  new ArtAnimation({
-                    element,
-                    speed: 0.0001,
-                    amount: 5,
-                    startupDuration: 0,
-                  }).start();
-                });
-              })();
-            </script>
+                  )
+                  .replace(/width=".*?"/, "")
+                  .replace(/height=".*?"/, "")
+                  .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
+                <script>
+                  (() => {
+                    const element =
+                      document.currentScript.previousElementSibling;
+                    document.addEventListener("DOMContentLoaded", () => {
+                      new ArtAnimation({
+                        element,
+                        speed: 0.0001,
+                        amount: 5,
+                        startupDuration: 0,
+                      }).start();
+                    });
+                  })();
+                </script>
 
-            <section
-              style="${css`
-                max-width: 110ch;
-                margin: 0 auto;
-              `}"
-            >
-              <h1
-                style="${css`
-                  font-family: $font-family-serif;
-                  @include font-size(3rem);
-                  font-weight: bold;
-                  font-style: italic;
-                  text-align: center;
-                  text-shadow: 2px 2px $pink-600;
-                `}"
-              >
-                Team
-              </h1>
-
-              <div
-                style="${css`
-                  display: grid;
-                  gap: 1rem;
-                  @include media-breakpoint-up(md) {
-                    grid-auto-flow: column;
-                  }
-                `}"
-              >
-                <div
-                  class="card shadow-lg"
+                <section
                   style="${css`
-                    background-color: $pink-600;
+                    max-width: 110ch;
+                    margin: 0 auto;
                   `}"
                 >
-                  <div
-                    class="card-header"
+                  <h1
                     style="${css`
+                      font-family: $font-family-serif;
+                      @include font-size(3rem);
+                      font-weight: bold;
+                      font-style: italic;
                       text-align: center;
-                      padding-top: 1rem;
+                      text-shadow: 2px 2px $pink-600;
                     `}"
                   >
-                    <a
-                      href="https://www.cs.jhu.edu/~scott/"
-                      class="stretched-link"
-                      ><img
-                        src="${app.locals.settings.url}/scott.png"
-                        alt="Dr. Scott Smith"
-                        width="200"
-                        class="card-title img-thumbnail rounded-circle"
-                    /></a>
-                    <h5
-                      class="card-title"
-                      style="${css`
-                        margin-bottom: 0;
-                      `}"
-                    >
-                      Dr. Scott Smith
-                    </h5>
-                    <p class="card-subtitle">CEO</p>
-                  </div>
-                  <div class="card-body">
-                    <p>
-                      Scott is a full professor at the Johns Hopkins University.
-                      Over his thirty years of experience as an educator, Scott
-                      taught courses on the Principles of Programming Languages,
-                      Object-Oriented Software Engineering, Functional
-                      Programming, and so forth.
-                    </p>
-                  </div>
-                </div>
+                    Team
+                  </h1>
 
-                <div
-                  class="card shadow-lg"
-                  style="${css`
-                    background-color: $pink-600;
-                  `}"
-                >
                   <div
-                    class="card-header"
                     style="${css`
-                      text-align: center;
-                      padding-top: 1rem;
+                      display: grid;
+                      gap: 1rem;
+                      @include media-breakpoint-up(md) {
+                        grid-auto-flow: column;
+                      }
                     `}"
                   >
-                    <a
-                      href="https://www.cs.jhu.edu/faculty/ali-madooei/"
-                      class="stretched-link"
-                      ><img
-                        src="${app.locals.settings.url}/ali.png"
-                        alt="Dr. Ali Madooei"
-                        width="200"
-                        class="card-title img-thumbnail rounded-circle"
-                    /></a>
-                    <h5
-                      class="card-title"
+                    <div
+                      class="card shadow-lg"
                       style="${css`
-                        margin-bottom: 0;
+                        background-color: $pink-600;
                       `}"
                     >
-                      Dr. Ali Madooei
-                    </h5>
-                    <p class="card-subtitle">Consultant</p>
-                  </div>
-                  <div class="card-body">
-                    <p>
-                      Ali is a lecturer at the Johns Hopkins University. Ali has
-                      taught courses in several areas, from Introduction to
-                      Programming to Object-Oriented Software Engineering. Ali
-                      has classroom experience with many student forums and
-                      knows what it takes to make a great one.
-                    </p>
-                  </div>
-                </div>
+                      <div
+                        class="card-header"
+                        style="${css`
+                          text-align: center;
+                          padding-top: 1rem;
+                        `}"
+                      >
+                        <a
+                          href="https://www.cs.jhu.edu/~scott/"
+                          class="stretched-link"
+                          ><img
+                            src="${app.locals.settings.url}/scott.png"
+                            alt="Dr. Scott Smith"
+                            width="200"
+                            class="card-title img-thumbnail rounded-circle"
+                        /></a>
+                        <h5
+                          class="card-title"
+                          style="${css`
+                            margin-bottom: 0;
+                          `}"
+                        >
+                          Dr. Scott Smith
+                        </h5>
+                        <p class="card-subtitle">CEO</p>
+                      </div>
+                      <div class="card-body">
+                        <p>
+                          Scott is a full professor at the Johns Hopkins
+                          University. Over his thirty years of experience as an
+                          educator, Scott taught courses on the Principles of
+                          Programming Languages, Object-Oriented Software
+                          Engineering, Functional Programming, and so forth.
+                        </p>
+                      </div>
+                    </div>
 
-                <div
-                  class="card shadow-lg"
-                  style="${css`
-                    background-color: $pink-600;
-                  `}"
-                >
-                  <div
-                    class="card-header"
-                    style="${css`
-                      text-align: center;
-                      padding-top: 1rem;
-                    `}"
-                  >
-                    <a href="https://leafac.com" class="stretched-link"
-                      ><img
-                        src="${app.locals.settings.url}/leandro.png"
-                        alt="Leandro Facchinetti"
-                        width="200"
-                        class="card-title img-thumbnail rounded-circle"
-                    /></a>
-                    <h5
-                      class="card-title"
+                    <div
+                      class="card shadow-lg"
                       style="${css`
-                        margin-bottom: 0;
+                        background-color: $pink-600;
                       `}"
                     >
-                      Leandro Facchinetti
-                    </h5>
-                    <p class="card-subtitle">Developer & Designer</p>
+                      <div
+                        class="card-header"
+                        style="${css`
+                          text-align: center;
+                          padding-top: 1rem;
+                        `}"
+                      >
+                        <a
+                          href="https://www.cs.jhu.edu/faculty/ali-madooei/"
+                          class="stretched-link"
+                          ><img
+                            src="${app.locals.settings.url}/ali.png"
+                            alt="Dr. Ali Madooei"
+                            width="200"
+                            class="card-title img-thumbnail rounded-circle"
+                        /></a>
+                        <h5
+                          class="card-title"
+                          style="${css`
+                            margin-bottom: 0;
+                          `}"
+                        >
+                          Dr. Ali Madooei
+                        </h5>
+                        <p class="card-subtitle">Consultant</p>
+                      </div>
+                      <div class="card-body">
+                        <p>
+                          Ali is a lecturer at the Johns Hopkins University. Ali
+                          has taught courses in several areas, from Introduction
+                          to Programming to Object-Oriented Software
+                          Engineering. Ali has classroom experience with many
+                          student forums and knows what it takes to make a great
+                          one.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div
+                      class="card shadow-lg"
+                      style="${css`
+                        background-color: $pink-600;
+                      `}"
+                    >
+                      <div
+                        class="card-header"
+                        style="${css`
+                          text-align: center;
+                          padding-top: 1rem;
+                        `}"
+                      >
+                        <a href="https://leafac.com" class="stretched-link"
+                          ><img
+                            src="${app.locals.settings.url}/leandro.png"
+                            alt="Leandro Facchinetti"
+                            width="200"
+                            class="card-title img-thumbnail rounded-circle"
+                        /></a>
+                        <h5
+                          class="card-title"
+                          style="${css`
+                            margin-bottom: 0;
+                          `}"
+                        >
+                          Leandro Facchinetti
+                        </h5>
+                        <p class="card-subtitle">Developer & Designer</p>
+                      </div>
+                      <div class="card-body">
+                        <p>
+                          Leandro was a PhD Candidate at the Johns Hopkins
+                          University. He received the Whiting School of
+                          Engineering’s Professor Joel Dean Excellence in
+                          Teaching Award for five years of work as a teaching
+                          assistant, and taught a course on Object-Oriented
+                          Software Engineering.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div class="card-body">
-                    <p>
-                      Leandro was a PhD Candidate at the Johns Hopkins
-                      University. He received the Whiting School of
-                      Engineering’s Professor Joel Dean Excellence in Teaching
-                      Award for five years of work as a teaching assistant, and
-                      taught a course on Object-Oriented Software Engineering.
-                    </p>
-                  </div>
-                </div>
+                </section>
               </div>
-            </section>
-          </div>
+            `;
+          })()}
         </main>
       </div>
 
