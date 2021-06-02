@@ -205,7 +205,7 @@ module.exports = (require) => {
                   }
 
                   @media (min-width: 1024px) {
-                    max-width: 110ch;
+                    max-width: calc(var(--space--72) * 3 + var(--space--8) * 2);
                     & > * {
                       flex: 1;
                     }
