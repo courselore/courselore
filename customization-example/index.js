@@ -197,9 +197,10 @@ module.exports = (require) => {
 
                 & > div {
                   display: flex;
-                  gap: var(--space--4);
+                  gap: var(--space--8);
 
                   @media (max-width: 1023px) {
+                    max-width: var(--space--72);
                     flex-direction: column;
                   }
 
