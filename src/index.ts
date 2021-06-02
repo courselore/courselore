@@ -351,20 +351,6 @@ export default async function courselore(
                   list-style: none;
                 }
 
-                img,
-                svg {
-                  max-width: 100%;
-                  height: auto;
-                }
-
-                textarea {
-                  resize: vertical;
-                }
-
-                [hidden] {
-                  display: none !important;
-                }
-
                 /* DESIGN SYSTEM */
 
                 /*
@@ -770,6 +756,20 @@ export default async function courselore(
                 :focus {
                   box-shadow: var(--space--0) var(--space--0) var(--space--0)
                     var(--space--1) var(--color--focus);
+                }
+
+                img,
+                svg {
+                  max-width: 100%;
+                  height: auto;
+                }
+
+                textarea {
+                  resize: vertical;
+                }
+
+                [hidden] {
+                  display: none !important;
                 }
 
                 /* COMPONENTS */
