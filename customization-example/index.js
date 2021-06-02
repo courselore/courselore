@@ -29,11 +29,10 @@ module.exports = (require) => {
           style="${css`
             min-height: 90vh;
             padding: var(--space--4);
-            padding-bottom: 10vw;
             display: flex;
             flex-direction: column;
             gap: var(--space--6);
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
           `}"
         >
@@ -179,7 +178,6 @@ module.exports = (require) => {
           <div
             style="${css`
               background-color: var(--color--primary--800);
-              margin-top: -10vw;
               clip-path: polygon(
                 0 10vw,
                 100% 0,
@@ -222,8 +220,10 @@ module.exports = (require) => {
 
             <section
               style="${css`
+                min-height: 100vh;
                 padding: calc(10vw + var(--space--8)) var(--space--4);
                 display: flex;
+                justify-content: center;
                 align-items: center;
                 flex-direction: column;
                 gap: var(--space--8);
@@ -438,12 +438,10 @@ module.exports = (require) => {
 
           <div
             style="${css`
-              background-color: $pink;
+              background-color: var(--color--fuchsia--800);
+              margin-top: -5vw;
               clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
               position: relative;
-              padding: calc(10vw + 2rem) 1rem 5rem;
-              margin-top: -5vw;
-              overflow: hidden;
             `}"
           >
             $${app.locals.partials.art.small
