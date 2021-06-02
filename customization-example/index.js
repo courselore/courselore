@@ -177,8 +177,6 @@ module.exports = (require) => {
         <main
           style="${css`
             & > div {
-              position: relative;
-
               & > svg {
                 width: 100%;
                 height: 100%;
