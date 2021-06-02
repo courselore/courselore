@@ -451,19 +451,20 @@ module.exports = (require) => {
                 <section>
                   <h2 class="heading--display--1">Team</h2>
 
+                  <!--
                   <div>
                     <div
                       class="card shadow-lg"
                       style="${css`
-                        background-color: $pink-600;
-                      `}"
+                    background-color: $pink-600;
+                  `}"
                     >
                       <div
                         class="card-header"
                         style="${css`
-                          text-align: center;
-                          padding-top: 1rem;
-                        `}"
+                    text-align: center;
+                    padding-top: 1rem;
+                  `}"
                       >
                         <a
                           href="https://www.cs.jhu.edu/~scott/"
@@ -477,8 +478,8 @@ module.exports = (require) => {
                         <h5
                           class="card-title"
                           style="${css`
-                            margin-bottom: 0;
-                          `}"
+                    margin-bottom: 0;
+                  `}"
                         >
                           Dr. Scott Smith
                         </h5>
@@ -498,15 +499,15 @@ module.exports = (require) => {
                     <div
                       class="card shadow-lg"
                       style="${css`
-                        background-color: $pink-600;
-                      `}"
+                    background-color: $pink-600;
+                  `}"
                     >
                       <div
                         class="card-header"
                         style="${css`
-                          text-align: center;
-                          padding-top: 1rem;
-                        `}"
+                    text-align: center;
+                    padding-top: 1rem;
+                  `}"
                       >
                         <a
                           href="https://www.cs.jhu.edu/faculty/ali-madooei/"
@@ -520,8 +521,8 @@ module.exports = (require) => {
                         <h5
                           class="card-title"
                           style="${css`
-                            margin-bottom: 0;
-                          `}"
+                    margin-bottom: 0;
+                  `}"
                         >
                           Dr. Ali Madooei
                         </h5>
@@ -542,15 +543,15 @@ module.exports = (require) => {
                     <div
                       class="card shadow-lg"
                       style="${css`
-                        background-color: $pink-600;
-                      `}"
+                    background-color: $pink-600;
+                  `}"
                     >
                       <div
                         class="card-header"
                         style="${css`
-                          text-align: center;
-                          padding-top: 1rem;
-                        `}"
+                    text-align: center;
+                    padding-top: 1rem;
+                  `}"
                       >
                         <a href="https://leafac.com" class="stretched-link"
                           ><img
@@ -562,8 +563,8 @@ module.exports = (require) => {
                         <h5
                           class="card-title"
                           style="${css`
-                            margin-bottom: 0;
-                          `}"
+                    margin-bottom: 0;
+                  `}"
                         >
                           Leandro Facchinetti
                         </h5>
@@ -581,6 +582,7 @@ module.exports = (require) => {
                       </div>
                     </div>
                   </div>
+                  -->
                 </section>
               </div>
             `;
