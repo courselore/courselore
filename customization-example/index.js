@@ -287,7 +287,7 @@ module.exports = (require) => {
                         & > ul {
                           display: flex;
                           flex-direction: column;
-                          gap: var(--space--1);
+                          gap: var(--space--2);
 
                           & > li {
                             display: flex;
@@ -320,23 +320,11 @@ module.exports = (require) => {
                       <ul>
                         <li>
                           <i class="bi bi-check-circle-fill"></i>
-                          Q&A
+                          Q&A / Chat
                         </li>
                         <li>
                           <i class="bi bi-check-circle-fill"></i>
-                          Chat
-                        </li>
-                        <li>
-                          <i class="bi bi-check-circle-fill"></i>
-                          Announcements
-                        </li>
-                        <li>
-                          <i class="bi bi-check-circle-fill"></i>
-                          Notifications
-                        </li>
-                        <li>
-                          <i class="bi bi-check-circle-fill"></i>
-                          Invitations
+                          Announcements & Notifications
                         </li>
                         <li>
                           <i class="bi bi-check-circle-fill"></i>
@@ -398,15 +386,7 @@ module.exports = (require) => {
                         </li>
                         <li>
                           <i class="bi bi-check-circle-fill"></i>
-                          Developed in public
-                        </li>
-                        <li>
-                          <i class="bi bi-check-circle-fill"></i>
                           Beginner-friendly code base
-                        </li>
-                        <li>
-                          <i class="bi bi-check-circle-fill"></i>
-                          Welcoming to new collaborators
                         </li>
                         <li>
                           <i class="bi bi-check-circle-fill"></i>
