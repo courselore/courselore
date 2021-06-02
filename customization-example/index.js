@@ -493,8 +493,8 @@ module.exports = (require) => {
                               & > h4 {
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
-                                font-weight: var(--font-weight--bold);
-                                color: var(--color--fuchsia--500);
+                                font-weight: var(--font-weight--black);
+                                color: var(--color--fuchsia--400);
                                 text-transform: uppercase;
                                 letter-spacing: var(--space--px);
                               }
