@@ -329,15 +329,10 @@ export default async function courselore(
                   https://unpkg.com/browse/@tailwindcss/forms@0.3.2/dist/forms.css
                 */
 
-                :root {
-                  box-sizing: border-box;
-                  overflow-wrap: break-word;
-                }
-
                 *,
                 ::before,
                 ::after {
-                  box-sizing: inherit;
+                  box-sizing: border-box;
                   padding: 0;
                   border: 0;
                   margin: 0;
@@ -346,6 +341,7 @@ export default async function courselore(
                   text-decoration: inherit;
                   color: inherit;
                   background-color: transparent;
+                  overflow-wrap: break-word;
                   appearance: none;
                   list-style: none;
                 }
@@ -718,10 +714,6 @@ export default async function courselore(
                   --color--primary-gray--900: var(--color--cool-gray--900);
 
                   --color--focus: var(--color--primary--200);
-
-                  @media (prefers-color-scheme: dark) {
-                    /* TODO */
-                  }
                 }
 
                 /* GLOBAL STYLES */
@@ -739,7 +731,7 @@ export default async function courselore(
                 pre {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
-                  overflow-y: auto;
+                  white-space: pre-wrap;
                 }
 
                 input,
