@@ -732,7 +732,7 @@ export default async function courselore(
                 pre {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
-                  white-space: pre-wrap;
+                  overflow-x: auto;
                 }
 
                 input,
