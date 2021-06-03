@@ -974,6 +974,13 @@ export default async function courselore(
 
                     & > li {
                       list-style: disc;
+
+                      &::marker {
+                        color: var(--color--primary-gray--500);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary-gray--500);
+                        }
+                      }
                     }
                   }
 
