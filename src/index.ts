@@ -1372,26 +1372,26 @@ export default async function courselore(
                   style="${css`
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
-                    color: var(--color--rose--700);
-                    background-color: var(--color--rose--100);
-                    --focus-color: var(--color--rose--400);
+                    color: var(--color--rose--50);
+                    background-color: var(--color--rose--500);
+                    --focus-color: var(--color--rose--300);
                     padding: var(--space--0) var(--space--4);
                     box-shadow: inset 0 calc(-1 * var(--border-width--1))
-                      var(--color--rose--300);
+                      var(--color--rose--600);
                     display: flex;
                     gap: var(--space--2);
                     justify-content: center;
 
                     & > * {
                       padding: var(--space--1) var(--space--2);
+                      position: relative;
                       display: flex;
                       gap: var(--space--2);
-                      transition: box-shadow var(--transition-duration);
+                      transition: background-color var(--transition-duration);
 
                       &:hover,
                       &.current {
-                        box-shadow: inset 0 calc(-1 * var(--border-width--4))
-                          var(--color--rose--500);
+                        background-color: var(--color--rose--700);
                       }
                     }
                   `}"
@@ -1480,52 +1480,41 @@ export default async function courselore(
           `}"
         >
           <div
-            class="card shadow-lg"
             style="${css`
-              color: white;
-              background-color: $purple-600;
-              max-width: 45ch;
+              max-width: var(--space--96);
               flex: 1;
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
             `}"
           >
-            <div class="card-header">
-              <h1
-                class="card-text"
+            <h1 class="heading--display--1">
+              <a
+                href="${app.locals.settings.url}/"
                 style="${css`
-                  text-align: center;
+                  color: var(--color--primary--50);
+                  * {
+                    stroke: var(--color--primary--50);
+                    transition: stroke var(--transition-duration);
+                  }
+                  display: inline-flex;
+                  gap: var(--space--2);
+                  align-items: center;
+                  transition: color var(--transition-duration);
+                  &:hover {
+                    color: var(--color--primary--200);
+                    * {
+                      stroke: var(--color--primary--200);
+                    }
+                  }
                 `}"
               >
-                <a
-                  href="${app.locals.settings.url}/"
-                  class="btn link-light"
-                  style="${css`
-                    font-family: $font-family-serif;
-                    font-size: 2rem;
-                    font-weight: bold;
-                    font-style: italic;
-                    padding: 0;
-                    display: inline-flex;
-                    gap: 0.5rem;
-                    align-items: center;
-                    * {
-                      stroke: white;
-                      transition: stroke 0.15s ease-in-out;
-                    }
-                    &:hover,
-                    &:focus {
-                      color: $purple-100;
-                      * {
-                        stroke: $purple-100;
-                      }
-                    }
-                  `}"
-                >
-                  $${app.locals.partials.art.small}
-                  <span>CourseLore</span>
-                </a>
-                <script>
-                  (() => {
-                    const logo = document.currentScript.previousElementSibling;
+                $${app.locals.partials.art.small} CourseLore
+              </a>
+              <script>
+                (() => {
+                  const logo = document.currentScript.previousElementSibling;
+                  document.addEventListener("DOMContentLoaded", () => {
                     const artAnimation = new ArtAnimation({
                       element: logo,
                       speed: 0.001,
@@ -1538,10 +1527,10 @@ export default async function courselore(
                     logo.addEventListener("mouseout", () => {
                       artAnimation.stop();
                     });
-                  })();
-                </script>
-              </h1>
-            </div>
+                  });
+                })();
+              </script>
+            </h1>
             <div class="card-body">$${body}</div>
           </div>
         </div>
