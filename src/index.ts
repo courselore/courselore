@@ -1043,14 +1043,8 @@ export default async function courselore(
           $${app.locals.partials.art.preamble}
 
           <div hidden>
-            <div
-              style="${css`
-                text-align: center;
-              `}"
-            >
-              $${app.locals.partials.art.small}
-              <strong>Loading…</strong>
-            </div>
+            $${app.locals.partials.art.small}
+            <strong>Loading…</strong>
           </div>
           <script>
             let loading;
