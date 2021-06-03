@@ -447,8 +447,8 @@ export default async function courselore(
                     --transition-duration: 0;
                   }
 
-                  --color-white: #ffffff;
-                  --color-black: #000000;
+                  --color--white: #ffffff;
+                  --color--black: #000000;
 
                   --color--rose--50: #fff1f2;
                   --color--rose--100: #ffe4e6;
@@ -715,6 +715,9 @@ export default async function courselore(
                   --color--primary-gray--900: var(--color--cool-gray--900);
 
                   --color--focus: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    --color--focus: var(--color--primary--900);
+                  }
                 }
 
                 /* GLOBAL STYLES */
@@ -784,6 +787,9 @@ export default async function courselore(
                   line-height: var(--line-height--base);
                   font-weight: var(--font-weight--bold);
                   color: var(--color--primary--900);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--400);
+                  }
                 }
 
                 .button {
@@ -798,25 +804,40 @@ export default async function courselore(
                   &.primary {
                     color: var(--color--primary--50);
                     background-color: var(--color--primary--700);
-
                     &:hover {
                       background-color: var(--color--primary--600);
                     }
-
                     &:active {
                       background-color: var(--color--primary--800);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--800);
+                      &:hover {
+                        background-color: var(--color--primary--700);
+                      }
+                      &:active {
+                        background-color: var(--color--primary--900);
+                      }
                     }
                   }
 
                   &.secondary {
                     --color--focus: var(--color--primary-gray--300);
-
                     &:hover {
                       background-color: var(--color--primary-gray--200);
                     }
-
                     &:active {
                       background-color: var(--color--primary-gray--300);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      --color--focus: var(--color--primary-gray--500);
+                      &:hover {
+                        background-color: var(--color--primary-gray--800);
+                      }
+                      &:active {
+                        background-color: var(--color--primary-gray--700);
+                      }
                     }
                   }
                 }
@@ -831,6 +852,20 @@ export default async function courselore(
                     }
                     &:last-child {
                       fill: var(--color--primary--900);
+                    }
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--900);
+                    background-color: var(--color--primary--200);
+                    border: var(--border-width--1) solid
+                      var(--color--primary--900);
+                    & > .tippy-svg-arrow > svg {
+                      &:first-child {
+                        fill: var(--color--primary--900);
+                      }
+                      &:last-child {
+                        fill: var(--color--primary--200);
+                      }
                     }
                   }
                 }
@@ -851,6 +886,9 @@ export default async function courselore(
                     &::before {
                       content: "";
                       background-color: var(--color--primary--300);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--primary--800);
+                      }
                       position: absolute;
                       top: 0;
                       right: 0;
@@ -869,7 +907,10 @@ export default async function courselore(
                       top: var(--space--2);
                       right: var(--space--4);
                       cursor: pointer;
-                      color: var(--color--primary--900);
+                      color: var(--color--primary--800);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--400);
+                      }
                     }
 
                     & > div {
@@ -879,6 +920,10 @@ export default async function courselore(
                       &.dialog {
                         color: var(--color--primary-gray--700);
                         background-color: var(--color--primary-gray--50);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary-gray--200);
+                          background-color: var(--color--primary-gray--900);
+                        }
                         max-width: min(calc(100% - 2 * var(--space--4)), 80ch);
                         max-height: calc(100% - 2 * var(--space--12));
                         padding: var(--space--4);
@@ -899,11 +944,21 @@ export default async function courselore(
                       color: var(--color--primary--800);
                       text-decoration: underline;
                     }
+
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--500);
+                      &:hover {
+                        color: var(--color--primary--700);
+                      }
+                    }
                   }
 
                   strong {
                     font-weight: var(--font-weight--bold);
                     color: var(--color--primary-gray--900);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--50);
+                    }
                   }
 
                   p,
@@ -926,7 +981,22 @@ export default async function courselore(
                     padding: var(--space--4);
                     border: var(--border-width--1) solid
                       var(--color--primary--200);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--primary--900);
+                    }
                     border-radius: var(--border-radius--xl);
+                  }
+                }
+
+                .dark {
+                  display: none;
+                }
+                @media (prefers-color-scheme: dark) {
+                  .light {
+                    display: none;
+                  }
+                  .dark {
+                    display: block;
                   }
                 }
 
@@ -6292,7 +6362,7 @@ ${value}</textarea
       .use(rehypeShiki, {
         highlighter: {
           light: await shiki.getHighlighter({ theme: "light-plus" }),
-          // TODO: dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })

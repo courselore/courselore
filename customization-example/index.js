@@ -23,6 +23,10 @@ module.exports = (require) => {
         style="${css`
           color: var(--color--primary-gray--700);
           background-color: var(--color--primary-gray--50);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--primary-gray--200);
+            background-color: var(--color--primary-gray--900);
+          }
         `}"
       >
         <header
@@ -56,6 +60,9 @@ module.exports = (require) => {
                       rx="10"
                       style="${css`
                         fill: var(--color--primary--700);
+                        @media (prefers-color-scheme: dark) {
+                          fill: var(--color--primary--800);
+                        }
                       `}"
                     />
                     <text
@@ -64,6 +71,9 @@ module.exports = (require) => {
                         font-size: var(--font-size--8xl);
                         line-height: var(--line-height--8xl);
                         fill: var(--color--primary--50);
+                        @media (prefers-color-scheme: dark) {
+                          fill: var(--color--primary--200);
+                        }
                       `}"
                     >
                       CourseLore
@@ -78,6 +88,9 @@ module.exports = (require) => {
                       rx="10"
                       style="${css`
                         fill: var(--color--fuchsia--500);
+                        @media (prefers-color-scheme: dark) {
+                          fill: var(--color--fuchsia--800);
+                        }
                       `}"
                     />
                     <text
@@ -85,6 +98,9 @@ module.exports = (require) => {
                         font-size: var(--font-size--3xl);
                         line-height: var(--line-height--3xl);
                         fill: var(--color--fuchsia--50);
+                        @media (prefers-color-scheme: dark) {
+                          fill: var(--color--fuchsia--200);
+                        }
                       `}"
                     >
                       The Open-Source Student Forum
@@ -99,6 +115,9 @@ module.exports = (require) => {
                       rx="10"
                       style="${css`
                         fill: var(--color--pink--500);
+                        @media (prefers-color-scheme: dark) {
+                          fill: var(--color--pink--800);
+                        }
                       `}"
                     />
                     <text
@@ -106,6 +125,9 @@ module.exports = (require) => {
                         font-size: var(--font-size--2xl);
                         line-height: var(--line-height--2xl);
                         fill: var(--color--pink--50);
+                        @media (prefers-color-scheme: dark) {
+                          fill: var(--color--pink--200);
+                        }
                         text-transform: uppercase;
                         letter-spacing: var(--space--0-5);
                       `}"
@@ -242,6 +264,10 @@ module.exports = (require) => {
                 style="${css`
                   color: var(--color--primary--100);
                   background-color: var(--color--primary--800);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
                   clip-path: polygon(
                     0 10vw,
                     100% 0,
@@ -262,6 +288,13 @@ module.exports = (require) => {
                         color: var(--color--primary--800);
                         background-color: var(--color--primary--100);
                         --color--focus: var(--color--primary--400);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary--100);
+                          background-color: var(--color--primary--900);
+                          --color--focus: var(--color--primary--400);
+                          border: var(--border-width--1) solid
+                            var(--color--primary--700);
+                        }
                         padding: var(--space--4);
                         border-radius: var(--border-radius--xl);
                         display: flex;
@@ -272,9 +305,15 @@ module.exports = (require) => {
                           display: flex;
                           align-items: center;
                           gap: var(--space--2);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--primary--200);
+                          }
 
                           & > i {
                             background-color: var(--color--primary--200);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(--color--primary--700);
+                            }
                             width: var(--font-size--4xl);
                             height: var(--font-size--4xl);
                             border-radius: 50%;
@@ -296,15 +335,25 @@ module.exports = (require) => {
                             & > i,
                             & > button {
                               color: var(--color--primary--600);
+                              @media (prefers-color-scheme: dark) {
+                                color: var(--color--primary--300);
+                              }
                             }
 
                             & > button {
                               &:hover {
                                 color: var(--color--primary--500);
                               }
-
                               &:active {
                                 color: var(--color--primary--700);
+                              }
+                              @media (prefers-color-scheme: dark) {
+                                &:hover {
+                                  color: var(--color--primary--400);
+                                }
+                                &:active {
+                                  color: var(--color--primary--500);
+                                }
                               }
                             }
                           }
@@ -424,6 +473,10 @@ module.exports = (require) => {
                 style="${css`
                   color: var(--color--fuchsia--100);
                   background-color: var(--color--fuchsia--800);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--fuchsia--200);
+                    background-color: var(--color--fuchsia--900);
+                  }
                   margin-top: -5vw;
                   clip-path: polygon(0 10vw, 100% 0, 100% 100%, 0 100%);
                 `}"
@@ -438,6 +491,13 @@ module.exports = (require) => {
                         color: var(--color--fuchsia--800);
                         background-color: var(--color--fuchsia--100);
                         --color--focus: var(--color--fuchsia--400);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--fuchsia--200);
+                          background-color: var(--color--fuchsia--900);
+                          --color--focus: var(--color--fuchsia--400);
+                          border: var(--border-width--1) solid
+                            var(--color--fuchsia--700);
+                        }
                         display: block;
                         border-radius: var(--border-radius--xl);
                         transition: transform var(--transition-duration);
@@ -457,6 +517,9 @@ module.exports = (require) => {
                               100% calc(100% - var(--space--8)),
                               0 100%
                             );
+                            @media (prefers-color-scheme: dark) {
+                              filter: brightness(0.8);
+                            }
                           }
 
                           & > div {
@@ -469,6 +532,9 @@ module.exports = (require) => {
                             & > div {
                               & > h3 {
                                 color: var(--color--fuchsia--900);
+                                @media (prefers-color-scheme: dark) {
+                                  color: var(--color--fuchsia--100);
+                                }
                               }
 
                               & > h4 {
@@ -476,6 +542,9 @@ module.exports = (require) => {
                                 line-height: var(--line-height--xs);
                                 font-weight: var(--font-weight--black);
                                 color: var(--color--fuchsia--400);
+                                @media (prefers-color-scheme: dark) {
+                                  color: var(--color--fuchsia--400);
+                                }
                                 text-transform: uppercase;
                                 letter-spacing: var(--space--px);
                               }
@@ -576,6 +645,10 @@ module.exports = (require) => {
                     text-align: center;
                     color: var(--color--primary--800);
                     background-color: var(--color--primary--50);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--300);
+                      background-color: var(--color--primary-gray--800);
+                    }
                     padding: var(--space--2) var(--space--4);
                   }
 
@@ -588,6 +661,9 @@ module.exports = (require) => {
                   & > * {
                     border: var(--border-width--1) solid
                       var(--color--primary--200);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--primary--900);
+                    }
                   }
                 }
 
