@@ -733,6 +733,10 @@ export default async function courselore(
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   overflow-x: auto;
+
+                  code {
+                    overflow-wrap: normal;
+                  }
                 }
 
                 input,
