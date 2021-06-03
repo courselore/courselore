@@ -330,7 +330,6 @@ export default async function courselore(
                 */
 
                 :root {
-                  -webkit-text-size-adjust: 100%;
                   box-sizing: border-box;
                   overflow-wrap: break-word;
                 }
