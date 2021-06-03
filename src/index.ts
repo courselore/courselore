@@ -339,6 +339,7 @@ export default async function courselore(
                   outline: 0;
                   font: inherit;
                   text-decoration: inherit;
+                  text-size-adjust: 100%;
                   color: inherit;
                   background-color: transparent;
                   overflow-wrap: break-word;
