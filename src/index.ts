@@ -1434,17 +1434,15 @@ export default async function courselore(
               `}"
             >
               <h3 class="heading--1">Demonstration Mode</h3>
-              <div class="text">
-                <p>
-                  CourseLore is running in Demonstration Mode. All data may be
-                  lost, including courses, threads, posts, users, and so forth.
-                  Also, no emails are actually sent; they show up in the
-                  <a href="${app.locals.settings.url}/demonstration-inbox"
-                    >Demonstration Inbox</a
-                  >
-                  instead.
-                </p>
-              </div>
+              <p class="text">
+                CourseLore is running in Demonstration Mode. All data may be
+                lost, including courses, threads, posts, users, and so forth.
+                Also, no emails are actually sent; they show up in the
+                <a href="${app.locals.settings.url}/demonstration-inbox"
+                  >Demonstration Inbox</a
+                >
+                instead.
+              </p>
             </div>
           </div>
         </div>
@@ -1531,7 +1529,7 @@ export default async function courselore(
                 })();
               </script>
             </h1>
-            <div class="card-body">$${body}</div>
+            <div>$${body}</div>
           </div>
         </div>
       `
