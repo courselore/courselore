@@ -714,9 +714,9 @@ export default async function courselore(
                   --color--primary-gray--800: var(--color--cool-gray--800);
                   --color--primary-gray--900: var(--color--cool-gray--900);
 
-                  --color--focus: var(--color--primary--200);
+                  --focus-color: var(--color--primary--200);
                   @media (prefers-color-scheme: dark) {
-                    --color--focus: var(--color--primary--900);
+                    --focus-color: var(--color--primary--900);
                   }
                 }
 
@@ -754,7 +754,7 @@ export default async function courselore(
 
                 :focus {
                   box-shadow: var(--space--0) var(--space--0) var(--space--0)
-                    var(--space--1) var(--color--focus);
+                    var(--space--1) var(--focus-color);
                 }
 
                 ::selection {
@@ -828,7 +828,7 @@ export default async function courselore(
                   }
 
                   &.secondary {
-                    --color--focus: var(--color--primary-gray--300);
+                    --focus-color: var(--color--primary-gray--300);
                     &:hover {
                       background-color: var(--color--primary-gray--200);
                     }
@@ -836,7 +836,7 @@ export default async function courselore(
                       background-color: var(--color--primary-gray--300);
                     }
                     @media (prefers-color-scheme: dark) {
-                      --color--focus: var(--color--primary-gray--500);
+                      --focus-color: var(--color--primary-gray--500);
                       &:hover {
                         background-color: var(--color--primary-gray--800);
                       }
@@ -1370,58 +1370,41 @@ export default async function courselore(
             ? html`
                 <nav
                   style="${css`
-                    background-color: $red;
-                    padding: 0.2rem 1rem;
-                    border-bottom: 1px solid white;
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    color: var(--color--rose--700);
+                    background-color: var(--color--rose--100);
+                    --focus-color: var(--color--rose--400);
+                    padding: var(--space--0) var(--space--4);
+                    box-shadow: inset 0 calc(-1 * var(--border-width--1))
+                      var(--color--rose--300);
                     display: flex;
+                    gap: var(--space--2);
                     justify-content: center;
-                    align-items: center;
-                    gap: 0.5rem;
+
+                    & > * {
+                      padding: var(--space--1) var(--space--2);
+                      display: flex;
+                      gap: var(--space--2);
+                      transition: box-shadow var(--transition-duration);
+
+                      &:hover,
+                      &.current {
+                        box-shadow: inset 0 calc(-1 * var(--border-width--4))
+                          var(--color--rose--500);
+                      }
+                    }
                   `}"
                 >
-                  <a
-                    role="button"
-                    data-bs-toggle="popover"
-                    data-bs-trigger="focus"
-                    data-bs-content="${html`
-                      CourseLore is running in Demonstration Mode. All data may
-                      be lost, including courses, threads, posts, users, and so
-                      forth. Also, no emails are actually sent; they show up in
-                      the
-                      <a href="${app.locals.settings.url}/demonstration-inbox"
-                        >Demonstration Inbox</a
-                      >
-                      instead.
-                    `}"
-                    data-bs-html="true"
-                    tabindex="0"
-                    class="btn btn-sm link-light"
-                    style="${css`
-                      padding: 0 0.2rem;
-                      &:hover,
-                      &:focus {
-                        background-color: $red-600;
-                      }
-                    `}"
-                  >
+                  <button data-micromodal-trigger="modal--demonstration-mode">
                     <i class="bi bi-easel"></i>
                     Demonstration Mode
-                  </a>
+                  </button>
                   <a
                     href="${app.locals.settings.url}/demonstration-inbox"
-                    class="btn btn-sm link-light"
-                    style="${css`
-                      padding: 0 0.2rem;
-                      &:hover,
-                      &:focus {
-                        background-color: $red-600;
-                      }
-                      ${req.path === "/demonstration-inbox"
-                        ? css`
-                            background-color: $red-600;
-                          `
-                        : css``}
-                    `}"
+                    class="${req.path === "/demonstration-inbox"
+                      ? "current"
+                      : ""}"
                   >
                     <i class="bi bi-inbox"></i>
                     Demonstration Inbox
@@ -1437,6 +1420,32 @@ export default async function courselore(
             `}"
           >
             $${body}
+          </div>
+        </div>
+
+        <div id="modal--demonstration-mode" class="modal">
+          <div data-micromodal-close class="close-button">
+            <div
+              class="dialog"
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <h3 class="heading--1">Demonstration Mode</h3>
+              <div class="text">
+                <p>
+                  CourseLore is running in Demonstration Mode. All data may be
+                  lost, including courses, threads, posts, users, and so forth.
+                  Also, no emails are actually sent; they show up in the
+                  <a href="${app.locals.settings.url}/demonstration-inbox"
+                    >Demonstration Inbox</a
+                  >
+                  instead.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       `
@@ -1459,8 +1468,12 @@ export default async function courselore(
         <div
           style="${css`
             min-height: 100%;
-            background-image: linear-gradient(135deg, $purple 0%, $pink 100%);
-            padding: 1rem;
+            background-image: linear-gradient(
+              135deg,
+              var(--color--fuchsia--400) 0%,
+              var(--color--purple--900) 100%
+            );
+            padding: var(--space--4);
             display: flex;
             justify-content: center;
             align-items: center;

@@ -287,11 +287,11 @@ module.exports = (require) => {
                       & > div {
                         color: var(--color--primary--800);
                         background-color: var(--color--primary--100);
-                        --color--focus: var(--color--primary--400);
+                        --focus-color: var(--color--primary--400);
                         @media (prefers-color-scheme: dark) {
                           color: var(--color--primary--100);
                           background-color: var(--color--primary--900);
-                          --color--focus: var(--color--primary--400);
+                          --focus-color: var(--color--primary--400);
                           border: var(--border-width--1) solid
                             var(--color--primary--700);
                         }
@@ -490,11 +490,11 @@ module.exports = (require) => {
                       & > a {
                         color: var(--color--fuchsia--800);
                         background-color: var(--color--fuchsia--100);
-                        --color--focus: var(--color--fuchsia--400);
+                        --focus-color: var(--color--fuchsia--400);
                         @media (prefers-color-scheme: dark) {
                           color: var(--color--fuchsia--200);
                           background-color: var(--color--fuchsia--900);
-                          --color--focus: var(--color--fuchsia--400);
+                          --focus-color: var(--color--fuchsia--400);
                           border: var(--border-width--1) solid
                             var(--color--fuchsia--700);
                         }
