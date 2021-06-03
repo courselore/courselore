@@ -1291,13 +1291,8 @@ export default async function courselore(
           document.addEventListener("submit", (event) => {
             for (const button of event.target.querySelectorAll(
               'button:not([type="button"])'
-            )) {
+            ))
               button.disabled = true;
-              button.insertAdjacentHTML(
-                "afterbegin",
-                '<div class="spinner-border spinner-border-sm"></div>'
-              );
-            }
           });
         </script>
 
