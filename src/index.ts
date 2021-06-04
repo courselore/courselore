@@ -1678,6 +1678,7 @@ export default async function courselore(
                 `}"
               >
                 $${app.locals.partials.art.small}
+                <span class="visually-hidden">CourseLore</span>
               </a>
               <script>
                 (() => {
