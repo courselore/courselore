@@ -857,6 +857,24 @@ export default async function courselore(
                   }
                 }
 
+                .link {
+                  color: var(--color--primary--600);
+                  text-decoration: underline;
+                  transition: color var(--transition-duration);
+
+                  &:hover {
+                    color: var(--color--primary--800);
+                    text-decoration: underline;
+                  }
+
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--500);
+                    &:hover {
+                      color: var(--color--primary--700);
+                    }
+                  }
+                }
+
                 .tippy-box[data-theme~="tooltip"] {
                   color: var(--color--primary--50);
                   background-color: var(--color--primary--900);
@@ -2665,85 +2683,142 @@ export default async function courselore(
           res,
           html`<title>Authenticate · CourseLore</title>`,
           html`
-            <p class="card-text">
-              To continue, follow the Magic Authentication Link we sent to
-              ${req.body.email}.
-            </p>
-            <p class="card-text">
-              If you’re a new user, you’ll sign up for a new account. If you’re
-              a returning user, you’ll sign in to your existing account.
-            </p>
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/authenticate?${qs.stringify({
-                redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
-              })}"
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
             >
-              <input type="hidden" name="email" value="${req.body.email}" />
-              <p class="card-text">
-                Didn’t receive the email? Already checked the spam folder?
-                <button
-                  type="submit"
-                  class="btn btn-link link-light"
+              <div
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+                `}"
+              >
+                <h2
+                  class="heading--2"
                   style="${css`
-                    padding: 0;
-                    border: 0;
-                    vertical-align: baseline;
+                    color: var(--color--primary--200);
                   `}"
                 >
-                  Resend</button
-                >.
-              </p>
-            </form>
-
-            $${app.locals.settings.demonstration
-              ? html`
-                  <div
-                    role="alert"
-                    class="alert alert-danger card-text"
-                    style="${css`
-                      display: flex;
-                      gap: 1rem;
-                      align-items: center;
-                      margin-top: 1rem;
-                    `}"
-                  >
-                    <i
-                      class="bi bi-easel"
+                  Authenticate
+                </h2>
+                <div
+                  style="${css`
+                    color: var(--color--primary--800);
+                    background-color: var(--color--primary--100);
+                    padding: var(--space--4);
+                    border-radius: var(--border-radius--xl);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <p>
+                    <strong
                       style="${css`
-                        font-size: 2rem;
-                      `}"
-                    ></i>
-                    <div
-                      style="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: 1rem;
+                        font-weight: var(--font-weight--bold);
+                        color: var(--color--primary--900);
                       `}"
                     >
-                      <span>
+                      To continue, follow the Magic Authentication Link we sent
+                      to ${req.body.email}.
+                    </strong>
+                  </p>
+                  <p>
+                    If you’re a new user, you’ll sign up for a new account. If
+                    you’re a returning user, you’ll sign in to your existing
+                    account.
+                  </p>
+                  <form
+                    method="POST"
+                    action="${app.locals.settings
+                      .url}/authenticate?${qs.stringify({
+                      redirect: req.query.redirect,
+                      email: req.query.email,
+                      name: req.query.name,
+                    })}"
+                  >
+                    <input
+                      type="hidden"
+                      name="email"
+                      value="${req.body.email}"
+                    />
+                    <p
+                      style="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `}"
+                    >
+                      Didn’t receive the email? Already checked the spam folder?
+                      <button class="link">Resend</button>.
+                    </p>
+                  </form>
+                </div>
+              </div>
+              $${app.locals.settings.demonstration
+                ? html`
+                    <div
+                      style="${css`
+                        color: var(--color--rose--100);
+                        background-color: var(--color--rose--500);
+                        --focus-color: var(--color--rose--300);
+                        padding: var(--space--4);
+                        border: var(--border-width--1) solid
+                          var(--color--rose--400);
+                        border-radius: var(--border-radius--xl);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <h3
+                        class="heading--2"
+                        style="${css`
+                          color: var(--color--rose--50);
+                        `}"
+                      >
+                        <i class="bi bi-easel"></i> Demonstration Mode
+                      </h3>
+                      <p>
                         CourseLore doesn’t send emails in demonstration mode.
-                      </span>
-                      <a
-                        href="${magicAuthenticationLink}"
-                        class="btn btn-outline-dark"
+                      </p>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+
+                          & > * {
+                            color: var(--color--rose--50);
+                            background-color: var(--color--rose--600);
+                            &:hover {
+                              background-color: var(--color--rose--400);
+                            }
+                            &:active {
+                              background-color: var(--color--rose--700);
+                            }
+                          }
+                        `}"
                       >
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        Follow Magic Authentication Link
-                      </a>
-                      <a
-                        href="${app.locals.settings.url}/demonstration-inbox"
-                        class="btn btn-outline-dark"
-                      >
-                        <i class="bi bi-inbox"></i>
-                        Go to the Demonstration Inbox
-                      </a>
+                        <a href="${magicAuthenticationLink}" class="button">
+                          <i class="bi bi-box-arrow-in-right"></i>
+                          Follow the Magic Authentication Link
+                        </a>
+                        <a
+                          href="${app.locals.settings.url}/demonstration-inbox"
+                          class="button"
+                        >
+                          <i class="bi bi-inbox"></i>
+                          Go to the Demonstration Inbox
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                `
-              : html``}
+                  `
+                : html``}
+            </div>
           `
         )
       );
