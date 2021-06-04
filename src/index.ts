@@ -7796,10 +7796,6 @@ ${value}</textarea
     // TODO: The worker that sends emails on non-demonstration mode. Kick the worker to wake up from here (as well as periodically just in case…)
   };
 
-  app.get<{}, HTML, {}, {}, {}>("/test", (req, res, next) => {
-    res.send(app.locals.layouts.main(req, res, html``, html``));
-  });
-
   app.get<{}, HTML, {}, {}, {}>("/demonstration-inbox", (req, res, next) => {
     if (!app.locals.settings.demonstration) return next();
 
