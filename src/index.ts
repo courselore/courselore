@@ -805,6 +805,7 @@ export default async function courselore(
                   font-weight: var(--font-weight--black);
                   text-transform: uppercase;
                   letter-spacing: var(--space--px);
+                  color: var(--color--primary-gray--600);
                 }
 
                 .button {
@@ -1655,7 +1656,7 @@ export default async function courselore(
               align-items: center;
             `}"
           >
-            <h1 class="heading--display--1">
+            <h1>
               <a
                 href="${app.locals.settings.url}/"
                 style="${css`
@@ -1985,12 +1986,18 @@ export default async function courselore(
       html`
         <div
           style="${css`
-            max-width: 80ch;
-            padding: 1rem;
-            margin: 0 auto;
+            background-color: var(--color--primary-gray--100);
           `}"
         >
-          $${body}
+          <div
+            style="${css`
+              max-width: calc(var(--space--80) * 2);
+              padding: var(--space--4);
+              margin: 0 auto;
+            `}"
+          >
+            $${body}
+          </div>
         </div>
       `
     );
@@ -7819,65 +7826,115 @@ ${value}</textarea
           </title>
         `,
         html`
-          <h1>Demonstration Inbox</h1>
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <h2 class="heading--2">Demonstration Inbox</h2>
+              <p
+                style="${css`
+                  color: var(--color--primary-gray--500);
+                `}"
+              >
+                CourseLore doesn’t send emails in demonstration mode.
+                $${emails.length === 0
+                  ? html`Emails that would have been sent will show up here
+                    instead.`
+                  : html`Here are the emails that would have been sent:`}
+              </p>
+            </div>
 
-          <p>
-            CourseLore doesn’t send emails in demonstration mode.
             $${emails.length === 0
-              ? html`Emails that would have been sent will show up here instead.`
-              : html`Here are the emails that would have been sent:`}
-          </p>
-
-          $${emails.length === 0
-            ? html``
-            : html`
-                <div class="accordion">
-                  $${emails.map(
-                    (email) => html`
-                        <div class="accordion-item">
-                          <h2
-                            class="accordion-header"
-                            id="email-heading--${email.reference}"
-                          >
-                            <button
-                              class="accordion-button collapsed"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#email-collapse--${
-                                email.reference
-                              }"
-                              aria-expanded="false"
-                              aria-controls="email-collapse--${email.reference}"
-                            >
-                              <span>
-                                <strong>${email.subject}</strong><br />
-                                <small
-                                  style="${css`
-                                    color: $text-muted;
-                                  `}"
-                                  >${email.to} ·
-                                  <time
-                                    style="${css`
-                                      display: inline-block;
-                                    `}"
-                                    >${email.createdAt}</time
-                                  ></span
-                                >
-                              </small>
-                            </button>
-                          </h2>
+              ? html``
+              : html`
+                  <div
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--4);
+                    `}"
+                  >
+                    $${emails.map(
+                      (email) => html`
+                        <div
+                          style="${css`
+                            border: var(--border-width--1) solid
+                              var(--color--primary--100);
+                            border-radius: var(--border-radius--xl);
+                          `}"
+                        >
                           <div
-                            id="email-collapse--${email.reference}"
-                            class="accordion-collapse collapse"
-                            aria-labelledby="email-heading--${email.reference}"
+                            style="${css`
+                              background-color: var(--color--primary--50);
+                              padding: var(--space--2) var(--space--4);
+                              border-bottom: var(--border-width--1) solid
+                                var(--color--primary--100);
+                              border-top-left-radius: var(--border-radius--xl);
+                              border-top-right-radius: var(--border-radius--xl);
+                              display: flex;
+                              justify-content: space-between;
+                              align-items: baseline;
+                            `}"
                           >
-                            <div class="accordion-body">$${email.body}</div>
+                            <h2
+                              class="heading--1"
+                              style="${css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <i class="bi bi-envelope"></i>
+                              ${email.subject}
+                            </h2>
+                            <h3
+                              style="${css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                                color: var(--color--primary--400);
+                              `}"
+                            >
+                              ${email.to} ·
+                              <time
+                                style="${css`
+                                  display: inline-block;
+                                `}"
+                                >${email.createdAt}</time
+                              >
+                            </h3>
+                          </div>
+
+                          <div
+                            class="text"
+                            style="${css`
+                              color: var(--color--primary-gray--700);
+                              background-color: var(--color--primary-gray--50);
+                              padding: var(--space--2) var(--space--4);
+                              border-bottom-left-radius: var(
+                                --border-radius--xl
+                              );
+                              border-bottom-right-radius: var(
+                                --border-radius--xl
+                              );
+                            `}"
+                          >
+                            $${email.body}
                           </div>
                         </div>
                       `
-                  )}
-                </div>
-              `}
+                    )}
+                  </div>
+                `}
+          </div>
         `
       )
     );
