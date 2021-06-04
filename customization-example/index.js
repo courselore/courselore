@@ -538,15 +538,10 @@ module.exports = (require) => {
                               }
 
                               & > h4 {
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
-                                font-weight: var(--font-weight--black);
                                 color: var(--color--fuchsia--400);
                                 @media (prefers-color-scheme: dark) {
                                   color: var(--color--fuchsia--400);
                                 }
-                                text-transform: uppercase;
-                                letter-spacing: var(--space--px);
                               }
                             }
                           }
@@ -563,7 +558,7 @@ module.exports = (require) => {
                         <div>
                           <div>
                             <h3 class="heading--1">Dr. Scott Smith</h3>
-                            <h4>CEO</h4>
+                            <h4 class="heading--2">CEO</h4>
                           </div>
                           <p>
                             Scott is a full professor at the Johns Hopkins
@@ -585,7 +580,7 @@ module.exports = (require) => {
                         <div>
                           <div>
                             <h3 class="heading--1">Dr. Ali Madooei</h3>
-                            <h4>Consultant</h4>
+                            <h4 class="heading--2">Consultant</h4>
                           </div>
                           <p>
                             Ali is a lecturer at the Johns Hopkins University.
@@ -608,7 +603,7 @@ module.exports = (require) => {
                         <div>
                           <div>
                             <h3 class="heading--1">Leandro Facchinetti</h3>
-                            <h4>Developer & Designer</h4>
+                            <h4 class="heading--2">Developer & Designer</h4>
                           </div>
                           <p>
                             Leandro was a PhD Candidate at the Johns Hopkins

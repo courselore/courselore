@@ -799,6 +799,14 @@ export default async function courselore(
                   }
                 }
 
+                .heading--2 {
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  font-weight: var(--font-weight--black);
+                  text-transform: uppercase;
+                  letter-spacing: var(--space--px);
+                }
+
                 .button {
                   font-weight: var(--font-weight--bold);
                   padding: var(--space--2) var(--space--4);
@@ -2518,55 +2526,97 @@ export default async function courselore(
           res,
           html`<title>CourseLore · The Open-Source Student Forum</title>`,
           html`
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/authenticate?${qs.stringify({
-                redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
-              })}"
+            <div
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space--2);
               `}"
             >
-              <div>
-                <div class="form-floating text-body">
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="${req.query.email ?? ""}"
-                    placeholder="name@educational-email.edu"
-                    required
-                    autofocus
-                    class="form-control"
-                    aria-describedby="email-help"
-                  />
-                  <label for="email">Email</label>
-                </div>
-                <div
-                  id="email-help"
-                  class="form-text"
+              <h2
+                class="heading--2"
+                style="${css`
+                  color: var(--color--primary--200);
+                  display: flex;
+                  gap: var(--space--2);
+                `}"
+              >
+                Authenticate
+                <i
+                  class="bi bi-info-circle"
+                  data-tippy-content="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
+                  data-tippy-theme="tooltip"
                   style="${css`
-                    color: inherit;
+                    cursor: help;
+                  `}"
+                ></i>
+              </h2>
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/authenticate?${qs.stringify({
+                  redirect: req.query.redirect,
+                  email: req.query.email,
+                  name: req.query.name,
+                })}"
+              >
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
                   `}"
                 >
-                  We recommend using the email address you use at your
-                  educational institution.
+                  <div
+                    style="${css`
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
+                    `}"
+                  >
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value="${req.query.email ?? ""}"
+                      required
+                      autofocus
+                      style="${css`
+                        color: var(--color--primary--800);
+                        background-color: var(--color--primary--100);
+                        &::placeholder {
+                          color: var(--color--primary--700);
+                        }
+                        width: 100%;
+                        padding: var(--space--2);
+                        padding-right: var(--space--32);
+                        border-radius: var(--border-radius--md);
+                      `}"
+                    />
+                    <div
+                      style="${css`
+                        justify-self: end;
+                        padding: var(--space--1);
+                      `}"
+                    >
+                      <button class="button primary">
+                        Continue <i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <p
+                    style="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      color: var(--color--primary--300);
+                    `}"
+                  >
+                    We recommend using the email address you use at your
+                    educational institution.
+                  </p>
                 </div>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                data-bs-toggle="tooltip"
-                title="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
-              >
-                Continue
-                <i class="bi bi-chevron-right"></i>
-              </button>
-            </form>
+              </form>
+            </div>
           `
         )
       );
