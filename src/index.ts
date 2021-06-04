@@ -1403,9 +1403,18 @@ export default async function courselore(
                     color: var(--color--rose--50);
                     background-color: var(--color--rose--500);
                     --focus-color: var(--color--rose--300);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--rose--200);
+                      background-color: var(--color--rose--700);
+                      --focus-color: var(--color--rose--600);
+                    }
                     padding: var(--space--0) var(--space--4);
                     box-shadow: inset 0 calc(-1 * var(--border-width--1))
                       var(--color--rose--600);
+                    @media (prefers-color-scheme: dark) {
+                      box-shadow: inset 0 calc(-1 * var(--border-width--1))
+                        var(--color--rose--900);
+                    }
                     display: flex;
                     gap: var(--space--2);
                     justify-content: center;
@@ -1420,6 +1429,9 @@ export default async function courselore(
                       &:hover,
                       &.current {
                         background-color: var(--color--rose--700);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--rose--800);
+                        }
                       }
                     }
                   `}"
@@ -1499,6 +1511,13 @@ export default async function courselore(
               var(--color--fuchsia--400) 0%,
               var(--color--purple--900) 100%
             );
+            @media (prefers-color-scheme: dark) {
+              background-image: linear-gradient(
+                135deg,
+                var(--color--fuchsia--600) 0%,
+                var(--color--purple--900) 100%
+              );
+            }
             padding: var(--space--4);
             display: flex;
             justify-content: center;
@@ -1523,6 +1542,12 @@ export default async function courselore(
                     stroke: var(--color--primary--50);
                     transition: stroke var(--transition-duration);
                   }
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    * {
+                      stroke: var(--color--primary--200);
+                    }
+                  }
                   display: inline-flex;
                   gap: var(--space--2);
                   align-items: center;
@@ -1531,6 +1556,12 @@ export default async function courselore(
                     color: var(--color--primary--200);
                     * {
                       stroke: var(--color--primary--200);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--300);
+                      * {
+                        stroke: var(--color--primary--300);
+                      }
                     }
                   }
                 `}"
@@ -2555,6 +2586,9 @@ export default async function courselore(
                 class="heading--2"
                 style="${css`
                   color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
                   display: flex;
                   gap: var(--space--2);
                 `}"
@@ -2605,6 +2639,13 @@ export default async function courselore(
                         &::placeholder {
                           color: var(--color--primary--700);
                         }
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary--200);
+                          background-color: var(--color--primary-gray--800);
+                          &::placeholder {
+                            color: var(--color--primary--300);
+                          }
+                        }
                         width: 100%;
                         padding: var(--space--2);
                         padding-right: var(--space--32);
@@ -2627,6 +2668,9 @@ export default async function courselore(
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       color: var(--color--primary--300);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--300);
+                      }
                     `}"
                   >
                     We recommend using the email address you use at your
@@ -2701,6 +2745,9 @@ export default async function courselore(
                   class="heading--2"
                   style="${css`
                     color: var(--color--primary--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                    }
                   `}"
                 >
                   Authenticate
@@ -2709,6 +2756,10 @@ export default async function courselore(
                   style="${css`
                     color: var(--color--primary--800);
                     background-color: var(--color--primary--100);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--900);
+                    }
                     padding: var(--space--4);
                     border-radius: var(--border-radius--xl);
                     display: flex;
@@ -2721,6 +2772,9 @@ export default async function courselore(
                       style="${css`
                         font-weight: var(--font-weight--bold);
                         color: var(--color--primary--900);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary--50);
+                        }
                       `}"
                     >
                       To continue, follow the Magic Authentication Link we sent
@@ -2750,6 +2804,10 @@ export default async function courselore(
                       style="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
+                        color: var(--color--primary--700);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary--300);
+                        }
                       `}"
                     >
                       Didn’t receive the email? Already checked the spam folder?
@@ -2765,9 +2823,17 @@ export default async function courselore(
                         color: var(--color--rose--100);
                         background-color: var(--color--rose--500);
                         --focus-color: var(--color--rose--300);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--rose--200);
+                          background-color: var(--color--rose--700);
+                          --focus-color: var(--color--rose--300);
+                        }
                         padding: var(--space--4);
                         border: var(--border-width--1) solid
                           var(--color--rose--400);
+                        @media (prefers-color-scheme: dark) {
+                          border-color: var(--color--rose--900);
+                        }
                         border-radius: var(--border-radius--xl);
                         display: flex;
                         flex-direction: column;
@@ -2778,6 +2844,9 @@ export default async function courselore(
                         class="heading--2"
                         style="${css`
                           color: var(--color--rose--50);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--rose--100);
+                          }
                         `}"
                       >
                         <i class="bi bi-easel"></i> Demonstration Mode
@@ -2799,6 +2868,16 @@ export default async function courselore(
                             }
                             &:active {
                               background-color: var(--color--rose--700);
+                            }
+                            @media (prefers-color-scheme: dark) {
+                              color: var(--color--rose--200);
+                              background-color: var(--color--rose--600);
+                              &:hover {
+                                background-color: var(--color--rose--500);
+                              }
+                              &:active {
+                                background-color: var(--color--rose--800);
+                              }
                             }
                           }
                         `}"
