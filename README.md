@@ -602,6 +602,18 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-05-29</summary>
+
+- Progress:
+  - Finish almost every screen using Bootstrap.
+  - Wasn’t satisfied with the result: Either we’d end up with a stock-Bootstrap looking application, or the customization would amount to as much work as doing more things from scratch. But the result would be even worse, because people would have to know CSS **as well as Bootstrap**.
+  - Started a make-over with a design system lifted from Tailwind. Borrowing only a couple helpers for things like tooltip positioning and modals.
+- Next week:
+  - Continue the redesign with the new design system.
+
+</details>
+
+<details>
 <summary>2021-05-22</summary>
 
 - Progress:
