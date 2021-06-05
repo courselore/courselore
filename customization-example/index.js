@@ -683,7 +683,6 @@ module.exports = (require) => {
                 @media (min-width: 768px) {
                   & > * {
                     flex: 1;
-                    min-width: 0;
                   }
 
                   & > :first-child {

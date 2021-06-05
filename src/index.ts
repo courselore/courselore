@@ -338,6 +338,7 @@ export default async function courselore(
                   color: inherit;
                   background-color: transparent;
                   box-sizing: border-box;
+                  min-width: 0;
                   padding: 0;
                   border: 0;
                   margin: 0;
@@ -803,7 +804,10 @@ export default async function courselore(
                   font-weight: var(--font-weight--black);
                   text-transform: uppercase;
                   letter-spacing: var(--space--px);
-                  color: var(--color--primary-gray--600);
+                  color: var(--color--primary-gray--500);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary-gray--600);
+                  }
                 }
 
                 .button {
@@ -1641,12 +1645,6 @@ export default async function courselore(
               @media (prefers-color-scheme: dark) {
                 color: var(--color--primary--200);
                 background-color: var(--color--primary--800);
-                &:hover {
-                  background-color: var(--color--primary--700);
-                }
-                &:active {
-                  background-color: var(--color--primary--900);
-                }
               }
               padding: var(--space--2) var(--space--4);
               display: flex;
@@ -1984,15 +1982,21 @@ export default async function courselore(
       html`
         <div
           style="${css`
+            color: var(--color--primary-gray--500);
             background-color: var(--color--primary-gray--100);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--primary-gray--500);
+              background-color: var(--color--primary-gray--900);
+            }
             min-height: 100%;
+            display: flex;
+            justify-content: center;
           `}"
         >
           <div
             style="${css`
               max-width: calc(var(--space--80) * 2);
               padding: var(--space--4);
-              margin: 0 auto;
             `}"
           >
             $${body}
@@ -7840,11 +7844,7 @@ ${value}</textarea
               `}"
             >
               <h2 class="heading--2">Demonstration Inbox</h2>
-              <p
-                style="${css`
-                  color: var(--color--primary-gray--500);
-                `}"
-              >
+              <p>
                 CourseLore doesn’t send emails in demonstration mode.
                 $${emails.length === 0
                   ? html`Emails that would have been sent will show up here
@@ -7861,6 +7861,9 @@ ${value}</textarea
                       line-height: var(--line-height--9xl);
                       text-align: center;
                       color: var(--color--primary-gray--300);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--700);
+                      }
                     `}"
                   >
                     <i class="bi bi-inbox"></i>
@@ -7876,19 +7879,19 @@ ${value}</textarea
                   >
                     $${emails.map(
                       (email) => html`
-                        <div
-                          style="${css`
-                            border: var(--border-width--1) solid
-                              var(--color--primary--100);
-                            border-radius: var(--border-radius--xl);
-                          `}"
-                        >
+                        <div>
                           <div
                             style="${css`
                               background-color: var(--color--primary--50);
+                              @media (prefers-color-scheme: dark) {
+                                background-color: var(--color--primary--900);
+                              }
                               padding: var(--space--2) var(--space--4);
-                              border-bottom: var(--border-width--1) solid
+                              border: var(--border-width--1) solid
                                 var(--color--primary--100);
+                              @media (prefers-color-scheme: dark) {
+                                border: var(--border-width--0);
+                              }
                               border-top-left-radius: var(--border-radius--xl);
                               border-top-right-radius: var(--border-radius--xl);
                               display: flex;
@@ -7906,6 +7909,9 @@ ${value}</textarea
                               style="${css`
                                 font-weight: var(--font-weight--bold);
                                 color: var(--color--primary--800);
+                                @media (prefers-color-scheme: dark) {
+                                  color: var(--color--primary--300);
+                                }
                                 display: flex;
                                 gap: var(--space--2);
                               `}"
@@ -7918,6 +7924,9 @@ ${value}</textarea
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 color: var(--color--primary--400);
+                                @media (prefers-color-scheme: dark) {
+                                  color: var(--color--primary--400);
+                                }
                               `}"
                             >
                               ${email.to} ·
@@ -7935,6 +7944,17 @@ ${value}</textarea
                             style="${css`
                               color: var(--color--primary-gray--700);
                               background-color: var(--color--primary-gray--50);
+                              @media (prefers-color-scheme: dark) {
+                                color: var(--color--primary-gray--400);
+                                background-color: var(
+                                  --color--primary-gray--800
+                                );
+                              }
+                              border: var(--border-width--1) solid
+                                var(--color--primary--100);
+                              @media (prefers-color-scheme: dark) {
+                                border: var(--border-width--0);
+                              }
                               padding: var(--space--2) var(--space--4);
                               border-bottom-left-radius: var(
                                 --border-radius--xl
@@ -7942,6 +7962,10 @@ ${value}</textarea
                               border-bottom-right-radius: var(
                                 --border-radius--xl
                               );
+                              margin-top: calc(-1 * var(--border-width--1));
+                              @media (prefers-color-scheme: dark) {
+                                margin-top: var(--border-width--0);
+                              }
                             `}"
                           >
                             $${email.body}
