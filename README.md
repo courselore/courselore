@@ -602,6 +602,16 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>2021-06-05</summary>
+
+- Progress:
+  - Continued the make-over with the new design system. Did the home page, brought back Dark Mode support, did the sign in / sign up workflow, including the Demonstration Inbox, created almost all the components we’ll need (tooltips, dropdowns, modals, and so forth), added support for `prefers-reduced-motion`, and so forth.
+- Next week:
+  - Finish the redesign with the new design system.
+
+</details>
+
+<details>
 <summary>2021-05-29</summary>
 
 - Progress:
