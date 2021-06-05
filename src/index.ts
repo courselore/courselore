@@ -1812,7 +1812,11 @@ export default async function courselore(
                       data-tippy-interactive="true"
                       data-tippy-allowHTML="true"
                     >
-                      <span data-tippy-content="Add" data-tippy-theme="tooltip">
+                      <span
+                        data-tippy-content="Add"
+                        data-tippy-theme="tooltip"
+                        data-tippy-touch="false"
+                      >
                         <i class="bi bi-plus-circle"></i>
                       </span>
                     </button>
@@ -1828,6 +1832,7 @@ export default async function courselore(
                       <span
                         data-tippy-content="${res.locals.user.name}"
                         data-tippy-theme="tooltip"
+                        data-tippy-touch="false"
                       >
                         <i class="bi bi-person-circle"></i>
                       </span>
