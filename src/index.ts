@@ -1823,7 +1823,13 @@ export default async function courselore(
                           data-tippy-theme="tooltip"
                           data-tippy-touch="false"
                         >
-                          <i class="bi bi-plus-circle"></i>
+                          <i
+                            class="bi bi-plus-circle"
+                            style="${css`
+                              font-size: var(--font-size--xl);
+                              line-height: var(--line-height--xl);
+                            `}"
+                          ></i>
                         </span>
                       </button>
                     </div>
@@ -1842,7 +1848,13 @@ export default async function courselore(
                           data-tippy-theme="tooltip"
                           data-tippy-touch="false"
                         >
-                          <i class="bi bi-person-circle"></i>
+                          <i
+                            class="bi bi-person-circle"
+                            style="${css`
+                              font-size: var(--font-size--xl);
+                              line-height: var(--line-height--xl);
+                            `}"
+                          ></i>
                         </span>
                       </button>
                     </div>
