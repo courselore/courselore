@@ -1987,6 +1987,7 @@ export default async function courselore(
         <div
           style="${css`
             background-color: var(--color--primary-gray--100);
+            min-height: 100%;
           `}"
         >
           <div
@@ -7855,7 +7856,18 @@ ${value}</textarea
             </div>
 
             $${emails.length === 0
-              ? html``
+              ? html`
+                  <p
+                    style="${css`
+                      font-size: var(--font-size--9xl);
+                      line-height: var(--line-height--9xl);
+                      text-align: center;
+                      color: var(--color--primary-gray--300);
+                    `}"
+                  >
+                    <i class="bi bi-inbox"></i>
+                  </p>
+                `
               : html`
                   <div
                     style="${css`
@@ -7882,13 +7894,20 @@ ${value}</textarea
                               border-top-left-radius: var(--border-radius--xl);
                               border-top-right-radius: var(--border-radius--xl);
                               display: flex;
+                              @media (max-width: 1023px) {
+                                flex-direction: column;
+                              }
+                              @media (min-width: 1024px) {
+                                gap: var(--space--4);
+                              }
                               justify-content: space-between;
                               align-items: baseline;
                             `}"
                           >
                             <h2
-                              class="heading--1"
                               style="${css`
+                                font-weight: var(--font-weight--bold);
+                                color: var(--color--primary--800);
                                 display: flex;
                                 gap: var(--space--2);
                               `}"
