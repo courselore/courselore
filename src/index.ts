@@ -3037,9 +3037,11 @@ export default async function courselore(
                   style="${css`
                     color: var(--color--primary--800);
                     background-color: var(--color--primary--100);
+                    --focus-color: var(--color--primary--300);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--200);
                       background-color: var(--color--primary--900);
+                      --focus-color: var(--color--primary--600);
                     }
                     padding: var(--space--4);
                     border-radius: var(--border-radius--xl);
