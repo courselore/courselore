@@ -333,8 +333,6 @@ export default async function courselore(
                 ::before,
                 ::after {
                   box-sizing: border-box;
-                  min-width: 0;
-                  min-height: 0;
                   padding: 0;
                   border: 0;
                   margin: 0;
