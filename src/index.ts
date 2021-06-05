@@ -332,16 +332,16 @@ export default async function courselore(
                 *,
                 ::before,
                 ::after {
-                  box-sizing: border-box;
-                  padding: 0;
-                  border: 0;
-                  margin: 0;
-                  outline: 0;
                   font: inherit;
                   text-decoration: inherit;
                   text-size-adjust: 100%;
                   color: inherit;
                   background-color: transparent;
+                  box-sizing: border-box;
+                  padding: 0;
+                  border: 0;
+                  margin: 0;
+                  outline: 0;
                   overflow-wrap: break-word;
                   appearance: none;
                   list-style: none;
