@@ -1793,50 +1793,59 @@ export default async function courselore(
                       gap: var(--space--4);
                     `}"
                   >
-                    <button
-                      data-tippy-content="${html`
-                        <button class="item">
-                          <i class="bi bi-journal-arrow-down"></i>
-                          Enroll in an Existing Course
-                        </button>
-                        <a
-                          href="${app.locals.settings.url}/courses/new"
-                          class="item"
+                    <div>
+                      <button
+                        data-tippy-content="${html`
+                          <button
+                            class="item"
+                            data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
+                            data-tippy-theme="tooltip"
+                            data-tippy-trigger="click"
+                          >
+                            <i class="bi bi-journal-arrow-down"></i>
+                            Enroll in an Existing Course
+                          </button>
+                          <a
+                            href="${app.locals.settings.url}/courses/new"
+                            class="item"
+                          >
+                            <i class="bi bi-journal-plus"></i>
+                            Create a New Course
+                          </a>
+                        `}"
+                        data-tippy-theme="dropdown"
+                        data-tippy-trigger="click"
+                        data-tippy-interactive="true"
+                        data-tippy-allowHTML="true"
+                      >
+                        <span
+                          data-tippy-content="Add"
+                          data-tippy-theme="tooltip"
+                          data-tippy-touch="false"
                         >
-                          <i class="bi bi-journal-plus"></i>
-                          Create a New Course
-                        </a>
-                      `}"
-                      data-tippy-theme="dropdown"
-                      data-tippy-trigger="click"
-                      data-tippy-interactive="true"
-                      data-tippy-allowHTML="true"
-                    >
-                      <span
-                        data-tippy-content="Add"
-                        data-tippy-theme="tooltip"
-                        data-tippy-touch="false"
+                          <i class="bi bi-plus-circle"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        data-tippy-content="${html`
+                          <a href="#" class="item">TODO</a>
+                        `}"
+                        data-tippy-theme="dropdown"
+                        data-tippy-trigger="click"
+                        data-tippy-interactive="true"
+                        data-tippy-allowHTML="true"
                       >
-                        <i class="bi bi-plus-circle"></i>
-                      </span>
-                    </button>
-                    <button
-                      data-tippy-content="${html`
-                        <a href="#" class="item">TODO</a>
-                      `}"
-                      data-tippy-theme="dropdown"
-                      data-tippy-trigger="click"
-                      data-tippy-interactive="true"
-                      data-tippy-allowHTML="true"
-                    >
-                      <span
-                        data-tippy-content="${res.locals.user.name}"
-                        data-tippy-theme="tooltip"
-                        data-tippy-touch="false"
-                      >
-                        <i class="bi bi-person-circle"></i>
-                      </span>
-                    </button>
+                        <span
+                          data-tippy-content="${res.locals.user.name}"
+                          data-tippy-theme="tooltip"
+                          data-tippy-touch="false"
+                        >
+                          <i class="bi bi-person-circle"></i>
+                        </span>
+                      </button>
+                    </div>
                     <!--
                     <div class="dropdown">
                       <a
@@ -1968,38 +1977,6 @@ export default async function courselore(
           >
             $${app.locals.helpers.flash.get(req, res) ?? html``} $${body}
           </main>
-        </div>
-
-        <div
-          class="modal fade"
-          id="enroll-in-an-existing-course-modal"
-          tabindex="-1"
-          aria-labelledby="enroll-in-an-existing-course-modal-label"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5
-                  class="modal-title"
-                  id="enroll-in-an-existing-course-modal-label"
-                >
-                  Enroll in an Existing Course
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                To enroll in an existing course you either have to follow an
-                invitation link or be invited via email. Contact your course
-                staff for more information.
-              </div>
-            </div>
-          </div>
         </div>
       `
     );
@@ -3444,10 +3421,10 @@ export default async function courselore(
                     `}"
                   >
                     <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-toggle="modal"
-                      data-bs-target="#enroll-in-an-existing-course-modal"
+                      class="item"
+                      data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
+                      data-tippy-theme="tooltip"
+                      data-tippy-trigger="click"
                     >
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
