@@ -2941,50 +2941,60 @@ export default async function courselore(
             res,
             html`<title>Authenticate · CourseLore</title>`,
             html`
-              <h2
-                class="heading--2"
-                style="${css`
-                  color: var(--color--primary--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                  }
-                `}"
-              >
-                Authenticate
-              </h2>
               <div
                 style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
                   display: flex;
                   flex-direction: column;
-                  gap: var(--space--4);
+                  gap: var(--space--2);
                 `}"
               >
-                <p>This Magic Authentication Link is invalid or has expired.</p>
-                <p>
-                  <a
-                    href="${app.locals.settings
-                      .url}/authenticate?${qs.stringify({
-                      redirect: req.query.redirect,
-                      email: req.query.email,
-                      name: req.query.name,
-                    })}"
-                    class="button primary"
-                    style="${css`
-                      width: 100%;
-                    `}"
-                  >
-                    <i class="bi bi-chevron-left"></i>
-                    Start Over
-                  </a>
-                </p>
+                <h2
+                  class="heading--2"
+                  style="${css`
+                    color: var(--color--primary--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                    }
+                  `}"
+                >
+                  Authenticate
+                </h2>
+                <div
+                  style="${css`
+                    color: var(--color--primary--800);
+                    background-color: var(--color--primary--100);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--900);
+                    }
+                    padding: var(--space--4);
+                    border-radius: var(--border-radius--xl);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <p>
+                    This Magic Authentication Link is invalid or has expired.
+                  </p>
+                  <p>
+                    <a
+                      href="${app.locals.settings
+                        .url}/authenticate?${qs.stringify({
+                        redirect: req.query.redirect,
+                        email: req.query.email,
+                        name: req.query.name,
+                      })}"
+                      class="button primary"
+                      style="${css`
+                        width: 100%;
+                      `}"
+                    >
+                      <i class="bi bi-chevron-left"></i>
+                      Start Over
+                    </a>
+                  </p>
+                </div>
               </div>
             `
           )
@@ -2999,59 +3009,106 @@ export default async function courselore(
             res,
             html`<title>Sign up · CourseLore</title>`,
             html`
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/users?${qs.stringify({
-                  redirect: req.query.redirect,
-                  email: req.query.email,
-                  name: req.query.name,
-                })}"
+              <div
                 style="${css`
                   display: flex;
                   flex-direction: column;
-                  gap: 1rem;
+                  gap: var(--space--2);
                 `}"
               >
-                <input
-                  type="hidden"
-                  name="nonce"
-                  value="${app.locals.helpers.authenticationNonce.create(
-                    email
-                  )}"
-                />
-                <div class="form-floating text-body">
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value="${req.query.name ?? ""}"
-                    required
-                    autofocus
-                    class="form-control"
-                  />
-                  <label for="name">Name</label>
-                </div>
-
-                <div
-                  class="form-floating text-body"
-                  data-bs-toggle="tooltip"
-                  title="This is the email you confirmed by having followed the Magic Authentication Link and may not be changed."
+                <h2
+                  class="heading--2"
+                  style="${css`
+                    color: var(--color--primary--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                    }
+                  `}"
+                >
+                  Sign up
+                </h2>
+                <form
+                  method="POST"
+                  action="${app.locals.settings.url}/users?${qs.stringify({
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
+                  })}"
+                  style="${css`
+                    color: var(--color--primary--800);
+                    background-color: var(--color--primary--100);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--900);
+                    }
+                    padding: var(--space--4);
+                    border-radius: var(--border-radius--xl);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
                 >
                   <input
-                    type="email"
-                    id="email"
-                    value="${email}"
-                    disabled
-                    class="form-control"
+                    type="hidden"
+                    name="nonce"
+                    value="${app.locals.helpers.authenticationNonce.create(
+                      email
+                    )}"
                   />
-                  <label for="email">Email</label>
-                </div>
+                  <label>
+                    Name
+                    <input
+                      type="text"
+                      name="name"
+                      value="${req.query.name ?? ""}"
+                      required
+                      autofocus
+                      style="${css`
+                        background-color: var(--color--primary--200);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--primary--700);
+                        }
+                        display: block;
+                        width: 100%;
+                        padding: var(--space--2);
+                        border-radius: var(--border-radius--md);
+                      `}"
+                    />
+                  </label>
 
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-person-plus"></i>
-                  Create Account
-                </button>
-              </form>
+                  <label>
+                    Email
+                    <span
+                      data-tippy-content="This is the email that you confirmed by having followed the Magic Authentication Link; it’s your identity in CourseLore and may not be changed anymore."
+                      data-tippy-theme="tooltip"
+                    >
+                      <input
+                        type="email"
+                        value="${email}"
+                        disabled
+                        style="${css`
+                          color: var(--color--primary--500);
+                          background-color: var(--color--primary--300);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--primary--400);
+                            background-color: var(--color--primary--800);
+                          }
+                          display: block;
+                          width: 100%;
+                          padding: var(--space--2);
+                          border-radius: var(--border-radius--md);
+                          cursor: not-allowed;
+                        `}"
+                      />
+                    </span>
+                  </label>
+
+                  <button class="button primary">
+                    <i class="bi bi-person-plus"></i>
+                    Sign up
+                  </button>
+                </form>
+              </div>
             `
           )
         );
