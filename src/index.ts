@@ -2832,6 +2832,7 @@ export default async function courselore(
                   </form>
                 </div>
               </div>
+
               $${app.locals.settings.demonstration
                 ? html`
                     <div
@@ -2940,25 +2941,51 @@ export default async function courselore(
             res,
             html`<title>Authenticate · CourseLore</title>`,
             html`
-              <p class="card-text">
-                This Magic Authentication Link is invalid or has expired.
-              </p>
-              <p class="card-text">
-                <a
-                  href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                    redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
-                  })}"
-                  class="btn btn-primary"
-                  style="${css`
-                    width: 100%;
-                  `}"
-                >
-                  <i class="bi bi-chevron-left"></i>
-                  Start Over
-                </a>
-              </p>
+              <h2
+                class="heading--2"
+                style="${css`
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
+                `}"
+              >
+                Authenticate
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p>This Magic Authentication Link is invalid or has expired.</p>
+                <p>
+                  <a
+                    href="${app.locals.settings
+                      .url}/authenticate?${qs.stringify({
+                      redirect: req.query.redirect,
+                      email: req.query.email,
+                      name: req.query.name,
+                    })}"
+                    class="button primary"
+                    style="${css`
+                      width: 100%;
+                    `}"
+                  >
+                    <i class="bi bi-chevron-left"></i>
+                    Start Over
+                  </a>
+                </p>
+              </div>
             `
           )
         );
