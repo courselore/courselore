@@ -1814,8 +1814,8 @@ export default async function courselore(
                     <button
                       data-tippy-content="${html`
                         <button class="item">
-                          <i class="bi bi-journal-arrow-down"></i> Enroll in an
-                          Existing Course
+                          <i class="bi bi-journal-arrow-down"></i>
+                          Enroll in an Existing Course
                         </button>
                         <a
                           href="${app.locals.settings.url}/courses/new"
