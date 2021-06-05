@@ -649,7 +649,7 @@ module.exports = (require) => {
 
                   & > div {
                     flex: 1;
-                    padding: var(--space--4) var(--space--4);
+                    padding: var(--space--4);
                     margin-top: calc(-1 * var(--border-width--1));
                   }
 
@@ -683,6 +683,7 @@ module.exports = (require) => {
                 @media (min-width: 768px) {
                   & > * {
                     flex: 1;
+                    min-width: 0;
                   }
 
                   & > :first-child {
