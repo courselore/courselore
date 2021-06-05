@@ -878,29 +878,54 @@ export default async function courselore(
                   }
                 }
 
-                .tippy-box[data-theme~="tooltip"] {
-                  color: var(--color--primary--50);
-                  background-color: var(--color--primary--900);
-                  border: var(--border-width--1) solid var(--color--primary--50);
+                .tippy-box {
+                  background-color: var(--background-color);
+                  border: var(--border-width--1) solid var(--border-color);
+                  border-radius: var(--border-radius--md);
                   & > .tippy-svg-arrow > svg {
                     &:first-child {
-                      fill: var(--color--primary--50);
+                      fill: var(--border-color);
                     }
                     &:last-child {
-                      fill: var(--color--primary--900);
+                      fill: var(--background-color);
                     }
                   }
-                  @media (prefers-color-scheme: dark) {
+
+                  .tippy-content {
+                    padding: var(--space--1) var(--space--3);
+                  }
+
+                  &[data-theme~="tooltip"] {
+                    color: var(--color--primary--50);
+                    --background-color: var(--color--primary--900);
+                    --border-color: var(--color--primary--50);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--900);
+                      --background-color: var(--color--primary--200);
+                      --border-color: var(--color--primary--900);
+                    }
+                  }
+
+                  &[data-theme~="dropdown"] {
                     color: var(--color--primary--900);
-                    background-color: var(--color--primary--200);
-                    border: var(--border-width--1) solid
-                      var(--color--primary--900);
-                    & > .tippy-svg-arrow > svg {
-                      &:first-child {
-                        fill: var(--color--primary--900);
-                      }
-                      &:last-child {
-                        fill: var(--color--primary--200);
+                    --background-color: var(--color--primary--50);
+                    --border-color: var(--color--primary--900);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                      --background-color: var(--color--primary--800);
+                      --border-color: var(--color--primary--200);
+                    }
+
+                    .item {
+                      padding: var(--space--1) var(--space--2);
+                      border-radius: var(--border-radius--md);
+                      margin: var(--space--0) calc(-1 * var(--space--2));
+                      display: flex;
+                      gap: var(--space--2);
+                      transition: background-color var(--transition-duration);
+
+                      &:hover {
+                        background-color: var(--color--primary--100);
                       }
                     }
                   }
@@ -1782,14 +1807,50 @@ export default async function courselore(
               : html`
                   <div
                     style="${css`
-                      grid-area: 1 / 3;
-                      justify-self: end;
-                      margin-right: -0.2rem;
                       display: flex;
-                      gap: 0.5rem;
-                      align-items: center;
+                      gap: var(--space--4);
                     `}"
                   >
+                    <button
+                      data-tippy-content="${html`
+                        <button class="item">
+                          <i class="bi bi-journal-arrow-down"></i> Enroll in an
+                          Existing Course
+                        </button>
+                        <a
+                          href="${app.locals.settings.url}/courses/new"
+                          class="item"
+                        >
+                          <i class="bi bi-journal-plus"></i>
+                          Create a New Course
+                        </a>
+                      `}"
+                      data-tippy-theme="dropdown"
+                      data-tippy-trigger="click"
+                      data-tippy-interactive="true"
+                      data-tippy-allowHTML="true"
+                    >
+                      <span data-tippy-content="Add" data-tippy-theme="tooltip">
+                        <i class="bi bi-plus-circle"></i>
+                      </span>
+                    </button>
+                    <button
+                      data-tippy-content="${html`
+                        <a href="#" class="item">TODO</a>
+                      `}"
+                      data-tippy-theme="dropdown"
+                      data-tippy-trigger="click"
+                      data-tippy-interactive="true"
+                      data-tippy-allowHTML="true"
+                    >
+                      <span
+                        data-tippy-content="${res.locals.user.name}"
+                        data-tippy-theme="tooltip"
+                      >
+                        <i class="bi bi-person-circle"></i>
+                      </span>
+                    </button>
+                    <!--
                     <div class="dropdown">
                       <a
                         role="button"
@@ -1799,12 +1860,12 @@ export default async function courselore(
                         aria-expanded="false"
                         aria-label="Add Menu"
                         style="${css`
-                          padding: 0;
-                          &:hover,
-                          &:focus {
-                            background-color: $purple-600;
-                          }
-                        `}"
+                      padding: 0;
+                      &:hover,
+                      &:focus {
+                        background-color: $purple-600;
+                      }
+                    `}"
                       >
                         <span
                           class="dropdown-toggle"
@@ -1812,8 +1873,8 @@ export default async function courselore(
                           data-bs-placement="left"
                           title="Add Course"
                           style="${css`
-                            padding: 0.2rem;
-                          `}"
+                      padding: 0.2rem;
+                    `}"
                         >
                           <i class="bi bi-plus-circle"></i>
                         </span>
@@ -1847,12 +1908,12 @@ export default async function courselore(
                         aria-expanded="false"
                         aria-label="User Menu"
                         style="${css`
-                          padding: 0;
-                          &:hover,
-                          &:focus {
-                            background-color: $purple-600;
-                          }
-                        `}"
+                      padding: 0;
+                      &:hover,
+                      &:focus {
+                        background-color: $purple-600;
+                      }
+                    `}"
                       >
                         <span
                           class="dropdown-toggle"
@@ -1860,8 +1921,8 @@ export default async function courselore(
                           data-bs-placement="left"
                           title="${res.locals.user.name}"
                           style="${css`
-                            padding: 0.2rem;
-                          `}"
+                      padding: 0.2rem;
+                    `}"
                         >
                           <i class="bi bi-person-circle"></i>
                         </span>
@@ -1869,14 +1930,14 @@ export default async function courselore(
                       <div class="dropdown-menu" aria-labelledby="user-menu">
                         <div
                           style="${css`
-                            padding: 0 1rem;
-                          `}"
+                      padding: 0 1rem;
+                    `}"
                         >
                           <strong>${res.locals.user.name}</strong><br />
                           <small
                             style="${css`
-                              color: $text-muted;
-                            `}"
+                      color: $text-muted;
+                    `}"
                             >${res.locals.user.email}</small
                           >
                         </div>
@@ -1898,7 +1959,7 @@ export default async function courselore(
                         <form
                           method="POST"
                           action="${app.locals.settings
-                            .url}/authenticate?_method=DELETE"
+                      .url}/authenticate?_method=DELETE"
                         >
                           <button class="dropdown-item">
                             <i class="bi bi-box-arrow-right"></i>
@@ -1907,6 +1968,7 @@ export default async function courselore(
                         </form>
                       </div>
                     </div>
+                    -->
                   </div>
                 `}
             $${extraMenu}
