@@ -169,6 +169,7 @@ module.exports = (require) => {
               href="$${app.locals.settings.url}/authenticate"
               data-tippy-content="Very rough early demonstration"
               data-tippy-theme="tooltip"
+              data-tippy-touch="false"
               class="button primary"
             >
               <i class="bi bi-easel"></i>
@@ -385,6 +386,7 @@ module.exports = (require) => {
                           <button
                             data-tippy-content="What’s Markdown?"
                             data-tippy-theme="tooltip"
+                            data-tippy-touch="false"
                             data-micromodal-trigger="modal--markdown"
                           >
                             <i class="bi bi-info-circle"></i>
@@ -396,6 +398,7 @@ module.exports = (require) => {
                           <button
                             data-tippy-content="What’s LaTeX?"
                             data-tippy-theme="tooltip"
+                            data-tippy-touch="false"
                             data-micromodal-trigger="modal--latex"
                           >
                             <i class="bi bi-info-circle"></i>
@@ -407,6 +410,7 @@ module.exports = (require) => {
                           <button
                             data-tippy-content="What’s Syntax Highlighting?"
                             data-tippy-theme="tooltip"
+                            data-tippy-touch="false"
                             data-micromodal-trigger="modal--syntax-highlighting"
                           >
                             <i class="bi bi-info-circle"></i>

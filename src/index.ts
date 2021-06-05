@@ -1126,7 +1126,6 @@ export default async function courselore(
             document.addEventListener("DOMContentLoaded", () => {
               tippy("[data-tippy-content]", {
                 arrow: tippy.roundArrow + tippy.roundArrow,
-                touch: "hold",
               });
             });
           </script>
@@ -1464,7 +1463,14 @@ export default async function courselore(
                     }
                   `}"
                 >
-                  <button data-micromodal-trigger="modal--demonstration-mode">
+                  <button
+                    data-tippy-content="CourseLore is running in Demonstration Mode. All data
+                    may be lost, including courses, threads, posts, users,
+                    and so forth. Also, no emails are actually sent; they
+                    show up in the Demonstration Inbox instead."
+                    data-tippy-theme="tooltip"
+                    data-tippy-trigger="click"
+                  >
                     <i class="bi bi-easel"></i>
                     Demonstration Mode
                   </button>
@@ -1488,30 +1494,6 @@ export default async function courselore(
             `}"
           >
             $${body}
-          </div>
-        </div>
-
-        <div id="modal--demonstration-mode" class="modal">
-          <div data-micromodal-close class="close-button">
-            <div
-              class="dialog"
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <h3 class="heading--1">Demonstration Mode</h3>
-              <p class="text">
-                CourseLore is running in Demonstration Mode. All data may be
-                lost, including courses, threads, posts, users, and so forth.
-                Also, no emails are actually sent; they show up in the
-                <a href="${app.locals.settings.url}/demonstration-inbox"
-                  >Demonstration Inbox</a
-                >
-                instead.
-              </p>
-            </div>
           </div>
         </div>
       `
@@ -2672,14 +2654,13 @@ export default async function courselore(
                 `}"
               >
                 Authenticate
-                <i
-                  class="bi bi-info-circle"
+                <button
                   data-tippy-content="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
                   data-tippy-theme="tooltip"
-                  style="${css`
-                    cursor: help;
-                  `}"
-                ></i>
+                  data-tippy-trigger="click"
+                >
+                  <i class="bi bi-info-circle"></i>
+                </button>
               </h2>
               <form
                 method="POST"
