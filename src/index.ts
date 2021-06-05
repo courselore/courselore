@@ -1124,9 +1124,18 @@ export default async function courselore(
               .url}/node_modules/tippy.js/dist/tippy-bundle.umd.js"></script>
           <script>
             document.addEventListener("DOMContentLoaded", () => {
-              tippy("[data-tippy-content]", {
-                arrow: tippy.roundArrow + tippy.roundArrow,
-              });
+              for (const element of document.querySelectorAll(
+                "[data-tippy-content]"
+              )) {
+                if (element.dataset.tippyCreated) continue;
+                tippy(element, {
+                  arrow: tippy.roundArrow + tippy.roundArrow,
+                  onMount() {
+                    document.dispatchEvent(new Event("DOMContentLoaded"));
+                  },
+                });
+                element.dataset.tippyCreated = true;
+              }
             });
           </script>
 
