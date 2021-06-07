@@ -1981,6 +1981,7 @@ export default async function courselore(
         >
           <div
             style="${css`
+              flex: 1;
               max-width: calc(var(--space--80) * 2);
               padding: var(--space--4);
             `}"
@@ -3341,6 +3342,10 @@ export default async function courselore(
                 <div
                   style="${css`
                     text-align: center;
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                    align-items: center;
                   `}"
                 >
                   <h1
@@ -3365,10 +3370,45 @@ export default async function courselore(
                     Welcome to CourseLore!
                   </h1>
 
+                  <p>
+                    Get started by enrolling in an existing course or by
+                    creating a new course.
+                  </p>
                   <div
                     style="${css`
+                      width: 100%;
+                      display: flex;
+                      gap: var(--space--4);
+                      & > * {
+                        flex: 1;
+                      }
+                      @media (max-width: 510px) {
+                        flex-direction: column;
+                      }
+                    `}"
+                  >
+                    <button
+                      data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
+                      data-tippy-theme="tooltip"
+                      data-tippy-trigger="click"
+                      class="button primary"
+                    >
+                      <i class="bi bi-journal-arrow-down"></i>
+                      Enroll in an Existing Course
+                    </button>
+                    <a
+                      href="${app.locals.settings.url}/courses/new"
+                      class="button secondary"
+                    >
+                      <i class="bi bi-journal-plus"></i>
+                      Create a New Course
+                    </a>
+                  </div>
+
+                  <div
+                    style="${css`
+                      width: min(100%, var(--space--24));
                       opacity: 30%;
-                      max-width: var(--space--16);
                     `}"
                   >
                     $${app.locals.partials.art.small
@@ -3388,40 +3428,6 @@ export default async function courselore(
                         });
                       })();
                     </script>
-                  </div>
-
-                  <p>
-                    Get started by enrolling in an existing course or by
-                    creating a new course.
-                  </p>
-                  <div
-                    style="${css`
-                      display: flex;
-                      gap: 1rem;
-                      @include media-breakpoint-down(md) {
-                        flex-direction: column;
-                      }
-                      & > * {
-                        flex: 1;
-                      }
-                    `}"
-                  >
-                    <button
-                      class="item"
-                      data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
-                      data-tippy-theme="tooltip"
-                      data-tippy-trigger="click"
-                    >
-                      <i class="bi bi-journal-arrow-down"></i>
-                      Enroll in an Existing Course
-                    </button>
-                    <a
-                      href="${app.locals.settings.url}/courses/new"
-                      class="btn btn-outline-primary"
-                    >
-                      <i class="bi bi-journal-plus"></i>
-                      Create a New Course
-                    </a>
                   </div>
                 </div>
               `
