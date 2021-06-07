@@ -1704,7 +1704,11 @@ export default async function courselore(
               }
             `}"
           >
-            <h1>
+            <h1
+              style="${css`
+                display: flex;
+              `}"
+            >
               <a
                 href="${app.locals.settings.url}/"
                 style="${css`
