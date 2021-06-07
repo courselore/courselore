@@ -15,6 +15,7 @@ type CSS = string;
 import css from "tagged-template-noop";
 import javascript from "tagged-template-noop";
 import { JSDOM } from "jsdom";
+import murmurHash2 from "@emotion/hash";
 import postcss from "postcss";
 import postcssNested from "postcss-nested";
 import autoprefixer from "autoprefixer";
@@ -245,18 +246,31 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.base = (req, res, head, body) => {
+    // TODO: Extract this logic into @leafac/css.
     const bodyDOM = JSDOM.fragment(html`<div>$${body}</div>`);
-    const styles: CSS[] = [];
+    const styles = new Map<string, CSS>();
     for (const element of bodyDOM.querySelectorAll("[style]")) {
-      if (element.id === "") element.id = `style--${styles.length}`;
-      styles.push(
-        css`
-          #${element.id} {
-            ${element.getAttribute("style")!}
-          }
-        `
-      );
+      const style = element.getAttribute("style")!;
       element.removeAttribute("style");
+      const className = `style--${murmurHash2(style)}`;
+      element.classList.add(className);
+      styles.set(className, style);
+    }
+    for (const element of bodyDOM.querySelectorAll("[data-tippy-allowHTML]")) {
+      const content = JSDOM.fragment(
+        html`<div>$${element.getAttribute("data-tippy-content")!}</div>`
+      );
+      for (const element of content.querySelectorAll("[style]")) {
+        const style = element.getAttribute("style")!;
+        element.removeAttribute("style");
+        const className = `style--${murmurHash2(style)}`;
+        element.classList.add(className);
+        styles.set(className, style);
+      }
+      element.setAttribute(
+        "data-tippy-content",
+        content.firstElementChild!.innerHTML
+      );
     }
 
     return html`
@@ -1088,7 +1102,16 @@ export default async function courselore(
                   white-space: nowrap;
                 }
 
-                ${styles.join("")}
+                ${[...styles]
+                  .map(
+                    ([className, style]) =>
+                      css`
+                        .${className} {
+                          ${style}
+                        }
+                      `
+                  )
+                  .join("")}
               `
             ).css}
           </style>
@@ -1364,7 +1387,6 @@ export default async function courselore(
           ? html`
               <script>
                 const eventSource = new EventSource(window.location.href);
-                let refreshCount = 0;
                 eventSource.addEventListener("refresh", async () => {
                   const response = await fetch(window.location.href);
                   switch (response.status) {
@@ -1373,21 +1395,6 @@ export default async function courselore(
                         await response.text(),
                         "text/html"
                       );
-                      refreshCount++;
-                      for (const element of refreshedDocument.querySelectorAll(
-                        '[id^="style--"]'
-                      ))
-                        element.id = element.id.replace(
-                          "style--",
-                          "style--" + String(refreshCount) + "--"
-                        );
-                      for (const element of refreshedDocument.querySelectorAll(
-                        "head style"
-                      ))
-                        element.textContent = element.textContent.replaceAll(
-                          "#style--",
-                          "#style--" + String(refreshCount) + "--"
-                        );
                       document
                         .querySelector("head")
                         .append(
@@ -1845,7 +1852,21 @@ export default async function courselore(
                     <div>
                       <button
                         data-tippy-content="${html`
-                          <a href="#" class="item">TODO</a>
+                          <p
+                            style="${css`
+                              font-weight: var(--font-weight--bold);
+                              color: var(--color--primary--900);
+                            `}"
+                          >
+                            ${res.locals.user.name}
+                          </p>
+                          <p
+                            style="${css`
+                              color: var(--color--primary--500);
+                            `}"
+                          >
+                            ${res.locals.user.email}
+                          </p>
                         `}"
                         data-tippy-theme="dropdown"
                         data-tippy-trigger="click"
@@ -1868,88 +1889,6 @@ export default async function courselore(
                       </button>
                     </div>
                     <!--
-                    <div class="dropdown">
-                      <a
-                        role="button"
-                        class="btn link-light"
-                        id="add-menu"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        aria-label="Add Menu"
-                        style="${css`
-                      padding: 0;
-                      &:hover,
-                      &:focus {
-                        background-color: $purple-600;
-                      }
-                    `}"
-                      >
-                        <span
-                          class="dropdown-toggle"
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="left"
-                          title="Add Course"
-                          style="${css`
-                      padding: 0.2rem;
-                    `}"
-                        >
-                          <i class="bi bi-plus-circle"></i>
-                        </span>
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="add-menu">
-                        <button
-                          type="button"
-                          class="dropdown-item"
-                          data-bs-toggle="modal"
-                          data-bs-target="#enroll-in-an-existing-course-modal"
-                        >
-                          <i class="bi bi-journal-arrow-down"></i>
-                          Enroll in an Existing Course
-                        </button>
-                        <a
-                          href="${app.locals.settings.url}/courses/new"
-                          class="dropdown-item"
-                        >
-                          <i class="bi bi-journal-plus"></i>
-                          Create a New Course
-                        </a>
-                      </div>
-                    </div>
-
-                    <div class="dropdown">
-                      <a
-                        role="button"
-                        class="btn link-light"
-                        id="user-menu"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        aria-label="User Menu"
-                        style="${css`
-                      padding: 0;
-                      &:hover,
-                      &:focus {
-                        background-color: $purple-600;
-                      }
-                    `}"
-                      >
-                        <span
-                          class="dropdown-toggle"
-                          data-bs-toggle="tooltip"
-                          data-bs-placement="left"
-                          title="${res.locals.user.name}"
-                          style="${css`
-                      padding: 0.2rem;
-                    `}"
-                        >
-                          <i class="bi bi-person-circle"></i>
-                        </span>
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="user-menu">
-                        <div
-                          style="${css`
-                      padding: 0 1rem;
-                    `}"
-                        >
                           <strong>${res.locals.user.name}</strong><br />
                           <small
                             style="${css`
