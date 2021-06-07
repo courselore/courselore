@@ -927,7 +927,7 @@ export default async function courselore(
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--200);
                       --background-color: var(--color--primary--800);
-                      --border-color: var(--color--primary--200);
+                      --border-color: var(--color--primary--400);
                     }
 
                     .item {
@@ -941,6 +941,9 @@ export default async function courselore(
 
                       &:hover {
                         background-color: var(--color--primary--100);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--primary--600);
+                        }
                       }
                     }
 
@@ -948,6 +951,9 @@ export default async function courselore(
                       margin: var(--space--2) var(--space--0);
                       border-top: var(--border-width--1) solid
                         var(--color--primary--300);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--primary--600);
+                      }
                     }
                   }
                 }
@@ -1863,6 +1869,9 @@ export default async function courselore(
                             style="${css`
                               font-weight: var(--font-weight--bold);
                               color: var(--color--primary--900);
+                              @media (prefers-color-scheme: dark) {
+                                color: var(--color--primary--50);
+                              }
                             `}"
                           >
                             ${res.locals.user.name}
@@ -1870,6 +1879,9 @@ export default async function courselore(
                           <p
                             style="${css`
                               color: var(--color--primary--500);
+                              @media (prefers-color-scheme: dark) {
+                                color: var(--color--primary--300);
+                              }
                             `}"
                           >
                             ${res.locals.user.email}
