@@ -820,7 +820,20 @@ export default async function courselore(
                   letter-spacing: var(--space--px);
                   color: var(--color--primary-gray--500);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary-gray--600);
+                    color: var(--color--primary-gray--500);
+                  }
+                }
+
+                .input--text {
+                  width: 100%;
+                  display: block;
+                  padding: var(--space--2) var(--space--4);
+                  border-radius: var(--border-radius--md);
+                  color: var(--color--primary-gray--700);
+                  background-color: var(--color--white);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary-gray--300);
+                    background-color: var(--color--primary-gray--700);
                   }
                 }
 
@@ -3348,7 +3361,7 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  <h1
+                  <h2
                     class="heading--display--1"
                     style="${css`
                       color: transparent;
@@ -3368,7 +3381,7 @@ export default async function courselore(
                     `}"
                   >
                     Welcome to CourseLore!
-                  </h1>
+                  </h2>
 
                   <p>
                     Get started by enrolling in an existing course or by
@@ -3590,45 +3603,50 @@ export default async function courselore(
           res,
           html`<title>Create a New Course · CourseLore</title>`,
           html`
-            <h1>Create a New Course</h1>
-
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/courses"
+            <div
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space--4);
               `}"
             >
-              <div class="form-floating">
-                <input
-                  type="text"
-                  name="name"
-                  autocomplete="off"
-                  required
-                  autofocus
-                  class="form-control"
-                  id="name"
-                  placeholder="name@example.com"
-                />
-                <label for="name">Name</label>
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  style="${css`
-                    @include media-breakpoint-down(md) {
-                      width: 100%;
-                    }
-                  `}"
-                >
-                  <i class="bi bi-journal-plus"></i>
-                  Create Course
-                </button>
-              </div>
-            </form>
+              <h2 class="heading--2">Create a New Course</h2>
+
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <label>
+                  Name
+                  <input
+                    type="text"
+                    name="name"
+                    class="input--text"
+                    autocomplete="off"
+                    required
+                    autofocus
+                  />
+                </label>
+                <div>
+                  <button
+                    class="button primary"
+                    style="${css`
+                      @media (max-width: 400px) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-journal-plus"></i>
+                    Create Course
+                  </button>
+                </div>
+              </form>
+            </div>
           `
         )
       );
