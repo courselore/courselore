@@ -931,7 +931,8 @@ export default async function courselore(
                     }
 
                     .item {
-                      padding: var(--space--1) var(--space--2);
+                      width: calc(100% + 2 * var(--space--2));
+                      padding: var(--space--0-5) var(--space--2);
                       border-radius: var(--border-radius--md);
                       margin: var(--space--0) calc(-1 * var(--space--2));
                       display: flex;
@@ -941,6 +942,12 @@ export default async function courselore(
                       &:hover {
                         background-color: var(--color--primary--100);
                       }
+                    }
+
+                    .separator {
+                      margin: var(--space--2) var(--space--0);
+                      border-top: var(--border-width--1) solid
+                        var(--color--primary--300);
                     }
                   }
                 }
@@ -1867,6 +1874,24 @@ export default async function courselore(
                           >
                             ${res.locals.user.email}
                           </p>
+                          <hr class="separator" />
+                          <a
+                            class="item"
+                            href="${app.locals.settings.url}/settings"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            User Settings
+                          </a>
+                          <form
+                            method="POST"
+                            action="${app.locals.settings
+                              .url}/authenticate?_method=DELETE"
+                          >
+                            <button class="item">
+                              <i class="bi bi-box-arrow-right"></i>
+                              Sign Out
+                            </button>
+                          </form>
                         `}"
                         data-tippy-theme="dropdown"
                         data-tippy-trigger="click"
@@ -1888,43 +1913,6 @@ export default async function courselore(
                         </span>
                       </button>
                     </div>
-                    <!--
-                          <strong>${res.locals.user.name}</strong><br />
-                          <small
-                            style="${css`
-                      color: $text-muted;
-                    `}"
-                            >${res.locals.user.email}</small
-                          >
-                        </div>
-                        <hr class="dropdown-divider" />
-                        <a
-                          class="dropdown-item"
-                          href="${app.locals.settings.url}/"
-                        >
-                          <i class="bi bi-journal"></i>
-                          Courses
-                        </a>
-                        <a
-                          class="dropdown-item"
-                          href="${app.locals.settings.url}/settings"
-                        >
-                          <i class="bi bi-sliders"></i>
-                          User Settings
-                        </a>
-                        <form
-                          method="POST"
-                          action="${app.locals.settings
-                      .url}/authenticate?_method=DELETE"
-                        >
-                          <button class="dropdown-item">
-                            <i class="bi bi-box-arrow-right"></i>
-                            Sign Out
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                    -->
                   </div>
                 `}
             $${extraMenu}
