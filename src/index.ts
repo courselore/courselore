@@ -1699,13 +1699,16 @@ export default async function courselore(
               display: flex;
               justify-content: space-between;
               align-items: center;
+              & > * {
+                flex: 1;
+              }
             `}"
           >
             <h1>
               <a
                 href="${app.locals.settings.url}/"
                 style="${css`
-                  display: flex;
+                  display: inline-flex;
                   * {
                     stroke: var(--color--primary--50);
                     @media (prefers-color-scheme: dark) {
@@ -1750,17 +1753,23 @@ export default async function courselore(
             $${res.locals.course === undefined
               ? html``
               : html`
+                  <button>
+                    <i class="bi bi-journal-text"></i>
+                    ${res.locals.course.name}
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <!--
                   <div
                     class="dropdown"
                     style="${css`
-                      @include media-breakpoint-down(md) {
-                        grid-area: 2 / 1 / 2 / 3;
-                        margin-left: -0.2rem;
-                      }
-                      @include media-breakpoint-up(md) {
-                        justify-self: center;
-                      }
-                    `}"
+                    @include media-breakpoint-down(md) {
+                      grid-area: 2 / 1 / 2 / 3;
+                      margin-left: -0.2rem;
+                    }
+                    @include media-breakpoint-up(md) {
+                      justify-self: center;
+                    }
+                  `}"
                   >
                     <a
                       role="button"
@@ -1769,14 +1778,14 @@ export default async function courselore(
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                       style="${css`
-                        white-space: normal;
-                        padding: 0 0.2rem;
-                        font-weight: 500;
-                        &:hover,
-                        &:focus {
-                          background-color: $purple-600;
-                        }
-                      `}"
+                    white-space: normal;
+                    padding: 0 0.2rem;
+                    font-weight: 500;
+                    &:hover,
+                    &:focus {
+                      background-color: $purple-600;
+                    }
+                  `}"
                     >
                       <i class="bi bi-journal-text"></i>
                       ${res.locals.course.name}
@@ -1784,7 +1793,7 @@ export default async function courselore(
                     <div class="dropdown-menu" aria-labelledby="course-menu">
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}"
+                    .course.reference}"
                         class="dropdown-item"
                       >
                         <i class="bi bi-chat-left-text"></i>
@@ -1792,39 +1801,40 @@ export default async function courselore(
                       </a>
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings"
+                    .course.reference}/settings"
                         class="dropdown-item"
                       >
                         <i class="bi bi-sliders"></i>
                         Course Settings
                       </a>
                       $${res.locals.otherEnrollments!.length === 0
-                        ? html``
-                        : html`
-                            <hr class="dropdown-divider" />
-                            <h6 class="dropdown-header">
-                              <i class="bi bi-arrow-left-right"></i>
-                              Switch to Another Course
-                            </h6>
-                            $${res.locals.otherEnrollments!.map(
-                              (otherEnrollment) => html`
-                                <a
-                                  href="${app.locals.settings
-                                    .url}/courses/${otherEnrollment.course
-                                    .reference}"
-                                  class="dropdown-item"
-                                  style="${css`
-                                    display: flex;
-                                    gap: 0.5rem;
-                                    white-space: normal;
-                                  `}"
-                                  >${otherEnrollment.course.name}</a
-                                >
-                              `
-                            )}
-                          `}
+                    ? html``
+                    : html`
+                        <hr class="dropdown-divider" />
+                        <h6 class="dropdown-header">
+                          <i class="bi bi-arrow-left-right"></i>
+                          Switch to Another Course
+                        </h6>
+                        $${res.locals.otherEnrollments!.map(
+                          (otherEnrollment) => html`
+                            <a
+                              href="${app.locals.settings
+                                .url}/courses/${otherEnrollment.course
+                                .reference}"
+                              class="dropdown-item"
+                              style="${css`
+                                display: flex;
+                                gap: 0.5rem;
+                                white-space: normal;
+                              `}"
+                              >${otherEnrollment.course.name}</a
+                            >
+                          `
+                        )}
+                      `}
                     </div>
                   </div>
+                  -->
                 `}
             $${res.locals.user === undefined
               ? html``
@@ -1833,6 +1843,7 @@ export default async function courselore(
                     style="${css`
                       display: flex;
                       gap: var(--space--4);
+                      justify-content: flex-end;
                     `}"
                   >
                     <div>
