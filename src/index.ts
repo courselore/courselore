@@ -3344,27 +3344,53 @@ export default async function courselore(
                   `}"
                 >
                   <h1
+                    class="heading--display--1"
                     style="${css`
-                      font-family: $font-family-serif;
-                      font-size: 2rem;
-                      font-weight: bold;
-                      font-style: italic;
-                      background: linear-gradient(
-                        135deg,
-                        $purple 0%,
-                        $pink 100%
-                      );
-                      background-clip: text;
                       color: transparent;
+                      background-clip: text;
+                      background-image: linear-gradient(
+                        135deg,
+                        var(--color--fuchsia--400) 0%,
+                        var(--color--purple--900) 100%
+                      );
+                      @media (prefers-color-scheme: dark) {
+                        background-image: linear-gradient(
+                          135deg,
+                          var(--color--fuchsia--600) 0%,
+                          var(--color--purple--900) 100%
+                        );
+                      }
                     `}"
                   >
                     Welcome to CourseLore!
                   </h1>
-                  <p
+
+                  <div
                     style="${css`
-                      color: $text-muted;
+                      opacity: 30%;
+                      max-width: var(--space--16);
                     `}"
                   >
+                    $${app.locals.partials.art.small
+                      .replace(/width=".*?"/, "")
+                      .replace(/height=".*?"/, "")}
+                    <script>
+                      (() => {
+                        const logo =
+                          document.currentScript.previousElementSibling;
+                        document.addEventListener("DOMContentLoaded", () => {
+                          new ArtAnimation({
+                            element: logo,
+                            speed: 0.001,
+                            amount: 1,
+                            startupDuration: 500,
+                          }).start();
+                        });
+                      })();
+                    </script>
+                  </div>
+
+                  <p>
                     Get started by enrolling in an existing course or by
                     creating a new course.
                   </p>
