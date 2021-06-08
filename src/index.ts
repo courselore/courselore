@@ -3503,22 +3503,39 @@ export default async function courselore(
               res,
               html`<title>CourseLore</title>`,
               html`
-                <h1>Courses</h1>
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <h2 class="heading--2">Courses</h2>
 
-                <div class="list-group">
-                  $${res.locals.enrollments.map(
-                    (enrollment) =>
-                      html`
-                        <a
-                          href="${app.locals.settings.url}/courses/${enrollment
-                            .course.reference}"
-                          class="list-group-item list-group-item-action"
-                        >
-                          <i class="bi bi-journal"></i>
-                          ${enrollment.course.name}
-                        </a>
-                      `
-                  )}
+                  <div
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    $${res.locals.enrollments.map(
+                      (enrollment) =>
+                        html`
+                          <a
+                            href="${app.locals.settings
+                              .url}/courses/${enrollment.course.reference}"
+                          >
+                            <i class="bi bi-journal"></i>
+                            ${enrollment.course.name}
+                          </a>
+                        `
+                    )}
+                  </div>
+
+                  <div class="decorative-icon">
+                    <i class="bi bi-journal-text"></i>
+                  </div>
                 </div>
               `
             )
