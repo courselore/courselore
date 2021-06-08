@@ -1234,6 +1234,11 @@ export default async function courselore(
                   onMount() {
                     document.dispatchEvent(new Event("DOMContentLoaded"));
                   },
+                  duration: window.matchMedia(
+                    "(prefers-reduced-motion: reduce)"
+                  ).matches
+                    ? 0
+                    : 150,
                 });
                 element.dataset.tippyCreated = true;
               }
@@ -1756,6 +1761,13 @@ export default async function courselore(
               & > * {
                 width: var(--space--20);
               }
+
+              .header--item {
+                transition: color var(--transition-duration);
+                &:hover {
+                  color: var(--color--primary--200);
+                }
+              }
             `}"
           >
             <h1
@@ -1866,6 +1878,7 @@ export default async function courselore(
                       data-tippy-trigger="click"
                       data-tippy-interactive="true"
                       data-tippy-allowHTML="true"
+                      class="header--item"
                       style="${css`
                         font-size: var(--font-size--base);
                         line-height: var(--line-height--base);
@@ -1925,6 +1938,7 @@ export default async function courselore(
                         data-tippy-trigger="click"
                         data-tippy-interactive="true"
                         data-tippy-allowHTML="true"
+                        class="header--item"
                       >
                         <span
                           data-tippy-content="Add"
@@ -1982,6 +1996,7 @@ export default async function courselore(
                         data-tippy-trigger="click"
                         data-tippy-interactive="true"
                         data-tippy-allowHTML="true"
+                        class="header--item"
                       >
                         <span
                           data-tippy-content="${res.locals.user.name}"
