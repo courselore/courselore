@@ -1991,6 +1991,7 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
+              min-width: 0;
               max-width: calc(var(--space--80) * 2);
               padding: var(--space--4);
             `}"

@@ -666,7 +666,7 @@ module.exports = (require) => {
                   }
                 }
 
-                @media (max-width: 767px) {
+                @media (max-width: 649px) {
                   flex-direction: column;
 
                   & > :first-child > :first-child {
@@ -684,7 +684,7 @@ module.exports = (require) => {
                   }
                 }
 
-                @media (min-width: 768px) {
+                @media (min-width: 650px) {
                   & > * {
                     flex: 1;
                   }
