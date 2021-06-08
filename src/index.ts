@@ -1545,13 +1545,15 @@ export default async function courselore(
                       position: relative;
                       display: flex;
                       gap: var(--space--2);
-                      transition: background-color var(--transition-duration);
+                      transition: box-shadow var(--transition-duration);
 
                       &:hover,
                       &.current {
-                        background-color: var(--color--rose--700);
+                        box-shadow: inset 0 calc(-1 * var(--border-width--4))
+                          var(--color--rose--700);
                         @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--rose--800);
+                          box-shadow: inset 0 calc(-1 * var(--border-width--4))
+                            var(--color--rose--800);
                         }
                       }
                     }
