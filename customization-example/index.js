@@ -170,7 +170,7 @@ module.exports = (require) => {
               data-tippy-content="Very rough early demonstration"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
-              class="button primary"
+              class="button button--primary"
             >
               <i class="bi bi-easel"></i>
               Demonstration
@@ -183,12 +183,18 @@ module.exports = (require) => {
                 justify-content: center;
               `}"
             >
-              <a href="https://github.com/courselore" class="button secondary">
+              <a
+                href="https://github.com/courselore"
+                class="button button--secondary"
+              >
                 <i class="bi bi-github"></i>
                 Source Code
               </a>
 
-              <a href="mailto:contact@courselore.org" class="button secondary">
+              <a
+                href="mailto:contact@courselore.org"
+                class="button button--secondary"
+              >
                 <i class="bi bi-envelope"></i>
                 Contact
               </a>
@@ -730,9 +736,9 @@ module.exports = (require) => {
 
         return html`
           <div id="modal--markdown" class="modal">
-            <div data-micromodal-close class="close-button">
+            <div data-micromodal-close class="modal--close-button">
               <div
-                class="dialog"
+                class="modal--dialog"
                 style="${css`
                   display: flex;
                   flex-direction: column;
@@ -771,9 +777,9 @@ module.exports = (require) => {
           </div>
 
           <div id="modal--latex" class="modal">
-            <div data-micromodal-close class="close-button">
+            <div data-micromodal-close class="modal--close-button">
               <div
-                class="dialog"
+                class="modal--dialog"
                 style="${css`
                   display: flex;
                   flex-direction: column;
@@ -807,9 +813,9 @@ module.exports = (require) => {
           </div>
 
           <div id="modal--syntax-highlighting" class="modal">
-            <div data-micromodal-close class="close-button">
+            <div data-micromodal-close class="modal--close-button">
               <div
-                class="dialog"
+                class="modal--dialog"
                 style="${css`
                   display: flex;
                   flex-direction: column;

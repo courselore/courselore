@@ -799,24 +799,6 @@ export default async function courselore(
                   font-weight: var(--font-weight--black);
                   font-style: italic;
                   text-align: center;
-
-                  &.gradient {
-                    color: transparent;
-                    background-clip: text;
-                    background-image: linear-gradient(
-                      135deg,
-                      var(--color--fuchsia--400) 0%,
-                      var(--color--purple--900) 100%
-                    );
-                    @media (prefers-color-scheme: dark) {
-                      background-image: linear-gradient(
-                        135deg,
-                        var(--color--fuchsia--600) 0%,
-                        var(--color--purple--700) 100%
-                      );
-                    }
-                    padding: var(--space--0) var(--space--0-5);
-                  }
                 }
 
                 .heading--1 {
@@ -839,6 +821,24 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary-gray--500);
                   }
+                }
+
+                .text-gradient {
+                  color: transparent;
+                  background-clip: text;
+                  background-image: linear-gradient(
+                    135deg,
+                    var(--color--fuchsia--400) 0%,
+                    var(--color--purple--900) 100%
+                  );
+                  @media (prefers-color-scheme: dark) {
+                    background-image: linear-gradient(
+                      135deg,
+                      var(--color--fuchsia--600) 0%,
+                      var(--color--purple--700) 100%
+                    );
+                  }
+                  padding: var(--space--0) var(--space--0-5);
                 }
 
                 .decorative-icon {
@@ -881,7 +881,7 @@ export default async function courselore(
                   justify-content: center;
                   transition: background-color var(--transition-duration);
 
-                  &.primary {
+                  &.button--primary {
                     color: var(--color--primary--50);
                     background-color: var(--color--primary--700);
                     &:hover {
@@ -902,7 +902,7 @@ export default async function courselore(
                     }
                   }
 
-                  &.secondary {
+                  &.button--secondary {
                     --focus-color: var(--color--primary-gray--300);
                     &:hover {
                       background-color: var(--color--primary-gray--200);
@@ -980,7 +980,7 @@ export default async function courselore(
                       --border-color: var(--color--primary--400);
                     }
 
-                    .heading {
+                    .dropdown--heading {
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       font-weight: var(--font-weight--black);
@@ -993,7 +993,7 @@ export default async function courselore(
                       }
                     }
 
-                    .item {
+                    .dropdown--item {
                       width: calc(
                         100% + 2 * var(--space--2) + var(--space--px)
                       );
@@ -1012,7 +1012,7 @@ export default async function courselore(
                       }
                     }
 
-                    .separator {
+                    .dropdown--separator {
                       margin: var(--space--2) var(--space--0);
                       border-top: var(--border-width--1) solid
                         var(--color--primary--300);
@@ -1051,7 +1051,7 @@ export default async function courselore(
                       z-index: -1;
                     }
 
-                    &.close-button::after {
+                    &.modal--close-button::after {
                       content: "\\f622";
                       font-family: bootstrap-icons !important;
                       font-size: var(--font-size--2xl);
@@ -1070,7 +1070,7 @@ export default async function courselore(
                       overflow: auto;
                       position: relative;
 
-                      &.dialog {
+                      &.modal--dialog {
                         color: var(--color--primary-gray--700);
                         background-color: var(--color--primary-gray--50);
                         @media (prefers-color-scheme: dark) {
@@ -1820,14 +1820,14 @@ export default async function courselore(
                   >
                     <button
                       data-tippy-content="${html`
-                        <p class="heading">
+                        <p class="dropdown--heading">
                           <i class="bi bi-journal-text"></i>
                           ${res.locals.course.name}
                         </p>
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}"
-                          class="item"
+                          class="dropdown--item"
                         >
                           <i class="bi bi-chat-left-text"></i>
                           Threads
@@ -1835,7 +1835,7 @@ export default async function courselore(
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}/settings"
-                          class="item"
+                          class="dropdown--item"
                         >
                           <i class="bi bi-sliders"></i>
                           Course Settings
@@ -1843,8 +1843,8 @@ export default async function courselore(
                         $${res.locals.otherEnrollments!.length === 0
                           ? html``
                           : html`
-                              <hr class="separator" />
-                              <p class="heading">
+                              <hr class="dropdown--separator" />
+                              <p class="dropdown--heading">
                                 <i class="bi bi-arrow-left-right"></i>
                                 Switch to Another Course
                               </p>
@@ -1854,7 +1854,7 @@ export default async function courselore(
                                     href="${app.locals.settings
                                       .url}/courses/${otherEnrollment.course
                                       .reference}"
-                                    class="item"
+                                    class="dropdown--item"
                                   >
                                     ${otherEnrollment.course.name}
                                   </a>
@@ -1905,7 +1905,7 @@ export default async function courselore(
                       <button
                         data-tippy-content="${html`
                           <button
-                            class="item"
+                            class="dropdown--item"
                             data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
                             data-tippy-theme="tooltip"
                             data-tippy-trigger="click"
@@ -1915,7 +1915,7 @@ export default async function courselore(
                           </button>
                           <a
                             href="${app.locals.settings.url}/courses/new"
-                            class="item"
+                            class="dropdown--item"
                           >
                             <i class="bi bi-journal-plus"></i>
                             Create a New Course
@@ -1959,9 +1959,9 @@ export default async function courselore(
                           >
                             ${res.locals.user.email}
                           </p>
-                          <hr class="separator" />
+                          <hr class="dropdown--separator" />
                           <a
-                            class="item"
+                            class="dropdown--item"
                             href="${app.locals.settings.url}/settings"
                           >
                             <i class="bi bi-sliders"></i>
@@ -1972,7 +1972,7 @@ export default async function courselore(
                             action="${app.locals.settings
                               .url}/authenticate?_method=DELETE"
                           >
-                            <button class="item">
+                            <button class="dropdown--item">
                               <i class="bi bi-box-arrow-right"></i>
                               Sign Out
                             </button>
@@ -2728,7 +2728,7 @@ export default async function courselore(
                         padding: var(--space--1);
                       `}"
                     >
-                      <button class="button primary">
+                      <button class="button button--primary">
                         Continue <i class="bi bi-chevron-right"></i>
                       </button>
                     </div>
@@ -3039,7 +3039,7 @@ export default async function courselore(
                         email: req.query.email,
                         name: req.query.name,
                       })}"
-                      class="button primary"
+                      class="button button--primary"
                       style="${css`
                         width: 100%;
                       `}"
@@ -3159,7 +3159,7 @@ export default async function courselore(
                     </span>
                   </label>
 
-                  <button class="button primary">
+                  <button class="button button--primary">
                     <i class="bi bi-person-plus"></i>
                     Sign up
                   </button>
@@ -3416,7 +3416,7 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  <h2 class="heading--display--1 gradient">
+                  <h2 class="heading--display--1 text-gradient">
                     Welcome to CourseLore!
                   </h2>
 
@@ -3471,14 +3471,14 @@ export default async function courselore(
                       data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
                       data-tippy-theme="tooltip"
                       data-tippy-trigger="click"
-                      class="button primary"
+                      class="button button--primary"
                     >
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
                     </button>
                     <a
                       href="${app.locals.settings.url}/courses/new"
-                      class="button secondary"
+                      class="button button--secondary"
                     >
                       <i class="bi bi-journal-plus"></i>
                       Create a New Course
@@ -3693,7 +3693,7 @@ export default async function courselore(
                 </label>
                 <div>
                   <button
-                    class="button primary"
+                    class="button button--primary"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -3950,7 +3950,7 @@ export default async function courselore(
                   align-items: center;
                 `}"
               >
-                <h1 class="heading--display--1 gradient">
+                <h1 class="heading--display--1 text-gradient">
                   Welcome to ${res.locals.course.name}!
                 </h1>
 
@@ -3986,7 +3986,7 @@ export default async function courselore(
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}/settings/invitations"
-                          class="button primary"
+                          class="button button--primary"
                         >
                           <i class="bi bi-person-plus"></i>
                           Invite Other People to the Course
@@ -3997,8 +3997,8 @@ export default async function courselore(
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/threads/new"
                     class="button $${res.locals.enrollment.role === "staff"
-                      ? "secondary"
-                      : "primary"}"
+                      ? "button--secondary"
+                      : "button--primary"}"
                   >
                     <i class="bi bi-chat-left-text"></i>
                     Create the First Thread
