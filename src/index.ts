@@ -812,7 +812,7 @@ export default async function courselore(
                       background-image: linear-gradient(
                         135deg,
                         var(--color--fuchsia--600) 0%,
-                        var(--color--purple--900) 100%
+                        var(--color--purple--700) 100%
                       );
                     }
                     padding: var(--space--0) var(--space--0-5);
@@ -839,6 +839,24 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary-gray--500);
                   }
+                }
+
+                .decorative-icon {
+                  font-size: var(--font-size--9xl);
+                  line-height: var(--line-height--9xl);
+                  color: var(--color--primary-gray--200);
+                  background-color: var(--color--primary-gray--50);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary-gray--600);
+                    background-color: var(--color--primary-gray--800);
+                  }
+                  width: var(--space--48);
+                  height: var(--space--48);
+                  border-radius: 50%;
+                  margin: var(--space--0) auto;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
                 }
 
                 .input--text {
@@ -3400,6 +3418,36 @@ export default async function courselore(
                     Welcome to CourseLore!
                   </h2>
 
+                  <div class="decorative-icon">
+                    <div
+                      style="${css`
+                        width: var(--space--32);
+                        opacity: 30%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      `}"
+                    >
+                      $${app.locals.partials.art.small
+                        .replace(/width=".*?"/, "")
+                        .replace(/height=".*?"/, "")}
+                      <script>
+                        (() => {
+                          const logo =
+                            document.currentScript.previousElementSibling;
+                          document.addEventListener("DOMContentLoaded", () => {
+                            new ArtAnimation({
+                              element: logo,
+                              speed: 0.001,
+                              amount: 1,
+                              startupDuration: 500,
+                            }).start();
+                          });
+                        })();
+                      </script>
+                    </div>
+                  </div>
+
                   <p>
                     Get started by enrolling in an existing course or by
                     creating a new course.
@@ -3433,31 +3481,6 @@ export default async function courselore(
                       <i class="bi bi-journal-plus"></i>
                       Create a New Course
                     </a>
-                  </div>
-
-                  <div
-                    style="${css`
-                      width: min(100%, var(--space--24));
-                      opacity: 30%;
-                    `}"
-                  >
-                    $${app.locals.partials.art.small
-                      .replace(/width=".*?"/, "")
-                      .replace(/height=".*?"/, "")}
-                    <script>
-                      (() => {
-                        const logo =
-                          document.currentScript.previousElementSibling;
-                        document.addEventListener("DOMContentLoaded", () => {
-                          new ArtAnimation({
-                            element: logo,
-                            speed: 0.001,
-                            amount: 1,
-                            startupDuration: 500,
-                          }).start();
-                        });
-                      })();
-                    </script>
                   </div>
                 </div>
               `
@@ -3912,6 +3935,10 @@ export default async function courselore(
                   Welcome to ${res.locals.course.name}!
                 </h1>
 
+                <div class="decorative-icon">
+                  <i class="bi bi-journal-text"></i>
+                </div>
+
                 <p>
                   $${res.locals.enrollment.role === "staff"
                     ? html`
@@ -3958,20 +3985,6 @@ export default async function courselore(
                     Create the First Thread
                   </a>
                 </div>
-
-                <p
-                  style="${css`
-                    font-size: var(--font-size--9xl);
-                    line-height: var(--line-height--9xl);
-                    text-align: center;
-                    color: var(--color--primary-gray--300);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary-gray--700);
-                    }
-                  `}"
-                >
-                  <i class="bi bi-journal-text"></i>
-                </p>
               </div>
             `
           )
@@ -7997,19 +8010,9 @@ ${value}</textarea
 
             $${emails.length === 0
               ? html`
-                  <p
-                    style="${css`
-                      font-size: var(--font-size--9xl);
-                      line-height: var(--line-height--9xl);
-                      text-align: center;
-                      color: var(--color--primary-gray--300);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary-gray--700);
-                      }
-                    `}"
-                  >
+                  <div class="decorative-icon">
                     <i class="bi bi-inbox"></i>
-                  </p>
+                  </div>
                 `
               : html`
                   <div
