@@ -1772,82 +1772,76 @@ export default async function courselore(
                   <div
                     style="${css`
                       flex: 1;
+                      display: flex;
+                      justify-content: center;
                     `}"
                   >
-                    <div
+                    <button
+                      data-tippy-content="${html`
+                        <p class="heading">
+                          <i class="bi bi-journal-text"></i>
+                          ${res.locals.course.name}
+                        </p>
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}"
+                          class="item"
+                        >
+                          <i class="bi bi-chat-left-text"></i>
+                          Threads
+                        </a>
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}/settings"
+                          class="item"
+                        >
+                          <i class="bi bi-sliders"></i>
+                          Course Settings
+                        </a>
+                        $${res.locals.otherEnrollments!.length === 0
+                          ? html``
+                          : html`
+                              <hr class="separator" />
+                              <p class="heading">
+                                <i class="bi bi-arrow-left-right"></i>
+                                Switch to Another Course
+                              </p>
+                              $${res.locals.otherEnrollments!.map(
+                                (otherEnrollment) => html`
+                                  <a
+                                    href="${app.locals.settings
+                                      .url}/courses/${otherEnrollment.course
+                                      .reference}"
+                                    class="item"
+                                  >
+                                    ${otherEnrollment.course.name}
+                                  </a>
+                                `
+                              )}
+                            `}
+                      `}"
+                      data-tippy-theme="dropdown"
+                      data-tippy-trigger="click"
+                      data-tippy-interactive="true"
+                      data-tippy-allowHTML="true"
                       style="${css`
-                        width: 100%;
+                        max-width: 100%;
                         display: flex;
-                        justify-content: center;
+                        gap: var(--space--2);
                       `}"
                     >
-                      <button
-                        data-tippy-content="${html`
-                          <p class="heading">
-                            <i class="bi bi-journal-text"></i>
-                            ${res.locals.course.name}
-                          </p>
-                          <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}"
-                            class="item"
-                          >
-                            <i class="bi bi-chat-left-text"></i>
-                            Threads
-                          </a>
-                          <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/settings"
-                            class="item"
-                          >
-                            <i class="bi bi-sliders"></i>
-                            Course Settings
-                          </a>
-                          $${res.locals.otherEnrollments!.length === 0
-                            ? html``
-                            : html`
-                                <hr class="separator" />
-                                <p class="heading">
-                                  <i class="bi bi-arrow-left-right"></i>
-                                  Switch to Another Course
-                                </p>
-                                $${res.locals.otherEnrollments!.map(
-                                  (otherEnrollment) => html`
-                                    <a
-                                      href="${app.locals.settings
-                                        .url}/courses/${otherEnrollment.course
-                                        .reference}"
-                                      class="item"
-                                    >
-                                      ${otherEnrollment.course.name}
-                                    </a>
-                                  `
-                                )}
-                              `}
-                        `}"
-                        data-tippy-theme="dropdown"
-                        data-tippy-trigger="click"
-                        data-tippy-interactive="true"
-                        data-tippy-allowHTML="true"
+                      <i class="bi bi-journal-text"></i>
+                      <span
                         style="${css`
-                          max-width: 100%;
-                          display: flex;
-                          gap: var(--space--2);
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
                         `}"
                       >
-                        <i class="bi bi-journal-text"></i>
-                        <span
-                          style="${css`
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                          `}"
-                        >
-                          ${res.locals.course.name}
-                        </span>
-                        <i class="bi bi-chevron-down"></i>
-                      </button>
-                    </div>
+                        ${res.locals.course.name}
+                      </span>
+                      <i class="bi bi-chevron-down"></i>
+                    </button>
                   </div>
                 `}
             $${res.locals.user === undefined
