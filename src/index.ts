@@ -870,6 +870,15 @@ export default async function courselore(
                     color: var(--color--primary-gray--300);
                     background-color: var(--color--primary-gray--700);
                   }
+
+                  &:disabled {
+                    color: var(--color--primary-gray--600);
+                    background-color: var(--color--gray--50);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--500);
+                      background-color: var(--color--primary-gray--800);
+                    }
+                  }
                 }
 
                 .button {
@@ -3152,6 +3161,7 @@ export default async function courselore(
                     <span
                       data-tippy-content="This is the email that you confirmed by having followed the Magic Authentication Link; it’s your identity in CourseLore and may not be changed anymore."
                       data-tippy-theme="tooltip"
+                      tabindex="0"
                     >
                       <input
                         type="email"
@@ -3570,59 +3580,65 @@ export default async function courselore(
           res,
           html`<title>User Settings · CourseLore</title>`,
           html`
-            <h1>User Settings</h1>
-
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/settings?_method=PATCH"
+            <div
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space--4);
               `}"
             >
-              <div class="form-floating">
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  autocomplete="off"
-                  required
-                  value="${res.locals.user.name}"
-                  class="form-control"
-                />
-                <label for="name">Name</label>
-              </div>
-              <div
-                class="form-floating"
-                data-bs-toggle="tooltip"
-                title="Your email is your identity in CourseLore and may not be changed."
+              <h2 class="heading--2">User Settings</h2>
+
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/settings?_method=PATCH"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
               >
-                <input
-                  type="email"
-                  id="email"
-                  value="${res.locals.user.email}"
-                  class="form-control"
-                  disabled
-                  aria-describedby="email-help"
-                />
-                <label for="email">Email</label>
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  style="${css`
-                    @include media-breakpoint-down(md) {
-                      width: 100%;
-                    }
-                  `}"
-                >
-                  <i class="bi bi-pencil"></i>
-                  Update User Settings
-                </button>
-              </div>
-            </form>
+                <label>
+                  Name
+                  <input
+                    type="text"
+                    name="name"
+                    value="${res.locals.user.name}"
+                    class="input--text"
+                    autocomplete="off"
+                    required
+                  />
+                </label>
+                <label>
+                  Email
+                  <span
+                    data-tippy-content="Your email is your identity in CourseLore and may not be changed."
+                    data-tippy-theme="tooltip"
+                    tabindex="0"
+                  >
+                    <input
+                      type="email"
+                      value="${res.locals.user.email}"
+                      class="input--text"
+                      disabled
+                    />
+                  </span>
+                </label>
+                <div>
+                  <button
+                    class="button button--primary"
+                    style="${css`
+                      @media (max-width: 400px) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-pencil"></i>
+                    Update User Settings
+                  </button>
+                </div>
+              </form>
+            </div>
           `
         )
       );
@@ -3965,9 +3981,9 @@ export default async function courselore(
                   align-items: center;
                 `}"
               >
-                <h1 class="heading--display--1 text-gradient">
+                <h2 class="heading--display--1 text-gradient">
                   Welcome to ${res.locals.course.name}!
-                </h1>
+                </h2>
 
                 <div class="decorative-icon">
                   <i class="bi bi-journal-text"></i>
