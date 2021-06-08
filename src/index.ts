@@ -956,7 +956,7 @@ export default async function courselore(
                     }
 
                     .item {
-                      width: calc(100% + 2 * var(--space--2));
+                      width: calc(100% + 2 * var(--space--2) + var(--space--px));
                       padding: var(--space--0-5) var(--space--2);
                       border-radius: var(--border-radius--md);
                       margin: var(--space--0) calc(-1 * var(--space--2));
