@@ -923,6 +923,8 @@ export default async function courselore(
                 }
 
                 .tippy-box {
+                  font-size: var(--font-size--sm);
+                  line-height: var(--line-height--sm);
                   background-color: var(--background-color);
                   border: var(--border-width--1) solid var(--border-color);
                   border-radius: var(--border-radius--md);
@@ -1845,6 +1847,9 @@ export default async function courselore(
                       data-tippy-interactive="true"
                       data-tippy-allowHTML="true"
                       style="${css`
+                        font-size: var(--font-size--base);
+                        line-height: var(--line-height--base);
+                        font-weight: var(--font-weight--bold);
                         max-width: 100%;
                         display: flex;
                         gap: var(--space--2);
@@ -1869,6 +1874,8 @@ export default async function courselore(
               : html`
                   <div
                     style="${css`
+                      font-size: var(--font-size--xl);
+                      line-height: var(--line-height--xl);
                       display: flex;
                       gap: var(--space--4);
                       justify-content: flex-end;
@@ -1904,13 +1911,7 @@ export default async function courselore(
                           data-tippy-theme="tooltip"
                           data-tippy-touch="false"
                         >
-                          <i
-                            class="bi bi-plus-circle"
-                            style="${css`
-                              font-size: var(--font-size--xl);
-                              line-height: var(--line-height--xl);
-                            `}"
-                          ></i>
+                          <i class="bi bi-plus-circle"></i>
                         </span>
                       </button>
                     </div>
@@ -1967,13 +1968,7 @@ export default async function courselore(
                           data-tippy-theme="tooltip"
                           data-tippy-touch="false"
                         >
-                          <i
-                            class="bi bi-person-circle"
-                            style="${css`
-                              font-size: var(--font-size--xl);
-                              line-height: var(--line-height--xl);
-                            `}"
-                          ></i>
+                          <i class="bi bi-person-circle"></i>
                         </span>
                       </button>
                     </div>
