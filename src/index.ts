@@ -352,7 +352,6 @@ export default async function courselore(
                   color: inherit;
                   background-color: transparent;
                   box-sizing: border-box;
-                  min-width: 0;
                   padding: 0;
                   border: 0;
                   margin: 0;
