@@ -1696,9 +1696,10 @@ export default async function courselore(
               }
               padding: var(--space--2) var(--space--4);
               display: flex;
+              justify-content: space-between;
               align-items: center;
               & > * {
-                flex: 1;
+                width: var(--space--20);
               }
             `}"
           >
@@ -1757,8 +1758,7 @@ export default async function courselore(
               : html`
                   <div
                     style="${css`
-                      display: flex;
-                      justify-content: center;
+                      width: auto;
                     `}"
                   >
                     <button
