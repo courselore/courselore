@@ -799,6 +799,24 @@ export default async function courselore(
                   font-weight: var(--font-weight--black);
                   font-style: italic;
                   text-align: center;
+
+                  &.gradient {
+                    color: transparent;
+                    background-clip: text;
+                    background-image: linear-gradient(
+                      135deg,
+                      var(--color--fuchsia--400) 0%,
+                      var(--color--purple--900) 100%
+                    );
+                    @media (prefers-color-scheme: dark) {
+                      background-image: linear-gradient(
+                        135deg,
+                        var(--color--fuchsia--600) 0%,
+                        var(--color--purple--900) 100%
+                      );
+                    }
+                    padding: var(--space--0) var(--space--0-5);
+                  }
                 }
 
                 .heading--1 {
@@ -956,7 +974,9 @@ export default async function courselore(
                     }
 
                     .item {
-                      width: calc(100% + 2 * var(--space--2) + var(--space--px));
+                      width: calc(
+                        100% + 2 * var(--space--2) + var(--space--px)
+                      );
                       padding: var(--space--0-5) var(--space--2);
                       border-radius: var(--border-radius--md);
                       margin: var(--space--0) calc(-1 * var(--space--2));
@@ -3381,25 +3401,7 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  <h2
-                    class="heading--display--1"
-                    style="${css`
-                      color: transparent;
-                      background-clip: text;
-                      background-image: linear-gradient(
-                        135deg,
-                        var(--color--fuchsia--400) 0%,
-                        var(--color--purple--900) 100%
-                      );
-                      @media (prefers-color-scheme: dark) {
-                        background-image: linear-gradient(
-                          135deg,
-                          var(--color--fuchsia--600) 0%,
-                          var(--color--purple--900) 100%
-                        );
-                      }
-                    `}"
-                  >
+                  <h2 class="heading--display--1 gradient">
                     Welcome to CourseLore!
                   </h2>
 
@@ -3905,27 +3907,17 @@ export default async function courselore(
               <div
                 style="${css`
                   text-align: center;
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                  align-items: center;
                 `}"
               >
-                <h1
-                  style="${css`
-                    font-family: $font-family-serif;
-                    font-size: 2rem;
-                    font-weight: bold;
-                    font-style: italic;
-                    background: linear-gradient(135deg, $purple 0%, $pink 100%);
-                    background-clip: text;
-                    color: transparent;
-                  `}"
-                >
+                <h1 class="heading--display--1 gradient">
                   Welcome to ${res.locals.course.name}!
                 </h1>
 
-                <p
-                  style="${css`
-                    color: $text-muted;
-                  `}"
-                >
+                <p>
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         Get started by inviting other people to the course or by
@@ -3937,9 +3929,13 @@ export default async function courselore(
                 </p>
                 <div
                   style="${css`
+                    width: 100%;
                     display: flex;
-                    gap: 1rem;
-                    @include media-breakpoint-down(md) {
+                    gap: var(--space--4);
+                    & > * {
+                      flex: 1;
+                    }
+                    @media (max-width: 510px) {
                       flex-direction: column;
                     }
                   `}"
@@ -3949,10 +3945,7 @@ export default async function courselore(
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}/settings/invitations"
-                          class="btn btn-primary"
-                          style="${css`
-                            flex: 1;
-                          `}"
+                          class="button primary"
                         >
                           <i class="bi bi-person-plus"></i>
                           Invite Other People to the Course
@@ -3962,15 +3955,28 @@ export default async function courselore(
                   <a
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/threads/new"
-                    class="btn btn-outline-primary"
-                    style="${css`
-                      flex: 1;
-                    `}"
+                    class="button $${res.locals.enrollment.role === "staff"
+                      ? "secondary"
+                      : "primary"}"
                   >
                     <i class="bi bi-chat-left-text"></i>
                     Create the First Thread
                   </a>
                 </div>
+
+                <p
+                  style="${css`
+                    font-size: var(--font-size--9xl);
+                    line-height: var(--line-height--9xl);
+                    text-align: center;
+                    color: var(--color--primary-gray--300);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--700);
+                    }
+                  `}"
+                >
+                  <i class="bi bi-journal-text"></i>
+                </p>
               </div>
             `
           )
