@@ -4166,27 +4166,27 @@ export default async function courselore(
             flex-direction: column;
           `}"
         >
-          <div
-            style="${css`
-              color: var(--color--primary--200);
-              background-color: var(--color--primary--800);
-              @media (prefers-color-scheme: dark) {
-                color: var(--color--primary--200);
-                background-color: var(--color--primary--900);
-              }
-              padding: var(--space--1) var(--space--4);
-              display: flex;
-              justify-content: center;
-            `}"
-          >
-            <button
-              style="${css`
-                display: flex;
-                gap: var(--space--2);
-              `}"
-              data-tippy-content="${html`
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
+          $${res.locals.enrollment.role === "staff"
+            ? html`
+                <div
+                  style="${css`
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--800);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--900);
+                    }
+                    padding: var(--space--1) var(--space--4);
+                    display: flex;
+                    justify-content: center;
+                  `}"
+                >
+                  <button
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                    data-tippy-content="${html`
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/settings"
@@ -4221,35 +4221,35 @@ export default async function courselore(
                         <i class="bi bi-people"></i>
                         Enrollments
                       </a>
-                    `
-                  : html``}
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/settings/enrollment"
-                  class="dropdown--item ${req.path.endsWith(
-                    "/settings/enrollment"
-                  )
-                    ? "dropdown--item--active"
-                    : ""}"
-                >
-                  <i class="bi bi-person"></i>
-                  Your Enrollment
-                </a>
-              `}"
-              data-tippy-theme="dropdown"
-              data-tippy-trigger="click"
-              data-tippy-interactive="true"
-              data-tippy-allowHTML="true"
-            >
-              <i class="bi bi-sliders"></i>
-              Course Settings
-              <i class="bi bi-chevron-down"></i>
-            </button>
-          </div>
+                      <a
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/settings/enrollment"
+                        class="dropdown--item ${req.path.endsWith(
+                          "/settings/enrollment"
+                        )
+                          ? "dropdown--item--active"
+                          : ""}"
+                      >
+                        <i class="bi bi-person"></i>
+                        Your Enrollment
+                      </a>
+                    `}"
+                    data-tippy-theme="dropdown"
+                    data-tippy-trigger="click"
+                    data-tippy-interactive="true"
+                    data-tippy-allowHTML="true"
+                  >
+                    <i class="bi bi-sliders"></i>
+                    Course Settings
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                </div>
+              `
+            : html``}
+
           <div
             style="${css`
-              background-color: green;
-              height: 100%;
+              flex: 1;
               overflow: auto;
             `}"
           >
