@@ -1238,6 +1238,7 @@ export default async function courselore(
                 "[data-tippy-content]"
               )) {
                 if (element.dataset.tippyCreated) continue;
+                element.dataset.tippyCreated = true;
                 tippy(element, {
                   arrow: tippy.roundArrow + tippy.roundArrow,
                   onMount() {
@@ -1249,7 +1250,6 @@ export default async function courselore(
                     ? 0
                     : 150,
                 });
-                element.dataset.tippyCreated = true;
               }
             });
           </script>
@@ -1258,6 +1258,8 @@ export default async function courselore(
               .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
           <script>
             document.addEventListener("DOMContentLoaded", () => {
+              if (body.dataset.micromodalInitialized) continue;
+              body.dataset.micromodalInitialized = true;
               MicroModal.init({ disableScroll: true, disableFocus: true });
             });
           </script>
@@ -1349,8 +1351,8 @@ export default async function courselore(
 
           document.addEventListener("DOMContentLoaded", () => {
             for (const element of document.querySelectorAll("input.datetime")) {
-              if (element.dataset.local === "true") continue;
-              element.dataset.local = "true";
+              if (element.dataset.local) continue;
+              element.dataset.local = true;
               const date = new Date(element.defaultValue);
               element.defaultValue =
                 String(date.getFullYear()) +
@@ -1691,18 +1693,21 @@ export default async function courselore(
                 </a>
                 <script>
                   (() => {
-                    const logo = document.currentScript.previousElementSibling;
+                    const element =
+                      document.currentScript.previousElementSibling;
                     document.addEventListener("DOMContentLoaded", () => {
+                      if (element.dataset.animated) continue;
+                      element.dataset.animated = true;
                       const artAnimation = new ArtAnimation({
-                        element: logo,
+                        element,
                         speed: 0.001,
                         amount: 1,
                         startupDuration: 500,
                       });
-                      logo.addEventListener("mouseover", () => {
+                      element.addEventListener("mouseover", () => {
                         artAnimation.start();
                       });
-                      logo.addEventListener("mouseout", () => {
+                      element.addEventListener("mouseout", () => {
                         artAnimation.stop();
                       });
                     });
@@ -1810,18 +1815,20 @@ export default async function courselore(
               </a>
               <script>
                 (() => {
-                  const logo = document.currentScript.previousElementSibling;
+                  const element = document.currentScript.previousElementSibling;
                   document.addEventListener("DOMContentLoaded", () => {
+                    if (element.dataset.animated) return;
+                    element.dataset.animated = true;
                     const artAnimation = new ArtAnimation({
-                      element: logo,
+                      element,
                       speed: 0.001,
                       amount: 1,
                       startupDuration: 500,
                     });
-                    logo.addEventListener("mouseover", () => {
+                    element.addEventListener("mouseover", () => {
                       artAnimation.start();
                     });
-                    logo.addEventListener("mouseout", () => {
+                    element.addEventListener("mouseout", () => {
                       artAnimation.stop();
                     });
                   });
@@ -3460,11 +3467,13 @@ export default async function courselore(
                         .replace(/height=".*?"/, "")}
                       <script>
                         (() => {
-                          const logo =
+                          const element =
                             document.currentScript.previousElementSibling;
                           document.addEventListener("DOMContentLoaded", () => {
+                            if (element.dataset.animated) return;
+                            element.dataset.animated = true;
                             new ArtAnimation({
-                              element: logo,
+                              element,
                               speed: 0.001,
                               amount: 1,
                               startupDuration: 500,

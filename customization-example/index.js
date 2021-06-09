@@ -143,6 +143,8 @@ module.exports = (require) => {
               (() => {
                 const element = document.currentScript.previousElementSibling;
                 document.addEventListener("DOMContentLoaded", () => {
+                  if (element.dataset.animated) return;
+                  element.dataset.animated = true;
                   new ArtAnimation({
                     element,
                     speed: 0.001,
@@ -255,6 +257,8 @@ module.exports = (require) => {
                 (() => {
                   const element = document.currentScript.previousElementSibling;
                   document.addEventListener("DOMContentLoaded", () => {
+                    if (element.dataset.animated) return;
+                    element.dataset.animated = true;
                     new ArtAnimation({
                       element,
                       speed: 0.0001,
