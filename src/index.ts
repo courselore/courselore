@@ -1258,8 +1258,8 @@ export default async function courselore(
               .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
           <script>
             document.addEventListener("DOMContentLoaded", () => {
-              if (body.dataset.micromodalInitialized) continue;
-              body.dataset.micromodalInitialized = true;
+              if (document.body.dataset.micromodalInitialized) return;
+              document.body.dataset.micromodalInitialized = true;
               MicroModal.init({ disableScroll: true, disableFocus: true });
             });
           </script>
@@ -1696,7 +1696,7 @@ export default async function courselore(
                     const element =
                       document.currentScript.previousElementSibling;
                     document.addEventListener("DOMContentLoaded", () => {
-                      if (element.dataset.animated) continue;
+                      if (element.dataset.animated) return;
                       element.dataset.animated = true;
                       const artAnimation = new ArtAnimation({
                         element,
