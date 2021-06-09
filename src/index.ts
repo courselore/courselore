@@ -4149,94 +4149,117 @@ export default async function courselore(
       req,
       res,
       head,
-      body
-      // html`
-      //   <div
-      //     style="${css`
-      //       a {
-      //         text-decoration: none;
-      //         color: inherit;
-      //         display: block;
-      //         transition: $btn-transition;
-      //         line-height: 1.3;
-      //         padding: 0.5rem 1rem;
-      //         &:hover,
-      //         &:active {
-      //           background-color: $purple-700;
-      //         }
-      //       }
+      html`
+        <div
+          style="${css`
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          `}"
+        >
+          <div
+            style="${css`
+              background-color: var(--color--primary--800);
+              color: var(--color--primary--200);
+              padding: var(--space--1) var(--space--4);
+              display: flex;
+              flex-direction: column;
+            `}"
+          >
+            <button
+              style="${css`
+                align-self: center;
+                display: flex;
+                gap: var(--space--2);
+              `}"
+              onclick="${javascript``}"
+            >
+              <i class="bi bi-sliders"></i>
+              Course Settings
+              <i class="bi bi-chevron-bar-expand"></i>
+            </button>
 
-      //       a + a {
-      //         border-top: 1px solid $purple-700;
-      //       }
-      //     `}"
-      //   >
-      //     $${res.locals.enrollment.role === "staff"
-      //       ? html`
-      //           <a
-      //             href="${app.locals.settings.url}/courses/${res.locals.course
-      //               .reference}/settings"
-      //             style="${css`
-      //               ${req.path.endsWith("/settings")
-      //                 ? css`
-      //                     background-color: $purple-700;
-      //                   `
-      //                 : css``}
-      //             `}"
-      //           >
-      //             <i class="bi bi-sliders"></i>
-      //             Course Settings
-      //           </a>
-      //           <a
-      //             href="${app.locals.settings.url}/courses/${res.locals.course
-      //               .reference}/settings/invitations"
-      //             style="${css`
-      //               ${req.path.endsWith("/settings/invitations")
-      //                 ? css`
-      //                     background-color: $purple-700;
-      //                   `
-      //                 : css``}
-      //             `}"
-      //           >
-      //             <i class="bi bi-person-plus"></i>
-      //             Invitations
-      //           </a>
-      //           <a
-      //             href="${app.locals.settings.url}/courses/${res.locals.course
-      //               .reference}/settings/enrollments"
-      //             style="${css`
-      //               ${req.path.endsWith("/settings/enrollments")
-      //                 ? css`
-      //                     background-color: $purple-700;
-      //                   `
-      //                 : css``}
-      //             `}"
-      //           >
-      //             <i class="bi bi-people"></i>
-      //             Enrollments
-      //           </a>
-      //         `
-      //       : html``}
-      //     <a
-      //       href="${app.locals.settings.url}/courses/${res.locals.course
-      //         .reference}/settings/enrollment"
-      //       style="${css`
-      //         ${req.path.endsWith("/settings/enrollment")
-      //           ? css`
-      //               background-color: $purple-700;
-      //             `
-      //           : css``}
-      //       `}"
-      //     >
-      //       <i class="bi bi-person"></i>
-      //       Your Enrollment
-      //     </a>
-      //   </div>
-      // `,
-      // html`
-      //   <i class="bi bi-sliders"></i>
-      //   Course Settings
-      // `
+            <div
+              style="${css`
+                flex: 1;
+                height: 100%;
+                overflow: auto;
+              `}"
+            >
+              <div
+                style="${css`
+                  flex: 1;
+                  height: 100%;
+                  overflow: auto;
+                `}"
+              >
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <a
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/settings"
+                        style="${css`
+                          ${req.path.endsWith("/settings")
+                            ? css`
+                                background-color: $purple-700;
+                              `
+                            : css``}
+                        `}"
+                      >
+                        <i class="bi bi-sliders"></i>
+                        Course Settings
+                      </a>
+                      <a
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/settings/invitations"
+                        style="${css`
+                          ${req.path.endsWith("/settings/invitations")
+                            ? css`
+                                background-color: $purple-700;
+                              `
+                            : css``}
+                        `}"
+                      >
+                        <i class="bi bi-person-plus"></i>
+                        Invitations
+                      </a>
+                      <a
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/settings/enrollments"
+                        style="${css`
+                          ${req.path.endsWith("/settings/enrollments")
+                            ? css`
+                                background-color: $purple-700;
+                              `
+                            : css``}
+                        `}"
+                      >
+                        <i class="bi bi-people"></i>
+                        Enrollments
+                      </a>
+                    `
+                  : html``}
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/settings/enrollment"
+                  style="${css`
+                    ${req.path.endsWith("/settings/enrollment")
+                      ? css`
+                          background-color: $purple-700;
+                        `
+                      : css``}
+                  `}"
+                >
+                  <i class="bi bi-person"></i>
+                  Your Enrollment
+                </a>
+              </div>
+            </div>
+            <div hidden>$${body}</div>
+          </div>
+        </div>
+      `
     );
 
   app.get<
