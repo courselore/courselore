@@ -1268,7 +1268,7 @@ export default async function courselore(
   };
 
   interface Layouts {
-    application: (
+    applicationBase: (
       req: express.Request<
         {},
         any,
@@ -1281,7 +1281,7 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.application = (req, res, head, body) =>
+  app.locals.layouts.applicationBase = (req, res, head, body) =>
     app.locals.layouts.base(
       req,
       res,
@@ -1617,7 +1617,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.box = (req, res, head, body) =>
-    app.locals.layouts.application(
+    app.locals.layouts.applicationBase(
       req,
       res,
       head,
@@ -1719,7 +1719,7 @@ export default async function courselore(
     );
 
   interface Layouts {
-    applicationWithHeader: (
+    application: (
       req: express.Request<
         {},
         any,
@@ -1737,8 +1737,8 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.applicationWithHeader = (req, res, head, body) =>
-    app.locals.layouts.application(
+  app.locals.layouts.application = (req, res, head, body) =>
+    app.locals.layouts.applicationBase(
       req,
       res,
       head,
@@ -2048,7 +2048,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.main = (req, res, head, body) =>
-    app.locals.layouts.applicationWithHeader(
+    app.locals.layouts.application(
       req,
       res,
       head,
@@ -4145,7 +4145,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.courseSettings = (req, res, head, body) =>
-    app.locals.layouts.applicationWithHeader(
+    app.locals.layouts.application(
       req,
       res,
       head,
@@ -6174,7 +6174,7 @@ export default async function courselore(
     ) => HTML;
   }
   app.locals.layouts.thread = (req, res, head, body) =>
-    app.locals.layouts.applicationWithHeader(
+    app.locals.layouts.application(
       req,
       res,
       head,
