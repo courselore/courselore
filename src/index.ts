@@ -1019,6 +1019,15 @@ export default async function courselore(
                           background-color: var(--color--primary--600);
                         }
                       }
+
+                      &.dropdown--item--active {
+                        color: var(--color--primary--50);
+                        background-color: var(--color--primary--600);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary--900);
+                          background-color: var(--color--primary--100);
+                        }
+                      }
                     }
 
                     .dropdown--separator {
@@ -4152,7 +4161,6 @@ export default async function courselore(
       html`
         <div
           style="${css`
-            flex: 1;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -4160,52 +4168,31 @@ export default async function courselore(
         >
           <div
             style="${css`
-              background-color: var(--color--primary--800);
               color: var(--color--primary--200);
+              background-color: var(--color--primary--800);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--primary--200);
+                background-color: var(--color--primary--900);
+              }
               padding: var(--space--1) var(--space--4);
               display: flex;
-              flex-direction: column;
+              justify-content: center;
             `}"
           >
             <button
               style="${css`
-                align-self: center;
                 display: flex;
                 gap: var(--space--2);
               `}"
-              onclick="${javascript``}"
-            >
-              <i class="bi bi-sliders"></i>
-              Course Settings
-              <i class="bi bi-chevron-bar-expand"></i>
-            </button>
-
-            <div
-              style="${css`
-                flex: 1;
-                height: 100%;
-                overflow: auto;
-              `}"
-            >
-              <div
-                style="${css`
-                  flex: 1;
-                  height: 100%;
-                  overflow: auto;
-                `}"
-              >
+              data-tippy-content="${html`
                 $${res.locals.enrollment.role === "staff"
                   ? html`
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/settings"
-                        style="${css`
-                          ${req.path.endsWith("/settings")
-                            ? css`
-                                background-color: $purple-700;
-                              `
-                            : css``}
-                        `}"
+                        class="dropdown--item ${req.path.endsWith("/settings")
+                          ? "dropdown--item--active"
+                          : ""}"
                       >
                         <i class="bi bi-sliders"></i>
                         Course Settings
@@ -4213,13 +4200,11 @@ export default async function courselore(
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/settings/invitations"
-                        style="${css`
-                          ${req.path.endsWith("/settings/invitations")
-                            ? css`
-                                background-color: $purple-700;
-                              `
-                            : css``}
-                        `}"
+                        class="dropdown--item ${req.path.endsWith(
+                          "/settings/invitations"
+                        )
+                          ? "dropdown--item--active"
+                          : ""}"
                       >
                         <i class="bi bi-person-plus"></i>
                         Invitations
@@ -4227,13 +4212,11 @@ export default async function courselore(
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/settings/enrollments"
-                        style="${css`
-                          ${req.path.endsWith("/settings/enrollments")
-                            ? css`
-                                background-color: $purple-700;
-                              `
-                            : css``}
-                        `}"
+                        class="dropdown--item ${req.path.endsWith(
+                          "/settings/enrollments"
+                        )
+                          ? "dropdown--item--active"
+                          : ""}"
                       >
                         <i class="bi bi-people"></i>
                         Enrollments
@@ -4243,22 +4226,88 @@ export default async function courselore(
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/settings/enrollment"
-                  style="${css`
-                    ${req.path.endsWith("/settings/enrollment")
-                      ? css`
-                          background-color: $purple-700;
-                        `
-                      : css``}
-                  `}"
+                  class="dropdown--item ${req.path.endsWith(
+                    "/settings/enrollment"
+                  )
+                    ? "dropdown--item--active"
+                    : ""}"
                 >
                   <i class="bi bi-person"></i>
                   Your Enrollment
                 </a>
+              `}"
+              data-tippy-theme="dropdown"
+              data-tippy-trigger="click"
+              data-tippy-interactive="true"
+              data-tippy-allowHTML="true"
+            >
+              <i class="bi bi-sliders"></i>
+              Course Settings
+              <i class="bi bi-chevron-down"></i>
+            </button>
+          </div>
+          <div
+            style="${css`
+              background-color: green;
+              height: 100%;
+              overflow: auto;
+            `}"
+          >
+            $${body}
+          </div>
+        </div>
+        <!--
+        <div
+          style="${css`
+          flex: 1;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        `}"
+        >
+          <div
+            style="${css`
+          background-color: var(--color--primary--800);
+          color: var(--color--primary--200);
+          padding: var(--space--1) var(--space--4);
+          display: flex;
+          flex-direction: column;
+        `}"
+          >
+            <button
+              style="${css`
+          align-self: center;
+          display: flex;
+          gap: var(--space--2);
+        `}"
+              onclick="${javascript``}"
+            >
+              <i class="bi bi-sliders"></i>
+              Course Settings
+              <i class="bi bi-chevron-bar-expand"></i>
+            </button>
+
+            <div
+              style="${css`
+          flex: 1;
+          height: 100%;
+          overflow: auto;
+        `}"
+            >
+              <div
+                style="${css`
+          flex: 1;
+          height: 100%;
+          overflow: auto;
+        `}"
+              >
+                
               </div>
             </div>
             <div hidden>$${body}</div>
           </div>
         </div>
+        -->
       `
     );
 
