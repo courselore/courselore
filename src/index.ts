@@ -1737,17 +1737,10 @@ export default async function courselore(
           Partial<EventSourceMiddlewareLocals>
       >,
       head: HTML,
-      body: HTML,
-      extraMenu?: HTML
+      body: HTML
     ) => HTML;
   }
-  app.locals.layouts.applicationWithHeader = (
-    req,
-    res,
-    head,
-    body,
-    extraMenu = html``
-  ) =>
+  app.locals.layouts.applicationWithHeader = (req, res, head, body) =>
     app.locals.layouts.application(
       req,
       res,
@@ -2025,7 +2018,6 @@ export default async function courselore(
                     </div>
                   </div>
                 `}
-            $${extraMenu}
           </header>
           <main
             style="${css`
@@ -2177,38 +2169,6 @@ export default async function courselore(
               $${body}
             </div>
           </div>
-        </div>
-      `,
-      html`
-        <div
-          style="${css`
-            @include media-breakpoint-down(md) {
-              grid-area: 2 / 3 / 2 / 4;
-              justify-self: end;
-              margin-right: -0.2rem;
-            }
-            @include media-breakpoint-up(md) {
-              display: none;
-            }
-          `}"
-        >
-          <button
-            type="button"
-            class="btn link-light dropdown-toggle"
-            data-bs-toggle="collapse"
-            data-bs-target="#sidebar"
-            aria-expanded="false"
-            aria-controls="sidebar"
-            style="${css`
-              padding: 0 0.2rem;
-              &:hover,
-              &:focus {
-                background-color: $purple-700;
-              }
-            `}"
-          >
-            $${sidebarButton}
-          </button>
         </div>
       `
     );
