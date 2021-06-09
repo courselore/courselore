@@ -1213,10 +1213,9 @@ export default async function courselore(
             <strong>Loading…</strong>
           </div>
           <script>
-            let loading;
-            (() => {
+            const loading = (() => {
               const source = document.currentScript.previousElementSibling;
-              loading = (target) => {
+              return (target) => {
                 target.innerHTML = source.innerHTML;
                 new ArtAnimation({
                   element: target,
@@ -1288,6 +1287,95 @@ export default async function courselore(
       res,
       head,
       html`
+        <div
+          style="${css`
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+          `}"
+        >
+          $${app.locals.settings.demonstration
+            ? html`
+                <nav
+                  style="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    color: var(--color--rose--50);
+                    background-color: var(--color--rose--500);
+                    --focus-color: var(--color--rose--300);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--rose--200);
+                      background-color: var(--color--rose--700);
+                      --focus-color: var(--color--rose--600);
+                    }
+                    padding: var(--space--0) var(--space--2);
+                    box-shadow: inset 0 calc(-1 * var(--border-width--1))
+                      var(--color--rose--600);
+                    @media (prefers-color-scheme: dark) {
+                      box-shadow: inset 0 calc(-1 * var(--border-width--1))
+                        var(--color--rose--900);
+                    }
+                    display: flex;
+                    gap: var(--space--2);
+                    justify-content: center;
+
+                    & > * {
+                      padding: var(--space--1) var(--space--2);
+                      position: relative;
+                      display: flex;
+                      gap: var(--space--2);
+                      transition: box-shadow var(--transition-duration);
+
+                      &:hover,
+                      &.current {
+                        box-shadow: inset 0 calc(-1 * var(--border-width--4))
+                          var(--color--rose--700);
+                        @media (prefers-color-scheme: dark) {
+                          box-shadow: inset 0 calc(-1 * var(--border-width--4))
+                            var(--color--rose--800);
+                        }
+                      }
+                    }
+                  `}"
+                >
+                  <button
+                    data-tippy-content="CourseLore is running in Demonstration Mode. All data
+                    may be lost, including courses, threads, posts, users,
+                    and so forth. Also, no emails are actually sent; they
+                    show up in the Demonstration Inbox instead."
+                    data-tippy-theme="tooltip"
+                    data-tippy-trigger="click"
+                  >
+                    <i class="bi bi-easel"></i>
+                    Demonstration Mode
+                  </button>
+                  <a
+                    href="${app.locals.settings.url}/demonstration-inbox"
+                    class="${req.path === "/demonstration-inbox"
+                      ? "current"
+                      : ""}"
+                  >
+                    <i class="bi bi-inbox"></i>
+                    Demonstration Inbox
+                  </a>
+                </nav>
+              `
+            : html``}
+
+          <div
+            style="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+          >
+            $${body}
+          </div>
+        </div>
+
         <script>
           (() => {
             const relativizeTimes = () => {
@@ -1475,11 +1563,9 @@ export default async function courselore(
             ))
               button.disabled = true;
           });
-        </script>
 
-        $${res.locals.eventSource
-          ? html`
-              <script>
+          $${res.locals.eventSource
+            ? javascript`
                 const eventSource = new EventSource(window.location.href);
                 eventSource.addEventListener("refresh", async () => {
                   const response = await fetch(window.location.href);
@@ -1516,98 +1602,9 @@ export default async function courselore(
                       break;
                   }
                 });
-              </script>
             `
-          : html``}
-
-        <div
-          style="${css`
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-          `}"
-        >
-          $${app.locals.settings.demonstration
-            ? html`
-                <nav
-                  style="${css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    color: var(--color--rose--50);
-                    background-color: var(--color--rose--500);
-                    --focus-color: var(--color--rose--300);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--rose--200);
-                      background-color: var(--color--rose--700);
-                      --focus-color: var(--color--rose--600);
-                    }
-                    padding: var(--space--0) var(--space--2);
-                    box-shadow: inset 0 calc(-1 * var(--border-width--1))
-                      var(--color--rose--600);
-                    @media (prefers-color-scheme: dark) {
-                      box-shadow: inset 0 calc(-1 * var(--border-width--1))
-                        var(--color--rose--900);
-                    }
-                    display: flex;
-                    gap: var(--space--2);
-                    justify-content: center;
-
-                    & > * {
-                      padding: var(--space--1) var(--space--2);
-                      position: relative;
-                      display: flex;
-                      gap: var(--space--2);
-                      transition: box-shadow var(--transition-duration);
-
-                      &:hover,
-                      &.current {
-                        box-shadow: inset 0 calc(-1 * var(--border-width--4))
-                          var(--color--rose--700);
-                        @media (prefers-color-scheme: dark) {
-                          box-shadow: inset 0 calc(-1 * var(--border-width--4))
-                            var(--color--rose--800);
-                        }
-                      }
-                    }
-                  `}"
-                >
-                  <button
-                    data-tippy-content="CourseLore is running in Demonstration Mode. All data
-                    may be lost, including courses, threads, posts, users,
-                    and so forth. Also, no emails are actually sent; they
-                    show up in the Demonstration Inbox instead."
-                    data-tippy-theme="tooltip"
-                    data-tippy-trigger="click"
-                  >
-                    <i class="bi bi-easel"></i>
-                    Demonstration Mode
-                  </button>
-                  <a
-                    href="${app.locals.settings.url}/demonstration-inbox"
-                    class="${req.path === "/demonstration-inbox"
-                      ? "current"
-                      : ""}"
-                  >
-                    <i class="bi bi-inbox"></i>
-                    Demonstration Inbox
-                  </a>
-                </nav>
-              `
-            : html``}
-
-          <div
-            style="${css`
-              flex: 1;
-              overflow: auto;
-            `}"
-          >
-            $${body}
-          </div>
-        </div>
+            : javascript``};
+        </script>
       `
     );
 
@@ -7473,17 +7470,17 @@ ${value}</textarea
               )}
             </div>
             <script>
-              (() => {
-                const id = document.currentScript.previousElementSibling.id;
-                eventSource.addEventListener("refreshed", (event) => {
-                  const posts = document.querySelector("#" + id);
-                  if (posts.querySelector(".edit:not([hidden])") !== null)
-                    return;
-                  posts.replaceWith(
-                    event.detail.document.querySelector("#" + id)
-                  );
-                });
-              })();
+              // (() => {
+              //   const id = document.currentScript.previousElementSibling.id;
+              //   eventSource.addEventListener("refreshed", (event) => {
+              //     const posts = document.querySelector("#" + id);
+              //     if (posts.querySelector(".edit:not([hidden])") !== null)
+              //       return;
+              //     posts.replaceWith(
+              //       event.detail.document.querySelector("#" + id)
+              //     );
+              //   });
+              // })();
             </script>
 
             <form
