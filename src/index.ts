@@ -4153,8 +4153,51 @@ export default async function courselore(
       body: HTML
     ) => HTML;
   }
-  app.locals.layouts.courseSettings = (req, res, head, body) =>
-    app.locals.layouts.application(
+  app.locals.layouts.courseSettings = (req, res, head, body) => {
+    const menu = html`
+      <a
+        href="${app.locals.settings.url}/courses/${res.locals.course
+          .reference}/settings"
+        class="dropdown--item ${req.path.endsWith("/settings")
+          ? "dropdown--item--active"
+          : ""}"
+      >
+        <i class="bi bi-sliders"></i>
+        Course Settings
+      </a>
+      <a
+        href="${app.locals.settings.url}/courses/${res.locals.course
+          .reference}/settings/invitations"
+        class="dropdown--item ${req.path.endsWith("/settings/invitations")
+          ? "dropdown--item--active"
+          : ""}"
+      >
+        <i class="bi bi-person-plus"></i>
+        Invitations
+      </a>
+      <a
+        href="${app.locals.settings.url}/courses/${res.locals.course
+          .reference}/settings/enrollments"
+        class="dropdown--item ${req.path.endsWith("/settings/enrollments")
+          ? "dropdown--item--active"
+          : ""}"
+      >
+        <i class="bi bi-people"></i>
+        Enrollments
+      </a>
+      <a
+        href="${app.locals.settings.url}/courses/${res.locals.course
+          .reference}/settings/enrollment"
+        class="dropdown--item ${req.path.endsWith("/settings/enrollment")
+          ? "dropdown--item--active"
+          : ""}"
+      >
+        <i class="bi bi-person"></i>
+        Your Enrollment
+      </a>
+    `;
+
+    return app.locals.layouts.application(
       req,
       res,
       head,
@@ -4186,54 +4229,7 @@ export default async function courselore(
                       display: flex;
                       gap: var(--space--2);
                     `}"
-                    data-tippy-content="${html`
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings"
-                        class="dropdown--item ${req.path.endsWith("/settings")
-                          ? "dropdown--item--active"
-                          : ""}"
-                      >
-                        <i class="bi bi-sliders"></i>
-                        Course Settings
-                      </a>
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings/invitations"
-                        class="dropdown--item ${req.path.endsWith(
-                          "/settings/invitations"
-                        )
-                          ? "dropdown--item--active"
-                          : ""}"
-                      >
-                        <i class="bi bi-person-plus"></i>
-                        Invitations
-                      </a>
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings/enrollments"
-                        class="dropdown--item ${req.path.endsWith(
-                          "/settings/enrollments"
-                        )
-                          ? "dropdown--item--active"
-                          : ""}"
-                      >
-                        <i class="bi bi-people"></i>
-                        Enrollments
-                      </a>
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings/enrollment"
-                        class="dropdown--item ${req.path.endsWith(
-                          "/settings/enrollment"
-                        )
-                          ? "dropdown--item--active"
-                          : ""}"
-                      >
-                        <i class="bi bi-person"></i>
-                        Your Enrollment
-                      </a>
-                    `}"
+                    data-tippy-content="${menu}"
                     data-tippy-theme="dropdown"
                     data-tippy-trigger="click"
                     data-tippy-interactive="true"
@@ -4249,11 +4245,35 @@ export default async function courselore(
 
           <div
             style="${css`
+              background: tomato;
               flex: 1;
-              overflow: auto;
+              display: grid;
+              grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
             `}"
           >
-            $${body}
+            $${res.locals.enrollment.role === "staff"
+              ? html`
+                  <div
+                    style="${css`
+                      background: blue;
+                    `}"
+                  >
+                    $${menu}
+                  </div>
+                `
+              : html``}
+            <div
+              style="${css`
+                background: green;
+                justify-self: center;
+                flex: 1;
+                min-width: 0;
+                max-width: calc(var(--space--80) * 2);
+                padding: var(--space--4);
+              `}"
+            >
+              $${body}
+            </div>
           </div>
         </div>
         <!--
@@ -4310,6 +4330,7 @@ export default async function courselore(
         -->
       `
     );
+  };
 
   app.get<
     { courseReference: string },
