@@ -3460,6 +3460,9 @@ export default async function courselore(
                         display: flex;
                         justify-content: center;
                         align-items: center;
+                        svg {
+                          width: 100%;
+                        }
                       `}"
                     >
                       $${app.locals.partials.art.small
