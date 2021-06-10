@@ -4215,7 +4215,7 @@ export default async function courselore(
             ? html`
                 <div
                   style="${css`
-                    color: var(--color--primary--200);
+                    color: var(--color--primary--100);
                     background-color: var(--color--primary--800);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--200);
@@ -4247,10 +4247,10 @@ export default async function courselore(
 
           <div
             style="${css`
-              background: tomato;
               flex: 1;
               display: grid;
               grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
+              gap: var(--space--12);
               overflow: auto;
             `}"
           >
@@ -4258,13 +4258,26 @@ export default async function courselore(
               ? html`
                   <div
                     style="${css`
-                      background: violet;
                       padding: var(--space--4);
                       justify-self: end;
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--4);
+                      gap: var(--space--2);
                       overflow: auto;
+
+                      .dropdown--item {
+                        color: var(--color--primary-gray--600);
+                        padding: var(--space--1) var(--space--3);
+                        border-radius: var(--border-radius--md);
+                        transition: color var(--transition-duration),
+                          background-color var(--transition-duration);
+                      }
+
+                      .dropdown--item:hover,
+                      .dropdown--item--active {
+                        color: var(--color--primary-gray--900);
+                        background-color: var(--color--primary-gray--200);
+                      }
                     `}"
                   >
                     $${menu}
@@ -4274,7 +4287,6 @@ export default async function courselore(
             <div
               style="${css`
                 grid-area: 1 / 2;
-                background: green;
                 padding: var(--space--4);
                 overflow: auto;
               `}"
