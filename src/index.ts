@@ -949,21 +949,6 @@ export default async function courselore(
                   }
                 }
 
-                .flash {
-                  padding: var(--space--2) var(--space--4);
-                  display: flex;
-                  justify-content: center;
-
-                  &.flash--success {
-                    color: var(--color--green--700);
-                    background-color: var(--color--green--200);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--green--300);
-                      background-color: var(--color--green--700);
-                    }
-                  }
-                }
-
                 .tippy-box {
                   font-size: var(--font-size--sm);
                   line-height: var(--line-height--sm);
@@ -1760,8 +1745,9 @@ export default async function courselore(
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.application = ({ req, res, head, extraHeaders, body }) =>
-    app.locals.layouts.applicationBase({
+  app.locals.layouts.application = ({ req, res, head, extraHeaders, body }) => {
+    const flash = app.locals.helpers.flash.get(req, res);
+    return app.locals.layouts.applicationBase({
       req,
       res,
       head,
@@ -2042,7 +2028,60 @@ export default async function courselore(
                 `}
           </header>
           $${extraHeaders ?? html``}
-          $${app.locals.helpers.flash.get(req, res) ?? html``}
+          $${flash === undefined
+            ? html``
+            : html`
+                <div
+                  style="${css`
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
+
+                    & > :first-child {
+                      padding: var(--space--2) var(--space--10);
+                      text-align: center;
+
+                      & + button {
+                        transition: color var(--transition-duration);
+                      }
+
+                      &.flash--success {
+                        &,
+                        & + button {
+                          color: var(--color--green--700);
+                          background-color: var(--color--green--200);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--green--300);
+                            background-color: var(--color--green--700);
+                          }
+                        }
+                        & + button:hover {
+                          color: var(--color--green--600);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--green--100);
+                          }
+                        }
+                      }
+                    }
+                  `}"
+                >
+                  $${flash}
+                  <button
+                    style="${css`
+                      justify-self: end;
+                      align-self: start;
+                      margin-top: var(--space--2);
+                      margin-right: var(--space--4);
+                    `}"
+                    onclick="${javascript`
+                      this.parentElement.remove();
+                    `}"
+                  >
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+              `}
           <main
             style="${css`
               color: var(--color--primary-gray--500);
@@ -2061,6 +2100,7 @@ export default async function courselore(
         </div>
       `,
     });
+  };
 
   interface Layouts {
     main: (_: {
@@ -4423,7 +4463,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--success">
+          <div class="flash--success">
             Course settings have been updated successfully.
           </div>
         `
