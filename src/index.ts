@@ -4251,9 +4251,11 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
-              display: grid;
-              grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
-              gap: var(--space--12);
+              @media (min-width: 1100px) {
+                display: grid;
+                grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
+                gap: var(--space--12);
+              }
               overflow: auto;
             `}"
           >
