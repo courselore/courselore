@@ -4341,44 +4341,53 @@ export default async function courselore(
             </title>
           `,
           html`
-            <h1>Course Settings</h1>
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings?_method=PATCH"
+            <div
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space--4);
               `}"
             >
-              <div class="form-floating">
-                <input
-                  type="text"
-                  name="name"
-                  autocomplete="off"
-                  required
-                  value="${res.locals.course.name}"
-                  class="form-control"
-                  id="name"
-                />
-                <label for="name">Name</label>
-              </div>
-              <div>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  style="${css`
-                    @include media-breakpoint-down(md) {
-                      width: 100%;
-                    }
-                  `}"
-                >
-                  <i class="bi bi-pencil"></i>
-                  Update Course Settings
-                </button>
-              </div>
-            </form>
+              <h2 class="heading--2">
+                <i class="bi bi-sliders"></i>
+                Course Settings
+              </h2>
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings?_method=PATCH"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <label>
+                  Name
+                  <input
+                    type="text"
+                    name="name"
+                    value="${res.locals.course.name}"
+                    required
+                    autocomplete="off"
+                    class="input--text"
+                  />
+                </label>
+                <div>
+                  <button
+                    class="button button--primary"
+                    style="${css`
+                      @media (max-width: 400px) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-pencil"></i>
+                    Update Course Settings
+                  </button>
+                </div>
+              </form>
+            </div>
           `
         )
       );
