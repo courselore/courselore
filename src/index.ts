@@ -4251,12 +4251,12 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
+              overflow: auto;
               @media (min-width: 1100px) {
                 display: grid;
                 grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
                 gap: var(--space--12);
               }
-              overflow: auto;
             `}"
           >
             $${res.locals.enrollment.role === "staff"
@@ -4273,15 +4273,15 @@ export default async function courselore(
                       .dropdown--item {
                         color: var(--color--primary-gray--600);
                         padding: var(--space--1) var(--space--3);
-                        border-radius: var(--border-radius--md);
                         transition: color var(--transition-duration),
-                          background-color var(--transition-duration);
+                          box-shadow var(--transition-duration);
                       }
 
                       .dropdown--item:hover,
                       .dropdown--item--active {
                         color: var(--color--primary-gray--900);
-                        background-color: var(--color--primary-gray--200);
+                        box-shadow: inset var(--border-width--4) 0
+                          var(--color--primary-gray--500);
                       }
 
                       @media (max-width: 1099px) {
