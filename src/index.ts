@@ -949,6 +949,21 @@ export default async function courselore(
                   }
                 }
 
+                .flash {
+                  padding: var(--space--2) var(--space--4);
+                  display: flex;
+                  justify-content: center;
+
+                  &.flash--success {
+                    color: var(--color--green--700);
+                    background-color: var(--color--green--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--green--300);
+                      background-color: var(--color--green--700);
+                    }
+                  }
+                }
+
                 .tippy-box {
                   font-size: var(--font-size--sm);
                   line-height: var(--line-height--sm);
@@ -2028,6 +2043,7 @@ export default async function courselore(
                   </div>
                 `}
           </header>
+          $${app.locals.helpers.flash.get(req, res) ?? html``}
           <main
             style="${css`
               color: var(--color--primary-gray--500);
@@ -2041,7 +2057,7 @@ export default async function courselore(
               display: flex;
             `}"
           >
-            $${app.locals.helpers.flash.get(req, res) ?? html``} $${body}
+            $${body}
           </main>
         </div>
       `
@@ -4415,22 +4431,8 @@ export default async function courselore(
         req,
         res,
         html`
-          <div
-            class="alert alert-success alert-dismissible fade show"
-            style="${css`
-              text-align: center;
-              border-radius: 0;
-              margin-bottom: 0;
-            `}"
-            role="alert"
-          >
+          <div class="flash flash--success">
             Course settings have been updated successfully.
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
           </div>
         `
       );
