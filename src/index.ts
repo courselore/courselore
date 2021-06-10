@@ -81,32 +81,45 @@ export default async function courselore(
   type Role = "student" | "staff";
   app.locals.constants.roles = ["student", "staff"];
 
-  // https://pico-8.fandom.com/wiki/Palette
   interface Constants {
     accentColors: AccentColor[];
   }
   type AccentColor =
-    | "#83769c"
-    | "#ff77a8"
-    | "#29adff"
-    | "#ffa300"
-    | "#ff004d"
-    | "#7e2553"
-    | "#008751"
-    | "#ab5236"
-    | "#1d2b53"
-    | "#5f574f";
+    | "purple"
+    | "fuchsia"
+    | "pink"
+    | "rose"
+    | "red"
+    | "orange"
+    | "amber"
+    | "yellow"
+    | "lime"
+    | "green"
+    | "emerald"
+    | "teal"
+    | "cyan"
+    | "light-blue"
+    | "blue"
+    | "indigo"
+    | "violet";
   app.locals.constants.accentColors = [
-    "#83769c",
-    "#ff77a8",
-    "#29adff",
-    "#ffa300",
-    "#ff004d",
-    "#7e2553",
-    "#008751",
-    "#ab5236",
-    "#1d2b53",
-    "#5f574f",
+    "purple",
+    "fuchsia",
+    "pink",
+    "rose",
+    "red",
+    "orange",
+    "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
+    "teal",
+    "cyan",
+    "light-blue",
+    "blue",
+    "indigo",
+    "violet",
   ];
 
   interface Constants {
@@ -188,7 +201,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('#83769c', '#ff77a8', '#29adff', '#ffa300', '#ff004d', '#7e2553', '#008751', '#ab5236', '#1d2b53', '#5f574f')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('purple', 'fuchsia', 'pink', 'rose', 'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'light-blue', 'blue', 'indigo', 'violet')),
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
@@ -1750,7 +1763,47 @@ export default async function courselore(
     return app.locals.layouts.applicationBase({
       req,
       res,
-      head,
+      head: html`
+        $${head}
+        $${res.locals.enrollment === undefined
+          ? html``
+          : html`
+              <style>
+                :root {
+                  --color--primary--50: var(
+                    --color--${res.locals.enrollment.accentColor}--50
+                  );
+                  --color--primary--100: var(
+                    --color--${res.locals.enrollment.accentColor}--100
+                  );
+                  --color--primary--200: var(
+                    --color--${res.locals.enrollment.accentColor}--200
+                  );
+                  --color--primary--300: var(
+                    --color--${res.locals.enrollment.accentColor}--300
+                  );
+                  --color--primary--400: var(
+                    --color--${res.locals.enrollment.accentColor}--400
+                  );
+                  --color--primary--500: var(
+                    --color--${res.locals.enrollment.accentColor}--500
+                  );
+                  --color--primary--600: var(
+                    --color--${res.locals.enrollment.accentColor}--600
+                  );
+                  --color--primary--700: var(
+                    --color--${res.locals.enrollment.accentColor}--700
+                  );
+                  --color--primary--800: var(
+                    --color--${res.locals.enrollment.accentColor}--800
+                  );
+                  --color--primary--900: var(
+                    --color--${res.locals.enrollment.accentColor}--900
+                  );
+                }
+              </style>
+            `}
+      `,
       body: html`
         <div
           style="${css`
@@ -5996,7 +6049,7 @@ export default async function courselore(
                             ? html`checked`
                             : html``}
                           style="${css`
-                            background-color: ${accentColor};
+                            background-color: var(--color--${accentColor}--500);
                             width: var(--space--5);
                             height: var(--space--5);
                             border-radius: 50%;
