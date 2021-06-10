@@ -5942,10 +5942,11 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2>
+              <h2 class="heading--2">
                 <i class="bi bi-person"></i>
                 Your Enrollment
               </h2>
+
               <form
                 method="POST"
                 action="${app.locals.settings.url}/courses/${res.locals.course
@@ -5956,79 +5957,76 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <div>
-                  <div>
-                    <strong>Accent Color</strong>
-                    <span data-bs-toggle="tooltip" title="Help">
-                      <a
-                        tabindex="0"
-                        class="btn"
-                        role="button"
-                        data-bs-toggle="popover"
-                        data-bs-trigger="focus"
-                        data-bs-content="${html`
-                          The accent color helps you tell your courses apart.
-                        `}"
-                        style="${css`
-                          color: $text-muted;
-                          padding: 0 0.2rem;
-                          &:hover,
-                          &:focus {
-                            background-color: $gray-100;
-                          }
-                        `}"
-                        onclick="${javascript`
-                        bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                      `}"
-                      >
-                        <i class="bi bi-question-circle"></i>
-                      </a>
-                    </span>
-                  </div>
-                  <div
-                    class="btn-group"
-                    role="group"
-                    aria-label="Accent colors"
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--1);
+                  `}"
+                >
+                  <p
                     style="${css`
-                      padding: 1px;
-                      max-width: 100%;
-                      overflow: auto;
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    Accent Color
+                    <button
+                      type="button"
+                      data-tippy-content="The accent color helps you tell your courses apart."
+                      data-tippy-theme="tooltip"
+                      data-tippy-trigger="click"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </p>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
                     `}"
                   >
                     $${app.locals.constants.accentColors.map(
                       (accentColor) => html`
                         <input
                           type="radio"
-                          class="btn-check"
                           name="accentColor"
-                          id="accentColor--${accentColor.slice(1)}"
-                          autocomplete="off"
+                          value="${accentColor}"
                           $${accentColor === res.locals.enrollment.accentColor
                             ? html`checked`
                             : html``}
-                          value="${accentColor}"
+                          style="${css`
+                            background-color: ${accentColor};
+                            width: var(--space--5);
+                            height: var(--space--5);
+                            border-radius: 50%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            cursor: pointer;
+
+                            &:checked::before {
+                              content: "";
+                              display: block;
+                              width: var(--space--2);
+                              height: var(--space--2);
+                              border-radius: 50%;
+                              background-color: var(--color--primary-gray--50);
+                              @media (prefers-color-scheme: dark) {
+                                background-color: var(
+                                  --color--primary-gray--900
+                                );
+                              }
+                            }
+                          `}"
                         />
-                        <label
-                          class="btn btn-outline-primary"
-                          for="accentColor--${accentColor.slice(1)}"
-                        >
-                          <span
-                            class="badge rounded-pill"
-                            style="${css`
-                              color: ${accentColor};
-                              background-color: white;
-                            `}"
-                          >
-                            <i class="bi bi-palette-fill"></i>
-                          </span>
-                        </label>
                       `
                     )}
                   </div>
                 </div>
                 <div>
                   <button
-                    class="button button-primary"
+                    class="button button--primary"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -6071,22 +6069,8 @@ export default async function courselore(
         req,
         res,
         html`
-          <div
-            class="alert alert-success alert-dismissible fade show"
-            style="${css`
-              text-align: center;
-              border-radius: 0;
-              margin-bottom: 0;
-            `}"
-            role="alert"
-          >
+          <div class="flash--success">
             Your enrollment has been updated successfully.
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
           </div>
         `
       );
