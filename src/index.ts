@@ -5903,7 +5903,17 @@ export default async function courselore(
             </title>
           `,
           html`
-            <h1>Your Enrollment</h1>
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <h2>
+                <i class="bi bi-person"></i>
+                Your Enrollment
+              </h2>
             <form
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
@@ -5911,7 +5921,7 @@ export default async function courselore(
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                  gap: var(--space--4);
               `}"
             >
               <div>
@@ -5986,10 +5996,9 @@ export default async function courselore(
               </div>
               <div>
                 <button
-                  type="submit"
-                  class="btn btn-primary"
+                    class="button button-primary"
                   style="${css`
-                    @include media-breakpoint-down(md) {
+                      @media (max-width: 400px) {
                       width: 100%;
                     }
                   `}"
@@ -5999,6 +6008,7 @@ export default async function courselore(
                 </button>
               </div>
             </form>
+            </div>
           `
         )
       );
