@@ -238,14 +238,14 @@ export default async function courselore(
   );
 
   interface Layouts {
-    base: (
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
-      head: HTML,
-      body: HTML
-    ) => HTML;
+    base: (_: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   }
-  app.locals.layouts.base = (req, res, head, body) => {
+  app.locals.layouts.base = ({ req, res, head, body }) => {
     // TODO: Extract this logic into @leafac/css.
     const bodyDOM = JSDOM.fragment(html`<div>$${body}</div>`);
     const styles = new Map<string, CSS>();
@@ -1290,25 +1290,25 @@ export default async function courselore(
   };
 
   interface Layouts {
-    applicationBase: (
+    applicationBase: (_: {
       req: express.Request<
         {},
         any,
         {},
         {},
         Partial<EventSourceMiddlewareLocals>
-      >,
-      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>,
-      head: HTML,
-      body: HTML
-    ) => HTML;
+      >;
+      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   }
-  app.locals.layouts.applicationBase = (req, res, head, body) =>
-    app.locals.layouts.base(
+  app.locals.layouts.applicationBase = ({ req, res, head, body }) =>
+    app.locals.layouts.base({
       req,
       res,
       head,
-      html`
+      body: html`
         <div
           style="${css`
             position: absolute;
@@ -1627,23 +1627,23 @@ export default async function courselore(
             `
             : javascript``};
         </script>
-      `
-    );
+      `,
+    });
 
   interface Layouts {
-    box: (
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
-      head: HTML,
-      body: HTML
-    ) => HTML;
+    box: (_: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   }
-  app.locals.layouts.box = (req, res, head, body) =>
-    app.locals.layouts.applicationBase(
+  app.locals.layouts.box = ({ req, res, head, body }) =>
+    app.locals.layouts.applicationBase({
       req,
       res,
       head,
-      html`
+      body: html`
         <div
           style="${css`
             min-height: 100%;
@@ -1737,11 +1737,11 @@ export default async function courselore(
             <main>$${body}</main>
           </div>
         </div>
-      `
-    );
+      `,
+    });
 
   interface Layouts {
-    application: (
+    application: (_: {
       req: express.Request<
         {},
         any,
@@ -1749,22 +1749,22 @@ export default async function courselore(
         {},
         Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
-      >,
+      >;
       res: express.Response<
         any,
         Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
-      >,
-      head: HTML,
-      body: HTML
-    ) => HTML;
+      >;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   }
-  app.locals.layouts.application = (req, res, head, body) =>
-    app.locals.layouts.applicationBase(
+  app.locals.layouts.application = ({ req, res, head, body }) =>
+    app.locals.layouts.applicationBase({
       req,
       res,
       head,
-      html`
+      body: html`
         <div
           style="${css`
             height: 100%;
@@ -2057,11 +2057,11 @@ export default async function courselore(
             $${body}
           </main>
         </div>
-      `
-    );
+      `,
+    });
 
   interface Layouts {
-    main: (
+    main: (_: {
       req: express.Request<
         {},
         any,
@@ -2069,22 +2069,22 @@ export default async function courselore(
         {},
         Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
-      >,
+      >;
       res: express.Response<
         any,
         Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
-      >,
-      head: HTML,
-      body: HTML
-    ) => HTML;
+      >;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   }
-  app.locals.layouts.main = (req, res, head, body) =>
-    app.locals.layouts.application(
+  app.locals.layouts.main = ({ req, res, head, body }) =>
+    app.locals.layouts.application({
       req,
       res,
       head,
-      html`
+      body: html`
         <div
           style="${css`
             flex: 1;
@@ -2104,8 +2104,8 @@ export default async function courselore(
             $${body}
           </div>
         </div>
-      `
-    );
+      `,
+    });
 
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
   interface Partials {
@@ -2566,11 +2566,11 @@ export default async function courselore(
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`<title>CourseLore · The Open-Source Student Forum</title>`,
-          html`
+          head: html`<title>CourseLore · The Open-Source Student Forum</title>`,
+          body: html`
             <div
               style="${css`
                 display: flex;
@@ -2674,8 +2674,8 @@ export default async function courselore(
                 </div>
               </form>
             </div>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -2717,11 +2717,11 @@ export default async function courselore(
       });
 
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`<title>Authenticate · CourseLore</title>`,
-          html`
+          head: html`<title>Authenticate · CourseLore</title>`,
+          body: html`
             <div
               style="${css`
                 display: flex;
@@ -2894,8 +2894,8 @@ export default async function courselore(
                   `
                 : html``}
             </div>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -2915,11 +2915,11 @@ export default async function courselore(
       );
       if (email === undefined)
         return res.send(
-          app.locals.layouts.box(
+          app.locals.layouts.box({
             req,
             res,
-            html`<title>Authenticate · CourseLore</title>`,
-            html`
+            head: html`<title>Authenticate · CourseLore</title>`,
+            body: html`
               <div
                 style="${css`
                   display: flex;
@@ -2975,19 +2975,19 @@ export default async function courselore(
                   </p>
                 </div>
               </div>
-            `
-          )
+            `,
+          })
         );
       const user = app.locals.database.get<{ id: number }>(
         sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
       );
       if (user === undefined)
         return res.send(
-          app.locals.layouts.box(
+          app.locals.layouts.box({
             req,
             res,
-            html`<title>Sign up · CourseLore</title>`,
-            html`
+            head: html`<title>Sign up · CourseLore</title>`,
+            body: html`
               <div
                 style="${css`
                   display: flex;
@@ -3091,8 +3091,8 @@ export default async function courselore(
                   </button>
                 </form>
               </div>
-            `
-          )
+            `,
+          })
         );
       app.locals.helpers.session.open(req, res, user.id);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
@@ -3122,11 +3122,11 @@ export default async function courselore(
       )!.exists === 1
     )
       return res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`<title>Sign up · CourseLore</title>`,
-          html`
+          head: html`<title>Sign up · CourseLore</title>`,
+          body: html`
             <p class="card-text">Something went wrong in your sign up.</p>
             <p class="card-text">
               <a
@@ -3144,8 +3144,8 @@ export default async function courselore(
                 Start Over
               </a>
             </p>
-          `
-        )
+          `,
+        })
       );
     const userId = Number(
       app.locals.database.run(
@@ -3197,11 +3197,11 @@ export default async function courselore(
           ? html`<strong>${otherUserEmail}</strong>`
           : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`<title>Magic Authentication Link · CourseLore</title>`,
-          html`
+          head: html`<title>Magic Authentication Link · CourseLore</title>`,
+          body: html`
             <p class="card-text">
               You’re already signed in as $${currentUserHTML} and you tried to
               use
@@ -3292,8 +3292,8 @@ export default async function courselore(
                     </a>
                   </p>
                 `}
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -3328,11 +3328,11 @@ export default async function courselore(
       switch (res.locals.enrollments.length) {
         case 0:
           res.send(
-            app.locals.layouts.main(
+            app.locals.layouts.main({
               req,
               res,
-              html`<title>CourseLore</title>`,
-              html`
+              head: html`<title>CourseLore</title>`,
+              body: html`
                 <div
                   style="${css`
                     text-align: center;
@@ -3416,8 +3416,8 @@ export default async function courselore(
                     </a>
                   </div>
                 </div>
-              `
-            )
+              `,
+            })
           );
           break;
 
@@ -3429,11 +3429,11 @@ export default async function courselore(
 
         default:
           res.send(
-            app.locals.layouts.main(
+            app.locals.layouts.main({
               req,
               res,
-              html`<title>CourseLore</title>`,
-              html`
+              head: html`<title>CourseLore</title>`,
+              body: html`
                 <div
                   style="${css`
                     display: flex;
@@ -3468,8 +3468,8 @@ export default async function courselore(
                     <i class="bi bi-journal-text"></i>
                   </div>
                 </div>
-              `
-            )
+              `,
+            })
           );
           break;
       }
@@ -3481,11 +3481,11 @@ export default async function courselore(
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.main({
           req,
           res,
-          html`<title>User Settings · CourseLore</title>`,
-          html`
+          head: html`<title>User Settings · CourseLore</title>`,
+          body: html`
             <div
               style="${css`
                 display: flex;
@@ -3545,8 +3545,8 @@ export default async function courselore(
                 </div>
               </form>
             </div>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -3594,11 +3594,11 @@ export default async function courselore(
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.send(
-        app.locals.layouts.main(
+        app.locals.layouts.main({
           req,
           res,
-          html`<title>Create a New Course · CourseLore</title>`,
-          html`
+          head: html`<title>Create a New Course · CourseLore</title>`,
+          body: html`
             <div
               style="${css`
                 display: flex;
@@ -3643,8 +3643,8 @@ export default async function courselore(
                 </div>
               </form>
             </div>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -3873,11 +3873,11 @@ export default async function courselore(
     (req, res) => {
       if (res.locals.threads.length === 0)
         return res.send(
-          app.locals.layouts.main(
+          app.locals.layouts.main({
             req,
             res,
-            html`<title>${res.locals.course.name} · CourseLore</title>`,
-            html`
+            head: html`<title>${res.locals.course.name} · CourseLore</title>`,
+            body: html`
               <div
                 style="${css`
                   text-align: center;
@@ -3942,8 +3942,8 @@ export default async function courselore(
                   </a>
                 </div>
               </div>
-            `
-          )
+            `,
+          })
         );
 
       res.redirect(
@@ -4153,7 +4153,7 @@ export default async function courselore(
   ];
 
   interface Layouts {
-    courseSettings: (
+    courseSettings: (_: {
       req: express.Request<
         {},
         any,
@@ -4161,17 +4161,17 @@ export default async function courselore(
         {},
         IsEnrolledInCourseMiddlewareLocals &
           Partial<EventSourceMiddlewareLocals>
-      >,
+      >;
       res: express.Response<
         any,
         IsEnrolledInCourseMiddlewareLocals &
           Partial<EventSourceMiddlewareLocals>
-      >,
-      head: HTML,
-      body: HTML
-    ) => HTML;
+      >;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   }
-  app.locals.layouts.courseSettings = (req, res, head, body) => {
+  app.locals.layouts.courseSettings = ({ req, res, head, body }) => {
     const menu = html`
       <a
         href="${app.locals.settings.url}/courses/${res.locals.course
@@ -4215,11 +4215,11 @@ export default async function courselore(
       </a>
     `;
 
-    return app.locals.layouts.application(
+    return app.locals.layouts.application({
       req,
       res,
       head,
-      html`
+      body: html`
         <div
           style="${css`
             flex: 1;
@@ -4330,8 +4330,8 @@ export default async function courselore(
             </div>
           </div>
         </div>
-      `
-    );
+      `,
+    });
   };
 
   app.get<
@@ -4345,15 +4345,15 @@ export default async function courselore(
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings(
+        app.locals.layouts.courseSettings({
           req,
           res,
-          html`
+          head: html`
             <title>
               Course Settings · ${res.locals.course.name} · CourseLore
             </title>
           `,
-          html`
+          body: html`
             <div
               style="${css`
                 display: flex;
@@ -4401,8 +4401,8 @@ export default async function courselore(
                 </div>
               </form>
             </div>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -4485,16 +4485,16 @@ export default async function courselore(
       );
 
       res.send(
-        app.locals.layouts.courseSettings(
+        app.locals.layouts.courseSettings({
           req,
           res,
-          html`
+          head: html`
             <title>
               Invitations · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
-          html`
+          body: html`
             <h1>Invitations</h1>
 
             <h6>Create a New Invitation</h6>
@@ -5167,8 +5167,8 @@ export default async function courselore(
                     })
                   )}
                 `}
-          `
-        )
+          `,
+        })
       );
     })
   );
@@ -5633,16 +5633,16 @@ export default async function courselore(
       );
 
       res.send(
-        app.locals.layouts.courseSettings(
+        app.locals.layouts.courseSettings({
           req,
           res,
-          html`
+          head: html`
             <title>
               Enrollments · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
-          html`
+          body: html`
             <h1>Enrollments</h1>
 
             <table class="table table-hover table-sm">
@@ -5779,8 +5779,8 @@ export default async function courselore(
                 })}
               </tbody>
             </table>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -5890,16 +5890,16 @@ export default async function courselore(
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings(
+        app.locals.layouts.courseSettings({
           req,
           res,
-          html`
+          head: html`
             <title>
               Your Enrollment · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
-          html`
+          body: html`
             <div
               style="${css`
                 display: flex;
@@ -6006,8 +6006,8 @@ export default async function courselore(
                 </div>
               </form>
             </div>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -6074,13 +6074,13 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`
+          head: html`
             <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
-          html`
+          body: html`
             <p>
               You tried to use an invitation for ${res.locals.course.name} but
               you’re already enrolled.
@@ -6099,8 +6099,8 @@ export default async function courselore(
                 <i class="bi bi-chevron-right"></i>
               </a>
             </p>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -6117,15 +6117,15 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`
+          head: html`
             <title>
               Invitation · ${res.locals.invitation.course.name} · CourseLore
             </title>
           `,
-          html`
+          body: html`
             <h6
               style="${css`
                 text-align: center;
@@ -6151,8 +6151,8 @@ export default async function courselore(
                 Enroll as ${lodash.capitalize(res.locals.invitation.role)}
               </button>
             </form>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -6207,15 +6207,15 @@ export default async function courselore(
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`
+          head: html`
             <title>
               Invitation · ${res.locals.invitation.course.name} · CourseLore
             </title>
           `,
-          html`
+          body: html`
             <h6
               style="${css`
                 text-align: center;
@@ -6246,14 +6246,14 @@ export default async function courselore(
               Authenticate
               <i class="bi bi-chevron-right"></i>
             </a>
-          `
-        )
+          `,
+        })
       );
     }
   );
 
   interface Layouts {
-    thread: (
+    thread: (_: {
       req: express.Request<
         { courseReference: string; threadReference?: string },
         HTML,
@@ -6262,23 +6262,25 @@ export default async function courselore(
         IsEnrolledInCourseMiddlewareLocals &
           Partial<IsThreadAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
-      >,
+      >;
       res: express.Response<
         HTML,
         IsEnrolledInCourseMiddlewareLocals &
           Partial<IsThreadAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
-      >,
-      head: HTML,
-      body: HTML
-    ) => HTML;
+      >;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   }
-  app.locals.layouts.thread = (req, res, head, body) =>
+  app.locals.layouts.thread = ({ req, res, head, body }) =>
     app.locals.layouts.application(
-      req,
-      res,
-      head,
-      body
+      {
+        req,
+        res,
+        head,
+        body,
+      }
       // html`
       //   <div
       //     style="${css`
@@ -6577,15 +6579,15 @@ ${value}</textarea
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
-        app.locals.layouts.thread(
+        app.locals.layouts.thread({
           req,
           res,
-          html`
+          head: html`
             <title>
               Create a New Thread · ${res.locals.course.name} · CourseLore
             </title>
           `,
-          html`
+          body: html`
             <h1>Create a New Thread</h1>
 
             <form
@@ -6668,8 +6670,8 @@ ${value}</textarea
                 </button>
               </div>
             </form>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -6994,16 +6996,16 @@ ${value}</textarea
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
-        app.locals.layouts.thread(
+        app.locals.layouts.thread({
           req,
           res,
-          html`
+          head: html`
             <title>
               ${res.locals.thread.title} · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
-          html`
+          body: html`
             <div id="thread">
               <div class="title">
                 <div
@@ -7692,8 +7694,8 @@ ${value}</textarea
                 </button>
               </div>
             </form>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -8004,15 +8006,15 @@ ${value}</textarea
     );
 
     res.send(
-      app.locals.layouts.main(
+      app.locals.layouts.main({
         req,
         res,
-        html`
+        head: html`
           <title>
             Demonstration Inbox · CourseLore · The Open-Source Student Forum
           </title>
         `,
-        html`
+        body: html`
           <div
             style="${css`
               display: flex;
@@ -8150,8 +8152,8 @@ ${value}</textarea
                   </div>
                 `}
           </div>
-        `
-      )
+        `,
+      })
     );
   });
 
@@ -8160,11 +8162,11 @@ ${value}</textarea
     ...app.locals.middlewares.isAuthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`<title>404 Not Found · CourseLore</title>`,
-          html`
+          head: html`<title>404 Not Found · CourseLore</title>`,
+          body: html`
             <h1>404 Not Found</h1>
 
             <p>
@@ -8174,8 +8176,8 @@ ${value}</textarea
                 >system administrator</a
               >.
             </p>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -8185,11 +8187,11 @@ ${value}</textarea
     ...app.locals.middlewares.isUnauthenticated,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.box(
+        app.locals.layouts.box({
           req,
           res,
-          html`<title>404 Not Found · CourseLore</title>`,
-          html`
+          head: html`<title>404 Not Found · CourseLore</title>`,
+          body: html`
             <h1>404 Not Found</h1>
 
             <p>
@@ -8203,8 +8205,8 @@ ${value}</textarea
               >
               to see this page.
             </p>
-          `
-        )
+          `,
+        })
       );
     }
   );
@@ -8214,11 +8216,11 @@ ${value}</textarea
     const isValidation = err === "validation";
     const message = isValidation ? "Validation" : "Server";
     res.status(isValidation ? 422 : 500).send(
-      app.locals.layouts.box(
+      app.locals.layouts.box({
         req,
         res,
-        html`<title>${message} Error · CourseLore</title>`,
-        html`
+        head: html`<title>${message} Error · CourseLore</title>`,
+        body: html`
           <h1>${message} Error</h1>
 
           <p>
@@ -8227,8 +8229,8 @@ ${value}</textarea
               >issues@courselore.org</a
             >.
           </p>
-        `
-      )
+        `,
+      })
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
