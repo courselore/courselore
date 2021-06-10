@@ -4206,6 +4206,7 @@ export default async function courselore(
       html`
         <div
           style="${css`
+            flex: 1;
             display: flex;
             flex-direction: column;
           `}"
@@ -4250,13 +4251,20 @@ export default async function courselore(
               flex: 1;
               display: grid;
               grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
+              overflow: auto;
             `}"
           >
             $${res.locals.enrollment.role === "staff"
               ? html`
                   <div
                     style="${css`
-                      background: blue;
+                      background: violet;
+                      padding: var(--space--4);
+                      justify-self: end;
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--4);
+                      overflow: auto;
                     `}"
                   >
                     $${menu}
@@ -4265,12 +4273,10 @@ export default async function courselore(
               : html``}
             <div
               style="${css`
+                grid-area: 1 / 2;
                 background: green;
-                justify-self: center;
-                flex: 1;
-                min-width: 0;
-                max-width: calc(var(--space--80) * 2);
                 padding: var(--space--4);
+                overflow: auto;
               `}"
             >
               $${body}
