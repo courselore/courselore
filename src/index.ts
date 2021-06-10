@@ -4224,6 +4224,9 @@ export default async function courselore(
                     padding: var(--space--1) var(--space--4);
                     display: flex;
                     justify-content: center;
+                    @media (min-width: 1100px) {
+                      display: none;
+                    }
                   `}"
                 >
                   <button
@@ -4277,6 +4280,10 @@ export default async function courselore(
                       .dropdown--item--active {
                         color: var(--color--primary-gray--900);
                         background-color: var(--color--primary-gray--200);
+                      }
+
+                      @media (max-width: 1099px) {
+                        display: none;
                       }
                     `}"
                   >
