@@ -2072,6 +2072,7 @@ export default async function courselore(
               background-color: var(--color--primary-gray--900);
             }
             flex: 1;
+            min-width: 0;
             display: flex;
             justify-content: center;
           `}"
@@ -4205,7 +4206,6 @@ export default async function courselore(
       html`
         <div
           style="${css`
-            height: 100%;
             display: flex;
             flex-direction: column;
           `}"
