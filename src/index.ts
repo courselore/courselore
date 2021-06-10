@@ -1756,10 +1756,11 @@ export default async function courselore(
           Partial<EventSourceMiddlewareLocals>
       >;
       head: HTML;
+      extraHeaders?: HTML;
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.application = ({ req, res, head, body }) =>
+  app.locals.layouts.application = ({ req, res, head, extraHeaders, body }) =>
     app.locals.layouts.applicationBase({
       req,
       res,
@@ -2040,6 +2041,7 @@ export default async function courselore(
                   </div>
                 `}
           </header>
+          $${extraHeaders ?? html``}
           $${app.locals.helpers.flash.get(req, res) ?? html``}
           <main
             style="${css`
@@ -4219,115 +4221,108 @@ export default async function courselore(
       req,
       res,
       head,
+      extraHeaders: html`
+        $${res.locals.enrollment.role === "staff"
+          ? html`
+              <div
+                style="${css`
+                  color: var(--color--primary--100);
+                  background-color: var(--color--primary--800);
+                  --focus-color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                    --focus-color: var(--color--primary--300);
+                  }
+                  padding: var(--space--1) var(--space--4);
+                  display: flex;
+                  justify-content: center;
+                  @media (min-width: 1100px) {
+                    display: none;
+                  }
+                `}"
+              >
+                <button
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                  data-tippy-content="${menu}"
+                  data-tippy-theme="dropdown"
+                  data-tippy-trigger="click"
+                  data-tippy-interactive="true"
+                  data-tippy-allowHTML="true"
+                >
+                  <i class="bi bi-sliders"></i>
+                  Course Settings
+                  <i class="bi bi-chevron-down"></i>
+                </button>
+              </div>
+            `
+          : html``}
+      `,
       body: html`
         <div
           style="${css`
             flex: 1;
-            display: flex;
-            flex-direction: column;
+            overflow: auto;
+            @media (min-width: 1100px) {
+              display: grid;
+              grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
+              gap: var(--space--12);
+            }
           `}"
         >
           $${res.locals.enrollment.role === "staff"
             ? html`
                 <div
                   style="${css`
-                    color: var(--color--primary--100);
-                    background-color: var(--color--primary--800);
-                    --focus-color: var(--color--primary--200);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--200);
-                      background-color: var(--color--primary--900);
-                      --focus-color: var(--color--primary--300);
-                    }
-                    padding: var(--space--1) var(--space--4);
+                    padding: var(--space--4);
+                    justify-self: end;
                     display: flex;
-                    justify-content: center;
-                    @media (min-width: 1100px) {
+                    flex-direction: column;
+                    gap: var(--space--2);
+                    overflow: auto;
+
+                    .dropdown--item {
+                      color: var(--color--primary-gray--600);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--400);
+                      }
+                      padding: var(--space--1) var(--space--3);
+                      transition: color var(--transition-duration),
+                        box-shadow var(--transition-duration);
+                    }
+
+                    .dropdown--item:hover,
+                    .dropdown--item--active {
+                      color: var(--color--primary-gray--900);
+                      box-shadow: inset var(--border-width--4) 0
+                        var(--color--primary-gray--500);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--100);
+                        box-shadow: inset var(--border-width--4) 0
+                          var(--color--primary-gray--500);
+                      }
+                    }
+
+                    @media (max-width: 1099px) {
                       display: none;
                     }
                   `}"
                 >
-                  <button
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                    `}"
-                    data-tippy-content="${menu}"
-                    data-tippy-theme="dropdown"
-                    data-tippy-trigger="click"
-                    data-tippy-interactive="true"
-                    data-tippy-allowHTML="true"
-                  >
-                    <i class="bi bi-sliders"></i>
-                    Course Settings
-                    <i class="bi bi-chevron-down"></i>
-                  </button>
+                  $${menu}
                 </div>
               `
             : html``}
-
           <div
             style="${css`
-              flex: 1;
+              grid-area: 1 / 2;
+              padding: var(--space--4);
               overflow: auto;
-              @media (min-width: 1100px) {
-                display: grid;
-                grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
-                gap: var(--space--12);
-              }
             `}"
           >
-            $${res.locals.enrollment.role === "staff"
-              ? html`
-                  <div
-                    style="${css`
-                      padding: var(--space--4);
-                      justify-self: end;
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                      overflow: auto;
-
-                      .dropdown--item {
-                        color: var(--color--primary-gray--600);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--primary-gray--400);
-                        }
-                        padding: var(--space--1) var(--space--3);
-                        transition: color var(--transition-duration),
-                          box-shadow var(--transition-duration);
-                      }
-
-                      .dropdown--item:hover,
-                      .dropdown--item--active {
-                        color: var(--color--primary-gray--900);
-                        box-shadow: inset var(--border-width--4) 0
-                          var(--color--primary-gray--500);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--primary-gray--100);
-                          box-shadow: inset var(--border-width--4) 0
-                            var(--color--primary-gray--500);
-                        }
-                      }
-
-                      @media (max-width: 1099px) {
-                        display: none;
-                      }
-                    `}"
-                  >
-                    $${menu}
-                  </div>
-                `
-              : html``}
-            <div
-              style="${css`
-                grid-area: 1 / 2;
-                padding: var(--space--4);
-                overflow: auto;
-              `}"
-            >
-              $${body}
-            </div>
+            $${body}
           </div>
         </div>
       `,
