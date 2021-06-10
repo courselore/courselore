@@ -1018,13 +1018,10 @@ export default async function courselore(
                     }
 
                     .dropdown--item {
-                      width: calc(
-                        100% + 2 * (var(--space--2) + var(--space--px))
-                      );
+                      width: calc(100% + 2 * var(--space--2));
                       padding: var(--space--0-5) var(--space--2);
                       border-radius: var(--border-radius--md);
-                      margin: var(--space--0)
-                        calc(-1 * (var(--space--2) + var(--space--px)));
+                      margin-left: calc(-1 * var(--space--2));
                       display: flex;
                       gap: var(--space--2);
                       transition: background-color var(--transition-duration);
@@ -5914,100 +5911,100 @@ export default async function courselore(
                 <i class="bi bi-person"></i>
                 Your Enrollment
               </h2>
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/enrollment?_method=PATCH"
-              style="${css`
-                display: flex;
-                flex-direction: column;
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/enrollment?_method=PATCH"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
                   gap: var(--space--4);
-              `}"
-            >
-              <div>
+                `}"
+              >
                 <div>
-                  <strong>Accent Color</strong>
-                  <span data-bs-toggle="tooltip" title="Help">
-                    <a
-                      tabindex="0"
-                      class="btn"
-                      role="button"
-                      data-bs-toggle="popover"
-                      data-bs-trigger="focus"
-                      data-bs-content="${html`
-                        The accent color helps you tell your courses apart.
-                      `}"
-                      style="${css`
-                        color: $text-muted;
-                        padding: 0 0.2rem;
-                        &:hover,
-                        &:focus {
-                          background-color: $gray-100;
-                        }
-                      `}"
-                      onclick="${javascript`
+                  <div>
+                    <strong>Accent Color</strong>
+                    <span data-bs-toggle="tooltip" title="Help">
+                      <a
+                        tabindex="0"
+                        class="btn"
+                        role="button"
+                        data-bs-toggle="popover"
+                        data-bs-trigger="focus"
+                        data-bs-content="${html`
+                          The accent color helps you tell your courses apart.
+                        `}"
+                        style="${css`
+                          color: $text-muted;
+                          padding: 0 0.2rem;
+                          &:hover,
+                          &:focus {
+                            background-color: $gray-100;
+                          }
+                        `}"
+                        onclick="${javascript`
                         bootstrap.Tooltip.getInstance(this.parentElement).hide();
                       `}"
-                    >
-                      <i class="bi bi-question-circle"></i>
-                    </a>
-                  </span>
-                </div>
-                <div
-                  class="btn-group"
-                  role="group"
-                  aria-label="Accent colors"
-                  style="${css`
-                    padding: 1px;
-                    max-width: 100%;
-                    overflow: auto;
-                  `}"
-                >
-                  $${app.locals.constants.accentColors.map(
-                    (accentColor) => html`
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="accentColor"
-                        id="accentColor--${accentColor.slice(1)}"
-                        autocomplete="off"
-                        $${accentColor === res.locals.enrollment.accentColor
-                          ? html`checked`
-                          : html``}
-                        value="${accentColor}"
-                      />
-                      <label
-                        class="btn btn-outline-primary"
-                        for="accentColor--${accentColor.slice(1)}"
                       >
-                        <span
-                          class="badge rounded-pill"
-                          style="${css`
-                            color: ${accentColor};
-                            background-color: white;
-                          `}"
+                        <i class="bi bi-question-circle"></i>
+                      </a>
+                    </span>
+                  </div>
+                  <div
+                    class="btn-group"
+                    role="group"
+                    aria-label="Accent colors"
+                    style="${css`
+                      padding: 1px;
+                      max-width: 100%;
+                      overflow: auto;
+                    `}"
+                  >
+                    $${app.locals.constants.accentColors.map(
+                      (accentColor) => html`
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="accentColor"
+                          id="accentColor--${accentColor.slice(1)}"
+                          autocomplete="off"
+                          $${accentColor === res.locals.enrollment.accentColor
+                            ? html`checked`
+                            : html``}
+                          value="${accentColor}"
+                        />
+                        <label
+                          class="btn btn-outline-primary"
+                          for="accentColor--${accentColor.slice(1)}"
                         >
-                          <i class="bi bi-palette-fill"></i>
-                        </span>
-                      </label>
-                    `
-                  )}
+                          <span
+                            class="badge rounded-pill"
+                            style="${css`
+                              color: ${accentColor};
+                              background-color: white;
+                            `}"
+                          >
+                            <i class="bi bi-palette-fill"></i>
+                          </span>
+                        </label>
+                      `
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <button
+                <div>
+                  <button
                     class="button button-primary"
-                  style="${css`
+                    style="${css`
                       @media (max-width: 400px) {
-                      width: 100%;
-                    }
-                  `}"
-                >
-                  <i class="bi bi-pencil"></i>
-                  Update Your Enrollment
-                </button>
-              </div>
-            </form>
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-pencil"></i>
+                    Update Your Enrollment
+                  </button>
+                </div>
+              </form>
             </div>
           `
         )
