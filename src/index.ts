@@ -4304,58 +4304,6 @@ export default async function courselore(
             </div>
           </div>
         </div>
-        <!--
-        <div
-          style="${css`
-          flex: 1;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        `}"
-        >
-          <div
-            style="${css`
-          background-color: var(--color--primary--800);
-          color: var(--color--primary--200);
-          padding: var(--space--1) var(--space--4);
-          display: flex;
-          flex-direction: column;
-        `}"
-          >
-            <button
-              style="${css`
-          align-self: center;
-          display: flex;
-          gap: var(--space--2);
-        `}"
-              onclick="${javascript``}"
-            >
-              <i class="bi bi-sliders"></i>
-              Course Settings
-              <i class="bi bi-chevron-bar-expand"></i>
-            </button>
-
-            <div
-              style="${css`
-          flex: 1;
-          height: 100%;
-          overflow: auto;
-        `}"
-            >
-              <div
-                style="${css`
-          flex: 1;
-          height: 100%;
-          overflow: auto;
-        `}"
-              >
-                
-              </div>
-            </div>
-            <div hidden>$${body}</div>
-          </div>
-        </div>
-        -->
       `
     );
   };
