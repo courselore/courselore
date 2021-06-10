@@ -1004,11 +1004,12 @@ export default async function courselore(
 
                     .dropdown--item {
                       width: calc(
-                        100% + 2 * var(--space--2) + var(--space--px)
+                        100% + 2 * (var(--space--2) + var(--space--px))
                       );
                       padding: var(--space--0-5) var(--space--2);
                       border-radius: var(--border-radius--md);
-                      margin: var(--space--0) calc(-1 * var(--space--2));
+                      margin: var(--space--0)
+                        calc(-1 * (var(--space--2) + var(--space--px)));
                       display: flex;
                       gap: var(--space--2);
                       transition: background-color var(--transition-duration);
