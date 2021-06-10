@@ -2029,6 +2029,7 @@ export default async function courselore(
             style="${css`
               flex: 1;
               overflow: auto;
+              display: flex;
             `}"
           >
             $${app.locals.helpers.flash.get(req, res) ?? html``} $${body}
@@ -2070,7 +2071,7 @@ export default async function courselore(
               color: var(--color--primary-gray--500);
               background-color: var(--color--primary-gray--900);
             }
-            min-height: 100%;
+            flex: 1;
             display: flex;
             justify-content: center;
           `}"
@@ -2078,9 +2079,9 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
-              min-width: 0;
               max-width: calc(var(--space--80) * 2);
               padding: var(--space--4);
+              overflow: auto;
             `}"
           >
             $${body}
@@ -3895,7 +3896,7 @@ export default async function courselore(
                     & > * {
                       flex: 1;
                     }
-                    @media (max-width: 510px) {
+                    @media (max-width: 600px) {
                       flex-direction: column;
                     }
                   `}"
