@@ -1763,9 +1763,11 @@ export default async function courselore(
             style="${css`
               color: var(--color--primary--50);
               background-color: var(--color--primary--700);
+              --focus-color: var(--color--primary--200);
               @media (prefers-color-scheme: dark) {
                 color: var(--color--primary--200);
                 background-color: var(--color--primary--800);
+                --focus-color: var(--color--primary--300);
               }
               padding: var(--space--2) var(--space--4);
               display: flex;
@@ -2027,6 +2029,12 @@ export default async function courselore(
           </header>
           <main
             style="${css`
+              color: var(--color--primary-gray--500);
+              background-color: var(--color--primary-gray--100);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--primary-gray--500);
+                background-color: var(--color--primary-gray--900);
+              }
               flex: 1;
               overflow: auto;
               display: flex;
@@ -2065,12 +2073,6 @@ export default async function courselore(
       html`
         <div
           style="${css`
-            color: var(--color--primary-gray--500);
-            background-color: var(--color--primary-gray--100);
-            @media (prefers-color-scheme: dark) {
-              color: var(--color--primary-gray--500);
-              background-color: var(--color--primary-gray--900);
-            }
             flex: 1;
             min-width: 0;
             display: flex;
@@ -4217,9 +4219,11 @@ export default async function courselore(
                   style="${css`
                     color: var(--color--primary--100);
                     background-color: var(--color--primary--800);
+                    --focus-color: var(--color--primary--200);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--200);
                       background-color: var(--color--primary--900);
+                      --focus-color: var(--color--primary--300);
                     }
                     padding: var(--space--1) var(--space--4);
                     display: flex;
@@ -4272,6 +4276,9 @@ export default async function courselore(
 
                       .dropdown--item {
                         color: var(--color--primary-gray--600);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary-gray--400);
+                        }
                         padding: var(--space--1) var(--space--3);
                         transition: color var(--transition-duration),
                           box-shadow var(--transition-duration);
@@ -4282,6 +4289,11 @@ export default async function courselore(
                         color: var(--color--primary-gray--900);
                         box-shadow: inset var(--border-width--4) 0
                           var(--color--primary-gray--500);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary-gray--100);
+                          box-shadow: inset var(--border-width--4) 0
+                            var(--color--primary-gray--500);
+                        }
                       }
 
                       @media (max-width: 1099px) {
