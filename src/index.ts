@@ -5379,15 +5379,7 @@ export default async function courselore(
             req,
             res,
             html`
-              <div
-                class="alert alert-success alert-dismissible fade show"
-                style="${css`
-                  text-align: center;
-                  border-radius: 0;
-                  margin-bottom: 0;
-                `}"
-                role="alert"
-              >
+              <div class="flash flash--success">
                 Invitation created successfully.
                 <a
                   role="button"
@@ -5396,12 +5388,6 @@ export default async function courselore(
                   data-bs-target="#invitation--${invitationReference}"
                   >See invitation</a
                 >.
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="alert"
-                  aria-label="Close"
-                ></button>
               </div>
             `
           );
@@ -5508,22 +5494,8 @@ export default async function courselore(
             req,
             res,
             html`
-              <div
-                class="alert alert-success alert-dismissible fade show"
-                style="${css`
-                  text-align: center;
-                  border-radius: 0;
-                  margin-bottom: 0;
-                `}"
-                role="alert"
-              >
+              <div class="flash flash--success">
                 Invitations sent successfully.
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="alert"
-                  aria-label="Close"
-                ></button>
               </div>
               $${app.locals.settings.demonstration
                 ? html`
@@ -5592,22 +5564,8 @@ export default async function courselore(
           req,
           res,
           html`
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              style="${css`
-                text-align: center;
-                border-radius: 0;
-                margin-bottom: 0;
-              `}"
-              role="alert"
-            >
+            <div class="flash flash--success">
               Invitation email resent successfully.
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
             </div>
           `
         );
@@ -5625,22 +5583,8 @@ export default async function courselore(
           req,
           res,
           html`
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              style="${css`
-                text-align: center;
-                border-radius: 0;
-                margin-bottom: 0;
-              `}"
-              role="alert"
-            >
+            <div class="flash flash--success">
               Invitation role updated successfully.
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
             </div>
           `
         );
@@ -5662,22 +5606,8 @@ export default async function courselore(
           req,
           res,
           html`
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              style="${css`
-                text-align: center;
-                border-radius: 0;
-                margin-bottom: 0;
-              `}"
-              role="alert"
-            >
+            <div class="flash flash--success">
               Invitation expiration updated successfully.
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
             </div>
           `
         );
@@ -5696,22 +5626,8 @@ export default async function courselore(
           req,
           res,
           html`
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              style="${css`
-                text-align: center;
-                border-radius: 0;
-                margin-bottom: 0;
-              `}"
-              role="alert"
-            >
+            <div class="flash flash--success">
               Invitation set as non-expiring successfully.
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
             </div>
           `
         );
@@ -5730,22 +5646,8 @@ export default async function courselore(
           req,
           res,
           html`
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              style="${css`
-                text-align: center;
-                border-radius: 0;
-                margin-bottom: 0;
-              `}"
-              role="alert"
-            >
+            <div class="flash flash--success">
               Invitation expired successfully.
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
             </div>
           `
         );
@@ -5930,10 +5832,10 @@ export default async function courselore(
                                                                   --font-weight--bold
                                                                 );
                                                               `}"
-                                                              >You may not undo
-                                                              this
-                                                              action!</strong
                                                             >
+                                                              You may not undo
+                                                              this action!
+                                                            </strong>
                                                           </p>
                                                           <button
                                                             class="button button--danger"
@@ -5988,6 +5890,83 @@ export default async function courselore(
                             </span>
                           </button>
                         </span>
+
+                        <span
+                          $${isOnlyStaff
+                            ? html`
+                                data-tippy-content="You may not remove yourself
+                                from the course because you’re the only staff
+                                member." data-tippy-theme="tooltip
+                                tooltip--danger" tabindex="0"
+                              `
+                            : html``}
+                        >
+                          <button
+                            $${isOnlyStaff
+                              ? html`
+                                  disabled style="${css`
+                                    color: var(--color--primary-gray--400);`}"
+                                `
+                              : html`
+                                  data-tippy-content="${html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=DELETE"
+                                    >
+                                      <div
+                                        style="${css`
+                                          padding: var(--space--2)
+                                            var(--space--0);
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--4);
+                                        `}"
+                                      >
+                                        <p>
+                                          Are you sure you want to remove
+                                          ${isSelf ? "yourself" : "this person"}
+                                          from the course?
+                                        </p>
+                                        <p>
+                                          <strong
+                                            style="${css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                            `}"
+                                          >
+                                            You may not undo this action!
+                                          </strong>
+                                        </p>
+                                        <button class="button button--danger">
+                                          Remove from the course
+                                        </button>
+                                      </div>
+                                    </form>
+                                  `}"
+                                  data-tippy-theme="dropdown dropdown--danger"
+                                  data-tippy-trigger="click"
+                                  data-tippy-interactive="true"
+                                  data-tippy-allowHTML="true" style="${css`
+                                    transition: color var(--transition-duration);
+                                    &:hover {
+                                      color: var(--color--rose--500);
+                                    }`}"
+                                `}
+                          >
+                            <span
+                              $${isOnlyStaff
+                                ? html``
+                                : html`
+                                    data-tippy-content="Remove from the course"
+                                    data-tippy-theme="tooltip tooltip--danger"
+                                    data-tippy-touch="false"
+                                  `}
+                            >
+                              <i class="bi bi-person-dash"></i>
+                            </span>
+                          </button>
+                        </span>
                       </div>
                     </div>
                   `;
@@ -6026,9 +6005,13 @@ export default async function courselore(
             </div>
           `
         );
+
+        if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
+          return res.redirect(
+            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
+          );
       }
 
-      // FIXME: This should redirect to ‘${app.locals.settings.url}/courses/${res.locals.course.reference}/settings’ when you changed your own role
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
@@ -6049,34 +6032,26 @@ export default async function courselore(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
+      const isSelf =
+        res.locals.managedEnrollment.id === res.locals.enrollment.id;
+
       app.locals.helpers.flash.set(
         req,
         res,
         html`
-          <div
-            class="alert alert-success alert-dismissible fade show"
-            style="${css`
-              text-align: center;
-              border-radius: 0;
-              margin-bottom: 0;
-            `}"
-            role="alert"
-          >
-            The person has been removed from the course successfully.
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
+          <div class="flash flash--success">
+            $${isSelf
+              ? html`You removed yourself`
+              : html`The person been removed`}
+            from the course successfully.
           </div>
         `
       );
 
-      if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
-        return res.redirect(`${app.locals.settings.url}/`);
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
+        isSelf
+          ? `${app.locals.settings.url}/`
+          : `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
