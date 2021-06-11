@@ -474,6 +474,33 @@ export default async function courselore(
                     --transition-duration: 0;
                   }
 
+                  --color--primary--50: var(--color--purple--50);
+                  --color--primary--100: var(--color--purple--100);
+                  --color--primary--200: var(--color--purple--200);
+                  --color--primary--300: var(--color--purple--300);
+                  --color--primary--400: var(--color--purple--400);
+                  --color--primary--500: var(--color--purple--500);
+                  --color--primary--600: var(--color--purple--600);
+                  --color--primary--700: var(--color--purple--700);
+                  --color--primary--800: var(--color--purple--800);
+                  --color--primary--900: var(--color--purple--900);
+
+                  --color--primary-gray--50: var(--color--cool-gray--50);
+                  --color--primary-gray--100: var(--color--cool-gray--100);
+                  --color--primary-gray--200: var(--color--cool-gray--200);
+                  --color--primary-gray--300: var(--color--cool-gray--300);
+                  --color--primary-gray--400: var(--color--cool-gray--400);
+                  --color--primary-gray--500: var(--color--cool-gray--500);
+                  --color--primary-gray--600: var(--color--cool-gray--600);
+                  --color--primary-gray--700: var(--color--cool-gray--700);
+                  --color--primary-gray--800: var(--color--cool-gray--800);
+                  --color--primary-gray--900: var(--color--cool-gray--900);
+
+                  --focus-color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    --focus-color: var(--color--primary--900);
+                  }
+
                   --color--white: #ffffff;
                   --color--black: #000000;
 
@@ -718,33 +745,6 @@ export default async function courselore(
                   --color--rose--700: #be123c;
                   --color--rose--800: #9f1239;
                   --color--rose--900: #881337;
-
-                  --color--primary--50: var(--color--purple--50);
-                  --color--primary--100: var(--color--purple--100);
-                  --color--primary--200: var(--color--purple--200);
-                  --color--primary--300: var(--color--purple--300);
-                  --color--primary--400: var(--color--purple--400);
-                  --color--primary--500: var(--color--purple--500);
-                  --color--primary--600: var(--color--purple--600);
-                  --color--primary--700: var(--color--purple--700);
-                  --color--primary--800: var(--color--purple--800);
-                  --color--primary--900: var(--color--purple--900);
-
-                  --color--primary-gray--50: var(--color--cool-gray--50);
-                  --color--primary-gray--100: var(--color--cool-gray--100);
-                  --color--primary-gray--200: var(--color--cool-gray--200);
-                  --color--primary-gray--300: var(--color--cool-gray--300);
-                  --color--primary-gray--400: var(--color--cool-gray--400);
-                  --color--primary-gray--500: var(--color--cool-gray--500);
-                  --color--primary-gray--600: var(--color--cool-gray--600);
-                  --color--primary-gray--700: var(--color--cool-gray--700);
-                  --color--primary-gray--800: var(--color--cool-gray--800);
-                  --color--primary-gray--900: var(--color--cool-gray--900);
-
-                  --focus-color: var(--color--primary--200);
-                  @media (prefers-color-scheme: dark) {
-                    --focus-color: var(--color--primary--900);
-                  }
                 }
 
                 /* GLOBAL STYLES */
