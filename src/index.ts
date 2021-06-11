@@ -841,14 +841,14 @@ export default async function courselore(
                   background-clip: text;
                   background-image: linear-gradient(
                     135deg,
-                    var(--color--fuchsia--400) 0%,
-                    var(--color--purple--900) 100%
+                    var(--color--primary--400) 0%,
+                    var(--color--primary--700) 100%
                   );
                   @media (prefers-color-scheme: dark) {
                     background-image: linear-gradient(
                       135deg,
-                      var(--color--fuchsia--600) 0%,
-                      var(--color--purple--700) 100%
+                      var(--color--primary--400) 0%,
+                      var(--color--primary--700) 100%
                     );
                   }
                   padding: var(--space--0) var(--space--0-5);
@@ -942,6 +942,27 @@ export default async function courselore(
                       }
                     }
                   }
+
+                  &.button--danger {
+                    color: var(--color--rose--50);
+                    background-color: var(--color--rose--700);
+                    &:hover {
+                      background-color: var(--color--rose--600);
+                    }
+                    &:active {
+                      background-color: var(--color--rose--800);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--rose--200);
+                      background-color: var(--color--rose--800);
+                      &:hover {
+                        background-color: var(--color--rose--700);
+                      }
+                      &:active {
+                        background-color: var(--color--rose--900);
+                      }
+                    }
+                  }
                 }
 
                 .link {
@@ -989,6 +1010,17 @@ export default async function courselore(
                       color: var(--color--primary--900);
                       --background-color: var(--color--primary--200);
                       --border-color: var(--color--primary--900);
+                    }
+
+                    &[data-theme~="tooltip--danger"] {
+                      color: var(--color--rose--50);
+                      --background-color: var(--color--rose--900);
+                      --border-color: var(--color--rose--50);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--rose--900);
+                        --background-color: var(--color--rose--200);
+                        --border-color: var(--color--rose--900);
+                      }
                     }
                   }
 
@@ -1047,6 +1079,50 @@ export default async function courselore(
                         var(--color--primary--300);
                       @media (prefers-color-scheme: dark) {
                         border-color: var(--color--primary--600);
+                      }
+                    }
+                  }
+
+                  &[data-theme~="dropdown--danger"] {
+                    color: var(--color--rose--900);
+                    --background-color: var(--color--rose--50);
+                    --border-color: var(--color--rose--900);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--rose--200);
+                      --background-color: var(--color--rose--800);
+                      --border-color: var(--color--rose--400);
+                    }
+
+                    .dropdown--heading {
+                      color: var(--color--rose--400);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--rose--300);
+                      }
+                    }
+
+                    .dropdown--item {
+                      &:hover {
+                        background-color: var(--color--rose--100);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--rose--600);
+                        }
+                      }
+
+                      &.dropdown--item--active {
+                        color: var(--color--rose--50);
+                        background-color: var(--color--rose--600);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--rose--900);
+                          background-color: var(--color--rose--100);
+                        }
+                      }
+                    }
+
+                    .dropdown--separator {
+                      border-top: var(--border-width--1) solid
+                        var(--color--rose--300);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--rose--600);
                       }
                     }
                   }
@@ -1268,6 +1344,13 @@ export default async function courselore(
                   ).matches
                     ? 0
                     : 150,
+                  ...(element.dataset.tippyAppendTo === undefined
+                    ? {}
+                    : {
+                        appendTo: element.closest(
+                          element.dataset.tippyAppendTo
+                        ),
+                      }),
                 });
               }
             });
@@ -3660,7 +3743,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash--success">
+          <div class="flash flash--success">
             User settings have been updated successfully.
           </div>
         `
@@ -4502,7 +4585,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash--success">
+          <div class="flash flash--success">
             Course settings have been updated successfully.
           </div>
         `
@@ -5717,10 +5800,21 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <h1>Enrollments</h1>
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <h2 class="heading--2">
+                <i class="bi bi-sliders"></i>
+                Course Settings ·
+                <i class="bi bi-people"></i>
+                Enrollments
+              </h2>
 
-            <table class="table table-hover table-sm">
-              <tbody>
+              <div>
                 $${enrollments.map((enrollment) => {
                   const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
                   const isSelf = enrollment.id === res.locals.enrollment.id;
@@ -5731,128 +5825,175 @@ export default async function courselore(
                     ).length === 1;
 
                   return html`
-                    <tr>
-                      <td
+                    <div
+                      style="${css`
+                        &:nth-child(even) {
+                          background-color: var(--color--primary-gray--200);
+                        }
+                        @media (max-width: 1099px) {
+                          --space--bleed: var(--space--2);
+                        }
+                        @media (min-width: 1100px) {
+                          --space--bleed: var(--space--4);
+                        }
+                        width: calc(100% + 2 * var(--space--bleed));
+                        padding: var(--space--2) var(--space--bleed);
+                        border-radius: var(--border-radius--md);
+                        margin-left: calc(-1 * var(--space--bleed));
+                        display: grid;
+                        grid-template-columns: 1fr var(--space--32);
+                      `}"
+                    >
+                      <div
                         style="${css`
-                          font-weight: bold;
+                          display: flex;
+                          flex-direction: column;
                         `}"
                       >
-                        ${enrollment.userName}
-                      </td>
-                      <td
+                        <div
+                          style="${css`
+                            font-weight: var(--font-weight--bold);
+                            color: var(--color--primary-gray--800);
+                          `}"
+                        >
+                          ${enrollment.userName}
+                        </div>
+                        <div>${enrollment.userEmail}</div>
+                      </div>
+                      <div
                         style="${css`
-                          color: $text-muted;
+                          display: flex;
+                          justify-content: flex-end;
+                          align-items: baseline;
+                          gap: var(--space--6);
                         `}"
                       >
-                        ${enrollment.userEmail}
-                      </td>
-                      <td>
-                        <div class="dropdown">
+                        <span
+                          $${isOnlyStaff
+                            ? html`
+                                data-tippy-content="You may not change your own
+                                role because you’re the only staff member."
+                                data-tippy-theme="tooltip" tabindex="0"
+                              `
+                            : html``}
+                        >
                           <button
-                            class="btn dropdown-toggle"
-                            type="button"
-                            id="enrollment-role-dropdown--${enrollment.reference}"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            style="${css`
-                              padding: 0;
-                            `}"
+                            $${isOnlyStaff
+                              ? html`
+                                  disabled style="${css`
+                                    color: var(--color--primary-gray--400);`}"
+                                `
+                              : html`
+                                  data-tippy-content="${html`
+                                    $${app.locals.constants.roles.map((role) =>
+                                      role === enrollment.role
+                                        ? html``
+                                        : html`
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="role"
+                                                value="${role}"
+                                              />
+                                              <button
+                                                class="dropdown--item"
+                                                $${isSelf
+                                                  ? html`
+                                                      type="button"
+                                                      data-tippy-content="${html`
+                                                        <div
+                                                          style="${css`
+                                                            padding: var(
+                                                                --space--2
+                                                              )
+                                                              var(--space--0);
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            gap: var(
+                                                              --space--4
+                                                            );
+                                                          `}"
+                                                        >
+                                                          <p>
+                                                            Are you sure you
+                                                            want to convert
+                                                            yourself into
+                                                            ${role}?
+                                                          </p>
+                                                          <p>
+                                                            <strong
+                                                              style="${css`
+                                                                font-weight: var(
+                                                                  --font-weight--bold
+                                                                );
+                                                              `}"
+                                                              >You may not undo
+                                                              this
+                                                              action!</strong
+                                                            >
+                                                          </p>
+                                                          <button
+                                                            class="button button--danger"
+                                                            onclick="${javascript`
+                                                              document.querySelector('[aria-describedby="' + this.closest("[data-tippy-root]").id + '"]').closest("form").submit();
+                                                            `}"
+                                                          >
+                                                            Convert to
+                                                            ${lodash.capitalize(
+                                                              role
+                                                            )}
+                                                          </button>
+                                                        </div>
+                                                      `}"
+                                                      data-tippy-theme="dropdown
+                                                      dropdown--danger"
+                                                      data-tippy-trigger="click"
+                                                      data-tippy-interactive="true"
+                                                      data-tippy-allowHTML="true"
+                                                      data-tippy-append-to="body"
+                                                    `
+                                                  : html``}
+                                              >
+                                                Convert to
+                                                ${lodash.capitalize(role)}
+                                              </button>
+                                            </form>
+                                          `
+                                    )}
+                                  `}"
+                                  data-tippy-theme="dropdown"
+                                  data-tippy-trigger="click"
+                                  data-tippy-interactive="true"
+                                  data-tippy-allowHTML="true" style="${css`
+                                    transition: color var(--transition-duration);
+                                    &:hover {
+                                      color: var(--color--primary-gray--800);
+                                    }`}"
+                                `}
                           >
-                            ${lodash.capitalize(enrollment.role)}
-                          </button>
-                          <div
-                            class="dropdown-menu"
-                            aria-labelledby="enrollment-role-dropdown--${enrollment.reference}"
-                          >
-                            $${app.locals.constants.roles.map((role) =>
-                              role === enrollment.role
+                            <span
+                              $${isOnlyStaff
                                 ? html``
                                 : html`
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=PATCH"
-                                    >
-                                      <input
-                                        type="hidden"
-                                        name="role"
-                                        value="${role}"
-                                      />
-                                      <span
-                                        $${isOnlyStaff
-                                          ? html`
-                                              data-bs-toggle="tooltip"
-                                              title="You may not convert
-                                              yourself into ${role} because
-                                              you’re the only staff member."
-                                            `
-                                          : html``}
-                                      >
-                                        <button
-                                          type="submit"
-                                          class="dropdown-item"
-                                          $${isOnlyStaff
-                                            ? html`disabled`
-                                            : isSelf
-                                            ? html`
-                                                onclick="${javascript`
-                                                  if (!confirm("Convert yourself into ${role}?\\n\\nYou may not undo this action!"))
-                                                    event.preventDefault();
-                                                `}"
-                                              `
-                                            : html``}
-                                        >
-                                          Convert to ${lodash.capitalize(role)}
-                                        </button>
-                                      </span>
-                                    </form>
-                                  `
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td
-                        style="${css`
-                          text-align: right;
-                        `}"
-                      >
-                        <form method="POST" action="${action}?_method=DELETE">
-                          <span
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="left"
-                            title="$${isOnlyStaff
-                              ? `You may not remove yourself from the course because you’re the only staff member.`
-                              : `Remove from the course`}"
-                          >
-                            <button
-                              type="submit"
-                              class="btn btn-outline-danger"
-                              style="${css`
-                                padding: 0 0.2rem;
-                                border: 0;
-                              `}"
-                              $${isOnlyStaff
-                                ? html`disabled`
-                                : html`
-                                    onclick="${javascript`
-                                      if (!confirm("Remove ${
-                                        isSelf
-                                          ? `yourself`
-                                          : `${enrollment.userName} <${enrollment.userEmail}>`
-                                      } from ${res.locals.course.name}?\\n\\nYou may not undo this action!"))
-                                        event.preventDefault();
-                                    `}"
+                                    data-tippy-content="Change role"
+                                    data-tippy-theme="tooltip"
+                                    data-tippy-touch="false"
                                   `}
                             >
-                              <i class="bi bi-person-dash"></i>
-                            </button>
-                          </span>
-                        </form>
-                      </td>
-                    </tr>
+                              ${lodash.capitalize(enrollment.role)}
+                              <i class="bi bi-chevron-down"></i>
+                            </span>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
                   `;
                 })}
-              </tbody>
-            </table>
+              </div>
+            </div>
           `,
         })
       );
@@ -5880,27 +6021,14 @@ export default async function courselore(
           req,
           res,
           html`
-            <div
-              class="alert alert-success alert-dismissible fade show"
-              style="${css`
-                text-align: center;
-                border-radius: 0;
-                margin-bottom: 0;
-              `}"
-              role="alert"
-            >
+            <div class="flash flash--success">
               Enrollment has been updated successfully.
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              ></button>
             </div>
           `
         );
       }
 
+      // FIXME: This should redirect to ‘${app.locals.settings.url}/courses/${res.locals.course.reference}/settings’ when you changed your own role
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
@@ -6116,7 +6244,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash--success">
+          <div class="flash flash--success">
             Your enrollment has been updated successfully.
           </div>
         `
