@@ -5982,6 +5982,8 @@ export default async function courselore(
               `}"
             >
               <h2 class="heading--2">
+                <i class="bi bi-sliders"></i>
+                Course Settings ·
                 <i class="bi bi-person"></i>
                 Your Enrollment
               </h2>
