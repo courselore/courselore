@@ -6037,6 +6037,11 @@ export default async function courselore(
                             : html``}
                           style="${css`
                             background-color: var(--color--${accentColor}--500);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(
+                                --color--${accentColor}--700
+                              );
+                            }
                             width: var(--space--5);
                             height: var(--space--5);
                             border-radius: 50%;
