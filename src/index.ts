@@ -4356,7 +4356,7 @@ export default async function courselore(
             ? html`
                 <div
                   style="${css`
-                    padding: var(--space--4);
+                    padding: var(--space--2-5) var(--space--4) var(--space--4);
                     justify-self: end;
                     display: flex;
                     flex-direction: column;
