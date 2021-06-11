@@ -8336,15 +8336,48 @@ ${value}</textarea
           res,
           head: html`<title>404 Not Found · CourseLore</title>`,
           body: html`
-            <h1>404 Not Found</h1>
-
-            <p>
-              If you think there should be something here, please contact the
-              course staff or the
-              <a href="${app.locals.settings.administrator}" class="link-light"
-                >system administrator</a
-              >.
-            </p>
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <h2
+                class="heading--2"
+                style="${css`
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
+                `}"
+              >
+                404 Not Found
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p>
+                  If you think there should be something here, please contact
+                  the course staff or the
+                  <a href="${app.locals.settings.administrator}" class="link"
+                    >system administrator</a
+                  >.
+                </p>
+              </div>
+            </div>
           `,
         })
       );
@@ -8361,19 +8394,60 @@ ${value}</textarea
           res,
           head: html`<title>404 Not Found · CourseLore</title>`,
           body: html`
-            <h1>404 Not Found</h1>
-
-            <p>
-              You may have to
-              <a
-                href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                  redirect: req.originalUrl,
-                })}"
-                class="link-light"
-                >authenticate</a
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <h2
+                class="heading--2"
+                style="${css`
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
+                `}"
               >
-              to see this page.
-            </p>
+                404 Not Found
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p>
+                  Either this page doesn’t exist or you have to authenticate to
+                  see it.
+                </p>
+                <p>
+                  <a
+                    href="${app.locals.settings
+                      .url}/authenticate?${qs.stringify({
+                      redirect: req.originalUrl,
+                    })}"
+                    class="button button--primary"
+                    style="${css`
+                      width: 100%;
+                    `}"
+                  >
+                    Authenticate
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                </p>
+              </div>
+            </div>
           `,
         })
       );
@@ -8390,14 +8464,47 @@ ${value}</textarea
         res,
         head: html`<title>${message} Error · CourseLore</title>`,
         body: html`
-          <h1>${message} Error</h1>
-
-          <p>
-            This is an issue in CourseLore; please report to
-            <a href="mailto:issues@courselore.org" class="link-light"
-              >issues@courselore.org</a
-            >.
-          </p>
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            <h2
+              class="heading--2"
+              style="${css`
+                color: var(--color--primary--200);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--primary--200);
+                }
+              `}"
+            >
+              ${message} Error
+            </h2>
+            <div
+              style="${css`
+                color: var(--color--primary--800);
+                background-color: var(--color--primary--100);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--primary--200);
+                  background-color: var(--color--primary--900);
+                }
+                padding: var(--space--4);
+                border-radius: var(--border-radius--xl);
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <p>
+                This is an issue in CourseLore; please report to
+                <a href="mailto:issues@courselore.org" class="link"
+                  >issues@courselore.org</a
+                >.
+              </p>
+            </div>
+          </div>
         `,
       })
     );
