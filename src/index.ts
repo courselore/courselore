@@ -5687,7 +5687,7 @@ export default async function courselore(
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id"
           WHERE "enrollments"."course" = ${res.locals.course.id}
-          ORDER BY "enrollments"."id" DESC
+          ORDER BY "enrollments"."role" ASC, "users"."name" ASC
         `
       );
 
@@ -5801,7 +5801,6 @@ export default async function courselore(
                                                 value="${role}"
                                               />
                                               <button
-                                                class="dropdown--item"
                                                 $${isSelf
                                                   ? html`
                                                       type="button"
@@ -5858,6 +5857,7 @@ export default async function courselore(
                                                       data-tippy-append-to="body"
                                                     `
                                                   : html``}
+                                                class="dropdown--item"
                                               >
                                                 Convert to
                                                 ${lodash.capitalize(role)}
