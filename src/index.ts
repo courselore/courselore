@@ -776,6 +776,7 @@ export default async function courselore(
                   line-height: var(--line-height--base);
                 }
 
+                a,
                 button {
                   cursor: pointer;
                 }
@@ -6796,113 +6797,126 @@ export default async function courselore(
     textEditor: (id: string, value?: string) => HTML;
   }
   app.locals.partials.textEditor = (id, value = ""): HTML => html`
-    <div>
+    <div class="text-editor">
       <div
         style="${css`
-          background-color: $gray-100;
-          padding-top: 0.5rem;
-          border: $nav-tabs-border-width solid $nav-tabs-border-color;
-          border-bottom: none;
-          border-top-left-radius: $nav-tabs-border-radius;
-          border-top-right-radius: $nav-tabs-border-radius;
+          display: flex;
+
+          & > label {
+            display: grid;
+            cursor: pointer;
+
+            & > * {
+              grid-area: 1 / 1;
+            }
+
+            & > span {
+              padding: var(--space--1) var(--space--3);
+              border-top-left-radius: var(--border-radius--md);
+              border-top-right-radius: var(--border-radius--md);
+              display: flex;
+              gap: var(--space--2);
+            }
+
+            & > :checked + span {
+              color: var(--color--primary-gray--900);
+              background-color: var(--color--white);
+            }
+          }
         `}"
       >
-        <ul
-          class="nav nav-tabs"
-          id="myTab"
-          role="tablist"
-          style="${css`
-            padding: 0 0.5rem;
-          `}"
-        >
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="text-editor-${id}-write-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#text-editor-${id}-write"
-              type="button"
-              role="tab"
-              aria-controls="text-editor-${id}-write"
-              aria-selected="true"
-            >
-              <i class="bi bi-pencil"></i>
-              Write
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="text-editor-${id}-preview-tab"
-              data-bs-target="#text-editor-${id}-preview"
-              type="button"
-              role="tab"
-              aria-controls="text-editor-${id}-preview"
-              aria-selected="false"
-              onclick="${javascript`
-                (async () => {
-                  const write = document.querySelector("#text-editor-${id}-write");
-                  const preview = document.querySelector("#text-editor-${id}-preview");
-                  if (!isValid(write)) return;
-                  loading(preview);
-                  new bootstrap.Tab(this).show();
-                  preview.innerHTML = await (
-                    await fetch("${app.locals.settings.url}/preview", {
-                      method: "POST",
-                      body: new URLSearchParams({ content: write.querySelector("textarea").value }),
-                    })
-                  ).text();
-                })();
-              `}"
-            >
-              <i class="bi bi-eyeglasses"></i>
-              Preview
-            </button>
-          </li>
-        </ul>
+        <label>
+          <input
+            type="radio"
+            name="text-editor--mode"
+            checked
+            onclick="${javascript`
+              this.closest(".text-editor").querySelector(".write").hidden = false;
+              this.closest(".text-editor").querySelector(".preview").hidden = true;
+            `}"
+          />
+          <span>
+            <i class="bi bi-pencil"></i>
+            Write
+          </span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="text-editor--mode"
+            onclick="${javascript`
+              (async () => {
+                const write = this.closest(".text-editor").querySelector(".write");
+                const preview = this.closest(".text-editor").querySelector(".preview");
+                if (!isValid(write)) {event.preventDefault(); return;}
+                write.hidden = true;
+                preview.hidden = false;
+                loading(preview);
+                // preview.innerHTML = await (
+                //   await fetch("${app.locals.settings.url}/preview", {
+                //     method: "POST",
+                //     body: new URLSearchParams({ content: write.querySelector("textarea").value }),
+                //   })
+                // ).text();
+              })();
+            `}"
+          />
+          <span>
+            <i class="bi bi-eyeglasses"></i>
+            Preview
+          </span>
+        </label>
       </div>
       <div
-        class="tab-content"
+        class="write"
         style="${css`
-          border: $nav-tabs-border-width solid $nav-tabs-border-color;
-          border-top: none;
-          border-bottom-right-radius: $nav-tabs-border-radius;
-          border-bottom-left-radius: $nav-tabs-border-radius;
+          background-color: var(--color--white);
+          border-radius: var(--border-radius--lg);
+          border-top-left-radius: var(--border-radius--none);
         `}"
       >
         <div
-          class="tab-pane fade show active"
-          id="text-editor-${id}-write"
-          role="tabpanel"
-          aria-labelledby="text-editor-${id}-write-tab"
-        >
-          <textarea
-            class="form-control"
-            name="content"
-            required
-            style="${css`
-              border: none;
-              box-shadow: none;
-            `}"
-            onkeydown="${javascript`
-              if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-                event.preventDefault();
-                this.closest("form").querySelector('button:not([type="button"])').click();
-              }
-            `}"
-          >
-${value}</textarea
-          >
-        </div>
-        <div
-          class="tab-pane fade"
-          id="text-editor-${id}-preview"
-          role="tabpanel"
-          aria-labelledby="text-editor-${id}-preview-tab"
           style="${css`
-            padding: 1rem;
+            padding: var(--space--2) var(--space--4);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space--2);
           `}"
-        ></div>
+        >
+          <a
+            href="https://guides.github.com/features/mastering-markdown/"
+            target="_blank"
+          >
+            <i class="bi bi-markdown"></i>
+          </a>
+        </div>
+        <textarea
+          class="input--text"
+          name="content"
+          required
+          onkeydown="${javascript`
+            if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+              event.preventDefault();
+              this.closest("form").querySelector('button:not([type="button"])').click();
+            }
+          `}"
+          style="${css`
+            min-height: calc(6 * var(--line-height--base));
+          `}"
+        >
+${value}</textarea
+        >
+      </div>
+      <div
+        class="preview"
+        style="${css`
+          background-color: var(--color--white);
+          padding: var(--space--4);
+          border-radius: var(--border-radius--lg);
+        `}"
+        hidden
+      >
+        Preview
       </div>
     </div>
   `;
@@ -7015,6 +7029,11 @@ ${value}</textarea
                   style="${css`
                     display: flex;
                     gap: var(--space--8);
+
+                    span {
+                      display: flex;
+                      gap: var(--space--2);
+                    }
                   `}"
                 >
                   $${res.locals.enrollment.role === "staff"
