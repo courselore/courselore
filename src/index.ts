@@ -6550,13 +6550,145 @@ export default async function courselore(
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.thread = ({ req, res, head, body }) =>
-    app.locals.layouts.application(
+  app.locals.layouts.thread = ({ req, res, head, body }) => {
+    const sidebar = html`
+      <div
+        style="${css`
+          color: var(--color--primary--200);
+          background-color: var(--color--primary--800);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--primary--200);
+            background-color: var(--color--primary--900);
+          }
+          flex: 1;
+          padding: var(--space--4);
+          display: flex;
+          justify-content: center;
+        `}"
+      >
+        <div
+          style="${css`
+            flex: 1;
+            max-width: calc(var(--space--80) * 2);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space--8);
+          `}"
+        >
+          <div
+            style="${css`
+              display: flex;
+              justify-content: center;
+              font-weight: var(--font-weight--bold);
+            `}"
+          >
+            <a
+              href="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/threads/new"
+            >
+              <i class="bi bi-chat-left-text"></i>
+              Create a New Thread
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return app.locals.layouts.application(
       {
         req,
         res,
         head,
-        body,
+        extraHeaders: html`
+          $${res.locals.enrollment.role === "staff"
+            ? html`
+                <div
+                  style="${css`
+                    color: var(--color--primary--100);
+                    background-color: var(--color--primary--800);
+                    --focus-color: var(--color--primary--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--900);
+                      --focus-color: var(--color--primary--300);
+                    }
+                    padding: var(--space--1) var(--space--4);
+                    display: flex;
+                    justify-content: center;
+                    @media (min-width: 1280px) {
+                      display: none;
+                    }
+                  `}"
+                >
+                  <button
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                    onclick="${javascript`
+                      document.querySelector("#sidebar").classList.toggle("single-column--hidden");
+                      document.querySelector("#main").classList.toggle("single-column--hidden");
+                      this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
+                      this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
+                    `}"
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Threads
+                    <i class="bi bi-chevron-bar-expand"></i>
+                  </button>
+                </div>
+              `
+            : html``}
+        `,
+        body: html`
+          <div
+            style="${css`
+              flex: 1;
+              overflow: auto;
+
+              & > * {
+                display: flex;
+                overflow: auto;
+              }
+
+              @media (max-width: 1279px) {
+                display: flex;
+                justify-content: center;
+
+                & > * {
+                  flex: 1;
+                }
+
+                & > .single-column--hidden {
+                  display: none;
+                }
+              }
+
+              @media (min-width: 1280px) {
+                display: grid;
+                grid-template-columns: var(--space--80) auto var(--space--80);
+
+                & > #main {
+                  justify-content: center;
+                }
+              }
+            `}"
+          >
+            <div id="sidebar" class="single-column--hidden">$${sidebar}</div>
+            <div id="main">
+              <div
+                style="${css`
+                  flex: 1;
+                  max-width: calc(var(--space--80) * 2);
+                  padding: var(--space--4);
+                  overflow: auto;
+                `}"
+              >
+                $${body}
+              </div>
+            </div>
+          </div>
+        `,
       }
       // html`
       //   <div
@@ -6565,14 +6697,6 @@ export default async function courselore(
       //       text-align: center;
       //     `}"
       //   >
-      //     <a
-      //       href="${app.locals.settings.url}/courses/${res.locals.course
-      //         .reference}/threads/new"
-      //       class="btn btn-outline-light"
-      //     >
-      //       <i class="bi bi-chat-left-text"></i>
-      //       Create a New Thread
-      //     </a>
       //   </div>
       //   <div id="threads">
       //     $${res.locals.threads.map(
@@ -6676,6 +6800,7 @@ export default async function courselore(
       //   Threads
       // `
     );
+  };
 
   interface Partials {
     textEditor: (id: string, value?: string) => HTML;
