@@ -1089,7 +1089,7 @@ export default async function courselore(
                     --border-color: var(--color--rose--900);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--rose--200);
-                      --background-color: var(--color--rose--800);
+                      --background-color: var(--color--rose--900);
                       --border-color: var(--color--rose--400);
                     }
 
@@ -1112,7 +1112,7 @@ export default async function courselore(
                         color: var(--color--rose--50);
                         background-color: var(--color--rose--600);
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--rose--900);
+                          color: var(--color--rose--800);
                           background-color: var(--color--rose--100);
                         }
                       }
@@ -5731,6 +5731,9 @@ export default async function courselore(
                       style="${css`
                         &:nth-child(even) {
                           background-color: var(--color--primary-gray--200);
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--primary-gray--800);
+                          }
                         }
                         @media (max-width: 1099px) {
                           --space--bleed: var(--space--2);
@@ -5756,6 +5759,9 @@ export default async function courselore(
                           style="${css`
                             font-weight: var(--font-weight--bold);
                             color: var(--color--primary-gray--800);
+                            @media (prefers-color-scheme: dark) {
+                              color: var(--color--primary-gray--100);
+                            }
                           `}"
                         >
                           ${enrollment.userName}
@@ -5783,7 +5789,8 @@ export default async function courselore(
                             $${isOnlyStaff
                               ? html`
                                   disabled style="${css`
-                                    color: var(--color--primary-gray--400);`}"
+                                    color: var(--color--primary-gray--400);
+                                    @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
                                 `
                               : html`
                                   data-tippy-content="${html`
@@ -5873,6 +5880,7 @@ export default async function courselore(
                                     transition: color var(--transition-duration);
                                     &:hover {
                                       color: var(--color--primary-gray--800);
+                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
                                     }`}"
                                 `}
                           >
@@ -5905,7 +5913,8 @@ export default async function courselore(
                             $${isOnlyStaff
                               ? html`
                                   disabled style="${css`
-                                    color: var(--color--primary-gray--400);`}"
+                                    color: var(--color--primary-gray--400);
+                                    @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
                                 `
                               : html`
                                   data-tippy-content="${html`
@@ -5951,6 +5960,7 @@ export default async function courselore(
                                     transition: color var(--transition-duration);
                                     &:hover {
                                       color: var(--color--rose--500);
+                                      @media (prefers-color-scheme: dark) {color: var(--color--rose--500);}
                                     }`}"
                                 `}
                           >
