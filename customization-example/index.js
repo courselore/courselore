@@ -192,7 +192,7 @@ module.exports = (require) => {
                     `}"
                   >
                     <a
-                      href="https://github.com/courselore"
+                      href="https://github.com/courselore/courselore"
                       class="button button--secondary"
                     >
                       <i class="bi bi-github"></i>
