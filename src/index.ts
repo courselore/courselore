@@ -372,6 +372,7 @@ export default async function courselore(
                   overflow-wrap: break-word;
                   appearance: none;
                   list-style: none;
+                  cursor: inherit;
                 }
 
                 /* DESIGN SYSTEM */
@@ -6585,6 +6586,13 @@ export default async function courselore(
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/threads/new"
+              style="${css`
+                transition: color var(--transition-duration);
+
+                &:hover {
+                  color: var(--color--primary--100);
+                }
+              `}"
             >
               <i class="bi bi-chat-left-text"></i>
               Create a New Thread
@@ -6649,6 +6657,7 @@ export default async function courselore(
               & > * {
                 display: flex;
                 overflow: auto;
+                justify-content: center;
               }
 
               @media (max-width: 1279px) {
@@ -6667,10 +6676,6 @@ export default async function courselore(
               @media (min-width: 1280px) {
                 display: grid;
                 grid-template-columns: var(--space--80) auto var(--space--80);
-
-                & > #main {
-                  justify-content: center;
-                }
               }
             `}"
           >
@@ -6975,88 +6980,164 @@ ${value}</textarea
             </title>
           `,
           body: html`
-            <h1>Create a New Thread</h1>
-
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/threads"
+            <div
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space--4);
               `}"
             >
-              <div class="form-floating">
+              <h2 class="heading--2">
+                <i class="bi bi-chat-left-text"></i>
+                Create a New Thread
+              </h2>
+
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/threads"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
                 <input
                   type="text"
                   name="title"
-                  autocomplete="off"
+                  placeholder="Title"
                   required
                   autofocus
-                  class="form-control"
-                  id="title"
-                  placeholder="Title…"
+                  autocomplete="off"
+                  class="input--text"
                 />
-                <label for="title">Title</label>
-              </div>
-              <div
-                style="${css`
-                  display: flex;
-                  gap: 2rem;
-                `}"
-              >
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
-                      <div
-                        class="form-check form-switch"
-                        data-bs-toggle="tooltip"
-                        title="Pinned threads are listed first"
-                      >
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          id="pin"
-                          name="isPinned"
-                        />
-                        <label class="form-check-label" for="pin">
-                          <i class="bi bi-pin-angle"></i>
-                          Pin
-                        </label>
-                      </div>
-                    `
-                  : html``}
-
-                <div class="form-check form-switch">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="question"
-                    name="isQuestion"
-                    $${res.locals.enrollment.role === "staff" ? `` : `checked`}
-                  />
-                  <label class="form-check-label" for="question">
-                    <i class="bi bi-patch-question"></i>
-                    Question
-                  </label>
-                </div>
-              </div>
-              $${app.locals.partials.textEditor("new")}
-              <div>
-                <button
-                  type="submit"
-                  class="btn btn-primary"
+                <div
                   style="${css`
-                    @include media-breakpoint-down(md) {
-                      width: 100%;
-                    }
+                    display: flex;
+                    gap: var(--space--8);
                   `}"
                 >
-                  <i class="bi bi-chat-left-text"></i>
-                  Create Thread
-                </button>
-              </div>
-            </form>
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <label
+                            style="${css`
+                              display: grid;
+                              cursor: pointer;
+
+                              & > * {
+                                grid-area: 1 / 1;
+                              }
+                            `}"
+                          >
+                            <input type="checkbox" name="isPinned" />
+                            <span
+                              data-tippy-content="Pin"
+                              data-tippy-theme="tooltip"
+                              data-tippy-touch="false"
+                              style="${css`
+                                :checked + & {
+                                  display: none;
+                                }
+                              `}"
+                            >
+                              <i class="bi bi-pin-angle"></i>
+                              Unpinned
+                            </span>
+                            <span
+                              data-tippy-content="Unpin"
+                              data-tippy-theme="tooltip"
+                              data-tippy-touch="false"
+                              style="${css`
+                                :not(:checked) + * + & {
+                                  display: none;
+                                }
+                              `}"
+                            >
+                              <i class="bi bi-pin-fill"></i>
+                              Pinned
+                            </span>
+                          </label>
+                          <button
+                            type="button"
+                            data-tippy-content="Pinned threads are listed first"
+                            data-tippy-theme="tooltip"
+                            data-tippy-trigger="click"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
+                      `
+                    : html``}
+
+                  <label
+                    style="${css`
+                      display: grid;
+                      cursor: pointer;
+
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
+                    `}"
+                  >
+                    <input
+                      type="checkbox"
+                      name="isQuestion"
+                      $${res.locals.enrollment.role === "staff"
+                        ? ``
+                        : `checked`}
+                    />
+                    <span
+                      data-tippy-content="Mark as a question"
+                      data-tippy-theme="tooltip"
+                      data-tippy-touch="false"
+                      style="${css`
+                        :checked + & {
+                          display: none;
+                        }
+                      `}"
+                    >
+                      <i class="bi bi-patch-question"></i>
+                      Not a question
+                    </span>
+                    <span
+                      data-tippy-content="Mark as not a question"
+                      data-tippy-theme="tooltip"
+                      data-tippy-touch="false"
+                      style="${css`
+                        :not(:checked) + * + & {
+                          display: none;
+                        }
+                      `}"
+                    >
+                      <i class="bi bi-patch-question-fill"></i>
+                      Question
+                    </span>
+                  </label>
+                </div>
+
+                $${app.locals.partials.textEditor("new")}
+
+                <div>
+                  <button
+                    class="button button--primary"
+                    style="${css`
+                      @media (max-width: 400px) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Create Thread
+                  </button>
+                </div>
+              </form>
+            </div>
           `,
         })
       );
