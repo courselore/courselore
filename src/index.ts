@@ -2049,6 +2049,7 @@ export default async function courselore(
                                       }
                                     `}"
                                   >
+                                    <i class="bi bi-journal-text"></i>
                                     ${otherEnrollment.course.name}
                                   </a>
                                 `
