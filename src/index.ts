@@ -1289,7 +1289,7 @@ export default async function courselore(
                   .map(
                     ([className, style]) =>
                       css`
-                        .${className} {
+                        .${className}.${className}.${className}.${className}.${className}.${className} {
                           ${style}
                         }
                       `
