@@ -3305,23 +3305,59 @@ export default async function courselore(
           res,
           head: html`<title>Sign up · CourseLore</title>`,
           body: html`
-            <p class="card-text">Something went wrong in your sign up.</p>
-            <p class="card-text">
-              <a
-                href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                  redirect: req.query.redirect,
-                  email: req.query.email,
-                  name: req.query.name,
-                })}"
-                class="btn btn-primary"
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <h2
+                class="heading--2"
                 style="${css`
-                  width: 100%;
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
                 `}"
               >
-                <i class="bi bi-chevron-left"></i>
-                Start Over
-              </a>
-            </p>
+                Sign up
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p>Something went wrong in your sign up.</p>
+                <p>
+                  <a
+                    href="${app.locals.settings
+                      .url}/authenticate?${qs.stringify({
+                      redirect: req.query.redirect,
+                      email: req.query.email,
+                      name: req.query.name,
+                    })}"
+                    class="button button--primary"
+                    style="${css`
+                      width: 100%;
+                    `}"
+                  >
+                    <i class="bi bi-chevron-left"></i>
+                    Start Over
+                  </a>
+                </p>
+              </div>
+            </div>
           `,
         })
       );
