@@ -6621,21 +6621,21 @@ export default async function courselore(
                       gap: var(--space--0-5);
                     `}"
                   >
-                  <div>
                     <div>
-                      #${thread.reference} created
-                      <time>${thread.createdAt}</time> by
-                      ${thread.authorEnrollment.user.name}
-                    </div>
-                    $${thread.updatedAt !== thread.createdAt
-                      ? html`
-                          <div>
-                            and last updated
-                            <time>${thread.updatedAt}</time>
-                          </div>
-                        `
-                      : html``}
+                      <div>
+                        #${thread.reference} created
+                        <time>${thread.createdAt}</time> by
+                        ${thread.authorEnrollment.user.name}
                       </div>
+                      $${thread.updatedAt !== thread.createdAt
+                        ? html`
+                            <div>
+                              and last updated
+                              <time>${thread.updatedAt}</time>
+                            </div>
+                          `
+                        : html``}
+                    </div>
                     <div
                       style="${css`
                         display: flex;
