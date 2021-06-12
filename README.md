@@ -602,6 +602,20 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Meetings
 
 <details>
+<summary>Meetings</summary>
+
+<details>
+<summary>2021-06-12</summary>
+
+- Progress:
+  - Continued the make-over with the new design system: Landing pages (for example, when you just created a course), course settings, threads pages.
+- Next week:
+  - Finish the redesign with the new design system.
+  - Come up with a roadmap.
+
+</details>
+
+<details>
 <summary>2021-06-05</summary>
 
 - Progress:
@@ -1065,5 +1079,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://yellowdig.com
   - Moodle
     - It’s a whole LMS, not a Q&A
+
+</details>
 
 </details>
