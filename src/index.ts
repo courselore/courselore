@@ -3662,6 +3662,7 @@ export default async function courselore(
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
+                      align-items: flex-start;
                     `}"
                   >
                     $${res.locals.enrollments.map(
@@ -3670,6 +3671,39 @@ export default async function courselore(
                           <a
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
+                            style="${css`
+                              font-weight: var(--font-weight--bold);
+                              color: var(
+                                --color--${enrollment.accentColor}--50
+                              );
+                              background-color: var(
+                                --color--${enrollment.accentColor}--500
+                              );
+                              @media (prefers-color-scheme: dark) {
+                                color: var(
+                                  --color--${enrollment.accentColor}--200
+                                );
+                                background-color: var(
+                                  --color--${enrollment.accentColor}--700
+                                );
+                              }
+                              padding: var(--space--1) var(--space--3);
+                              border-radius: var(--border-radius--md);
+                              display: inline-block;
+                              transition: background-color
+                                var(--transition-duration);
+
+                              &:hover {
+                                background-color: var(
+                                  --color--${enrollment.accentColor}--400
+                                );
+                                @media (prefers-color-scheme: dark) {
+                                  background-color: var(
+                                    --color--${enrollment.accentColor}--600
+                                  );
+                                }
+                              }
+                            `}"
                           >
                             <i class="bi bi-journal"></i>
                             ${enrollment.course.name}
