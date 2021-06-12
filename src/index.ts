@@ -6690,15 +6690,6 @@ export default async function courselore(
           </div>
         `,
       }
-      // html`
-      //   <div
-      //     style="${css`
-      //       padding: 1rem;
-      //       text-align: center;
-      //     `}"
-      //   >
-      //   </div>
-      //   <div id="threads">
       //     $${res.locals.threads.map(
       //       (thread) => html`
       //         <a
@@ -6783,7 +6774,6 @@ export default async function courselore(
       //         </a>
       //       `
       //     )}
-      //   </div>
       //   <script>
       //     (() => {
       //       const id = document.currentScript.previousElementSibling.id;
@@ -6794,11 +6784,6 @@ export default async function courselore(
       //       });
       //     })();
       //   </script>
-      // `,
-      // html`
-      //   <i class="bi bi-chat-left-text"></i>
-      //   Threads
-      // `
     );
   };
 
