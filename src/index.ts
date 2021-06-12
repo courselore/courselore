@@ -7054,6 +7054,10 @@ ${value}</textarea
                               data-tippy-theme="tooltip"
                               data-tippy-touch="false"
                               style="${css`
+                                color: var(--color--primary-gray--900);
+                                @media (prefers-color-scheme: dark) {
+                                  color: var(--color--primary-gray--50);
+                                }
                                 :not(:checked) + * + & {
                                   display: none;
                                 }
@@ -7110,6 +7114,10 @@ ${value}</textarea
                       data-tippy-theme="tooltip"
                       data-tippy-touch="false"
                       style="${css`
+                        color: var(--color--primary-gray--900);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary-gray--50);
+                        }
                         :not(:checked) + * + & {
                           display: none;
                         }
