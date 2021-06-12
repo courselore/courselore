@@ -1670,6 +1670,7 @@ export default async function courselore(
           $${res.locals.eventSource
             ? javascript`
                 const eventSource = new EventSource(window.location.href);
+                /* TODO
                 eventSource.addEventListener("refresh", async () => {
                   const response = await fetch(window.location.href);
                   switch (response.status) {
@@ -1705,6 +1706,7 @@ export default async function courselore(
                       break;
                   }
                 });
+                */
             `
             : javascript``};
         </script>
