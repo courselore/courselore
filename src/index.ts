@@ -2020,6 +2020,32 @@ export default async function courselore(
                                       .url}/courses/${otherEnrollment.course
                                       .reference}"
                                     class="dropdown--item"
+                                    style="${css`
+                                      color: var(
+                                        --color--${otherEnrollment.accentColor}--50
+                                      );
+                                      background-color: var(
+                                        --color--${otherEnrollment.accentColor}--500
+                                      );
+                                      &:hover {
+                                        background-color: var(
+                                          --color--${otherEnrollment.accentColor}--400
+                                        );
+                                      }
+                                      @media (prefers-color-scheme: dark) {
+                                        color: var(
+                                          --color--${otherEnrollment.accentColor}--200
+                                        );
+                                        background-color: var(
+                                          --color--${otherEnrollment.accentColor}--700
+                                        );
+                                        &:hover {
+                                          background-color: var(
+                                            --color--${otherEnrollment.accentColor}--600
+                                          );
+                                        }
+                                      }
+                                    `}"
                                   >
                                     ${otherEnrollment.course.name}
                                   </a>
@@ -3679,6 +3705,11 @@ export default async function courselore(
                               background-color: var(
                                 --color--${enrollment.accentColor}--500
                               );
+                              &:hover {
+                                background-color: var(
+                                  --color--${enrollment.accentColor}--400
+                                );
+                              }
                               @media (prefers-color-scheme: dark) {
                                 color: var(
                                   --color--${enrollment.accentColor}--200
@@ -3686,23 +3717,17 @@ export default async function courselore(
                                 background-color: var(
                                   --color--${enrollment.accentColor}--700
                                 );
+                                &:hover {
+                                  background-color: var(
+                                    --color--${enrollment.accentColor}--600
+                                  );
+                                }
                               }
                               padding: var(--space--1) var(--space--3);
                               border-radius: var(--border-radius--md);
                               display: inline-block;
                               transition: background-color
                                 var(--transition-duration);
-
-                              &:hover {
-                                background-color: var(
-                                  --color--${enrollment.accentColor}--400
-                                );
-                                @media (prefers-color-scheme: dark) {
-                                  background-color: var(
-                                    --color--${enrollment.accentColor}--600
-                                  );
-                                }
-                              }
                             `}"
                           >
                             <i class="bi bi-journal"></i>
