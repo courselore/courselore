@@ -1306,25 +1306,6 @@ export default async function courselore(
           $${bodyDOM.firstElementChild!.innerHTML}
           $${app.locals.partials.art.preamble}
 
-          <div hidden>
-            $${app.locals.partials.art.small}
-            <strong>Loading…</strong>
-          </div>
-          <script>
-            const loading = (() => {
-              const source = document.currentScript.previousElementSibling;
-              return (target) => {
-                target.innerHTML = source.innerHTML;
-                new ArtAnimation({
-                  element: target,
-                  speed: 0.005,
-                  amount: 1,
-                  startupDuration: 0,
-                }).start();
-              };
-            })();
-          </script>
-
           <script src="${app.locals.settings
               .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="${app.locals.settings
@@ -6847,17 +6828,22 @@ export default async function courselore(
             onclick="${javascript`
               (async () => {
                 const write = this.closest(".text-editor").querySelector(".write");
+                const loading = this.closest(".text-editor").querySelector(".loading");
                 const preview = this.closest(".text-editor").querySelector(".preview");
-                if (!isValid(write)) {event.preventDefault(); return;}
+                if (!isValid(write)) {
+                  event.preventDefault();
+                  return;
+                }
                 write.hidden = true;
+                loading.hidden = false;
+                preview.innerHTML = await (
+                  await fetch("${app.locals.settings.url}/preview", {
+                    method: "POST",
+                    body: new URLSearchParams({ content: write.querySelector("textarea").value }),
+                  })
+                ).text();
+                loading.hidden = true;
                 preview.hidden = false;
-                loading(preview);
-                // preview.innerHTML = await (
-                //   await fetch("${app.locals.settings.url}/preview", {
-                //     method: "POST",
-                //     body: new URLSearchParams({ content: write.querySelector("textarea").value }),
-                //   })
-                // ).text();
               })();
             `}"
           />
@@ -6907,14 +6893,48 @@ export default async function courselore(
 ${value}</textarea
         >
       </div>
+
       <div
+        hidden
+        class="loading"
+        style="${css`
+          font-weight: var(--font-weight--bold);
+          color: var(--color--primary-gray--900);
+          background-color: var(--color--white);
+          padding: var(--space--4);
+          border-radius: var(--border-radius--lg);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: var(--space--2);
+        `}"
+      >
+        $${app.locals.partials.art.small} Loading…
+      </div>
+      <script>
+        (() => {
+          const element = document.currentScript.previousElementSibling;
+          document.addEventListener("DOMContentLoaded", () => {
+            if (element.dataset.animated) return;
+            element.dataset.animated = true;
+            new ArtAnimation({
+              element,
+              speed: 0.005,
+              amount: 1,
+              startupDuration: 0,
+            }).start();
+          });
+        })();
+      </script>
+
+      <div
+        hidden
         class="preview"
         style="${css`
           background-color: var(--color--white);
           padding: var(--space--4);
           border-radius: var(--border-radius--lg);
         `}"
-        hidden
       >
         Preview
       </div>
