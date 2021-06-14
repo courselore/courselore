@@ -834,6 +834,8 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary-gray--500);
                   }
+                  display: flex;
+                  gap: var(--space--2);
                 }
 
                 .text-gradient {
@@ -2778,10 +2780,9 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary--200);
                   }
-                  display: flex;
-                  gap: var(--space--2);
                 `}"
               >
+                <i class="bi bi-box-arrow-in-right"></i>
                 Authenticate
                 <button
                   data-tippy-content="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
@@ -2938,6 +2939,7 @@ export default async function courselore(
                     }
                   `}"
                 >
+                  <i class="bi bi-box-arrow-in-right"></i>
                   Authenticate
                 </h2>
                 <div
@@ -3129,6 +3131,7 @@ export default async function courselore(
                     }
                   `}"
                 >
+                  <i class="bi bi-box-arrow-in-right"></i>
                   Authenticate
                 </h2>
                 <div
@@ -3197,6 +3200,7 @@ export default async function courselore(
                     }
                   `}"
                 >
+                  <i class="bi bi-person-plus"></i>
                   Sign up
                 </h2>
                 <form
@@ -3336,6 +3340,7 @@ export default async function courselore(
                   }
                 `}"
               >
+                <i class="bi bi-person-plus"></i>
                 Sign up
               </h2>
               <div
@@ -3446,6 +3451,7 @@ export default async function courselore(
                   }
                 `}"
               >
+                <i class="bi bi-box-arrow-in-right"></i>
                 Authenticate
               </h2>
               <div
@@ -3717,7 +3723,10 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  <h2 class="heading--2">Courses</h2>
+                  <h2 class="heading--2">
+                    <i class="bi bi-journal"></i>
+                    Courses
+                  </h2>
 
                   <div
                     style="${css`
@@ -3802,7 +3811,10 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">User Settings</h2>
+              <h2 class="heading--2">
+                <i class="bi bi-sliders"></i>
+                User Settings
+              </h2>
 
               <form
                 method="POST"
@@ -3901,7 +3913,10 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">Create a New Course</h2>
+              <h2 class="heading--2">
+                <i class="bi bi-journal-plus"></i>
+                Create a New Course
+              </h2>
 
               <form
                 method="POST"
@@ -8609,7 +8624,10 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">Demonstration Inbox</h2>
+              <h2 class="heading--2">
+                <i class="bi bi-inbox"></i>
+                Demonstration Inbox
+              </h2>
               <p>
                 CourseLore doesn’t send emails in demonstration mode.
                 $${emails.length === 0
@@ -8763,6 +8781,7 @@ ${value}</textarea
                   }
                 `}"
               >
+                <i class="bi bi-question-diamond"></i>
                 404 Not Found
               </h2>
               <div
@@ -8782,7 +8801,7 @@ ${value}</textarea
               >
                 <p>
                   If you think there should be something here, please contact
-                  the course staff or the
+                  your course staff or the
                   <a href="${app.locals.settings.administrator}" class="link"
                     >system administrator</a
                   >.
@@ -8821,6 +8840,7 @@ ${value}</textarea
                   }
                 `}"
               >
+                <i class="bi bi-question-diamond"></i>
                 404 Not Found
               </h2>
               <div
@@ -8853,8 +8873,8 @@ ${value}</textarea
                       width: 100%;
                     `}"
                   >
+                    <i class="bi bi-box-arrow-in-right"></i>
                     Authenticate
-                    <i class="bi bi-chevron-right"></i>
                   </a>
                 </p>
               </div>
@@ -8891,6 +8911,7 @@ ${value}</textarea
                 }
               `}"
             >
+              <i class="bi bi-bug"></i>
               ${message} Error
             </h2>
             <div
@@ -8908,12 +8929,15 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
-              <p>
-                This is an issue in CourseLore; please report to
-                <a href="mailto:issues@courselore.org" class="link"
-                  >issues@courselore.org</a
-                >.
-              </p>
+              <p>This is an issue in CourseLore.</p>
+
+              <a
+                href="mailto:issues@courselore.org"
+                class="button button--primary"
+              >
+                <i class="bi bi-envelope"></i>
+                Report to issues@courselore.org
+              </a>
             </div>
           </div>
         `,
