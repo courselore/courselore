@@ -4598,6 +4598,8 @@ export default async function courselore(
                         color: var(--color--primary-gray--400);
                       }
                       padding: var(--space--1) var(--space--3);
+                      display: flex;
+                      gap: var(--space--2);
                       transition: color var(--transition-duration),
                         box-shadow var(--transition-duration);
                     }
