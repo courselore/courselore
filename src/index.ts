@@ -4545,7 +4545,7 @@ export default async function courselore(
                   padding: var(--space--1) var(--space--4);
                   display: flex;
                   justify-content: center;
-                  @media (min-width: 1100px) {
+                  @media (min-width: 768px) {
                     display: none;
                   }
                 `}"
@@ -4574,6 +4574,9 @@ export default async function courselore(
           style="${css`
             flex: 1;
             overflow: auto;
+            @media (min-width: 768px) and (max-width: 1099px) {
+              display: flex;
+            }
             @media (min-width: 1100px) {
               display: grid;
               grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
@@ -4586,7 +4589,6 @@ export default async function courselore(
                 <div
                   style="${css`
                     padding: var(--space--2-5) var(--space--4) var(--space--4);
-                    justify-self: end;
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -4616,8 +4618,12 @@ export default async function courselore(
                       }
                     }
 
-                    @media (max-width: 1099px) {
+                    @media (max-width: 767px) {
                       display: none;
+                    }
+
+                    @media (min-width: 1100px) {
+                      justify-self: end;
                     }
                   `}"
                 >
@@ -4627,12 +4633,26 @@ export default async function courselore(
             : html``}
           <div
             style="${css`
-              grid-area: 1 / 2;
               padding: var(--space--4);
               overflow: auto;
+              display: flex;
+              justify-content: center;
+              @media (min-width: 768px) and (max-width: 1099px) {
+                flex: 1;
+              }
+              @media (min-width: 1100px) {
+                grid-area: 1 / 2;
+              }
             `}"
           >
-            $${body}
+            <div
+              style="${css`
+                flex: 1;
+                max-width: calc(var(--space--80) * 2);
+              `}"
+            >
+              $${body}
+            </div>
           </div>
         </div>
       `,
