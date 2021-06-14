@@ -4819,48 +4819,66 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <h1>Invitations</h1>
-
-            <h6>Create a New Invitation</h6>
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/invitations"
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
             >
-              <div
+              <h2 class="heading--2">
+                <i class="bi bi-sliders"></i>
+                Course Settings ·
+                <i class="bi bi-person-plus"></i>
+                Invitations
+              </h2>
+
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/invitations"
                 style="${css`
                   display: flex;
-                  gap: 1rem;
                   flex-direction: column;
+                  gap: var(--space--4);
                 `}"
+              ></form>
+            </div>
+            <!--
+              <div
+                style="${css`
+              display: flex;
+              gap: 1rem;
+              flex-direction: column;
+            `}"
               >
                 <div
                   class="btn-group"
                   role="group"
                   aria-label="Role"
                   style="${css`
-                    & > * {
-                      flex: 1;
-                    }
-                  `}"
+              & > * {
+                flex: 1;
+              }
+            `}"
                 >
                   $${app.locals.constants.roles.map(
-                    (role, index) =>
-                      html`
-                        <input
-                          type="radio"
-                          class="btn-check"
-                          name="role"
-                          id="${role}"
-                          autocomplete="off"
-                          value="${role}"
-                          required
-                        />
-                        <label class="btn btn-outline-primary" for="${role}">
-                          ${lodash.capitalize(role)}
-                        </label>
-                      `
-                  )}
+              (role, index) =>
+                html`
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="role"
+                    id="${role}"
+                    autocomplete="off"
+                    value="${role}"
+                    required
+                  />
+                  <label class="btn btn-outline-primary" for="${role}">
+                    ${lodash.capitalize(role)}
+                  </label>
+                `
+            )}
                 </div>
 
                 <div>
@@ -4869,11 +4887,11 @@ export default async function courselore(
                     role="group"
                     aria-label="Expiration"
                     style="${css`
-                      width: 100%;
-                      & > * {
-                        flex: 1;
-                      }
-                    `}"
+              width: 100%;
+              & > * {
+                flex: 1;
+              }
+            `}"
                   >
                     <input
                       type="radio"
@@ -4923,8 +4941,8 @@ export default async function courselore(
                   <div class="collapse" id="expiresAt--collapse">
                     <div
                       style="${css`
-                        margin-top: 1rem;
-                      `}"
+              margin-top: 1rem;
+            `}"
                     >
                       <div class="form-floating">
                         <input
@@ -4952,11 +4970,11 @@ export default async function courselore(
                     role="group"
                     aria-label="Type"
                     style="${css`
-                      width: 100%;
-                      & > * {
-                        flex: 1;
-                      }
-                    `}"
+              width: 100%;
+              & > * {
+                flex: 1;
+              }
+            `}"
                   >
                     <input
                       type="radio"
@@ -5002,12 +5020,12 @@ export default async function courselore(
                   <div class="collapse" id="type--collapse">
                     <div
                       style="${css`
-                        margin-top: 1rem;
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                        }
-                      `}"
+              margin-top: 1rem;
+              display: grid;
+              & > * {
+                grid-area: 1 / 1;
+              }
+            `}"
                     >
                       <div class="form-floating">
                         <textarea
@@ -5045,8 +5063,8 @@ export default async function courselore(
                               return "Match the requested format";
                           `}"
                           style="${css`
-                            height: 20ex;
-                          `}"
+              height: 20ex;
+            `}"
                         ></textarea>
                         <label for="emails">Emails</label>
                       </div>
@@ -5054,10 +5072,10 @@ export default async function courselore(
                         data-bs-toggle="tooltip"
                         title="Help"
                         style="${css`
-                          z-index: $zindex-dropdown;
-                          justify-self: end;
-                          align-self: start;
-                        `}"
+              z-index: $zindex-dropdown;
+              justify-self: end;
+              align-self: start;
+            `}"
                       >
                         <a
                           tabindex="0"
@@ -5067,20 +5085,20 @@ export default async function courselore(
                           data-bs-trigger="focus"
                           data-bs-html="true"
                           data-bs-content="${html`
-                            Emails must be separated by commas or newlines, and
-                            may include names, for example:
-                            <br />
-                            <code>${`"Scott" <scott@courselore.org>`}</code>
-                          `}"
+              Emails must be separated by commas or newlines, and may include
+              names, for example:
+              <br />
+              <code>${`"Scott" <scott@courselore.org>`}</code>
+            `}"
                           style="${css`
-                            color: $text-muted;
-                            padding: 0 0.2rem;
-                            margin: 0.3rem;
-                            &:hover,
-                            &:focus {
-                              background-color: $gray-100;
-                            }
-                          `}"
+              color: $text-muted;
+              padding: 0 0.2rem;
+              margin: 0.3rem;
+              &:hover,
+              &:focus {
+                background-color: $gray-100;
+              }
+            `}"
                           onclick="${javascript`
                             bootstrap.Tooltip.getInstance(this.parentElement).hide();
                           `}"
@@ -5097,10 +5115,10 @@ export default async function courselore(
                     type="submit"
                     class="btn btn-primary"
                     style="${css`
-                      @include media-breakpoint-down(md) {
-                        width: 100%;
-                      }
-                    `}"
+              @include media-breakpoint-down(md) {
+                width: 100%;
+              }
+            `}"
                   >
                     <i class="bi bi-person-plus"></i>
                     Create Invitation
@@ -5491,6 +5509,7 @@ export default async function courselore(
                     })
                   )}
                 `}
+                -->
           `,
         })
       );
