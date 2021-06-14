@@ -470,7 +470,7 @@ export default async function courselore(
 
                   --transition-duration: 150ms;
                   @media (prefers-reduced-motion: reduce) {
-                    --transition-duration: 0;
+                    --transition-duration: 1ms;
                   }
 
                   --color--primary--50: var(--color--purple--50);
@@ -901,6 +901,7 @@ export default async function courselore(
                   display: inline-flex;
                   gap: var(--space--2);
                   justify-content: center;
+                  align-items: center;
                   transition: background-color var(--transition-duration);
 
                   &.button--primary {
@@ -1323,7 +1324,7 @@ export default async function courselore(
                   duration: window.matchMedia(
                     "(prefers-reduced-motion: reduce)"
                   ).matches
-                    ? 0
+                    ? 1
                     : 150,
                   ...(element.dataset.tippyAppendTo === undefined
                     ? {}
@@ -1553,10 +1554,10 @@ export default async function courselore(
 
           function isValid(element) {
             const elementsToValidate = [
-              ...element.querySelectorAll("*"),
               element,
+              ...element.querySelectorAll("*"),
             ];
-            const elementsToReset = [];
+            const elementsToReset = new Map();
 
             for (const element of elementsToValidate) {
               if (
@@ -1568,7 +1569,7 @@ export default async function courselore(
               const valueInputByUser = element.value;
               const customValidity = validate(element);
               if (element.value !== valueInputByUser)
-                elementsToReset.push({ element, valueInputByUser });
+                elementsToReset.set(element, valueInputByUser);
 
               if (typeof customValidity === "string") {
                 element.setCustomValidity(customValidity);
@@ -1582,7 +1583,7 @@ export default async function courselore(
               }
 
               if (!element.reportValidity()) {
-                for (const { element, valueInputByUser } of elementsToReset)
+                for (const [element, valueInputByUser] of elementsToReset)
                   element.value = valueInputByUser;
                 return false;
               }
@@ -1590,9 +1591,11 @@ export default async function courselore(
             return true;
 
             function validate(element) {
-              if (element.value.trim() === "")
-                if (element.matches("[required]")) return "Fill out this field";
-                else return;
+              if (element.value === "" && !element.matches("[required]"))
+                return;
+
+              if (element.matches("[required]") && element.value.trim() === "")
+                return "Fill out this field";
 
               if (
                 element.matches('[type="email"]') &&
@@ -1629,7 +1632,7 @@ export default async function courselore(
           })();
 
           function isModified(element) {
-            const elementsToCheck = [...element.querySelectorAll("*"), element];
+            const elementsToCheck = [element, ...element.querySelectorAll("*")];
             for (const element of elementsToCheck) {
               if (element.dataset.skipIsModified === "true") continue;
               if (["radio", "checkbox"].includes(element.type)) {
@@ -3411,113 +3414,160 @@ export default async function courselore(
           : app.locals.database.get<{ name: string }>(
               sql`SELECT "name" FROM "users" WHERE "email" = ${otherUserEmail}`
             );
-      const currentUserHTML = html`<strong
-        >${res.locals.user.name} ${`<${res.locals.user.email}>`}</strong
-      >`;
+      const currentUserHTML = html`${res.locals.user.name}
+      ${`<${res.locals.user.email}>`}`;
       const otherUserHTML =
         otherUserEmail === undefined
           ? undefined
           : isSelf
           ? html`yourself`
           : otherUser === undefined
-          ? html`<strong>${otherUserEmail}</strong>`
-          : html`<strong>${otherUser.name} ${`<${otherUserEmail}>`}</strong>`;
+          ? html`${otherUserEmail}`
+          : html`${otherUser.name} ${`<${otherUserEmail}>`}`;
       res.send(
         app.locals.layouts.box({
           req,
           res,
           head: html`<title>Magic Authentication Link · CourseLore</title>`,
           body: html`
-            <p class="card-text">
-              You’re already signed in as $${currentUserHTML} and you tried to
-              use
-              $${otherUserEmail === undefined
-                ? html`an invalid or expired Magic Authentication Link`
-                : html`a Magic Authentication Link for $${otherUserHTML}`}.
-            </p>
-
-            <p class="card-text">
-              <a
-                href="${app.locals.settings.url}/"
-                class="btn btn-primary"
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <h2
+                class="heading--2"
                 style="${css`
-                  width: 100%;
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
                 `}"
               >
-                Continue Signed in as $${currentUserHTML}
-                <i class="bi bi-chevron-right"></i>
-              </a>
-            </p>
+                Authenticate
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p>
+                  You’re already signed in as $${currentUserHTML} and you tried
+                  to use
+                  $${otherUserEmail === undefined
+                    ? html`an invalid or expired Magic Authentication Link`
+                    : html`a Magic Authentication Link for $${otherUserHTML}`}.
+                </p>
 
-            $${otherUserEmail === undefined || isSelf
-              ? html`
-                  <form
-                    method="POST"
-                    action="${app.locals.settings
-                      .url}/authenticate?_method=DELETE"
-                    class="card-text"
-                  >
-                    <p>
-                      <button
-                        type="submit"
-                        class="btn btn-outline-light"
+                <a
+                  href="${app.locals.settings.url}/"
+                  class="button button--primary"
+                  style="${css`
+                    justify-content: space-between;
+                  `}"
+                >
+                  Continue Signed in as $${currentUserHTML}
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+
+                $${otherUserEmail === undefined || isSelf
+                  ? html`
+                      <form
+                        method="POST"
+                        action="${app.locals.settings
+                          .url}/authenticate?_method=DELETE"
+                      >
+                        <button
+                          type="submit"
+                          class="button"
+                          style="${css`
+                            text-align: left;
+                            width: 100%;
+                            justify-content: space-between;
+                            &:hover {
+                              background-color: var(--color--primary--200);
+                              @media (prefers-color-scheme: dark) {
+                                background-color: var(--color--primary--800);
+                              }
+                            }
+                          `}"
+                        >
+                          Sign Out
+                          <i class="bi bi-box-arrow-in-right"></i>
+                        </button>
+                      </form>
+                    `
+                  : html`
+                      <form
+                        method="POST"
+                        action="${app.locals.settings
+                          .url}/authenticate/${app.locals.helpers.authenticationNonce.create(
+                          otherUserEmail
+                        )}?_method=PUT&${qs.stringify({
+                          redirect: req.query.redirect,
+                          email: req.query.email,
+                          name: req.query.name,
+                        })}"
+                      >
+                        <button
+                          type="submit"
+                          class="button"
+                          style="${css`
+                            text-align: left;
+                            width: 100%;
+                            justify-content: space-between;
+                            &:hover {
+                              background-color: var(--color--primary--200);
+                              @media (prefers-color-scheme: dark) {
+                                background-color: var(--color--primary--800);
+                              }
+                            }
+                          `}"
+                        >
+                          Sign out as $${currentUserHTML} and Sign
+                          ${otherUser === undefined ? "up" : "in"} as
+                          $${otherUserHTML}
+                          <i class="bi bi-arrow-left-right"></i>
+                        </button>
+                      </form>
+                    `}
+                $${req.query.redirect === undefined
+                  ? html``
+                  : html`
+                      <a
+                        href="${app.locals.settings.url}${req.query.redirect}"
+                        class="button"
                         style="${css`
-                          width: 100%;
+                          justify-content: space-between;
+                          &:hover {
+                            background-color: var(--color--primary--200);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(--color--primary--800);
+                            }
+                          }
                         `}"
                       >
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        Sign Out
-                      </button>
-                    </p>
-                  </form>
-                `
-              : html`
-                  <form
-                    method="POST"
-                    action="${app.locals.settings
-                      .url}/authenticate/${app.locals.helpers.authenticationNonce.create(
-                      otherUserEmail
-                    )}?_method=PUT&${qs.stringify({
-                      redirect: req.query.redirect,
-                      email: req.query.email,
-                      name: req.query.name,
-                    })}"
-                  >
-                    <p class="card-text">
-                      <button
-                        type="submit"
-                        class="btn btn-outline-light"
-                        style="${css`
-                          width: 100%;
-                        `}"
-                      >
-                        <i class="bi bi-arrow-left-right"></i>
-                        Sign out as $${currentUserHTML} and Sign
-                        ${otherUser === undefined ? "up" : "in"} as
-                        $${otherUserHTML}
-                      </button>
-                    </p>
-                  </form>
-                `}
-            $${req.query.redirect === undefined
-              ? html``
-              : html`
-                  <p class="card-text">
-                    <a
-                      href="${app.locals.settings.url}${req.query.redirect}"
-                      class="btn btn-outline-light"
-                      style="${css`
-                        width: 100%;
-                      `}"
-                    >
-                      Continue Signed in as $${currentUserHTML} and Visit the
-                      Page to Which the Magic Authentication Link Would Have
-                      Redirected You:
-                      ${app.locals.settings.url}${req.query.redirect}
-                      <i class="bi bi-chevron-right"></i>
-                    </a>
-                  </p>
-                `}
+                        Continue Signed in as $${currentUserHTML} and Visit the
+                        Page to Which the Magic Authentication Link Would Have
+                        Redirected You:
+                        ${app.locals.settings.url}${req.query.redirect}
+                        <i class="bi bi-chevron-right"></i>
+                      </a>
+                    `}
+              </div>
+            </div>
           `,
         })
       );
