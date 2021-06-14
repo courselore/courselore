@@ -3887,7 +3887,7 @@ export default async function courselore(
         res,
         html`
           <div class="flash flash--success">
-            User settings have been updated successfully.
+            User settings updated successfully.
           </div>
         `
       );
@@ -4753,7 +4753,7 @@ export default async function courselore(
         res,
         html`
           <div class="flash flash--success">
-            Course settings have been updated successfully.
+            Course settings updated successfully.
           </div>
         `
       );
@@ -6179,7 +6179,7 @@ export default async function courselore(
           res,
           html`
             <div class="flash flash--success">
-              Enrollment has been updated successfully.
+              Enrollment updated successfully.
             </div>
           `
         );
@@ -6398,7 +6398,7 @@ export default async function courselore(
         res,
         html`
           <div class="flash flash--success">
-            Your enrollment has been updated successfully.
+            Enrollment updated successfully.
           </div>
         `
       );
