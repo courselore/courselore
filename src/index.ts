@@ -44,11 +44,12 @@ const VERSION = require("../package.json").version;
 export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
-  interface App extends express.Express {
-    locals: AppLocals;
-  }
+  interface App extends express.Express {}
   const app = express() as App;
 
+  interface App {
+    locals: AppLocals;
+  }
   interface AppLocals {
     settings: Settings;
   }
@@ -262,24 +263,21 @@ export default async function courselore(
     // TODO: Extract this logic into @leafac/css.
     const bodyDOM = JSDOM.fragment(html`<div>$${body}</div>`);
     const styles = new Map<string, CSS>();
-    for (const element of bodyDOM.querySelectorAll("[style]")) {
-      const style = element.getAttribute("style")!;
-      element.removeAttribute("style");
-      const className = `style--${murmurHash2(style)}`;
-      element.classList.add(className);
-      styles.set(className, style);
-    }
-    for (const element of bodyDOM.querySelectorAll("[data-tippy-allowHTML]")) {
-      const content = JSDOM.fragment(
-        html`<div>$${element.getAttribute("data-tippy-content")!}</div>`
-      );
-      for (const element of content.querySelectorAll("[style]")) {
+    const extractStyle = (fragment: ParentNode) => {
+      for (const element of fragment.querySelectorAll("[style]")) {
         const style = element.getAttribute("style")!;
         element.removeAttribute("style");
         const className = `style--${murmurHash2(style)}`;
         element.classList.add(className);
         styles.set(className, style);
       }
+    };
+    extractStyle(bodyDOM);
+    for (const element of bodyDOM.querySelectorAll("[data-tippy-allowHTML]")) {
+      const content = JSDOM.fragment(
+        html`<div>$${element.getAttribute("data-tippy-content")!}</div>`
+      );
+      extractStyle(content);
       element.setAttribute(
         "data-tippy-content",
         content.firstElementChild!.innerHTML
