@@ -4594,6 +4594,13 @@ export default async function courselore(
                     gap: var(--space--2);
                     overflow: auto;
 
+                    @media (max-width: 767px) {
+                      display: none;
+                    }
+                    @media (min-width: 1100px) {
+                      justify-self: end;
+                    }
+
                     .dropdown--item {
                       color: var(--color--primary-gray--600);
                       @media (prefers-color-scheme: dark) {
@@ -4616,14 +4623,6 @@ export default async function courselore(
                         box-shadow: inset var(--border-width--4) 0
                           var(--color--primary-gray--500);
                       }
-                    }
-
-                    @media (max-width: 767px) {
-                      display: none;
-                    }
-
-                    @media (min-width: 1100px) {
-                      justify-self: end;
                     }
                   `}"
                 >
@@ -5913,12 +5912,12 @@ export default async function courselore(
                         padding: var(--space--2) var(--space--bleed);
                         border-radius: var(--border-radius--md);
                         margin-left: calc(-1 * var(--space--bleed));
-                        display: grid;
-                        grid-template-columns: 1fr var(--space--32);
+                        display: flex;
                       `}"
                     >
                       <div
                         style="${css`
+                          flex: 1;
                           display: flex;
                           flex-direction: column;
                         `}"
@@ -5938,6 +5937,7 @@ export default async function courselore(
                       </div>
                       <div
                         style="${css`
+                          width: var(--space--32);
                           display: flex;
                           justify-content: flex-end;
                           align-items: baseline;
