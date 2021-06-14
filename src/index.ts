@@ -7041,7 +7041,7 @@ ${value}</textarea
 
       <div
         hidden
-        class="preview"
+        class="preview text"
         style="${css`
           background-color: var(--color--white);
           padding: var(--space--4);
