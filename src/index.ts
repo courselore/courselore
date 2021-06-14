@@ -6218,10 +6218,8 @@ export default async function courselore(
         res,
         html`
           <div class="flash flash--success">
-            $${isSelf
-              ? html`You removed yourself`
-              : html`The person been removed`}
-            from the course successfully.
+            $${isSelf ? html`You removed yourself` : html`Person removed`} from
+            the course successfully.
           </div>
         `
       );
@@ -6625,7 +6623,7 @@ export default async function courselore(
       <div
         style="${css`
           color: var(--color--primary--200);
-          background-color: var(--color--primary--800);
+          background-color: var(--color--primary--900);
           @media (prefers-color-scheme: dark) {
             color: var(--color--primary--200);
             background-color: var(--color--primary--900);
@@ -6796,7 +6794,7 @@ export default async function courselore(
                   --focus-color: var(--color--primary--200);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    background-color: var(--color--primary--800);
                     --focus-color: var(--color--primary--300);
                   }
                   padding: var(--space--1) var(--space--4);
@@ -6813,11 +6811,11 @@ export default async function courselore(
                     gap: var(--space--2);
                   `}"
                   onclick="${javascript`
-                      document.querySelector("#sidebar").classList.toggle("single-column--hidden");
-                      document.querySelector("#main").classList.toggle("single-column--hidden");
-                      this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
-                      this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
-                    `}"
+                    document.querySelector("#sidebar").classList.toggle("single-column--hidden");
+                    document.querySelector("#main").classList.toggle("single-column--hidden");
+                    this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
+                    this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
+                  `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
                   Threads
@@ -6839,7 +6837,7 @@ export default async function courselore(
               justify-content: center;
             }
 
-            @media (max-width: 1279px) {
+            @media (max-width: 899px) {
               display: flex;
               justify-content: center;
 
@@ -6849,6 +6847,18 @@ export default async function courselore(
 
               & > .single-column--hidden {
                 display: none;
+              }
+            }
+
+            @media (min-width: 900px) and (max-width: 1279px) {
+              display: flex;
+
+              & > #sidebar {
+                width: var(--space--80);
+              }
+
+              & > #main {
+                flex: 1;
               }
             }
 
