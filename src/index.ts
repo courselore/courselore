@@ -896,7 +896,6 @@ export default async function courselore(
                   display: flex;
                   & > * {
                     flex: 1;
-                    text-align: center;
                   }
                   & > label {
                     display: grid;
@@ -904,8 +903,12 @@ export default async function courselore(
                       grid-area: 1 / 1;
                     }
                     & > span {
+                      color: var(--color--primary-gray--700);
                       background-color: var(--color--white);
                       padding: var(--space--2) var(--space--4);
+                      display: flex;
+                      gap: var(--space--2);
+                      justify-content: center;
                       cursor: pointer;
                       transition: color var(--transition-duration),
                         background-color var(--transition-duration),
@@ -4951,7 +4954,10 @@ export default async function courselore(
                               element.disabled = true;
                           `}"
                         />
-                        <span>Invitation Link</span>
+                        <span>
+                          <i class="bi bi-link"></i>
+                          Invitation Link
+                        </span>
                       </label>
                       <label>
                         <input
@@ -4966,7 +4972,10 @@ export default async function courselore(
                               element.disabled = false;
                           `}"
                         />
-                        <span>Email</span>
+                        <span>
+                          <i class="bi bi-envelope"></i>
+                          Email
+                        </span>
                       </label>
                     </div>
                     <div
