@@ -1051,6 +1051,15 @@ export default async function courselore(
                   }
                 }
 
+                .separator {
+                  margin: var(--space--4) var(--space--0);
+                  border-top: var(--border-width--1) solid
+                    var(--color--primary-gray--300);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--primary-gray--600);
+                  }
+                }
+
                 .tippy-box {
                   font-size: var(--font-size--sm);
                   line-height: var(--line-height--sm);
@@ -2434,7 +2443,13 @@ export default async function courselore(
             <stop offset="0%" stop-color="var(--color--fuchsia--400)" />
             <stop offset="100%" stop-color="var(--color--purple--400)" />
           </linearGradient>
-          <linearGradient id="gradient--primary" x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient
+            id="gradient--primary"
+            x1="0%"
+            y1="0%"
+            x2="0%"
+            y2="100%"
+          >
             <stop offset="0%" stop-color="var(--color--primary--400)" />
             <stop offset="100%" stop-color="var(--color--primary--700)" />
           </linearGradient>
@@ -4905,9 +4920,8 @@ export default async function courselore(
 
               <form
                 method="POST"
-                action="${app.locals.settings.url}/courses/${
-            res.locals.course.reference
-          }/settings/invitations"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/invitations"
                 style="${css`
                   display: flex;
                   flex-direction: column;
@@ -5537,7 +5551,10 @@ export default async function courselore(
                                 $${(
                                   await QRCode.toString(link, { type: "svg" })
                                 )
-                                  .replace("#000000", "url('#gradient--primary')")
+                                  .replace(
+                                    "#000000",
+                                    "url('#gradient--primary')"
+                                  )
                                   .replace("#ffffff", "#00000000")}
                               </div>
                             </div>
