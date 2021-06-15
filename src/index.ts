@@ -1236,16 +1236,16 @@ export default async function courselore(
                     &.modal--close-button::after {
                       content: "\\f622";
                       font-family: bootstrap-icons !important;
-                      font-size: var(--font-size--2xl);
-                      line-height: var(--line-height--2xl);
-                      position: fixed;
-                      top: var(--space--2);
-                      right: var(--space--4);
-                      cursor: pointer;
+                      font-size: var(--font-size--xl);
+                      line-height: var(--line-height--xl);
                       color: var(--color--primary--800);
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--primary--400);
                       }
+                      position: fixed;
+                      top: var(--space--2);
+                      right: var(--space--4);
+                      cursor: pointer;
                     }
 
                     & > div {
@@ -1254,7 +1254,7 @@ export default async function courselore(
 
                       &.modal--dialog {
                         color: var(--color--primary-gray--700);
-                        background-color: var(--color--primary-gray--50);
+                        background-color: var(--color--primary-gray--100);
                         @media (prefers-color-scheme: dark) {
                           color: var(--color--primary-gray--200);
                           background-color: var(--color--primary-gray--900);
@@ -5201,46 +5201,33 @@ export default async function courselore(
                         $${invitation.email === null
                           ? html`
                               <div>
-                                <span
+                                <button
                                   $${isExpired
-                                    ? html`
-                                        data-tippy-content="This invitation has
-                                        already expired."
-                                        data-tippy-theme="tooltip" tabindex="0"
-                                      `
-                                    : html``}
+                                    ? html`disabled`
+                                    : html`
+                                        data-micromodal-trigger="modal--invitation--${invitation.reference}"
+                                      `}
                                 >
-                                  <button
-                                    type="button"
-                                    class="btn"
+                                  <span
                                     $${isExpired
-                                      ? html`disabled`
+                                      ? html`
+                                          data-tippy-content="This invitation
+                                          has already expired."
+                                          data-tippy-theme="tooltip"
+                                          tabindex="0"
+                                        `
                                       : html`
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#invitation--${invitation.reference}"
-                                          onclick="${javascript`
-                                              bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                                            `}"
+                                          data-tippy-content="See Invitation"
+                                          data-tippy-theme="tooltip"
+                                          data-tippy-touch="false"
                                         `}
-                                    style="${css`
-                                      padding: 0;
-                                    `}"
                                   >
-                                    <span
-                                      $${isExpired
-                                        ? html``
-                                        : html`
-                                            data-tippy-content="See Invitation"
-                                            data-tippy-theme="tooltip"
-                                          `}
-                                    >
-                                      <i class="bi bi-link"></i>
-                                      ${"*".repeat(
-                                        6
-                                      )}${invitation.reference.slice(6)}
-                                    </span>
-                                  </button>
-                                </span>
+                                    <i class="bi bi-link"></i>
+                                    ${"*".repeat(
+                                      6
+                                    )}${invitation.reference.slice(6)}
+                                  </span>
+                                </button>
                               </div>
                             `
                           : html`
@@ -5453,6 +5440,12 @@ export default async function courselore(
                 `}
             $${await Promise.all(
               invitations.map(async (invitation) => {
+                if (
+                  app.locals.helpers.isExpired(invitation.expiresAt) ||
+                  invitation.email !== null
+                )
+                  return html``;
+
                 const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
 
                 return html`

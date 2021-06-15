@@ -687,6 +687,10 @@ module.exports = (require) => {
                         }
 
                         & > div {
+                          background-color: var(--color--primary-gray--50);
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--primary-gray--800);
+                          }
                           flex: 1;
                           padding: var(--space--4);
                           margin-top: calc(-1 * var(--border-width--1));
