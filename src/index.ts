@@ -896,6 +896,49 @@ export default async function courselore(
                   }
                 }
 
+                .input--radio--group {
+                  display: flex;
+                  & > label {
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
+                    & > span {
+                      background-color: var(--color--white);
+                      padding: var(--space--1) var(--space--3);
+                      cursor: pointer;
+                      transition: color var(--transition-duration),
+                        background-color var(--transition-duration),
+                        border-color var(--transition-duration);
+                      &:hover {
+                        background-color: var(--color--primary-gray--200);
+                      }
+                    }
+                    & > :checked + span {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--700);
+                      border-color: var(--color--primary--700);
+                    }
+                    &:first-child > span {
+                      border-top-left-radius: var(--border-radius--md);
+                      border-bottom-left-radius: var(--border-radius--md);
+                    }
+                    &:last-child > span {
+                      border-top-right-radius: var(--border-radius--md);
+                      border-bottom-right-radius: var(--border-radius--md);
+                    }
+                    &:not(:last-child) > span {
+                      border-right: var(--border-width--1) solid
+                        var(--color--primary-gray--200);
+                    }
+                    &:not(:first-child) > span {
+                      border-left: var(--border-width--1) solid
+                        var(--color--primary-gray--200);
+                      margin-left: calc(-1 * var(--border-width--1));
+                    }
+                  }
+                }
+
                 .button {
                   font-weight: var(--font-weight--bold);
                   padding: var(--space--2) var(--space--4);
@@ -4780,7 +4823,6 @@ export default async function courselore(
     }
   );
 
-  // TODO: There’s no visual indication of ‘used’, which allows you to even try some forbidden operations, such as trying to change the expiration date of an used invitation. Also, the table layout breaks on small screens.
   app.get<
     { courseReference: string },
     HTML,
@@ -4842,43 +4884,45 @@ export default async function courselore(
                   flex-direction: column;
                   gap: var(--space--4);
                 `}"
-              ></form>
+              >
+                <div>
+                  <p>Role</p>
+                  <div class="input--radio--group">
+                    $${app.locals.constants.roles.map(
+                      (role, index) =>
+                        html`
+                          <label>
+                            <input
+                              type="radio"
+                              name="role"
+                              value="${role}"
+                              required
+                              autocomplete="off"
+                            />
+                            <span>${lodash.capitalize(role)}</span>
+                          </label>
+                        `
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <button
+                    class="button button--primary"
+                    style="${css`
+                      @media (max-width: 400px) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-person-plus"></i>
+                    Create Invitation
+                  </button>
+                </div>
+              </form>
             </div>
             <!--
-              <div
-                style="${css`
-              display: flex;
-              gap: 1rem;
-              flex-direction: column;
-            `}"
-              >
-                <div
-                  class="btn-group"
-                  role="group"
-                  aria-label="Role"
-                  style="${css`
-              & > * {
-                flex: 1;
-              }
-            `}"
-                >
-                  $${app.locals.constants.roles.map(
-              (role, index) =>
-                html`
-                  <input
-                    type="radio"
-                    class="btn-check"
-                    name="role"
-                    id="${role}"
-                    autocomplete="off"
-                    value="${role}"
-                    required
-                  />
-                  <label class="btn btn-outline-primary" for="${role}">
-                    ${lodash.capitalize(role)}
-                  </label>
-                `
-            )}
+                 
                 </div>
 
                 <div>
