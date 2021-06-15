@@ -914,11 +914,6 @@ export default async function courselore(
                         background-color: var(--color--primary-gray--200);
                       }
                     }
-                    & > :checked + span {
-                      color: var(--color--primary--200);
-                      background-color: var(--color--primary--700);
-                      border-color: var(--color--primary--700);
-                    }
                     &:first-child > span {
                       border-top-left-radius: var(--border-radius--md);
                       border-bottom-left-radius: var(--border-radius--md);
@@ -935,6 +930,12 @@ export default async function courselore(
                       border-left: var(--border-width--1) solid
                         var(--color--primary-gray--200);
                       margin-left: calc(-1 * var(--border-width--1));
+                    }
+                    & > :checked + span {
+                      color: var(--color--primary--200);
+                      background-color: var(--color--primary--700);
+                      border-color: var(--color--primary--700);
+                      position: relative;
                     }
                   }
                 }
