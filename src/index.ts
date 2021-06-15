@@ -4920,9 +4920,8 @@ export default async function courselore(
 
               <form
                 method="POST"
-                action="${app.locals.settings.url}/courses/${
-            res.locals.course.reference
-          }/settings/invitations"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/invitations"
                 style="${css`
                   display: flex;
                   flex-direction: column;
@@ -5165,406 +5164,387 @@ export default async function courselore(
                 </div>
               </form>
             </div>
-            <!--
-            $${
-              invitations.length === 0
-                ? html``
-                : html`
-                    <h6
-                      style="${css`
-                        margin-top: 2rem;
-                      `}"
-                    >
-                      Existing Invitations
-                    </h6>
+            $${invitations.length === 0
+              ? html``
+              : html`
+                  <hr class="separator" />
 
-                    <table class="table table-hover table-sm">
-                      <thead>
-                        <tr>
-                          <th>Invitation</th>
-                          <th>Role</th>
-                          <th
-                            style="${css`
-                              text-align: right;
-                            `}"
-                          >
-                            Expiration
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        $${invitations.map((invitation) => {
-                          const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                          const isExpired = app.locals.helpers.isExpired(
-                            invitation.expiresAt
-                          );
-                          const isUsed = invitation.usedAt !== null;
+                  $${invitations.map((invitation) => {
+                    const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                    const isExpired = app.locals.helpers.isExpired(
+                      invitation.expiresAt
+                    );
+                    const isUsed = invitation.usedAt !== null;
 
-                          return html`
-                            <tr>
-                              <td>
-                                $${invitation.email === null
-                                  ? html`
-                                      <span
-                                        $${isExpired
-                                          ? html`
-                                              data-bs-toggle="tooltip"
-                                              title="This invitation has already
-                                              expired."
-                                            `
-                                          : html`
-                                              data-bs-toggle="tooltip"
-                                              title="See Invitation"
-                                            `}
-                                      >
-                                        <button
-                                          type="button"
-                                          class="btn"
-                                          $${isExpired
-                                            ? html`disabled`
-                                            : html`
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#invitation--${invitation.reference}"
-                                                onclick="${javascript`
-                                                bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                                              `}"
-                                              `}
-                                          style="${css`
-                                            padding: 0;
-                                          `}"
-                                        >
-                                          <i class="bi bi-link"></i>
-                                          ${"*".repeat(
-                                            6
-                                          )}${invitation.reference.slice(6)}
-                                        </button>
-                                      </span>
-                                    `
-                                  : html`
-                                      <i class="bi bi-envelope"></i>
-                                      ${invitation.name === null
-                                        ? invitation.email
-                                        : `${invitation.name} <${invitation.email}>`}
-                                    `}
-                              </td>
-                              <td>
-                                <div class="dropdown">
+                    return html`
+                      <div
+                        style="${css`
+                          &:nth-child(even) {
+                            background-color: var(--color--primary-gray--200);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(--color--primary-gray--800);
+                            }
+                          }
+                          @media (max-width: 1099px) {
+                            --space--bleed: var(--space--2);
+                          }
+                          @media (min-width: 1100px) {
+                            --space--bleed: var(--space--4);
+                          }
+                          width: calc(100% + 2 * var(--space--bleed));
+                          padding: var(--space--2) var(--space--bleed);
+                          border-radius: var(--border-radius--md);
+                          margin-left: calc(-1 * var(--space--bleed));
+                          display: flex;
+                        `}"
+                      >
+                        $${invitation.email === null
+                          ? html`
+                              <div>
+                                <span
+                                  $${isExpired
+                                    ? html`
+                                        data-tippy-content="This invitation has
+                                        already expired."
+                                        data-tippy-theme="tooltip" tabindex="0"
+                                      `
+                                    : html``}
+                                >
                                   <button
-                                    class="btn dropdown-toggle"
                                     type="button"
-                                    id="invitation-role-dropdown--${invitation.reference}"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
+                                    class="btn"
+                                    $${isExpired
+                                      ? html`disabled`
+                                      : html`
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#invitation--${invitation.reference}"
+                                          onclick="${javascript`
+                                              bootstrap.Tooltip.getInstance(this.parentElement).hide();
+                                            `}"
+                                        `}
                                     style="${css`
                                       padding: 0;
                                     `}"
                                   >
-                                    ${lodash.capitalize(invitation.role)}
-                                  </button>
-                                  <div
-                                    class="dropdown-menu"
-                                    aria-labelledby="invitation-role-dropdown--${invitation.reference}"
-                                  >
-                                    $${app.locals.constants.roles.map((role) =>
-                                      role === invitation.role
+                                    <span
+                                      $${isExpired
                                         ? html``
                                         : html`
-                                            <form
-                                              method="POST"
-                                              action="${action}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="role"
-                                                value="${role}"
-                                              />
-                                              <span
-                                                $${isUsed
-                                                  ? html`
-                                                      data-bs-toggle="tooltip"
-                                                      title="You may not change
-                                                      the role of this
-                                                      invitation because it has
-                                                      already been used."
-                                                    `
-                                                  : isExpired
-                                                  ? html`
-                                                      data-bs-toggle="tooltip"
-                                                      title="You may not change
-                                                      the role of this
-                                                      invitation because it’s
-                                                      expired."
-                                                    `
-                                                  : html``}
-                                              >
-                                                <button
-                                                  type="submit"
-                                                  class="dropdown-item"
-                                                  $${isUsed || isExpired
-                                                    ? html`disabled`
-                                                    : html``}
-                                                >
-                                                  Change Invitation Role to
-                                                  ${lodash.capitalize(role)}
-                                                </button>
-                                              </span>
-                                            </form>
-                                          `
-                                    )}
-                                  </div>
-                                </div>
-                              </td>
-                              <td
-                                style="${css`
-                                  text-align: right;
-                                `}"
-                              >
-                                <div class="dropdown">
-                                  <button
-                                    class="btn dropdown-toggle"
-                                    type="button"
-                                    id="invitation-expiresAt-dropdown--${invitation.reference}"
-                                    data-bs-toggle="dropdown"
-                                    data-bs-auto-close="outside"
-                                    aria-expanded="false"
-                                    style="${css`
-                                      padding: 0 0.5rem;
-                                      text-transform: capitalize;
-                                      ${isExpired
-                                        ? css`
-                                            color: $red-800;
-                                            background-color: $red-100;
-                                          `
-                                        : invitation.expiresAt !== null
-                                        ? css`
-                                            color: $orange-800;
-                                            background-color: $orange-100;
-                                          `
-                                        : css`
-                                            color: $green-800;
-                                            background-color: $green-100;
-                                          `};
-                                    `}"
-                                  >
-                                    $${isExpired
-                                      ? html`
-                                          <time
-                                            >${new Date(
-                                              invitation.expiresAt!
-                                            ).toISOString()}</time
-                                          >
-                                        `
-                                      : invitation.expiresAt !== null
-                                      ? html`
-                                          <time
-                                            >${new Date(
-                                              invitation.expiresAt!
-                                            ).toISOString()}</time
-                                          >
-                                        `
-                                      : html`Doesn’t Expire`}
-                                  </button>
-                                  <div
-                                    class="dropdown-menu"
-                                    aria-labelledby="invitation-expiresAt-dropdown--${invitation.reference}"
-                                  >
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=PATCH"
-                                      style="${css`
-                                        padding: 0 1rem;
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: 0.5rem;
-                                      `}"
+                                            data-tippy-content="See Invitation"
+                                            data-tippy-theme="tooltip"
+                                          `}
                                     >
-                                      <div class="form-floating">
-                                        <input
-                                          type="text"
-                                          class="form-control datetime"
-                                          id="expiresAt"
-                                          name="expiresAt"
-                                          value="${new Date(
-                                            invitation.expiresAt ?? new Date()
-                                          ).toISOString()}"
-                                          required
-                                          data-onvalidate="${javascript`
+                                      <i class="bi bi-link"></i>
+                                      ${"*".repeat(
+                                        6
+                                      )}${invitation.reference.slice(6)}
+                                    </span>
+                                  </button>
+                                </span>
+                              </div>
+                            `
+                          : html`
+                              <i class="bi bi-envelope"></i>
+                              ${invitation.name === null
+                                ? invitation.email
+                                : `${invitation.name} <${invitation.email}>`}
+                            `}
+                      </div>
+                      <!--
+                      <tr>
+                        <td>
+                        </td>
+                        <td>
+                          <div class="dropdown">
+                            <button
+                              class="btn dropdown-toggle"
+                              type="button"
+                              id="invitation-role-dropdown--${invitation.reference}"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                              style="${css`
+                        padding: 0;
+                      `}"
+                            >
+                              ${lodash.capitalize(invitation.role)}
+                            </button>
+                            <div
+                              class="dropdown-menu"
+                              aria-labelledby="invitation-role-dropdown--${invitation.reference}"
+                            >
+                              $${app.locals.constants.roles.map((role) =>
+                        role === invitation.role
+                          ? html``
+                          : html`
+                              <form
+                                method="POST"
+                                action="${action}?_method=PATCH"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="role"
+                                  value="${role}"
+                                />
+                                <span
+                                  $${isUsed
+                                    ? html`
+                                        data-bs-toggle="tooltip" title="You may
+                                        not change the role of this invitation
+                                        because it has already been used."
+                                      `
+                                    : isExpired
+                                    ? html`
+                                        data-bs-toggle="tooltip" title="You may
+                                        not change the role of this invitation
+                                        because it’s expired."
+                                      `
+                                    : html``}
+                                >
+                                  <button
+                                    type="submit"
+                                    class="dropdown-item"
+                                    $${isUsed || isExpired
+                                      ? html`disabled`
+                                      : html``}
+                                  >
+                                    Change Invitation Role to
+                                    ${lodash.capitalize(role)}
+                                  </button>
+                                </span>
+                              </form>
+                            `
+                      )}
+                            </div>
+                          </div>
+                        </td>
+                        <td
+                          style="${css`
+                        text-align: right;
+                      `}"
+                        >
+                          <div class="dropdown">
+                            <button
+                              class="btn dropdown-toggle"
+                              type="button"
+                              id="invitation-expiresAt-dropdown--${invitation.reference}"
+                              data-bs-toggle="dropdown"
+                              data-bs-auto-close="outside"
+                              aria-expanded="false"
+                              style="${css`
+                        padding: 0 0.5rem;
+                        text-transform: capitalize;
+                        ${isExpired
+                          ? css`
+                              color: $red-800;
+                              background-color: $red-100;
+                            `
+                          : invitation.expiresAt !== null
+                          ? css`
+                              color: $orange-800;
+                              background-color: $orange-100;
+                            `
+                          : css`
+                              color: $green-800;
+                              background-color: $green-100;
+                            `};
+                      `}"
+                            >
+                              $${isExpired
+                        ? html`
+                            <time
+                              >${new Date(
+                                invitation.expiresAt!
+                              ).toISOString()}</time
+                            >
+                          `
+                        : invitation.expiresAt !== null
+                        ? html`
+                            <time
+                              >${new Date(
+                                invitation.expiresAt!
+                              ).toISOString()}</time
+                            >
+                          `
+                        : html`Doesn’t Expire`}
+                            </button>
+                            <div
+                              class="dropdown-menu"
+                              aria-labelledby="invitation-expiresAt-dropdown--${invitation.reference}"
+                            >
+                              <form
+                                method="POST"
+                                action="${action}?_method=PATCH"
+                                style="${css`
+                        padding: 0 1rem;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                      `}"
+                              >
+                                <div class="form-floating">
+                                  <input
+                                    type="text"
+                                    class="form-control datetime"
+                                    id="expiresAt"
+                                    name="expiresAt"
+                                    value="${new Date(
+                        invitation.expiresAt ?? new Date()
+                      ).toISOString()}"
+                                    required
+                                    data-onvalidate="${javascript`
                                           if (new Date(this.value).getTime() <= Date.now())
                                             return "Must be in the future";
                                         `}"
-                                        />
-                                        <label for="expiresAt"
-                                          >Expires at</label
-                                        >
-                                      </div>
-                                      <button
-                                        type="submit"
-                                        class="btn btn-outline-secondary"
-                                      >
-                                        <i class="bi bi-pencil"></i>
-                                        Update Expiration Date
-                                      </button>
-                                    </form>
-                                    <hr class="dropdown-divider" />
-                                    $${invitation.expiresAt === null
-                                      ? html``
-                                      : html`
-                                          <form
-                                            method="POST"
-                                            action="${action}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="doesntExpire"
-                                              value="true"
-                                            />
-                                            <button
-                                              type="submit"
-                                              class="dropdown-item"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-minus"
-                                              ></i>
-                                              Set Invitation as Non-Expiring
-                                            </button>
-                                          </form>
-                                        `}
-                                    $${isExpired
-                                      ? html``
-                                      : html`
-                                          <form
-                                            method="POST"
-                                            action="${action}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="expireNow"
-                                              value="true"
-                                            />
-                                            <button
-                                              type="submit"
-                                              class="dropdown-item"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-plus"
-                                              ></i>
-                                              Expire Invitation Now
-                                            </button>
-                                          </form>
-                                        `}
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          `;
-                        })}
-                      </tbody>
-                    </table>
-                    -->
-                    $${await Promise.all(
-                      invitations.map(async (invitation) => {
-                        const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-
-                        return html`
-                          <div
-                            id="modal--invitation--${invitation.reference}"
-                            class="modal"
-                          >
-                            <div
-                              data-micromodal-close
-                              class="modal--close-button"
-                            >
-                              <div
-                                class="modal--dialog"
-                                style="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `}"
-                              >
-                                <h2 class="heading--1">
-                                  Enroll in ${res.locals.course.name} as
-                                  ${lodash.capitalize(invitation.role)}
-                                </h2>
-
-                                <div
-                                  style="${css`
-                                    display: grid;
-                                    & > * {
-                                      grid-area: 1 / 1;
-                                    }
-                                  `}"
-                                >
-                                  <input
-                                    type="text"
-                                    value="${link}"
-                                    readonly
-                                    class="input--text"
-                                    style="${css`
-                                      padding-right: var(--space--10);
-                                      user-select: all;
-                                    `}"
                                   />
-                                  <button
-                                    data-tippy-content="Copy"
-                                    data-tippy-theme="tooltip"
-                                    data-tippy-touch="false"
-                                    style="${css`
-                                      justify-self: end;
-                                      align-self: start;
-                                      margin-top: var(--space--2);
-                                      margin-right: var(--space--4);
-                                      position: relative;
-                                    `}"
-                                    onclick="${javascript`
-                                      this.previousElementSibling.select();
-                                      document.execCommand("copy");
-                                      const classList = this.firstElementChild.classList;
-                                      classList.remove("bi-clipboard");
-                                      classList.add("bi-check-lg");
-                                      this.style.color = "var(--color--green--500)";
-                                      window.setTimeout(() => {
-                                        classList.remove("bi-check-lg");
-                                        classList.add("bi-clipboard");
-                                        this.style.color = null;
-                                      }, 500);
-                                    `}"
-                                  >
-                                    <i class="bi bi-clipboard"></i>
-                                  </button>
+                                  <label for="expiresAt">Expires at</label>
                                 </div>
-
-                                <p
-                                  style="${css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `}"
+                                <button
+                                  type="submit"
+                                  class="btn btn-outline-secondary"
                                 >
-                                  QR Code
-                                  <button
-                                    data-tippy-content="People may point their phone camera at the image below to follow the invitation link."
-                                    data-tippy-theme="tooltip"
-                                    data-tippy-trigger="click"
-                                  >
-                                    <i class="bi bi-info-circle"></i>
-                                  </button>
-                                </p>
-                                $${(
-                                  await QRCode.toString(link, { type: "svg" })
-                                )
-                                  .replace(
-                                    "#000000",
-                                    "url('#gradient--primary')"
-                                  )
-                                  .replace("#ffffff", "#00000000")}
-                              </div>
+                                  <i class="bi bi-pencil"></i>
+                                  Update Expiration Date
+                                </button>
+                              </form>
+                              <hr class="dropdown-divider" />
+                              $${invitation.expiresAt === null
+                        ? html``
+                        : html`
+                            <form
+                              method="POST"
+                              action="${action}?_method=PATCH"
+                            >
+                              <input
+                                type="hidden"
+                                name="doesntExpire"
+                                value="true"
+                              />
+                              <button type="submit" class="dropdown-item">
+                                <i class="bi bi-calendar-minus"></i>
+                                Set Invitation as Non-Expiring
+                              </button>
+                            </form>
+                          `}
+                              $${isExpired
+                        ? html``
+                        : html`
+                            <form
+                              method="POST"
+                              action="${action}?_method=PATCH"
+                            >
+                              <input
+                                type="hidden"
+                                name="expireNow"
+                                value="true"
+                              />
+                              <button type="submit" class="dropdown-item">
+                                <i class="bi bi-calendar-plus"></i>
+                                Expire Invitation Now
+                              </button>
+                            </form>
+                          `}
                             </div>
                           </div>
-                        `;
-                      })
-                    )}
-                  `
-            }
+                        </td>
+                      </tr>
+                      -->
+                    `;
+                  })}
+                `}
+            $${await Promise.all(
+              invitations.map(async (invitation) => {
+                const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+
+                return html`
+                  <div
+                    id="modal--invitation--${invitation.reference}"
+                    class="modal"
+                  >
+                    <div data-micromodal-close class="modal--close-button">
+                      <div
+                        class="modal--dialog"
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
+                        <h2 class="heading--1">
+                          Enroll in ${res.locals.course.name} as
+                          ${lodash.capitalize(invitation.role)}
+                        </h2>
+
+                        <div
+                          style="${css`
+                            display: grid;
+                            & > * {
+                              grid-area: 1 / 1;
+                            }
+                          `}"
+                        >
+                          <input
+                            type="text"
+                            value="${link}"
+                            readonly
+                            class="input--text"
+                            style="${css`
+                              padding-right: var(--space--10);
+                              user-select: all;
+                            `}"
+                          />
+                          <button
+                            data-tippy-content="Copy"
+                            data-tippy-theme="tooltip"
+                            data-tippy-touch="false"
+                            style="${css`
+                              justify-self: end;
+                              align-self: start;
+                              margin-top: var(--space--2);
+                              margin-right: var(--space--4);
+                              position: relative;
+                            `}"
+                            onclick="${javascript`
+                              this.previousElementSibling.select();
+                              document.execCommand("copy");
+                              const classList = this.firstElementChild.classList;
+                              classList.remove("bi-clipboard");
+                              classList.add("bi-check-lg");
+                              this.style.color = "var(--color--green--500)";
+                              window.setTimeout(() => {
+                                classList.remove("bi-check-lg");
+                                classList.add("bi-clipboard");
+                                this.style.color = null;
+                              }, 500);
+                            `}"
+                          >
+                            <i class="bi bi-clipboard"></i>
+                          </button>
+                        </div>
+
+                        <p
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          QR Code
+                          <button
+                            data-tippy-content="People may point their phone camera at the image below to follow the invitation link."
+                            data-tippy-theme="tooltip"
+                            data-tippy-trigger="click"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </p>
+                        $${(await QRCode.toString(link, { type: "svg" }))
+                          .replace("#000000", "url('#gradient--primary')")
+                          .replace("#ffffff", "#00000000")}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              })
+            )}
           `,
         })
       );
@@ -6032,207 +6012,213 @@ export default async function courselore(
                           gap: var(--space--6);
                         `}"
                       >
-                        <span
-                          $${isOnlyStaff
-                            ? html`
-                                data-tippy-content="You may not change your own
-                                role because you’re the only staff member."
-                                data-tippy-theme="tooltip" tabindex="0"
-                              `
-                            : html``}
-                        >
                           <button
-                            $${isOnlyStaff
-                              ? html`
-                                  disabled style="${css`
-                                    color: var(--color--primary-gray--400);
-                                    @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
-                                `
-                              : html`
-                                  data-tippy-content="${html`
-                                    $${app.locals.constants.roles.map((role) =>
-                                      role === enrollment.role
-                                        ? html``
-                                        : html`
-                                            <form
-                                              method="POST"
-                                              action="${action}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="role"
-                                                value="${role}"
-                                              />
-                                              <button
-                                                $${isSelf
-                                                  ? html`
-                                                      type="button"
-                                                      data-tippy-content="${html`
-                                                        <div
-                                                          style="${css`
-                                                            padding: var(
-                                                                --space--2
-                                                              )
-                                                              var(--space--0);
-                                                            display: flex;
-                                                            flex-direction: column;
-                                                            gap: var(
-                                                              --space--4
-                                                            );
-                                                          `}"
-                                                        >
-                                                          <p>
-                                                            Are you sure you
-                                                            want to convert
-                                                            yourself into
-                                                            ${role}?
-                                                          </p>
-                                                          <p>
-                                                            <strong
+                            $${
+                              isOnlyStaff
+                                ? html`
+                                    disabled style="${css`
+                                      color: var(--color--primary-gray--400);
+                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
+                                  `
+                                : html`
+                                    data-tippy-content="${html`
+                                      $${app.locals.constants.roles.map(
+                                        (role) =>
+                                          role === enrollment.role
+                                            ? html``
+                                            : html`
+                                                <form
+                                                  method="POST"
+                                                  action="${action}?_method=PATCH"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="role"
+                                                    value="${role}"
+                                                  />
+                                                  <button
+                                                    $${isSelf
+                                                      ? html`
+                                                          type="button"
+                                                          data-tippy-content="${html`
+                                                            <div
                                                               style="${css`
-                                                                font-weight: var(
-                                                                  --font-weight--bold
+                                                                padding: var(
+                                                                    --space--2
+                                                                  )
+                                                                  var(
+                                                                    --space--0
+                                                                  );
+                                                                display: flex;
+                                                                flex-direction: column;
+                                                                gap: var(
+                                                                  --space--4
                                                                 );
                                                               `}"
                                                             >
-                                                              You may not undo
-                                                              this action!
-                                                            </strong>
-                                                          </p>
-                                                          <button
-                                                            class="button button--danger"
-                                                            onclick="${javascript`
+                                                              <p>
+                                                                Are you sure you
+                                                                want to convert
+                                                                yourself into
+                                                                ${role}?
+                                                              </p>
+                                                              <p>
+                                                                <strong
+                                                                  style="${css`
+                                                                    font-weight: var(
+                                                                      --font-weight--bold
+                                                                    );
+                                                                  `}"
+                                                                >
+                                                                  You may not
+                                                                  undo this
+                                                                  action!
+                                                                </strong>
+                                                              </p>
+                                                              <button
+                                                                class="button button--danger"
+                                                                onclick="${javascript`
                                                               document.querySelector('[aria-describedby="' + this.closest("[data-tippy-root]").id + '"]').closest("form").submit();
                                                             `}"
-                                                          >
-                                                            Convert to
-                                                            ${lodash.capitalize(
-                                                              role
-                                                            )}
-                                                          </button>
-                                                        </div>
-                                                      `}"
-                                                      data-tippy-theme="dropdown
-                                                      dropdown--danger"
-                                                      data-tippy-trigger="click"
-                                                      data-tippy-interactive="true"
-                                                      data-tippy-allowHTML="true"
-                                                      data-tippy-append-to="body"
-                                                    `
-                                                  : html``}
-                                                class="dropdown--item"
-                                              >
-                                                Convert to
-                                                ${lodash.capitalize(role)}
-                                              </button>
-                                            </form>
-                                          `
-                                    )}
-                                  `}"
-                                  data-tippy-theme="dropdown"
-                                  data-tippy-trigger="click"
-                                  data-tippy-interactive="true"
-                                  data-tippy-allowHTML="true" style="${css`
-                                    transition: color var(--transition-duration);
-                                    &:hover {
-                                      color: var(--color--primary-gray--800);
-                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
-                                    }`}"
-                                `}
+                                                              >
+                                                                Convert to
+                                                                ${lodash.capitalize(
+                                                                  role
+                                                                )}
+                                                              </button>
+                                                            </div>
+                                                          `}"
+                                                          data-tippy-theme="dropdown
+                                                          dropdown--danger"
+                                                          data-tippy-trigger="click"
+                                                          data-tippy-interactive="true"
+                                                          data-tippy-allowHTML="true"
+                                                          data-tippy-append-to="body"
+                                                        `
+                                                      : html``}
+                                                    class="dropdown--item"
+                                                  >
+                                                    Convert to
+                                                    ${lodash.capitalize(role)}
+                                                  </button>
+                                                </form>
+                                              `
+                                      )}
+                                    `}"
+                                    data-tippy-theme="dropdown"
+                                    data-tippy-trigger="click"
+                                    data-tippy-interactive="true"
+                                    data-tippy-allowHTML="true" style="${css`
+                                      transition: color
+                                        var(--transition-duration);
+                                      &:hover {
+                                        color: var(--color--primary-gray--800);
+                                        @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
+                                      }`}"
+                                  `
+                            }
                           >
                             <span
-                              $${isOnlyStaff
-                                ? html``
-                                : html`
-                                    data-tippy-content="Change role"
-                                    data-tippy-theme="tooltip"
-                                    data-tippy-touch="false"
-                                  `}
+                              $${
+                                isOnlyStaff
+                                  ? html`
+                                      data-tippy-content="You may not change
+                                      your own role because you’re the only
+                                      staff member." data-tippy-theme="tooltip"
+                                      tabindex="0"
+                                    `
+                                  : html`
+                                      data-tippy-content="Change role"
+                                      data-tippy-theme="tooltip"
+                                      data-tippy-touch="false"
+                                    `
+                              }
                             >
                               ${lodash.capitalize(enrollment.role)}
                               <i class="bi bi-chevron-down"></i>
                             </span>
-                          </button>
                         </span>
 
-                        <span
-                          $${isOnlyStaff
-                            ? html`
-                                data-tippy-content="You may not remove yourself
-                                from the course because you’re the only staff
-                                member." data-tippy-theme="tooltip
-                                tooltip--danger" tabindex="0"
-                              `
-                            : html``}
-                        >
                           <button
-                            $${isOnlyStaff
-                              ? html`
-                                  disabled style="${css`
-                                    color: var(--color--primary-gray--400);
-                                    @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
-                                `
-                              : html`
-                                  data-tippy-content="${html`
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=DELETE"
-                                    >
-                                      <div
-                                        style="${css`
-                                          padding: var(--space--2)
-                                            var(--space--0);
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--4);
-                                        `}"
+                            $${
+                              isOnlyStaff
+                                ? html`
+                                    disabled style="${css`
+                                      color: var(--color--primary-gray--400);
+                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
+                                  `
+                                : html`
+                                    data-tippy-content="${html`
+                                      <form
+                                        method="POST"
+                                        action="${action}?_method=DELETE"
                                       >
-                                        <p>
-                                          Are you sure you want to remove
-                                          ${isSelf ? "yourself" : "this person"}
-                                          from the course?
-                                        </p>
-                                        <p>
-                                          <strong
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                            `}"
-                                          >
-                                            You may not undo this action!
-                                          </strong>
-                                        </p>
-                                        <button class="button button--danger">
-                                          Remove from the course
-                                        </button>
-                                      </div>
-                                    </form>
-                                  `}"
-                                  data-tippy-theme="dropdown dropdown--danger"
-                                  data-tippy-trigger="click"
-                                  data-tippy-interactive="true"
-                                  data-tippy-allowHTML="true" style="${css`
-                                    transition: color var(--transition-duration);
-                                    &:hover {
-                                      color: var(--color--rose--500);
-                                      @media (prefers-color-scheme: dark) {color: var(--color--rose--500);}
-                                    }`}"
-                                `}
+                                        <div
+                                          style="${css`
+                                            padding: var(--space--2)
+                                              var(--space--0);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `}"
+                                        >
+                                          <p>
+                                            Are you sure you want to remove
+                                            ${isSelf
+                                              ? "yourself"
+                                              : "this person"}
+                                            from the course?
+                                          </p>
+                                          <p>
+                                            <strong
+                                              style="${css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                              `}"
+                                            >
+                                              You may not undo this action!
+                                            </strong>
+                                          </p>
+                                          <button class="button button--danger">
+                                            Remove from the course
+                                          </button>
+                                        </div>
+                                      </form>
+                                    `}"
+                                    data-tippy-theme="dropdown dropdown--danger"
+                                    data-tippy-trigger="click"
+                                    data-tippy-interactive="true"
+                                    data-tippy-allowHTML="true" style="${css`
+                                      transition: color
+                                        var(--transition-duration);
+                                      &:hover {
+                                        color: var(--color--rose--500);
+                                        @media (prefers-color-scheme: dark) {color: var(--color--rose--500);}
+                                      }`}"
+                                  `
+                            }
                           >
                             <span
-                              $${isOnlyStaff
-                                ? html``
-                                : html`
-                                    data-tippy-content="Remove from the course"
-                                    data-tippy-theme="tooltip tooltip--danger"
-                                    data-tippy-touch="false"
-                                  `}
+                              $${
+                                isOnlyStaff
+                                  ? html`
+                                      data-tippy-content="You may not remove
+                                      yourself from the course because you’re
+                                      the only staff member."
+                                      data-tippy-theme="tooltip tooltip--danger"
+                                      tabindex="0"
+                                    `
+                                  : html`
+                                      data-tippy-content="Remove from the
+                                      course" data-tippy-theme="tooltip
+                                      tooltip--danger" data-tippy-touch="false"
+                                    `
+                              }
                             >
                               <i class="bi bi-person-dash"></i>
                             </span>
                           </button>
-                        </span>
                       </div>
                     </div>
                   `;
