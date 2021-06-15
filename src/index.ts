@@ -897,7 +897,14 @@ export default async function courselore(
                 }
 
                 .input--radio--group {
+                  font-size: var(--font-size--base);
+                  line-height: var(--line-height--base);
+                  width: 100%;
                   display: flex;
+                  & > * {
+                    flex: 1;
+                    text-align: center;
+                  }
                   & > label {
                     display: grid;
                     & > * {
@@ -905,7 +912,7 @@ export default async function courselore(
                     }
                     & > span {
                       background-color: var(--color--white);
-                      padding: var(--space--1) var(--space--3);
+                      padding: var(--space--2) var(--space--4);
                       cursor: pointer;
                       transition: color var(--transition-duration),
                         background-color var(--transition-duration),
@@ -1007,6 +1014,27 @@ export default async function courselore(
                       }
                       &:active {
                         background-color: var(--color--rose--900);
+                      }
+                    }
+                  }
+
+                  &.button--success {
+                    color: var(--color--green--50);
+                    background-color: var(--color--green--700);
+                    &:hover {
+                      background-color: var(--color--green--600);
+                    }
+                    &:active {
+                      background-color: var(--color--green--800);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--green--200);
+                      background-color: var(--color--green--800);
+                      &:hover {
+                        background-color: var(--color--green--700);
+                      }
+                      &:active {
+                        background-color: var(--color--green--900);
                       }
                     }
                   }
@@ -4890,7 +4918,7 @@ export default async function courselore(
                   <p>Role</p>
                   <div class="input--radio--group">
                     $${app.locals.constants.roles.map(
-                      (role, index) =>
+                      (role) =>
                         html`
                           <label>
                             <input
@@ -4898,12 +4926,214 @@ export default async function courselore(
                               name="role"
                               value="${role}"
                               required
-                              autocomplete="off"
                             />
                             <span>${lodash.capitalize(role)}</span>
                           </label>
                         `
                     )}
+                  </div>
+                </div>
+
+                <div class="field">
+                  <p>Expiration</p>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      flex-direction: column;
+                    `}"
+                  >
+                    <div class="input--radio--group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="isExpiresAt"
+                          required
+                          onchange="${javascript`
+                            const extraFields = this.closest(".field").querySelector(".extra-fields");
+                            extraFields.hidden = true;
+                            for (const element of extraFields.querySelectorAll("input"))
+                              element.disabled = true;
+                          `}"
+                        />
+                        <span>Doesn’t Expire</span>
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name="isExpiresAt"
+                          required
+                          onchange="${javascript`
+                            const extraFields = this.closest(".field").querySelector(".extra-fields");
+                            extraFields.hidden = false;
+                            for (const element of extraFields.querySelectorAll("input"))
+                              element.disabled = false;
+                          `}"
+                        />
+                        <span>Expires</span>
+                      </label>
+                    </div>
+                    <div
+                      hidden
+                      class="extra-fields"
+                      style="${css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        name="expiresAt"
+                        value="${new Date().toISOString()}"
+                        required
+                        disabled
+                        class="datetime input--text"
+                        style="${css`
+                          padding-right: var(--space--10);
+                        `}"
+                        data-onvalidate="${javascript`
+                          if (new Date(this.value).getTime() <= Date.now())
+                            return "Must be in the future";
+                        `}"
+                      />
+                      <button
+                        type="button"
+                        data-tippy-content="This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change."
+                        data-tippy-theme="tooltip"
+                        data-tippy-trigger="click"
+                        style="${css`
+                          font-size: var(--font-size--base);
+                          line-height: var(--line-height--base);
+                          justify-self: end;
+                          align-self: start;
+                          margin-top: var(--space--2);
+                          margin-right: var(--space--4);
+                          position: relative;
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <p>Type</p>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      flex-direction: column;
+                    `}"
+                  >
+                    <div class="input--radio--group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="type"
+                          value="link"
+                          required
+                          onchange="${javascript`
+                            const extraFields = this.closest(".field").querySelector(".extra-fields");
+                            extraFields.hidden = true;
+                            for (const element of extraFields.querySelectorAll("textarea"))
+                              element.disabled = true;
+                          `}"
+                        />
+                        <span>Invitation link</span>
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name="type"
+                          value="email"
+                          required
+                          onchange="${javascript`
+                            const extraFields = this.closest(".field").querySelector(".extra-fields");
+                            extraFields.hidden = false;
+                            for (const element of extraFields.querySelectorAll("textarea"))
+                              element.disabled = false;
+                          `}"
+                        />
+                        <span>Email</span>
+                      </label>
+                    </div>
+                    <div
+                      hidden
+                      class="extra-fields"
+                      style="${css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
+                      `}"
+                    >
+                      <textarea
+                        name="emails"
+                        required
+                        disabled
+                        class="input--text"
+                        style="${css`
+                          min-height: calc(6 * var(--line-height--base));
+                          padding-right: var(--space--10);
+                        `}"
+                        data-onvalidate="${javascript`
+                          const emails = [];
+                          for (let email of this.value.split(${/[,\n]/})) {
+                            email = email.trim();
+                            let name = null;
+                            const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                            if (match !== null) {
+                              email = match.groups.email.trim();
+                              name = match.groups.name.trim();
+                              if (name.startsWith('"') && name.endsWith('"'))
+                                name = name.slice(1, -1);
+                              if (name === "") name = null;
+                            }
+                            if (email === "") continue;
+                            emails.push({ email, name });
+                          }
+                          if (
+                            emails.length === 0 ||
+                            emails.find(
+                              ({ email }) => !email.match(${
+                                app.locals.constants.emailRegExp
+                              })
+                            ) !== undefined
+                          )
+                            return "Match the requested format";
+                        `}"
+                      ></textarea>
+                      <button
+                        type="button"
+                        data-tippy-content="${html`
+                          <p>
+                            Emails must be separated by commas and/or newlines,
+                            and may include names which may be quoted or not,
+                            for example:
+                          </p>
+                          <pre><code>${`"Scott" <scott@courselore.org>`},
+${`Ali <ali@courselore.org>`}
+leandro@courselore.org</code></pre>
+                        `}"
+                        data-tippy-theme="tooltip"
+                        data-tippy-trigger="click"
+                        data-tippy-allowHTML="true"
+                        style="${css`
+                          font-size: var(--font-size--base);
+                          line-height: var(--line-height--base);
+                          justify-self: end;
+                          align-self: start;
+                          margin-top: var(--space--2);
+                          margin-right: var(--space--4);
+                          position: relative;
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -4923,255 +5153,6 @@ export default async function courselore(
               </form>
             </div>
             <!--
-                 
-                </div>
-
-                <div>
-                  <div
-                    class="btn-group"
-                    role="group"
-                    aria-label="Expiration"
-                    style="${css`
-              width: 100%;
-              & > * {
-                flex: 1;
-              }
-            `}"
-                  >
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="isExpiresAt"
-                      id="isExpiresAt--false"
-                      autocomplete="off"
-                      required
-                      onchange="${javascript`
-                        const collapse = document.querySelector("#expiresAt--collapse");
-                        if (!collapse.classList.contains("show")) return;
-                        new bootstrap.Collapse(collapse).hide();
-                        for (const element of collapse.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = true;
-                      `}"
-                    />
-                    <label
-                      class="btn btn-outline-primary"
-                      for="isExpiresAt--false"
-                    >
-                      <i class="bi bi-calendar-minus"></i>
-                      Doesn’t Expire
-                    </label>
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="isExpiresAt"
-                      id="isExpiresAt--true"
-                      autocomplete="off"
-                      required
-                      onchange="${javascript`
-                        const collapse = document.querySelector("#expiresAt--collapse");
-                        new bootstrap.Collapse(collapse).show();
-                        for (const element of collapse.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = false;
-                      `}"
-                    />
-                    <label
-                      class="btn btn-outline-primary"
-                      for="isExpiresAt--true"
-                    >
-                      <i class="bi bi-calendar-plus"></i>
-                      Expires
-                    </label>
-                  </div>
-
-                  <div class="collapse" id="expiresAt--collapse">
-                    <div
-                      style="${css`
-              margin-top: 1rem;
-            `}"
-                    >
-                      <div class="form-floating">
-                        <input
-                          type="text"
-                          class="form-control datetime"
-                          id="expiresAt"
-                          name="expiresAt"
-                          value="${new Date().toISOString()}"
-                          required
-                          disabled
-                          data-onvalidate="${javascript`
-                            if (new Date(this.value).getTime() <= Date.now())
-                              return "Must be in the future";
-                          `}"
-                        />
-                        <label for="expiresAt">Expires at</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div
-                    class="btn-group"
-                    role="group"
-                    aria-label="Type"
-                    style="${css`
-              width: 100%;
-              & > * {
-                flex: 1;
-              }
-            `}"
-                  >
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="type"
-                      value="link"
-                      id="type--link"
-                      autocomplete="off"
-                      required
-                      onchange="${javascript`
-                        const collapse = document.querySelector("#type--collapse");
-                        if (!collapse.classList.contains("show")) return;
-                        new bootstrap.Collapse(collapse).hide();
-                        for (const element of collapse.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = true;
-                      `}"
-                    />
-                    <label class="btn btn-outline-primary" for="type--link">
-                      <i class="bi bi-link"></i>
-                      Invite with a Link
-                    </label>
-                    <input
-                      type="radio"
-                      class="btn-check"
-                      name="type"
-                      value="email"
-                      id="type--email"
-                      autocomplete="off"
-                      required
-                      onchange="${javascript`
-                        const collapse = document.querySelector("#type--collapse");
-                        new bootstrap.Collapse(collapse).show();
-                        for (const element of collapse.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = false;
-                      `}"
-                    />
-                    <label class="btn btn-outline-primary" for="type--email">
-                      <i class="bi bi-envelope"></i>
-                      Invite via Email
-                    </label>
-                  </div>
-
-                  <div class="collapse" id="type--collapse">
-                    <div
-                      style="${css`
-              margin-top: 1rem;
-              display: grid;
-              & > * {
-                grid-area: 1 / 1;
-              }
-            `}"
-                    >
-                      <div class="form-floating">
-                        <textarea
-                          type="text"
-                          class="form-control datetime"
-                          id="emails"
-                          name="emails"
-                          value="${new Date().toISOString()}"
-                          required
-                          disabled
-                          data-onvalidate="${javascript`
-                            const emails = [];
-                            for (let email of this.value.split(${/[,\n]/})) {
-                              email = email.trim();
-                              let name = null;
-                              const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
-                              if (match !== null) {
-                                email = match.groups.email.trim();
-                                name = match.groups.name.trim();
-                                if (name.startsWith('"') && name.endsWith('"'))
-                                  name = name.slice(1, -1);
-                                if (name === "") name = null;
-                              }
-                              if (email === "") continue;
-                              emails.push({ email, name });
-                            }
-                            if (
-                              emails.length === 0 ||
-                              emails.find(
-                                ({ email }) => !email.match(${
-                                  app.locals.constants.emailRegExp
-                                })
-                              ) !== undefined
-                            )
-                              return "Match the requested format";
-                          `}"
-                          style="${css`
-              height: 20ex;
-            `}"
-                        ></textarea>
-                        <label for="emails">Emails</label>
-                      </div>
-                      <div
-                        data-bs-toggle="tooltip"
-                        title="Help"
-                        style="${css`
-              z-index: $zindex-dropdown;
-              justify-self: end;
-              align-self: start;
-            `}"
-                      >
-                        <a
-                          tabindex="0"
-                          class="btn"
-                          role="button"
-                          data-bs-toggle="popover"
-                          data-bs-trigger="focus"
-                          data-bs-html="true"
-                          data-bs-content="${html`
-              Emails must be separated by commas or newlines, and may include
-              names, for example:
-              <br />
-              <code>${`"Scott" <scott@courselore.org>`}</code>
-            `}"
-                          style="${css`
-              color: $text-muted;
-              padding: 0 0.2rem;
-              margin: 0.3rem;
-              &:hover,
-              &:focus {
-                background-color: $gray-100;
-              }
-            `}"
-                          onclick="${javascript`
-                            bootstrap.Tooltip.getInstance(this.parentElement).hide();
-                          `}"
-                        >
-                          <i class="bi bi-question-circle"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <button
-                    type="submit"
-                    class="btn btn-primary"
-                    style="${css`
-              @include media-breakpoint-down(md) {
-                width: 100%;
-              }
-            `}"
-                  >
-                    <i class="bi bi-person-plus"></i>
-                    Create Invitation
-                  </button>
-                </div>
-              </div>
-            </form>
-
             $${invitations.length === 0
               ? html``
               : html`
@@ -5611,14 +5592,28 @@ export default async function courselore(
             res,
             html`
               <div class="flash flash--success">
-                Invitation created successfully.
-                <a
-                  role="button"
-                  class="link-success"
-                  data-bs-toggle="modal"
-                  data-bs-target="#invitation--${invitationReference}"
-                  >See invitation</a
-                >.
+                <div
+                  style="${css`
+                    display: flex;
+                    justify-content: center;
+                    @media (max-width: 419px) {
+                      gap: var(--space--2);
+                      flex-direction: column;
+                    }
+                    @media (min-width: 420px) {
+                      gap: var(--space--4);
+                      align-items: baseline;
+                    }
+                  `}"
+                >
+                  Invitation created successfully.
+                  <button
+                    class="button button--success"
+                    data-micromodal-trigger="modal--invitation--${invitationReference}"
+                  >
+                    See Invitation
+                  </button>
+                </div>
               </div>
             `
           );
