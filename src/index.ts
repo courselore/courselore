@@ -2431,10 +2431,12 @@ export default async function courselore(
       <svg class="visually-hidden">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <!-- --color--fuchsia--400 -->
-            <stop offset="0%" stop-color="#e879f9" />
-            <!-- --color--purple--400 -->
-            <stop offset="100%" stop-color="#c084fc" />
+            <stop offset="0%" stop-color="var(--color--fuchsia--400)" />
+            <stop offset="100%" stop-color="var(--color--purple--400)" />
+          </linearGradient>
+          <linearGradient id="gradient--primary" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="var(--color--primary--400)" />
+            <stop offset="100%" stop-color="var(--color--primary--700)" />
           </linearGradient>
         </defs>
       </svg>
@@ -5535,7 +5537,7 @@ export default async function courselore(
                                 $${(
                                   await QRCode.toString(link, { type: "svg" })
                                 )
-                                  .replace("#000000", "url('#gradient')")
+                                  .replace("#000000", "url('#gradient--primary')")
                                   .replace("#ffffff", "#00000000")}
                               </div>
                             </div>
