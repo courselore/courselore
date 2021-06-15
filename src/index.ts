@@ -4928,6 +4928,125 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
+                <div class="field">
+                  <p>Type</p>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      flex-direction: column;
+                    `}"
+                  >
+                    <div class="input--radio--group">
+                      <label>
+                        <input
+                          type="radio"
+                          name="type"
+                          value="link"
+                          required
+                          onchange="${javascript`
+                            const extraFields = this.closest(".field").querySelector(".extra-fields");
+                            extraFields.hidden = true;
+                            for (const element of extraFields.querySelectorAll("textarea"))
+                              element.disabled = true;
+                          `}"
+                        />
+                        <span>Invitation Link</span>
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name="type"
+                          value="email"
+                          required
+                          onchange="${javascript`
+                            const extraFields = this.closest(".field").querySelector(".extra-fields");
+                            extraFields.hidden = false;
+                            for (const element of extraFields.querySelectorAll("textarea"))
+                              element.disabled = false;
+                          `}"
+                        />
+                        <span>Email</span>
+                      </label>
+                    </div>
+                    <div
+                      hidden
+                      class="extra-fields"
+                      style="${css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
+                      `}"
+                    >
+                      <textarea
+                        name="emails"
+                        placeholder="Emails"
+                        required
+                        disabled
+                        class="input--text"
+                        style="${css`
+                          min-height: calc(6 * var(--line-height--sm));
+                          padding-right: var(--space--10);
+                        `}"
+                        data-onvalidate="${javascript`
+                          const emails = [];
+                          for (let email of this.value.split(${/[,\n]/})) {
+                            email = email.trim();
+                            let name = null;
+                            const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                            if (match !== null) {
+                              email = match.groups.email.trim();
+                              name = match.groups.name.trim();
+                              if (name.startsWith('"') && name.endsWith('"'))
+                                name = name.slice(1, -1);
+                              if (name === "") name = null;
+                            }
+                            if (email === "") continue;
+                            emails.push({ email, name });
+                          }
+                          if (
+                            emails.length === 0 ||
+                            emails.find(
+                              ({ email }) => !email.match(${
+                                app.locals.constants.emailRegExp
+                              })
+                            ) !== undefined
+                          )
+                            return "Match the requested format";
+                        `}"
+                      ></textarea>
+                      <button
+                        type="button"
+                        data-tippy-content="${html`
+                          <p>
+                            Emails must be separated by commas and/or newlines,
+                            and may include names which may be quoted or not,
+                            for example:
+                          </p>
+                          <pre><code>${dedent`
+                            "Scott" <scott@courselore.org>,
+                            Ali <ali@courselore.org>
+                            leandro@courselore.org
+                          `}</code></pre>
+                        `}"
+                        data-tippy-theme="tooltip"
+                        data-tippy-trigger="click"
+                        data-tippy-allowHTML="true"
+                        style="${css`
+                          justify-self: end;
+                          align-self: start;
+                          margin-top: var(--space--2);
+                          margin-right: var(--space--4);
+                          position: relative;
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <p>Role</p>
                   <div class="input--radio--group">
@@ -5017,124 +5136,6 @@ export default async function courselore(
                         data-tippy-content="This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change."
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
-                        style="${css`
-                          justify-self: end;
-                          align-self: start;
-                          margin-top: var(--space--2);
-                          margin-right: var(--space--4);
-                          position: relative;
-                        `}"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <p>Type</p>
-                  <div
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                      flex-direction: column;
-                    `}"
-                  >
-                    <div class="input--radio--group">
-                      <label>
-                        <input
-                          type="radio"
-                          name="type"
-                          value="link"
-                          required
-                          onchange="${javascript`
-                            const extraFields = this.closest(".field").querySelector(".extra-fields");
-                            extraFields.hidden = true;
-                            for (const element of extraFields.querySelectorAll("textarea"))
-                              element.disabled = true;
-                          `}"
-                        />
-                        <span>Invitation Link</span>
-                      </label>
-                      <label>
-                        <input
-                          type="radio"
-                          name="type"
-                          value="email"
-                          required
-                          onchange="${javascript`
-                            const extraFields = this.closest(".field").querySelector(".extra-fields");
-                            extraFields.hidden = false;
-                            for (const element of extraFields.querySelectorAll("textarea"))
-                              element.disabled = false;
-                          `}"
-                        />
-                        <span>Email</span>
-                      </label>
-                    </div>
-                    <div
-                      hidden
-                      class="extra-fields"
-                      style="${css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                        }
-                      `}"
-                    >
-                      <textarea
-                        name="emails"
-                        required
-                        disabled
-                        class="input--text"
-                        style="${css`
-                          min-height: calc(6 * var(--line-height--sm));
-                          padding-right: var(--space--10);
-                        `}"
-                        data-onvalidate="${javascript`
-                          const emails = [];
-                          for (let email of this.value.split(${/[,\n]/})) {
-                            email = email.trim();
-                            let name = null;
-                            const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
-                            if (match !== null) {
-                              email = match.groups.email.trim();
-                              name = match.groups.name.trim();
-                              if (name.startsWith('"') && name.endsWith('"'))
-                                name = name.slice(1, -1);
-                              if (name === "") name = null;
-                            }
-                            if (email === "") continue;
-                            emails.push({ email, name });
-                          }
-                          if (
-                            emails.length === 0 ||
-                            emails.find(
-                              ({ email }) => !email.match(${
-                                app.locals.constants.emailRegExp
-                              })
-                            ) !== undefined
-                          )
-                            return "Match the requested format";
-                        `}"
-                      ></textarea>
-                      <button
-                        type="button"
-                        data-tippy-content="${html`
-                          <p>
-                            Emails must be separated by commas and/or newlines,
-                            and may include names which may be quoted or not,
-                            for example:
-                          </p>
-                          <pre><code>${dedent`
-                            "Scott" <scott@courselore.org>,
-                            Ali <ali@courselore.org>
-                            leandro@courselore.org
-                          `}</code></pre>
-                        `}"
-                        data-tippy-theme="tooltip"
-                        data-tippy-trigger="click"
-                        data-tippy-allowHTML="true"
                         style="${css`
                           justify-self: end;
                           align-self: start;
@@ -5544,9 +5545,9 @@ export default async function courselore(
     { courseReference: string },
     HTML,
     {
+      type?: "link" | "email";
       role?: Role;
       expiresAt?: string;
-      type?: "link" | "email";
       emails?: string;
     },
     {},
