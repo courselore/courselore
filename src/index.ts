@@ -291,7 +291,7 @@ export default async function courselore(
           <meta charset="UTF-8" />
           <meta
             name="viewport"
-            content="width=device-width, initial-scale=1.0"
+            content="width=device-width, initial-scale=1, user-scalable=0"
           />
           <meta name="generator" content="CourseLore/${VERSION}" />
           <meta name="description" content="The Open-Source Student Forum" />
@@ -768,12 +768,6 @@ export default async function courselore(
                   }
                 }
 
-                input,
-                textarea {
-                  font-size: var(--font-size--base);
-                  line-height: var(--line-height--base);
-                }
-
                 a,
                 button {
                   cursor: pointer;
@@ -897,8 +891,6 @@ export default async function courselore(
                 }
 
                 .input--radio--group {
-                  font-size: var(--font-size--base);
-                  line-height: var(--line-height--base);
                   width: 100%;
                   display: flex;
                   & > * {
@@ -5004,8 +4996,6 @@ export default async function courselore(
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
                         style="${css`
-                          font-size: var(--font-size--base);
-                          line-height: var(--line-height--base);
                           justify-self: end;
                           align-self: start;
                           margin-top: var(--space--2);
@@ -5076,7 +5066,7 @@ export default async function courselore(
                         disabled
                         class="input--text"
                         style="${css`
-                          min-height: calc(6 * var(--line-height--base));
+                          min-height: calc(6 * var(--line-height--sm));
                           padding-right: var(--space--10);
                         `}"
                         data-onvalidate="${javascript`
@@ -5122,8 +5112,6 @@ leandro@courselore.org</code></pre>
                         data-tippy-trigger="click"
                         data-tippy-allowHTML="true"
                         style="${css`
-                          font-size: var(--font-size--base);
-                          line-height: var(--line-height--base);
                           justify-self: end;
                           align-self: start;
                           margin-top: var(--space--2);
@@ -7058,7 +7046,7 @@ leandro@courselore.org</code></pre>
             }
           `}"
           style="${css`
-            min-height: calc(6 * var(--line-height--base));
+            min-height: calc(6 * var(--line-height--sm));
           `}"
         >
 ${value}</textarea
