@@ -4920,8 +4920,9 @@ export default async function courselore(
 
               <form
                 method="POST"
-                action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/invitations"
+                action="${app.locals.settings.url}/courses/${
+            res.locals.course.reference
+          }/settings/invitations"
                 style="${css`
                   display: flex;
                   flex-direction: column;
