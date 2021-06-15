@@ -5213,44 +5213,108 @@ export default async function courselore(
                           display: flex;
                         `}"
                       >
-                        $${invitation.email === null
-                          ? html`
-                              <div>
-                                <button
-                                  $${isExpired
-                                    ? html`disabled`
-                                    : html`
-                                        data-micromodal-trigger="modal--invitation--${invitation.reference}"
-                                      `}
-                                >
-                                  <span
+                        <div
+                          style="${css`
+                            flex: 1;
+                          `}"
+                        >
+                          $${invitation.email === null
+                            ? html`
+                                <div>
+                                  <button
                                     $${isExpired
-                                      ? html`
-                                          data-tippy-content="This invitation
-                                          has already expired."
-                                          data-tippy-theme="tooltip"
-                                          tabindex="0"
-                                        `
+                                      ? html`disabled`
                                       : html`
-                                          data-tippy-content="See Invitation
-                                          Link" data-tippy-theme="tooltip"
-                                          data-tippy-touch="false"
+                                          data-micromodal-trigger="modal--invitation--${invitation.reference}"
                                         `}
                                   >
-                                    <i class="bi bi-link"></i>
-                                    ${"*".repeat(
-                                      6
-                                    )}${invitation.reference.slice(6)}
-                                  </span>
-                                </button>
-                              </div>
-                            `
-                          : html`
-                              <i class="bi bi-envelope"></i>
-                              ${invitation.name === null
-                                ? invitation.email
-                                : `${invitation.name} <${invitation.email}>`}
-                            `}
+                                    <span
+                                      $${isExpired
+                                        ? html`
+                                            data-tippy-content="This invitation
+                                            has already expired."
+                                            data-tippy-theme="tooltip"
+                                            tabindex="0"
+                                          `
+                                        : html`
+                                            data-tippy-content="See Invitation
+                                            Link" data-tippy-theme="tooltip"
+                                            data-tippy-touch="false"
+                                          `}
+                                    >
+                                      <i class="bi bi-link"></i>
+                                      ${"*".repeat(
+                                        6
+                                      )}${invitation.reference.slice(6)}
+                                    </span>
+                                  </button>
+                                </div>
+                              `
+                            : html`
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <i class="bi bi-envelope"></i>
+                                  <div
+                                    style="${css`
+                                      flex: 1;
+                                      display: flex;
+                                      flex-direction: column;
+                                    `}"
+                                  >
+                                    ${invitation.name === null
+                                      ? invitation.email
+                                      : `${invitation.name} <${invitation.email}>`}
+                                  </div>
+                                </div>
+                              `}
+                        </div>
+                        <div style="${css``}">
+                          <button
+                            $${isUsed || isExpired
+                              ? html`disabled`
+                              : html`
+                                  data-tippy-content="${html``}"
+                                  data-tippy-theme="dropdown"
+                                  data-tippy-trigger="click"
+                                  data-tippy-interactive="true"
+                                  data-tippy-allowHTML="true" style="${css`
+                                    transition: color var(--transition-duration);
+                                    &:hover {
+                                      color: var(--color--primary-gray--800);
+                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
+                                    }`}"
+                                `}
+                          >
+                            <span
+                              $${isUsed
+                                ? html`
+                                    data-tippy-content="You may not change the
+                                    role of this invitation because it has
+                                    already been used."
+                                    data-tippy-theme="tooltip"
+                                    data-tippy-trigger="click"
+                                  `
+                                : isExpired
+                                ? html`
+                                    data-tippy-content="You may not change the
+                                    role of this invitation because it’s
+                                    expired." data-tippy-theme="tooltip"
+                                    data-tippy-trigger="click"
+                                  `
+                                : html`
+                                    data-tippy-content="Change Role"
+                                    data-tippy-theme="tooltip"
+                                    data-tippy-touch="false"
+                                  `}
+                            >
+                              ${lodash.capitalize(invitation.role)}
+                              <i class="bi bi-chevron-down"></i>
+                            </span>
+                          </button>
+                        </div>
                       </div>
                       <!--
                           <div class="dropdown">
@@ -6132,7 +6196,7 @@ export default async function courselore(
                                       tabindex="0"
                                     `
                                   : html`
-                                      data-tippy-content="Change role"
+                                      data-tippy-content="Change Role"
                                       data-tippy-theme="tooltip"
                                       data-tippy-touch="false"
                                     `
@@ -6215,7 +6279,7 @@ export default async function courselore(
                                     `
                                   : html`
                                       data-tippy-content="Remove from the
-                                      course" data-tippy-theme="tooltip
+                                      Course" data-tippy-theme="tooltip
                                       tooltip--danger" data-tippy-touch="false"
                                     `
                               }
@@ -7326,7 +7390,7 @@ ${value}</textarea
                         : `checked`}
                     />
                     <span
-                      data-tippy-content="Mark as a question"
+                      data-tippy-content="Mark as a Question"
                       data-tippy-theme="tooltip"
                       data-tippy-touch="false"
                       style="${css`
@@ -7339,7 +7403,7 @@ ${value}</textarea
                       Not a question
                     </span>
                     <span
-                      data-tippy-content="Mark as not a question"
+                      data-tippy-content="Mark as Not a Question"
                       data-tippy-theme="tooltip"
                       data-tippy-touch="false"
                       style="${css`
