@@ -292,7 +292,7 @@ export default async function courselore(
           <meta charset="UTF-8" />
           <meta
             name="viewport"
-            content="width=device-width, initial-scale=1, user-scalable=0"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
           />
           <meta name="generator" content="CourseLore/${VERSION}" />
           <meta name="description" content="The Open-Source Student Forum" />
