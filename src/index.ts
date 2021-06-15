@@ -38,6 +38,7 @@ import QRCode from "qrcode";
 import lodash from "lodash";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
+import dedent from "dedent";
 
 const VERSION = require("../package.json").version;
 
@@ -5104,9 +5105,11 @@ export default async function courselore(
                             and may include names which may be quoted or not,
                             for example:
                           </p>
-                          <pre><code>${`"Scott" <scott@courselore.org>`},
-${`Ali <ali@courselore.org>`}
-leandro@courselore.org</code></pre>
+                          <pre><code>${dedent`
+                            "Scott" <scott@courselore.org>,
+                            Ali <ali@courselore.org>
+                            leandro@courselore.org
+                          `}</code></pre>
                         `}"
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
