@@ -5054,7 +5054,7 @@ export default async function courselore(
                               element.disabled = true;
                           `}"
                         />
-                        <span>Invitation link</span>
+                        <span>Invitation Link</span>
                       </label>
                       <label>
                         <input
@@ -5238,10 +5238,6 @@ export default async function courselore(
                             `}
                       </div>
                       <!--
-                      <tr>
-                        <td>
-                        </td>
-                        <td>
                           <div class="dropdown">
                             <button
                               class="btn dropdown-toggle"
