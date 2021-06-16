@@ -7135,7 +7135,13 @@ export default async function courselore(
             </a>
           </div>
 
-          <div>
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
             $${res.locals.threads.map(
               (thread) => html`
                 <a
