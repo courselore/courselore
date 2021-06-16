@@ -1571,8 +1571,9 @@ export default async function courselore(
               const years = 365 * days;
               for (const element of document.querySelectorAll("time")) {
                 if (element.getAttribute("datetime") === null) {
-                  element.setAttribute("datetime", element.textContent);
-                  element.dataset.tippyContent = element.textContent;
+                  const datetime = element.textContent.trim();
+                  element.setAttribute("datetime", datetime);
+                  element.dataset.tippyContent = datetime;
                   element.dataset.tippyTheme = "tooltip";
                   element.dataset.tippyTouch = "false";
                 }
@@ -5400,238 +5401,211 @@ export default async function courselore(
                               justify-content: flex-end;
                             `}"
                           >
-                            $${isUsed
-                              ? html`
-                                  <div
-                                    data-tippy-content="${html`
+                            $${(() => {
+                              const changeExpirationForm = html`
+                                <form
+                                  method="POST"
+                                  action="${action}?_method=PATCH"
+                                  style="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <input
+                                    type="text"
+                                    name="expiresAt"
+                                    value="${new Date(
+                                      invitation.expiresAt ?? new Date()
+                                    ).toISOString()}"
+                                    required
+                                    class="input--text datetime"
+                                    data-onvalidate="${javascript`
+                                      if (new Date(this.value).getTime() <= Date.now())
+                                        return "Must be in the future";
+                                    `}"
+                                  />
+                                  <button class="dropdown--item">
+                                    <i class="bi bi-pencil"></i>
+                                    Update Expiration Date
+                                  </button>
+                                </form>
+                              `;
+                              const removeExpirationForm = html`
+                                <form
+                                  method="POST"
+                                  action="${action}?_method=PATCH"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="removeExpiration"
+                                    value="true"
+                                  />
+                                  <button class="dropdown--item">
+                                    Remove Expiration
+                                  </button>
+                                </form>
+                              `;
+                              const expireForm = html`
+                                <form
+                                  method="POST"
+                                  action="${action}?_method=PATCH"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="expire"
+                                    value="true"
+                                  />
+                                  <button class="dropdown--item">
+                                    Expire Invitation
+                                  </button>
+                                </form>
+                              `;
+
+                              return isUsed
+                                ? html`
+                                    <div
+                                      data-tippy-content="${html`
+                                        Used
+                                        <time>
+                                          ${new Date(
+                                            invitation.usedAt!
+                                          ).toISOString()}
+                                        </time>
+                                      `}"
+                                      data-tippy-theme="tooltip"
+                                      data-tippy-allowHTML="true"
+                                      style="${css`
+                                        color: var(--color--green--700);
+                                        background-color: var(
+                                          --color--green--100
+                                        );
+                                        padding: var(--space--1) var(--space--2);
+                                        border-radius: var(--border-radius--md);
+                                      `}"
+                                    >
                                       Used
-                                      <time>${invitation.usedAt}</time>
-                                    `}"
-                                    data-tippy-theme="tooltip"
-                                    data-tippy-allowHTML="true"
-                                    style="${css`
-                                      color: var(--color--green--700);
-                                      background-color: var(
-                                        --color--green--100
-                                      );
-                                      padding: var(--space--1) var(--space--2);
-                                      border-radius: var(--border-radius--md);
-                                    `}"
-                                  >
-                                    Used
-                                    <i class="bi bi-check-lg"></i>
-                                  </div>
-                                `
-                              : isExpired
-                              ? html`
-                                  <button
-                                    data-tippy-content="${html`
-                                      Expired
-                                      <time>${invitation.expiresAt}</time>
-                                    `}"
-                                    data-tippy-theme="dropdown"
-                                    data-tippy-trigger="click"
-                                    data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true"
-                                    style="${css`
-                                      color: var(--color--rose--700);
-                                      background-color: var(--color--rose--100);
-                                      padding: var(--space--1) var(--space--2);
-                                      border-radius: var(--border-radius--md);
-                                    `}"
-                                  >
-                                    <span
-                                      data-tippy-content="Change Expiration"
-                                      data-tippy-theme="tooltip"
-                                      data-tippy-touch="false"
+                                      <i class="bi bi-check-lg"></i>
+                                    </div>
+                                  `
+                                : isExpired
+                                ? html`
+                                    <button
+                                      data-tippy-content="${html`
+                                        <p>
+                                          Expired
+                                          <time>
+                                            ${new Date(
+                                              invitation.expiresAt!
+                                            ).toISOString()}
+                                          </time>
+                                        </p>
+                                        <hr class="dropdown--separator" />
+                                        $${changeExpirationForm}
+                                        <hr class="dropdown--separator" />
+                                        $${removeExpirationForm}
+                                      `}"
+                                      data-tippy-theme="dropdown"
+                                      data-tippy-trigger="click"
+                                      data-tippy-interactive="true"
+                                      data-tippy-allowHTML="true"
+                                      style="${css`
+                                        color: var(--color--rose--700);
+                                        background-color: var(
+                                          --color--rose--100
+                                        );
+                                        padding: var(--space--1) var(--space--2);
+                                        border-radius: var(--border-radius--md);
+                                      `}"
                                     >
-                                      Expired
-                                      <i class="bi bi-chevron-down"></i>
-                                    </span>
-                                  </button>
-                                `
-                              : invitation.expiresAt === null
-                              ? html`
-                                  <button
-                                    data-tippy-content="${html``}"
-                                    data-tippy-theme="dropdown"
-                                    data-tippy-trigger="click"
-                                    data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true"
-                                    style="${css`
-                                      color: var(--color--blue--700);
-                                      background-color: var(--color--blue--100);
-                                      padding: var(--space--1) var(--space--2);
-                                      border-radius: var(--border-radius--md);
-                                    `}"
-                                  >
-                                    <span
-                                      data-tippy-content="Change Expiration"
-                                      data-tippy-theme="tooltip"
-                                      data-tippy-touch="false"
+                                      <span
+                                        data-tippy-content="Change Expiration"
+                                        data-tippy-theme="tooltip"
+                                        data-tippy-touch="false"
+                                      >
+                                        Expired
+                                        <i class="bi bi-chevron-down"></i>
+                                      </span>
+                                    </button>
+                                  `
+                                : invitation.expiresAt === null
+                                ? html`
+                                    <button
+                                      data-tippy-content="${html`
+                                        $${changeExpirationForm}
+                                        <hr class="dropdown--separator" />
+                                        $${expireForm}
+                                      `}"
+                                      data-tippy-theme="dropdown"
+                                      data-tippy-trigger="click"
+                                      data-tippy-interactive="true"
+                                      data-tippy-allowHTML="true"
+                                      style="${css`
+                                        color: var(--color--blue--700);
+                                        background-color: var(
+                                          --color--blue--100
+                                        );
+                                        padding: var(--space--1) var(--space--2);
+                                        border-radius: var(--border-radius--md);
+                                      `}"
                                     >
-                                      Doesn’t Expire
-                                      <i class="bi bi-chevron-down"></i>
-                                    </span>
-                                  </button>
-                                `
-                              : html`
-                                  <button
-                                    data-tippy-content="${html`
-                                      Expires
-                                      <time>${invitation.expiresAt}</time>
-                                    `}"
-                                    data-tippy-theme="dropdown"
-                                    data-tippy-trigger="click"
-                                    data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true"
-                                    style="${css`
-                                      color: var(--color--yellow--700);
-                                      background-color: var(
-                                        --color--yellow--100
-                                      );
-                                      padding: var(--space--1) var(--space--2);
-                                      border-radius: var(--border-radius--md);
-                                    `}"
-                                  >
-                                    <span
-                                      data-tippy-content="Change Expiration"
-                                      data-tippy-theme="tooltip"
-                                      data-tippy-touch="false"
+                                      <span
+                                        data-tippy-content="Change Expiration"
+                                        data-tippy-theme="tooltip"
+                                        data-tippy-touch="false"
+                                      >
+                                        Doesn’t Expire
+                                        <i class="bi bi-chevron-down"></i>
+                                      </span>
+                                    </button>
+                                  `
+                                : html`
+                                    <button
+                                      data-tippy-content="${html`
+                                        <p>
+                                          Expires
+                                          <time>
+                                            ${new Date(
+                                              invitation.expiresAt
+                                            ).toISOString()}
+                                          </time>
+                                        </p>
+                                        <hr class="dropdown--separator" />
+                                        $${changeExpirationForm}
+                                        <hr class="dropdown--separator" />
+                                        $${removeExpirationForm}
+                                        $${expireForm}
+                                      `}"
+                                      data-tippy-theme="dropdown"
+                                      data-tippy-trigger="click"
+                                      data-tippy-interactive="true"
+                                      data-tippy-allowHTML="true"
+                                      style="${css`
+                                        color: var(--color--yellow--700);
+                                        background-color: var(
+                                          --color--yellow--100
+                                        );
+                                        padding: var(--space--1) var(--space--2);
+                                        border-radius: var(--border-radius--md);
+                                      `}"
                                     >
-                                      Expires
-                                      <i class="bi bi-chevron-down"></i>
-                                    </span>
-                                  </button>
-                                `}
+                                      <span
+                                        data-tippy-content="Change Expiration"
+                                        data-tippy-theme="tooltip"
+                                        data-tippy-touch="false"
+                                      >
+                                        Expires
+                                        <i class="bi bi-chevron-down"></i>
+                                      </span>
+                                    </button>
+                                  `;
+                            })()}
                           </div>
                         </div>
                       </div>
                       <!--
-                              $${app.locals.constants.roles.map((role) =>
-                        role === invitation.role
-                          ? html``
-                          : html`
-                              <form
-                                method="POST"
-                                action="${action}?_method=PATCH"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="role"
-                                  value="${role}"
-                                />
-                                <span
-                                  $${isUsed
-                                    ? html`
-                                        data-bs-toggle="tooltip" title="You may
-                                        not change the role of this invitation
-                                        because it has already been used."
-                                      `
-                                    : isExpired
-                                    ? html`
-                                        data-bs-toggle="tooltip" title="You may
-                                        not change the role of this invitation
-                                        because it’s expired."
-                                      `
-                                    : html``}
-                                >
-                                  <button
-                                    type="submit"
-                                    class="dropdown-item"
-                                    $${isUsed || isExpired
-                                      ? html`disabled`
-                                      : html``}
-                                  >
-                                    Change Invitation Role to
-                                    ${lodash.capitalize(role)}
-                                  </button>
-                                </span>
-                              </form>
-                            `
-                      )}
-                            </div>
-                          </div>
-                        </td>
-                        <td
-                          style="${css`
-                        text-align: right;
-                      `}"
-                        >
-                          <div class="dropdown">
-                            <button
-                              class="btn dropdown-toggle"
-                              type="button"
-                              id="invitation-expiresAt-dropdown--${invitation.reference}"
-                              data-bs-toggle="dropdown"
-                              data-bs-auto-close="outside"
-                              aria-expanded="false"
-                              style="${css`
-                        padding: 0 0.5rem;
-                        text-transform: capitalize;
-                        ${isExpired
-                          ? css`
-                              color: $red-800;
-                              background-color: $red-100;
-                            `
-                          : invitation.expiresAt !== null
-                          ? css`
-                              color: $orange-800;
-                              background-color: $orange-100;
-                            `
-                          : css`
-                              color: $green-800;
-                              background-color: $green-100;
-                            `};
-                      `}"
-                            >
-                              $${isExpired
-                        ? html`
-                            <time
-                              >${new Date(
-                                invitation.expiresAt!
-                              ).toISOString()}</time
-                            >
-                          `
-                        : invitation.expiresAt !== null
-                        ? html`
-                            <time
-                              >${new Date(
-                                invitation.expiresAt!
-                              ).toISOString()}</time
-                            >
-                          `
-                        : html`Doesn’t Expire`}
-                            </button>
-                            <div
-                              class="dropdown-menu"
-                              aria-labelledby="invitation-expiresAt-dropdown--${invitation.reference}"
-                            >
-                              <form
-                                method="POST"
-                                action="${action}?_method=PATCH"
-                                style="${css`
-                        padding: 0 1rem;
-                        display: flex;
-                        flex-direction: column;
-                        gap: 0.5rem;
-                      `}"
-                              >
                                 <div class="form-floating">
-                                  <input
-                                    type="text"
-                                    class="form-control datetime"
-                                    id="expiresAt"
-                                    name="expiresAt"
-                                    value="${new Date(
-                        invitation.expiresAt ?? new Date()
-                      ).toISOString()}"
-                                    required
-                                    data-onvalidate="${javascript`
-                                          if (new Date(this.value).getTime() <= Date.now())
-                                            return "Must be in the future";
-                                        `}"
-                                  />
+                                  
                                   <label for="expiresAt">Expires at</label>
                                 </div>
                                 <button
@@ -5652,7 +5626,7 @@ export default async function courselore(
                             >
                               <input
                                 type="hidden"
-                                name="doesntExpire"
+                                name="removeExpiration"
                                 value="true"
                               />
                               <button type="submit" class="dropdown-item">
@@ -5670,7 +5644,7 @@ export default async function courselore(
                             >
                               <input
                                 type="hidden"
-                                name="expireNow"
+                                name="expire"
                                 value="true"
                               />
                               <button type="submit" class="dropdown-item">
@@ -6021,8 +5995,8 @@ export default async function courselore(
       resend?: "true";
       role?: Role;
       expiresAt?: string;
-      doesntExpire?: "true";
-      expireNow?: "true";
+      removeExpiration?: "true";
+      expire?: "true";
     },
     {},
     MayManageInvitationMiddlewareLocals
@@ -6090,7 +6064,7 @@ export default async function courselore(
         );
       }
 
-      if (req.body.doesntExpire === "true") {
+      if (req.body.removeExpiration === "true") {
         app.locals.database.run(
           sql`
             UPDATE "invitations"
@@ -6104,13 +6078,13 @@ export default async function courselore(
           res,
           html`
             <div class="flash flash--success">
-              Invitation set as non-expiring successfully.
+              Invitation expiration removed successfully.
             </div>
           `
         );
       }
 
-      if (req.body.expireNow === "true") {
+      if (req.body.expire === "true") {
         app.locals.database.run(
           sql`
             UPDATE "invitations"
@@ -9056,8 +9030,9 @@ ${value}</textarea
                                 style="${css`
                                   display: inline-block;
                                 `}"
-                                >${email.createdAt}</time
                               >
+                                ${email.createdAt}
+                              </time>
                             </h3>
                           </div>
 
