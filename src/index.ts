@@ -5211,6 +5211,7 @@ export default async function courselore(
                           border-radius: var(--border-radius--md);
                           margin-left: calc(-1 * var(--space--bleed));
                           display: flex;
+                          align-items: baseline;
                         `}"
                       >
                         <div
@@ -5231,9 +5232,9 @@ export default async function courselore(
                                     <span
                                       $${isExpired
                                         ? html`
-                                            data-tippy-content="This invitation
-                                            has already expired."
-                                            data-tippy-theme="tooltip"
+                                            data-tippy-content="Can’t show
+                                            Invitation Link because it’s
+                                            expired." data-tippy-theme="tooltip"
                                             tabindex="0"
                                           `
                                         : html`
@@ -5243,9 +5244,18 @@ export default async function courselore(
                                           `}
                                     >
                                       <i class="bi bi-link"></i>
-                                      ${"*".repeat(
-                                        6
-                                      )}${invitation.reference.slice(6)}
+                                      <span
+                                        style="${css`
+                                          font-weight: var(--font-weight--bold);
+                                          color: var(
+                                            --color--primary-gray--800
+                                          );
+                                        `}"
+                                      >
+                                        ${"*".repeat(
+                                          6
+                                        )}${invitation.reference.slice(6)}
+                                      </span>
                                     </span>
                                   </button>
                                 </div>
@@ -5254,6 +5264,7 @@ export default async function courselore(
                                 <div
                                   style="${css`
                                     display: flex;
+                                    gap: var(--space--2);
                                   `}"
                                 >
                                   <i class="bi bi-envelope"></i>
@@ -5264,56 +5275,212 @@ export default async function courselore(
                                       flex-direction: column;
                                     `}"
                                   >
-                                    ${invitation.name === null
-                                      ? invitation.email
-                                      : `${invitation.name} <${invitation.email}>`}
+                                    $${invitation.name === null
+                                      ? html`
+                                          <div
+                                            style="${css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                              color: var(
+                                                --color--primary-gray--800
+                                              );
+                                            `}"
+                                          >
+                                            ${invitation.email}
+                                          </div>
+                                        `
+                                      : html`
+                                          <div
+                                            style="${css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                              color: var(
+                                                --color--primary-gray--800
+                                              );
+                                            `}"
+                                          >
+                                            ${invitation.name}
+                                          </div>
+                                          <div>${invitation.email}</div>
+                                        `}
                                   </div>
                                 </div>
                               `}
                         </div>
-                        <div style="${css``}">
-                          <button
-                            $${isUsed || isExpired
-                              ? html`disabled`
-                              : html`
-                                  data-tippy-content="${html``}"
-                                  data-tippy-theme="dropdown"
-                                  data-tippy-trigger="click"
-                                  data-tippy-interactive="true"
-                                  data-tippy-allowHTML="true" style="${css`
-                                    transition: color var(--transition-duration);
-                                    &:hover {
-                                      color: var(--color--primary-gray--800);
-                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
-                                    }`}"
-                                `}
+                        <div
+                          style="${css`
+                            display: flex;
+                            @media (max-width: 500px) {
+                              flex-direction: column;
+                              align-items: flex-end;
+                              gap: var(--space--2);
+                            }
+                          `}"
+                        >
+                          <div
+                            style="${css`
+                              width: var(--space--20);
+                              display: flex;
+                              justify-content: flex-end;
+                            `}"
                           >
-                            <span
-                              $${isUsed
-                                ? html`
-                                    data-tippy-content="You may not change the
-                                    role of this invitation because it has
-                                    already been used."
-                                    data-tippy-theme="tooltip"
-                                    data-tippy-trigger="click"
-                                  `
-                                : isExpired
-                                ? html`
-                                    data-tippy-content="You may not change the
-                                    role of this invitation because it’s
-                                    expired." data-tippy-theme="tooltip"
-                                    data-tippy-trigger="click"
-                                  `
+                            <button
+                              $${isUsed || isExpired
+                                ? html`disabled`
                                 : html`
-                                    data-tippy-content="Change Role"
-                                    data-tippy-theme="tooltip"
-                                    data-tippy-touch="false"
+                                    data-tippy-content="${html``}"
+                                    data-tippy-theme="dropdown"
+                                    data-tippy-trigger="click"
+                                    data-tippy-interactive="true"
+                                    data-tippy-allowHTML="true" style="${css`
+                                      transition: color
+                                        var(--transition-duration);
+                                      &:hover {
+                                        color: var(--color--primary-gray--800);
+                                        @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
+                                      }`}"
                                   `}
                             >
-                              ${lodash.capitalize(invitation.role)}
-                              <i class="bi bi-chevron-down"></i>
-                            </span>
-                          </button>
+                              <span
+                                $${isUsed
+                                  ? html`
+                                      data-tippy-content="You may not change the
+                                      role of this invitation because it has
+                                      already been used."
+                                      data-tippy-theme="tooltip"
+                                    `
+                                  : isExpired
+                                  ? html`
+                                      data-tippy-content="You may not change the
+                                      role of this invitation because it’s
+                                      expired." data-tippy-theme="tooltip"
+                                    `
+                                  : html`
+                                      data-tippy-content="Change Role"
+                                      data-tippy-theme="tooltip"
+                                      data-tippy-touch="false"
+                                    `}
+                              >
+                                ${lodash.capitalize(invitation.role)}
+                                <i class="bi bi-chevron-down"></i>
+                              </span>
+                            </button>
+                          </div>
+
+                          <div
+                            style="${css`
+                              width: var(--space--36);
+                              display: flex;
+                              justify-content: flex-end;
+                            `}"
+                          >
+                            $${isUsed
+                              ? html`
+                                  <div
+                                    data-tippy-content="${html`
+                                      Used
+                                      <time>${invitation.usedAt}</time>
+                                    `}"
+                                    data-tippy-theme="tooltip"
+                                    data-tippy-allowHTML="true"
+                                    style="${css`
+                                      color: var(--color--green--700);
+                                      background-color: var(
+                                        --color--green--100
+                                      );
+                                      padding: var(--space--1) var(--space--2);
+                                      border-radius: var(--border-radius--md);
+                                    `}"
+                                  >
+                                    Used
+                                    <i class="bi bi-check-lg"></i>
+                                  </div>
+                                `
+                              : isExpired
+                              ? html`
+                                  <button
+                                    data-tippy-content="${html`
+                                      Expired
+                                      <time>${invitation.expiresAt}</time>
+                                    `}"
+                                    data-tippy-theme="dropdown"
+                                    data-tippy-trigger="click"
+                                    data-tippy-interactive="true"
+                                    data-tippy-allowHTML="true"
+                                    style="${css`
+                                      color: var(--color--rose--700);
+                                      background-color: var(--color--rose--100);
+                                      padding: var(--space--1) var(--space--2);
+                                      border-radius: var(--border-radius--md);
+                                    `}"
+                                  >
+                                    <span
+                                      data-tippy-content="Change Expiration"
+                                      data-tippy-theme="tooltip"
+                                      data-tippy-touch="false"
+                                    >
+                                      Expired
+                                      <i class="bi bi-chevron-down"></i>
+                                    </span>
+                                  </button>
+                                `
+                              : invitation.expiresAt === null
+                              ? html`
+                                  <button
+                                    data-tippy-content="${html``}"
+                                    data-tippy-theme="dropdown"
+                                    data-tippy-trigger="click"
+                                    data-tippy-interactive="true"
+                                    data-tippy-allowHTML="true"
+                                    style="${css`
+                                      color: var(--color--blue--700);
+                                      background-color: var(--color--blue--100);
+                                      padding: var(--space--1) var(--space--2);
+                                      border-radius: var(--border-radius--md);
+                                    `}"
+                                  >
+                                    <span
+                                      data-tippy-content="Change Expiration"
+                                      data-tippy-theme="tooltip"
+                                      data-tippy-touch="false"
+                                    >
+                                      Doesn’t Expire
+                                      <i class="bi bi-chevron-down"></i>
+                                    </span>
+                                  </button>
+                                `
+                              : html`
+                                  <button
+                                    data-tippy-content="${html`
+                                      Expires
+                                      <time>${invitation.expiresAt}</time>
+                                    `}"
+                                    data-tippy-theme="dropdown"
+                                    data-tippy-trigger="click"
+                                    data-tippy-interactive="true"
+                                    data-tippy-allowHTML="true"
+                                    style="${css`
+                                      color: var(--color--yellow--700);
+                                      background-color: var(
+                                        --color--yellow--100
+                                      );
+                                      padding: var(--space--1) var(--space--2);
+                                      border-radius: var(--border-radius--md);
+                                    `}"
+                                  >
+                                    <span
+                                      data-tippy-content="Change Expiration"
+                                      data-tippy-theme="tooltip"
+                                      data-tippy-touch="false"
+                                    >
+                                      Expires
+                                      <i class="bi bi-chevron-down"></i>
+                                    </span>
+                                  </button>
+                                `}
+                          </div>
                         </div>
                       </div>
                       <!--
