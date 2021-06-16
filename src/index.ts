@@ -998,7 +998,7 @@ export default async function courselore(
                     }
                   }
 
-                  &.button--danger {
+                  &.button--rose {
                     color: var(--color--rose--50);
                     background-color: var(--color--rose--700);
                     &:hover {
@@ -1019,7 +1019,7 @@ export default async function courselore(
                     }
                   }
 
-                  &.button--success {
+                  &.button--green {
                     color: var(--color--green--50);
                     background-color: var(--color--green--700);
                     &:hover {
@@ -1097,7 +1097,7 @@ export default async function courselore(
                       --border-color: var(--color--primary--900);
                     }
 
-                    &[data-theme~="tooltip--danger"] {
+                    &[data-theme~="tooltip--rose"] {
                       color: var(--color--rose--50);
                       --background-color: var(--color--rose--900);
                       --border-color: var(--color--rose--50);
@@ -1168,7 +1168,7 @@ export default async function courselore(
                     }
                   }
 
-                  &[data-theme~="dropdown--danger"] {
+                  &[data-theme~="dropdown--rose"] {
                     color: var(--color--rose--900);
                     --background-color: var(--color--rose--50);
                     --border-color: var(--color--rose--900);
@@ -2286,7 +2286,7 @@ export default async function courselore(
                         transition: color var(--transition-duration);
                       }
 
-                      &.flash--success {
+                      &.flash--green {
                         &,
                         & + button,
                         & .link {
@@ -2306,7 +2306,7 @@ export default async function courselore(
                         }
                       }
 
-                      &.flash--danger {
+                      &.flash--rose {
                         &,
                         & + button {
                           color: var(--color--rose--700);
@@ -4001,7 +4001,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--success">
+          <div class="flash flash--green">
             User settings updated successfully.
           </div>
         `
@@ -4867,7 +4867,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--success">
+          <div class="flash flash--green">
             Course settings updated successfully.
           </div>
         `
@@ -5906,7 +5906,7 @@ export default async function courselore(
             req,
             res,
             html`
-              <div class="flash flash--success">
+              <div class="flash flash--green">
                 <div
                   style="${css`
                     display: flex;
@@ -5923,7 +5923,7 @@ export default async function courselore(
                 >
                   Invitation created successfully.
                   <button
-                    class="button button--success"
+                    class="button button--green"
                     data-micromodal-trigger="modal--invitation--${invitationReference}"
                   >
                     See Invitation
@@ -6035,7 +6035,7 @@ export default async function courselore(
             req,
             res,
             html`
-              <div class="flash flash--success">
+              <div class="flash flash--green">
                 Invitations sent successfully.
                 $${app.locals.settings.demonstration
                   ? html`
@@ -6087,7 +6087,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--success">
+            <div class="flash flash--green">
               Invitation email resent successfully.
             </div>
           `
@@ -6106,7 +6106,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--success">
+            <div class="flash flash--green">
               Invitation role updated successfully.
             </div>
           `
@@ -6129,7 +6129,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--success">
+            <div class="flash flash--green">
               Invitation expiration updated successfully.
             </div>
           `
@@ -6149,7 +6149,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--success">
+            <div class="flash flash--green">
               Invitation expiration removed successfully.
             </div>
           `
@@ -6169,7 +6169,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--success">
+            <div class="flash flash--green">
               Invitation expired successfully.
             </div>
           `
@@ -6364,7 +6364,7 @@ export default async function courselore(
                                                                 </strong>
                                                               </p>
                                                               <button
-                                                                class="button button--danger"
+                                                                class="button button--rose"
                                                                 onclick="${javascript`
                                                               document.querySelector('[aria-describedby="' + this.closest("[data-tippy-root]").id + '"]').closest("form").submit();
                                                             `}"
@@ -6377,7 +6377,7 @@ export default async function courselore(
                                                             </div>
                                                           `}"
                                                           data-tippy-theme="dropdown
-                                                          dropdown--danger"
+                                                          dropdown--rose"
                                                           data-tippy-trigger="click"
                                                           data-tippy-interactive="true"
                                                           data-tippy-allowHTML="true"
@@ -6468,13 +6468,13 @@ export default async function courselore(
                                               You may not undo this action!
                                             </strong>
                                           </p>
-                                          <button class="button button--danger">
+                                          <button class="button button--rose">
                                             Remove from the course
                                           </button>
                                         </div>
                                       </form>
                                     `}"
-                                    data-tippy-theme="dropdown dropdown--danger"
+                                    data-tippy-theme="dropdown dropdown--rose"
                                     data-tippy-trigger="click"
                                     data-tippy-interactive="true"
                                     data-tippy-allowHTML="true" style="${css`
@@ -6494,13 +6494,13 @@ export default async function courselore(
                                       data-tippy-content="You may not remove
                                       yourself from the course because you’re
                                       the only staff member."
-                                      data-tippy-theme="tooltip tooltip--danger"
+                                      data-tippy-theme="tooltip tooltip--rose"
                                       tabindex="0"
                                     `
                                   : html`
                                       data-tippy-content="Remove from the
                                       Course" data-tippy-theme="tooltip
-                                      tooltip--danger" data-tippy-touch="false"
+                                      tooltip--rose" data-tippy-touch="false"
                                     `
                               }
                             >
@@ -6540,7 +6540,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--success">
+            <div class="flash flash--green">
               Enrollment updated successfully.
             </div>
           `
@@ -6579,7 +6579,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--success">
+          <div class="flash flash--green">
             $${isSelf ? html`You removed yourself` : html`Person removed`} from
             the course successfully.
           </div>
@@ -6757,9 +6757,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--success">
-            Enrollment updated successfully.
-          </div>
+          <div class="flash flash--green">Enrollment updated successfully.</div>
         `
       );
 
