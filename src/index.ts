@@ -5104,12 +5104,7 @@ export default async function courselore(
                               element.disabled = true;
                           `}"
                         />
-                        <span
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `}"
-                        >
+                        <span>
                           <i class="bi bi-calendar-minus"></i>
                           Doesn’t Expire
                         </span>
@@ -5126,12 +5121,7 @@ export default async function courselore(
                               element.disabled = false;
                           `}"
                         />
-                        <span
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `}"
-                        >
+                        <span>
                           <i class="bi bi-calendar-plus"></i>
                           Expires
                         </span>
