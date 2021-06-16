@@ -5104,7 +5104,15 @@ export default async function courselore(
                               element.disabled = true;
                           `}"
                         />
-                        <span>Doesn’t Expire</span>
+                        <span
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <i class="bi bi-calendar-minus"></i>
+                          Doesn’t Expire
+                        </span>
                       </label>
                       <label>
                         <input
@@ -5118,7 +5126,15 @@ export default async function courselore(
                               element.disabled = false;
                           `}"
                         />
-                        <span>Expires</span>
+                        <span
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <i class="bi bi-calendar-plus"></i>
+                          Expires
+                        </span>
                       </label>
                     </div>
                     <div
@@ -5396,7 +5412,7 @@ export default async function courselore(
 
                           <div
                             style="${css`
-                              width: var(--space--36);
+                              width: var(--space--40);
                               display: flex;
                               justify-content: flex-end;
                             `}"
@@ -5442,6 +5458,7 @@ export default async function courselore(
                                     value="true"
                                   />
                                   <button class="dropdown--item">
+                                    <i class="bi bi-calendar-minus"></i>
                                     Remove Expiration
                                   </button>
                                 </form>
@@ -5457,6 +5474,7 @@ export default async function courselore(
                                     value="true"
                                   />
                                   <button class="dropdown--item">
+                                    <i class="bi bi-calendar-x"></i>
                                     Expire Invitation
                                   </button>
                                 </form>
@@ -5492,18 +5510,36 @@ export default async function courselore(
                                 ? html`
                                     <button
                                       data-tippy-content="${html`
-                                        <p>
-                                          Expired
-                                          <time>
-                                            ${new Date(
-                                              invitation.expiresAt!
-                                            ).toISOString()}
-                                          </time>
-                                        </p>
-                                        <hr class="dropdown--separator" />
-                                        $${changeExpirationForm}
-                                        <hr class="dropdown--separator" />
-                                        $${removeExpirationForm}
+                                        <div
+                                          style="${css`
+                                            padding-top: var(--space--0-5);
+                                          `}"
+                                        >
+                                          <p
+                                            style="${css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                              color: var(--color--primary--800);
+                                              display: flex;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-x"></i>
+                                            <span>
+                                              Expired
+                                              <time>
+                                                ${new Date(
+                                                  invitation.expiresAt!
+                                                ).toISOString()}
+                                              </time>
+                                            </span>
+                                          </p>
+                                          <hr class="dropdown--separator" />
+                                          $${changeExpirationForm}
+                                          <hr class="dropdown--separator" />
+                                          $${removeExpirationForm}
+                                        </div>
                                       `}"
                                       data-tippy-theme="dropdown"
                                       data-tippy-trigger="click"
@@ -5523,7 +5559,15 @@ export default async function courselore(
                                         data-tippy-theme="tooltip"
                                         data-tippy-touch="false"
                                       >
-                                        Expired
+                                        <span
+                                          style="${css`
+                                            display: inline-flex;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <i class="bi bi-calendar-x"></i>
+                                          Expired
+                                        </span>
                                         <i class="bi bi-chevron-down"></i>
                                       </span>
                                     </button>
@@ -5532,9 +5576,15 @@ export default async function courselore(
                                 ? html`
                                     <button
                                       data-tippy-content="${html`
-                                        $${changeExpirationForm}
-                                        <hr class="dropdown--separator" />
-                                        $${expireForm}
+                                        <div
+                                          style="${css`
+                                            padding-top: var(--space--1);
+                                          `}"
+                                        >
+                                          $${changeExpirationForm}
+                                          <hr class="dropdown--separator" />
+                                          $${expireForm}
+                                        </div>
                                       `}"
                                       data-tippy-theme="dropdown"
                                       data-tippy-trigger="click"
@@ -5554,7 +5604,15 @@ export default async function courselore(
                                         data-tippy-theme="tooltip"
                                         data-tippy-touch="false"
                                       >
-                                        Doesn’t Expire
+                                        <span
+                                          style="${css`
+                                            display: inline-flex;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <i class="bi bi-calendar-minus"></i>
+                                          Doesn’t Expire
+                                        </span>
                                         <i class="bi bi-chevron-down"></i>
                                       </span>
                                     </button>
@@ -5562,19 +5620,37 @@ export default async function courselore(
                                 : html`
                                     <button
                                       data-tippy-content="${html`
-                                        <p>
-                                          Expires
-                                          <time>
-                                            ${new Date(
-                                              invitation.expiresAt
-                                            ).toISOString()}
-                                          </time>
-                                        </p>
-                                        <hr class="dropdown--separator" />
-                                        $${changeExpirationForm}
-                                        <hr class="dropdown--separator" />
-                                        $${removeExpirationForm}
-                                        $${expireForm}
+                                        <div
+                                          style="${css`
+                                            padding-top: var(--space--0-5);
+                                          `}"
+                                        >
+                                          <p
+                                            style="${css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                              color: var(--color--primary--800);
+                                              display: flex;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-plus"></i>
+                                            <span>
+                                              Expires
+                                              <time>
+                                                ${new Date(
+                                                  invitation.expiresAt
+                                                ).toISOString()}
+                                              </time>
+                                            </span>
+                                          </p>
+                                          <hr class="dropdown--separator" />
+                                          $${changeExpirationForm}
+                                          <hr class="dropdown--separator" />
+                                          $${removeExpirationForm}
+                                          $${expireForm}
+                                        </div>
                                       `}"
                                       data-tippy-theme="dropdown"
                                       data-tippy-trigger="click"
@@ -5594,7 +5670,15 @@ export default async function courselore(
                                         data-tippy-theme="tooltip"
                                         data-tippy-touch="false"
                                       >
-                                        Expires
+                                        <span
+                                          style="${css`
+                                            display: inline-flex;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <i class="bi bi-calendar-plus"></i>
+                                          Expires
+                                        </span>
                                         <i class="bi bi-chevron-down"></i>
                                       </span>
                                     </button>
@@ -5642,11 +5726,7 @@ export default async function courselore(
                               method="POST"
                               action="${action}?_method=PATCH"
                             >
-                              <input
-                                type="hidden"
-                                name="expire"
-                                value="true"
-                              />
+                              <input type="hidden" name="expire" value="true" />
                               <button type="submit" class="dropdown-item">
                                 <i class="bi bi-calendar-plus"></i>
                                 Expire Invitation Now
