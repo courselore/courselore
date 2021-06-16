@@ -1710,7 +1710,7 @@ export default async function courselore(
 
           (() => {
             const beforeUnloadHandler = (event) => {
-              if (!isModified(document)) return;
+              if (!isModified(document.body)) return;
               event.preventDefault();
               event.returnValue = "";
             };
