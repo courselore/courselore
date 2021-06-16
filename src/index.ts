@@ -2288,7 +2288,8 @@ export default async function courselore(
 
                       &.flash--success {
                         &,
-                        & + button {
+                        & + button,
+                        & .link {
                           color: var(--color--green--700);
                           background-color: var(--color--green--200);
                           @media (prefers-color-scheme: dark) {
@@ -2296,10 +2297,29 @@ export default async function courselore(
                             background-color: var(--color--green--700);
                           }
                         }
-                        & + button:hover {
+                        & + button:hover,
+                        & .link:hover {
                           color: var(--color--green--600);
                           @media (prefers-color-scheme: dark) {
                             color: var(--color--green--100);
+                          }
+                        }
+                      }
+
+                      &.flash--danger {
+                        &,
+                        & + button {
+                          color: var(--color--rose--700);
+                          background-color: var(--color--rose--200);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--rose--300);
+                            background-color: var(--color--rose--700);
+                          }
+                        }
+                        & + button:hover {
+                          color: var(--color--rose--600);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--rose--100);
                           }
                         }
                       }
@@ -6017,36 +6037,18 @@ export default async function courselore(
             html`
               <div class="flash flash--success">
                 Invitations sent successfully.
-              </div>
-              $${app.locals.settings.demonstration
-                ? html`
-                    <div
-                      role="alert"
-                      class="alert alert-danger alert-dismissible fade show"
-                      style="${css`
-                        text-align: center;
-                        border-radius: 0;
-                        margin-bottom: 0;
-                      `}"
-                    >
-                      <span>
-                        CourseLore doesn’t send emails in demonstration mode.
-                      </span>
+                $${app.locals.settings.demonstration
+                  ? html`
+                      <br />
+                      CourseLore doesn’t send emails in demonstration mode.
                       <a
                         href="${app.locals.settings.url}/demonstration-inbox"
-                        class="link-danger"
-                      >
-                        Go to the Demonstration Inbox </a
+                        class="link"
+                        >Go to the Demonstration Inbox</a
                       >.
-                      <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"
-                      ></button>
-                    </div>
-                  `
-                : html``}
+                    `
+                  : html``}
+              </div>
             `
           );
           break;
