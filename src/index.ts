@@ -5330,7 +5330,31 @@ export default async function courselore(
                               $${isUsed || isExpired
                                 ? html`disabled`
                                 : html`
-                                    data-tippy-content="${html``}"
+                                    data-tippy-content="${html`
+                                      $${app.locals.constants.roles.map(
+                                        (role) =>
+                                          role === invitation.role
+                                            ? html``
+                                            : html`
+                                                <form
+                                                  method="POST"
+                                                  action="${action}?_method=PATCH"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="role"
+                                                    value="${role}"
+                                                  />
+                                                  <button
+                                                    class="dropdown--item"
+                                                  >
+                                                    Change Invitation Role to
+                                                    ${lodash.capitalize(role)}
+                                                  </button>
+                                                </form>
+                                              `
+                                      )}
+                                    `}"
                                     data-tippy-theme="dropdown"
                                     data-tippy-trigger="click"
                                     data-tippy-interactive="true"
@@ -5484,23 +5508,6 @@ export default async function courselore(
                         </div>
                       </div>
                       <!--
-                          <div class="dropdown">
-                            <button
-                              class="btn dropdown-toggle"
-                              type="button"
-                              id="invitation-role-dropdown--${invitation.reference}"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                              style="${css`
-                        padding: 0;
-                      `}"
-                            >
-                              ${lodash.capitalize(invitation.role)}
-                            </button>
-                            <div
-                              class="dropdown-menu"
-                              aria-labelledby="invitation-role-dropdown--${invitation.reference}"
-                            >
                               $${app.locals.constants.roles.map((role) =>
                         role === invitation.role
                           ? html``
