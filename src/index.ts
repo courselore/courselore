@@ -4372,7 +4372,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.threads[0].reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.threads[0].reference}?redirected=true`
       );
     }
   );
@@ -7156,9 +7156,18 @@ export default async function courselore(
                     display: block;
                     transition: background-color var(--transition-duration);
 
-                    &:hover,
-                    &.active {
+                    &:hover {
                       background-color: var(--color--primary--700);
+                    }
+                    @media (max-width: 899px) {
+                      :not(.active--cancel) > &.active {
+                        background-color: var(--color--primary--700);
+                      }
+                    }
+                    @media (min-width: 900px) {
+                      &.active {
+                        background-color: var(--color--primary--700);
+                      }
                     }
                   `}"
                 >
@@ -7251,6 +7260,22 @@ export default async function courselore(
               })();
             </script>
           </div>
+          <script>
+            (() => {
+              const element = document.currentScript.previousElementSibling;
+              document.addEventListener("DOMContentLoaded", () => {
+                if (element.dataset.canceledActiveWhenRedirected) return;
+                element.dataset.canceledActiveWhenRedirected = true;
+                if (
+                  new URLSearchParams(window.location.search).get(
+                    "redirected"
+                  ) !== "true"
+                )
+                  return;
+                element.classList.add("active--cancel");
+              });
+            })();
+          </script>
         </div>
       </div>
     `;
@@ -7296,6 +7321,24 @@ export default async function courselore(
                   Threads
                   <i class="bi bi-chevron-bar-expand"></i>
                 </button>
+                <script>
+                  (() => {
+                    const element =
+                      document.currentScript.previousElementSibling;
+                    document.addEventListener("DOMContentLoaded", () => {
+                      if (element.dataset.pressedWhenRedirected) return;
+                      element.dataset.pressedWhenRedirected = true;
+                      if (
+                        new URLSearchParams(window.location.search).get(
+                          "redirected"
+                        ) !== "true"
+                      )
+                        return;
+                      element.click();
+                      element.parentElement.remove();
+                    });
+                  })();
+                </script>
               </div>
             `
           : html``}
