@@ -2174,6 +2174,36 @@ export default async function courselore(
                     <div>
                       <button
                         data-tippy-content="${html`
+                          $${res.locals.invitations!.length === 0
+                            ? html``
+                            : html`
+                                <p
+                                  style="${css`
+                                    font-weight: var(--font-weight--bold);
+                                    color: var(--color--primary--800);
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <i class="bi bi-journal-arrow-down"></i>
+                                  Invitations
+                                </p>
+                                $${res.locals.invitations!.map(
+                                  (invitation) => html`
+                                    <a
+                                      href="${app.locals.settings
+                                        .url}/courses/${invitation.course
+                                        .reference}/invitations/${invitation.reference}"
+                                      class="dropdown--item"
+                                    >
+                                      <i class="bi bi-journal-arrow-down"></i>
+                                      Enroll in ${invitation.course.name} as
+                                      ${lodash.capitalize(invitation.role)}
+                                    </a>
+                                  `
+                                )}
+                                <hr class="dropdown--separator" />
+                              `}
                           <button
                             class="dropdown--item"
                             data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
@@ -2764,6 +2794,16 @@ export default async function courselore(
       email: string;
       name: string;
     };
+    invitations: {
+      id: number;
+      course: {
+        id: number;
+        reference: string;
+        name: string;
+      };
+      reference: string;
+      role: Role;
+    }[];
     enrollments: {
       id: number;
       course: {
@@ -2813,6 +2853,42 @@ export default async function courselore(
         email: session.userEmail,
         name: session.userName,
       };
+      res.locals.invitations = app.locals.database
+        .all<{
+          id: number;
+          courseId: number;
+          courseReference: string;
+          courseName: string;
+          reference: string;
+          role: Role;
+        }>(
+          sql`
+          SELECT "invitations"."id",
+                 "courses"."id" AS "courseId",
+                 "courses"."reference" AS "courseReference",
+                 "courses"."name" AS "courseName",
+                 "invitations"."reference",
+                 "invitations"."role"
+          FROM "invitations"
+          JOIN "courses" ON "invitations"."course" = "courses"."id"
+          WHERE "invitations"."usedAt" IS NULL AND (
+                  "invitations"."expiresAt" IS NULL OR
+                  CURRENT_TIMESTAMP < datetime("invitations"."expiresAt") 
+                ) AND
+                "invitations"."email" = ${res.locals.user.email}
+          ORDER BY "invitations"."id" DESC
+        `
+        )
+        .map((invitation) => ({
+          id: invitation.id,
+          course: {
+            id: invitation.courseId,
+            reference: invitation.courseReference,
+            name: invitation.courseName,
+          },
+          reference: invitation.reference,
+          role: invitation.role,
+        }));
       res.locals.enrollments = app.locals.database
         .all<{
           id: number;
@@ -6802,7 +6878,7 @@ export default async function courselore(
                   }
                 `}"
               >
-                <i class="bi bi-journal-plus"></i>
+                <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
               <div
@@ -6881,7 +6957,7 @@ export default async function courselore(
                   }
                 `}"
               >
-                <i class="bi bi-journal-plus"></i>
+                <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
               <div
@@ -6921,7 +6997,7 @@ export default async function courselore(
                       width: 100%;
                     `}"
                   >
-                    <i class="bi bi-journal-plus"></i>
+                    <i class="bi bi-journal-arrow-down"></i>
                     Enroll as ${lodash.capitalize(res.locals.invitation.role)}
                   </button>
                 </form>
@@ -7008,7 +7084,7 @@ export default async function courselore(
                   }
                 `}"
               >
-                <i class="bi bi-journal-plus"></i>
+                <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
               <div
