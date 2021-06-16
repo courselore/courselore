@@ -6786,24 +6786,58 @@ export default async function courselore(
             <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
           body: html`
-            <p>
-              You tried to use an invitation for ${res.locals.course.name} but
-              you’re already enrolled.
-            </p>
-
-            <p>
-              <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}"
-                class="btn btn-primary"
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <h2
+                class="heading--2"
                 style="${css`
-                  width: 100%;
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
                 `}"
               >
-                Go to ${res.locals.course.name}
-                <i class="bi bi-chevron-right"></i>
-              </a>
-            </p>
+                <i class="bi bi-journal-plus"></i>
+                Invitation
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p>
+                  You tried to use an invitation for ${res.locals.course.name}
+                  but you’re already enrolled.
+                </p>
+
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}"
+                  class="button button--primary"
+                  style="${css`
+                    width: 100%;
+                  `}"
+                >
+                  Go to ${res.locals.course.name}
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </div>
+            </div>
           `,
         })
       );
@@ -6831,31 +6865,68 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <h6
+            <div
               style="${css`
-                text-align: center;
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
               `}"
             >
-              Welcome to ${res.locals.invitation.course.name}!
-            </h6>
-
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.invitation
-                .course.reference}/invitations/${res.locals.invitation
-                .reference}"
-            >
-              <button
-                type="submit"
-                class="btn btn-primary"
+              <h2
+                class="heading--2"
                 style="${css`
-                  width: 100%;
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
                 `}"
               >
                 <i class="bi bi-journal-plus"></i>
-                Enroll as ${lodash.capitalize(res.locals.invitation.role)}
-              </button>
-            </form>
+                Invitation
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p
+                  style="${css`
+                    font-weight: var(--font-weight--bold);
+                    color: var(--color--primary--800);
+                  `}"
+                >
+                  Welcome to ${res.locals.invitation.course.name}!
+                </p>
+
+                <form
+                  method="POST"
+                  action="${app.locals.settings.url}/courses/${res.locals
+                    .invitation.course.reference}/invitations/${res.locals
+                    .invitation.reference}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--primary"
+                    style="${css`
+                      width: 100%;
+                    `}"
+                  >
+                    <i class="bi bi-journal-plus"></i>
+                    Enroll as ${lodash.capitalize(res.locals.invitation.role)}
+                  </button>
+                </form>
+              </div>
+            </div>
           `,
         })
       );
@@ -6921,36 +6992,74 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <h6
+            <div
               style="${css`
-                text-align: center;
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
               `}"
             >
-              Welcome to ${res.locals.invitation.course.name}!
-            </h6>
+              <h2
+                class="heading--2"
+                style="${css`
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
+                `}"
+              >
+                <i class="bi bi-journal-plus"></i>
+                Invitation
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p
+                  style="${css`
+                    font-weight: var(--font-weight--bold);
+                    color: var(--color--primary--800);
+                  `}"
+                >
+                  Welcome to ${res.locals.invitation.course.name}!
+                </p>
+                <p>To enroll, first you must authenticate.</p>
 
-            <a
-              href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                redirect: req.originalUrl,
-                ...(res.locals.invitation.email === null
-                  ? {}
-                  : {
-                      email: res.locals.invitation.email,
-                    }),
-                ...(res.locals.invitation.name === null
-                  ? {}
-                  : {
-                      name: res.locals.invitation.name,
-                    }),
-              })}"
-              class="btn btn-primary"
-              style="${css`
-                width: 100%;
-              `}"
-            >
-              Authenticate
-              <i class="bi bi-chevron-right"></i>
-            </a>
+                <a
+                  href="${app.locals.settings.url}/authenticate?${qs.stringify({
+                    redirect: req.originalUrl,
+                    ...(res.locals.invitation.email === null
+                      ? {}
+                      : {
+                          email: res.locals.invitation.email,
+                        }),
+                    ...(res.locals.invitation.name === null
+                      ? {}
+                      : {
+                          name: res.locals.invitation.name,
+                        }),
+                  })}"
+                  class="button button--primary"
+                  style="${css`
+                    width: 100%;
+                  `}"
+                >
+                  <i class="bi bi-box-arrow-in-right"></i>
+                  Authenticate
+                </a>
+              </div>
+            </div>
           `,
         })
       );
