@@ -7242,12 +7242,12 @@ export default async function courselore(
             )}
             <script>
               (() => {
-                const id = document.currentScript.previousElementSibling.id;
-                eventSource.addEventListener("refreshed", (event) => {
-                  document
-                    .querySelector("#" + id)
-                    .replaceWith(event.detail.document.querySelector("#" + id));
-                });
+                // const id = document.currentScript.previousElementSibling.id;
+                // eventSource.addEventListener("refreshed", (event) => {
+                //   document
+                //     .querySelector("#" + id)
+                //     .replaceWith(event.detail.document.querySelector("#" + id));
+                // });
               })();
             </script>
           </div>
