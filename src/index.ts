@@ -894,6 +894,9 @@ export default async function courselore(
                       background-color: var(--color--primary-gray--800);
                     }
                   }
+                  &:disabled {
+                    cursor: not-allowed;
+                  }
                   transition: box-shadow var(--transition-duration);
                 }
 
@@ -1031,7 +1034,8 @@ export default async function courselore(
                   &.button--rose {
                     color: var(--color--rose--50);
                     background-color: var(--color--rose--700);
-                    &:hover {
+                    &:hover,
+                    &:focus {
                       background-color: var(--color--rose--600);
                     }
                     &:active {
@@ -1040,7 +1044,8 @@ export default async function courselore(
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--rose--200);
                       background-color: var(--color--rose--800);
-                      &:hover {
+                      &:hover,
+                      &:focus {
                         background-color: var(--color--rose--700);
                       }
                       &:active {
@@ -1052,7 +1057,8 @@ export default async function courselore(
                   &.button--green {
                     color: var(--color--green--50);
                     background-color: var(--color--green--700);
-                    &:hover {
+                    &:hover,
+                    &:focus {
                       background-color: var(--color--green--600);
                     }
                     &:active {
@@ -1061,7 +1067,8 @@ export default async function courselore(
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--green--200);
                       background-color: var(--color--green--800);
-                      &:hover {
+                      &:hover,
+                      &:focus {
                         background-color: var(--color--green--700);
                       }
                       &:active {
@@ -1072,21 +1079,26 @@ export default async function courselore(
                 }
 
                 .link {
-                  color: var(--color--primary--600);
                   text-decoration: underline;
-                  transition: color var(--transition-duration);
-
-                  &:hover {
-                    color: var(--color--primary--800);
-                    text-decoration: underline;
+                  color: var(--color--primary--600);
+                  &:hover,
+                  &:focus {
+                    color: var(--color--primary--400);
                   }
-
+                  &:active {
+                    color: var(--color--primary--800);
+                  }
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary--500);
-                    &:hover {
+                    &:hover,
+                    &:focus {
+                      color: var(--color--primary--300);
+                    }
+                    &:active {
                       color: var(--color--primary--700);
                     }
                   }
+                  transition: color var(--transition-duration);
                 }
 
                 .separator {
@@ -1313,6 +1325,7 @@ export default async function courselore(
 
                 .text {
                   a {
+                    text-decoration: underline;
                     color: var(--color--primary--600);
                     &:hover,
                     &:focus {
@@ -1331,7 +1344,6 @@ export default async function courselore(
                         color: var(--color--primary--700);
                       }
                     }
-                    text-decoration: underline;
                     transition: color var(--transition-duration);
                   }
 
@@ -1947,6 +1959,12 @@ export default async function courselore(
                         artAnimation.start();
                       });
                       element.addEventListener("mouseout", () => {
+                        artAnimation.stop();
+                      });
+                      element.addEventListener("focus", () => {
+                        artAnimation.start();
+                      });
+                      element.addEventListener("blur", () => {
                         artAnimation.stop();
                       });
                     });
@@ -3263,7 +3281,7 @@ export default async function courselore(
                         background-color: var(--color--rose--500);
                         @media (prefers-color-scheme: dark) {
                           color: var(--color--rose--200);
-                          background-color: var(--color--rose--700);
+                          background-color: var(--color--rose--600);
                         }
                         padding: var(--space--4);
                         border: var(--border-width--1) solid
@@ -3296,36 +3314,18 @@ export default async function courselore(
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
-
-                          & > * {
-                            color: var(--color--rose--50);
-                            background-color: var(--color--rose--600);
-                            &:hover {
-                              background-color: var(--color--rose--400);
-                            }
-                            &:active {
-                              background-color: var(--color--rose--700);
-                            }
-                            @media (prefers-color-scheme: dark) {
-                              color: var(--color--rose--200);
-                              background-color: var(--color--rose--600);
-                              &:hover {
-                                background-color: var(--color--rose--500);
-                              }
-                              &:active {
-                                background-color: var(--color--rose--800);
-                              }
-                            }
-                          }
                         `}"
                       >
-                        <a href="${magicAuthenticationLink}" class="button">
+                        <a
+                          href="${magicAuthenticationLink}"
+                          class="button button--rose"
+                        >
                           <i class="bi bi-box-arrow-in-right"></i>
                           Follow the Magic Authentication Link
                         </a>
                         <a
                           href="${app.locals.settings.url}/demonstration-inbox"
-                          class="button"
+                          class="button button--rose"
                         >
                           <i class="bi bi-inbox"></i>
                           Go to the Demonstration Inbox
@@ -3485,16 +3485,7 @@ export default async function courselore(
                       value="${req.query.name ?? ""}"
                       required
                       autofocus
-                      style="${css`
-                        background-color: var(--color--primary--200);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--primary--700);
-                        }
-                        display: block;
-                        width: 100%;
-                        padding: var(--space--2);
-                        border-radius: var(--border-radius--md);
-                      `}"
+                      class="input--text"
                     />
                   </label>
 
@@ -3509,19 +3500,7 @@ export default async function courselore(
                         type="email"
                         value="${email}"
                         disabled
-                        style="${css`
-                          color: var(--color--primary--500);
-                          background-color: var(--color--primary--300);
-                          @media (prefers-color-scheme: dark) {
-                            color: var(--color--primary--400);
-                            background-color: var(--color--primary--800);
-                          }
-                          display: block;
-                          width: 100%;
-                          padding: var(--space--2);
-                          border-radius: var(--border-radius--md);
-                          cursor: not-allowed;
-                        `}"
+                        class="input--text"
                       />
                     </span>
                   </label>
