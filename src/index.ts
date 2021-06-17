@@ -871,7 +871,7 @@ export default async function courselore(
                   }
                   &:focus {
                     box-shadow: var(--border-width--0) var(--border-width--0)
-                      var(--border-width--0) var(--border-width--4)
+                      var(--border-width--0) var(--border-width--2)
                       var(--color--primary--400);
                   }
                   &:disabled {
@@ -886,7 +886,7 @@ export default async function courselore(
                     }
                     &:focus {
                       box-shadow: var(--border-width--0) var(--border-width--0)
-                        var(--border-width--0) var(--border-width--4)
+                        var(--border-width--0) var(--border-width--2)
                         var(--color--primary--800);
                     }
                     &:disabled {
