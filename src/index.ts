@@ -876,7 +876,7 @@ export default async function courselore(
                   }
                   &:disabled {
                     color: var(--color--primary-gray--600);
-                    background-color: var(--color--gray--50);
+                    background-color: var(--color--gray--200);
                   }
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary-gray--200);
@@ -1183,19 +1183,22 @@ export default async function courselore(
                       gap: var(--space--2);
                       transition: background-color var(--transition-duration);
 
-                      &:hover {
+                      &:hover,
+                      &:focus {
                         background-color: var(--color--primary--100);
-                        @media (prefers-color-scheme: dark) {
+                      }
+                      &:active,
+                      &.active {
+                        background-color: var(--color--primary--300);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        &:hover,
+                        &:focus {
                           background-color: var(--color--primary--600);
                         }
-                      }
-
-                      &.dropdown--item--active {
-                        color: var(--color--primary--50);
-                        background-color: var(--color--primary--600);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--primary--900);
-                          background-color: var(--color--primary--100);
+                        &:active,
+                        &.active {
+                          background-color: var(--color--primary--900);
                         }
                       }
                     }
@@ -1235,7 +1238,7 @@ export default async function courselore(
                         }
                       }
 
-                      &.dropdown--item--active {
+                      &.active {
                         color: var(--color--rose--50);
                         background-color: var(--color--rose--600);
                         @media (prefers-color-scheme: dark) {
@@ -2069,10 +2072,23 @@ export default async function courselore(
               }
 
               .header--item {
-                transition: color var(--transition-duration);
-                &:hover {
+                &:hover,
+                &:focus {
                   color: var(--color--primary--200);
                 }
+                &:active {
+                  color: var(--color--primary--400);
+                }
+                @media (prefers-color-scheme: dark) {
+                  &:hover,
+                  &:focus {
+                    color: var(--color--white);
+                  }
+                  &:active {
+                    color: var(--color--primary--400);
+                  }
+                }
+                transition: color var(--transition-duration);
               }
             `}"
           >
@@ -2407,23 +2423,41 @@ export default async function courselore(
                         & .link {
                           color: var(--color--green--700);
                           background-color: var(--color--green--200);
-                          @media (prefers-color-scheme: dark) {
+                        }
+                        & + button:hover,
+                        & .link:hover,
+                        & + button:focus,
+                        & .link:focus {
+                          color: var(--color--green--600);
+                        }
+                        & + button:active,
+                        & .link:active {
+                          color: var(--color--green--900);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          &,
+                          & + button,
+                          & .link {
                             color: var(--color--green--300);
                             background-color: var(--color--green--700);
                           }
-                        }
-                        & + button:hover,
-                        & .link:hover {
-                          color: var(--color--green--600);
-                          @media (prefers-color-scheme: dark) {
+                          & + button:hover,
+                          & .link:hover,
+                          & + button:focus,
+                          & .link:focus {
                             color: var(--color--green--100);
+                          }
+                          & + button:active,
+                          & .link:active {
+                            color: var(--color--green--500);
                           }
                         }
                       }
 
                       &.flash--rose {
                         &,
-                        & + button {
+                        & + button,
+                        & .link {
                           color: var(--color--rose--700);
                           background-color: var(--color--rose--200);
                           @media (prefers-color-scheme: dark) {
@@ -2431,7 +2465,8 @@ export default async function courselore(
                             background-color: var(--color--rose--700);
                           }
                         }
-                        & + button:hover {
+                        & + button:hover,
+                        & .link:hover {
                           color: var(--color--rose--600);
                           @media (prefers-color-scheme: dark) {
                             color: var(--color--rose--100);
@@ -4709,9 +4744,7 @@ export default async function courselore(
       <a
         href="${app.locals.settings.url}/courses/${res.locals.course
           .reference}/settings"
-        class="dropdown--item ${req.path.endsWith("/settings")
-          ? "dropdown--item--active"
-          : ""}"
+        class="dropdown--item ${req.path.endsWith("/settings") ? "active" : ""}"
       >
         <i class="bi bi-sliders"></i>
         Course Settings
@@ -4720,7 +4753,7 @@ export default async function courselore(
         href="${app.locals.settings.url}/courses/${res.locals.course
           .reference}/settings/invitations"
         class="dropdown--item ${req.path.endsWith("/settings/invitations")
-          ? "dropdown--item--active"
+          ? "active"
           : ""}"
       >
         <i class="bi bi-person-plus"></i>
@@ -4730,7 +4763,7 @@ export default async function courselore(
         href="${app.locals.settings.url}/courses/${res.locals.course
           .reference}/settings/enrollments"
         class="dropdown--item ${req.path.endsWith("/settings/enrollments")
-          ? "dropdown--item--active"
+          ? "active"
           : ""}"
       >
         <i class="bi bi-people"></i>
@@ -4740,7 +4773,7 @@ export default async function courselore(
         href="${app.locals.settings.url}/courses/${res.locals.course
           .reference}/settings/enrollment"
         class="dropdown--item ${req.path.endsWith("/settings/enrollment")
-          ? "dropdown--item--active"
+          ? "active"
           : ""}"
       >
         <i class="bi bi-person"></i>
@@ -4835,7 +4868,7 @@ export default async function courselore(
                     }
 
                     .dropdown--item:hover,
-                    .dropdown--item--active {
+                    .active {
                       color: var(--color--primary-gray--900);
                       box-shadow: inset var(--border-width--4) 0
                         var(--color--primary-gray--500);
