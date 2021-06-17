@@ -3503,6 +3503,23 @@ export default async function courselore(
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
+
+                    .input--text {
+                      color: var(--color--primary--800);
+                      background-color: var(--color--primary--50);
+                      &:disabled {
+                        color: var(--color--primary--700);
+                        background-color: var(--color--primary--300);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--50);
+                        background-color: var(--color--primary--700);
+                        &:disabled {
+                          color: var(--color--primary--300);
+                          background-color: var(--color--primary--800);
+                        }
+                      }
+                    }
                   `}"
                 >
                   <input
