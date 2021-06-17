@@ -951,7 +951,8 @@ export default async function courselore(
                   &.button--primary {
                     color: var(--color--primary--50);
                     background-color: var(--color--primary--700);
-                    &:hover {
+                    &:hover,
+                    &:focus {
                       background-color: var(--color--primary--600);
                     }
                     &:active {
@@ -960,7 +961,8 @@ export default async function courselore(
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--200);
                       background-color: var(--color--primary--800);
-                      &:hover {
+                      &:hover,
+                      &:focus {
                         background-color: var(--color--primary--700);
                       }
                       &:active {
@@ -970,14 +972,16 @@ export default async function courselore(
                   }
 
                   &.button--secondary {
-                    &:hover {
+                    &:hover,
+                    &:focus {
                       background-color: var(--color--primary-gray--200);
                     }
                     &:active {
                       background-color: var(--color--primary-gray--300);
                     }
                     @media (prefers-color-scheme: dark) {
-                      &:hover {
+                      &:hover,
+                      &:focus {
                         background-color: var(--color--primary-gray--800);
                       }
                       &:active {
