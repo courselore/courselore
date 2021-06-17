@@ -1110,6 +1110,33 @@ export default async function courselore(
                   }
                 }
 
+                .notification-indicator {
+                  display: grid;
+                  & > *,
+                  &::after {
+                    grid-area: 1 / 1;
+                  }
+                  &::after {
+                    content: "";
+                    background-color: var(--color--rose--500);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--rose--600);
+                    }
+                    display: block;
+                    width: var(--space--3);
+                    height: var(--space--3);
+                    border: var(--border-width--2) solid
+                      var(--color--primary--700);
+                    @media (prefers-color-scheme: dark) {
+                      border: var(--border-width--2) solid
+                        var(--color--primary--800);
+                    }
+                    border-radius: 50%;
+                    justify-self: end;
+                    margin-right: calc(-1 * var(--space--1));
+                  }
+                }
+
                 .tippy-box {
                   font-size: var(--font-size--sm);
                   line-height: var(--line-height--sm);
@@ -2319,52 +2346,28 @@ export default async function courselore(
                         data-tippy-trigger="click"
                         data-tippy-interactive="true"
                         data-tippy-allowHTML="true"
+                        class="header--item"
                         style="${css`
                           display: grid;
                         `}"
                       >
-                        <div
-                          style="${css`
-                            display: grid;
-                            & > * {
-                              grid-area: 1 / 1;
-                            }
-                          `}"
-                        >
-                          <div
-                            data-tippy-content="$${res.locals.invitations!
-                              .length === 0
-                              ? "Add"
-                              : `You have ${
-                                  res.locals.invitations!.length
-                                } pending invitation${
-                                  res.locals.invitations!.length === 1
-                                    ? ""
-                                    : "s"
-                                }`}"
-                            data-tippy-theme="tooltip"
-                            data-tippy-touch="false"
-                            class="header--item"
-                          >
-                            <i class="bi bi-plus-circle"></i>
-                          </div>
+                        <span
+                          data-tippy-content="$${res.locals.invitations!
+                            .length === 0
+                            ? "Add"
+                            : `${
+                                res.locals.invitations!.length
+                              } pending invitation${
+                                res.locals.invitations!.length === 1 ? "" : "s"
+                              }`}"
+                          data-tippy-theme="tooltip"
+                          data-tippy-touch="false"
                           $${res.locals.invitations!.length === 0
                             ? html``
-                            : html`
-                                <div
-                                  style="${css`
-                                    background-color: var(--color--rose--500);
-                                    width: var(--space--3);
-                                    height: var(--space--3);
-                                    border: var(--border-width--2) solid
-                                      var(--color--primary--700);
-                                    border-radius: 50%;
-                                    justify-self: end;
-                                    margin-right: calc(-1 * var(--space--1));
-                                  `}"
-                                ></div>
-                              `}
-                        </div>
+                            : html`class="notification-indicator"`}
+                        >
+                          <i class="bi bi-plus-circle"></i>
+                        </span>
                       </button>
                     </div>
                     <div>
