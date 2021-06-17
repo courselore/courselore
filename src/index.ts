@@ -2278,17 +2278,10 @@ export default async function courselore(
                           $${res.locals.invitations!.length === 0
                             ? html``
                             : html`
-                                <p
-                                  style="${css`
-                                    font-weight: var(--font-weight--bold);
-                                    color: var(--color--primary--800);
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
+                                <h3 class="dropdown--heading">
                                   <i class="bi bi-journal-arrow-down"></i>
                                   Invitations
-                                </p>
+                                </h3>
                                 $${res.locals.invitations!.map(
                                   (invitation) => html`
                                     <a
