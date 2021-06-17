@@ -1488,8 +1488,14 @@ export default async function courselore(
                         var(--color--rose--900);
                     }
                     display: flex;
-                    gap: var(--space--2);
-                    justify-content: center;
+                    @media (max-width: 329px) {
+                      flex-direction: column;
+                      align-items: center;
+                    }
+                    @media (min-width: 330px) {
+                      gap: var(--space--2);
+                      justify-content: center;
+                    }
 
                     & > * {
                       padding: var(--space--1) var(--space--2);
@@ -1499,11 +1505,20 @@ export default async function courselore(
                       transition: box-shadow var(--transition-duration);
 
                       &:hover,
+                      &:focus,
                       &.current {
                         box-shadow: inset 0 calc(-1 * var(--border-width--4))
                           var(--color--rose--700);
                         @media (prefers-color-scheme: dark) {
                           box-shadow: inset 0 calc(-1 * var(--border-width--4))
+                            var(--color--rose--800);
+                        }
+                      }
+                      &:active {
+                        box-shadow: inset 0 calc(-1 * var(--line-height--xl))
+                          var(--color--rose--700);
+                        @media (prefers-color-scheme: dark) {
+                          box-shadow: inset 0 calc(-1 * var(--line-height--xl))
                             var(--color--rose--800);
                         }
                       }
@@ -1843,11 +1858,7 @@ export default async function courselore(
                         stroke: var(--color--primary--200);
                       }
                     }
-                    display: inline-flex;
-                    gap: var(--space--2);
-                    align-items: center;
-                    transition: color var(--transition-duration);
-                    &:hover {
+                    &:hover, &:focus {
                       color: var(--color--primary--200);
                       * {
                         stroke: var(--color--primary--200);
@@ -1859,6 +1870,22 @@ export default async function courselore(
                         }
                       }
                     }
+                    &:active {
+                      color: var(--color--primary--400);
+                      * {
+                        stroke: var(--color--primary--400);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--500);
+                        * {
+                          stroke: var(--color--primary--500);
+                        }
+                      }
+                    }
+                    display: inline-flex;
+                    gap: var(--space--2);
+                    align-items: center;
+                    transition: color var(--transition-duration);
                   `}"
                 >
                   $${app.locals.partials.art.small} CourseLore
