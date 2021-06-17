@@ -864,21 +864,59 @@ export default async function courselore(
                   display: block;
                   padding: var(--space--2) var(--space--4);
                   border-radius: var(--border-radius--md);
-                  color: var(--color--primary-gray--700);
+                  color: var(--color--primary-gray--800);
                   background-color: var(--color--white);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary-gray--300);
-                    background-color: var(--color--primary-gray--700);
+                  &::placeholder {
+                    color: var(--color--primary-gray--600);
                   }
-
+                  &:focus {
+                    box-shadow: var(--border-width--0) var(--border-width--0)
+                      var(--border-width--0) var(--border-width--4)
+                      var(--color--primary--400);
+                  }
                   &:disabled {
                     color: var(--color--primary-gray--600);
                     background-color: var(--color--gray--50);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary-gray--500);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary-gray--200);
+                    background-color: var(--color--primary-gray--700);
+                    &::placeholder {
+                      color: var(--color--primary-gray--400);
+                    }
+                    &:focus {
+                      box-shadow: var(--border-width--0) var(--border-width--0)
+                        var(--border-width--0) var(--border-width--4)
+                        var(--color--primary--800);
+                    }
+                    &:disabled {
+                      color: var(--color--primary-gray--400);
                       background-color: var(--color--primary-gray--800);
                     }
                   }
+                  transition: box-shadow var(--transition-duration);
+                }
+
+                .input--text--button--inset {
+                  color: var(--color--primary-gray--800);
+                  &:hover,
+                  &:focus {
+                    color: var(--color--primary-gray--500);
+                  }
+                  &:active {
+                    color: var(--color--primary-gray--900);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary-gray--300);
+                    &:hover,
+                    &:focus {
+                      color: var(--color--primary-gray--50);
+                    }
+                    &:active {
+                      color: var(--color--primary-gray--400);
+                    }
+                  }
+                  transition: color var(--transition-duration);
                 }
 
                 .input--radio--group {
@@ -1506,7 +1544,7 @@ export default async function courselore(
 
                       &:hover,
                       &:focus,
-                      &.current {
+                      &.active:focus {
                         box-shadow: inset 0 calc(-1 * var(--border-width--4))
                           var(--color--rose--700);
                         @media (prefers-color-scheme: dark) {
@@ -1514,7 +1552,8 @@ export default async function courselore(
                             var(--color--rose--800);
                         }
                       }
-                      &:active {
+                      &:active,
+                      &.active {
                         box-shadow: inset 0 calc(-1 * var(--line-height--xl))
                           var(--color--rose--700);
                         @media (prefers-color-scheme: dark) {
@@ -1539,7 +1578,7 @@ export default async function courselore(
                   <a
                     href="${app.locals.settings.url}/demonstration-inbox"
                     class="${req.path === "/demonstration-inbox"
-                      ? "current"
+                      ? "active"
                       : ""}"
                   >
                     <i class="bi bi-inbox"></i>
@@ -1858,7 +1897,8 @@ export default async function courselore(
                         stroke: var(--color--primary--200);
                       }
                     }
-                    &:hover, &:focus {
+                    &:hover,
+                    &:focus {
                       color: var(--color--primary--200);
                       * {
                         stroke: var(--color--primary--200);
@@ -2034,7 +2074,8 @@ export default async function courselore(
                     }
                     transition: stroke var(--transition-duration);
                   }
-                  &:hover {
+                  &:hover,
+                  &:focus {
                     * {
                       stroke: var(--color--primary--200);
                       @media (prefers-color-scheme: dark) {
@@ -2063,6 +2104,12 @@ export default async function courselore(
                       artAnimation.start();
                     });
                     element.addEventListener("mouseout", () => {
+                      artAnimation.stop();
+                    });
+                    element.addEventListener("focus", () => {
+                      artAnimation.start();
+                    });
+                    element.addEventListener("blur", () => {
                       artAnimation.stop();
                     });
                   });
@@ -2995,13 +3042,6 @@ export default async function courselore(
               >
                 <i class="bi bi-box-arrow-in-right"></i>
                 Authenticate
-                <button
-                  data-tippy-content="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
-                  data-tippy-theme="tooltip"
-                  data-tippy-trigger="click"
-                >
-                  <i class="bi bi-info-circle"></i>
-                </button>
               </h2>
               <form
                 method="POST"
@@ -3033,31 +3073,28 @@ export default async function courselore(
                       value="${req.query.email ?? ""}"
                       required
                       autofocus
+                      class="input--text"
                       style="${css`
-                        color: var(--color--primary--800);
-                        background-color: var(--color--primary--100);
-                        &::placeholder {
-                          color: var(--color--primary--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--primary--200);
-                          background-color: var(--color--primary-gray--800);
-                          &::placeholder {
-                            color: var(--color--primary--300);
-                          }
-                        }
-                        width: 100%;
-                        padding: var(--space--2);
-                        padding-right: var(--space--32);
-                        border-radius: var(--border-radius--md);
+                        padding-right: var(--space--36);
                       `}"
                     />
                     <div
                       style="${css`
                         justify-self: end;
                         padding: var(--space--1);
+                        display: flex;
+                        gap: var(--space--2);
                       `}"
                     >
+                      <button
+                        type="button"
+                        data-tippy-content="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
+                        data-tippy-theme="tooltip"
+                        data-tippy-trigger="click"
+                        class="input--text--button--inset"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
                       <button class="button button--primary">
                         Continue <i class="bi bi-chevron-right"></i>
                       </button>
