@@ -364,14 +364,16 @@ module.exports = (require) => {
                                   }
 
                                   & > button {
-                                    &:hover {
+                                    &:hover,
+                                    &:focus {
                                       color: var(--color--primary--500);
                                     }
                                     &:active {
                                       color: var(--color--primary--700);
                                     }
                                     @media (prefers-color-scheme: dark) {
-                                      &:hover {
+                                      &:hover,
+                                      &:focus {
                                         color: var(--color--primary--400);
                                       }
                                       &:active {
@@ -526,8 +528,12 @@ module.exports = (require) => {
                               border-radius: var(--border-radius--xl);
                               transition: transform var(--transition-duration);
 
-                              &:hover {
+                              &:hover,
+                              &:focus {
                                 transform: scale(1.02) rotate(-1deg);
+                              }
+                              &:active {
+                                transform: scale(0.98);
                               }
 
                               & > div {

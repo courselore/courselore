@@ -1276,20 +1276,25 @@ export default async function courselore(
                 .text {
                   a {
                     color: var(--color--primary--600);
-                    text-decoration: underline;
-                    transition: color var(--transition-duration);
-
-                    &:hover {
-                      color: var(--color--primary--800);
-                      text-decoration: underline;
+                    &:hover,
+                    &:focus {
+                      color: var(--color--primary--400);
                     }
-
+                    &:active {
+                      color: var(--color--primary--800);
+                    }
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--500);
-                      &:hover {
+                      &:hover,
+                      &:focus {
+                        color: var(--color--primary--300);
+                      }
+                      &:active {
                         color: var(--color--primary--700);
                       }
                     }
+                    text-decoration: underline;
+                    transition: color var(--transition-duration);
                   }
 
                   strong {
