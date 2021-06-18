@@ -1172,6 +1172,27 @@ export default async function courselore(
                   }
                 }
 
+                .stripped {
+                  & > * {
+                    &:nth-child(even) {
+                      background-color: var(--color--primary-gray--200);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--primary-gray--800);
+                      }
+                    }
+                    @media (max-width: 1099px) {
+                      --space--bleed: var(--space--2);
+                    }
+                    @media (min-width: 1100px) {
+                      --space--bleed: var(--space--4);
+                    }
+                    width: calc(100% + 2 * var(--space--bleed));
+                    padding: var(--space--2) var(--space--bleed);
+                    border-radius: var(--border-radius--md);
+                    margin-left: calc(-1 * var(--space--bleed));
+                  }
+                }
+
                 .tippy-box {
                   font-size: var(--font-size--sm);
                   line-height: var(--line-height--sm);
@@ -5453,608 +5474,614 @@ export default async function courselore(
               : html`
                   <hr class="separator" />
 
-                  $${invitations.map((invitation) => {
-                    const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                    const isExpired = app.locals.helpers.isExpired(
-                      invitation.expiresAt
-                    );
-                    const isUsed = invitation.usedAt !== null;
+                  <div class="stripped">
+                    $${invitations.map((invitation) => {
+                      const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                      const isExpired = app.locals.helpers.isExpired(
+                        invitation.expiresAt
+                      );
+                      const isUsed = invitation.usedAt !== null;
 
-                    return html`
-                      <div
-                        style="${css`
-                          &:nth-child(even) {
-                            background-color: var(--color--primary-gray--200);
-                            @media (prefers-color-scheme: dark) {
-                              background-color: var(--color--primary-gray--800);
-                            }
-                          }
-                          @media (max-width: 1099px) {
-                            --space--bleed: var(--space--2);
-                          }
-                          @media (min-width: 1100px) {
-                            --space--bleed: var(--space--4);
-                          }
-                          width: calc(100% + 2 * var(--space--bleed));
-                          padding: var(--space--2) var(--space--bleed);
-                          border-radius: var(--border-radius--md);
-                          margin-left: calc(-1 * var(--space--bleed));
-                          display: flex;
-                          align-items: baseline;
-                        `}"
-                      >
-                        <div
-                          style="${css`
-                            flex: 1;
-                          `}"
-                        >
-                          $${invitation.email === null
-                            ? html`
-                                <div>
-                                  <button
-                                    $${isExpired
-                                      ? html`disabled`
-                                      : html`
-                                          data-micromodal-trigger="modal--invitation--${invitation.reference}"
-                                        `}
-                                  >
-                                    <span
-                                      $${isExpired
-                                        ? html`
-                                            data-tippy-content="Can’t show
-                                            Invitation Link because it’s
-                                            expired." data-tippy-theme="tooltip"
-                                            tabindex="0"
-                                          `
-                                        : html`
-                                            data-tippy-content="See Invitation
-                                            Link" data-tippy-theme="tooltip"
-                                            data-tippy-touch="false"
-                                          `}
-                                    >
-                                      <i class="bi bi-link"></i>
-                                      <span
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                          color: var(
-                                            --color--primary-gray--800
-                                          );
-                                          :hover > * > &,
-                                          :focus > * > & {
-                                            color: var(--color--primary--600);
-                                          }
-                                          :active > * > & {
-                                            color: var(--color--primary--800);
-                                          }
-                                          @media (prefers-color-scheme: dark) {
-                                            color: var(
-                                              --color--primary-gray--200
-                                            );
-                                            :hover > * > &,
-                                            :focus > * > & {
-                                              color: var(--color--primary--300);
-                                            }
-                                            :active > * > & {
-                                              color: var(--color--primary--500);
-                                            }
-                                          }
-                                          transition: color
-                                            var(--transition-duration);
-                                        `}"
-                                      >
-                                        ${"*".repeat(
-                                          6
-                                        )}${invitation.reference.slice(6)}
-                                      </span>
-                                    </span>
-                                  </button>
-                                </div>
-                              `
-                            : html`
-                                <div
-                                  style="${css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
-                                  <i class="bi bi-envelope"></i>
-                                  <div
-                                    style="${css`
-                                      flex: 1;
-                                      display: flex;
-                                      flex-direction: column;
-                                    `}"
-                                  >
-                                    $${invitation.name === null
-                                      ? html`
-                                          <div
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                              color: var(
-                                                --color--primary-gray--800
-                                              );
-                                              @media (prefers-color-scheme: dark) {
-                                                color: var(
-                                                  --color--primary-gray--100
-                                                );
-                                              }
-                                            `}"
-                                          >
-                                            ${invitation.email}
-                                          </div>
-                                        `
-                                      : html`
-                                          <div
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                              color: var(
-                                                --color--primary-gray--800
-                                              );
-                                              @media (prefers-color-scheme: dark) {
-                                                color: var(
-                                                  --color--primary-gray--100
-                                                );
-                                              }
-                                            `}"
-                                          >
-                                            ${invitation.name}
-                                          </div>
-                                          <div>${invitation.email}</div>
-                                        `}
-                                  </div>
-                                </div>
-                              `}
-                        </div>
+                      return html`
                         <div
                           style="${css`
                             display: flex;
-                            @media (max-width: 500px) {
-                              flex-direction: column;
-                              align-items: flex-end;
-                              gap: var(--space--2);
-                            }
+                            align-items: baseline;
                           `}"
                         >
                           <div
                             style="${css`
-                              width: var(--space--20);
-                              display: flex;
-                              justify-content: flex-end;
+                              flex: 1;
                             `}"
                           >
-                            <button
-                              $${isUsed || isExpired
-                                ? html`disabled`
-                                : html`
-                                    data-tippy-content="${html`
-                                      $${app.locals.constants.roles.map(
-                                        (role) =>
-                                          role === invitation.role
-                                            ? html``
-                                            : html`
-                                                <form
-                                                  method="POST"
-                                                  action="${action}?_method=PATCH"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="role"
-                                                    value="${role}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--item"
-                                                  >
-                                                    Change Invitation Role to
-                                                    ${lodash.capitalize(role)}
-                                                  </button>
-                                                </form>
-                                              `
-                                      )}
+                            $${invitation.email === null
+                              ? html`
+                                  <div>
+                                    <button
+                                      $${isExpired
+                                        ? html`disabled`
+                                        : html`
+                                            data-micromodal-trigger="modal--invitation--${invitation.reference}"
+                                          `}
+                                    >
+                                      <span
+                                        $${isExpired
+                                          ? html`
+                                              data-tippy-content="Can’t show
+                                              Invitation Link because it’s
+                                              expired."
+                                              data-tippy-theme="tooltip"
+                                              tabindex="0"
+                                            `
+                                          : html`
+                                              data-tippy-content="See Invitation
+                                              Link" data-tippy-theme="tooltip"
+                                              data-tippy-touch="false"
+                                            `}
+                                      >
+                                        <i class="bi bi-link"></i>
+                                        <span
+                                          style="${css`
+                                            font-weight: var(
+                                              --font-weight--bold
+                                            );
+                                            color: var(
+                                              --color--primary-gray--800
+                                            );
+                                            :hover > * > &,
+                                            :focus > * > & {
+                                              color: var(--color--primary--600);
+                                            }
+                                            :active > * > & {
+                                              color: var(--color--primary--800);
+                                            }
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(
+                                                --color--primary-gray--200
+                                              );
+                                              :hover > * > &,
+                                              :focus > * > & {
+                                                color: var(
+                                                  --color--primary--300
+                                                );
+                                              }
+                                              :active > * > & {
+                                                color: var(
+                                                  --color--primary--500
+                                                );
+                                              }
+                                            }
+                                            transition: color
+                                              var(--transition-duration);
+                                          `}"
+                                        >
+                                          ${"*".repeat(
+                                            6
+                                          )}${invitation.reference.slice(6)}
+                                        </span>
+                                      </span>
+                                    </button>
+                                  </div>
+                                `
+                              : html`
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
                                     `}"
-                                    data-tippy-theme="dropdown"
-                                    data-tippy-trigger="click"
-                                    data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true"
-                                  `}
+                                  >
+                                    <i class="bi bi-envelope"></i>
+                                    <div
+                                      style="${css`
+                                        flex: 1;
+                                        display: flex;
+                                        flex-direction: column;
+                                      `}"
+                                    >
+                                      $${invitation.name === null
+                                        ? html`
+                                            <div
+                                              style="${css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                                color: var(
+                                                  --color--primary-gray--800
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  color: var(
+                                                    --color--primary-gray--100
+                                                  );
+                                                }
+                                              `}"
+                                            >
+                                              ${invitation.email}
+                                            </div>
+                                          `
+                                        : html`
+                                            <div
+                                              style="${css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                                color: var(
+                                                  --color--primary-gray--800
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  color: var(
+                                                    --color--primary-gray--100
+                                                  );
+                                                }
+                                              `}"
+                                            >
+                                              ${invitation.name}
+                                            </div>
+                                            <div>${invitation.email}</div>
+                                          `}
+                                    </div>
+                                  </div>
+                                `}
+                          </div>
+                          <div
+                            style="${css`
+                              display: flex;
+                              @media (max-width: 500px) {
+                                flex-direction: column;
+                                align-items: flex-end;
+                                gap: var(--space--2);
+                              }
+                            `}"
+                          >
+                            <div
+                              style="${css`
+                                width: var(--space--20);
+                                display: flex;
+                                justify-content: flex-end;
+                              `}"
                             >
-                              <span
-                                $${isUsed
-                                  ? html`
-                                      data-tippy-content="You may not change the
-                                      role of this invitation because it has
-                                      already been used."
-                                      data-tippy-theme="tooltip" tabindex="0"
-                                    `
-                                  : isExpired
-                                  ? html`
-                                      data-tippy-content="You may not change the
-                                      role of this invitation because it’s
-                                      expired." data-tippy-theme="tooltip"
-                                      tabindex="0"
-                                    `
+                              <button
+                                $${isUsed || isExpired
+                                  ? html`disabled`
                                   : html`
-                                      data-tippy-content="Change Role"
-                                      data-tippy-theme="tooltip"
-                                      data-tippy-touch="false"
+                                      data-tippy-content="${html`
+                                        $${app.locals.constants.roles.map(
+                                          (role) =>
+                                            role === invitation.role
+                                              ? html``
+                                              : html`
+                                                  <form
+                                                    method="POST"
+                                                    action="${action}?_method=PATCH"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="role"
+                                                      value="${role}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--item"
+                                                    >
+                                                      Change Invitation Role to
+                                                      ${lodash.capitalize(role)}
+                                                    </button>
+                                                  </form>
+                                                `
+                                        )}
+                                      `}"
+                                      data-tippy-theme="dropdown"
+                                      data-tippy-trigger="click"
+                                      data-tippy-interactive="true"
+                                      data-tippy-allowHTML="true"
                                     `}
-                                style="${css`
-                                  transition: color var(--transition-duration);
-                                  &:hover,
-                                  &:focus,
-                                  :focus > & {
-                                    color: var(--color--primary--600);
-                                  }
-                                  &:active {
-                                    color: var(--color--primary--800);
-                                  }
-                                  @media (prefers-color-scheme: dark) {
-                                    color: var(--color--primary-gray--400);
+                              >
+                                <span
+                                  $${isUsed
+                                    ? html`
+                                        data-tippy-content="You may not change
+                                        the role of this invitation because it
+                                        has already been used."
+                                        data-tippy-theme="tooltip" tabindex="0"
+                                      `
+                                    : isExpired
+                                    ? html`
+                                        data-tippy-content="You may not change
+                                        the role of this invitation because it’s
+                                        expired." data-tippy-theme="tooltip"
+                                        tabindex="0"
+                                      `
+                                    : html`
+                                        data-tippy-content="Change Role"
+                                        data-tippy-theme="tooltip"
+                                        data-tippy-touch="false"
+                                      `}
+                                  style="${css`
+                                    transition: color var(--transition-duration);
                                     &:hover,
                                     &:focus,
                                     :focus > & {
-                                      color: var(--color--primary--300);
+                                      color: var(--color--primary--600);
                                     }
                                     &:active {
-                                      color: var(--color--primary--500);
+                                      color: var(--color--primary--800);
                                     }
-                                  }
-                                `}"
-                              >
-                                ${lodash.capitalize(invitation.role)}
-                                <i class="bi bi-chevron-down"></i>
-                              </span>
-                            </button>
-                          </div>
-
-                          <div
-                            style="${css`
-                              width: var(--space--40);
-                              display: flex;
-                              justify-content: flex-end;
-                            `}"
-                          >
-                            $${(() => {
-                              const changeExpirationForm = html`
-                                <form
-                                  method="POST"
-                                  action="${action}?_method=PATCH"
-                                  style="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--2);
+                                    @media (prefers-color-scheme: dark) {
+                                      color: var(--color--primary-gray--400);
+                                      &:hover,
+                                      &:focus,
+                                      :focus > & {
+                                        color: var(--color--primary--300);
+                                      }
+                                      &:active {
+                                        color: var(--color--primary--500);
+                                      }
+                                    }
                                   `}"
                                 >
-                                  <input
-                                    type="text"
-                                    name="expiresAt"
-                                    value="${new Date(
-                                      invitation.expiresAt ?? new Date()
-                                    ).toISOString()}"
-                                    required
-                                    class="input--text datetime"
-                                    data-onvalidate="${javascript`
+                                  ${lodash.capitalize(invitation.role)}
+                                  <i class="bi bi-chevron-down"></i>
+                                </span>
+                              </button>
+                            </div>
+
+                            <div
+                              style="${css`
+                                width: var(--space--40);
+                                display: flex;
+                                justify-content: flex-end;
+                              `}"
+                            >
+                              $${(() => {
+                                const changeExpirationForm = html`
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=PATCH"
+                                    style="${css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <input
+                                      type="text"
+                                      name="expiresAt"
+                                      value="${new Date(
+                                        invitation.expiresAt ?? new Date()
+                                      ).toISOString()}"
+                                      required
+                                      class="input--text datetime"
+                                      data-onvalidate="${javascript`
                                       if (new Date(this.value).getTime() <= Date.now())
                                         return "Must be in the future";
                                     `}"
-                                  />
-                                  <button class="dropdown--item">
-                                    <i class="bi bi-pencil"></i>
-                                    Update Expiration Date
-                                  </button>
-                                </form>
-                              `;
-                              const removeExpirationForm = html`
-                                <form
-                                  method="POST"
-                                  action="${action}?_method=PATCH"
-                                >
-                                  <input
-                                    type="hidden"
-                                    name="removeExpiration"
-                                    value="true"
-                                  />
-                                  <button class="dropdown--item">
-                                    <i class="bi bi-calendar-minus"></i>
-                                    Remove Expiration
-                                  </button>
-                                </form>
-                              `;
-                              const expireForm = html`
-                                <form
-                                  method="POST"
-                                  action="${action}?_method=PATCH"
-                                >
-                                  <input
-                                    type="hidden"
-                                    name="expire"
-                                    value="true"
-                                  />
-                                  <button class="dropdown--item">
-                                    <i class="bi bi-calendar-x"></i>
-                                    Expire Invitation
-                                  </button>
-                                </form>
-                              `;
-
-                              return isUsed
-                                ? html`
-                                    <div
-                                      data-tippy-content="${html`
-                                        Used
-                                        <time>
-                                          ${new Date(
-                                            invitation.usedAt!
-                                          ).toISOString()}
-                                        </time>
-                                      `}"
-                                      data-tippy-theme="tooltip"
-                                      data-tippy-allowHTML="true"
-                                      data-tippy-interactive="true"
-                                      style="${css`
-                                        color: var(--color--green--700);
-                                        background-color: var(
-                                          --color--green--100
-                                        );
-                                        @media (prefers-color-scheme: dark) {
-                                          color: var(--color--green--100);
-                                          background-color: var(
-                                            --color--green--900
-                                          );
-                                        }
-                                        padding: var(--space--1) var(--space--2);
-                                        border-radius: var(--border-radius--md);
-                                      `}"
-                                    >
-                                      Used
-                                      <i class="bi bi-check-lg"></i>
-                                    </div>
-                                  `
-                                : isExpired
-                                ? html`
-                                    <button
-                                      data-tippy-content="${html`
-                                        <h3 class="dropdown--heading">
-                                          <i class="bi bi-calendar-x"></i>
-                                          <span>
-                                            Expired
-                                            <time>
-                                              ${new Date(
-                                                invitation.expiresAt!
-                                              ).toISOString()}
-                                            </time>
-                                          </span>
-                                        </h3>
-                                        <hr class="dropdown--separator" />
-                                        $${changeExpirationForm}
-                                        <hr class="dropdown--separator" />
-                                        $${removeExpirationForm}
-                                      `}"
-                                      data-tippy-theme="dropdown"
-                                      data-tippy-trigger="click"
-                                      data-tippy-interactive="true"
-                                      data-tippy-allowHTML="true"
-                                      style="${css`
-                                        color: var(--color--rose--700);
-                                        background-color: var(
-                                          --color--rose--100
-                                        );
-                                        &:hover,
-                                        &:focus {
-                                          background-color: var(
-                                            --color--rose--200
-                                          );
-                                        }
-                                        &:active {
-                                          background-color: var(
-                                            --color--rose--300
-                                          );
-                                        }
-                                        @media (prefers-color-scheme: dark) {
-                                          color: var(--color--rose--100);
-                                          background-color: var(
-                                            --color--rose--900
-                                          );
-                                          &:hover,
-                                          &:focus {
-                                            background-color: var(
-                                              --color--rose--700
-                                            );
-                                          }
-                                          &:active {
-                                            background-color: var(
-                                              --color--rose--600
-                                            );
-                                          }
-                                        }
-                                        padding: var(--space--1) var(--space--2);
-                                        border-radius: var(--border-radius--md);
-                                        transition: background-color
-                                          var(--transition-duration);
-                                      `}"
-                                    >
-                                      <span
-                                        data-tippy-content="Change Expiration"
-                                        data-tippy-theme="tooltip"
-                                        data-tippy-touch="false"
-                                      >
-                                        <span
-                                          style="${css`
-                                            display: inline-flex;
-                                            gap: var(--space--2);
-                                          `}"
-                                        >
-                                          <i class="bi bi-calendar-x"></i>
-                                          Expired
-                                        </span>
-                                        <i class="bi bi-chevron-down"></i>
-                                      </span>
+                                    />
+                                    <button class="dropdown--item">
+                                      <i class="bi bi-pencil"></i>
+                                      Update Expiration Date
                                     </button>
-                                  `
-                                : invitation.expiresAt === null
-                                ? html`
-                                    <button
-                                      data-tippy-content="${html`
-                                        <div
-                                          style="${css`
-                                            padding-top: var(--space--1);
-                                          `}"
-                                        >
+                                  </form>
+                                `;
+                                const removeExpirationForm = html`
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=PATCH"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="removeExpiration"
+                                      value="true"
+                                    />
+                                    <button class="dropdown--item">
+                                      <i class="bi bi-calendar-minus"></i>
+                                      Remove Expiration
+                                    </button>
+                                  </form>
+                                `;
+                                const expireForm = html`
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=PATCH"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="expire"
+                                      value="true"
+                                    />
+                                    <button class="dropdown--item">
+                                      <i class="bi bi-calendar-x"></i>
+                                      Expire Invitation
+                                    </button>
+                                  </form>
+                                `;
+
+                                return isUsed
+                                  ? html`
+                                      <div
+                                        data-tippy-content="${html`
+                                          Used
+                                          <time>
+                                            ${new Date(
+                                              invitation.usedAt!
+                                            ).toISOString()}
+                                          </time>
+                                        `}"
+                                        data-tippy-theme="tooltip"
+                                        data-tippy-allowHTML="true"
+                                        data-tippy-interactive="true"
+                                        style="${css`
+                                          color: var(--color--green--700);
+                                          background-color: var(
+                                            --color--green--100
+                                          );
+                                          @media (prefers-color-scheme: dark) {
+                                            color: var(--color--green--100);
+                                            background-color: var(
+                                              --color--green--900
+                                            );
+                                          }
+                                          padding: var(--space--1)
+                                            var(--space--2);
+                                          border-radius: var(
+                                            --border-radius--md
+                                          );
+                                        `}"
+                                      >
+                                        Used
+                                        <i class="bi bi-check-lg"></i>
+                                      </div>
+                                    `
+                                  : isExpired
+                                  ? html`
+                                      <button
+                                        data-tippy-content="${html`
+                                          <h3 class="dropdown--heading">
+                                            <i class="bi bi-calendar-x"></i>
+                                            <span>
+                                              Expired
+                                              <time>
+                                                ${new Date(
+                                                  invitation.expiresAt!
+                                                ).toISOString()}
+                                              </time>
+                                            </span>
+                                          </h3>
+                                          <hr class="dropdown--separator" />
                                           $${changeExpirationForm}
                                           <hr class="dropdown--separator" />
-                                          $${expireForm}
-                                        </div>
-                                      `}"
-                                      data-tippy-theme="dropdown"
-                                      data-tippy-trigger="click"
-                                      data-tippy-interactive="true"
-                                      data-tippy-allowHTML="true"
-                                      style="${css`
-                                        color: var(--color--blue--700);
-                                        background-color: var(
-                                          --color--blue--100
-                                        );
-                                        &:hover,
-                                        &:focus {
+                                          $${removeExpirationForm}
+                                        `}"
+                                        data-tippy-theme="dropdown"
+                                        data-tippy-trigger="click"
+                                        data-tippy-interactive="true"
+                                        data-tippy-allowHTML="true"
+                                        style="${css`
+                                          color: var(--color--rose--700);
                                           background-color: var(
-                                            --color--blue--200
-                                          );
-                                        }
-                                        &:active {
-                                          background-color: var(
-                                            --color--blue--300
-                                          );
-                                        }
-                                        @media (prefers-color-scheme: dark) {
-                                          color: var(--color--blue--100);
-                                          background-color: var(
-                                            --color--blue--900
+                                            --color--rose--100
                                           );
                                           &:hover,
                                           &:focus {
                                             background-color: var(
-                                              --color--blue--700
+                                              --color--rose--200
                                             );
                                           }
                                           &:active {
                                             background-color: var(
-                                              --color--blue--600
+                                              --color--rose--300
                                             );
                                           }
-                                        }
-                                        padding: var(--space--1) var(--space--2);
-                                        border-radius: var(--border-radius--md);
-                                        transition: background-color
-                                          var(--transition-duration);
-                                      `}"
-                                    >
-                                      <span
-                                        data-tippy-content="Change Expiration"
-                                        data-tippy-theme="tooltip"
-                                        data-tippy-touch="false"
+                                          @media (prefers-color-scheme: dark) {
+                                            color: var(--color--rose--100);
+                                            background-color: var(
+                                              --color--rose--900
+                                            );
+                                            &:hover,
+                                            &:focus {
+                                              background-color: var(
+                                                --color--rose--700
+                                              );
+                                            }
+                                            &:active {
+                                              background-color: var(
+                                                --color--rose--600
+                                              );
+                                            }
+                                          }
+                                          padding: var(--space--1)
+                                            var(--space--2);
+                                          border-radius: var(
+                                            --border-radius--md
+                                          );
+                                          transition: background-color
+                                            var(--transition-duration);
+                                        `}"
                                       >
                                         <span
-                                          style="${css`
-                                            display: inline-flex;
-                                            gap: var(--space--2);
-                                          `}"
+                                          data-tippy-content="Change Expiration"
+                                          data-tippy-theme="tooltip"
+                                          data-tippy-touch="false"
                                         >
-                                          <i class="bi bi-calendar-minus"></i>
-                                          Doesn’t Expire
-                                        </span>
-                                        <i class="bi bi-chevron-down"></i>
-                                      </span>
-                                    </button>
-                                  `
-                                : html`
-                                    <button
-                                      data-tippy-content="${html`
-                                        <h3 class="dropdown--heading">
-                                          <i class="bi bi-calendar-plus"></i>
-                                          <span>
-                                            Expires
-                                            <time>
-                                              ${new Date(
-                                                invitation.expiresAt
-                                              ).toISOString()}
-                                            </time>
+                                          <span
+                                            style="${css`
+                                              display: inline-flex;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-x"></i>
+                                            Expired
                                           </span>
-                                        </h3>
-                                        <hr class="dropdown--separator" />
-                                        $${changeExpirationForm}
-                                        <hr class="dropdown--separator" />
-                                        $${removeExpirationForm} $${expireForm}
-                                      `}"
-                                      data-tippy-theme="dropdown"
-                                      data-tippy-trigger="click"
-                                      data-tippy-interactive="true"
-                                      data-tippy-allowHTML="true"
-                                      style="${css`
-                                        color: var(--color--yellow--700);
-                                        background-color: var(
-                                          --color--yellow--100
-                                        );
-                                        &:hover,
-                                        &:focus {
+                                          <i class="bi bi-chevron-down"></i>
+                                        </span>
+                                      </button>
+                                    `
+                                  : invitation.expiresAt === null
+                                  ? html`
+                                      <button
+                                        data-tippy-content="${html`
+                                          <div
+                                            style="${css`
+                                              padding-top: var(--space--1);
+                                            `}"
+                                          >
+                                            $${changeExpirationForm}
+                                            <hr class="dropdown--separator" />
+                                            $${expireForm}
+                                          </div>
+                                        `}"
+                                        data-tippy-theme="dropdown"
+                                        data-tippy-trigger="click"
+                                        data-tippy-interactive="true"
+                                        data-tippy-allowHTML="true"
+                                        style="${css`
+                                          color: var(--color--blue--700);
                                           background-color: var(
-                                            --color--yellow--200
-                                          );
-                                        }
-                                        &:active {
-                                          background-color: var(
-                                            --color--yellow--300
-                                          );
-                                        }
-                                        @media (prefers-color-scheme: dark) {
-                                          color: var(--color--yellow--100);
-                                          background-color: var(
-                                            --color--yellow--900
+                                            --color--blue--100
                                           );
                                           &:hover,
                                           &:focus {
                                             background-color: var(
-                                              --color--yellow--700
+                                              --color--blue--200
                                             );
                                           }
                                           &:active {
                                             background-color: var(
-                                              --color--yellow--600
+                                              --color--blue--300
                                             );
                                           }
-                                        }
-                                        padding: var(--space--1) var(--space--2);
-                                        border-radius: var(--border-radius--md);
-                                        transition: background-color
-                                          var(--transition-duration);
-                                      `}"
-                                    >
-                                      <span
-                                        data-tippy-content="Change Expiration"
-                                        data-tippy-theme="tooltip"
-                                        data-tippy-touch="false"
+                                          @media (prefers-color-scheme: dark) {
+                                            color: var(--color--blue--100);
+                                            background-color: var(
+                                              --color--blue--900
+                                            );
+                                            &:hover,
+                                            &:focus {
+                                              background-color: var(
+                                                --color--blue--700
+                                              );
+                                            }
+                                            &:active {
+                                              background-color: var(
+                                                --color--blue--600
+                                              );
+                                            }
+                                          }
+                                          padding: var(--space--1)
+                                            var(--space--2);
+                                          border-radius: var(
+                                            --border-radius--md
+                                          );
+                                          transition: background-color
+                                            var(--transition-duration);
+                                        `}"
                                       >
                                         <span
-                                          style="${css`
-                                            display: inline-flex;
-                                            gap: var(--space--2);
-                                          `}"
+                                          data-tippy-content="Change Expiration"
+                                          data-tippy-theme="tooltip"
+                                          data-tippy-touch="false"
                                         >
-                                          <i class="bi bi-calendar-plus"></i>
-                                          Expires
+                                          <span
+                                            style="${css`
+                                              display: inline-flex;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-minus"></i>
+                                            Doesn’t Expire
+                                          </span>
+                                          <i class="bi bi-chevron-down"></i>
                                         </span>
-                                        <i class="bi bi-chevron-down"></i>
-                                      </span>
-                                    </button>
-                                  `;
-                            })()}
+                                      </button>
+                                    `
+                                  : html`
+                                      <button
+                                        data-tippy-content="${html`
+                                          <h3 class="dropdown--heading">
+                                            <i class="bi bi-calendar-plus"></i>
+                                            <span>
+                                              Expires
+                                              <time>
+                                                ${new Date(
+                                                  invitation.expiresAt
+                                                ).toISOString()}
+                                              </time>
+                                            </span>
+                                          </h3>
+                                          <hr class="dropdown--separator" />
+                                          $${changeExpirationForm}
+                                          <hr class="dropdown--separator" />
+                                          $${removeExpirationForm}
+                                          $${expireForm}
+                                        `}"
+                                        data-tippy-theme="dropdown"
+                                        data-tippy-trigger="click"
+                                        data-tippy-interactive="true"
+                                        data-tippy-allowHTML="true"
+                                        style="${css`
+                                          color: var(--color--yellow--700);
+                                          background-color: var(
+                                            --color--yellow--100
+                                          );
+                                          &:hover,
+                                          &:focus {
+                                            background-color: var(
+                                              --color--yellow--200
+                                            );
+                                          }
+                                          &:active {
+                                            background-color: var(
+                                              --color--yellow--300
+                                            );
+                                          }
+                                          @media (prefers-color-scheme: dark) {
+                                            color: var(--color--yellow--100);
+                                            background-color: var(
+                                              --color--yellow--900
+                                            );
+                                            &:hover,
+                                            &:focus {
+                                              background-color: var(
+                                                --color--yellow--700
+                                              );
+                                            }
+                                            &:active {
+                                              background-color: var(
+                                                --color--yellow--600
+                                              );
+                                            }
+                                          }
+                                          padding: var(--space--1)
+                                            var(--space--2);
+                                          border-radius: var(
+                                            --border-radius--md
+                                          );
+                                          transition: background-color
+                                            var(--transition-duration);
+                                        `}"
+                                      >
+                                        <span
+                                          data-tippy-content="Change Expiration"
+                                          data-tippy-theme="tooltip"
+                                          data-tippy-touch="false"
+                                        >
+                                          <span
+                                            style="${css`
+                                              display: inline-flex;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-plus"></i>
+                                            Expires
+                                          </span>
+                                          <i class="bi bi-chevron-down"></i>
+                                        </span>
+                                      </button>
+                                    `;
+                              })()}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    `;
-                  })}
+                      `;
+                    })}
+                  </div>
                 `}
             $${await Promise.all(
               invitations.map(async (invitation) => {
