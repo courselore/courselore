@@ -7228,7 +7228,6 @@ export default async function courselore(
                 <p
                   style="${css`
                     font-weight: var(--font-weight--bold);
-                    color: var(--color--primary--800);
                   `}"
                 >
                   Welcome to ${res.locals.invitation.course.name}!
@@ -7355,7 +7354,6 @@ export default async function courselore(
                 <p
                   style="${css`
                     font-weight: var(--font-weight--bold);
-                    color: var(--color--primary--800);
                   `}"
                 >
                   Welcome to ${res.locals.invitation.course.name}!
