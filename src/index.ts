@@ -5620,7 +5620,7 @@ export default async function courselore(
                                                   >
                                                     <input
                                                       type="hidden"
-                                                      name="role"
+                                                      name="resend"
                                                       value="true"
                                                     />
                                                     <button
