@@ -870,9 +870,9 @@ export default async function courselore(
                     color: var(--color--primary-gray--600);
                   }
                   &:focus {
-                    box-shadow: var(--border-width--0) var(--border-width--0)
-                      var(--border-width--0) var(--border-width--2)
-                      var(--color--primary--400);
+                    box-shadow: inset var(--border-width--0)
+                      var(--border-width--0) var(--border-width--0)
+                      var(--border-width--2) var(--color--primary--400);
                   }
                   &:disabled {
                     color: var(--color--primary-gray--600);
@@ -885,9 +885,9 @@ export default async function courselore(
                       color: var(--color--primary-gray--400);
                     }
                     &:focus {
-                      box-shadow: var(--border-width--0) var(--border-width--0)
-                        var(--border-width--0) var(--border-width--2)
-                        var(--color--primary--800);
+                      box-shadow: inset var(--border-width--0)
+                        var(--border-width--0) var(--border-width--0)
+                        var(--border-width--2) var(--color--primary--800);
                     }
                     &:disabled {
                       color: var(--color--primary-gray--400);
