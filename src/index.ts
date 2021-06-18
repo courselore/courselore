@@ -5502,6 +5502,7 @@ export default async function courselore(
                                         ? html`disabled`
                                         : html`
                                             data-micromodal-trigger="modal--invitation--${invitation.reference}"
+                                            class="button--inline"
                                           `}
                                     >
                                       <span
@@ -5525,34 +5526,6 @@ export default async function courselore(
                                             font-weight: var(
                                               --font-weight--bold
                                             );
-                                            color: var(
-                                              --color--primary-gray--800
-                                            );
-                                            :hover > * > &,
-                                            :focus > * > & {
-                                              color: var(--color--primary--600);
-                                            }
-                                            :active > * > & {
-                                              color: var(--color--primary--800);
-                                            }
-                                            @media (prefers-color-scheme: dark) {
-                                              color: var(
-                                                --color--primary-gray--200
-                                              );
-                                              :hover > * > &,
-                                              :focus > * > & {
-                                                color: var(
-                                                  --color--primary--300
-                                                );
-                                              }
-                                              :active > * > & {
-                                                color: var(
-                                                  --color--primary--500
-                                                );
-                                              }
-                                            }
-                                            transition: color
-                                              var(--transition-duration);
                                           `}"
                                         >
                                           ${"*".repeat(
@@ -5672,6 +5645,7 @@ export default async function courselore(
                                       data-tippy-trigger="click"
                                       data-tippy-interactive="true"
                                       data-tippy-allowHTML="true"
+                                      class="button--inline"
                                     `}
                               >
                                 <span
@@ -5694,28 +5668,6 @@ export default async function courselore(
                                         data-tippy-theme="tooltip"
                                         data-tippy-touch="false"
                                       `}
-                                  style="${css`
-                                    transition: color var(--transition-duration);
-                                    &:hover,
-                                    &:focus,
-                                    :focus > & {
-                                      color: var(--color--primary--600);
-                                    }
-                                    &:active {
-                                      color: var(--color--primary--800);
-                                    }
-                                    @media (prefers-color-scheme: dark) {
-                                      color: var(--color--primary-gray--400);
-                                      &:hover,
-                                      &:focus,
-                                      :focus > & {
-                                        color: var(--color--primary--300);
-                                      }
-                                      &:active {
-                                        color: var(--color--primary--500);
-                                      }
-                                    }
-                                  `}"
                                 >
                                   ${lodash.capitalize(invitation.role)}
                                   <i class="bi bi-chevron-down"></i>
