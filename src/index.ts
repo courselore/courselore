@@ -936,6 +936,16 @@ export default async function courselore(
                     & > span {
                       color: var(--color--primary-gray--700);
                       background-color: var(--color--white);
+                      &:hover {
+                        background-color: var(--color--primary-gray--200);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--100);
+                        background-color: var(--color--primary-gray--700);
+                        &:hover {
+                          background-color: var(--color--primary-gray--600);
+                        }
+                      }
                       padding: var(--space--2) var(--space--4);
                       display: flex;
                       gap: var(--space--2);
@@ -944,9 +954,6 @@ export default async function courselore(
                       transition: color var(--transition-duration),
                         background-color var(--transition-duration),
                         border-color var(--transition-duration);
-                      &:hover {
-                        background-color: var(--color--primary-gray--200);
-                      }
                     }
                     &:first-child > span {
                       border-top-left-radius: var(--border-radius--md);
@@ -959,11 +966,34 @@ export default async function courselore(
                     &:not(:last-child) > span {
                       border-right: var(--border-width--1) solid
                         var(--color--primary-gray--200);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--primary-gray--900);
+                      }
                     }
                     &:not(:first-child) > span {
                       border-left: var(--border-width--1) solid
                         var(--color--primary-gray--200);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--primary-gray--900);
+                      }
                       margin-left: calc(-1 * var(--border-width--1));
+                    }
+                    & > :focus + span {
+                      background-color: var(--color--primary-gray--200);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--primary-gray--600);
+                      }
+                    }
+                    & > :active + span,
+                    & > :checked:focus + span {
+                      color: var(--color--primary--50);
+                      background-color: var(--color--primary--800);
+                      border-color: var(--color--primary--800);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--200);
+                        background-color: var(--color--primary--900);
+                        border-color: var(--color--primary--900);
+                      }
                     }
                     & > :checked {
                       &,
@@ -974,6 +1004,11 @@ export default async function courselore(
                         color: var(--color--primary--100);
                         background-color: var(--color--primary--700);
                         border-color: var(--color--primary--700);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary--200);
+                          background-color: var(--color--primary--800);
+                          border-color: var(--color--primary--800);
+                        }
                       }
                     }
                   }
@@ -1128,8 +1163,7 @@ export default async function courselore(
                     border: var(--border-width--2) solid
                       var(--color--primary--700);
                     @media (prefers-color-scheme: dark) {
-                      border: var(--border-width--2) solid
-                        var(--color--primary--800);
+                      border-color: var(--color--primary--800);
                     }
                     border-radius: 50%;
                     justify-self: end;
@@ -1211,7 +1245,8 @@ export default async function courselore(
                       transition: background-color var(--transition-duration);
 
                       &:hover,
-                      &:focus {
+                      &:focus,
+                      &.active:focus {
                         background-color: var(--color--primary--100);
                       }
                       &:active,
@@ -1220,7 +1255,8 @@ export default async function courselore(
                       }
                       @media (prefers-color-scheme: dark) {
                         &:hover,
-                        &:focus {
+                        &:focus,
+                        &.active:focus {
                           background-color: var(--color--primary--600);
                         }
                         &:active,
@@ -4915,17 +4951,19 @@ export default async function courselore(
                       gap: var(--space--2);
                       transition: color var(--transition-duration),
                         box-shadow var(--transition-duration);
-                    }
 
-                    .dropdown--item:hover,
-                    .active {
-                      color: var(--color--primary-gray--900);
-                      box-shadow: inset var(--border-width--4) 0
-                        var(--color--primary-gray--500);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary-gray--100);
+                      &:hover,
+                      &:focus,
+                      &:active,
+                      &.active {
+                        color: var(--color--primary-gray--900);
                         box-shadow: inset var(--border-width--4) 0
                           var(--color--primary-gray--500);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary-gray--100);
+                          box-shadow: inset var(--border-width--4) 0
+                            var(--color--primary-gray--500);
+                        }
                       }
                     }
                   `}"
@@ -5165,8 +5203,8 @@ export default async function courselore(
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = true;
-                            for (const element of extraFields.querySelectorAll("textarea"))
-                              element.disabled = true;
+                            for (const element of extraFields.querySelectorAll("*"))
+                              if (element.disabled !== null) element.disabled = true;
                           `}"
                         />
                         <span>
@@ -5183,8 +5221,8 @@ export default async function courselore(
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = false;
-                            for (const element of extraFields.querySelectorAll("textarea"))
-                              element.disabled = false;
+                            for (const element of extraFields.querySelectorAll("*"))
+                              if (element.disabled !== null) element.disabled = false;
                           `}"
                         />
                         <span>
