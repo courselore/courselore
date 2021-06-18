@@ -5589,6 +5589,7 @@ export default async function courselore(
                                         ${"*".repeat(
                                           6
                                         )}${invitation.reference.slice(6)}
+                                        <i class="bi bi-chevron-down"></i>
                                       </span>
                                     </button>
                                   </div>
