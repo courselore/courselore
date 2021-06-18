@@ -784,6 +784,10 @@ export default async function courselore(
                   resize: vertical;
                 }
 
+                :disabled {
+                  cursor: not-allowed;
+                }
+
                 [hidden] {
                   display: none !important;
                 }
@@ -894,32 +898,7 @@ export default async function courselore(
                       background-color: var(--color--primary-gray--800);
                     }
                   }
-                  &:disabled {
-                    cursor: not-allowed;
-                  }
                   transition: box-shadow var(--transition-duration);
-                }
-
-                .input--text--button--inset {
-                  color: var(--color--primary-gray--800);
-                  &:hover,
-                  &:focus {
-                    color: var(--color--primary-gray--500);
-                  }
-                  &:active {
-                    color: var(--color--primary-gray--900);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary-gray--300);
-                    &:hover,
-                    &:focus {
-                      color: var(--color--primary-gray--50);
-                    }
-                    &:active {
-                      color: var(--color--primary-gray--400);
-                    }
-                  }
-                  transition: color var(--transition-duration);
                 }
 
                 .input--radio--group {
@@ -1111,6 +1090,28 @@ export default async function courselore(
                       }
                     }
                   }
+
+                  &--inline {
+                    color: var(--color--primary-gray--800);
+                    &:hover,
+                    &:focus {
+                      color: var(--color--primary--500);
+                    }
+                    &:active {
+                      color: var(--color--primary--700);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--300);
+                      &:hover,
+                      &:focus {
+                        color: var(--color--primary--500);
+                      }
+                      &:active {
+                        color: var(--color--primary--700);
+                      }
+                    }
+                    transition: color var(--transition-duration);
+                  }
                 }
 
                 .link {
@@ -1228,11 +1229,13 @@ export default async function courselore(
                       font-weight: var(--font-weight--black);
                       text-transform: uppercase;
                       letter-spacing: var(--space--px);
-                      padding: var(--space--0-5);
                       color: var(--color--primary--400);
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--primary--300);
                       }
+                      padding: var(--space--0-5);
+                      display: flex;
+                      gap: var(--space--2);
                     }
 
                     .dropdown--item {
@@ -3213,7 +3216,7 @@ export default async function courselore(
                         data-tippy-content="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
-                        class="input--text--button--inset"
+                        class="button--inline"
                       >
                         <i class="bi bi-info-circle"></i>
                       </button>
@@ -4954,8 +4957,7 @@ export default async function courselore(
 
                       &:hover,
                       &:focus,
-                      &:active,
-                      &.active {
+                      &.active:focus {
                         color: var(--color--primary-gray--900);
                         box-shadow: inset var(--border-width--4) 0
                           var(--color--primary-gray--500);
@@ -4963,6 +4965,17 @@ export default async function courselore(
                           color: var(--color--primary-gray--100);
                           box-shadow: inset var(--border-width--4) 0
                             var(--color--primary-gray--500);
+                        }
+                      }
+                      &:active,
+                      &.active {
+                        color: var(--color--primary--900);
+                        box-shadow: inset var(--border-width--4) 0
+                          var(--color--primary--500);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary--100);
+                          box-shadow: inset var(--border-width--4) 0
+                            var(--color--primary--500);
                         }
                       }
                     }
@@ -5295,7 +5308,7 @@ export default async function courselore(
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
                         data-tippy-allowHTML="true"
-                        class="input--text--button--inset"
+                        class="button--inline"
                         style="${css`
                           justify-self: end;
                           align-self: start;
@@ -5405,7 +5418,7 @@ export default async function courselore(
                         data-tippy-content="This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change."
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
-                        class="input--text--button--inset"
+                        class="button--inline"
                         style="${css`
                           justify-self: end;
                           align-self: start;
@@ -5506,11 +5519,27 @@ export default async function courselore(
                                           color: var(
                                             --color--primary-gray--800
                                           );
+                                          :hover > * > &,
+                                          :focus > * > & {
+                                            color: var(--color--primary--600);
+                                          }
+                                          :active > * > & {
+                                            color: var(--color--primary--800);
+                                          }
                                           @media (prefers-color-scheme: dark) {
                                             color: var(
-                                              --color--primary-gray--100
+                                              --color--primary-gray--200
                                             );
+                                            :hover > * > &,
+                                            :focus > * > & {
+                                              color: var(--color--primary--300);
+                                            }
+                                            :active > * > & {
+                                              color: var(--color--primary--500);
+                                            }
                                           }
+                                          transition: color
+                                            var(--transition-duration);
                                         `}"
                                       >
                                         ${"*".repeat(
@@ -5629,13 +5658,7 @@ export default async function courselore(
                                     data-tippy-theme="dropdown"
                                     data-tippy-trigger="click"
                                     data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true" style="${css`
-                                      transition: color
-                                        var(--transition-duration);
-                                      &:hover {
-                                        color: var(--color--primary-gray--800);
-                                        @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
-                                      }`}"
+                                    data-tippy-allowHTML="true"
                                   `}
                             >
                               <span
@@ -5644,19 +5667,42 @@ export default async function courselore(
                                       data-tippy-content="You may not change the
                                       role of this invitation because it has
                                       already been used."
-                                      data-tippy-theme="tooltip"
+                                      data-tippy-theme="tooltip" tabindex="0"
                                     `
                                   : isExpired
                                   ? html`
                                       data-tippy-content="You may not change the
                                       role of this invitation because it’s
                                       expired." data-tippy-theme="tooltip"
+                                      tabindex="0"
                                     `
                                   : html`
                                       data-tippy-content="Change Role"
                                       data-tippy-theme="tooltip"
                                       data-tippy-touch="false"
                                     `}
+                                style="${css`
+                                  transition: color var(--transition-duration);
+                                  &:hover,
+                                  &:focus,
+                                  :focus > & {
+                                    color: var(--color--primary--600);
+                                  }
+                                  &:active {
+                                    color: var(--color--primary--800);
+                                  }
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--primary-gray--400);
+                                    &:hover,
+                                    &:focus,
+                                    :focus > & {
+                                      color: var(--color--primary--300);
+                                    }
+                                    &:active {
+                                      color: var(--color--primary--500);
+                                    }
+                                  }
+                                `}"
                               >
                                 ${lodash.capitalize(invitation.role)}
                                 <i class="bi bi-chevron-down"></i>
@@ -5747,11 +5793,18 @@ export default async function courselore(
                                       `}"
                                       data-tippy-theme="tooltip"
                                       data-tippy-allowHTML="true"
+                                      data-tippy-interactive="true"
                                       style="${css`
                                         color: var(--color--green--700);
                                         background-color: var(
                                           --color--green--100
                                         );
+                                        @media (prefers-color-scheme: dark) {
+                                          color: var(--color--green--100);
+                                          background-color: var(
+                                            --color--green--900
+                                          );
+                                        }
                                         padding: var(--space--1) var(--space--2);
                                         border-radius: var(--border-radius--md);
                                       `}"
@@ -5764,36 +5817,21 @@ export default async function courselore(
                                 ? html`
                                     <button
                                       data-tippy-content="${html`
-                                        <div
-                                          style="${css`
-                                            padding-top: var(--space--0-5);
-                                          `}"
-                                        >
-                                          <p
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                              color: var(--color--primary--800);
-                                              display: flex;
-                                              gap: var(--space--2);
-                                            `}"
-                                          >
-                                            <i class="bi bi-calendar-x"></i>
-                                            <span>
-                                              Expired
-                                              <time>
-                                                ${new Date(
-                                                  invitation.expiresAt!
-                                                ).toISOString()}
-                                              </time>
-                                            </span>
-                                          </p>
-                                          <hr class="dropdown--separator" />
-                                          $${changeExpirationForm}
-                                          <hr class="dropdown--separator" />
-                                          $${removeExpirationForm}
-                                        </div>
+                                        <h3 class="dropdown--heading">
+                                          <i class="bi bi-calendar-x"></i>
+                                          <span>
+                                            Expired
+                                            <time>
+                                              ${new Date(
+                                                invitation.expiresAt!
+                                              ).toISOString()}
+                                            </time>
+                                          </span>
+                                        </h3>
+                                        <hr class="dropdown--separator" />
+                                        $${changeExpirationForm}
+                                        <hr class="dropdown--separator" />
+                                        $${removeExpirationForm}
                                       `}"
                                       data-tippy-theme="dropdown"
                                       data-tippy-trigger="click"
@@ -5804,8 +5842,38 @@ export default async function courselore(
                                         background-color: var(
                                           --color--rose--100
                                         );
+                                        &:hover,
+                                        &:focus {
+                                          background-color: var(
+                                            --color--rose--200
+                                          );
+                                        }
+                                        &:active {
+                                          background-color: var(
+                                            --color--rose--300
+                                          );
+                                        }
+                                        @media (prefers-color-scheme: dark) {
+                                          color: var(--color--rose--100);
+                                          background-color: var(
+                                            --color--rose--900
+                                          );
+                                          &:hover,
+                                          &:focus {
+                                            background-color: var(
+                                              --color--rose--700
+                                            );
+                                          }
+                                          &:active {
+                                            background-color: var(
+                                              --color--rose--600
+                                            );
+                                          }
+                                        }
                                         padding: var(--space--1) var(--space--2);
                                         border-radius: var(--border-radius--md);
+                                        transition: background-color
+                                          var(--transition-duration);
                                       `}"
                                     >
                                       <span
@@ -5849,8 +5917,38 @@ export default async function courselore(
                                         background-color: var(
                                           --color--blue--100
                                         );
+                                        &:hover,
+                                        &:focus {
+                                          background-color: var(
+                                            --color--blue--200
+                                          );
+                                        }
+                                        &:active {
+                                          background-color: var(
+                                            --color--blue--300
+                                          );
+                                        }
+                                        @media (prefers-color-scheme: dark) {
+                                          color: var(--color--blue--100);
+                                          background-color: var(
+                                            --color--blue--900
+                                          );
+                                          &:hover,
+                                          &:focus {
+                                            background-color: var(
+                                              --color--blue--700
+                                            );
+                                          }
+                                          &:active {
+                                            background-color: var(
+                                              --color--blue--600
+                                            );
+                                          }
+                                        }
                                         padding: var(--space--1) var(--space--2);
                                         border-radius: var(--border-radius--md);
+                                        transition: background-color
+                                          var(--transition-duration);
                                       `}"
                                     >
                                       <span
@@ -5874,37 +5972,21 @@ export default async function courselore(
                                 : html`
                                     <button
                                       data-tippy-content="${html`
-                                        <div
-                                          style="${css`
-                                            padding-top: var(--space--0-5);
-                                          `}"
-                                        >
-                                          <p
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                              color: var(--color--primary--800);
-                                              display: flex;
-                                              gap: var(--space--2);
-                                            `}"
-                                          >
-                                            <i class="bi bi-calendar-plus"></i>
-                                            <span>
-                                              Expires
-                                              <time>
-                                                ${new Date(
-                                                  invitation.expiresAt
-                                                ).toISOString()}
-                                              </time>
-                                            </span>
-                                          </p>
-                                          <hr class="dropdown--separator" />
-                                          $${changeExpirationForm}
-                                          <hr class="dropdown--separator" />
-                                          $${removeExpirationForm}
-                                          $${expireForm}
-                                        </div>
+                                        <h3 class="dropdown--heading">
+                                          <i class="bi bi-calendar-plus"></i>
+                                          <span>
+                                            Expires
+                                            <time>
+                                              ${new Date(
+                                                invitation.expiresAt
+                                              ).toISOString()}
+                                            </time>
+                                          </span>
+                                        </h3>
+                                        <hr class="dropdown--separator" />
+                                        $${changeExpirationForm}
+                                        <hr class="dropdown--separator" />
+                                        $${removeExpirationForm} $${expireForm}
                                       `}"
                                       data-tippy-theme="dropdown"
                                       data-tippy-trigger="click"
@@ -5915,8 +5997,38 @@ export default async function courselore(
                                         background-color: var(
                                           --color--yellow--100
                                         );
+                                        &:hover,
+                                        &:focus {
+                                          background-color: var(
+                                            --color--yellow--200
+                                          );
+                                        }
+                                        &:active {
+                                          background-color: var(
+                                            --color--yellow--300
+                                          );
+                                        }
+                                        @media (prefers-color-scheme: dark) {
+                                          color: var(--color--yellow--100);
+                                          background-color: var(
+                                            --color--yellow--900
+                                          );
+                                          &:hover,
+                                          &:focus {
+                                            background-color: var(
+                                              --color--yellow--700
+                                            );
+                                          }
+                                          &:active {
+                                            background-color: var(
+                                              --color--yellow--600
+                                            );
+                                          }
+                                        }
                                         padding: var(--space--1) var(--space--2);
                                         border-radius: var(--border-radius--md);
+                                        transition: background-color
+                                          var(--transition-duration);
                                       `}"
                                     >
                                       <span
@@ -5941,57 +6053,6 @@ export default async function courselore(
                           </div>
                         </div>
                       </div>
-                      <!--
-                                <div class="form-floating">
-                                  
-                                  <label for="expiresAt">Expires at</label>
-                                </div>
-                                <button
-                                  type="submit"
-                                  class="btn btn-outline-secondary"
-                                >
-                                  <i class="bi bi-pencil"></i>
-                                  Update Expiration Date
-                                </button>
-                              </form>
-                              <hr class="dropdown-divider" />
-                              $${invitation.expiresAt === null
-                        ? html``
-                        : html`
-                            <form
-                              method="POST"
-                              action="${action}?_method=PATCH"
-                            >
-                              <input
-                                type="hidden"
-                                name="removeExpiration"
-                                value="true"
-                              />
-                              <button type="submit" class="dropdown-item">
-                                <i class="bi bi-calendar-minus"></i>
-                                Set Invitation as Non-Expiring
-                              </button>
-                            </form>
-                          `}
-                              $${isExpired
-                        ? html``
-                        : html`
-                            <form
-                              method="POST"
-                              action="${action}?_method=PATCH"
-                            >
-                              <input type="hidden" name="expire" value="true" />
-                              <button type="submit" class="dropdown-item">
-                                <i class="bi bi-calendar-plus"></i>
-                                Expire Invitation Now
-                              </button>
-                            </form>
-                          `}
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                      -->
                     `;
                   })}
                 `}
@@ -6046,6 +6107,7 @@ export default async function courselore(
                             data-tippy-content="Copy"
                             data-tippy-theme="tooltip"
                             data-tippy-touch="false"
+                            class="button--inline"
                             style="${css`
                               justify-self: end;
                               align-self: start;
@@ -6082,6 +6144,7 @@ export default async function courselore(
                             data-tippy-content="People may point their phone camera at the image below to follow the invitation link."
                             data-tippy-theme="tooltip"
                             data-tippy-trigger="click"
+                            class="button--inline"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
