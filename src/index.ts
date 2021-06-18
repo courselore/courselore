@@ -5551,8 +5551,10 @@ export default async function courselore(
                                               data-tippy-content="See Invitation
                                               Link" data-tippy-theme="tooltip"
                                               data-tippy-touch="false"
-                                              class="strong"
                                             `}
+                                        style="${css`
+                                          font-weight: var(--font-weight--bold);
+                                        `}"
                                       >
                                         ${"*".repeat(
                                           6
