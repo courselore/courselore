@@ -3897,10 +3897,20 @@ export default async function courselore(
                             text-align: left;
                             width: 100%;
                             justify-content: space-between;
-                            &:hover {
+                            &:hover,
+                            &:focus {
                               background-color: var(--color--primary--200);
-                              @media (prefers-color-scheme: dark) {
+                            }
+                            &:active {
+                              background-color: var(--color--primary--300);
+                            }
+                            @media (prefers-color-scheme: dark) {
+                              &:hover,
+                              &:focus {
                                 background-color: var(--color--primary--800);
+                              }
+                              &:active {
+                                background-color: var(--color--primary--900);
                               }
                             }
                           `}"
@@ -3929,10 +3939,20 @@ export default async function courselore(
                             text-align: left;
                             width: 100%;
                             justify-content: space-between;
-                            &:hover {
+                            &:hover,
+                            &:focus {
                               background-color: var(--color--primary--200);
-                              @media (prefers-color-scheme: dark) {
+                            }
+                            &:active {
+                              background-color: var(--color--primary--300);
+                            }
+                            @media (prefers-color-scheme: dark) {
+                              &:hover,
+                              &:focus {
                                 background-color: var(--color--primary--800);
+                              }
+                              &:active {
+                                background-color: var(--color--primary--900);
                               }
                             }
                           `}"
@@ -3952,10 +3972,20 @@ export default async function courselore(
                         class="button"
                         style="${css`
                           justify-content: space-between;
-                          &:hover {
+                          &:hover,
+                          &:focus {
                             background-color: var(--color--primary--200);
-                            @media (prefers-color-scheme: dark) {
+                          }
+                          &:active {
+                            background-color: var(--color--primary--300);
+                          }
+                          @media (prefers-color-scheme: dark) {
+                            &:hover,
+                            &:focus {
                               background-color: var(--color--primary--800);
+                            }
+                            &:active {
+                              background-color: var(--color--primary--900);
                             }
                           }
                         `}"
@@ -5580,40 +5610,12 @@ export default async function courselore(
                                     >
                                       $${invitation.name === null
                                         ? html`
-                                            <div
-                                              style="${css`
-                                                font-weight: var(
-                                                  --font-weight--bold
-                                                );
-                                                color: var(
-                                                  --color--primary-gray--800
-                                                );
-                                                @media (prefers-color-scheme: dark) {
-                                                  color: var(
-                                                    --color--primary-gray--100
-                                                  );
-                                                }
-                                              `}"
-                                            >
+                                            <div class="strong">
                                               ${invitation.email}
                                             </div>
                                           `
                                         : html`
-                                            <div
-                                              style="${css`
-                                                font-weight: var(
-                                                  --font-weight--bold
-                                                );
-                                                color: var(
-                                                  --color--primary-gray--800
-                                                );
-                                                @media (prefers-color-scheme: dark) {
-                                                  color: var(
-                                                    --color--primary-gray--100
-                                                  );
-                                                }
-                                              `}"
-                                            >
+                                            <div class="strong">
                                               ${invitation.name}
                                             </div>
                                             <div>${invitation.email}</div>
