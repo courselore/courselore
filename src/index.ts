@@ -5608,16 +5608,68 @@ export default async function courselore(
                                         flex-direction: column;
                                       `}"
                                     >
+                                      <div>
+                                        <button
+                                          $${isUsed || isExpired
+                                            ? html`disabled`
+                                            : html`
+                                                data-tippy-content="${html`
+                                                  <form
+                                                    method="POST"
+                                                    action="${action}?_method=PATCH"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="role"
+                                                      value="true"
+                                                    />
+                                                    <button
+                                                      class="dropdown--item"
+                                                    >
+                                                      Resend Invitation Email
+                                                    </button>
+                                                  </form>
+                                                `}"
+                                                data-tippy-theme="dropdown"
+                                                data-tippy-trigger="click"
+                                                data-tippy-interactive="true"
+                                                data-tippy-allowHTML="true"
+                                                class="button--inline"
+                                              `}
+                                          style="${css`
+                                            font-weight: var(
+                                              --font-weight--bold
+                                            );
+                                          `}"
+                                        >
+                                          <span
+                                            $${isUsed
+                                              ? html`
+                                                  data-tippy-content="Can’t
+                                                  resend invitation because it’s
+                                                  used."
+                                                  data-tippy-theme="tooltip"
+                                                  tabindex="0"
+                                                `
+                                              : isExpired
+                                              ? html`
+                                                  data-tippy-content="Can’t
+                                                  resend invitation because it’s
+                                                  expired."
+                                                  data-tippy-theme="tooltip"
+                                                  tabindex="0"
+                                                `
+                                              : html``}
+                                          >
+                                            ${invitation.name ??
+                                            invitation.email}
+                                            <i class="bi bi-chevron-down"></i>
+                                          </span>
+                                        </button>
+                                      </div>
                                       $${invitation.name === null
-                                        ? html`
-                                            <div class="strong">
-                                              ${invitation.email}
-                                            </div>
-                                          `
+                                        ? html``
                                         : html`
-                                            <div class="strong">
-                                              ${invitation.name}
-                                            </div>
                                             <div>${invitation.email}</div>
                                           `}
                                     </div>
