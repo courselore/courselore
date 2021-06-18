@@ -1112,6 +1112,27 @@ export default async function courselore(
                     }
                   }
                   transition: color var(--transition-duration);
+
+                  &.button--inline--rose {
+                    color: var(--color--primary-gray--800);
+                    &:hover,
+                    &:focus {
+                      color: var(--color--rose--500);
+                    }
+                    &:active {
+                      color: var(--color--rose--700);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--300);
+                      &:hover,
+                      &:focus {
+                        color: var(--color--rose--500);
+                      }
+                      &:active {
+                        color: var(--color--rose--700);
+                      }
+                    }
+                  }
                 }
 
                 .link {
@@ -6525,7 +6546,7 @@ export default async function courselore(
                 Enrollments
               </h2>
 
-              <div>
+              <div class="stripped">
                 $${enrollments.map((enrollment) => {
                   const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
                   const isSelf = enrollment.id === res.locals.enrollment.id;
@@ -6538,22 +6559,6 @@ export default async function courselore(
                   return html`
                     <div
                       style="${css`
-                        &:nth-child(even) {
-                          background-color: var(--color--primary-gray--200);
-                          @media (prefers-color-scheme: dark) {
-                            background-color: var(--color--primary-gray--800);
-                          }
-                        }
-                        @media (max-width: 1099px) {
-                          --space--bleed: var(--space--2);
-                        }
-                        @media (min-width: 1100px) {
-                          --space--bleed: var(--space--4);
-                        }
-                        width: calc(100% + 2 * var(--space--bleed));
-                        padding: var(--space--2) var(--space--bleed);
-                        border-radius: var(--border-radius--md);
-                        margin-left: calc(-1 * var(--space--bleed));
                         display: flex;
                       `}"
                     >
@@ -6589,11 +6594,7 @@ export default async function courselore(
                           <button
                             $${
                               isOnlyStaff
-                                ? html`
-                                    disabled style="${css`
-                                      color: var(--color--primary-gray--400);
-                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
-                                  `
+                                ? html`disabled`
                                 : html`
                                     data-tippy-content="${html`
                                       $${app.locals.constants.roles.map(
@@ -6682,13 +6683,8 @@ export default async function courselore(
                                     data-tippy-theme="dropdown"
                                     data-tippy-trigger="click"
                                     data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true" style="${css`
-                                      transition: color
-                                        var(--transition-duration);
-                                      &:hover {
-                                        color: var(--color--primary-gray--800);
-                                        @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--400);}
-                                      }`}"
+                                    data-tippy-allowHTML="true"
+                                    class="button--inline"
                                   `
                             }
                           >
@@ -6716,11 +6712,7 @@ export default async function courselore(
                           <button
                             $${
                               isOnlyStaff
-                                ? html`
-                                    disabled style="${css`
-                                      color: var(--color--primary-gray--400);
-                                      @media (prefers-color-scheme: dark) {color: var(--color--primary-gray--500);}`}"
-                                  `
+                                ? html`disabled`
                                 : html`
                                     data-tippy-content="${html`
                                       <form
@@ -6763,13 +6755,8 @@ export default async function courselore(
                                     data-tippy-theme="dropdown dropdown--rose"
                                     data-tippy-trigger="click"
                                     data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true" style="${css`
-                                      transition: color
-                                        var(--transition-duration);
-                                      &:hover {
-                                        color: var(--color--rose--500);
-                                        @media (prefers-color-scheme: dark) {color: var(--color--rose--500);}
-                                      }`}"
+                                    data-tippy-allowHTML="true"
+                                    class="button--inline button--inline--rose"
                                   `
                             }
                           >
