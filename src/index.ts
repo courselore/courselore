@@ -1104,7 +1104,7 @@ export default async function courselore(
                       background-color: var(--color--green--800);
                       &:hover,
                       &:focus {
-                        background-color: var(--color--green--700);
+                        background-color: var(--color--green--600);
                       }
                       &:active {
                         background-color: var(--color--green--900);
@@ -5295,6 +5295,7 @@ export default async function courselore(
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
                         data-tippy-allowHTML="true"
+                        class="input--text--button--inset"
                         style="${css`
                           justify-self: end;
                           align-self: start;
@@ -5347,8 +5348,8 @@ export default async function courselore(
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = true;
-                            for (const element of extraFields.querySelectorAll("input"))
-                              element.disabled = true;
+                            for (const element of extraFields.querySelectorAll("*"))
+                              if (element.disabled !== undefined) element.disabled = true;
                           `}"
                         />
                         <span>
@@ -5364,8 +5365,8 @@ export default async function courselore(
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = false;
-                            for (const element of extraFields.querySelectorAll("input"))
-                              element.disabled = false;
+                            for (const element of extraFields.querySelectorAll("*"))
+                              if (element.disabled !== undefined) element.disabled = false;
                           `}"
                         />
                         <span>
@@ -5404,6 +5405,7 @@ export default async function courselore(
                         data-tippy-content="This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change."
                         data-tippy-theme="tooltip"
                         data-tippy-trigger="click"
+                        class="input--text--button--inset"
                         style="${css`
                           justify-self: end;
                           align-self: start;
@@ -5504,6 +5506,11 @@ export default async function courselore(
                                           color: var(
                                             --color--primary-gray--800
                                           );
+                                          @media (prefers-color-scheme: dark) {
+                                            color: var(
+                                              --color--primary-gray--100
+                                            );
+                                          }
                                         `}"
                                       >
                                         ${"*".repeat(
@@ -5539,6 +5546,11 @@ export default async function courselore(
                                               color: var(
                                                 --color--primary-gray--800
                                               );
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(
+                                                  --color--primary-gray--100
+                                                );
+                                              }
                                             `}"
                                           >
                                             ${invitation.email}
@@ -5553,6 +5565,11 @@ export default async function courselore(
                                               color: var(
                                                 --color--primary-gray--800
                                               );
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(
+                                                  --color--primary-gray--100
+                                                );
+                                              }
                                             `}"
                                           >
                                             ${invitation.name}
