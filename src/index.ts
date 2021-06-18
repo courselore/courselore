@@ -1114,7 +1114,6 @@ export default async function courselore(
                   transition: color var(--transition-duration);
 
                   &.button--inline--rose {
-                    color: var(--color--primary-gray--800);
                     &:hover,
                     &:focus {
                       color: var(--color--rose--500);
@@ -1123,7 +1122,6 @@ export default async function courselore(
                       color: var(--color--rose--700);
                     }
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary-gray--300);
                       &:hover,
                       &:focus {
                         color: var(--color--rose--500);
@@ -1156,6 +1154,14 @@ export default async function courselore(
                     }
                   }
                   transition: color var(--transition-duration);
+                }
+
+                .strong {
+                  font-weight: var(--font-weight--bold);
+                  color: var(--color--primary-gray--800);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary-gray--300);
+                  }
                 }
 
                 .separator {
@@ -5517,7 +5523,13 @@ export default async function courselore(
                           >
                             $${invitation.email === null
                               ? html`
-                                  <div>
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <i class="bi bi-link"></i>
                                     <button
                                       $${isExpired
                                         ? html`disabled`
@@ -5539,20 +5551,12 @@ export default async function courselore(
                                               data-tippy-content="See Invitation
                                               Link" data-tippy-theme="tooltip"
                                               data-tippy-touch="false"
+                                              class="strong"
                                             `}
                                       >
-                                        <i class="bi bi-link"></i>
-                                        <span
-                                          style="${css`
-                                            font-weight: var(
-                                              --font-weight--bold
-                                            );
-                                          `}"
-                                        >
-                                          ${"*".repeat(
-                                            6
-                                          )}${invitation.reference.slice(6)}
-                                        </span>
+                                        ${"*".repeat(
+                                          6
+                                        )}${invitation.reference.slice(6)}
                                       </span>
                                     </button>
                                   </div>
@@ -6569,15 +6573,7 @@ export default async function courselore(
                           flex-direction: column;
                         `}"
                       >
-                        <div
-                          style="${css`
-                            font-weight: var(--font-weight--bold);
-                            color: var(--color--primary-gray--800);
-                            @media (prefers-color-scheme: dark) {
-                              color: var(--color--primary-gray--100);
-                            }
-                          `}"
-                        >
+                        <div class="strong">
                           ${enrollment.userName}
                         </div>
                         <div>${enrollment.userEmail}</div>
