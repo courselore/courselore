@@ -8522,125 +8522,120 @@ ${value}</textarea
             </title>
           `,
           body: html`
-            <div>
-              <div class="title">
+            <div class="title">
+              <div
+                style="${css`
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: baseline;
+                  gap: var(--space--4);
+                `}"
+              >
+                <h2>
+                  <span class="heading--1">${res.locals.thread.title}</span>
+
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/threads/${res.locals.thread.reference}"
+                    class="button--inline"
+                    style="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                    `}"
+                    >#${res.locals.thread.reference}</a
+                  >
+                </h2>
+
                 <div
-                  class="show"
                   style="${css`
                     display: flex;
-                    justify-content: space-between;
-                    align-items: baseline;
-                    gap: 1rem;
+                    gap: var(--space--2);
                   `}"
                 >
-                  <h1>
-                    ${res.locals.thread.title}
-
-                    <a
-                      href="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/${res.locals.thread
-                        .reference}"
-                      class="secondary"
-                      >#${res.locals.thread.reference}</a
-                    >
-                  </h1>
-
-                  <div>
-                    <div
-                      class="btn-group btn-group-sm"
-                      role="group"
-                      aria-label="Thread Actions"
-                    >
-                      $${res.locals.enrollment.role === "staff"
-                        ? html`
-                            <form
-                              method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/threads/${res.locals
-                                .thread.reference}?_method=DELETE"
-                              class="btn btn-outline-primary"
-                              style="${css`
-                                padding: 0;
-                              `}"
-                            >
-                              <button
-                                data-bs-toggle="tooltip"
-                                title="Remove Thread"
-                                class="btn btn-sm"
-                                style="${css`
-                                  color: inherit;
-                                `}"
-                                onclick="${javascript`
-                                if (!confirm("Remove thread?\\n\\nYou may not undo this action!"))
-                                  event.preventDefault();
-                              `}"
-                              >
-                                <i class="bi bi-trash"></i>
-                              </button>
-                            </form>
-                          `
-                        : html``}
-                      $${app.locals.helpers.mayEditThread(req, res)
-                        ? html`
-                            <button
-                              data-bs-toggle="tooltip"
-                              title="Edit Title"
-                              type="button"
-                              class="btn btn-outline-primary"
-                              onclick="${javascript`
-                                const title = this.closest(".title");
-                                title.querySelector(".show").hidden = true;
-                                const edit = title.querySelector(".edit");
-                                edit.hidden = false;
-                                const input = edit.querySelector('[name="title"]');
-                                input.focus();
-                                input.setSelectionRange(0, 0);
-                              `}"
-                            >
-                              <i class="bi bi-pencil"></i>
-                            </button>
-                          `
-                        : html``}
-                    </div>
-                  </div>
-                </div>
-
-                $${app.locals.helpers.mayEditThread(req, res)
-                  ? html`
-                      <form
-                        method="POST"
-                        action="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/threads/${res.locals.thread
-                          .reference}?_method=PATCH"
-                        hidden
-                        class="edit"
-                        style="${css`
-                          display: flex;
-
-                          & > * + * {
-                            margin-left: 1rem;
-                          }
-                        `}"
-                      >
-                        <p
-                          style="${css`
-                            flex: 1;
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${app.locals.settings.url}/courses/${res
+                            .locals.course.reference}/threads/${res.locals
+                            .thread.reference}?_method=DELETE"
+                        >
+                          <button
+                            data-tippy-content="Remove Thread"
+                            data-tippy-theme="tooltip"
+                            data-tippy-touch="false"
+                            class="button--inline button--inline--rose"
+                            onclick="${javascript`
+                              if (!confirm("Remove thread?\\n\\nYou may not undo this action!"))
+                                event.preventDefault();
+                            `}"
+                          >
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </form>
+                      `
+                    : html``}
+                  $${app.locals.helpers.mayEditThread(req, res)
+                    ? html`
+                        <button
+                          data-tippy-content="Edit Title"
+                          data-tippy-theme="tooltip"
+                          data-tippy-touch="false"
+                          data-bs-toggle="tooltip"
+                          class="button--inline"
+                          onclick="${javascript`
+                            const title = this.closest(".title");
+                            title.querySelector(".show").hidden = true;
+                            const edit = title.querySelector(".edit");
+                            edit.hidden = false;
+                            const input = edit.querySelector('[name="title"]');
+                            input.focus();
+                            input.setSelectionRange(0, 0);
                           `}"
                         >
-                          <input
-                            type="text"
-                            name="title"
-                            value="${res.locals.thread.title}"
-                            autocomplete="off"
-                            required
-                            class="full-width"
-                          />
-                        </p>
-                        <p>
-                          <button class="green">Change Title</button>
-                          <button
-                            type="reset"
-                            onclick="${javascript`
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                      `
+                    : html``}
+                </div>
+              </div>
+
+              $${app.locals.helpers.mayEditThread(req, res)
+                ? html`
+                    <form
+                      method="POST"
+                      action="${app.locals.settings.url}/courses/${res.locals
+                        .course.reference}/threads/${res.locals.thread
+                        .reference}?_method=PATCH"
+                      hidden
+                      class="edit"
+                      style="${css`
+                        display: flex;
+
+                        & > * + * {
+                          margin-left: 1rem;
+                        }
+                      `}"
+                    >
+                      <p
+                        style="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          name="title"
+                          value="${res.locals.thread.title}"
+                          autocomplete="off"
+                          required
+                          class="full-width"
+                        />
+                      </p>
+                      <p>
+                        <button class="green">Change Title</button>
+                        <button
+                          type="reset"
+                          onclick="${javascript`
                               const title = this.closest(".title");
                               if (isModified(title) && !confirm("Discard changes?")) {
                                 event.preventDefault();
@@ -8650,212 +8645,193 @@ ${value}</textarea
                               const edit = title.querySelector(".edit");
                               edit.hidden = true;
                             `}"
-                          >
-                            Cancel
-                          </button>
-                        </p>
-                      </form>
-                    `
-                  : html``}
-              </div>
-
-              $${(() => {
-                const content: HTML[] = [];
-
-                if (res.locals.enrollment.role === "staff")
-                  content.push(html`
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/${res.locals.thread
-                        .reference}?_method=PATCH"
-                    >
-                      <input
-                        type="hidden"
-                        name="isPinned"
-                        value="${res.locals.thread.pinnedAt === null
-                          ? "true"
-                          : "false"}"
-                      />
-                      <p>
-                        <button>
-                          <span
-                            style="${css`
-                              position: relative;
-                              top: ${res.locals.thread.pinnedAt === null
-                                ? "0.1em"
-                                : "0.2em"};
-                            `}"
-                          >
-                          </span>
-                          ${res.locals.thread.pinnedAt === null
-                            ? "Unpinned"
-                            : "Pinned"}
+                        >
+                          Cancel
                         </button>
                       </p>
                     </form>
-                  `);
-                else if (res.locals.thread.pinnedAt !== null)
-                  content.push(html`
-                    <p>
-                      <span
-                        style="${css`
-                          position: relative;
-                          top: 0.2em;
-                        `}"
-                      >
-                        <i class="bi bi-pin-fill"></i>
-                      </span>
-                      Pinned
-                    </p>
-                  `);
+                  `
+                : html``}
+            </div>
 
-                if (app.locals.helpers.mayEditThread(req, res))
-                  content.push(html`
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/${res.locals.thread
-                        .reference}?_method=PATCH"
-                    >
-                      <input
-                        type="hidden"
-                        name="isQuestion"
-                        value="${res.locals.thread.questionAt === null
-                          ? "true"
-                          : "false"}"
-                      />
-                      <p>
-                        <button>
-                          <span
-                            style="${css`
-                              position: relative;
-                              top: 0.2em;
-                            `}"
-                          >
-                          </span>
-                          ${res.locals.thread.questionAt === null
-                            ? "Not a Question"
-                            : "Question"}
-                        </button>
-                      </p>
-                    </form>
-                  `);
-                else if (res.locals.thread.questionAt !== null)
-                  content.push(html`
-                    <p>
-                      <span
-                        style="${css`
-                          position: relative;
-                          top: 0.2em;
-                        `}"
-                      >
-                        <i class="bi bi-question-diamond-fill"></i>
-                      </span>
-                      Question
-                    </p>
-                  `);
+            $${(() => {
+              const content: HTML[] = [];
 
-                return content.length === 0
-                  ? html``
-                  : html`
-                      <div
-                        class="secondary"
-                        style="${css`
-                          margin-top: -1.5rem;
-                          display: flex;
-
-                          & > * + * {
-                            margin-left: 1rem;
-                          }
-                        `}"
-                      >
-                        $${content}
-                      </div>
-                    `;
-              })()}
-              $${res.locals.posts.map(
-                (post) => html`
-                  <section
-                    class="post"
-                    style="${css`
-                      border-bottom: 1px solid silver;
-                      @media (prefers-color-scheme: dark) {
-                        border-color: black;
-                      }
-                    `}"
+              if (res.locals.enrollment.role === "staff")
+                content.push(html`
+                  <form
+                    method="POST"
+                    action="${app.locals.settings.url}/courses/${res.locals
+                      .course.reference}/threads/${res.locals.thread
+                      .reference}?_method=PATCH"
                   >
-                    <div
+                    <input
+                      type="hidden"
+                      name="isPinned"
+                      value="${res.locals.thread.pinnedAt === null
+                        ? "true"
+                        : "false"}"
+                    />
+                    <p>
+                      <button>
+                        <span
+                          style="${css`
+                            position: relative;
+                            top: ${res.locals.thread.pinnedAt === null
+                              ? "0.1em"
+                              : "0.2em"};
+                          `}"
+                        >
+                        </span>
+                        ${res.locals.thread.pinnedAt === null
+                          ? "Unpinned"
+                          : "Pinned"}
+                      </button>
+                    </p>
+                  </form>
+                `);
+              else if (res.locals.thread.pinnedAt !== null)
+                content.push(html`
+                  <p>
+                    <span
                       style="${css`
+                        position: relative;
+                        top: 0.2em;
+                      `}"
+                    >
+                      <i class="bi bi-pin-fill"></i>
+                    </span>
+                    Pinned
+                  </p>
+                `);
+
+              if (app.locals.helpers.mayEditThread(req, res))
+                content.push(html`
+                  <form
+                    method="POST"
+                    action="${app.locals.settings.url}/courses/${res.locals
+                      .course.reference}/threads/${res.locals.thread
+                      .reference}?_method=PATCH"
+                  >
+                    <input
+                      type="hidden"
+                      name="isQuestion"
+                      value="${res.locals.thread.questionAt === null
+                        ? "true"
+                        : "false"}"
+                    />
+                    <p>
+                      <button>
+                        <span
+                          style="${css`
+                            position: relative;
+                            top: 0.2em;
+                          `}"
+                        >
+                        </span>
+                        ${res.locals.thread.questionAt === null
+                          ? "Not a Question"
+                          : "Question"}
+                      </button>
+                    </p>
+                  </form>
+                `);
+              else if (res.locals.thread.questionAt !== null)
+                content.push(html`
+                  <p>
+                    <span
+                      style="${css`
+                        position: relative;
+                        top: 0.2em;
+                      `}"
+                    >
+                      <i class="bi bi-question-diamond-fill"></i>
+                    </span>
+                    Question
+                  </p>
+                `);
+
+              return content.length === 0
+                ? html``
+                : html`
+                    <div
+                      hidden
+                      class="secondary"
+                      style="${css`
+                        margin-top: -1.5rem;
                         display: flex;
-                        margin-bottom: -1rem;
 
                         & > * + * {
-                          margin-left: 0.5rem;
+                          margin-left: 1rem;
                         }
                       `}"
                     >
-                      <p
-                        style="${css`
-                          flex: 1;
-                        `}"
+                      $${content}
+                    </div>
+                  `;
+            })()}
+            $${res.locals.posts.map(
+              (post) => html`
+                <div>
+                  <div>
+                    <div>
+                      <span class="strong"
+                        >${post.authorEnrollment.user.name}</span
                       >
-                        <strong>${post.authorEnrollment.user.name}</strong>
-                        <span class="secondary">
-                          said
-                          <time>${post.createdAt}</time>
-                          $${post.updatedAt !== post.createdAt
-                            ? html`
-                                and last edited
-                                <time>${post.updatedAt}</time>
-                              `
-                            : html``}
-                          <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/threads/${res.locals
-                              .thread.reference}#${post.reference}"
-                            style="${css`
-                              text-decoration: none;
-                            `}"
-                            >#${res.locals.thread
-                              .reference}/${post.reference}</a
-                          >
-                        </span>
-                      </p>
-
-                      $${res.locals.enrollment.role === "staff" &&
-                      post.reference !== "1"
+                      said
+                      <time>${post.createdAt}</time>
+                      $${post.updatedAt !== post.createdAt
                         ? html`
-                            <form
-                              method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/threads/${res.locals
-                                .thread
-                                .reference}/posts/${post.reference}?_method=DELETE"
-                            >
-                              <p>
-                                <button
-                                  title="Remove Post"
-                                  class="undecorated red"
-                                  onclick="${javascript`
+                            and last edited
+                            <time>${post.updatedAt}</time>
+                          `
+                        : html``}
+                      <a
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/threads/${res.locals.thread
+                          .reference}#${post.reference}"
+                        class="button--inline"
+                        style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                        `}"
+                        >#${res.locals.thread.reference}/${post.reference}</a
+                      >
+                    </div>
+
+                    $${res.locals.enrollment.role === "staff" &&
+                    post.reference !== "1"
+                      ? html`
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/threads/${res.locals
+                              .thread
+                              .reference}/posts/${post.reference}?_method=DELETE"
+                          >
+                            <div>
+                              <button
+                                title="Remove Post"
+                                class="undecorated red"
+                                onclick="${javascript`
                                     if (!confirm("Remove post?\\n\\nYou may not undo this action!"))
                                       event.preventDefault();
                                   `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                </button>
-                              </p>
-                            </form>
-                          `
-                        : html``}
-                      $${app.locals.helpers.mayEditPost(req, res, post)
-                        ? html`
-                            <p>
-                              <button
-                                title="Edit Post"
-                                type="button"
-                                class="undecorated"
-                                onclick="${javascript`
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </div>
+                          </form>
+                        `
+                      : html``}
+                    $${app.locals.helpers.mayEditPost(req, res, post)
+                      ? html`
+                          <div>
+                            <button
+                              title="Edit Post"
+                              type="button"
+                              class="undecorated"
+                              onclick="${javascript`
                                   const post = this.closest(".post");
                                   post.querySelector(".show").hidden = true;
                                   const edit = post.querySelector(".edit");
@@ -8864,19 +8840,19 @@ ${value}</textarea
                                   textarea.focus();
                                   textarea.setSelectionRange(0, 0);
                                 `}"
-                              >
-                                <i class="bi bi-pencil"></i>
-                              </button>
-                            </p>
-                          `
-                        : html``}
+                            >
+                              <i class="bi bi-pencil"></i>
+                            </button>
+                          </div>
+                        `
+                      : html``}
 
-                      <p>
-                        <button
-                          title="Reply"
-                          type="button"
-                          class="undecorated"
-                          onclick="${javascript`
+                    <div>
+                      <button
+                        title="Reply"
+                        type="button"
+                        class="undecorated"
+                        onclick="${javascript`
                             const newPost = document.querySelector("#new-post");
                             newPost.querySelector(".write").click();
                             const newPostContent = newPost.querySelector('[name="content"]');
@@ -8901,170 +8877,168 @@ ${value}</textarea
                             newPostContent.focus();
                             newPostContent.setSelectionRange(selectionStart, selectionEnd);
                           `}"
-                        >
-                          <i class="bi bi-reply"></i>
-                        </button>
-                      </p>
+                      >
+                        <i class="bi bi-reply"></i>
+                      </button>
                     </div>
+                  </div>
 
-                    <div class="show">
-                      $${(() => {
-                        const content: HTML[] = [];
+                  <div class="show">
+                    $${(() => {
+                      const content: HTML[] = [];
 
-                        if (post.reference !== "1")
-                          if (app.locals.helpers.mayEditPost(req, res, post))
-                            content.push(html`
-                              <form
-                                method="POST"
-                                action="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/threads/${res.locals
-                                  .thread
-                                  .reference}/posts/${post.reference}?_method=PATCH"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="isAnswer"
-                                  value="${post.answerAt === null
-                                    ? "true"
-                                    : "false"}"
-                                />
-                                <p>
-                                  <button>
-                                    <span
-                                      style="${css`
-                                        position: relative;
-                                        top: 0.1em;
-                                      `}"
-                                    >
-                                    </span>
-                                    ${post.answerAt === null
-                                      ? "Not an Answer"
-                                      : "Answer"}
-                                  </button>
-                                </p>
-                              </form>
-                            `);
-                          else if (post.answerAt !== null)
-                            content.push(html`
-                              <p>
-                                <span
-                                  style="${css`
-                                    position: relative;
-                                    top: 0.1em;
-                                  `}"
-                                >
-                                  <i class="bi bi-patch-check-fill"></i>
-                                </span>
-                                Answer
-                              </p>
-                            `);
-
-                        return content.length === 0
-                          ? html``
-                          : html`
-                              <div
-                                class="secondary"
-                                style="${css`
-                                  margin-top: -1.5rem;
-                                  display: flex;
-
-                                  & > * + * {
-                                    margin-left: 1rem;
-                                  }
-                                `}"
-                              >
-                                $${content}
-                              </div>
-                            `;
-                      })()}
-                      $${app.locals.partials.textProcessor(post.content)}
-
-                      <div>
-                        $${(() => {
-                          const isLiked = post.likes.find(
-                            (like) =>
-                              like.enrollment.id === res.locals.enrollment.id
-                          );
-                          const likesCount = post.likes.length;
-
-                          return html`
+                      if (post.reference !== "1")
+                        if (app.locals.helpers.mayEditPost(req, res, post))
+                          content.push(html`
                             <form
                               method="POST"
                               action="${app.locals.settings.url}/courses/${res
                                 .locals.course.reference}/threads/${res.locals
                                 .thread
-                                .reference}/posts/${post.reference}/likes${isLiked
-                                ? "?_method=DELETE"
-                                : ""}"
-                              onsubmit="${javascript`
-                          event.preventDefault();
-                          fetch(this.action, { method: this.method });
-                        `}"
+                                .reference}/posts/${post.reference}?_method=PATCH"
                             >
-                              <p
-                                style="${css`
-                                  margin-top: -0.5rem;
-                                `}"
-                              >
-                                <span
-                                  class="secondary"
-                                  style="${css`
-                                    & > * + * {
-                                      margin-left: 0.5rem;
-                                    }
-                                  `}"
-                                >
-                                  <button
-                                    class="undecorated ${isLiked
-                                      ? "green"
-                                      : ""}"
+                              <input
+                                type="hidden"
+                                name="isAnswer"
+                                value="${post.answerAt === null
+                                  ? "true"
+                                  : "false"}"
+                              />
+                              <p>
+                                <button>
+                                  <span
+                                    style="${css`
+                                      position: relative;
+                                      top: 0.1em;
+                                    `}"
                                   >
-                                    <span
-                                      style="${css`
-                                        position: relative;
-                                        top: 0.05em;
-                                      `}"
-                                    >
-                                    </span>
-                                    $${isLiked ? html`Liked` : html`Like`}
-                                    $${likesCount > 0
-                                      ? html`
-                                          · ${likesCount}
-                                          like${likesCount === 1 ? "" : "s"}
-                                        `
-                                      : html``}
-                                  </button>
-                                </span>
+                                  </span>
+                                  ${post.answerAt === null
+                                    ? "Not an Answer"
+                                    : "Answer"}
+                                </button>
                               </p>
                             </form>
-                          `;
-                        })()}
-                      </div>
-                    </div>
+                          `);
+                        else if (post.answerAt !== null)
+                          content.push(html`
+                            <p>
+                              <span
+                                style="${css`
+                                  position: relative;
+                                  top: 0.1em;
+                                `}"
+                              >
+                                <i class="bi bi-patch-check-fill"></i>
+                              </span>
+                              Answer
+                            </p>
+                          `);
 
-                    $${app.locals.helpers.mayEditPost(req, res, post)
-                      ? html`
+                      return content.length === 0
+                        ? html``
+                        : html`
+                            <div
+                              class="secondary"
+                              style="${css`
+                                margin-top: -1.5rem;
+                                display: flex;
+
+                                & > * + * {
+                                  margin-left: 1rem;
+                                }
+                              `}"
+                            >
+                              $${content}
+                            </div>
+                          `;
+                    })()}
+                    $${app.locals.partials.textProcessor(post.content)}
+
+                    <div>
+                      $${(() => {
+                        const isLiked = post.likes.find(
+                          (like) =>
+                            like.enrollment.id === res.locals.enrollment.id
+                        );
+                        const likesCount = post.likes.length;
+
+                        return html`
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
                               .locals.course.reference}/threads/${res.locals
                               .thread
-                              .reference}/posts/${post.reference}?_method=PATCH"
-                            hidden
-                            class="edit"
+                              .reference}/posts/${post.reference}/likes${isLiked
+                              ? "?_method=DELETE"
+                              : ""}"
+                            onsubmit="${javascript`
+                          event.preventDefault();
+                          fetch(this.action, { method: this.method });
+                        `}"
                           >
-                            $${app.locals.partials.textEditor(
-                              post.reference,
-                              post.content
-                            )}
                             <p
                               style="${css`
-                                text-align: right;
+                                margin-top: -0.5rem;
                               `}"
                             >
-                              <button
-                                type="reset"
-                                onclick="${javascript`
+                              <span
+                                class="secondary"
+                                style="${css`
+                                  & > * + * {
+                                    margin-left: 0.5rem;
+                                  }
+                                `}"
+                              >
+                                <button
+                                  class="undecorated ${isLiked ? "green" : ""}"
+                                >
+                                  <span
+                                    style="${css`
+                                      position: relative;
+                                      top: 0.05em;
+                                    `}"
+                                  >
+                                  </span>
+                                  $${isLiked ? html`Liked` : html`Like`}
+                                  $${likesCount > 0
+                                    ? html`
+                                        · ${likesCount}
+                                        like${likesCount === 1 ? "" : "s"}
+                                      `
+                                    : html``}
+                                </button>
+                              </span>
+                            </p>
+                          </form>
+                        `;
+                      })()}
+                    </div>
+                  </div>
+
+                  $${app.locals.helpers.mayEditPost(req, res, post)
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${app.locals.settings.url}/courses/${res
+                            .locals.course.reference}/threads/${res.locals
+                            .thread
+                            .reference}/posts/${post.reference}?_method=PATCH"
+                          hidden
+                          class="edit"
+                        >
+                          $${app.locals.partials.textEditor(
+                            post.reference,
+                            post.content
+                          )}
+                          <p
+                            style="${css`
+                              text-align: right;
+                            `}"
+                          >
+                            <button
+                              type="reset"
+                              onclick="${javascript`
                                   const post = this.closest(".post");
                                   if (isModified(post) && !confirm("Discard changes?")) {
                                     event.preventDefault();
@@ -9074,18 +9048,17 @@ ${value}</textarea
                                   const edit = post.querySelector(".edit");
                                   edit.hidden = true;
                                 `}"
-                              >
-                                Cancel
-                              </button>
-                              <button class="green">Change Post</button>
-                            </p>
-                          </form>
-                        `
-                      : html``}
-                  </section>
-                `
-              )}
-            </div>
+                            >
+                              Cancel
+                            </button>
+                            <button class="green">Change Post</button>
+                          </p>
+                        </form>
+                      `
+                    : html``}
+                </div>
+              `
+            )}
             <script>
               // (() => {
               //   const id = document.currentScript.previousElementSibling.id;
@@ -9107,7 +9080,7 @@ ${value}</textarea
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: 1rem;
+                gap: var(--space--4);
               `}"
             >
               <span
@@ -9195,10 +9168,9 @@ ${value}</textarea
 
               <div>
                 <button
-                  type="submit"
-                  class="btn btn-primary"
+                  class="button button--primary"
                   style="${css`
-                    @include media-breakpoint-down(md) {
+                    @media (max-width: 400px) {
                       width: 100%;
                     }
                   `}"
