@@ -8031,6 +8031,7 @@ ${value}</textarea
                               data-tippy-content="Pin"
                               data-tippy-theme="tooltip"
                               data-tippy-touch="false"
+                              class="button--inline"
                               style="${css`
                                 :checked + & {
                                   display: none;
@@ -8044,11 +8045,8 @@ ${value}</textarea
                               data-tippy-content="Unpin"
                               data-tippy-theme="tooltip"
                               data-tippy-touch="false"
+                              class="button--inline strong"
                               style="${css`
-                                color: var(--color--primary-gray--900);
-                                @media (prefers-color-scheme: dark) {
-                                  color: var(--color--primary-gray--50);
-                                }
                                 :not(:checked) + * + & {
                                   display: none;
                                 }
@@ -8063,6 +8061,7 @@ ${value}</textarea
                             data-tippy-content="Pinned threads are listed first."
                             data-tippy-theme="tooltip"
                             data-tippy-trigger="click"
+                            class="button--inline"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
@@ -8091,6 +8090,7 @@ ${value}</textarea
                       data-tippy-content="Mark as a Question"
                       data-tippy-theme="tooltip"
                       data-tippy-touch="false"
+                      class="button--inline"
                       style="${css`
                         :checked + & {
                           display: none;
@@ -8104,11 +8104,8 @@ ${value}</textarea
                       data-tippy-content="Mark as Not a Question"
                       data-tippy-theme="tooltip"
                       data-tippy-touch="false"
+                      class="button--inline strong"
                       style="${css`
-                        color: var(--color--primary-gray--900);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--primary-gray--50);
-                        }
                         :not(:checked) + * + & {
                           display: none;
                         }
