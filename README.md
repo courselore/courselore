@@ -605,6 +605,42 @@ Insiders Builds are generated on every push. They’re useful for development an
 <summary>Meetings</summary>
 
 <details>
+<summary>2021-06-19</summary>
+
+- Progress:
+  - Styled pages:
+    - Invitations.
+    - Showing the menu first when on mobile & going to the course main page.
+    - Follow Magic Authentication Link but already authenticated.
+    - Threads screen (not finished).
+  - Notification for when you’re invited to a course by email.
+  - `:focus`, `:hover`, `:active`, and so forth.
+- Next week:
+  - 10 weeks.
+  - Finish threads screen.
+    - Finish questions & answer tagging.
+    - Edit.
+    - Styles for Markdown.
+    - Reference posts.
+    - @mentions.
+    - Text editor.
+    - Upload images.
+      - Drag and drop.
+      - Control + V.
+  - Tags: Create & Filter.
+  - Generalize live updates.
+  - Notifications.
+    - Email configuration.
+  - Flags.
+  - Search.
+  - Statistics.
+  - Anonymity.
+    - Persona.
+  - Threads private to instructors.
+
+</details>
+
+<details>
 <summary>2021-06-12</summary>
 
 - Progress:
