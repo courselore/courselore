@@ -7535,6 +7535,9 @@ export default async function courselore(
                     style="${css`
                       font-weight: var(--font-weight--bold);
                       color: var(--color--primary--100);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--100);
+                      }
                     `}"
                   >
                     ${thread.title}
