@@ -7621,7 +7621,7 @@ export default async function courselore(
                   background-color: var(--color--primary--800);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary--200);
-                    background-color: var(--color--primary--800);
+                    background-color: var(--color--primary--900);
                   }
                   padding: var(--space--1) var(--space--4);
                   display: flex;
