@@ -7453,8 +7453,15 @@ export default async function courselore(
               style="${css`
                 transition: color var(--transition-duration);
 
-                &:hover {
-                  color: var(--color--primary--100);
+                &:hover,
+                &:focus {
+                  color: var(--color--primary--50);
+                }
+                @media (prefers-color-scheme: dark) {
+                  &:hover,
+                  &:focus {
+                    color: var(--color--primary--50);
+                  }
                 }
               `}"
             >
@@ -7484,7 +7491,12 @@ export default async function courselore(
                     display: block;
                     transition: background-color var(--transition-duration);
 
-                    &:hover {
+                    &:hover,
+                    &:focus,
+                    &.active:focus {
+                      background-color: var(--color--primary--600);
+                    }
+                    &:active {
                       background-color: var(--color--primary--700);
                     }
                     @media (max-width: 899px) {
@@ -7495,6 +7507,26 @@ export default async function courselore(
                     @media (min-width: 900px) {
                       &.active {
                         background-color: var(--color--primary--700);
+                      }
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      &:hover,
+                      &:focus,
+                      &.active:focus {
+                        background-color: var(--color--primary--600);
+                      }
+                      &:active {
+                        background-color: var(--color--primary--700);
+                      }
+                      @media (max-width: 899px) {
+                        :not(.active--cancel) > &.active {
+                          background-color: var(--color--primary--700);
+                        }
+                      }
+                      @media (min-width: 900px) {
+                        &.active {
+                          background-color: var(--color--primary--700);
+                        }
                       }
                     }
                   `}"
