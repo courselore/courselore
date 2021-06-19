@@ -2621,7 +2621,7 @@ export default async function courselore(
               color: var(--color--primary-gray--500);
               background-color: var(--color--primary-gray--100);
               @media (prefers-color-scheme: dark) {
-                color: var(--color--primary-gray--500);
+                color: var(--color--primary-gray--400);
                 background-color: var(--color--primary-gray--900);
               }
               flex: 1;
@@ -7756,8 +7756,10 @@ export default async function courselore(
             }
 
             & > :checked + span {
-              color: var(--color--primary-gray--900);
               background-color: var(--color--white);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--primary-gray--700);
+              }
             }
           }
         `}"
@@ -7772,7 +7774,7 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".preview").hidden = true;
             `}"
           />
-          <span class="button--inline">
+          <span class="button--inline after-toggle">
             <i class="bi bi-pencil"></i>
             Write
           </span>
@@ -7803,7 +7805,7 @@ export default async function courselore(
               })();
             `}"
           />
-          <span class="button--inline">
+          <span class="button--inline after-toggle">
             <i class="bi bi-eyeglasses"></i>
             Preview
           </span>
@@ -7813,6 +7815,9 @@ export default async function courselore(
         class="write"
         style="${css`
           background-color: var(--color--white);
+          @media (prefers-color-scheme: dark) {
+            background-color: var(--color--primary-gray--700);
+          }
           border-radius: var(--border-radius--lg);
           border-top-left-radius: var(--border-radius--none);
         `}"
@@ -7828,6 +7833,7 @@ export default async function courselore(
           <a
             href="https://guides.github.com/features/mastering-markdown/"
             target="_blank"
+            class="button--inline"
           >
             <i class="bi bi-markdown"></i>
           </a>
@@ -7852,11 +7858,12 @@ ${value}</textarea
 
       <div
         hidden
-        class="loading"
+        class="loading strong"
         style="${css`
-          font-weight: var(--font-weight--bold);
-          color: var(--color--primary-gray--900);
           background-color: var(--color--white);
+          @media (prefers-color-scheme: dark) {
+            background-color: var(--color--primary-gray--700);
+          }
           padding: var(--space--4);
           border-radius: var(--border-radius--lg);
           display: flex;
@@ -7888,6 +7895,9 @@ ${value}</textarea
         class="preview text"
         style="${css`
           background-color: var(--color--white);
+          @media (prefers-color-scheme: dark) {
+            background-color: var(--color--primary-gray--700);
+          }
           padding: var(--space--4);
           border-radius: var(--border-radius--lg);
         `}"
