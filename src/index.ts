@@ -7771,6 +7771,7 @@ export default async function courselore(
             checked
             onclick="${javascript`
               this.closest(".text-editor").querySelector(".write").hidden = false;
+              this.closest(".text-editor").querySelector(".loading").hidden = true;
               this.closest(".text-editor").querySelector(".preview").hidden = true;
             `}"
           />
@@ -7794,12 +7795,14 @@ export default async function courselore(
                 }
                 write.hidden = true;
                 loading.hidden = false;
+                preview.hidden = true;
                 preview.innerHTML = await (
                   await fetch("${app.locals.settings.url}/preview", {
                     method: "POST",
                     body: new URLSearchParams({ content: write.querySelector("textarea").value }),
                   })
                 ).text();
+                write.hidden = true;
                 loading.hidden = true;
                 preview.hidden = false;
               })();
