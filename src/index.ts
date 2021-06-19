@@ -1095,7 +1095,8 @@ export default async function courselore(
                 .button--inline {
                   color: var(--color--primary-gray--800);
                   &:hover,
-                  &:focus {
+                  &:focus,
+                  :focus ~ &.after-toggle {
                     color: var(--color--primary--500);
                   }
                   &:active {
@@ -1104,7 +1105,8 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary-gray--300);
                     &:hover,
-                    &:focus {
+                    &:focus,
+                    :focus ~ &.after-toggle {
                       color: var(--color--primary--500);
                     }
                     &:active {
@@ -1115,7 +1117,8 @@ export default async function courselore(
 
                   &.button--inline--rose {
                     &:hover,
-                    &:focus {
+                    &:focus,
+                    :focus ~ &.after-toggle {
                       color: var(--color--rose--500);
                     }
                     &:active {
@@ -1123,7 +1126,8 @@ export default async function courselore(
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
-                      &:focus {
+                      &:focus,
+                      :focus ~ &.after-toggle {
                         color: var(--color--rose--500);
                       }
                       &:active {
@@ -7768,7 +7772,7 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".preview").hidden = true;
             `}"
           />
-          <span>
+          <span class="button--inline">
             <i class="bi bi-pencil"></i>
             Write
           </span>
@@ -7799,7 +7803,7 @@ export default async function courselore(
               })();
             `}"
           />
-          <span>
+          <span class="button--inline">
             <i class="bi bi-eyeglasses"></i>
             Preview
           </span>
@@ -8031,7 +8035,7 @@ ${value}</textarea
                               data-tippy-content="Pin"
                               data-tippy-theme="tooltip"
                               data-tippy-touch="false"
-                              class="button--inline"
+                              class="button--inline after-toggle"
                               style="${css`
                                 :checked + & {
                                   display: none;
@@ -8045,7 +8049,7 @@ ${value}</textarea
                               data-tippy-content="Unpin"
                               data-tippy-theme="tooltip"
                               data-tippy-touch="false"
-                              class="button--inline strong"
+                              class="button--inline after-toggle strong"
                               style="${css`
                                 :not(:checked) + * + & {
                                   display: none;
@@ -8090,7 +8094,7 @@ ${value}</textarea
                       data-tippy-content="Mark as a Question"
                       data-tippy-theme="tooltip"
                       data-tippy-touch="false"
-                      class="button--inline"
+                      class="button--inline after-toggle"
                       style="${css`
                         :checked + & {
                           display: none;
@@ -8104,7 +8108,7 @@ ${value}</textarea
                       data-tippy-content="Mark as Not a Question"
                       data-tippy-theme="tooltip"
                       data-tippy-touch="false"
-                      class="button--inline strong"
+                      class="button--inline after-toggle strong"
                       style="${css`
                         :not(:checked) + * + & {
                           display: none;
