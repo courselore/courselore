@@ -8522,7 +8522,7 @@ ${value}</textarea
             </title>
           `,
           body: html`
-            <div id="thread">
+            <div>
               <div class="title">
                 <div
                   class="show"
@@ -8777,7 +8777,6 @@ ${value}</textarea
               $${res.locals.posts.map(
                 (post) => html`
                   <section
-                    id="post--${post.reference}"
                     class="post"
                     style="${css`
                       border-bottom: 1px solid silver;
@@ -9102,7 +9101,6 @@ ${value}</textarea
             </script>
 
             <form
-              id="new-post"
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/threads/${res.locals.thread.reference}/posts"
