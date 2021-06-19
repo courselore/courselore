@@ -8772,12 +8772,19 @@ ${value}</textarea
             })()}
             $${res.locals.posts.map(
               (post) => html`
-                <div>
+                <div
+                  style="${css`
+                    padding-bottom: var(--space--4);
+                    border-bottom: var(--border-width--1) solid
+                      var(--color--primary-gray--300);
+                    margin-bottom: var(--space--4);
+                  `}"
+                >
                   <div>
                     <div>
-                      <span class="strong"
-                        >${post.authorEnrollment.user.name}</span
-                      >
+                      <span class="strong">
+                        ${post.authorEnrollment.user.name}
+                      </span>
                       said
                       <time>${post.createdAt}</time>
                       $${post.updatedAt !== post.createdAt
@@ -8799,39 +8806,40 @@ ${value}</textarea
                       >
                     </div>
 
-                    $${res.locals.enrollment.role === "staff" &&
-                    post.reference !== "1"
-                      ? html`
-                          <form
-                            method="POST"
-                            action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/threads/${res.locals
-                              .thread
-                              .reference}/posts/${post.reference}?_method=DELETE"
-                          >
-                            <div>
-                              <button
-                                title="Remove Post"
-                                class="undecorated red"
-                                onclick="${javascript`
+                    <div hidden>
+                      $${res.locals.enrollment.role === "staff" &&
+                      post.reference !== "1"
+                        ? html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/threads/${res.locals
+                                .thread
+                                .reference}/posts/${post.reference}?_method=DELETE"
+                            >
+                              <div>
+                                <button
+                                  title="Remove Post"
+                                  class="undecorated red"
+                                  onclick="${javascript`
                                     if (!confirm("Remove post?\\n\\nYou may not undo this action!"))
                                       event.preventDefault();
                                   `}"
-                              >
-                                <i class="bi bi-trash"></i>
-                              </button>
-                            </div>
-                          </form>
-                        `
-                      : html``}
-                    $${app.locals.helpers.mayEditPost(req, res, post)
-                      ? html`
-                          <div>
-                            <button
-                              title="Edit Post"
-                              type="button"
-                              class="undecorated"
-                              onclick="${javascript`
+                                >
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </form>
+                          `
+                        : html``}
+                      $${app.locals.helpers.mayEditPost(req, res, post)
+                        ? html`
+                            <div>
+                              <button
+                                title="Edit Post"
+                                type="button"
+                                class="undecorated"
+                                onclick="${javascript`
                                   const post = this.closest(".post");
                                   post.querySelector(".show").hidden = true;
                                   const edit = post.querySelector(".edit");
@@ -8840,19 +8848,19 @@ ${value}</textarea
                                   textarea.focus();
                                   textarea.setSelectionRange(0, 0);
                                 `}"
-                            >
-                              <i class="bi bi-pencil"></i>
-                            </button>
-                          </div>
-                        `
-                      : html``}
+                              >
+                                <i class="bi bi-pencil"></i>
+                              </button>
+                            </div>
+                          `
+                        : html``}
 
-                    <div>
-                      <button
-                        title="Reply"
-                        type="button"
-                        class="undecorated"
-                        onclick="${javascript`
+                      <div>
+                        <button
+                          title="Reply"
+                          type="button"
+                          class="undecorated"
+                          onclick="${javascript`
                             const newPost = document.querySelector("#new-post");
                             newPost.querySelector(".write").click();
                             const newPostContent = newPost.querySelector('[name="content"]');
@@ -8877,9 +8885,10 @@ ${value}</textarea
                             newPostContent.focus();
                             newPostContent.setSelectionRange(selectionStart, selectionEnd);
                           `}"
-                      >
-                        <i class="bi bi-reply"></i>
-                      </button>
+                        >
+                          <i class="bi bi-reply"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -8948,6 +8957,7 @@ ${value}</textarea
                                   margin-left: 1rem;
                                 }
                               `}"
+                              hidden
                             >
                               $${content}
                             </div>
@@ -8976,6 +8986,7 @@ ${value}</textarea
                           event.preventDefault();
                           fetch(this.action, { method: this.method });
                         `}"
+                            hidden
                           >
                             <p
                               style="${css`
