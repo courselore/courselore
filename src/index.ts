@@ -7823,6 +7823,7 @@ export default async function courselore(
           <input
             type="radio"
             name="text-editor--mode"
+            autocomplete="off"
             checked
             onclick="${javascript`
               this.closest(".text-editor").querySelector(".write").hidden = false;
@@ -7839,6 +7840,7 @@ export default async function courselore(
           <input
             type="radio"
             name="text-editor--mode"
+            autocomplete="off"
             onclick="${javascript`
               (async () => {
                 const write = this.closest(".text-editor").querySelector(".write");
