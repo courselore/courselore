@@ -744,6 +744,8 @@ export default async function courselore(
 
                 /* GLOBAL STYLES */
 
+                /* TODO: Try to get rid of most of these. Either they go into components, or they go into ‘.text’. */
+
                 body {
                   font-family: var(--font-family--sans-serif);
                   font-size: var(--font-size--sm);
@@ -1563,6 +1565,55 @@ export default async function courselore(
                       background-color: var(--color--primary-gray--700);
                     }
                     padding: var(--space--4);
+                    border-radius: var(--border-radius--xl);
+                  }
+
+                  code,
+                  tt {
+                    font-family: var(--font-family--monospace);
+                  }
+
+                  del {
+                    color: var(--color--rose--900);
+                    background-color: var(--color--rose--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--rose--100);
+                      background-color: var(--color--rose--800);
+                    }
+                  }
+
+                  ins {
+                    color: var(--color--green--900);
+                    background-color: var(--color--green--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--green--100);
+                      background-color: var(--color--green--800);
+                    }
+                  }
+
+                  sup,
+                  sub {
+                    position: relative;
+                    font-size: var(--font-size--xs);
+                    line-height: 0;
+                    vertical-align: baseline;
+                  }
+
+                  sup {
+                    top: calc(-1 * var(--space--1));
+                  }
+
+                  sub {
+                    bottom: calc(-1 * var(--space--1));
+                  }
+
+                  img {
+                    background-color: var(--color--white);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--white);
+                    }
+                    max-width: 100%;
+                    height: auto;
                     border-radius: var(--border-radius--xl);
                   }
 

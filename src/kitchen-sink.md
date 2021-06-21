@@ -122,19 +122,8 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div
 
 ---
 
-https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins
-
-<p>“You're late!”</p>
-<del>
-    <p>“I apologize for the delay.”</p>
-</del>
-<ins cite="../howtobeawizard.html" datetime="2018-05">
-    <p>“A wizard is never late …”</p>
-</ins>
-
----
-
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins
 
 <blockquote>
     There is <del>nothing</del> <ins>no code</ins> either good or bad, but <del>thinking</del> <ins>running it</ins> makes it so.
@@ -146,14 +135,14 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup
 
 <p>The <b>Pythagorean theorem</b> is often expressed as the following equation:</p>
 
-<p><var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var></p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore reprehenderit facere error culpa quo perspiciatis minima doloribus placeat nobis, reiciendis corrupti dolore aliquam aut, amet cupiditate cumque delectus odio odit. <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var> Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore reprehenderit facere error culpa quo perspiciatis minima doloribus placeat nobis, reiciendis corrupti dolore aliquam aut, amet cupiditate cumque delectus odio odit.</p>
 
 ---
 
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub
 
-<p>Almost every developer's favorite molecule is
-C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub>, also known as "caffeine."</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore reprehenderit facere error culpa quo perspiciatis minima doloribus placeat nobis, reiciendis corrupti dolore aliquam aut, amet cupiditate cumque delectus odio odit. Almost every developer's favorite molecule is
+C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub>, also known as "caffeine." Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore reprehenderit facere error culpa quo perspiciatis minima doloribus placeat nobis, reiciendis corrupti dolore aliquam aut, amet cupiditate cumque delectus odio odit.</p>
 
 ---
 
