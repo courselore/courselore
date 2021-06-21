@@ -7455,7 +7455,7 @@ export default async function courselore(
             max-width: calc(var(--space--80) * 2);
             display: flex;
             flex-direction: column;
-            gap: var(--space--8);
+            gap: var(--space--4);
           `}"
         >
           <div
@@ -7469,6 +7469,8 @@ export default async function courselore(
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/threads/new"
               style="${css`
+                display: flex;
+                gap: var(--space--2);
                 transition: color var(--transition-duration);
 
                 &:hover,
@@ -7784,9 +7786,9 @@ export default async function courselore(
   };
 
   interface Partials {
-    textEditor: (id: string, value?: string) => HTML;
+    textEditor: (value?: string) => HTML;
   }
-  app.locals.partials.textEditor = (id, value = ""): HTML => html`
+  app.locals.partials.textEditor = (value = ""): HTML => html`
     <div class="text-editor">
       <div
         style="${css`
@@ -8187,7 +8189,7 @@ ${value}</textarea
                   </label>
                 </div>
 
-                $${app.locals.partials.textEditor("new")}
+                $${app.locals.partials.textEditor()}
 
                 <div>
                   <button
@@ -8794,6 +8796,9 @@ ${value}</textarea
                     padding-bottom: var(--space--4);
                     border-bottom: var(--border-width--1) solid
                       var(--color--primary-gray--300);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--primary-gray--700);
+                    }
                     margin-bottom: var(--space--4);
                   `}"
                 >
@@ -8814,7 +8819,7 @@ ${value}</textarea
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/threads/${res.locals.thread
                           .reference}#${post.reference}"
-                        class="button--inline"
+                        class="button--inline button--inline--gray"
                         style="${css`
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
@@ -8980,7 +8985,9 @@ ${value}</textarea
                             </div>
                           `;
                     })()}
-                    $${app.locals.partials.textProcessor(post.content)}
+                    <div class="text">
+                      $${app.locals.partials.textProcessor(post.content)}
+                    </div>
 
                     <div>
                       $${(() => {
@@ -9055,10 +9062,7 @@ ${value}</textarea
                           hidden
                           class="edit"
                         >
-                          $${app.locals.partials.textEditor(
-                            post.reference,
-                            post.content
-                          )}
+                          $${app.locals.partials.textEditor(post.content)}
                           <p
                             style="${css`
                               text-align: right;
@@ -9111,85 +9115,93 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
+              <!--
               <span
                 style="${css`
-                  & > * + * {
-                    margin-left: 1rem;
-                  }
-                `}"
+                & > * + * {
+                  margin-left: 1rem;
+                }
+              `}"
               >
                 $${res.locals.thread.questionAt !== null
-                  ? html`
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="isAnswer"
-                          $${res.locals.enrollment.role === "staff"
-                            ? `checked`
-                            : ``}
-                          class="undecorated"
-                          style="${css`
-                            width: 1em;
-                            height: 1em;
+                ? html`
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="isAnswer"
+                        $${res.locals.enrollment.role === "staff"
+                          ? `checked`
+                          : ``}
+                        class="undecorated"
+                        style="${css`
+                          width: 1em;
+                          height: 1em;
+                          background-image: url("data:image/svg+xml;base64,${Buffer.from(
+                            "TODO"
+                            // app.locals.icons["patch-check"].replace(
+                            //   "currentColor",
+                            //   "gray"
+                            // )
+                          ).toString("base64")}");
+                          &:checked {
                             background-image: url("data:image/svg+xml;base64,${Buffer.from(
                               "TODO"
-                              // app.locals.icons["patch-check"].replace(
-                              //   "currentColor",
-                              //   "gray"
-                              // )
+                              // app.locals.icons["patch-check-fill"]
                             ).toString("base64")}");
-                            &:checked {
-                              background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                                "TODO"
-                                // app.locals.icons["patch-check-fill"]
-                              ).toString("base64")}");
-                            }
-                            background-repeat: no-repeat;
-                            background-size: contain;
-                            position: relative;
-                            top: 0.1em;
+                          }
+                          background-repeat: no-repeat;
+                          background-size: contain;
+                          position: relative;
+                          top: 0.1em;
 
-                            &:not(:checked) + * {
-                              color: gray;
-                            }
-                          `}"
-                        />
-                        <span>Answer</span>
-                      </label>
-                    `
-                  : html``}
+                          &:not(:checked) + * {
+                            color: gray;
+                          }
+                        `}"
+                      />
+                      <span>Answer</span>
+                    </label>
+                  `
+                : html``}
               </span>
+              -->
 
-              $${app.locals.partials.textEditor("new")}
+              $${app.locals.partials.textEditor()}
               <script>
                 (() => {
                   const textarea = document.currentScript.previousElementSibling.querySelector(
                     "textarea"
                   );
-                  textarea.defaultValue =
-                    JSON.parse(
-                      localStorage.getItem("threadsTextareas") ?? "{}"
-                    )[window.location.pathname] ?? "";
-                  textarea.dataset.skipIsModified = "true";
-                  textarea.addEventListener("input", () => {
-                    const threadsTextareas = JSON.parse(
-                      localStorage.getItem("threadsTextareas") ?? "{}"
-                    );
-                    threadsTextareas[window.location.pathname] = textarea.value;
-                    localStorage.setItem(
-                      "threadsTextareas",
-                      JSON.stringify(threadsTextareas)
-                    );
-                  });
-                  textarea.closest("form").addEventListener("submit", () => {
-                    const threadsTextareas = JSON.parse(
-                      localStorage.getItem("threadsTextareas") ?? "{}"
-                    );
-                    delete threadsTextareas[window.location.pathname];
-                    localStorage.setItem(
-                      "threadsTextareas",
-                      JSON.stringify(threadsTextareas)
-                    );
+                  document.addEventListener("DOMContentLoaded", () => {
+                    if (textarea.dataset.populatedFromLocalStorage === "true")
+                      return;
+                    textarea.dataset.populatedFromLocalStorage = true;
+                    textarea.defaultValue =
+                      JSON.parse(
+                        localStorage.getItem("threadsTextareas") ?? "{}"
+                      )[window.location.pathname] ?? "";
+                    textarea.dataset.skipIsModified = "true";
+                    textarea.addEventListener("input", () => {
+                      const threadsTextareas = JSON.parse(
+                        localStorage.getItem("threadsTextareas") ?? "{}"
+                      );
+                      threadsTextareas[window.location.pathname] =
+                        textarea.value;
+                      localStorage.setItem(
+                        "threadsTextareas",
+                        JSON.stringify(threadsTextareas)
+                      );
+                    });
+                    textarea.closest("form").addEventListener("submit", () => {
+                      const threadsTextareas = JSON.parse(
+                        localStorage.getItem("threadsTextareas") ?? "{}"
+                      );
+                      delete threadsTextareas[window.location.pathname];
+                      localStorage.setItem(
+                        "threadsTextareas",
+                        JSON.stringify(threadsTextareas)
+                      );
+                    });
                   });
                 })();
               </script>
