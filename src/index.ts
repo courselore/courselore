@@ -6798,38 +6798,33 @@ export default async function courselore(
                                       <form
                                         method="POST"
                                         action="${action}?_method=DELETE"
+                                        style="${css`
+                                          padding: var(--space--2)
+                                            var(--space--0);
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--4);
+                                        `}"
                                       >
-                                        <div
-                                          style="${css`
-                                            padding: var(--space--2)
-                                              var(--space--0);
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--4);
-                                          `}"
-                                        >
-                                          <p>
-                                            Are you sure you want to remove
-                                            ${isSelf
-                                              ? "yourself"
-                                              : "this person"}
-                                            from the course?
-                                          </p>
-                                          <p>
-                                            <strong
-                                              style="${css`
-                                                font-weight: var(
-                                                  --font-weight--bold
-                                                );
-                                              `}"
-                                            >
-                                              You may not undo this action!
-                                            </strong>
-                                          </p>
-                                          <button class="button button--rose">
-                                            Remove from the course
-                                          </button>
-                                        </div>
+                                        <p>
+                                          Are you sure you want to remove
+                                          ${isSelf ? "yourself" : "this person"}
+                                          from the course?
+                                        </p>
+                                        <p>
+                                          <strong
+                                            style="${css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                            `}"
+                                          >
+                                            You may not undo this action!
+                                          </strong>
+                                        </p>
+                                        <button class="button button--rose">
+                                          Remove from the course
+                                        </button>
                                       </form>
                                     `}"
                                     data-tippy-theme="dropdown dropdown--rose"
@@ -8577,25 +8572,51 @@ ${value}</textarea
                 >
                   $${res.locals.enrollment.role === "staff"
                     ? html`
-                        <form
-                          method="POST"
-                          action="${app.locals.settings.url}/courses/${res
-                            .locals.course.reference}/threads/${res.locals
-                            .thread.reference}?_method=DELETE"
+                        <button
+                          data-tippy-content="${html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/threads/${res.locals
+                                .thread.reference}?_method=DELETE"
+                              style="${css`
+                                padding: var(--space--2) var(--space--0);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                Are you sure you want to remove this thread?
+                              </p>
+                              <p>
+                                <strong
+                                  style="${css`
+                                    font-weight: var(--font-weight--bold);
+                                  `}"
+                                >
+                                  You may not undo this action!
+                                </strong>
+                              </p>
+                              <button class="button button--rose">
+                                Remove Thread
+                              </button>
+                            </form>
+                          `}"
+                          data-tippy-theme="dropdown dropdown--rose"
+                          data-tippy-trigger="click"
+                          data-tippy-interactive="true"
+                          data-tippy-allowHTML="true"
+                          class="button--inline button--inline--gray button--inline--rose"
                         >
-                          <button
+                          <span
                             data-tippy-content="Remove Thread"
-                            data-tippy-theme="tooltip"
+                            data-tippy-theme="tooltip tooltip--rose"
                             data-tippy-touch="false"
-                            class="button--inline button--inline--gray button--inline--rose"
-                            onclick="${javascript`
-                              if (!confirm("Remove thread?\\n\\nYou may not undo this action!"))
-                                event.preventDefault();
-                            `}"
                           >
                             <i class="bi bi-trash"></i>
-                          </button>
-                        </form>
+                          </span>
+                        </button>
                       `
                     : html``}
                   $${app.locals.helpers.mayEditThread(req, res)
