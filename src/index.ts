@@ -1115,6 +1115,29 @@ export default async function courselore(
                   }
                   transition: color var(--transition-duration);
 
+                  &.button--inline--gray {
+                    color: var(--color--primary-gray--500);
+                    &:hover,
+                    &:focus,
+                    :focus ~ &.after-toggle {
+                      color: var(--color--primary--600);
+                    }
+                    &:active {
+                      color: var(--color--primary--700);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--600);
+                      &:hover,
+                      &:focus,
+                      :focus ~ &.after-toggle {
+                        color: var(--color--primary--600);
+                      }
+                      &:active {
+                        color: var(--color--primary--700);
+                      }
+                    }
+                  }
+
                   &.button--inline--rose {
                     &:hover,
                     &:focus,
@@ -8537,7 +8560,7 @@ ${value}</textarea
                   <a
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/threads/${res.locals.thread.reference}"
-                    class="button--inline"
+                    class="button--inline button--inline--gray"
                     style="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
@@ -8564,7 +8587,7 @@ ${value}</textarea
                             data-tippy-content="Remove Thread"
                             data-tippy-theme="tooltip"
                             data-tippy-touch="false"
-                            class="button--inline button--inline--rose"
+                            class="button--inline button--inline--gray button--inline--rose"
                             onclick="${javascript`
                               if (!confirm("Remove thread?\\n\\nYou may not undo this action!"))
                                 event.preventDefault();
@@ -8582,7 +8605,7 @@ ${value}</textarea
                           data-tippy-theme="tooltip"
                           data-tippy-touch="false"
                           data-bs-toggle="tooltip"
-                          class="button--inline"
+                          class="button--inline button--inline--gray"
                           onclick="${javascript`
                             const title = this.closest(".title");
                             title.querySelector(".show").hidden = true;
