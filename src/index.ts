@@ -1021,7 +1021,7 @@ export default async function courselore(
                         background-color: var(--color--primary--700);
                       }
                       &:active {
-                        background-color: var(--color--primary--900);
+                        background-color: var(--color--primary--800);
                       }
                     }
                   }
@@ -1120,7 +1120,7 @@ export default async function courselore(
                     &:hover,
                     &:focus,
                     :focus ~ &.after-toggle {
-                      color: var(--color--primary--600);
+                      color: var(--color--primary--500);
                     }
                     &:active {
                       color: var(--color--primary--700);
@@ -1294,7 +1294,7 @@ export default async function courselore(
                     --border-color: var(--color--primary--900);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--200);
-                      --background-color: var(--color--primary--800);
+                      --background-color: var(--color--primary--900);
                       --border-color: var(--color--primary--400);
                     }
 
@@ -8571,95 +8571,101 @@ ${value}</textarea
               >
                 $${res.locals.enrollment.role === "staff"
                   ? html`
-                      <button
-                        data-tippy-content="${html`
-                          <form
-                            method="POST"
-                            action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/threads/${res.locals
-                              .thread.reference}?_method=DELETE"
-                            style="${css`
-                              padding: var(--space--2) var(--space--0);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
-                          >
-                            <p>Are you sure you want to remove this thread?</p>
-                            <p>
-                              <strong
-                                style="${css`
-                                  font-weight: var(--font-weight--bold);
-                                `}"
-                              >
-                                You may not undo this action!
-                              </strong>
-                            </p>
-                            <button class="button button--rose">
-                              Remove Thread
-                            </button>
-                          </form>
-                        `}"
-                        data-tippy-theme="dropdown dropdown--rose"
-                        data-tippy-trigger="click"
-                        data-tippy-interactive="true"
-                        data-tippy-allowHTML="true"
-                        class="button--inline button--inline--gray button--inline--rose"
-                      >
-                        <span
-                          data-tippy-content="Remove Thread"
-                          data-tippy-theme="tooltip tooltip--rose"
-                          data-tippy-touch="false"
+                      <div>
+                        <button
+                          data-tippy-content="${html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/threads/${res.locals
+                                .thread.reference}?_method=DELETE"
+                              style="${css`
+                                padding: var(--space--2) var(--space--0);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                Are you sure you want to remove this thread?
+                              </p>
+                              <p>
+                                <strong
+                                  style="${css`
+                                    font-weight: var(--font-weight--bold);
+                                  `}"
+                                >
+                                  You may not undo this action!
+                                </strong>
+                              </p>
+                              <button class="button button--rose">
+                                Remove Thread
+                              </button>
+                            </form>
+                          `}"
+                          data-tippy-theme="dropdown dropdown--rose"
+                          data-tippy-trigger="click"
+                          data-tippy-interactive="true"
+                          data-tippy-allowHTML="true"
+                          class="button--inline button--inline--gray button--inline--rose"
                         >
-                          <i class="bi bi-trash"></i>
-                        </span>
-                      </button>
+                          <span
+                            data-tippy-content="Remove Thread"
+                            data-tippy-theme="tooltip tooltip--rose"
+                            data-tippy-touch="false"
+                          >
+                            <i class="bi bi-trash"></i>
+                          </span>
+                        </button>
+                      </div>
                     `
                   : html``}
                 $${app.locals.helpers.mayEditThread(req, res)
                   ? html`
-                      <button
-                        data-tippy-content="${html`
-                          <form
-                            method="POST"
-                            action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/threads/${res.locals
-                              .thread.reference}?_method=PATCH"
-                            style="${css`
-                              padding: var(--space--2) var(--space--0);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              name="title"
-                              value="${res.locals.thread.title}"
-                              required
-                              autocomplete="off"
-                              class="input--text"
-                            />
-                            <button class="button button--primary">
-                              <i class="bi bi-pencil"></i>
-                              Update Title
-                            </button>
-                          </form>
-                        `}"
-                        data-tippy-theme="dropdown"
-                        data-tippy-trigger="click"
-                        data-tippy-interactive="true"
-                        data-tippy-allowHTML="true"
-                        class="button--inline button--inline--gray"
-                      >
-                        <span
-                          data-tippy-content="Edit Title"
-                          data-tippy-theme="tooltip"
-                          data-tippy-touch="false"
+                      <div>
+                        <button
+                          data-tippy-content="${html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/threads/${res.locals
+                                .thread.reference}?_method=PATCH"
+                              style="${css`
+                                padding: var(--space--2) var(--space--0);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                name="title"
+                                value="${res.locals.thread.title}"
+                                required
+                                autocomplete="off"
+                                class="input--text"
+                              />
+                              <button class="button button--primary">
+                                <i class="bi bi-pencil"></i>
+                                Update Title
+                              </button>
+                            </form>
+                          `}"
+                          data-tippy-theme="dropdown"
+                          data-tippy-trigger="click"
+                          data-tippy-interactive="true"
+                          data-tippy-allowHTML="true"
+                          class="button--inline button--inline--gray"
                         >
-                          <i class="bi bi-pencil"></i>
-                        </span>
-                      </button>
+                          <span
+                            data-tippy-content="Edit Title"
+                            data-tippy-theme="tooltip"
+                            data-tippy-touch="false"
+                          >
+                            <i class="bi bi-pencil"></i>
+                          </span>
+                        </button>
+                      </div>
                     `
                   : html``}
               </div>
