@@ -8618,7 +8618,40 @@ ${value}</textarea
                   : html``}
                 $${app.locals.helpers.mayEditThread(req, res)
                   ? html`
-                      <button class="button--inline button--inline--gray">
+                      <button
+                        data-tippy-content="${html`
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/threads/${res.locals
+                              .thread.reference}?_method=PATCH"
+                            style="${css`
+                              padding: var(--space--2) var(--space--0);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              name="title"
+                              value="${res.locals.thread.title}"
+                              required
+                              autocomplete="off"
+                              class="input--text"
+                            />
+                            <button class="button button--primary">
+                              <i class="bi bi-pencil"></i>
+                              Update Title
+                            </button>
+                          </form>
+                        `}"
+                        data-tippy-theme="dropdown"
+                        data-tippy-trigger="click"
+                        data-tippy-interactive="true"
+                        data-tippy-allowHTML="true"
+                        class="button--inline button--inline--gray"
+                      >
                         <span
                           data-tippy-content="Edit Title"
                           data-tippy-theme="tooltip"
@@ -8632,58 +8665,6 @@ ${value}</textarea
               </div>
             </div>
 
-            $${app.locals.helpers.mayEditThread(req, res)
-              ? html`
-                  <form
-                    method="POST"
-                    action="${app.locals.settings.url}/courses/${res.locals
-                      .course.reference}/threads/${res.locals.thread
-                      .reference}?_method=PATCH"
-                    hidden
-                    class="edit"
-                    style="${css`
-                      display: flex;
-
-                      & > * + * {
-                        margin-left: 1rem;
-                      }
-                    `}"
-                  >
-                    <p
-                      style="${css`
-                        flex: 1;
-                      `}"
-                    >
-                      <input
-                        type="text"
-                        name="title"
-                        value="${res.locals.thread.title}"
-                        autocomplete="off"
-                        required
-                        class="full-width"
-                      />
-                    </p>
-                    <p>
-                      <button class="green">Change Title</button>
-                      <button
-                        type="reset"
-                        onclick="${javascript`
-                              const title = this.closest(".title");
-                              if (isModified(title) && !confirm("Discard changes?")) {
-                                event.preventDefault();
-                                return;
-                              }
-                              title.querySelector(".show").hidden = false;
-                              const edit = title.querySelector(".edit");
-                              edit.hidden = true;
-                            `}"
-                      >
-                        Cancel
-                      </button>
-                    </p>
-                  </form>
-                `
-              : html``}
             $${(() => {
               const content: HTML[] = [];
 
