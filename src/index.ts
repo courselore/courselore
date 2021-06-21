@@ -4284,7 +4284,6 @@ export default async function courselore(
                     name="name"
                     value="${res.locals.user.name}"
                     class="input--text"
-                    autocomplete="off"
                     required
                   />
                 </label>
@@ -4385,8 +4384,8 @@ export default async function courselore(
                     type="text"
                     name="name"
                     class="input--text"
-                    autocomplete="off"
                     required
+                    autocomplete="off"
                     autofocus
                   />
                 </label>
@@ -5318,6 +5317,7 @@ export default async function courselore(
                           name="type"
                           value="link"
                           required
+                          autocomplete="off"
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = true;
@@ -5336,6 +5336,7 @@ export default async function courselore(
                           name="type"
                           value="email"
                           required
+                          autocomplete="off"
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = false;
@@ -5440,6 +5441,7 @@ export default async function courselore(
                               name="role"
                               value="${role}"
                               required
+                              autocomplete="off"
                             />
                             <span>${lodash.capitalize(role)}</span>
                           </label>
@@ -5463,6 +5465,7 @@ export default async function courselore(
                           type="radio"
                           name="isExpiresAt"
                           required
+                          autocomplete="off"
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = true;
@@ -5480,6 +5483,7 @@ export default async function courselore(
                           type="radio"
                           name="isExpiresAt"
                           required
+                          autocomplete="off"
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = false;
@@ -5508,6 +5512,7 @@ export default async function courselore(
                         name="expiresAt"
                         value="${new Date().toISOString()}"
                         required
+                        autocomplete="off"
                         disabled
                         class="datetime input--text"
                         style="${css`
@@ -5809,6 +5814,7 @@ export default async function courselore(
                                         invitation.expiresAt ?? new Date()
                                       ).toISOString()}"
                                       required
+                                      autocomplete="off"
                                       class="input--text datetime"
                                       data-onvalidate="${javascript`
                                       if (new Date(this.value).getTime() <= Date.now())
@@ -7023,6 +7029,8 @@ export default async function courselore(
                           type="radio"
                           name="accentColor"
                           value="${accentColor}"
+                          required
+                          autocomplete="off"
                           $${accentColor === res.locals.enrollment.accentColor
                             ? html`checked`
                             : html``}
@@ -8067,8 +8075,8 @@ ${value}</textarea
                   name="title"
                   placeholder="Title"
                   required
-                  autofocus
                   autocomplete="off"
+                  autofocus
                   class="input--text"
                 />
                 <div
@@ -8100,7 +8108,11 @@ ${value}</textarea
                               }
                             `}"
                           >
-                            <input type="checkbox" name="isPinned" />
+                            <input
+                              type="checkbox"
+                              name="isPinned"
+                              autocomplete="off"
+                            />
                             <span
                               data-tippy-content="Pin"
                               data-tippy-theme="tooltip"
@@ -8156,6 +8168,7 @@ ${value}</textarea
                     <input
                       type="checkbox"
                       name="isQuestion"
+                      autocomplete="off"
                       $${res.locals.enrollment.role === "staff"
                         ? ``
                         : `checked`}
@@ -9134,6 +9147,7 @@ ${value}</textarea
                         $${res.locals.enrollment.role === "staff"
                           ? `checked`
                           : ``}
+                        autocomplete="off"
                         class="undecorated"
                         style="${css`
                           width: 1em;
