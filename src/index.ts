@@ -8540,146 +8540,134 @@ ${value}</textarea
             </title>
           `,
           body: html`
-            <div class="title">
+            <div
+              style="${css`
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: var(--space--4);
+              `}"
+            >
+              <h2>
+                <span class="heading--1">${res.locals.thread.title}</span>
+
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/threads/${res.locals.thread.reference}"
+                  class="button--inline button--inline--gray"
+                  style="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                  `}"
+                  >#${res.locals.thread.reference}</a
+                >
+              </h2>
+
               <div
                 style="${css`
                   display: flex;
-                  justify-content: space-between;
-                  align-items: baseline;
-                  gap: var(--space--4);
+                  gap: var(--space--2);
                 `}"
               >
-                <h2>
-                  <span class="heading--1">${res.locals.thread.title}</span>
-
-                  <a
-                    href="${app.locals.settings.url}/courses/${res.locals.course
-                      .reference}/threads/${res.locals.thread.reference}"
-                    class="button--inline button--inline--gray"
-                    style="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                    `}"
-                    >#${res.locals.thread.reference}</a
-                  >
-                </h2>
-
-                <div
-                  style="${css`
-                    display: flex;
-                    gap: var(--space--2);
-                  `}"
-                >
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <button
-                          data-tippy-content="${html`
-                            <form
-                              method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/threads/${res.locals
-                                .thread.reference}?_method=DELETE"
-                              style="${css`
-                                padding: var(--space--2) var(--space--0);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <p>
-                                Are you sure you want to remove this thread?
-                              </p>
-                              <p>
-                                <strong
-                                  style="${css`
-                                    font-weight: var(--font-weight--bold);
-                                  `}"
-                                >
-                                  You may not undo this action!
-                                </strong>
-                              </p>
-                              <button class="button button--rose">
-                                Remove Thread
-                              </button>
-                            </form>
-                          `}"
-                          data-tippy-theme="dropdown dropdown--rose"
-                          data-tippy-trigger="click"
-                          data-tippy-interactive="true"
-                          data-tippy-allowHTML="true"
-                          class="button--inline button--inline--gray button--inline--rose"
-                        >
-                          <span
-                            data-tippy-content="Remove Thread"
-                            data-tippy-theme="tooltip tooltip--rose"
-                            data-tippy-touch="false"
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <button
+                        data-tippy-content="${html`
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/threads/${res.locals
+                              .thread.reference}?_method=DELETE"
+                            style="${css`
+                              padding: var(--space--2) var(--space--0);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
                           >
-                            <i class="bi bi-trash"></i>
-                          </span>
-                        </button>
-                      `
-                    : html``}
-                  $${app.locals.helpers.mayEditThread(req, res)
-                    ? html`
-                        <button
+                            <p>Are you sure you want to remove this thread?</p>
+                            <p>
+                              <strong
+                                style="${css`
+                                  font-weight: var(--font-weight--bold);
+                                `}"
+                              >
+                                You may not undo this action!
+                              </strong>
+                            </p>
+                            <button class="button button--rose">
+                              Remove Thread
+                            </button>
+                          </form>
+                        `}"
+                        data-tippy-theme="dropdown dropdown--rose"
+                        data-tippy-trigger="click"
+                        data-tippy-interactive="true"
+                        data-tippy-allowHTML="true"
+                        class="button--inline button--inline--gray button--inline--rose"
+                      >
+                        <span
+                          data-tippy-content="Remove Thread"
+                          data-tippy-theme="tooltip tooltip--rose"
+                          data-tippy-touch="false"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </span>
+                      </button>
+                    `
+                  : html``}
+                $${app.locals.helpers.mayEditThread(req, res)
+                  ? html`
+                      <button class="button--inline button--inline--gray">
+                        <span
                           data-tippy-content="Edit Title"
                           data-tippy-theme="tooltip"
                           data-tippy-touch="false"
-                          data-bs-toggle="tooltip"
-                          class="button--inline button--inline--gray"
-                          onclick="${javascript`
-                            const title = this.closest(".title");
-                            title.querySelector(".show").hidden = true;
-                            const edit = title.querySelector(".edit");
-                            edit.hidden = false;
-                            const input = edit.querySelector('[name="title"]');
-                            input.focus();
-                            input.setSelectionRange(0, 0);
-                          `}"
                         >
                           <i class="bi bi-pencil"></i>
-                        </button>
-                      `
-                    : html``}
-                </div>
+                        </span>
+                      </button>
+                    `
+                  : html``}
               </div>
+            </div>
 
-              $${app.locals.helpers.mayEditThread(req, res)
-                ? html`
-                    <form
-                      method="POST"
-                      action="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/threads/${res.locals.thread
-                        .reference}?_method=PATCH"
-                      hidden
-                      class="edit"
+            $${app.locals.helpers.mayEditThread(req, res)
+              ? html`
+                  <form
+                    method="POST"
+                    action="${app.locals.settings.url}/courses/${res.locals
+                      .course.reference}/threads/${res.locals.thread
+                      .reference}?_method=PATCH"
+                    hidden
+                    class="edit"
+                    style="${css`
+                      display: flex;
+
+                      & > * + * {
+                        margin-left: 1rem;
+                      }
+                    `}"
+                  >
+                    <p
                       style="${css`
-                        display: flex;
-
-                        & > * + * {
-                          margin-left: 1rem;
-                        }
+                        flex: 1;
                       `}"
                     >
-                      <p
-                        style="${css`
-                          flex: 1;
-                        `}"
-                      >
-                        <input
-                          type="text"
-                          name="title"
-                          value="${res.locals.thread.title}"
-                          autocomplete="off"
-                          required
-                          class="full-width"
-                        />
-                      </p>
-                      <p>
-                        <button class="green">Change Title</button>
-                        <button
-                          type="reset"
-                          onclick="${javascript`
+                      <input
+                        type="text"
+                        name="title"
+                        value="${res.locals.thread.title}"
+                        autocomplete="off"
+                        required
+                        class="full-width"
+                      />
+                    </p>
+                    <p>
+                      <button class="green">Change Title</button>
+                      <button
+                        type="reset"
+                        onclick="${javascript`
                               const title = this.closest(".title");
                               if (isModified(title) && !confirm("Discard changes?")) {
                                 event.preventDefault();
@@ -8689,15 +8677,13 @@ ${value}</textarea
                               const edit = title.querySelector(".edit");
                               edit.hidden = true;
                             `}"
-                        >
-                          Cancel
-                        </button>
-                      </p>
-                    </form>
-                  `
-                : html``}
-            </div>
-
+                      >
+                        Cancel
+                      </button>
+                    </p>
+                  </form>
+                `
+              : html``}
             $${(() => {
               const content: HTML[] = [];
 
