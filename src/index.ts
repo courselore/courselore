@@ -1468,6 +1468,72 @@ export default async function courselore(
                 }
 
                 .text {
+                  color: var(--color--primary-gray--700);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary-gray--400);
+                  }
+
+                  h1,
+                  h2,
+                  h3,
+                  h4,
+                  h5,
+                  h6 {
+                    font-size: var(--font-size--base);
+                    line-height: var(--line-height--base);
+                    font-weight: var(--font-weight--bold);
+                    color: var(--color--primary-gray--800);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--300);
+                    }
+                    &:not(:first-child) {
+                      margin-top: var(--space--6);
+                    }
+                    &::before {
+                      color: var(--color--primary-gray--500);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--600);
+                      }
+                      margin-right: var(--space--2);
+                    }
+                  }
+                  h1::before {
+                    content: "#";
+                  }
+                  h2::before {
+                    content: "##";
+                  }
+                  h3::before {
+                    content: "###";
+                  }
+                  h4::before {
+                    content: "####";
+                  }
+                  h5::before {
+                    content: "#####";
+                  }
+                  h6::before {
+                    content: "######";
+                  }
+
+                  b,
+                  strong {
+                    font-weight: var(--font-weight--bold);
+                    color: var(--color--primary-gray--800);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--300);
+                    }
+                  }
+
+                  i,
+                  em {
+                    font-style: italic;
+                    color: var(--color--primary-gray--800);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary-gray--300);
+                    }
+                  }
+
                   a {
                     text-decoration: underline;
                     color: var(--color--primary--600);
@@ -1491,11 +1557,21 @@ export default async function courselore(
                     transition: color var(--transition-duration);
                   }
 
-                  strong {
-                    font-weight: var(--font-weight--bold);
-                    color: var(--color--primary-gray--900);
+                  pre {
+                    background-color: var(--color--white);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary-gray--50);
+                      background-color: var(--color--primary-gray--700);
+                    }
+                    padding: var(--space--4);
+                    border-radius: var(--border-radius--xl);
+                  }
+
+                  hr {
+                    margin: var(--space--4) var(--space--0);
+                    border-top: var(--border-width--1) solid
+                      var(--color--primary-gray--300);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--primary-gray--600);
                     }
                   }
 
@@ -1520,16 +1596,6 @@ export default async function courselore(
                         }
                       }
                     }
-                  }
-
-                  pre {
-                    padding: var(--space--4);
-                    border: var(--border-width--1) solid
-                      var(--color--primary--200);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--primary--900);
-                    }
-                    border-radius: var(--border-radius--xl);
                   }
                 }
 
