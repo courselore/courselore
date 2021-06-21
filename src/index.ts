@@ -1774,7 +1774,9 @@ export default async function courselore(
               const weeks = 7 * days;
               const months = 30 * days;
               const years = 365 * days;
-              for (const element of document.querySelectorAll("time")) {
+              for (const element of document.querySelectorAll(
+                ".time--relative"
+              )) {
                 if (element.getAttribute("datetime") === null) {
                   const datetime = element.textContent.trim();
                   element.setAttribute("datetime", datetime);
@@ -5865,7 +5867,7 @@ export default async function courselore(
                                       <div
                                         data-tippy-content="${html`
                                           Used
-                                          <time>
+                                          <time class="time--relative">
                                             ${new Date(
                                               invitation.usedAt!
                                             ).toISOString()}
@@ -5904,7 +5906,7 @@ export default async function courselore(
                                             <i class="bi bi-calendar-x"></i>
                                             <span>
                                               Expired
-                                              <time>
+                                              <time class="time--relative">
                                                 ${new Date(
                                                   invitation.expiresAt!
                                                 ).toISOString()}
@@ -6065,7 +6067,7 @@ export default async function courselore(
                                             <i class="bi bi-calendar-plus"></i>
                                             <span>
                                               Expires
-                                              <time>
+                                              <time class="time--relative">
                                                 ${new Date(
                                                   invitation.expiresAt
                                                 ).toISOString()}
@@ -7582,14 +7584,16 @@ export default async function courselore(
                     <div>
                       <div>
                         #${thread.reference} created
-                        <time>${thread.createdAt}</time> by
-                        ${thread.authorEnrollment.user.name}
+                        <time class="time--relative">${thread.createdAt}</time>
+                        by ${thread.authorEnrollment.user.name}
                       </div>
                       $${thread.updatedAt !== thread.createdAt
                         ? html`
                             <div>
                               and last updated
-                              <time>${thread.updatedAt}</time>
+                              <time class="time--relative">
+                                ${thread.updatedAt}
+                              </time>
                             </div>
                           `
                         : html``}
@@ -8823,11 +8827,13 @@ ${value}</textarea
                         ${post.authorEnrollment.user.name}
                       </span>
                       said
-                      <time>${post.createdAt}</time>
+                      <time class="time--relative">${post.createdAt}</time>
                       $${post.updatedAt !== post.createdAt
                         ? html`
                             and last edited
-                            <time>${post.updatedAt}</time>
+                            <time class="time--relative">
+                              ${post.updatedAt}
+                            </time>
                           `
                         : html``}
                       <a
@@ -9652,6 +9658,7 @@ ${value}</textarea
                             >
                               ${email.to} ·
                               <time
+                                class="time--relative"
                                 style="${css`
                                   display: inline-block;
                                 `}"
