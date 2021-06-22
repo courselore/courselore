@@ -1644,7 +1644,8 @@ export default async function courselore(
                   figure,
                   dl,
                   details,
-                  .rehype-shiki {
+                  .rehype-shiki,
+                  .math-display {
                     &:not(:first-child) {
                       margin-top: var(--space--4);
                     }
