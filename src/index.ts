@@ -1627,25 +1627,57 @@ export default async function courselore(
                   }
 
                   p,
-                  ul,
-                  .rehype-shiki {
+                  ol,
+                  ul {
                     &:not(:first-child) {
                       margin-top: var(--space--2);
                     }
                   }
 
-                  ul {
-                    padding-left: var(--space--4);
+                  pre,
+                  div,
+                  table,
+                  .rehype-shiki {
+                    &:not(:first-child) {
+                      margin-top: var(--space--4);
+                    }
+                  }
 
+                  ol {
+                    padding-left: var(--space--8);
                     & > li {
-                      list-style: disc;
-
+                      list-style: decimal;
                       &::marker {
                         color: var(--color--primary-gray--500);
                         @media (prefers-color-scheme: dark) {
                           color: var(--color--primary-gray--500);
                         }
                       }
+                    }
+                  }
+
+                  ul {
+                    padding-left: var(--space--8);
+                    & > li {
+                      list-style: disc;
+                      &::marker {
+                        color: var(--color--primary-gray--500);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--primary-gray--500);
+                        }
+                      }
+                    }
+                  }
+
+                  table {
+                    thead tr {
+                      font-weight: var(--font-weight--bold);
+                      color: var(--color--primary-gray--800);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--300);
+                      }
+                      border-bottom: var(--border-width--1) solid
+                        var(--color--primary-gray--300);
                     }
                   }
                 }
@@ -1777,6 +1809,7 @@ export default async function courselore(
             left: 0;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
           `}"
         >
           $${app.locals.settings.demonstration

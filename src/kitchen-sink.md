@@ -162,6 +162,26 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol
   <li>Stir both mixtures together.</li>
   <li>Fill muffin tray 3/4 full.</li>
   <li>Bake for 20 minutes.</li>
+  <li>Mix flour, baking powder, sugar, and salt.</li>
+  <li>In another bowl, mix eggs, milk, and oil.</li>
+  <li>Stir both mixtures together.</li>
+  <li>Fill muffin tray 3/4 full.</li>
+  <li>Bake for 20 minutes.</li>
+  <li>Mix flour, baking powder, sugar, and salt.</li>
+  <li>In another bowl, mix eggs, milk, and oil.</li>
+  <li>Stir both mixtures together.</li>
+  <li>Fill muffin tray 3/4 full.</li>
+  <li>Bake for 20 minutes.</li>
+  <li>Mix flour, baking powder, sugar, and salt.</li>
+  <li>In another bowl, mix eggs, milk, and oil.</li>
+  <li>Stir both mixtures together.</li>
+  <li>Fill muffin tray 3/4 full.</li>
+  <li>Bake for 20 minutes.</li>
+  <li>Mix flour, baking powder, sugar, and salt.</li>
+  <li>In another bowl, mix eggs, milk, and oil.</li>
+  <li>Stir both mixtures together.</li>
+  <li>Fill muffin tray 3/4 full.</li>
+  <li>Bake for 20 minutes.</li>
 </ol>
 
 ---
