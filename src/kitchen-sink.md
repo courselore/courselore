@@ -319,14 +319,15 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd
 <p>Cryptids of Cornwall:</p>
 
 <dl>
-    <dt>Beast of Bodmin</dt>
-    <dd>A large feline inhabiting Bodmin Moor.</dd>
 
-    <dt>Morgawr</dt>
-    <dd>A sea serpent.</dd>
+<dt>Beast of Bodmin</dt>
+<dd>A large feline inhabiting Bodmin Moor.</dd>
 
-    <dt>Owlman</dt>
-    <dd>A giant owl-like creature.</dd>
+<dt>Morgawr</dt>
+<dd>A sea serpent.</dd>
+
+<dt>Owlman</dt>
+<dd>A giant owl-like creature.</dd>
 
 </dl>
 
@@ -552,12 +553,7 @@ shiki
 
 https://katex.org
 
-$$
-% \f is defined as #1f(#2) using the macro
-\f\relax{x} = \int_{-\infty}^\infty
-    \f\hat\xi\,e^{2 \pi i \xi x}
-    \,d\xi
-$$
+$\displaystyle \frac{1}{\Bigl(\sqrt{\phi \sqrt{5}}-\phi\Bigr) e^{\frac25 \pi}} = 1+\frac{e^{-2\pi}} {1+\frac{e^{-4\pi}} {1+\frac{e^{-6\pi}} {1+\frac{e^{-8\pi}} {1+\cdots} } } }$
 
 ---
 
@@ -637,3 +633,88 @@ $$
   "itemProp"
 ]
 ```
+
+---
+
+# CommonMark
+
+> Block quote.
+
+Some _emphasis_, **importance**, and `code`.
+
+---
+
+# GitHub Flavored Markdown (GFM)
+
+## Autolink literals
+
+www.example.com, https://example.com, and contact@example.com.
+
+## Strikethrough
+
+~one~ or ~~two~~ tildes.
+
+## Table
+
+| a   | b   |   c |  d  |
+| --- | :-- | --: | :-: |
+
+## Tasklist
+
+- [ ] Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus cupiditate distinctio similique sequi velit omnis tenetur aut vitae sapiente quod a repudiandae porro veniam soluta doloribus quia, dolorum, reprehenderit quisquam.
+- [x] Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, voluptatem at architecto excepturi officia, dolores quibusdam fugiat eligendi veniam perspiciatis, nostrum laudantium autem quasi sequi explicabo molestias ea minima iusto.
+
+---
+
+# HTML
+
+<details class="note">
+
+A mix of _Markdown_ and <em>HTML</em>.
+
+</details>
+
+---
+
+# Cross-Site Scripting (XSS)
+
+👍<script>document.write("💩");</script>🙌
+
+---
+
+# Syntax highlighting (Shiki)
+
+```javascript
+const shiki = require("shiki");
+
+shiki
+  .getHighlighter({
+    theme: "nord",
+  })
+  .then((highlighter) => {
+    console.log(highlighter.codeToHtml(`console.log('shiki');`, "js"));
+  });
+```
+
+---
+
+# Mathematics (KaTeX)
+
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+equation.
+
+$$
+L = \frac{1}{2} \rho v^2 S C_L
+$$
+
+A raw dollar sign: \$
+
+$$
+\invalidMacro
+$$
+
+Prevent large width/height visual affronts:
+
+$$
+\rule{500em}{500em}
+$$

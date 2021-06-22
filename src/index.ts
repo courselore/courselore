@@ -1569,7 +1569,9 @@ export default async function courselore(
                   }
 
                   code,
-                  tt {
+                  tt,
+                  kbd,
+                  samp {
                     font-family: var(--font-family--monospace);
                   }
 
@@ -1628,7 +1630,8 @@ export default async function courselore(
 
                   p,
                   ol,
-                  ul {
+                  ul,
+                  dt {
                     &:not(:first-child) {
                       margin-top: var(--space--2);
                     }
@@ -1637,6 +1640,10 @@ export default async function courselore(
                   pre,
                   div,
                   table,
+                  blockquote,
+                  figure,
+                  dl,
+                  details,
                   .rehype-shiki {
                     &:not(:first-child) {
                       margin-top: var(--space--4);
@@ -1670,14 +1677,162 @@ export default async function courselore(
                   }
 
                   table {
-                    thead tr {
+                    border-collapse: collapse;
+                    caption {
+                      font-style: italic;
+                    }
+                    th,
+                    td {
+                      padding: var(--space--1) var(--space--3);
+                      border-bottom: var(--border-width--1) solid
+                        var(--color--primary-gray--300);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--primary-gray--700);
+                      }
+                    }
+                    th {
                       font-weight: var(--font-weight--bold);
                       color: var(--color--primary-gray--800);
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--primary-gray--300);
                       }
+                    }
+                  }
+
+                  blockquote {
+                    font-style: italic;
+                    padding-left: var(--space--8);
+                    position: relative;
+                    z-index: 0;
+                    &::before {
+                      content: "“";
+                      font-size: var(--font-size--7xl);
+                      line-height: var(--line-height--7xl);
+                      color: var(--color--primary-gray--300);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--800);
+                      }
+                      display: block;
+                      position: absolute;
+                      left: calc(-1 * var(--space--2));
+                      top: calc(-1 * var(--space--3));
+                      z-index: -1;
+                    }
+                  }
+
+                  dl {
+                    dt {
+                      font-weight: var(--font-weight--bold);
+                      color: var(--color--primary-gray--800);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--300);
+                      }
+                    }
+                    dd {
+                      padding-left: var(--space--4);
+                    }
+                  }
+
+                  var {
+                    font-style: italic;
+                  }
+
+                  s,
+                  strike {
+                    text-decoration: line-through;
+                  }
+
+                  details {
+                    padding: var(--space--2) var(--space--4);
+                    background-color: var(--color--white);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--primary-gray--700);
+                    }
+                    border-radius: var(--border-radius--md);
+                    summary {
+                      cursor: pointer;
+                      &::before {
+                        content: "\\f275";
+                        font-family: bootstrap-icons !important;
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                        margin-right: var(--space--2);
+                      }
+                    }
+                    &[open] > summary {
+                      padding-bottom: var(--space--4);
                       border-bottom: var(--border-width--1) solid
                         var(--color--primary-gray--300);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--primary-gray--700);
+                      }
+                      margin-bottom: var(--space--4);
+                      &::before {
+                        content: "\\f273";
+                      }
+                    }
+                  }
+
+                  figure {
+                    figcaption {
+                      font-style: italic;
+                    }
+                  }
+
+                  abbr {
+                    text-decoration: underline dotted;
+                    cursor: help;
+                  }
+
+                  dfn {
+                    font-weight: var(--font-weight--bold);
+                  }
+
+                  mark {
+                    color: var(--color--yellow--900);
+                    background-color: var(--color--yellow--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--yellow--100);
+                      background-color: var(--color--yellow--800);
+                    }
+                  }
+
+                  small {
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                  }
+
+                  input[type="checkbox"] {
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    color: transparent;
+                    width: var(--space--4);
+                    height: var(--space--4);
+                    border: var(--border-width--1) solid
+                      var(--color--primary-gray--300);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--primary-gray--600);
+                    }
+                    border-radius: var(--border-radius);
+                    margin-right: var(--space--0-5);
+                    position: relative;
+                    bottom: calc(-1 * var(--space--0-5));
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                    &::before {
+                      content: "\\f633";
+                      font-family: bootstrap-icons !important;
+                    }
+                    &:checked {
+                      color: var(--color--primary-gray--50);
+                      background-color: var(--color--primary--700);
+                      border-color: var(--color--primary--700);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary-gray--200);
+                        background-color: var(--color--primary--800);
+                        border-color: var(--color--primary--800);
+                      }
                     }
                   }
                 }
@@ -8963,7 +9118,7 @@ ${value}</textarea
                 <div
                   style="${css`
                     padding-bottom: var(--space--4);
-                    border-bottom: var(--border-width--1) solid
+                    border-bottom: var(--border-width--4) solid
                       var(--color--primary-gray--300);
                     @media (prefers-color-scheme: dark) {
                       border-color: var(--color--primary-gray--700);
