@@ -9128,7 +9128,7 @@ ${value}</textarea
                     @media (prefers-color-scheme: dark) {
                       border-color: var(--color--primary-gray--700);
                     }
-                    margin-bottom: var(--space--4);
+                    margin: var(--space--4) var(--space--0);
                   `}"
                 >
                   <div>
