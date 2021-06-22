@@ -14,6 +14,7 @@ import { html, HTML } from "@leafac/html";
 type CSS = string;
 import css from "tagged-template-noop";
 import javascript from "tagged-template-noop";
+import markdown from "tagged-template-noop";
 import { JSDOM } from "jsdom";
 import murmurHash2 from "@emotion/hash";
 import postcss from "postcss";
@@ -7755,6 +7756,11 @@ export default async function courselore(
   }
   app.locals.layouts.thread = ({ req, res, head, body }) => {
     const sidebar = html`
+      <!--
+<button class="button--inline">
+            <i class="bi bi-share"></i>
+          </button>
+    -->
       <div
         style="${css`
           color: var(--color--primary--200);
@@ -8208,10 +8214,96 @@ export default async function courselore(
           style="${css`
             padding: var(--space--2) var(--space--4);
             display: flex;
-            justify-content: flex-end;
-            gap: var(--space--2);
+            gap: var(--space--4);
+            overflow-x: auto;
+            & > * {
+              display: flex;
+              gap: var(--space--2);
+            }
           `}"
         >
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-type-h1"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-type-h2"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-type-h3"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-type-bold"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-type-italic"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-link"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-list-ul"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-list-ol"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-ui-checks"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-chat-left-quote"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-table"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-chevron-bar-expand"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-code"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-code-square"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-calculator"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-calculator-fill"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-at"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-hash"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-image"></i>
+            </button>
+            <button class="button--inline">
+              <i class="bi bi-paperclip"></i>
+            </button>
+          </div>
+          <div>
+            <button class="button--inline">
+              <i class="bi bi-info-circle"></i>
+            </button>
+          </div>
+          <!--
           <a
             href="https://guides.github.com/features/mastering-markdown/"
             target="_blank"
@@ -8219,6 +8311,14 @@ export default async function courselore(
           >
             <i class="bi bi-markdown"></i>
           </a>
+
+          <i class="bi bi-table"></i>
+
+            $${app.locals.partials.textProcessor(
+            // prettier-ignore
+            markdown`$\\LaTeX$`
+          )}
+          -->
         </div>
         <textarea
           class="input--text"
