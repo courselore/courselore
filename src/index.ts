@@ -1836,6 +1836,10 @@ export default async function courselore(
                       }
                     }
                   }
+
+                  .katex {
+                    overflow: auto;
+                  }
                 }
 
                 .dark {
