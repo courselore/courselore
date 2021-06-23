@@ -1268,24 +1268,41 @@ export default async function courselore(
                     padding: var(--space--1) var(--space--3);
                   }
 
+                  .keyboard-shortcut {
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                  }
+
                   &[data-theme~="tooltip"] {
                     color: var(--color--primary--50);
                     --background-color: var(--color--primary--900);
                     --border-color: var(--color--primary--50);
+                    .keyboard-shortcut {
+                      color: var(--color--primary--200);
+                    }
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--900);
                       --background-color: var(--color--primary--200);
                       --border-color: var(--color--primary--900);
+                      .keyboard-shortcut {
+                        color: var(--color--primary--700);
+                      }
                     }
 
                     &[data-theme~="tooltip--rose"] {
                       color: var(--color--rose--50);
                       --background-color: var(--color--rose--900);
                       --border-color: var(--color--rose--50);
+                      .keyboard-shortcut {
+                        color: var(--color--rose--200);
+                      }
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--rose--900);
                         --background-color: var(--color--rose--200);
                         --border-color: var(--color--rose--900);
+                        .keyboard-shortcut {
+                          color: var(--color--rose--700);
+                        }
                       }
                     }
                   }
@@ -8226,9 +8243,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Heading Level 1"
+              data-tippy-content="${html`
+                Heading Level 1
+                <span class="keyboard-shortcut">
+                  (Ctrl+1 / <i class="bi bi-command"></i>1)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8245,9 +8268,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Heading Level 2"
+              data-tippy-content="${html`
+                Heading Level 2
+                <span class="keyboard-shortcut">
+                  (Ctrl+2 / <i class="bi bi-command"></i>2)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8264,9 +8293,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Heading Level 3"
+              data-tippy-content="${html`
+                Heading Level 3
+                <span class="keyboard-shortcut">
+                  (Ctrl+3 / <i class="bi bi-command"></i>3)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8285,9 +8320,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Bold"
+              data-tippy-content="${html`
+                Bold
+                <span class="keyboard-shortcut">
+                  (Ctrl+B / <i class="bi bi-command"></i>B)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8304,9 +8345,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Italic"
+              data-tippy-content="${html`
+                Italic
+                <span class="keyboard-shortcut">
+                  (Ctrl+I / <i class="bi bi-command"></i>I)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8323,9 +8370,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Link"
+              data-tippy-content="${html`
+                Link
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8344,9 +8397,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Unordered List"
+              data-tippy-content="${html`
+                Unordered List
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8363,9 +8422,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Ordered List"
+              data-tippy-content="${html`
+                Ordered List
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8382,9 +8447,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Task List"
+              data-tippy-content="${html`
+                Task List
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8403,9 +8474,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Quote"
+              data-tippy-content="${html`
+                Quote
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8422,9 +8499,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Table"
+              data-tippy-content="${html`
+                Table
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8442,9 +8525,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Disclosure"
+              data-tippy-content="${html`
+                Disclosure
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8463,9 +8552,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Inline Code"
+              data-tippy-content="${html`
+                Inline Code
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8482,9 +8577,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Code Block"
+              data-tippy-content="${html`
+                Code Block
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8503,9 +8604,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Inline Mathematics"
+              data-tippy-content="${html`
+                Inline Mathematics
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8522,9 +8629,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Mathematics Block"
+              data-tippy-content="${html`
+                Mathematics Block
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 const content = this.closest(".text-editor").querySelector('[name="content"]');
@@ -8543,9 +8656,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Mention User"
+              data-tippy-content="${html`
+                Mention User
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 alert("TODO");
@@ -8555,9 +8674,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Cite Thread or Post"
+              data-tippy-content="${html`
+                Cite Thread or Post
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 alert("TODO");
@@ -8569,9 +8694,15 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              data-tippy-content="Image"
+              data-tippy-content="${html`
+                Image
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 alert("TODO");
@@ -8581,9 +8712,15 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              data-tippy-content="Attachment"
+              data-tippy-content="${html`
+                Attachment
+                <span class="keyboard-shortcut">
+                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                </span>
+              `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
+              data-tippy-allowHTML="true"
               class="button--inline"
               onclick="${javascript`
                 alert("TODO");
@@ -8618,9 +8755,15 @@ export default async function courselore(
               class="button--inline"
             >
               <span
-                data-tippy-content="Help"
+                data-tippy-content="${html`
+                  Help
+                  <span class="keyboard-shortcut">
+                    (Ctrl+K / <i class="bi bi-command"></i>K)
+                  </span>
+                `}"
                 data-tippy-theme="tooltip"
                 data-tippy-touch="false"
+                data-tippy-allowHTML="true"
               >
                 <i class="bi bi-info-circle"></i>
               </span>
@@ -8929,6 +9072,15 @@ ${value}</textarea
 
                 <div>
                   <button
+                    data-tippy-content="${html`
+                      <span class="keyboard-shortcut">
+                        Ctrl+Enter / <i class="bi bi-command"></i
+                        ><i class="bi bi-arrow-return-left"></i>
+                      </span>
+                    `}"
+                    data-tippy-theme="tooltip"
+                    data-tippy-touch="false"
+                    data-tippy-allowHTML="true"
                     class="button button--primary"
                     style="${css`
                       @media (max-width: 400px) {
@@ -9821,7 +9973,21 @@ ${value}</textarea
                             >
                               Cancel
                             </button>
-                            <button class="green">Change Post</button>
+                            <button
+                              data-tippy-content="${html`
+                                <span class="keyboard-shortcut">
+                                  Ctrl+Enter /
+                                  <i class="bi bi-command"></i
+                                  ><i class="bi bi-arrow-return-left"></i>
+                                </span>
+                              `}"
+                              data-tippy-theme="tooltip"
+                              data-tippy-touch="false"
+                              data-tippy-allowHTML="true"
+                              class="green"
+                            >
+                              Change Post
+                            </button>
                           </p>
                         </form>
                       `
@@ -9947,6 +10113,16 @@ ${value}</textarea
 
               <div>
                 <button
+                  data-tippy-content="${html`
+                    <span class="keyboard-shortcut">
+                      Ctrl+Enter /
+                      <i class="bi bi-command"></i
+                      ><i class="bi bi-arrow-return-left"></i>
+                    </span>
+                  `}"
+                  data-tippy-theme="tooltip"
+                  data-tippy-touch="false"
+                  data-tippy-allowHTML="true"
                   class="button button--primary"
                   style="${css`
                     @media (max-width: 400px) {
