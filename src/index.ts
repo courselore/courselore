@@ -8246,7 +8246,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Heading Level 1
                 <span class="keyboard-shortcut">
-                  (Ctrl+1 / <i class="bi bi-command"></i>1)
+                  (Ctrl+1 or <i class="bi bi-command"></i>1)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8271,7 +8271,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Heading Level 2
                 <span class="keyboard-shortcut">
-                  (Ctrl+2 / <i class="bi bi-command"></i>2)
+                  (Ctrl+2 or <i class="bi bi-command"></i>2)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8296,7 +8296,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Heading Level 3
                 <span class="keyboard-shortcut">
-                  (Ctrl+3 / <i class="bi bi-command"></i>3)
+                  (Ctrl+3 or <i class="bi bi-command"></i>3)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8323,7 +8323,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Bold
                 <span class="keyboard-shortcut">
-                  (Ctrl+B / <i class="bi bi-command"></i>B)
+                  (Ctrl+B or <i class="bi bi-command"></i>B)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8348,7 +8348,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Italic
                 <span class="keyboard-shortcut">
-                  (Ctrl+I / <i class="bi bi-command"></i>I)
+                  (Ctrl+I or <i class="bi bi-command"></i>I)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8373,7 +8373,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Link
                 <span class="keyboard-shortcut">
-                  (Ctrl+K / <i class="bi bi-command"></i>K)
+                  (Ctrl+K or <i class="bi bi-command"></i>K)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8400,7 +8400,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Unordered List
                 <span class="keyboard-shortcut">
-                  (Ctrl+U / <i class="bi bi-command"></i>U)
+                  (Ctrl+U or <i class="bi bi-command"></i>U)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8425,7 +8425,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Ordered List
                 <span class="keyboard-shortcut">
-                  (Ctrl+O / <i class="bi bi-command"></i>O)
+                  (Ctrl+O or <i class="bi bi-command"></i>O)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8450,7 +8450,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Task List
                 <span class="keyboard-shortcut">
-                  (Ctrl+Y / <i class="bi bi-command"></i>Y)
+                  (Ctrl+Y or <i class="bi bi-command"></i>Y)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8477,7 +8477,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Quote
                 <span class="keyboard-shortcut">
-                  (Ctrl+' / <i class="bi bi-command"></i>')
+                  (Ctrl+' or <i class="bi bi-command"></i>')
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8502,7 +8502,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Table
                 <span class="keyboard-shortcut">
-                  (Ctrl+H / <i class="bi bi-command"></i>H)
+                  (Ctrl+H or <i class="bi bi-command"></i>H)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8528,7 +8528,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Disclosure
                 <span class="keyboard-shortcut">
-                  (Ctrl+D / <i class="bi bi-command"></i>D)
+                  (Ctrl+D or <i class="bi bi-command"></i>D)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8555,7 +8555,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Inline Code
                 <span class="keyboard-shortcut">
-                  (Ctrl+[ / <i class="bi bi-command"></i>[)
+                  (Ctrl+[ or <i class="bi bi-command"></i>[)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8580,7 +8580,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Code Block
                 <span class="keyboard-shortcut">
-                  (Ctrl+] / <i class="bi bi-command"></i>])
+                  (Ctrl+] or <i class="bi bi-command"></i>])
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8607,7 +8607,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Inline Mathematics
                 <span class="keyboard-shortcut">
-                  (Ctrl+M / <i class="bi bi-command"></i>M)
+                  (Ctrl+M or <i class="bi bi-command"></i>M)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8632,7 +8632,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Mathematics Block
                 <span class="keyboard-shortcut">
-                  (Ctrl+L / <i class="bi bi-command"></i>L)
+                  (Ctrl+L or <i class="bi bi-command"></i>L)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8659,7 +8659,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Mention User
                 <span class="keyboard-shortcut">
-                  (Ctrl+, / <i class="bi bi-command"></i>,)
+                  (Ctrl+, or <i class="bi bi-command"></i>,)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8677,7 +8677,7 @@ export default async function courselore(
               data-tippy-content="${html`
                 Cite Thread or Post
                 <span class="keyboard-shortcut">
-                  (Ctrl+. / <i class="bi bi-command"></i>.)
+                  (Ctrl+. or <i class="bi bi-command"></i>.)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8697,8 +8697,8 @@ export default async function courselore(
               data-tippy-content="${html`
                 Image
                 <span class="keyboard-shortcut">
-                  (Ctrl+; / <i class="bi bi-command"></i>;) (You may also drag
-                  and drop or copy and paste)
+                  (Ctrl+; or <i class="bi bi-command"></i>; or drag-and-drop or
+                  copy-and-paste)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8716,8 +8716,8 @@ export default async function courselore(
               data-tippy-content="${html`
                 Attachment
                 <span class="keyboard-shortcut">
-                  (Ctrl+P / <i class="bi bi-command"></i>P) (You may also drag
-                  and drop or copy and paste)
+                  (Ctrl+P or <i class="bi bi-command"></i>P or drag-and-drop or
+                  copy-and-paste)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -9171,7 +9171,7 @@ ${value}</textarea
                   <button
                     data-tippy-content="${html`
                       <span class="keyboard-shortcut">
-                        Ctrl+Enter / <i class="bi bi-command"></i
+                        Ctrl+Enter or <i class="bi bi-command"></i
                         ><i class="bi bi-arrow-return-left"></i>
                       </span>
                     `}"
@@ -10073,7 +10073,7 @@ ${value}</textarea
                             <button
                               data-tippy-content="${html`
                                 <span class="keyboard-shortcut">
-                                  Ctrl+Enter /
+                                  Ctrl+Enter or
                                   <i class="bi bi-command"></i
                                   ><i class="bi bi-arrow-return-left"></i>
                                 </span>
@@ -10212,7 +10212,7 @@ ${value}</textarea
                 <button
                   data-tippy-content="${html`
                     <span class="keyboard-shortcut">
-                      Ctrl+Enter /
+                      Ctrl+Enter or
                       <i class="bi bi-command"></i
                       ><i class="bi bi-arrow-return-left"></i>
                     </span>
