@@ -1953,6 +1953,20 @@ export default async function courselore(
               MicroModal.init({ disableScroll: true, disableFocus: true });
             });
           </script>
+
+          <script type="module">
+            import fitTextarea from "${app.locals.settings
+              .url}/node_modules/fit-textarea/index.js";
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const element of document.querySelectorAll(
+                ".fit-textarea"
+              )) {
+                if (element.dataset.fitTextarea) continue;
+                element.dataset.fitTextarea = true;
+                fitTextarea.watch(element);
+              }
+            });
+          </script>
         </body>
       </html>
     `.trim();
@@ -5695,9 +5709,8 @@ export default async function courselore(
                         placeholder="Emails"
                         required
                         disabled
-                        class="input--text"
+                        class="input--text fit-textarea"
                         style="${css`
-                          min-height: calc(6 * var(--line-height--sm));
                           padding-right: var(--space--10);
                         `}"
                         data-onvalidate="${javascript`
@@ -8767,7 +8780,7 @@ export default async function courselore(
           </div>
         </div>
         <textarea
-          class="input--text"
+          class="input--text fit-textarea"
           name="content"
           required
           onkeydown="${javascript`
@@ -8876,9 +8889,6 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".tool--attachment").click();
               return;
             }
-          `}"
-          style="${css`
-            min-height: calc(6 * var(--line-height--sm));
           `}"
         >
 ${value}</textarea
