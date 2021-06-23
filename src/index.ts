@@ -14,7 +14,6 @@ import { html, HTML } from "@leafac/html";
 type CSS = string;
 import css from "tagged-template-noop";
 import javascript from "tagged-template-noop";
-import markdown from "tagged-template-noop";
 import { JSDOM } from "jsdom";
 import murmurHash2 from "@emotion/hash";
 import postcss from "postcss";
@@ -1577,6 +1576,7 @@ export default async function courselore(
                   }
 
                   del {
+                    text-decoration: line-through;
                     color: var(--color--rose--900);
                     background-color: var(--color--rose--200);
                     @media (prefers-color-scheme: dark) {
@@ -8212,10 +8212,11 @@ export default async function courselore(
       >
         <div
           style="${css`
-            padding: var(--space--2) var(--space--4);
+            padding: var(--space--2) var(--space--0);
+            margin: var(--space--0) var(--space--4);
+            overflow-x: auto;
             display: flex;
             gap: var(--space--4);
-            overflow-x: auto;
             & > * {
               display: flex;
               gap: var(--space--2);
@@ -8223,102 +8224,245 @@ export default async function courselore(
           `}"
         >
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Heading Level 1"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "# ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
+            >
               <i class="bi bi-type-h1"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Heading Level 2"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-type-h2"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Heading Level 3"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-type-h3"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Bold"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-type-bold"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Italic"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-type-italic"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Link"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-link"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Unordered List"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-list-ul"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Ordered List"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-list-ol"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Task List"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-ui-checks"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Quote"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-chat-left-quote"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Table"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-table"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Disclosure"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-chevron-bar-expand"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Inline Code"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-code"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Code Block"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-code-square"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Inline Mathematics"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-calculator"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Mathematics Block"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-calculator-fill"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Mention User"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-at"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Cite Thread or Post"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-hash"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Image"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-image"></i>
             </button>
-            <button class="button--inline">
+            <button
+              type="button"
+              data-tippy-content="Attachment"
+              data-tippy-theme="tooltip"
+              data-tippy-touch="false"
+              class="button--inline"
+            >
               <i class="bi bi-paperclip"></i>
             </button>
           </div>
           <div>
-            <button class="button--inline">
-              <i class="bi bi-info-circle"></i>
+            <button
+              type="button"
+              data-tippy-content="${html`
+                <p class="text">
+                  You may style text with
+                  <a
+                    href="https://guides.github.com/features/mastering-markdown/"
+                    target="_blank"
+                    >GitHub Flavored Markdown</a
+                  >
+                  and include mathematical formulas with
+                  <a
+                    href="https://katex.org/docs/supported.html"
+                    target="_blank"
+                    >LaTeX</a
+                  >.
+                </p>
+              `}"
+              data-tippy-theme="dropdown"
+              data-tippy-trigger="click"
+              data-tippy-interactive="true"
+              data-tippy-allowHTML="true"
+              class="button--inline"
+            >
+              <span
+                data-tippy-content="Help"
+                data-tippy-theme="tooltip"
+                data-tippy-touch="false"
+              >
+                <i class="bi bi-info-circle"></i>
+              </span>
             </button>
           </div>
-          <!--
-          <a
-            href="https://guides.github.com/features/mastering-markdown/"
-            target="_blank"
-            class="button--inline"
-          >
-            <i class="bi bi-markdown"></i>
-          </a>
-
-          <i class="bi bi-table"></i>
-
-            $${app.locals.partials.textProcessor(
-            // prettier-ignore
-            markdown`$\\LaTeX$`
-          )}
-          -->
         </div>
         <textarea
           class="input--text"
