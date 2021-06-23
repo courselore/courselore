@@ -8249,6 +8249,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "## ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-type-h2"></i>
             </button>
@@ -8258,6 +8268,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "### ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-type-h3"></i>
             </button>
@@ -8269,6 +8289,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = "**";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-type-bold"></i>
             </button>
@@ -8278,6 +8308,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = "_";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-type-italic"></i>
             </button>
@@ -8287,6 +8327,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = "[";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "](https://example.com)" + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-link"></i>
             </button>
@@ -8298,6 +8348,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "- ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-list-ul"></i>
             </button>
@@ -8307,6 +8367,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "1. ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-list-ol"></i>
             </button>
@@ -8316,6 +8386,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-ui-checks"></i>
             </button>
@@ -8327,6 +8407,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "> ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-chat-left-quote"></i>
             </button>
@@ -8336,6 +8426,17 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "| ";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                const gapLength = selectionEnd - selectionStart + 2;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n" + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-table"></i>
             </button>
@@ -8345,6 +8446,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "</summary>\\n\\nContent\\n\\n</details>\\n\\n" + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-chevron-bar-expand"></i>
             </button>
@@ -8356,6 +8467,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = "\`";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-code"></i>
             </button>
@@ -8365,6 +8486,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "\\n\`\`\`\\n\\n" + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-code-square"></i>
             </button>
@@ -8376,6 +8507,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = "$";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-calculator"></i>
             </button>
@@ -8385,6 +8526,16 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                const content = this.closest(".text-editor").querySelector('[name="content"]');
+                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n";
+                const selectionStart = content.selectionStart + snippet.length;
+                const selectionEnd = content.selectionEnd + snippet.length;
+                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "\\n$$\\n\\n" + content.value.slice(content.selectionEnd);
+                content.dispatchEvent(new Event("input"));
+                content.focus();
+                content.setSelectionRange(selectionStart, selectionEnd);
+              `}"
             >
               <i class="bi bi-calculator-fill"></i>
             </button>
@@ -8396,6 +8547,9 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                alert("TODO");
+              `}"
             >
               <i class="bi bi-at"></i>
             </button>
@@ -8405,6 +8559,9 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                alert("TODO");
+              `}"
             >
               <i class="bi bi-hash"></i>
             </button>
@@ -8416,6 +8573,9 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                alert("TODO");
+              `}"
             >
               <i class="bi bi-image"></i>
             </button>
@@ -8425,6 +8585,9 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               class="button--inline"
+              onclick="${javascript`
+                alert("TODO");
+              `}"
             >
               <i class="bi bi-paperclip"></i>
             </button>
