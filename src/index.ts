@@ -783,7 +783,7 @@ export default async function courselore(
                 }
 
                 textarea {
-                  resize: vertical;
+                  resize: none;
                 }
 
                 :disabled {
@@ -5700,6 +5700,7 @@ export default async function courselore(
                           padding-right: var(--space--10);
                         `}"
                         oninput="${javascript`
+                          this.style.height = "";
                           this.style.height = String(this.scrollHeight) + "px";
                         `}"
                         data-onvalidate="${javascript`
@@ -8773,6 +8774,7 @@ export default async function courselore(
           name="content"
           required
           oninput="${javascript`
+            this.style.height = "";
             this.style.height = String(this.scrollHeight) + "px";
           `}"
           onkeydown="${javascript`
