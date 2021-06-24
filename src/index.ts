@@ -371,7 +371,12 @@ export default async function courselore(
                   overflow-wrap: break-word;
                   appearance: none;
                   list-style: none;
+                  resize: none;
                   cursor: inherit;
+                }
+
+                ::-webkit-details-marker {
+                  display: none;
                 }
 
                 /* DESIGN SYSTEM */
@@ -780,10 +785,6 @@ export default async function courselore(
                 svg {
                   max-width: 100%;
                   height: auto;
-                }
-
-                textarea {
-                  resize: none;
                 }
 
                 :disabled {
