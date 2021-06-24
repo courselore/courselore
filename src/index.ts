@@ -8256,7 +8256,7 @@ export default async function courselore(
             margin: var(--space--0) var(--space--4);
             overflow-x: auto;
             display: flex;
-            gap: var(--space--4);
+            gap: var(--space--5);
             & > * {
               display: flex;
               gap: var(--space--2);
