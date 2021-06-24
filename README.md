@@ -65,7 +65,8 @@ CourseLore has been designed to be a welcoming project for people who are new to
 - [Visual Studio Code](https://code.visualstudio.com) and the following Visual Studio Code extensions:
   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
   - [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html)
-  - [es6-string-css](https://marketplace.visualstudio.com/items?itemName=bashmish.es6-string-css)
+  - [es6-string-css](https://marketplace.visualstudio.com/items?itemName=bashmish.es6-string-css) / [vscode-styled-components](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components)
+  - [es6-string-javascript](https://marketplace.visualstudio.com/items?itemName=zjcompt.es6-string-javascript)
   - [es6-string-markdown](https://marketplace.visualstudio.com/items?itemName=jeoht.es6-string-markdown)
 - [Git](https://git-scm.com)
 
@@ -351,6 +352,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - http://sqlite.1065341.n5.nabble.com/SQLite-is-perfect-for-FILE-based-MESSAGE-QUEUE-td57343.html
   - https://rdrr.io/cran/liteq/man/liteq.html
   - https://github.com/kd0kfo/smq/wiki/About-SMQ
+  - https://github.com/damoclark/node-persistent-queue
 
 #### Error Pages
 
@@ -396,6 +398,11 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Fast
 
 ### Improvements
+
+#### Make It Work on Mobile
+
+- Responsive design.
+- Mobile app may not be necessary, as web applications are capable of some “native” things.
 
 #### Tests
 
@@ -586,11 +593,161 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://gitea.io/
   - https://gogs.io/
   - https://hub.balena.io
+  - https://github.com/awesome-selfhosted/awesome-selfhosted
+  - https://selfhosted.show
 - <https://github.com/npm/roadmap/projects/1>: A meta-reference on how to present the roadmap moving forward.
 
 </details>
 
 ### Meetings
+
+<details>
+<summary>Meetings</summary>
+
+<details>
+<summary>2021-06-19</summary>
+
+- Progress:
+  - Styled pages:
+    - Invitations.
+    - Showing the menu first when on mobile & going to the course main page.
+    - Follow Magic Authentication Link but already authenticated.
+    - Threads screen (not finished).
+  - Notification for when you’re invited to a course by email.
+  - `:focus`, `:hover`, `:active`, and so forth.
+- Next week:
+  - 10 weeks.
+  - Finish threads screen.
+    - Finish questions & answer tagging.
+    - Edit.
+    - Styles for Markdown.
+    - Reference posts.
+    - @mentions.
+    - Text editor.
+    - Upload images.
+      - Drag and drop.
+      - Control + V.
+  - Tags: Create & Filter.
+  - Generalize live updates.
+  - Notifications.
+    - Email configuration.
+  - Flags.
+  - Search.
+  - Statistics.
+  - Anonymity.
+    - Persona.
+  - Threads private to instructors.
+
+</details>
+
+<details>
+<summary>2021-06-12</summary>
+
+- Progress:
+  - Continued the make-over with the new design system: Landing pages (for example, when you just created a course), course settings, threads pages.
+- Next week:
+  - Finish the redesign with the new design system.
+  - Come up with a roadmap.
+
+</details>
+
+<details>
+<summary>2021-06-05</summary>
+
+- Progress:
+  - Continued the make-over with the new design system. Did the home page, brought back Dark Mode support, did the sign in / sign up workflow, including the Demonstration Inbox, created almost all the components we’ll need (tooltips, dropdowns, modals, and so forth), added support for `prefers-reduced-motion`, and so forth.
+- Next week:
+  - Finish the redesign with the new design system.
+
+</details>
+
+<details>
+<summary>2021-05-29</summary>
+
+- Progress:
+  - Finish almost every screen using Bootstrap.
+  - Wasn’t satisfied with the result: Either we’d end up with a stock-Bootstrap looking application, or the customization would amount to as much work as doing more things from scratch. But the result would be even worse, because people would have to know CSS **as well as Bootstrap**.
+  - Started a make-over with a design system lifted from Tailwind. Borrowing only a couple helpers for things like tooltip positioning and modals.
+- Next week:
+  - Continue the redesign with the new design system.
+
+</details>
+
+<details>
+<summary>2021-05-22</summary>
+
+- Progress:
+  - Worked fewer hours this week.
+  - Styled most of the Course Settings pages (separated them into multiple pages).
+  - Small usability improvements, for example, flash session messages saying your operation (for example, updating your profile) was successful.
+- Next week:
+  - Finish the following screens: Threads, course settings, and invitations.
+  - Return to posts tags.
+
+</details>
+
+<details>
+<summary>2021-05-15</summary>
+
+- Progress:
+  - Started a user-interface overhaul: Responsive design, accessibility, fancier components for a bit of a “wow factor”, and so forth.
+  - Started using Bootstrap. Not Tailwind because Bootstrap has components, as opposed to just utilities. We’re continuing to use @leafac/css instead of utilities. We aren’t using many things from Bootstrap, for example, the grid system, because CSS Grid is better for our case.
+- Next week:
+  - Finish the following screens: Threads, course settings, and invitations.
+  - Return to posts tags.
+
+</details>
+
+<details>
+<summary>2021-05-01</summary>
+
+- Progress:
+  - Tags.
+    - Pinning.
+    - Question & Answer.
+  - Keyboard navigation.
+  - Many internal improvements on how icons and CSS are handled.
+- Next week:
+  - On checkboxes that are icons:
+    - Change the text.
+    - Change the cursor.
+  - On buttons that toggle state:
+    - Add a tooltip: Show the tooltip right away, and let them be long if necessary.
+  - Move the “Threads that are pinned” to a tooltip.
+  - Editor helpers for things like **bold**, _italics_, and so forth.
+  - Staff endorsements.
+  - Tag creation is a separate step under Course Settings.
+    - Private tags: Tags that only staff sees.
+    - Don’t let students create tags.
+    - Force students to tag the threads they initiate.
+    - Attributes on tags.
+  - Search.
+
+</details>
+
+<details>
+<summary>2021-04-24</summary>
+
+- Progress:
+  - Live update posts, and counts (of posts & likes).
+  - Reply to.
+  - Only ask for confirmation if actually going go to lose data.
+  - Save the content of a new post textarea in localStorage.
+  - Tags.
+  - Introduced types to layouts, middlewares, and so forth.
+- Next week:
+  - Tags.
+    - Pinning.
+    - Question & Answer.
+    - Tag creation is a separate step under Course Settings.
+      - Private tags: Tags that only staff sees.
+      - Don’t let students create tags.
+      - Force students to tag the threads they initiate.
+    - Instructor likes → Endorsed.
+    - Attributes on tags.
+  - Search.
+
+</details>
 
 <details>
 <summary>2021-04-17</summary>
@@ -958,5 +1115,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://yellowdig.com
   - Moodle
     - It’s a whole LMS, not a Q&A
+
+</details>
 
 </details>
