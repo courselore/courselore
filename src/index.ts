@@ -8277,7 +8277,7 @@ export default async function courselore(
               class="button--inline tool--heading-level-1"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.insert(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ");
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
                 element.focus();
               `}"
             >
@@ -8296,14 +8296,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--heading-level-2"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "## ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-type-h2"></i>
@@ -8321,14 +8316,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--heading-level-3"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "### ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-type-h3"></i>
@@ -8348,14 +8338,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--bold"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = "**";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, "**");
+                element.focus();
               `}"
             >
               <i class="bi bi-type-bold"></i>
@@ -8373,14 +8358,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--italic"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = "_";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, "_");
+                element.focus();
               `}"
             >
               <i class="bi bi-type-italic"></i>
@@ -8398,14 +8378,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--link"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = "[";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "](https://example.com)" + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
+                element.focus();
               `}"
             >
               <i class="bi bi-link"></i>
@@ -8425,14 +8400,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--unordered-list"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "- ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-list-ul"></i>
@@ -8450,14 +8420,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--ordered-list"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "1. ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-list-ol"></i>
@@ -8475,14 +8440,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--task-list"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-ui-checks"></i>
@@ -8502,14 +8462,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--quote"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "> ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-chat-left-quote"></i>
@@ -8527,15 +8482,10 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--table"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "| ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                const gapLength = selectionEnd - selectionStart + 2;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n" + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                const gapLength = element.selectionEnd - element.selectionStart + 2;
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-table"></i>
@@ -8553,14 +8503,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--disclosure"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "</summary>\\n\\nContent\\n\\n</details>\\n\\n" + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-chevron-bar-expand"></i>
@@ -8580,14 +8525,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--inline-code"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = "\`";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, "\`");
+                element.focus();
               `}"
             >
               <i class="bi bi-code"></i>
@@ -8605,14 +8545,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--code-block"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "\\n\`\`\`\\n\\n" + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-code-square"></i>
@@ -8632,14 +8567,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--inline-mathematics"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = "$";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + snippet + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, "$");
+                element.focus();
               `}"
             >
               <i class="bi bi-calculator"></i>
@@ -8657,14 +8587,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--mathematics-block"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart, content.selectionEnd) + "\\n$$\\n\\n" + content.value.slice(content.selectionEnd);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                element.focus();
               `}"
             >
               <i class="bi bi-calculator-fill"></i>
