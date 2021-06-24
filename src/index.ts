@@ -1953,6 +1953,23 @@ export default async function courselore(
               MicroModal.init({ disableScroll: true, disableFocus: true });
             });
           </script>
+
+          <script type="module">
+            import fitTextarea from "${app.locals.settings
+              .url}/node_modules/fit-textarea/index.js";
+            window.fitTextarea = fitTextarea;
+          </script>
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const element of document.querySelectorAll(
+                ".fit-textarea"
+              )) {
+                if (element.dataset.fitTextarea) continue;
+                element.dataset.fitTextarea = true;
+                fitTextarea(element);
+              }
+            });
+          </script>
         </body>
       </html>
     `.trim();
@@ -5695,13 +5712,9 @@ export default async function courselore(
                         placeholder="Emails"
                         required
                         disabled
-                        class="input--text"
+                        class="input--text fit-textarea"
                         style="${css`
                           padding-right: var(--space--10);
-                        `}"
-                        oninput="${javascript`
-                          this.style.height = "";
-                          this.style.height = String(this.scrollHeight) + "px";
                         `}"
                         data-onvalidate="${javascript`
                           const emails = [];
@@ -8770,13 +8783,9 @@ export default async function courselore(
           </div>
         </div>
         <textarea
-          class="input--text"
+          class="input--text fit-textarea"
           name="content"
           required
-          oninput="${javascript`
-            this.style.height = "";
-            this.style.height = String(this.scrollHeight) + "px";
-          `}"
           onkeydown="${javascript`
             if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
               event.preventDefault();
