@@ -1957,6 +1957,9 @@ export default async function courselore(
           <script type="module">
             import fitTextarea from "${app.locals.settings
               .url}/node_modules/fit-textarea/index.js";
+            window.fitTextarea = fitTextarea;
+          </script>
+          <script>
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 ".fit-textarea"
