@@ -1915,7 +1915,7 @@ export default async function courselore(
           <script src="${app.locals.settings
               .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="${app.locals.settings
-              .url}/node_modules/tippy.js/dist/tippy-bundle.umd.js"></script>
+              .url}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
           <script>
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
