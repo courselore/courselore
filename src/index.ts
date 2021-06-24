@@ -1966,7 +1966,7 @@ export default async function courselore(
               )) {
                 if (element.dataset.fitTextarea) continue;
                 element.dataset.fitTextarea = true;
-                fitTextarea(element);
+                fitTextarea.watch(element);
               }
             });
           </script>
