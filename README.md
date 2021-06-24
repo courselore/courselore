@@ -73,7 +73,7 @@ CourseLore has been designed to be a welcoming project for people who are new to
 TODO:
 - Windows setup:
   - Administrator `cmd.exe`/PowerShell.
-  - `choco install nodejs git vscode`
+  - `choco install nvm git vscode python visualstudio2017-workload-vctools`
   - `npm install --global windows-build-tools`
   - Ctrl-P in VS Code: `ext install esbenp.prettier-vscode Tobermory.es6-string-html bashmish.es6-string-css jeoht.es6-string-markdown` (this actually applies to every system)
   - You may need to close and reopen `cmd.exe`/PowerShell between these commands.
