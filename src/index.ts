@@ -1970,6 +1970,12 @@ export default async function courselore(
               }
             });
           </script>
+
+          <script type="module">
+            import * as textFieldEdit from "${app.locals.settings
+              .url}/node_modules/text-field-edit/index.js";
+            window.textFieldEdit = textFieldEdit;
+          </script>
         </body>
       </html>
     `.trim();
@@ -8270,14 +8276,9 @@ export default async function courselore(
               data-tippy-allowHTML="true"
               class="button--inline tool--heading-level-1"
               onclick="${javascript`
-                const content = this.closest(".text-editor").querySelector('[name="content"]');
-                const snippet = ((content.selectionStart > 0) ? "\\n\\n" : "") + "# ";
-                const selectionStart = content.selectionStart + snippet.length;
-                const selectionEnd = content.selectionEnd + snippet.length;
-                content.value = content.value.slice(0, content.selectionStart) + snippet + content.value.slice(content.selectionStart);
-                content.dispatchEvent(new Event("input"));
-                content.focus();
-                content.setSelectionRange(selectionStart, selectionEnd);
+                const element = this.closest(".text-editor").querySelector('[name="content"]');
+                textFieldEdit.insert(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ");
+                element.focus();
               `}"
             >
               <i class="bi bi-type-h1"></i>
