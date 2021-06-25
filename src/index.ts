@@ -8629,18 +8629,19 @@ export default async function courselore(
             <button
               type="button"
               data-tippy-content="${html`
-                Inline Mathematics
+                Inline Equation
                 <span class="keyboard-shortcut">
-                  (Alt+M or
+                  (Ctrl+Alt+E or
                   <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-alt"></i>M</span
+                    ><i class="bi bi-alt"></i
+                    ><i class="bi bi-command"></i>E</span
                   >)
                 </span>
               `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--inline-mathematics"
+              class="button--inline tool--inline-equation"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "$");
@@ -8652,18 +8653,19 @@ export default async function courselore(
             <button
               type="button"
               data-tippy-content="${html`
-                Mathematics Block
+                Equation Block
                 <span class="keyboard-shortcut">
-                  (Alt+Shift+M or
+                  (Ctrl+Alt+Shift+E or
                   <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i><i class="bi bi-alt"></i>M</span
+                    ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
+                    ><i class="bi bi-command"></i>E</span
                   >)
                 </span>
               `}"
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--mathematics-block"
+              class="button--inline tool--equation-block"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
@@ -8679,9 +8681,10 @@ export default async function courselore(
               data-tippy-content="${html`
                 Mention User
                 <span class="keyboard-shortcut">
-                  (Ctrl+, or
+                  (Ctrl+Shift+U or
                   <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>,</span
+                    ><i class="bi bi-shift"></i
+                    ><i class="bi bi-command"></i>U</span
                   >)
                 </span>
               `}"
@@ -8700,10 +8703,11 @@ export default async function courselore(
               data-tippy-content="${html`
                 Cite Thread or Post
                 <span class="keyboard-shortcut">
-                  (Ctrl+. or
+                  (Ctrl+Shift+J or
                   <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i></span
-                  >.)
+                    ><i class="bi bi-shift"></i
+                    ><i class="bi bi-command"></i>J</span
+                  >)
                 </span>
               `}"
               data-tippy-theme="tooltip"
@@ -8723,9 +8727,10 @@ export default async function courselore(
               data-tippy-content="${html`
                 Image
                 <span class="keyboard-shortcut">
-                  (Ctrl+; or
+                  (Ctrl+Shift+I or
                   <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>;</span
+                    ><i class="bi bi-shift"></i
+                    ><i class="bi bi-command"></i>I</span
                   >
                   or drag-and-drop or copy-and-paste)
                 </span>
@@ -8745,9 +8750,10 @@ export default async function courselore(
               data-tippy-content="${html`
                 Attachment
                 <span class="keyboard-shortcut">
-                  (Ctrl+P or
+                  (Ctrl+Shift+K or
                   <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>P</span
+                    ><i class="bi bi-shift"></i
+                    ><i class="bi bi-command"></i>K</span
                   >
                   or drag-and-drop or copy-and-paste)
                 </span>
@@ -8828,9 +8834,19 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".tool--bold").click();
               return;
             }
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyI") {
+              event.preventDefault();
+              this.closest(".text-editor").querySelector(".tool--image").click();
+              return;
+            }
             if ((event.ctrlKey || event.metaKey) && event.code === "KeyI") {
               event.preventDefault();
               this.closest(".text-editor").querySelector(".tool--italic").click();
+              return;
+            }
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyK") {
+              event.preventDefault();
+              this.closest(".text-editor").querySelector(".tool--attachment").click();
               return;
             }
             if ((event.ctrlKey || event.metaKey) && event.code === "KeyK") {
@@ -8868,6 +8884,16 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".tool--disclosure").click();
               return;
             }
+            if ((event.ctrlKey || event.metaKey) && event.altKey && event.shiftKey && event.code === "KeyE") {
+              event.preventDefault();
+              this.closest(".text-editor").querySelector(".tool--equation-block").click();
+              return;
+            }
+            if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "KeyE") {
+              event.preventDefault();
+              this.closest(".text-editor").querySelector(".tool--inline-equation").click();
+              return;
+            }
             if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyE") {
               event.preventDefault();
               this.closest(".text-editor").querySelector(".tool--code-block").click();
@@ -8878,35 +8904,14 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".tool--inline-code").click();
               return;
             }
-            if (event.altKey && event.shiftKey && event.code === "KeyM") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--mathematics-block").click();
-              return;
-            }
-            if (event.altKey && event.code === "KeyM") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--inline-mathematics").click();
-              return;
-            }
-            // TODO: STOPPED HERE
-            if ((event.ctrlKey || event.metaKey) && event.code === ",") {
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyU") {
               event.preventDefault();
               this.closest(".text-editor").querySelector(".tool--mention-user").click();
               return;
             }
-            if ((event.ctrlKey || event.metaKey) && event.code === ".") {
+            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyJ") {
               event.preventDefault();
               this.closest(".text-editor").querySelector(".tool--cite-thread-or-post").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === ";") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--image").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === "P") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--attachment").click();
               return;
             }
             if ((event.ctrlKey || event.metaKey) && event.code === "Enter") {
