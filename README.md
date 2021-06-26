@@ -130,17 +130,17 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Roadmap
 
-|            |     |
-| ---------- | --- |
-| 2021-07-03 |     |
-| 2021-07-10 |     |
-| 2021-07-17 |     |
-| 2021-07-24 |     |
-| 2021-07-31 |     |
-| 2021-08-07 |     |
-| 2021-08-14 |     |
-| 2021-08-21 |     |
-| 2021-08-28 |     |
+|            |                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                                                                        |
+| 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; generalized live updates. Tags: Mark posts as answers; create arbitrary tags; filter by tags; flag posts to answer later. |
+| 2021-07-17 | Finish tags. Search.                                                                                                                                                                 |
+| 2021-07-24 | Notifications: In-app; via email.                                                                                                                                                    |
+| 2021-07-31 | Finish notifications.                                                                                                                                                                |
+| 2021-08-07 | Access management: Anonymity & private threads.                                                                                                                                      |
+| 2021-08-14 | Continued access management.                                                                                                                                                         |
+| 2021-08-21 | Buffer for things that’ll take longer than we expect.                                                                                                                                |
+| 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                                |
 
 ### Backlog
 
@@ -618,6 +618,20 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 <details>
 <summary>Meetings</summary>
+
+<details>
+<summary>2021-06-26</summary>
+
+- Styled user-generated content such that nothing breaks the layout and everything looks nice.
+- Text editor improvements:
+  - Expand with content.
+  - Toolbar.
+    - Including **undo** when possible.
+  - Keyboard shortcuts.
+  - Started the image & attachments uploads (which is also the backbone of user avatars, and so forth).
+- Roadmap.
+
+</details>
 
 <details>
 <summary>2021-06-19</summary>
