@@ -130,7 +130,22 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Roadmap
 
+|            |     |
+| ---------- | --- |
+| 2021-07-03 |     |
+| 2021-07-10 |     |
+| 2021-07-17 |     |
+| 2021-07-24 |     |
+| 2021-07-31 |     |
+| 2021-08-07 |     |
+| 2021-08-14 |     |
+| 2021-08-21 |     |
+| 2021-08-28 |     |
+
+### Backlog
+
 <details>
+<summary>Backlog</summary>
 
 ### Features
 
