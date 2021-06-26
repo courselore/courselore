@@ -359,6 +359,8 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Upload files (like images), and have them embedded (similar to what GitHub has).
   - Packages to handle multipart form data: busboy, multer, formidable, multiparty, connect-multiparty, and pez.
 - Templates for questions (like GitHub Issues).
+- Paste tables from Excel and have them formatted as Markdown tables.
+- Select part of a post and quote part in your answer.
 
 #### Queues
 
