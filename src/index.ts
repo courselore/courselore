@@ -2311,54 +2311,18 @@ export default async function courselore(
                   >
                     <div>
                       <button
-                        data-tippy-content="${html`
-                          $${res.locals.invitations!.length === 0
-                            ? html``
-                            : html`
-                                <h3 class="dropdown--heading">
-                                  <i class="bi bi-journal-arrow-down"></i>
-                                  Invitations
-                                </h3>
-                                $${res.locals.invitations!.map(
-                                  (invitation) => html`
-                                    <a
-                                      href="${app.locals.settings
-                                        .url}/courses/${invitation.course
-                                        .reference}/invitations/${invitation.reference}"
-                                      class="dropdown--item"
-                                    >
-                                      <i class="bi bi-journal-arrow-down"></i>
-                                      Enroll in ${invitation.course.name} as
-                                      ${lodash.capitalize(invitation.role)}
-                                    </a>
-                                  `
-                                )}
-                                <hr class="dropdown--separator" />
-                              `}
-                          <button
-                            class="dropdown--item"
-                            data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
-                            data-tippy-theme="tooltip"
-                            data-tippy-trigger="click"
-                          >
-                            <i class="bi bi-journal-arrow-down"></i>
-                            Enroll in an Existing Course
-                          </button>
-                          <a
-                            href="${app.locals.settings.url}/courses/new"
-                            class="dropdown--item"
-                          >
-                            <i class="bi bi-journal-plus"></i>
-                            Create a New Course
-                          </a>
-                        `}"
-                        data-tippy-theme="dropdown"
-                        data-tippy-trigger="click"
-                        data-tippy-interactive="true"
-                        data-tippy-allowHTML="true"
                         class="header--item"
                         style="${css`
                           display: grid;
+                        `}"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: this.nextElementSibling.innerHTML,
+                            theme: "dropdown",
+                            trigger: "click",
+                            interactive: true,
+                            allowHTML: true,
+                          });
                         `}"
                       >
                         <span
@@ -2379,6 +2343,51 @@ export default async function courselore(
                           <i class="bi bi-plus-circle"></i>
                         </span>
                       </button>
+                      <div hidden data-skip-ondomcontentloaded="true">
+                        $${res.locals.invitations!.length === 0
+                          ? html``
+                          : html`
+                              <h3 class="dropdown--heading">
+                                <i class="bi bi-journal-arrow-down"></i>
+                                Invitations
+                              </h3>
+                              $${res.locals.invitations!.map(
+                                (invitation) => html`
+                                  <a
+                                    href="${app.locals.settings
+                                      .url}/courses/${invitation.course
+                                      .reference}/invitations/${invitation.reference}"
+                                    class="dropdown--item"
+                                  >
+                                    <i class="bi bi-journal-arrow-down"></i>
+                                    Enroll in ${invitation.course.name} as
+                                    ${lodash.capitalize(invitation.role)}
+                                  </a>
+                                `
+                              )}
+                              <hr class="dropdown--separator" />
+                            `}
+                        <button
+                          class="dropdown--item"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                              theme: "tooltip",
+                              trigger: "click",
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-journal-arrow-down"></i>
+                          Enroll in an Existing Course
+                        </button>
+                        <a
+                          href="${app.locals.settings.url}/courses/new"
+                          class="dropdown--item"
+                        >
+                          <i class="bi bi-journal-plus"></i>
+                          Create a New Course
+                        </a>
+                      </div>
                     </div>
                     <div>
                       <button
