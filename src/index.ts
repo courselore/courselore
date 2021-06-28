@@ -422,7 +422,7 @@ export default async function courselore(
                 line-height: var(--line-height--xs);
                 font-weight: var(--font-weight--bold);
                 text-transform: uppercase;
-                letter-spacing: var(--space--px);
+                letter-spacing: var(--letter-spacing--widest);
                 color: var(--color--gray--cool--500);
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--gray--cool--500);
@@ -875,8 +875,8 @@ export default async function courselore(
                   line-height: var(--line-height--xs);
 
                   .keyboard-shortcut--cluster {
-                    letter-spacing: 2px;
-                    margin-right: -2px;
+                    letter-spacing: var(--letter-spacing--wider);
+                    margin-right: calc(-1 * var(--letter-spacing--wider));
                   }
                 }
 
@@ -929,7 +929,7 @@ export default async function courselore(
                     line-height: var(--line-height--xs);
                     font-weight: var(--font-weight--bold);
                     text-transform: uppercase;
-                    letter-spacing: var(--space--px);
+                    letter-spacing: var(--letter-spacing--widest);
                     color: var(--color--primary--400);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--300);
@@ -5516,7 +5516,9 @@ export default async function courselore(
                                               data-tippy-touch="false"
                                             `}
                                         style="${css`
-                                          font-weight: var(--font-weight--semibold);
+                                          font-weight: var(
+                                            --font-weight--semibold
+                                          );
                                         `}"
                                       >
                                         ${"*".repeat(

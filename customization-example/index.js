@@ -123,9 +123,9 @@ module.exports = (require) => {
                         </g>
                         <g transform="translate(300, 550) rotate(-2)">
                           <rect
-                            width="370"
+                            width="400"
                             height="35"
-                            x="-185"
+                            x="-200"
                             y="-26"
                             rx="10"
                             style="${css`
@@ -144,7 +144,7 @@ module.exports = (require) => {
                                 fill: var(--color--pink--200);
                               }
                               text-transform: uppercase;
-                              letter-spacing: var(--space--0-5);
+                              letter-spacing: var(--letter-spacing--widest);
                             `}"
                           >
                             Coming September 2021!
