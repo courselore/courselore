@@ -8701,7 +8701,7 @@ export default async function courselore(
             <button
               type="button"
               data-tippy-content="${html`
-                Cite Thread or Post
+                Refer to Thread or Post
                 <span class="keyboard-shortcut">
                   (Ctrl+Shift+J or
                   <span class="keyboard-shortcut--cluster"
@@ -8713,9 +8713,9 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--cite-thread-or-post"
+              class="button--inline tool--refer-to-thread-or-post"
               onclick="${javascript`
-                alert("TODO: Cite Thread or Post");
+                alert("TODO: Refer to Thread or Post");
               `}"
             >
               <i class="bi bi-hash"></i>
@@ -8911,7 +8911,7 @@ export default async function courselore(
             }
             if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyJ") {
               event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--cite-thread-or-post").click();
+              this.closest(".text-editor").querySelector(".tool--refer-to-thread-or-post").click();
               return;
             }
             if ((event.ctrlKey || event.metaKey) && event.code === "Enter") {
