@@ -392,9 +392,9 @@ module.exports = (require) => {
                                 <i class="bi bi-check-circle-fill"></i>
                                 Markdown
                                 <button
-                                  data-tippy-content="What’s Markdown?"
-                                  data-tippy-theme="tooltip"
-                                  data-tippy-touch="false"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, { content: "What’s Markdown?", theme: "tooltip", touch: false });
+                                  `}"
                                   data-micromodal-trigger="modal--markdown"
                                 >
                                   <i class="bi bi-info-circle"></i>
@@ -404,9 +404,9 @@ module.exports = (require) => {
                                 <i class="bi bi-check-circle-fill"></i>
                                 LaTeX
                                 <button
-                                  data-tippy-content="What’s LaTeX?"
-                                  data-tippy-theme="tooltip"
-                                  data-tippy-touch="false"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, { content: "What’s LaTeX?", theme: "tooltip", touch: false });
+                                  `}"
                                   data-micromodal-trigger="modal--latex"
                                 >
                                   <i class="bi bi-info-circle"></i>
@@ -416,9 +416,9 @@ module.exports = (require) => {
                                 <i class="bi bi-check-circle-fill"></i>
                                 Syntax highlighting
                                 <button
-                                  data-tippy-content="What’s Syntax Highlighting?"
-                                  data-tippy-theme="tooltip"
-                                  data-tippy-touch="false"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, { content: "What’s Syntax Highlighting?", theme: "tooltip", touch: false });
+                                  `}"
                                   data-micromodal-trigger="modal--syntax-highlighting"
                                 >
                                   <i class="bi bi-info-circle"></i>
