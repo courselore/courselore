@@ -328,6 +328,47 @@ export default async function courselore(
               .url}/node_modules/tippy.js/dist/border.css"
           />
 
+          <script src="${app.locals.settings
+              .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
+          <script>
+            MicroModal.init({ disableScroll: true, disableFocus: true });
+          </script>
+
+          <script type="module">
+            import fitTextarea from "${app.locals.settings
+              .url}/node_modules/fit-textarea/index.js";
+            window.fitTextarea = fitTextarea;
+          </script>
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const element of document.querySelectorAll(
+                ".fit-textarea"
+              )) {
+                if (element.dataset.fitTextarea) continue;
+                element.dataset.fitTextarea = true;
+                fitTextarea.watch(element);
+              }
+            });
+          </script>
+
+          <script type="module">
+            import * as textFieldEdit from "${app.locals.settings
+              .url}/node_modules/text-field-edit/index.js";
+            window.textFieldEdit = textFieldEdit;
+          </script>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const element of document.querySelectorAll(
+                "[data-ondomcontentloaded]"
+              )) {
+                if (element.dataset.ondomcontentloadedExecuted) continue;
+                element.dataset.ondomcontentloadedExecuted = true;
+                new Function(element.dataset.ondomcontentloaded).call(element);
+              }
+            });
+          </script>
+
           $${head}
         </head>
         <body
@@ -1482,51 +1523,6 @@ export default async function courselore(
           `}"
         >
           $${body} $${app.locals.partials.art.preamble}
-
-          <script src="${app.locals.settings
-              .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
-          <script>
-            document.addEventListener("DOMContentLoaded", () => {
-              if (document.body.dataset.micromodalInitialized) return;
-              document.body.dataset.micromodalInitialized = true;
-              MicroModal.init({ disableScroll: true, disableFocus: true });
-            });
-          </script>
-
-          <script type="module">
-            import fitTextarea from "${app.locals.settings
-              .url}/node_modules/fit-textarea/index.js";
-            window.fitTextarea = fitTextarea;
-          </script>
-          <script>
-            document.addEventListener("DOMContentLoaded", () => {
-              for (const element of document.querySelectorAll(
-                ".fit-textarea"
-              )) {
-                if (element.dataset.fitTextarea) continue;
-                element.dataset.fitTextarea = true;
-                fitTextarea.watch(element);
-              }
-            });
-          </script>
-
-          <script type="module">
-            import * as textFieldEdit from "${app.locals.settings
-              .url}/node_modules/text-field-edit/index.js";
-            window.textFieldEdit = textFieldEdit;
-          </script>
-
-          <script>
-            document.addEventListener("DOMContentLoaded", () => {
-              for (const element of document.querySelectorAll(
-                "[data-ondomcontentloaded]"
-              )) {
-                if (element.dataset.ondomcontentloadedExecuted) continue;
-                element.dataset.ondomcontentloadedExecuted = true;
-                new Function(element.dataset.ondomcontentloaded).call(element);
-              }
-            });
-          </script>
         </body>
       </html>
     `);
