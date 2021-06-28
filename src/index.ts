@@ -339,17 +339,6 @@ export default async function courselore(
               .url}/node_modules/fit-textarea/index.js";
             window.fitTextarea = fitTextarea;
           </script>
-          <script>
-            document.addEventListener("DOMContentLoaded", () => {
-              for (const element of document.querySelectorAll(
-                ".fit-textarea"
-              )) {
-                if (element.dataset.fitTextarea) continue;
-                element.dataset.fitTextarea = true;
-                fitTextarea.watch(element);
-              }
-            });
-          </script>
 
           <script type="module">
             import * as textFieldEdit from "${app.locals.settings
@@ -5263,9 +5252,12 @@ export default async function courselore(
                         placeholder="Emails"
                         required
                         disabled
-                        class="input--text fit-textarea"
+                        class="input--text"
                         style="${css`
                           padding-right: var(--space--10);
+                        `}"
+                        data-ondomcontentloaded="${javascript`
+                          fitTextarea.watch(this);
                         `}"
                         data-onvalidate="${javascript`
                           const emails = [];
@@ -8344,9 +8336,12 @@ export default async function courselore(
           </div>
         </div>
         <textarea
-          class="input--text fit-textarea"
           name="content"
           required
+          class="input--text"
+          data-ondomcontentloaded="${javascript`
+            fitTextarea.watch(this);
+          `}"
           onkeydown="${javascript`
             if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyP") {
               event.preventDefault();
