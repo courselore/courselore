@@ -1049,7 +1049,7 @@ export default async function courselore(
                     right: 0;
                     bottom: 0;
                     left: 0;
-                    opacity: 70%;
+                    opacity: var(--opacity--70);
                     z-index: -1;
                   }
 
@@ -3986,7 +3986,7 @@ export default async function courselore(
                     <div
                       style="${css`
                         width: var(--font-size--9xl);
-                        opacity: 30%;
+                        opacity: var(--opacity--30);
                         display: flex;
                         justify-content: center;
                         align-items: center;
