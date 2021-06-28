@@ -460,7 +460,7 @@ export default async function courselore(
                 }
                 width: var(--space--48);
                 height: var(--space--48);
-                border-radius: 50%;
+                border-radius: var(--border-radius--circle);
                 margin: var(--space--0) auto;
                 display: flex;
                 justify-content: center;
@@ -824,7 +824,7 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--primary--800);
                   }
-                  border-radius: 50%;
+                  border-radius: var(--border-radius--circle);
                   justify-self: end;
                   margin-right: var(--space---1);
                 }
@@ -1439,7 +1439,7 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--cool--600);
                   }
-                  border-radius: var(--border-radius);
+                  border-radius: var(--border-radius--base);
                   margin-right: var(--space--0-5);
                   position: relative;
                   bottom: var(--space---0-5);
@@ -6946,7 +6946,7 @@ export default async function courselore(
                             }
                             width: var(--space--5);
                             height: var(--space--5);
-                            border-radius: 50%;
+                            border-radius: var(--border-radius--circle);
                             display: flex;
                             justify-content: center;
                             align-items: center;
@@ -6957,7 +6957,7 @@ export default async function courselore(
                               display: block;
                               width: var(--space--2);
                               height: var(--space--2);
-                              border-radius: 50%;
+                              border-radius: var(--border-radius--circle);
                               background-color: var(--color--gray--cool--50);
                               @media (prefers-color-scheme: dark) {
                                 background-color: var(--color--gray--cool--900);

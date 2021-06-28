@@ -323,7 +323,7 @@ module.exports = (require) => {
                                   }
                                   width: var(--font-size--4xl);
                                   height: var(--font-size--4xl);
-                                  border-radius: 50%;
+                                  border-radius: var(--border-radius--circle);
                                   display: inline-flex;
                                   justify-content: center;
                                   align-items: center;
