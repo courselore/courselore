@@ -826,7 +826,7 @@ export default async function courselore(
                   }
                   border-radius: 50%;
                   justify-self: end;
-                  margin-right: calc(-1 * var(--space--1));
+                  margin-right: var(--space---1);
                 }
               }
 
@@ -943,7 +943,7 @@ export default async function courselore(
                     width: calc(100% + 2 * var(--space--2));
                     padding: var(--space--0-5) var(--space--2);
                     border-radius: var(--border-radius--md);
-                    margin-left: calc(-1 * var(--space--2));
+                    margin-left: var(--space---2);
                     display: flex;
                     gap: var(--space--2);
                     transition: background-color var(--transition-duration);
@@ -1227,11 +1227,11 @@ export default async function courselore(
                 }
 
                 sup {
-                  top: calc(-1 * var(--space--1));
+                  top: var(--space---1);
                 }
 
                 sub {
-                  bottom: calc(-1 * var(--space--1));
+                  bottom: var(--space---1);
                 }
 
                 img {
@@ -1340,8 +1340,8 @@ export default async function courselore(
                     }
                     display: block;
                     position: absolute;
-                    left: calc(-1 * var(--space--2));
-                    top: calc(-1 * var(--space--3));
+                    left: var(--space---2);
+                    top: var(--space---3);
                     z-index: -1;
                   }
                 }
@@ -1442,7 +1442,7 @@ export default async function courselore(
                   border-radius: var(--border-radius);
                   margin-right: var(--space--0-5);
                   position: relative;
-                  bottom: calc(-1 * var(--space--0-5));
+                  bottom: var(--space---0-5);
                   display: inline-flex;
                   justify-content: center;
                   align-items: center;
@@ -7419,7 +7419,7 @@ export default async function courselore(
                     width: calc(100% + 2 * var(--space--2));
                     padding: var(--space--2) var(--space--2);
                     border-radius: var(--border-radius--lg);
-                    margin-left: calc(-1 * var(--space--2));
+                    margin-left: var(--space---2);
                     display: block;
                     transition: background-color var(--transition-duration);
 
