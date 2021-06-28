@@ -1519,10 +1519,11 @@ export default async function courselore(
           <script>
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
-                "[data-ondomcontentloaded]:not([data-ondomcontentloaded-executed])"
+                "[data-ondomcontentloaded]"
               )) {
-                new Function(element.dataset.ondomcontentloaded).call(element);
+                if (element.dataset.ondomcontentloadedExecuted) continue;
                 element.dataset.ondomcontentloadedExecuted = true;
+                new Function(element.dataset.ondomcontentloaded).call(element);
               }
             });
           </script>

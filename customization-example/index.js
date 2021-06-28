@@ -46,7 +46,16 @@ module.exports = (require) => {
                   align-items: center;
                 `}"
               >
-                <h1>
+                <h1
+                  data-ondomcontentloaded="${javascript`
+                    new ArtAnimation({
+                      element: this,
+                      speed: 0.001,
+                      amount: 3,
+                      startupDuration: 0,
+                    }).start();
+                  `}"
+                >
                   $${app.locals.partials.art.large.replace(
                     "</svg>",
                     html`
@@ -145,22 +154,6 @@ module.exports = (require) => {
                       $&
                     `
                   )}
-                  <script>
-                    (() => {
-                      const element =
-                        document.currentScript.previousElementSibling;
-                      document.addEventListener("DOMContentLoaded", () => {
-                        if (element.dataset.animated) return;
-                        element.dataset.animated = true;
-                        new ArtAnimation({
-                          element,
-                          speed: 0.001,
-                          amount: 3,
-                          startupDuration: 0,
-                        }).start();
-                      });
-                    })();
-                  </script>
                 </h1>
 
                 <nav
