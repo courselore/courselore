@@ -2368,7 +2368,7 @@ export default async function courselore(
                         `}"
                       >
                         <span
-                          data-tippy-content="$${res.locals.invitations!
+                          data-tippy-content="${res.locals.invitations!
                             .length === 0
                             ? "Add"
                             : `${

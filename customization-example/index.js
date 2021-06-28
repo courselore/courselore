@@ -253,27 +253,19 @@ module.exports = (require) => {
                     $${app.locals.partials.art.small
                       .replace(
                         "<svg",
-                        `$& preserveAspectRatio="xMidYMid slice"`
-                      )
-                      .replace(/width=".*?"/, "")
-                      .replace(/height=".*?"/, "")
-                      .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
-                    <script>
-                      (() => {
-                        const element =
-                          document.currentScript.previousElementSibling;
-                        document.addEventListener("DOMContentLoaded", () => {
-                          if (element.dataset.animated) return;
-                          element.dataset.animated = true;
+                        html`$& preserveAspectRatio="xMidYMid slice"
+                        data-ondomcontentloaded="${javascript`
                           new ArtAnimation({
-                            element,
+                            element: this,
                             speed: 0.0001,
                             amount: 5,
                             startupDuration: 0,
                           }).start();
-                        });
-                      })();
-                    </script>
+                        `}"`
+                      )
+                      .replace(/width=".*?"/, "")
+                      .replace(/height=".*?"/, "")
+                      .replace(/viewBox=".*?"/, `viewBox="5 5 15 15"`)}
                   `;
 
                   return html`
