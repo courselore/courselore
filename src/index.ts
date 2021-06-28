@@ -266,6 +266,7 @@ export default async function courselore(
           />
           <meta name="generator" content="CourseLore/${VERSION}" />
           <meta name="description" content="The Open-Source Student Forum" />
+
           <link
             rel="icon"
             type="image/png"
@@ -283,6 +284,7 @@ export default async function courselore(
             type="image/x-icon"
             href="${app.locals.settings.url}/favicon.ico"
           />
+
           <link
             rel="stylesheet"
             href="${app.locals.settings
@@ -298,6 +300,23 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/katex/dist/katex.min.css"
           />
+
+          <script src="${app.locals.settings
+              .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="${app.locals.settings
+              .url}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <script>
+            tippy.setDefaultProps({
+              arrow: tippy.roundArrow + tippy.roundArrow,
+              onMount() {
+                document.dispatchEvent(new Event("DOMContentLoaded"));
+              },
+              duration: window.matchMedia("(prefers-reduced-motion: reduce)")
+                .matches
+                ? 1
+                : 150,
+            });
+          </script>
           <link
             rel="stylesheet"
             href="${app.locals.settings
@@ -308,6 +327,7 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/tippy.js/dist/border.css"
           />
+
           $${head}
         </head>
         <body
@@ -1462,39 +1482,6 @@ export default async function courselore(
           `}"
         >
           $${body} $${app.locals.partials.art.preamble}
-
-          <script src="${app.locals.settings
-              .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="${app.locals.settings
-              .url}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-          <script>
-            document.addEventListener("DOMContentLoaded", () => {
-              for (const element of document.querySelectorAll(
-                "[data-tippy-content]"
-              )) {
-                if (element.dataset.tippyCreated) continue;
-                element.dataset.tippyCreated = true;
-                tippy(element, {
-                  arrow: tippy.roundArrow + tippy.roundArrow,
-                  onMount() {
-                    document.dispatchEvent(new Event("DOMContentLoaded"));
-                  },
-                  duration: window.matchMedia(
-                    "(prefers-reduced-motion: reduce)"
-                  ).matches
-                    ? 1
-                    : 150,
-                  ...(element.dataset.tippyAppendTo === undefined
-                    ? {}
-                    : {
-                        appendTo: element.closest(
-                          element.dataset.tippyAppendTo
-                        ),
-                      }),
-                });
-              }
-            });
-          </script>
 
           <script src="${app.locals.settings
               .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
