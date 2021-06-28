@@ -3,7 +3,8 @@ module.exports = (require) => {
   const express = require("express");
   const cookieParser = require("cookie-parser");
   const { html } = require("@leafac/html");
-  const css = require("tagged-template-noop");
+  const css = require("@leafac/css");
+  const javascript = require("tagged-template-noop");
   const markdown = require("dedent");
 
   return (app) => {
@@ -174,11 +175,11 @@ module.exports = (require) => {
                   `}"
                 >
                   <a
-                    href="$${app.locals.settings.url}/authenticate"
-                    data-tippy-content="Very rough early demonstration"
-                    data-tippy-theme="tooltip"
-                    data-tippy-touch="false"
+                    href="${app.locals.settings.url}/authenticate"
                     class="button button--primary"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, { content: "Very rough early demonstration", theme: "tooltip", touch: false });
+                    `}"
                   >
                     <i class="bi bi-easel"></i>
                     Demonstration
