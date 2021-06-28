@@ -1873,6 +1873,17 @@ export default async function courselore(
                       break;
                   }
                 });
+
+
+
+                (() => {
+                // const id = document.currentScript.previousElementSibling.id;
+                // eventSource.addEventListener("refreshed", (event) => {
+                //   document
+                //     .querySelector("#" + id)
+                //     .replaceWith(event.detail.document.querySelector("#" + id));
+                // });
+              })();
                 */
             `
             : javascript``};
@@ -1970,37 +1981,29 @@ export default async function courselore(
                     align-items: center;
                     transition: color var(--transition-duration);
                   `}"
+                  data-ondomcontentloaded="${javascript`
+                    const artAnimation = new ArtAnimation({
+                      element: this,
+                      speed: 0.001,
+                      amount: 1,
+                      startupDuration: 500,
+                    });
+                    this.addEventListener("mouseover", () => {
+                      artAnimation.start();
+                    });
+                    this.addEventListener("mouseout", () => {
+                      artAnimation.stop();
+                    });
+                    this.addEventListener("focus", () => {
+                      artAnimation.start();
+                    });
+                    this.addEventListener("blur", () => {
+                      artAnimation.stop();
+                    });
+                  `}"
                 >
                   $${app.locals.partials.art.small} CourseLore
                 </a>
-                <script>
-                  (() => {
-                    const element =
-                      document.currentScript.previousElementSibling;
-                    document.addEventListener("DOMContentLoaded", () => {
-                      if (element.dataset.animated) return;
-                      element.dataset.animated = true;
-                      const artAnimation = new ArtAnimation({
-                        element,
-                        speed: 0.001,
-                        amount: 1,
-                        startupDuration: 500,
-                      });
-                      element.addEventListener("mouseover", () => {
-                        artAnimation.start();
-                      });
-                      element.addEventListener("mouseout", () => {
-                        artAnimation.stop();
-                      });
-                      element.addEventListener("focus", () => {
-                        artAnimation.start();
-                      });
-                      element.addEventListener("blur", () => {
-                        artAnimation.stop();
-                      });
-                    });
-                  })();
-                </script>
               </h1>
             </header>
             <main>$${body}</main>
@@ -2146,37 +2149,30 @@ export default async function courselore(
                     }
                   }
                 `}"
+                data-ondomcontentloaded="${javascript`
+                  const artAnimation = new ArtAnimation({
+                    element: this,
+                    speed: 0.001,
+                    amount: 1,
+                    startupDuration: 500,
+                  });
+                  this.addEventListener("mouseover", () => {
+                    artAnimation.start();
+                  });
+                  this.addEventListener("mouseout", () => {
+                    artAnimation.stop();
+                  });
+                  this.addEventListener("focus", () => {
+                    artAnimation.start();
+                  });
+                  this.addEventListener("blur", () => {
+                    artAnimation.stop();
+                  });
+                `}"
               >
                 $${app.locals.partials.art.small}
                 <span class="visually-hidden">CourseLore</span>
               </a>
-              <script>
-                (() => {
-                  const element = document.currentScript.previousElementSibling;
-                  document.addEventListener("DOMContentLoaded", () => {
-                    if (element.dataset.animated) return;
-                    element.dataset.animated = true;
-                    const artAnimation = new ArtAnimation({
-                      element,
-                      speed: 0.001,
-                      amount: 1,
-                      startupDuration: 500,
-                    });
-                    element.addEventListener("mouseover", () => {
-                      artAnimation.start();
-                    });
-                    element.addEventListener("mouseout", () => {
-                      artAnimation.stop();
-                    });
-                    element.addEventListener("focus", () => {
-                      artAnimation.start();
-                    });
-                    element.addEventListener("blur", () => {
-                      artAnimation.stop();
-                    });
-                  });
-                })();
-              </script>
             </h1>
 
             $${res.locals.course === undefined
@@ -3979,26 +3975,18 @@ export default async function courselore(
                           width: 100%;
                         }
                       `}"
+                      data-ondomcontentloaded="${javascript`
+                        new ArtAnimation({
+                          element: this,
+                          speed: 0.001,
+                          amount: 1,
+                          startupDuration: 500,
+                        }).start();
+                      `}"
                     >
                       $${app.locals.partials.art.small
                         .replace(/width=".*?"/, "")
                         .replace(/height=".*?"/, "")}
-                      <script>
-                        (() => {
-                          const element =
-                            document.currentScript.previousElementSibling;
-                          document.addEventListener("DOMContentLoaded", () => {
-                            if (element.dataset.animated) return;
-                            element.dataset.animated = true;
-                            new ArtAnimation({
-                              element,
-                              speed: 0.001,
-                              amount: 1,
-                              startupDuration: 500,
-                            }).start();
-                          });
-                        })();
-                      </script>
                     </div>
                   </div>
 
@@ -7398,6 +7386,10 @@ export default async function courselore(
               flex-direction: column;
               gap: var(--space--2);
             `}"
+            data-ondomcontentloaded="${javascript`
+              if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
+              this.classList.add("active--cancel");
+            `}"
           >
             $${res.locals.threads.map(
               (thread) => html`
@@ -7536,33 +7528,7 @@ export default async function courselore(
                 </a>
               `
             )}
-            <script>
-              (() => {
-                // const id = document.currentScript.previousElementSibling.id;
-                // eventSource.addEventListener("refreshed", (event) => {
-                //   document
-                //     .querySelector("#" + id)
-                //     .replaceWith(event.detail.document.querySelector("#" + id));
-                // });
-              })();
-            </script>
           </div>
-          <script>
-            (() => {
-              const element = document.currentScript.previousElementSibling;
-              document.addEventListener("DOMContentLoaded", () => {
-                if (element.dataset.canceledActiveWhenRedirected) return;
-                element.dataset.canceledActiveWhenRedirected = true;
-                if (
-                  new URLSearchParams(window.location.search).get(
-                    "redirected"
-                  ) !== "true"
-                )
-                  return;
-                element.classList.add("active--cancel");
-              });
-            })();
-          </script>
         </div>
       </div>
     `;
@@ -7595,6 +7561,11 @@ export default async function courselore(
                     display: flex;
                     gap: var(--space--2);
                   `}"
+                  data-ondomcontentloaded="${javascript`
+                    if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
+                    this.click();
+                    this.parentElement.remove();
+                  `}"
                   onclick="${javascript`
                     document.querySelector("#sidebar").classList.toggle("single-column--hidden");
                     document.querySelector("#main").classList.toggle("single-column--hidden");
@@ -7606,24 +7577,6 @@ export default async function courselore(
                   Threads
                   <i class="bi bi-chevron-bar-expand"></i>
                 </button>
-                <script>
-                  (() => {
-                    const element =
-                      document.currentScript.previousElementSibling;
-                    document.addEventListener("DOMContentLoaded", () => {
-                      if (element.dataset.pressedWhenRedirected) return;
-                      element.dataset.pressedWhenRedirected = true;
-                      if (
-                        new URLSearchParams(window.location.search).get(
-                          "redirected"
-                        ) !== "true"
-                      )
-                        return;
-                      element.click();
-                      element.parentElement.remove();
-                    });
-                  })();
-                </script>
               </div>
             `
           : html``}
@@ -8474,24 +8427,17 @@ ${value}</textarea
           align-items: center;
           gap: var(--space--2);
         `}"
+        data-ondomcontentloaded="${javascript`
+          new ArtAnimation({
+            element: this,
+            speed: 0.005,
+            amount: 1,
+            startupDuration: 0,
+          }).start();
+        `}"
       >
         $${app.locals.partials.art.small} Loading…
       </div>
-      <script>
-        (() => {
-          const element = document.currentScript.previousElementSibling;
-          document.addEventListener("DOMContentLoaded", () => {
-            if (element.dataset.animated) return;
-            element.dataset.animated = true;
-            new ArtAnimation({
-              element,
-              speed: 0.005,
-              amount: 1,
-              startupDuration: 0,
-            }).start();
-          });
-        })();
-      </script>
 
       <div
         hidden
@@ -9671,19 +9617,6 @@ ${value}</textarea
                 </div>
               `
             )}
-            <script>
-              // (() => {
-              //   const id = document.currentScript.previousElementSibling.id;
-              //   eventSource.addEventListener("refreshed", (event) => {
-              //     const posts = document.querySelector("#" + id);
-              //     if (posts.querySelector(".edit:not([hidden])") !== null)
-              //       return;
-              //     posts.replaceWith(
-              //       event.detail.document.querySelector("#" + id)
-              //     );
-              //   });
-              // })();
-            </script>
 
             <form
               method="POST"
@@ -9747,45 +9680,39 @@ ${value}</textarea
               </span>
               -->
 
-              $${app.locals.partials.textEditor()}
-              <script>
-                (() => {
-                  const textarea = document.currentScript.previousElementSibling.querySelector(
-                    "textarea"
+              <div
+                data-ondomcontentloaded="${javascript`
+                const content = this.querySelector('[name="content"]');
+                content.defaultValue =
+                  JSON.parse(
+                    localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                  )[window.location.pathname] ?? "";
+                content.dataset.skipIsModified = "true";
+                content.addEventListener("input", () => {
+                  const threadsContentsInProgress = JSON.parse(
+                    localStorage.getItem("threadsContentsInProgress") ?? "{}"
                   );
-                  document.addEventListener("DOMContentLoaded", () => {
-                    if (textarea.dataset.populatedFromLocalStorage === "true")
-                      return;
-                    textarea.dataset.populatedFromLocalStorage = true;
-                    textarea.defaultValue =
-                      JSON.parse(
-                        localStorage.getItem("threadsTextareas") ?? "{}"
-                      )[window.location.pathname] ?? "";
-                    textarea.dataset.skipIsModified = "true";
-                    textarea.addEventListener("input", () => {
-                      const threadsTextareas = JSON.parse(
-                        localStorage.getItem("threadsTextareas") ?? "{}"
-                      );
-                      threadsTextareas[window.location.pathname] =
-                        textarea.value;
-                      localStorage.setItem(
-                        "threadsTextareas",
-                        JSON.stringify(threadsTextareas)
-                      );
-                    });
-                    textarea.closest("form").addEventListener("submit", () => {
-                      const threadsTextareas = JSON.parse(
-                        localStorage.getItem("threadsTextareas") ?? "{}"
-                      );
-                      delete threadsTextareas[window.location.pathname];
-                      localStorage.setItem(
-                        "threadsTextareas",
-                        JSON.stringify(threadsTextareas)
-                      );
-                    });
-                  });
-                })();
-              </script>
+                  threadsContentsInProgress[window.location.pathname] =
+                    content.value;
+                  localStorage.setItem(
+                    "threadsContentsInProgress",
+                    JSON.stringify(threadsContentsInProgress)
+                  );
+                });
+                content.closest("form").addEventListener("submit", () => {
+                  const threadsContentsInProgress = JSON.parse(
+                    localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                  );
+                  delete threadsContentsInProgress[window.location.pathname];
+                  localStorage.setItem(
+                    "threadsContentsInProgress",
+                    JSON.stringify(threadsContentsInProgress)
+                  );
+                });
+              `}"
+              >
+                $${app.locals.partials.textEditor()}
+              </div>
 
               <div>
                 <button
