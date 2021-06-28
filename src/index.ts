@@ -1461,8 +1461,7 @@ export default async function courselore(
             }
           `}"
         >
-          $${bodyDOM.firstElementChild!.innerHTML}
-          $${app.locals.partials.art.preamble}
+          $${body} $${app.locals.partials.art.preamble}
 
           <script src="${app.locals.settings
               .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
