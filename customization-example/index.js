@@ -26,11 +26,11 @@ module.exports = (require) => {
           body: html`
             <div
               style="${css`
-                color: var(--color--primary-gray--700);
-                background-color: var(--color--primary-gray--50);
+                color: var(--color--cool-gray--700);
+                background-color: var(--color--cool-gray--50);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--primary-gray--200);
-                  background-color: var(--color--primary-gray--900);
+                  color: var(--color--cool-gray--200);
+                  background-color: var(--color--cool-gray--900);
                 }
               `}"
             >
@@ -683,15 +683,15 @@ module.exports = (require) => {
                           background-color: var(--color--primary--50);
                           @media (prefers-color-scheme: dark) {
                             color: var(--color--primary--300);
-                            background-color: var(--color--primary-gray--800);
+                            background-color: var(--color--cool-gray--800);
                           }
                           padding: var(--space--2) var(--space--4);
                         }
 
                         & > div {
-                          background-color: var(--color--primary-gray--50);
+                          background-color: var(--color--cool-gray--50);
                           @media (prefers-color-scheme: dark) {
-                            background-color: var(--color--primary-gray--800);
+                            background-color: var(--color--cool-gray--800);
                           }
                           flex: 1;
                           padding: var(--space--4);
