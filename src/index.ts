@@ -1932,7 +1932,7 @@ export default async function courselore(
         >
           <div
             style="${css`
-              max-width: var(--space--96);
+              max-width: var(--width--sm);
               flex: 1;
               display: flex;
               flex-direction: column;
@@ -2589,7 +2589,7 @@ export default async function courselore(
         <div
           style="${css`
             flex: 1;
-            min-width: 0;
+            min-width: var(--width--0);
             display: flex;
             justify-content: center;
           `}"
@@ -2597,7 +2597,7 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
-              max-width: calc(var(--space--80) * 2);
+              max-width: var(--width--2xl);
               padding: var(--space--4);
               overflow: auto;
             `}"
@@ -5008,7 +5008,7 @@ export default async function courselore(
             <div
               style="${css`
                 flex: 1;
-                max-width: calc(var(--space--80) * 2);
+                max-width: var(--width--2xl);
               `}"
             >
               $${body}
@@ -7364,7 +7364,7 @@ export default async function courselore(
         <div
           style="${css`
             flex: 1;
-            max-width: calc(var(--space--80) * 2);
+            max-width: var(--width--2xl);
             display: flex;
             flex-direction: column;
             gap: var(--space--4);
@@ -7686,7 +7686,7 @@ export default async function courselore(
             <div
               style="${css`
                 flex: 1;
-                max-width: calc(var(--space--80) * 2);
+                max-width: var(--width--2xl);
                 padding: var(--space--4);
                 overflow: auto;
               `}"
