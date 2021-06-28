@@ -1050,7 +1050,7 @@ export default async function courselore(
                     bottom: 0;
                     left: 0;
                     opacity: var(--opacity--70);
-                    z-index: -1;
+                    z-index: var(--z-index---1);
                   }
 
                   &.modal--close-button::after {
@@ -1329,7 +1329,7 @@ export default async function courselore(
                   font-style: italic;
                   padding-left: var(--space--8);
                   position: relative;
-                  z-index: 0;
+                  z-index: var(--z-index--0);
                   &::before {
                     content: "“";
                     font-size: var(--font-size--7xl);
@@ -1342,7 +1342,7 @@ export default async function courselore(
                     position: absolute;
                     left: var(--space---2);
                     top: var(--space---3);
-                    z-index: -1;
+                    z-index: var(--z-index---1);
                   }
                 }
 
