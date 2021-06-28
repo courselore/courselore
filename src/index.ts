@@ -351,7 +351,12 @@ export default async function courselore(
               for (const element of document.querySelectorAll(
                 "[data-ondomcontentloaded]"
               )) {
-                if (element.dataset.ondomcontentloadedExecuted) continue;
+                if (
+                  element.dataset.ondomcontentloadedExecuted ||
+                  element.closest('[data-skip-ondomcontentloaded="true"]') !==
+                    null
+                )
+                  continue;
                 element.dataset.ondomcontentloadedExecuted = true;
                 new Function(element.dataset.ondomcontentloaded).call(element);
               }
