@@ -3985,7 +3985,7 @@ export default async function courselore(
                   <div class="decorative-icon">
                     <div
                       style="${css`
-                        width: var(--space--32);
+                        width: var(--font-size--9xl);
                         opacity: 30%;
                         display: flex;
                         justify-content: center;
