@@ -1528,6 +1528,17 @@ export default async function courselore(
               .url}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
           </script>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const element of document.querySelectorAll(
+                "[data-ondomcontentloaded]:not([data-ondomcontentloaded-executed])"
+              )) {
+                new Function(element.dataset.ondomcontentloaded).call(element);
+                element.dataset.ondomcontentloadedExecuted = true;
+              }
+            });
+          </script>
         </body>
       </html>
     `);
