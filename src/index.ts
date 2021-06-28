@@ -432,7 +432,7 @@ export default async function courselore(
               }
 
               .text-gradient {
-                color: transparent;
+                color: var(--color--transparent);
                 background-clip: text;
                 background-image: linear-gradient(
                   135deg,
@@ -1431,7 +1431,7 @@ export default async function courselore(
                 input[type="checkbox"] {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
-                  color: transparent;
+                  color: var(--color--transparent);
                   width: var(--space--4);
                   height: var(--space--4);
                   border: var(--border-width--1) solid
