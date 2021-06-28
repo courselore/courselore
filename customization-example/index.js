@@ -62,7 +62,7 @@ module.exports = (require) => {
                       <g
                         text-anchor="middle"
                         style="${css`
-                          font-weight: var(--font-weight--black);
+                          font-weight: var(--font-weight--bold);
                           font-style: italic;
                         `}"
                       >
@@ -213,8 +213,8 @@ module.exports = (require) => {
                       width: 100%;
                       height: 100%;
                       position: absolute;
-                      z-index: -1;
-                      opacity: 10%;
+                      z-index: var(--z-index---1);
+                      opacity: var(--opacity--10);
                     }
 
                     & > section {
@@ -231,14 +231,12 @@ module.exports = (require) => {
                         gap: var(--space--8);
 
                         @media (max-width: 1023px) {
-                          max-width: var(--space--72);
+                          max-width: var(--width--xs);
                           flex-direction: column;
                         }
 
                         @media (min-width: 1024px) {
-                          max-width: calc(
-                            var(--space--72) * 3 + var(--space--8) * 2
-                          );
+                          max-width: var(--width--5xl);
                           & > * {
                             flex: 1;
                           }
@@ -512,14 +510,23 @@ module.exports = (require) => {
                               }
                               display: block;
                               border-radius: var(--border-radius--xl);
-                              transition: transform var(--transition-duration);
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--in-out
+                              );
 
                               &:hover,
                               &:focus {
-                                transform: scale(1.02) rotate(-1deg);
+                                transform: scale(var(--scale--105))
+                                  rotate(var(--rotate---1));
                               }
                               &:active {
-                                transform: scale(0.98);
+                                transform: scale(var(--scale--95));
                               }
 
                               & > div {
@@ -538,7 +545,7 @@ module.exports = (require) => {
                                     0 100%
                                   );
                                   @media (prefers-color-scheme: dark) {
-                                    filter: brightness(0.8);
+                                    filter: brightness(var(--brightness--75));
                                   }
                                 }
 
@@ -663,7 +670,7 @@ module.exports = (require) => {
                         flex-direction: column;
 
                         & > h4 {
-                          font-weight: var(--font-weight--bold);
+                          font-weight: var(--font-weight--semibold);
                           text-align: center;
                           color: var(--color--primary--800);
                           background-color: var(--color--primary--50);
@@ -854,14 +861,14 @@ module.exports = (require) => {
                       $${textProcessorExample(
                         // prettier-ignore
                         markdown`
-                      Calculate the position:
-      
-                      \`\`\`javascript
-                      function position(time) {
-                        return time * 0.25;
-                      }
-                      \`\`\`
-                    `
+                          Calculate the position:
+          
+                          \`\`\`javascript
+                          function position(time) {
+                            return time * 0.25;
+                          }
+                          \`\`\`
+                        `
                       )}
                       <p class="text">
                         CourseLore uses

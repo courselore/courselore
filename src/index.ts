@@ -402,7 +402,7 @@ export default async function courselore(
                 font-family: var(--font-family--serif);
                 font-size: var(--font-size--4xl);
                 line-height: var(--line-height--4xl);
-                font-weight: var(--font-weight--black);
+                font-weight: var(--font-weight--bold);
                 font-style: italic;
                 text-align: center;
               }
@@ -410,7 +410,7 @@ export default async function courselore(
               .heading--1 {
                 font-size: var(--font-size--base);
                 line-height: var(--line-height--base);
-                font-weight: var(--font-weight--bold);
+                font-weight: var(--font-weight--semibold);
                 color: var(--color--primary--900);
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--primary--400);
@@ -420,7 +420,7 @@ export default async function courselore(
               .heading--2 {
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
-                font-weight: var(--font-weight--black);
+                font-weight: var(--font-weight--bold);
                 text-transform: uppercase;
                 letter-spacing: var(--space--px);
                 color: var(--color--cool-gray--500);
@@ -598,7 +598,7 @@ export default async function courselore(
               }
 
               .button {
-                font-weight: var(--font-weight--bold);
+                font-weight: var(--font-weight--semibold);
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: inline-flex;
@@ -788,7 +788,7 @@ export default async function courselore(
               }
 
               .strong {
-                font-weight: var(--font-weight--bold);
+                font-weight: var(--font-weight--semibold);
                 color: var(--color--cool-gray--800);
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--cool-gray--300);
@@ -927,7 +927,7 @@ export default async function courselore(
                   .dropdown--heading {
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
-                    font-weight: var(--font-weight--black);
+                    font-weight: var(--font-weight--bold);
                     text-transform: uppercase;
                     letter-spacing: var(--space--px);
                     color: var(--color--primary--400);
@@ -1107,7 +1107,7 @@ export default async function courselore(
                 h6 {
                   font-size: var(--font-size--base);
                   line-height: var(--line-height--base);
-                  font-weight: var(--font-weight--bold);
+                  font-weight: var(--font-weight--semibold);
                   color: var(--color--cool-gray--800);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--cool-gray--300);
@@ -1144,7 +1144,7 @@ export default async function courselore(
 
                 b,
                 strong {
-                  font-weight: var(--font-weight--bold);
+                  font-weight: var(--font-weight--semibold);
                   color: var(--color--cool-gray--800);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--cool-gray--300);
@@ -1317,7 +1317,7 @@ export default async function courselore(
                     }
                   }
                   th {
-                    font-weight: var(--font-weight--bold);
+                    font-weight: var(--font-weight--semibold);
                     color: var(--color--cool-gray--800);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--cool-gray--300);
@@ -1348,7 +1348,7 @@ export default async function courselore(
 
                 dl {
                   dt {
-                    font-weight: var(--font-weight--bold);
+                    font-weight: var(--font-weight--semibold);
                     color: var(--color--cool-gray--800);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--cool-gray--300);
@@ -1411,7 +1411,7 @@ export default async function courselore(
                 }
 
                 dfn {
-                  font-weight: var(--font-weight--bold);
+                  font-weight: var(--font-weight--semibold);
                 }
 
                 mark {
@@ -2283,7 +2283,7 @@ export default async function courselore(
                       style="${css`
                         font-size: var(--font-size--base);
                         line-height: var(--line-height--base);
-                        font-weight: var(--font-weight--bold);
+                        font-weight: var(--font-weight--semibold);
                         max-width: 100%;
                         display: flex;
                         gap: var(--space--2);
@@ -2391,7 +2391,7 @@ export default async function courselore(
                         data-tippy-content="${html`
                           <p
                             style="${css`
-                              font-weight: var(--font-weight--bold);
+                              font-weight: var(--font-weight--semibold);
                               color: var(--color--primary--900);
                               @media (prefers-color-scheme: dark) {
                                 color: var(--color--primary--50);
@@ -3310,7 +3310,7 @@ export default async function courselore(
                   <p>
                     <strong
                       style="${css`
-                        font-weight: var(--font-weight--bold);
+                        font-weight: var(--font-weight--semibold);
                         color: var(--color--primary--900);
                         @media (prefers-color-scheme: dark) {
                           color: var(--color--primary--50);
@@ -4097,7 +4097,7 @@ export default async function courselore(
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
                             style="${css`
-                              font-weight: var(--font-weight--bold);
+                              font-weight: var(--font-weight--semibold);
                               color: var(
                                 --color--${enrollment.accentColor}--50
                               );
@@ -5516,7 +5516,7 @@ export default async function courselore(
                                               data-tippy-touch="false"
                                             `}
                                         style="${css`
-                                          font-weight: var(--font-weight--bold);
+                                          font-weight: var(--font-weight--semibold);
                                         `}"
                                       >
                                         ${"*".repeat(
@@ -5572,7 +5572,7 @@ export default async function courselore(
                                               `}
                                           style="${css`
                                             font-weight: var(
-                                              --font-weight--bold
+                                              --font-weight--semibold
                                             );
                                           `}"
                                         >
@@ -6628,7 +6628,7 @@ export default async function courselore(
                                                                 <strong
                                                                   style="${css`
                                                                     font-weight: var(
-                                                                      --font-weight--bold
+                                                                      --font-weight--semibold
                                                                     );
                                                                   `}"
                                                                 >
@@ -6722,7 +6722,7 @@ export default async function courselore(
                                           <strong
                                             style="${css`
                                               font-weight: var(
-                                                --font-weight--bold
+                                                --font-weight--semibold
                                               );
                                             `}"
                                           >
@@ -7156,7 +7156,7 @@ export default async function courselore(
               >
                 <p
                   style="${css`
-                    font-weight: var(--font-weight--bold);
+                    font-weight: var(--font-weight--semibold);
                   `}"
                 >
                   Welcome to ${res.locals.invitation.course.name}!
@@ -7282,7 +7282,7 @@ export default async function courselore(
               >
                 <p
                   style="${css`
-                    font-weight: var(--font-weight--bold);
+                    font-weight: var(--font-weight--semibold);
                   `}"
                 >
                   Welcome to ${res.locals.invitation.course.name}!
@@ -7374,7 +7374,7 @@ export default async function courselore(
             style="${css`
               display: flex;
               justify-content: center;
-              font-weight: var(--font-weight--bold);
+              font-weight: var(--font-weight--semibold);
             `}"
           >
             <a
@@ -7465,7 +7465,7 @@ export default async function courselore(
                 >
                   <h3
                     style="${css`
-                      font-weight: var(--font-weight--bold);
+                      font-weight: var(--font-weight--semibold);
                       color: var(--color--primary--100);
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--primary--100);
@@ -9163,7 +9163,7 @@ ${value}</textarea
                               <p>
                                 <strong
                                   style="${css`
-                                    font-weight: var(--font-weight--bold);
+                                    font-weight: var(--font-weight--semibold);
                                   `}"
                                 >
                                   You may not undo this action!
@@ -10212,7 +10212,7 @@ ${value}</textarea
                           >
                             <h2
                               style="${css`
-                                font-weight: var(--font-weight--bold);
+                                font-weight: var(--font-weight--semibold);
                                 color: var(--color--primary--800);
                                 @media (prefers-color-scheme: dark) {
                                   color: var(--color--primary--300);
