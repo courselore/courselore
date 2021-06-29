@@ -5554,8 +5554,10 @@ export default async function courselore(
                                       $${isExpired
                                         ? html`disabled`
                                         : html`
-                                            data-micromodal-trigger="modal--invitation--${invitation.reference}"
                                             class="button--inline"
+                                            onclick="${javascript`
+                                              MicroModal.show("modal--invitation--${invitation.reference}", microModalDefaults);
+                                            `}"
                                           `}
                                     >
                                       <span
@@ -6138,7 +6140,12 @@ export default async function courselore(
                     id="modal--invitation--${invitation.reference}"
                     class="modal"
                   >
-                    <div data-micromodal-close class="modal--close-button">
+                    <div
+                      class="modal--close-button"
+                      onclick="${javascript`
+                        if (this === event.target) MicroModal.close();
+                      `}"
+                    >
                       <div
                         class="modal--dialog"
                         style="${css`
@@ -6298,7 +6305,9 @@ export default async function courselore(
                   Invitation created successfully.
                   <button
                     class="button button--green"
-                    data-micromodal-trigger="modal--invitation--${invitationReference}"
+                    onclick="${javascript`
+                      MicroModal.show("modal--invitation--${invitationReference}", microModalDefaults);
+                    `}"
                   >
                     See Invitation
                   </button>
