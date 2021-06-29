@@ -6858,63 +6858,78 @@ export default async function courselore(
                             $${isOnlyStaff
                               ? html`disabled`
                               : html`
-                                  data-tippy-content="${html`
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=DELETE"
-                                      style="${css`
-                                        padding: var(--space--2) var(--space--0);
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--4);
-                                      `}"
-                                    >
-                                      <p>
-                                        Are you sure you want to remove
-                                        ${isSelf ? "yourself" : "this person"}
-                                        from the course?
-                                      </p>
-                                      <p>
-                                        <strong
-                                          style="${css`
-                                            font-weight: var(
-                                              --font-weight--semibold
-                                            );
-                                          `}"
-                                        >
-                                          You may not undo this action!
-                                        </strong>
-                                      </p>
-                                      <button class="button button--rose">
-                                        Remove from the course
-                                      </button>
-                                    </form>
-                                  `}"
-                                  data-tippy-theme="dropdown dropdown--rose"
-                                  data-tippy-trigger="click"
-                                  data-tippy-interactive="true"
-                                  data-tippy-allowHTML="true"
                                   class="button--inline button--inline--rose"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: this.nextElementSibling.innerHTML,
+                                      theme: "dropdown dropdown--rose",
+                                      trigger: "click",
+                                      interactive: true,
+                                      allowHTML: true,
+                                    });
+                                  `}"
                                 `}
                           >
                             <span
                               $${isOnlyStaff
                                 ? html`
-                                    data-tippy-content="You may not remove
-                                    yourself from the course because you’re the
-                                    only staff member."
-                                    data-tippy-theme="tooltip tooltip--rose"
                                     tabindex="0"
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "You may not remove yourself from the course because you’re the only staff member.",
+                                        theme: "tooltip tooltip--rose",
+                                      });
+                                    `}"
                                   `
                                 : html`
-                                    data-tippy-content="Remove from the Course"
-                                    data-tippy-theme="tooltip tooltip--rose"
-                                    data-tippy-touch="false"
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "Remove from the Course",
+                                        theme: "tooltip tooltip--rose",
+                                        touch: false,
+                                      });
+                                    `}"
                                   `}
                             >
                               <i class="bi bi-person-dash"></i>
                             </span>
                           </button>
+                          $${isOnlyStaff
+                            ? html``
+                            : html`
+                                <div hidden>
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=DELETE"
+                                    style="${css`
+                                      padding: var(--space--2) var(--space--0);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <p>
+                                      Are you sure you want to remove
+                                      ${isSelf ? "yourself" : "this person"}
+                                      from the course?
+                                    </p>
+                                    <p>
+                                      <strong
+                                        style="${css`
+                                          font-weight: var(
+                                            --font-weight--semibold
+                                          );
+                                        `}"
+                                      >
+                                        You may not undo this action!
+                                      </strong>
+                                    </p>
+                                    <button class="button button--rose">
+                                      Remove from the course
+                                    </button>
+                                  </form>
+                                </div>
+                              `}
                         </div>
                       </div>
                     </div>
@@ -7064,9 +7079,13 @@ export default async function courselore(
                     Accent Color
                     <button
                       type="button"
-                      data-tippy-content="The accent color helps you tell your courses apart."
-                      data-tippy-theme="tooltip"
-                      data-tippy-trigger="click"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "The accent color helps you tell your courses apart.",
+                          theme: "tooltip",
+                          trigger: "click",
+                        });
+                      `}"
                     >
                       <i class="bi bi-info-circle"></i>
                     </button>
