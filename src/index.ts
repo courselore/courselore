@@ -1516,7 +1516,7 @@ export default async function courselore(
             }
           `}"
         >
-          $${body} $${app.locals.partials.art.preamble}
+          $${app.locals.partials.art.preamble} $${body}
         </body>
       </html>
     `);
@@ -2326,19 +2326,26 @@ export default async function courselore(
                         `}"
                       >
                         <span
-                          data-tippy-content="${res.locals.invitations!
-                            .length === 0
-                            ? "Add"
-                            : `${
-                                res.locals.invitations!.length
-                              } pending invitation${
-                                res.locals.invitations!.length === 1 ? "" : "s"
-                              }`}"
-                          data-tippy-theme="tooltip"
-                          data-tippy-touch="false"
                           $${res.locals.invitations!.length === 0
                             ? html``
                             : html`class="notification-indicator"`}
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: ${JSON.stringify(
+                                res.locals.invitations!.length === 0
+                                  ? "Add"
+                                  : `${
+                                      res.locals.invitations!.length
+                                    } pending invitation${
+                                      res.locals.invitations!.length === 1
+                                        ? ""
+                                        : "s"
+                                    }`
+                              )},
+                                theme: "tooltip",
+                                touch: false,
+                            });
+                          `}"
                         >
                           <i class="bi bi-plus-circle"></i>
                         </span>
@@ -2391,61 +2398,70 @@ export default async function courselore(
                     </div>
                     <div>
                       <button
-                        data-tippy-content="${html`
-                          <p
-                            style="${css`
-                              font-weight: var(--font-weight--semibold);
-                              color: var(--color--primary--900);
-                              @media (prefers-color-scheme: dark) {
-                                color: var(--color--primary--50);
-                              }
-                            `}"
-                          >
-                            ${res.locals.user.name}
-                          </p>
-                          <p
-                            style="${css`
-                              color: var(--color--primary--500);
-                              @media (prefers-color-scheme: dark) {
-                                color: var(--color--primary--300);
-                              }
-                            `}"
-                          >
-                            ${res.locals.user.email}
-                          </p>
-                          <hr class="dropdown--separator" />
-                          <a
-                            class="dropdown--item"
-                            href="${app.locals.settings.url}/settings"
-                          >
-                            <i class="bi bi-sliders"></i>
-                            User Settings
-                          </a>
-                          <form
-                            method="POST"
-                            action="${app.locals.settings
-                              .url}/authenticate?_method=DELETE"
-                          >
-                            <button class="dropdown--item">
-                              <i class="bi bi-box-arrow-right"></i>
-                              Sign Out
-                            </button>
-                          </form>
-                        `}"
-                        data-tippy-theme="dropdown"
-                        data-tippy-trigger="click"
-                        data-tippy-interactive="true"
-                        data-tippy-allowHTML="true"
                         class="header--item"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: this.nextElementSibling.innerHTML,
+                            theme: "dropdown",
+                            trigger: "click",
+                            interactive: true,
+                            allowHTML: true,
+                          });
+                        `}"
                       >
                         <span
-                          data-tippy-content="${res.locals.user.name}"
-                          data-tippy-theme="tooltip"
-                          data-tippy-touch="false"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: ${JSON.stringify(res.locals.user.name)},
+                              theme: "tooltip",
+                              touch: false,
+                            });
+                          `}"
                         >
                           <i class="bi bi-person-circle"></i>
                         </span>
                       </button>
+                      <div hidden>
+                        <p
+                          style="${css`
+                            font-weight: var(--font-weight--semibold);
+                            color: var(--color--primary--900);
+                            @media (prefers-color-scheme: dark) {
+                              color: var(--color--primary--50);
+                            }
+                          `}"
+                        >
+                          ${res.locals.user.name}
+                        </p>
+                        <p
+                          style="${css`
+                            color: var(--color--primary--500);
+                            @media (prefers-color-scheme: dark) {
+                              color: var(--color--primary--300);
+                            }
+                          `}"
+                        >
+                          ${res.locals.user.email}
+                        </p>
+                        <hr class="dropdown--separator" />
+                        <a
+                          class="dropdown--item"
+                          href="${app.locals.settings.url}/settings"
+                        >
+                          <i class="bi bi-sliders"></i>
+                          User Settings
+                        </a>
+                        <form
+                          method="POST"
+                          action="${app.locals.settings
+                            .url}/authenticate?_method=DELETE"
+                        >
+                          <button class="dropdown--item">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Sign Out
+                          </button>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 `}
@@ -3193,10 +3209,14 @@ export default async function courselore(
                     >
                       <button
                         type="button"
-                        data-tippy-content="If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account."
-                        data-tippy-theme="tooltip"
-                        data-tippy-trigger="click"
                         class="button--inline"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
+                            theme: "tooltip",
+                            trigger: "click",
+                          });
+                        `}"
                       >
                         <i class="bi bi-info-circle"></i>
                       </button>
@@ -3596,9 +3616,13 @@ export default async function courselore(
                   <label>
                     Email
                     <span
-                      data-tippy-content="This is the email that you confirmed by having followed the Magic Authentication Link; it’s your identity in CourseLore and may not be changed anymore."
-                      data-tippy-theme="tooltip"
                       tabindex="0"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "This is the email that you confirmed by having followed the Magic Authentication Link; it’s your identity in CourseLore and may not be changed anymore.",
+                          theme: "tooltip",
+                        });
+                      `}"
                     >
                       <input
                         type="email"
@@ -4030,10 +4054,14 @@ export default async function courselore(
                     `}"
                   >
                     <button
-                      data-tippy-content="To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information."
-                      data-tippy-theme="tooltip"
-                      data-tippy-trigger="click"
                       class="button button--primary"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                          theme: "tooltip",
+                          trigger: "click",
+                        });
+                      `}"
                     >
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
@@ -4187,9 +4215,13 @@ export default async function courselore(
                 <label>
                   Email
                   <span
-                    data-tippy-content="Your email is your identity in CourseLore and may not be changed."
-                    data-tippy-theme="tooltip"
                     tabindex="0"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "Your email is your identity in CourseLore and may not be changed.",
+                        theme: "tooltip",
+                      });
+                    `}"
                   >
                     <input
                       type="email"
@@ -4829,49 +4861,8 @@ export default async function courselore(
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.courseSettings = ({ req, res, head, body }) => {
-    const menu = html`
-      <a
-        href="${app.locals.settings.url}/courses/${res.locals.course
-          .reference}/settings"
-        class="dropdown--item ${req.path.endsWith("/settings") ? "active" : ""}"
-      >
-        <i class="bi bi-sliders"></i>
-        Course Settings
-      </a>
-      <a
-        href="${app.locals.settings.url}/courses/${res.locals.course
-          .reference}/settings/invitations"
-        class="dropdown--item ${req.path.endsWith("/settings/invitations")
-          ? "active"
-          : ""}"
-      >
-        <i class="bi bi-person-plus"></i>
-        Invitations
-      </a>
-      <a
-        href="${app.locals.settings.url}/courses/${res.locals.course
-          .reference}/settings/enrollments"
-        class="dropdown--item ${req.path.endsWith("/settings/enrollments")
-          ? "active"
-          : ""}"
-      >
-        <i class="bi bi-people"></i>
-        Enrollments
-      </a>
-      <a
-        href="${app.locals.settings.url}/courses/${res.locals.course
-          .reference}/settings/enrollment"
-        class="dropdown--item ${req.path.endsWith("/settings/enrollment")
-          ? "active"
-          : ""}"
-      >
-        <i class="bi bi-person"></i>
-        Your Enrollment
-      </a>
-    `;
-
-    return app.locals.layouts.application({
+  app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
+    app.locals.layouts.application({
       req,
       res,
       head,
@@ -4899,11 +4890,15 @@ export default async function courselore(
                     display: flex;
                     gap: var(--space--2);
                   `}"
-                  data-tippy-content="${menu}"
-                  data-tippy-theme="dropdown"
-                  data-tippy-trigger="click"
-                  data-tippy-interactive="true"
-                  data-tippy-allowHTML="true"
+                  data-ondomcontentloaded="${javascript`
+                    tippy(this, {
+                      content: document.querySelector(".course-settings--menu").innerHTML,
+                      theme: "dropdown",
+                      trigger: "click",
+                      interactive: true,
+                      allowHTML: true,
+                    });
+                  `}"
                 >
                   <i class="bi bi-sliders"></i>
                   Course Settings
@@ -4931,6 +4926,7 @@ export default async function courselore(
           $${res.locals.enrollment.role === "staff"
             ? html`
                 <div
+                  class="course-settings--menu"
                   style="${css`
                     padding: var(--space--2-5) var(--space--4) var(--space--4);
                     display: flex;
@@ -4982,7 +4978,52 @@ export default async function courselore(
                     }
                   `}"
                 >
-                  $${menu}
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/settings"
+                    class="dropdown--item ${req.path.endsWith("/settings")
+                      ? "active"
+                      : ""}"
+                  >
+                    <i class="bi bi-sliders"></i>
+                    Course Settings
+                  </a>
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/settings/invitations"
+                    class="dropdown--item ${req.path.endsWith(
+                      "/settings/invitations"
+                    )
+                      ? "active"
+                      : ""}"
+                  >
+                    <i class="bi bi-person-plus"></i>
+                    Invitations
+                  </a>
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/settings/enrollments"
+                    class="dropdown--item ${req.path.endsWith(
+                      "/settings/enrollments"
+                    )
+                      ? "active"
+                      : ""}"
+                  >
+                    <i class="bi bi-people"></i>
+                    Enrollments
+                  </a>
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/settings/enrollment"
+                    class="dropdown--item ${req.path.endsWith(
+                      "/settings/enrollment"
+                    )
+                      ? "active"
+                      : ""}"
+                  >
+                    <i class="bi bi-person"></i>
+                    Your Enrollment
+                  </a>
                 </div>
               `
             : html``}
@@ -5012,8 +5053,6 @@ export default async function courselore(
         </div>
       `,
     });
-  };
-
   app.get<
     { courseReference: string },
     HTML,
@@ -5298,7 +5337,33 @@ export default async function courselore(
                       ></textarea>
                       <button
                         type="button"
-                        data-tippy-content="${html`
+                        class="button--inline"
+                        style="${css`
+                          justify-self: end;
+                          align-self: start;
+                          margin-top: var(--space--2);
+                          margin-right: var(--space--4);
+                          position: relative;
+                        `}"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: this.nextElementSibling.innerHTML,
+                            theme: "tooltip",
+                            trigger: "click",
+                            allowHTML: true,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                      <div hidden>
+                        <div
+                          style="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
+                        >
                           <p>
                             Emails must be separated by commas and/or newlines,
                             and may include names which may be quoted or not,
@@ -5309,21 +5374,8 @@ export default async function courselore(
                             Ali <ali@courselore.org>
                             leandro@courselore.org
                           `}</code></pre>
-                        `}"
-                        data-tippy-theme="tooltip"
-                        data-tippy-trigger="click"
-                        data-tippy-allowHTML="true"
-                        class="button--inline"
-                        style="${css`
-                          justify-self: end;
-                          align-self: start;
-                          margin-top: var(--space--2);
-                          margin-right: var(--space--4);
-                          position: relative;
-                        `}"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -5424,9 +5476,6 @@ export default async function courselore(
                       />
                       <button
                         type="button"
-                        data-tippy-content="This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change."
-                        data-tippy-theme="tooltip"
-                        data-tippy-trigger="click"
                         class="button--inline"
                         style="${css`
                           justify-self: end;
@@ -5434,6 +5483,13 @@ export default async function courselore(
                           margin-top: var(--space--2);
                           margin-right: var(--space--4);
                           position: relative;
+                        `}"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
+                            theme: "tooltip",
+                            trigger: "click",
+                          });
                         `}"
                       >
                         <i class="bi bi-info-circle"></i>
@@ -5502,16 +5558,22 @@ export default async function courselore(
                                       <span
                                         $${isExpired
                                           ? html`
-                                              data-tippy-content="Can’t show
-                                              Invitation Link because it’s
-                                              expired."
-                                              data-tippy-theme="tooltip"
                                               tabindex="0"
+                                              data-ondomcontentloaded="${javascript`
+                                                tippy(this, {
+                                                  content: "Can’t show Invitation Link because it’s expired.",
+                                                  theme: "tooltip",
+                                                });
+                                              `}"
                                             `
                                           : html`
-                                              data-tippy-content="See Invitation
-                                              Link" data-tippy-theme="tooltip"
-                                              data-tippy-touch="false"
+                                              data-ondomcontentloaded="${javascript`
+                                                tippy(this, {
+                                                  content: "See Invitation Link",
+                                                  theme: "tooltip",
+                                                  touch: false,
+                                                });
+                                              `}"
                                             `}
                                         style="${css`
                                           font-weight: var(
@@ -5544,54 +5606,46 @@ export default async function courselore(
                                     >
                                       <div>
                                         <button
-                                          $${isUsed || isExpired
-                                            ? html`disabled`
-                                            : html`
-                                                data-tippy-content="${html`
-                                                  <form
-                                                    method="POST"
-                                                    action="${action}?_method=PATCH"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="resend"
-                                                      value="true"
-                                                    />
-                                                    <button
-                                                      class="dropdown--item"
-                                                    >
-                                                      Resend Invitation Email
-                                                    </button>
-                                                  </form>
-                                                `}"
-                                                data-tippy-theme="dropdown"
-                                                data-tippy-trigger="click"
-                                                data-tippy-interactive="true"
-                                                data-tippy-allowHTML="true"
-                                                class="button--inline"
-                                              `}
                                           style="${css`
                                             font-weight: var(
                                               --font-weight--semibold
                                             );
                                           `}"
+                                          $${isUsed || isExpired
+                                            ? html`disabled`
+                                            : html`
+                                                class="button--inline"
+                                                data-ondomcontentloaded="${javascript`
+                                                  tippy(this, {
+                                                    content: this.nextElementSibling.innerHTML,
+                                                    theme: "dropdown",
+                                                    trigger: "click",
+                                                    interactive: true,
+                                                    allowHTML: true,
+                                                  });
+                                                `}"
+                                              `}
                                         >
                                           <span
                                             $${isUsed
                                               ? html`
-                                                  data-tippy-content="Can’t
-                                                  resend invitation because it’s
-                                                  used."
-                                                  data-tippy-theme="tooltip"
                                                   tabindex="0"
+                                                  data-ondomcontentloaded="${javascript`
+                                                    tippy(this, {
+                                                      content: "Can’t resend invitation because it’s used.",
+                                                      theme: "tooltip",
+                                                    });
+                                                  `}"
                                                 `
                                               : isExpired
                                               ? html`
-                                                  data-tippy-content="Can’t
-                                                  resend invitation because it’s
-                                                  expired."
-                                                  data-tippy-theme="tooltip"
                                                   tabindex="0"
+                                                  data-ondomcontentloaded="${javascript`
+                                                    tippy(this, {
+                                                      content: "Can’t resend invitation because it’s expired.",
+                                                      theme: "tooltip",
+                                                    });
+                                                  `}"
                                                 `
                                               : html``}
                                           >
@@ -5600,6 +5654,21 @@ export default async function courselore(
                                             <i class="bi bi-chevron-down"></i>
                                           </span>
                                         </button>
+                                        <div hidden>
+                                          <form
+                                            method="POST"
+                                            action="${action}?_method=PATCH"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="resend"
+                                              value="true"
+                                            />
+                                            <button class="dropdown--item">
+                                              Resend Invitation Email
+                                            </button>
+                                          </form>
+                                        </div>
                                       </div>
                                       $${invitation.name === null
                                         ? html``
