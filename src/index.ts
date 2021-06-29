@@ -5705,63 +5705,75 @@ export default async function courselore(
                                 $${isUsed || isExpired
                                   ? html`disabled`
                                   : html`
-                                      data-tippy-content="${html`
-                                        $${app.locals.constants.roles.map(
-                                          (role) =>
-                                            role === invitation.role
-                                              ? html``
-                                              : html`
-                                                  <form
-                                                    method="POST"
-                                                    action="${action}?_method=PATCH"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="role"
-                                                      value="${role}"
-                                                    />
-                                                    <button
-                                                      class="dropdown--item"
-                                                    >
-                                                      Change Invitation Role to
-                                                      ${lodash.capitalize(role)}
-                                                    </button>
-                                                  </form>
-                                                `
-                                        )}
-                                      `}"
-                                      data-tippy-theme="dropdown"
-                                      data-tippy-trigger="click"
-                                      data-tippy-interactive="true"
-                                      data-tippy-allowHTML="true"
                                       class="button--inline"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: this.nextElementSibling.innerHTML,
+                                          theme: "dropdown",
+                                          trigger: "click",
+                                          interactive: true,
+                                          allowHTML: true,
+                                        });
+                                      `}"
                                     `}
                               >
                                 <span
                                   $${isUsed
                                     ? html`
-                                        data-tippy-content="You may not change
-                                        the role of this invitation because it
-                                        has already been used."
-                                        data-tippy-theme="tooltip" tabindex="0"
+                                        tabindex="0"
+                                        data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: "You may not change the role of this invitation because it has already been used.",
+                                            theme: "tooltip",
+                                          });
+                                        `}"
                                       `
                                     : isExpired
                                     ? html`
-                                        data-tippy-content="You may not change
-                                        the role of this invitation because it’s
-                                        expired." data-tippy-theme="tooltip"
                                         tabindex="0"
+                                        data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: "You may not change the role of this invitation because it’s expired.",
+                                            theme: "tooltip",
+                                          });
+                                        `}"
                                       `
                                     : html`
-                                        data-tippy-content="Change Role"
-                                        data-tippy-theme="tooltip"
-                                        data-tippy-touch="false"
+                                        data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: "Change Role",
+                                            theme: "tooltip",
+                                            touch: false,
+                                          });
+                                        `}"
                                       `}
                                 >
                                   ${lodash.capitalize(invitation.role)}
                                   <i class="bi bi-chevron-down"></i>
                                 </span>
                               </button>
+                              <div hidden>
+                                $${app.locals.constants.roles.map((role) =>
+                                  role === invitation.role
+                                    ? html``
+                                    : html`
+                                        <form
+                                          method="POST"
+                                          action="${action}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="role"
+                                            value="${role}"
+                                          />
+                                          <button class="dropdown--item">
+                                            Change Invitation Role to
+                                            ${lodash.capitalize(role)}
+                                          </button>
+                                        </form>
+                                      `
+                                )}
+                              </div>
                             </div>
 
                             <div
@@ -5838,17 +5850,6 @@ export default async function courselore(
                                 return isUsed
                                   ? html`
                                       <div
-                                        data-tippy-content="${html`
-                                          Used
-                                          <time class="time--relative">
-                                            ${new Date(
-                                              invitation.usedAt!
-                                            ).toISOString()}
-                                          </time>
-                                        `}"
-                                        data-tippy-theme="tooltip"
-                                        data-tippy-allowHTML="true"
-                                        data-tippy-interactive="true"
                                         style="${css`
                                           color: var(--color--green--700);
                                           background-color: var(
@@ -5866,6 +5867,21 @@ export default async function courselore(
                                             --border-radius--md
                                           );
                                         `}"
+                                        data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: ${JSON.stringify(html`
+                                              Used
+                                              <time class="time--relative">
+                                                ${new Date(
+                                                  invitation.usedAt!
+                                                ).toISOString()}
+                                              </time>
+                                            `)},
+                                            theme: "tooltip",
+                                            allowHTML: true,
+                                            interactive: true,
+                                          });
+                                        `}"
                                       >
                                         Used
                                         <i class="bi bi-check-lg"></i>
@@ -5873,8 +5889,81 @@ export default async function courselore(
                                     `
                                   : isExpired
                                   ? html`
-                                      <button
-                                        data-tippy-content="${html`
+                                      <div>
+                                        <button
+                                          style="${css`
+                                            color: var(--color--rose--700);
+                                            background-color: var(
+                                              --color--rose--100
+                                            );
+                                            &:hover,
+                                            &:focus {
+                                              background-color: var(
+                                                --color--rose--200
+                                              );
+                                            }
+                                            &:active {
+                                              background-color: var(
+                                                --color--rose--300
+                                              );
+                                            }
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(--color--rose--100);
+                                              background-color: var(
+                                                --color--rose--900
+                                              );
+                                              &:hover,
+                                              &:focus {
+                                                background-color: var(
+                                                  --color--rose--700
+                                                );
+                                              }
+                                              &:active {
+                                                background-color: var(
+                                                  --color--rose--600
+                                                );
+                                              }
+                                            }
+                                            padding: var(--space--1)
+                                              var(--space--2);
+                                            border-radius: var(
+                                              --border-radius--md
+                                            );
+                                            transition: background-color
+                                              var(--transition-duration);
+                                          `}"
+                                          data-ondomcontentloaded="${javascript`
+                                            tippy(this, {
+                                              content: this.nextElementSibling.innerHTML,
+                                              theme: "dropdown",
+                                              trigger: "click",
+                                              interactive: true,
+                                              allowHTML: true,
+                                            });
+                                          `}"
+                                        >
+                                          <span
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                theme: "tooltip",
+                                                touch: false,
+                                              });
+                                            `}"
+                                          >
+                                            <span
+                                              style="${css`
+                                                display: inline-flex;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              <i class="bi bi-calendar-x"></i>
+                                              Expired
+                                            </span>
+                                            <i class="bi bi-chevron-down"></i>
+                                          </span>
+                                        </button>
+                                        <div hidden>
                                           <h3 class="dropdown--heading">
                                             <i class="bi bi-calendar-x"></i>
                                             <span>
@@ -5890,75 +5979,88 @@ export default async function courselore(
                                           $${changeExpirationForm}
                                           <hr class="dropdown--separator" />
                                           $${removeExpirationForm}
-                                        `}"
-                                        data-tippy-theme="dropdown"
-                                        data-tippy-trigger="click"
-                                        data-tippy-interactive="true"
-                                        data-tippy-allowHTML="true"
-                                        style="${css`
-                                          color: var(--color--rose--700);
-                                          background-color: var(
-                                            --color--rose--100
-                                          );
-                                          &:hover,
-                                          &:focus {
+                                        </div>
+                                      </div>
+                                    `
+                                  : invitation.expiresAt === null
+                                  ? html`
+                                      <div>
+                                        <button
+                                          style="${css`
+                                            color: var(--color--blue--700);
                                             background-color: var(
-                                              --color--rose--200
-                                            );
-                                          }
-                                          &:active {
-                                            background-color: var(
-                                              --color--rose--300
-                                            );
-                                          }
-                                          @media (prefers-color-scheme: dark) {
-                                            color: var(--color--rose--100);
-                                            background-color: var(
-                                              --color--rose--900
+                                              --color--blue--100
                                             );
                                             &:hover,
                                             &:focus {
                                               background-color: var(
-                                                --color--rose--700
+                                                --color--blue--200
                                               );
                                             }
                                             &:active {
                                               background-color: var(
-                                                --color--rose--600
+                                                --color--blue--300
                                               );
                                             }
-                                          }
-                                          padding: var(--space--1)
-                                            var(--space--2);
-                                          border-radius: var(
-                                            --border-radius--md
-                                          );
-                                          transition: background-color
-                                            var(--transition-duration);
-                                        `}"
-                                      >
-                                        <span
-                                          data-tippy-content="Change Expiration"
-                                          data-tippy-theme="tooltip"
-                                          data-tippy-touch="false"
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(--color--blue--100);
+                                              background-color: var(
+                                                --color--blue--900
+                                              );
+                                              &:hover,
+                                              &:focus {
+                                                background-color: var(
+                                                  --color--blue--700
+                                                );
+                                              }
+                                              &:active {
+                                                background-color: var(
+                                                  --color--blue--600
+                                                );
+                                              }
+                                            }
+                                            padding: var(--space--1)
+                                              var(--space--2);
+                                            border-radius: var(
+                                              --border-radius--md
+                                            );
+                                            transition: background-color
+                                              var(--transition-duration);
+                                          `}"
+                                          data-ondomcontentloaded="${javascript`
+                                            tippy(this, {
+                                              content: this.nextElementSibling.innerHTML,
+                                              theme: "dropdown",
+                                              trigger: "click",
+                                              interactive: true,
+                                              allowHTML: true,
+                                            });
+                                          `}"
                                         >
                                           <span
-                                            style="${css`
-                                              display: inline-flex;
-                                              gap: var(--space--2);
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                theme: "tooltip",
+                                                touch: false,
+                                              });
                                             `}"
                                           >
-                                            <i class="bi bi-calendar-x"></i>
-                                            Expired
+                                            <span
+                                              style="${css`
+                                                display: inline-flex;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-calendar-minus"
+                                              ></i>
+                                              Doesn’t Expire
+                                            </span>
+                                            <i class="bi bi-chevron-down"></i>
                                           </span>
-                                          <i class="bi bi-chevron-down"></i>
-                                        </span>
-                                      </button>
-                                    `
-                                  : invitation.expiresAt === null
-                                  ? html`
-                                      <button
-                                        data-tippy-content="${html`
+                                        </button>
+                                        <div hidden>
                                           <div
                                             style="${css`
                                               padding-top: var(--space--1);
@@ -5968,74 +6070,87 @@ export default async function courselore(
                                             <hr class="dropdown--separator" />
                                             $${expireForm}
                                           </div>
-                                        `}"
-                                        data-tippy-theme="dropdown"
-                                        data-tippy-trigger="click"
-                                        data-tippy-interactive="true"
-                                        data-tippy-allowHTML="true"
-                                        style="${css`
-                                          color: var(--color--blue--700);
-                                          background-color: var(
-                                            --color--blue--100
-                                          );
-                                          &:hover,
-                                          &:focus {
+                                        </div>
+                                      </div>
+                                    `
+                                  : html`
+                                      <div>
+                                        <button
+                                          style="${css`
+                                            color: var(--color--yellow--700);
                                             background-color: var(
-                                              --color--blue--200
-                                            );
-                                          }
-                                          &:active {
-                                            background-color: var(
-                                              --color--blue--300
-                                            );
-                                          }
-                                          @media (prefers-color-scheme: dark) {
-                                            color: var(--color--blue--100);
-                                            background-color: var(
-                                              --color--blue--900
+                                              --color--yellow--100
                                             );
                                             &:hover,
                                             &:focus {
                                               background-color: var(
-                                                --color--blue--700
+                                                --color--yellow--200
                                               );
                                             }
                                             &:active {
                                               background-color: var(
-                                                --color--blue--600
+                                                --color--yellow--300
                                               );
                                             }
-                                          }
-                                          padding: var(--space--1)
-                                            var(--space--2);
-                                          border-radius: var(
-                                            --border-radius--md
-                                          );
-                                          transition: background-color
-                                            var(--transition-duration);
-                                        `}"
-                                      >
-                                        <span
-                                          data-tippy-content="Change Expiration"
-                                          data-tippy-theme="tooltip"
-                                          data-tippy-touch="false"
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(--color--yellow--100);
+                                              background-color: var(
+                                                --color--yellow--900
+                                              );
+                                              &:hover,
+                                              &:focus {
+                                                background-color: var(
+                                                  --color--yellow--700
+                                                );
+                                              }
+                                              &:active {
+                                                background-color: var(
+                                                  --color--yellow--600
+                                                );
+                                              }
+                                            }
+                                            padding: var(--space--1)
+                                              var(--space--2);
+                                            border-radius: var(
+                                              --border-radius--md
+                                            );
+                                            transition: background-color
+                                              var(--transition-duration);
+                                          `}"
+                                          data-ondomcontentloaded="${javascript`
+                                            tippy(this, {
+                                              content: this.nextElementSibling.innerHTML,
+                                              theme: "dropdown",
+                                              trigger: "click",
+                                              interactive: true,
+                                              allowHTML: true,
+                                            });
+                                          `}"
                                         >
                                           <span
-                                            style="${css`
-                                              display: inline-flex;
-                                              gap: var(--space--2);
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                theme: "tooltip",
+                                                touch: false,
+                                              });
                                             `}"
                                           >
-                                            <i class="bi bi-calendar-minus"></i>
-                                            Doesn’t Expire
+                                            <span
+                                              style="${css`
+                                                display: inline-flex;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-calendar-plus"
+                                              ></i>
+                                              Expires
+                                            </span>
+                                            <i class="bi bi-chevron-down"></i>
                                           </span>
-                                          <i class="bi bi-chevron-down"></i>
-                                        </span>
-                                      </button>
-                                    `
-                                  : html`
-                                      <button
-                                        data-tippy-content="${html`
+                                        </button>
+                                        <div hidden>
                                           <h3 class="dropdown--heading">
                                             <i class="bi bi-calendar-plus"></i>
                                             <span>
@@ -6052,70 +6167,8 @@ export default async function courselore(
                                           <hr class="dropdown--separator" />
                                           $${removeExpirationForm}
                                           $${expireForm}
-                                        `}"
-                                        data-tippy-theme="dropdown"
-                                        data-tippy-trigger="click"
-                                        data-tippy-interactive="true"
-                                        data-tippy-allowHTML="true"
-                                        style="${css`
-                                          color: var(--color--yellow--700);
-                                          background-color: var(
-                                            --color--yellow--100
-                                          );
-                                          &:hover,
-                                          &:focus {
-                                            background-color: var(
-                                              --color--yellow--200
-                                            );
-                                          }
-                                          &:active {
-                                            background-color: var(
-                                              --color--yellow--300
-                                            );
-                                          }
-                                          @media (prefers-color-scheme: dark) {
-                                            color: var(--color--yellow--100);
-                                            background-color: var(
-                                              --color--yellow--900
-                                            );
-                                            &:hover,
-                                            &:focus {
-                                              background-color: var(
-                                                --color--yellow--700
-                                              );
-                                            }
-                                            &:active {
-                                              background-color: var(
-                                                --color--yellow--600
-                                              );
-                                            }
-                                          }
-                                          padding: var(--space--1)
-                                            var(--space--2);
-                                          border-radius: var(
-                                            --border-radius--md
-                                          );
-                                          transition: background-color
-                                            var(--transition-duration);
-                                        `}"
-                                      >
-                                        <span
-                                          data-tippy-content="Change Expiration"
-                                          data-tippy-theme="tooltip"
-                                          data-tippy-touch="false"
-                                        >
-                                          <span
-                                            style="${css`
-                                              display: inline-flex;
-                                              gap: var(--space--2);
-                                            `}"
-                                          >
-                                            <i class="bi bi-calendar-plus"></i>
-                                            Expires
-                                          </span>
-                                          <i class="bi bi-chevron-down"></i>
-                                        </span>
-                                      </button>
+                                        </div>
+                                      </div>
                                     `;
                               })()}
                             </div>
@@ -6178,9 +6231,6 @@ export default async function courselore(
                             `}"
                           />
                           <button
-                            data-tippy-content="Copy"
-                            data-tippy-theme="tooltip"
-                            data-tippy-touch="false"
                             class="button--inline"
                             style="${css`
                               justify-self: end;
@@ -6188,6 +6238,13 @@ export default async function courselore(
                               margin-top: var(--space--2);
                               margin-right: var(--space--4);
                               position: relative;
+                            `}"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Copy",
+                                theme: "tooltip",
+                                touch: false,
+                              });
                             `}"
                             onclick="${javascript`
                               this.previousElementSibling.select();
@@ -6215,10 +6272,14 @@ export default async function courselore(
                         >
                           QR Code
                           <button
-                            data-tippy-content="People may point their phone camera at the image below to follow the invitation link."
-                            data-tippy-theme="tooltip"
-                            data-tippy-trigger="click"
                             class="button--inline"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "People may point their phone camera at the image below to follow the invitation link.",
+                                theme: "tooltip",
+                                trigger: "click",
+                              });
+                          `}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
