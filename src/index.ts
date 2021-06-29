@@ -6706,9 +6706,7 @@ export default async function courselore(
                           flex-direction: column;
                         `}"
                       >
-                        <div class="strong">
-                          ${enrollment.userName}
-                        </div>
+                        <div class="strong">${enrollment.userName}</div>
                         <div>${enrollment.userEmail}</div>
                       </div>
                       <div
@@ -6720,190 +6718,173 @@ export default async function courselore(
                           gap: var(--space--6);
                         `}"
                       >
-                          <button
-                            $${
-                              isOnlyStaff
-                                ? html`disabled`
-                                : html`
-                                    data-tippy-content="${html`
-                                      $${app.locals.constants.roles.map(
-                                        (role) =>
-                                          role === enrollment.role
-                                            ? html``
-                                            : html`
-                                                <form
-                                                  method="POST"
-                                                  action="${action}?_method=PATCH"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="role"
-                                                    value="${role}"
-                                                  />
-                                                  <button
-                                                    $${isSelf
-                                                      ? html`
-                                                          type="button"
-                                                          data-tippy-content="${html`
-                                                            <div
-                                                              style="${css`
-                                                                padding: var(
-                                                                    --space--2
-                                                                  )
-                                                                  var(
-                                                                    --space--0
-                                                                  );
-                                                                display: flex;
-                                                                flex-direction: column;
-                                                                gap: var(
-                                                                  --space--4
-                                                                );
-                                                              `}"
-                                                            >
-                                                              <p>
-                                                                Are you sure you
-                                                                want to convert
-                                                                yourself into
-                                                                ${role}?
-                                                              </p>
-                                                              <p>
-                                                                <strong
-                                                                  style="${css`
-                                                                    font-weight: var(
-                                                                      --font-weight--semibold
-                                                                    );
-                                                                  `}"
-                                                                >
-                                                                  You may not
-                                                                  undo this
-                                                                  action!
-                                                                </strong>
-                                                              </p>
-                                                              <button
-                                                                class="button button--rose"
-                                                                onclick="${javascript`
+                        <button
+                          $${isOnlyStaff
+                            ? html`disabled`
+                            : html`
+                                data-tippy-content="${html`
+                                  $${app.locals.constants.roles.map((role) =>
+                                    role === enrollment.role
+                                      ? html``
+                                      : html`
+                                          <form
+                                            method="POST"
+                                            action="${action}?_method=PATCH"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="role"
+                                              value="${role}"
+                                            />
+                                            <button
+                                              $${isSelf
+                                                ? html`
+                                                    type="button"
+                                                    data-tippy-content="${html`
+                                                      <div
+                                                        style="${css`
+                                                          padding: var(
+                                                              --space--2
+                                                            )
+                                                            var(--space--0);
+                                                          display: flex;
+                                                          flex-direction: column;
+                                                          gap: var(--space--4);
+                                                        `}"
+                                                      >
+                                                        <p>
+                                                          Are you sure you want
+                                                          to convert yourself
+                                                          into ${role}?
+                                                        </p>
+                                                        <p>
+                                                          <strong
+                                                            style="${css`
+                                                              font-weight: var(
+                                                                --font-weight--semibold
+                                                              );
+                                                            `}"
+                                                          >
+                                                            You may not undo
+                                                            this action!
+                                                          </strong>
+                                                        </p>
+                                                        <button
+                                                          class="button button--rose"
+                                                          onclick="${javascript`
                                                               document.querySelector('[aria-describedby="' + this.closest("[data-tippy-root]").id + '"]').closest("form").submit();
                                                             `}"
-                                                              >
-                                                                Convert to
-                                                                ${lodash.capitalize(
-                                                                  role
-                                                                )}
-                                                              </button>
-                                                            </div>
-                                                          `}"
-                                                          data-tippy-theme="dropdown
-                                                          dropdown--rose"
-                                                          data-tippy-trigger="click"
-                                                          data-tippy-interactive="true"
-                                                          data-tippy-allowHTML="true"
-                                                          data-tippy-append-to="body"
-                                                        `
-                                                      : html``}
-                                                    class="dropdown--item"
-                                                  >
-                                                    Convert to
-                                                    ${lodash.capitalize(role)}
-                                                  </button>
-                                                </form>
-                                              `
-                                      )}
-                                    `}"
-                                    data-tippy-theme="dropdown"
-                                    data-tippy-trigger="click"
-                                    data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true"
-                                    class="button--inline"
-                                  `
-                            }
+                                                        >
+                                                          Convert to
+                                                          ${lodash.capitalize(
+                                                            role
+                                                          )}
+                                                        </button>
+                                                      </div>
+                                                    `}"
+                                                    data-tippy-theme="dropdown
+                                                    dropdown--rose"
+                                                    data-tippy-trigger="click"
+                                                    data-tippy-interactive="true"
+                                                    data-tippy-allowHTML="true"
+                                                    data-tippy-append-to="body"
+                                                  `
+                                                : html``}
+                                              class="dropdown--item"
+                                            >
+                                              Convert to
+                                              ${lodash.capitalize(role)}
+                                            </button>
+                                          </form>
+                                        `
+                                  )}
+                                `}"
+                                data-tippy-theme="dropdown"
+                                data-tippy-trigger="click"
+                                data-tippy-interactive="true"
+                                data-tippy-allowHTML="true"
+                                class="button--inline"
+                              `}
+                        >
+                          <span
+                            $${isOnlyStaff
+                              ? html`
+                                  data-tippy-content="You may not change your
+                                  own role because you’re the only staff
+                                  member." data-tippy-theme="tooltip"
+                                  tabindex="0"
+                                `
+                              : html`
+                                  data-tippy-content="Change Role"
+                                  data-tippy-theme="tooltip"
+                                  data-tippy-touch="false"
+                                `}
                           >
-                            <span
-                              $${
-                                isOnlyStaff
-                                  ? html`
-                                      data-tippy-content="You may not change
-                                      your own role because you’re the only
-                                      staff member." data-tippy-theme="tooltip"
-                                      tabindex="0"
-                                    `
-                                  : html`
-                                      data-tippy-content="Change Role"
-                                      data-tippy-theme="tooltip"
-                                      data-tippy-touch="false"
-                                    `
-                              }
-                            >
-                              ${lodash.capitalize(enrollment.role)}
-                              <i class="bi bi-chevron-down"></i>
-                            </span>
-                        </span>
+                            ${lodash.capitalize(enrollment.role)}
+                            <i class="bi bi-chevron-down"></i>
+                          </span>
+                        </button>
 
-                          <button
-                            $${
-                              isOnlyStaff
-                                ? html`disabled`
-                                : html`
-                                    data-tippy-content="${html`
-                                      <form
-                                        method="POST"
-                                        action="${action}?_method=DELETE"
+                        <button
+                          $${isOnlyStaff
+                            ? html`disabled`
+                            : html`
+                                data-tippy-content="${html`
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=DELETE"
+                                    style="${css`
+                                      padding: var(--space--2) var(--space--0);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <p>
+                                      Are you sure you want to remove
+                                      ${isSelf ? "yourself" : "this person"}
+                                      from the course?
+                                    </p>
+                                    <p>
+                                      <strong
                                         style="${css`
-                                          padding: var(--space--2)
-                                            var(--space--0);
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--4);
+                                          font-weight: var(
+                                            --font-weight--semibold
+                                          );
                                         `}"
                                       >
-                                        <p>
-                                          Are you sure you want to remove
-                                          ${isSelf ? "yourself" : "this person"}
-                                          from the course?
-                                        </p>
-                                        <p>
-                                          <strong
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--semibold
-                                              );
-                                            `}"
-                                          >
-                                            You may not undo this action!
-                                          </strong>
-                                        </p>
-                                        <button class="button button--rose">
-                                          Remove from the course
-                                        </button>
-                                      </form>
-                                    `}"
-                                    data-tippy-theme="dropdown dropdown--rose"
-                                    data-tippy-trigger="click"
-                                    data-tippy-interactive="true"
-                                    data-tippy-allowHTML="true"
-                                    class="button--inline button--inline--rose"
-                                  `
-                            }
+                                        You may not undo this action!
+                                      </strong>
+                                    </p>
+                                    <button class="button button--rose">
+                                      Remove from the course
+                                    </button>
+                                  </form>
+                                `}"
+                                data-tippy-theme="dropdown dropdown--rose"
+                                data-tippy-trigger="click"
+                                data-tippy-interactive="true"
+                                data-tippy-allowHTML="true"
+                                class="button--inline button--inline--rose"
+                              `}
+                        >
+                          <span
+                            $${isOnlyStaff
+                              ? html`
+                                  data-tippy-content="You may not remove
+                                  yourself from the course because you’re the
+                                  only staff member." data-tippy-theme="tooltip
+                                  tooltip--rose" tabindex="0"
+                                `
+                              : html`
+                                  data-tippy-content="Remove from the Course"
+                                  data-tippy-theme="tooltip tooltip--rose"
+                                  data-tippy-touch="false"
+                                `}
                           >
-                            <span
-                              $${
-                                isOnlyStaff
-                                  ? html`
-                                      data-tippy-content="You may not remove
-                                      yourself from the course because you’re
-                                      the only staff member."
-                                      data-tippy-theme="tooltip tooltip--rose"
-                                      tabindex="0"
-                                    `
-                                  : html`
-                                      data-tippy-content="Remove from the
-                                      Course" data-tippy-theme="tooltip
-                                      tooltip--rose" data-tippy-touch="false"
-                                    `
-                              }
-                            >
-                              <i class="bi bi-person-dash"></i>
-                            </span>
-                          </button>
+                            <i class="bi bi-person-dash"></i>
+                          </span>
+                        </button>
                       </div>
                     </div>
                   `;
