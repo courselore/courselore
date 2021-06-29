@@ -2236,7 +2236,9 @@ export default async function courselore(
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}"
-                        class="dropdown--item ${req.path.includes("threads") ? "active" : ""}"
+                        class="dropdown--item ${req.path.includes("threads")
+                          ? "active"
+                          : ""}"
                       >
                         <i class="bi bi-chat-left-text"></i>
                         Threads
@@ -2244,7 +2246,9 @@ export default async function courselore(
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/settings"
-                        class="dropdown--item ${req.path.includes("settings") ? "active" : ""}"
+                        class="dropdown--item ${req.path.includes("settings")
+                          ? "active"
+                          : ""}"
                       >
                         <i class="bi bi-sliders"></i>
                         Course Settings
