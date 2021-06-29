@@ -8795,28 +8795,36 @@ ${value}</textarea
                               autocomplete="off"
                             />
                             <span
-                              data-tippy-content="Pin"
-                              data-tippy-theme="tooltip"
-                              data-tippy-touch="false"
                               class="button--inline after-toggle"
                               style="${css`
                                 :checked + & {
                                   display: none;
                                 }
                               `}"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Pin",
+                                  theme: "tooltip",
+                                  touch: false,
+                                });
+                              `}"
                             >
                               <i class="bi bi-pin-angle"></i>
                               Unpinned
                             </span>
                             <span
-                              data-tippy-content="Unpin"
-                              data-tippy-theme="tooltip"
-                              data-tippy-touch="false"
                               class="button--inline after-toggle strong"
                               style="${css`
                                 :not(:checked) + * + & {
                                   display: none;
                                 }
+                              `}"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Unpin",
+                                  theme: "tooltip",
+                                  touch: false,
+                                });
                               `}"
                             >
                               <i class="bi bi-pin-fill"></i>
