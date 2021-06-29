@@ -349,6 +349,9 @@ export default async function courselore(
             window.textFieldEdit = textFieldEdit;
           </script>
 
+          <script src="${app.locals.settings
+              .url}/node_modules/mousetrap/mousetrap.min.js"></script>
+
           <script>
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
@@ -7924,6 +7927,7 @@ export default async function courselore(
           <span
             class="button--inline after-toggle"
             data-ondomcontentloaded="${javascript`
+              Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+p", () => { this.click(); return false; });
               tippy(this, {
                 content: ${JSON.stringify(html`
                   <span class="keyboard-shortcut">
@@ -7938,7 +7942,6 @@ export default async function courselore(
                 allowHTML: true,
                 touch: false,
               });
-              // this.closest(".text-editor").querySelector('[name="content"]').
             `}"
           >
             <i class="bi bi-eyeglasses"></i>
@@ -7973,6 +7976,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--heading--1"
               data-tippy-content="${html`
                 Heading 1
                 <span class="keyboard-shortcut">
@@ -7986,7 +7990,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--heading--1"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
@@ -7997,6 +8000,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--heading--2"
               data-tippy-content="${html`
                 Heading 2
                 <span class="keyboard-shortcut">
@@ -8010,7 +8014,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--heading--2"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
@@ -8021,6 +8024,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--heading--3"
               data-tippy-content="${html`
                 Heading 3
                 <span class="keyboard-shortcut">
@@ -8034,7 +8038,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--heading--3"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
@@ -8047,6 +8050,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--bold"
               data-tippy-content="${html`
                 Bold
                 <span class="keyboard-shortcut">
@@ -8059,7 +8063,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--bold"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "**");
@@ -8070,6 +8073,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--italic"
               data-tippy-content="${html`
                 Italic
                 <span class="keyboard-shortcut">
@@ -8082,7 +8086,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--italic"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "_");
@@ -8093,6 +8096,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--link"
               data-tippy-content="${html`
                 Link
                 <span class="keyboard-shortcut">
@@ -8105,7 +8109,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--link"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
@@ -8118,6 +8121,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--bulleted-list"
               data-tippy-content="${html`
                 Bulleted List
                 <span class="keyboard-shortcut">
@@ -8131,7 +8135,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--bulleted-list"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
@@ -8142,6 +8145,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--numbered-list"
               data-tippy-content="${html`
                 Numbered List
                 <span class="keyboard-shortcut">
@@ -8155,7 +8159,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--numbered-list"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
@@ -8166,6 +8169,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--checklist"
               data-tippy-content="${html`
                 Checklist
                 <span class="keyboard-shortcut">
@@ -8179,7 +8183,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--checklist"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
@@ -8192,6 +8195,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--quote"
               data-tippy-content="${html`
                 Quote
                 <span class="keyboard-shortcut">
@@ -8204,7 +8208,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--quote"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
@@ -8215,6 +8218,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--table"
               data-tippy-content="${html`
                 Table
                 <span class="keyboard-shortcut">
@@ -8228,7 +8232,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--table"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 const gapLength = element.selectionEnd - element.selectionStart + 2;
@@ -8240,6 +8243,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--disclosure"
               data-tippy-content="${html`
                 Disclosure
                 <span class="keyboard-shortcut">
@@ -8253,7 +8257,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--disclosure"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
@@ -8266,6 +8269,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--inline-code"
               data-tippy-content="${html`
                 Inline Code
                 <span class="keyboard-shortcut">
@@ -8278,7 +8282,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--inline-code"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "\`");
@@ -8289,6 +8292,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--code-block"
               data-tippy-content="${html`
                 Code Block
                 <span class="keyboard-shortcut">
@@ -8302,7 +8306,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--code-block"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
@@ -8315,6 +8318,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--inline-equation"
               data-tippy-content="${html`
                 Inline Equation
                 <span class="keyboard-shortcut">
@@ -8328,7 +8332,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--inline-equation"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "$");
@@ -8339,6 +8342,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--equation-block"
               data-tippy-content="${html`
                 Equation Block
                 <span class="keyboard-shortcut">
@@ -8352,7 +8356,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--equation-block"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
@@ -8365,6 +8368,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--mention-user"
               data-tippy-content="${html`
                 Mention User
                 <span class="keyboard-shortcut">
@@ -8378,7 +8382,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--mention-user"
               onclick="${javascript`
                 alert("TODO: Mention User");
               `}"
@@ -8387,6 +8390,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--refer-to-thread-or-post"
               data-tippy-content="${html`
                 Refer to Thread or Post
                 <span class="keyboard-shortcut">
@@ -8400,7 +8404,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--refer-to-thread-or-post"
               onclick="${javascript`
                 alert("TODO: Refer to Thread or Post");
               `}"
@@ -8411,6 +8414,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline tool--image"
               data-tippy-content="${html`
                 Image
                 <span class="keyboard-shortcut">
@@ -8425,7 +8429,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--image"
               onclick="${javascript`
                 alert("TODO: Image");
               `}"
@@ -8434,6 +8437,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
+              class="button--inline tool--attachment"
               data-tippy-content="${html`
                 Attachment
                 <span class="keyboard-shortcut">
@@ -8448,7 +8452,6 @@ export default async function courselore(
               data-tippy-theme="tooltip"
               data-tippy-touch="false"
               data-tippy-allowHTML="true"
-              class="button--inline tool--attachment"
               onclick="${javascript`
                 alert("TODO: Attachment");
               `}"
@@ -8459,6 +8462,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
+              class="button--inline"
               data-tippy-content="${html`
                 <p class="text">
                   You may style text with
@@ -8479,7 +8483,6 @@ export default async function courselore(
               data-tippy-trigger="click"
               data-tippy-interactive="true"
               data-tippy-allowHTML="true"
-              class="button--inline"
             >
               <span
                 data-tippy-content="Help"
@@ -8504,111 +8507,111 @@ export default async function courselore(
             //   this.closest("form").querySelector(".tab--preview").click();
             //   return;
             // }
-            if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit1") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--heading--1").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit2") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--heading--2").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit3") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--heading--3").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === "KeyB") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--bold").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyI") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--image").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === "KeyI") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--italic").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyK") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--attachment").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === "KeyK") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--link").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit8") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--bulleted-list").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit7") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--numbered-list").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit9") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--checklist").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === "Quote") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--quote").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "KeyT") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--table").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyD") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--disclosure").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.altKey && event.shiftKey && event.code === "KeyE") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--equation-block").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "KeyE") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--inline-equation").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyE") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--code-block").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === "KeyE") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--inline-code").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyU") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--mention-user").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyJ") {
-              event.preventDefault();
-              this.closest(".text-editor").querySelector(".tool--refer-to-thread-or-post").click();
-              return;
-            }
-            if ((event.ctrlKey || event.metaKey) && event.code === "Enter") {
-              event.preventDefault();
-              this.closest("form").querySelector('button:not([type="button"])').click();
-              return;
-            }
+            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit1") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--heading--1").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit2") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--heading--2").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit3") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--heading--3").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyB") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--bold").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyI") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--image").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyI") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--italic").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyK") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--attachment").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyK") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--link").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit8") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--bulleted-list").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit7") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--numbered-list").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit9") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--checklist").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.code === "Quote") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--quote").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "KeyT") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--table").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyD") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--disclosure").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.shiftKey && event.code === "KeyE") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--equation-block").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "KeyE") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--inline-equation").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyE") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--code-block").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyE") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--inline-code").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyU") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--mention-user").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyJ") {
+            //   event.preventDefault();
+            //   this.closest(".text-editor").querySelector(".tool--refer-to-thread-or-post").click();
+            //   return;
+            // }
+            // if ((event.ctrlKey || event.metaKey) && event.code === "Enter") {
+            //   event.preventDefault();
+            //   this.closest("form").querySelector('button:not([type="button"])').click();
+            //   return;
+            // }
           `}"
         >
 ${value}</textarea
