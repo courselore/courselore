@@ -331,7 +331,10 @@ export default async function courselore(
           <script src="${app.locals.settings
               .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
           <script>
-            MicroModal.init({ disableScroll: true, disableFocus: true });
+            const microModalDefaults = {
+              disableScroll: true,
+              disableFocus: true,
+            };
           </script>
 
           <script type="module">

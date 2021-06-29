@@ -395,7 +395,9 @@ module.exports = (require) => {
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, { content: "What’s Markdown?", theme: "tooltip", touch: false });
                                   `}"
-                                  data-micromodal-trigger="modal--markdown"
+                                  onclick="${javascript`
+                                    MicroModal.show("modal--markdown", microModalDefaults);
+                                  `}"
                                 >
                                   <i class="bi bi-info-circle"></i>
                                 </button>
@@ -407,7 +409,9 @@ module.exports = (require) => {
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, { content: "What’s LaTeX?", theme: "tooltip", touch: false });
                                   `}"
-                                  data-micromodal-trigger="modal--latex"
+                                  onclick="${javascript`
+                                    MicroModal.show("modal--latex", microModalDefaults);
+                                  `}"
                                 >
                                   <i class="bi bi-info-circle"></i>
                                 </button>
@@ -419,7 +423,9 @@ module.exports = (require) => {
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, { content: "What’s Syntax Highlighting?", theme: "tooltip", touch: false });
                                   `}"
-                                  data-micromodal-trigger="modal--syntax-highlighting"
+                                  onclick="${javascript`
+                                    MicroModal.show("modal--syntax-highlighting", microModalDefaults);
+                                  `}"
                                 >
                                   <i class="bi bi-info-circle"></i>
                                 </button>
@@ -766,7 +772,12 @@ module.exports = (require) => {
 
               return html`
                 <div id="modal--markdown" class="modal">
-                  <div data-micromodal-close class="modal--close-button">
+                  <div
+                    class="modal--close-button"
+                    onclick="${javascript`
+                      if (this === event.target) MicroModal.close();
+                    `}"
+                  >
                     <div
                       class="modal--dialog"
                       style="${css`
@@ -808,7 +819,12 @@ module.exports = (require) => {
                 </div>
 
                 <div id="modal--latex" class="modal">
-                  <div data-micromodal-close class="modal--close-button">
+                  <div
+                    class="modal--close-button"
+                    onclick="${javascript`
+                      if (this === event.target) MicroModal.close();
+                    `}"
+                  >
                     <div
                       class="modal--dialog"
                       style="${css`
@@ -844,7 +860,12 @@ module.exports = (require) => {
                 </div>
 
                 <div id="modal--syntax-highlighting" class="modal">
-                  <div data-micromodal-close class="modal--close-button">
+                  <div
+                    class="modal--close-button"
+                    onclick="${javascript`
+                      if (this === event.target) MicroModal.close();
+                    `}"
+                  >
                     <div
                       class="modal--dialog"
                       style="${css`
