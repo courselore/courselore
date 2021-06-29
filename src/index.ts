@@ -7977,6 +7977,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Heading 1
@@ -8005,6 +8006,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Heading 2
@@ -8033,6 +8035,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Heading 3
@@ -8063,6 +8066,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Bold
@@ -8090,6 +8094,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Italic
@@ -8117,6 +8122,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Link
@@ -8146,6 +8152,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Bulleted List
@@ -8174,6 +8181,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Numbered List
@@ -8202,6 +8210,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Checklist
@@ -8232,6 +8241,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Quote
@@ -8259,6 +8269,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Table
@@ -8288,6 +8299,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Disclosure
@@ -8318,6 +8330,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Inline Code
@@ -8345,6 +8358,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Code Block
@@ -8375,6 +8389,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Inline Equation
@@ -8403,6 +8418,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Equation Block
@@ -8433,6 +8449,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Mention User
@@ -8459,6 +8476,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Refer to Thread or Post
@@ -8487,6 +8505,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Image
@@ -8514,6 +8533,7 @@ export default async function courselore(
               type="button"
               class="button--inline"
               data-ondomcontentloaded="${javascript`
+                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
                     Attachment
