@@ -7899,7 +7899,6 @@ export default async function courselore(
             type="radio"
             name="text-editor--mode"
             autocomplete="off"
-            class="tab--preview"
             onclick="${javascript`
               (async () => {
                 const write = this.closest(".text-editor").querySelector(".panel--write");
@@ -7976,7 +7975,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--heading--1"
+              class="button--inline"
               data-tippy-content="${html`
                 Heading 1
                 <span class="keyboard-shortcut">
@@ -8000,7 +7999,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--heading--2"
+              class="button--inline"
               data-tippy-content="${html`
                 Heading 2
                 <span class="keyboard-shortcut">
@@ -8024,7 +8023,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--heading--3"
+              class="button--inline"
               data-tippy-content="${html`
                 Heading 3
                 <span class="keyboard-shortcut">
@@ -8050,7 +8049,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--bold"
+              class="button--inline"
               data-tippy-content="${html`
                 Bold
                 <span class="keyboard-shortcut">
@@ -8073,7 +8072,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--italic"
+              class="button--inline"
               data-tippy-content="${html`
                 Italic
                 <span class="keyboard-shortcut">
@@ -8096,7 +8095,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--link"
+              class="button--inline"
               data-tippy-content="${html`
                 Link
                 <span class="keyboard-shortcut">
@@ -8121,7 +8120,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--bulleted-list"
+              class="button--inline"
               data-tippy-content="${html`
                 Bulleted List
                 <span class="keyboard-shortcut">
@@ -8145,7 +8144,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--numbered-list"
+              class="button--inline"
               data-tippy-content="${html`
                 Numbered List
                 <span class="keyboard-shortcut">
@@ -8169,7 +8168,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--checklist"
+              class="button--inline"
               data-tippy-content="${html`
                 Checklist
                 <span class="keyboard-shortcut">
@@ -8195,7 +8194,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--quote"
+              class="button--inline"
               data-tippy-content="${html`
                 Quote
                 <span class="keyboard-shortcut">
@@ -8218,7 +8217,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--table"
+              class="button--inline"
               data-tippy-content="${html`
                 Table
                 <span class="keyboard-shortcut">
@@ -8243,7 +8242,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--disclosure"
+              class="button--inline"
               data-tippy-content="${html`
                 Disclosure
                 <span class="keyboard-shortcut">
@@ -8269,7 +8268,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--inline-code"
+              class="button--inline"
               data-tippy-content="${html`
                 Inline Code
                 <span class="keyboard-shortcut">
@@ -8292,7 +8291,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--code-block"
+              class="button--inline"
               data-tippy-content="${html`
                 Code Block
                 <span class="keyboard-shortcut">
@@ -8318,7 +8317,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--inline-equation"
+              class="button--inline"
               data-tippy-content="${html`
                 Inline Equation
                 <span class="keyboard-shortcut">
@@ -8342,7 +8341,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--equation-block"
+              class="button--inline"
               data-tippy-content="${html`
                 Equation Block
                 <span class="keyboard-shortcut">
@@ -8368,7 +8367,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--mention-user"
+              class="button--inline"
               data-tippy-content="${html`
                 Mention User
                 <span class="keyboard-shortcut">
@@ -8390,7 +8389,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--refer-to-thread-or-post"
+              class="button--inline"
               data-tippy-content="${html`
                 Refer to Thread or Post
                 <span class="keyboard-shortcut">
@@ -8414,7 +8413,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline tool--image"
+              class="button--inline"
               data-tippy-content="${html`
                 Image
                 <span class="keyboard-shortcut">
@@ -8437,7 +8436,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline tool--attachment"
+              class="button--inline"
               data-tippy-content="${html`
                 Attachment
                 <span class="keyboard-shortcut">
