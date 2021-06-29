@@ -8607,118 +8607,6 @@ export default async function courselore(
           data-ondomcontentloaded="${javascript`
             fitTextarea.watch(this);
           `}"
-          onkeydown="${javascript`
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyP") {
-            //   event.preventDefault();
-            //   this.closest("form").querySelector(".tab--preview").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit1") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--heading--1").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit2") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--heading--2").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit3") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--heading--3").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyB") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--bold").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyI") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--image").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyI") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--italic").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyK") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--attachment").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyK") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--link").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit8") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--bulleted-list").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit7") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--numbered-list").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "Digit9") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--checklist").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.code === "Quote") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--quote").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "KeyT") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--table").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyD") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--disclosure").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.shiftKey && event.code === "KeyE") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--equation-block").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "KeyE") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--inline-equation").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyE") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--code-block").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.code === "KeyE") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--inline-code").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyU") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--mention-user").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyJ") {
-            //   event.preventDefault();
-            //   this.closest(".text-editor").querySelector(".tool--refer-to-thread-or-post").click();
-            //   return;
-            // }
-            // if ((event.ctrlKey || event.metaKey) && event.code === "Enter") {
-            //   event.preventDefault();
-            //   this.closest("form").querySelector('button:not([type="button"])').click();
-            //   return;
-            // }
-          `}"
         >
 ${value}</textarea
         >
@@ -9001,23 +8889,28 @@ ${value}</textarea
 
                 <div>
                   <button
-                    data-tippy-content="${html`
-                      <span class="keyboard-shortcut">
-                        Ctrl+Enter or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-command"></i
-                          ><i class="bi bi-arrow-return-left"></i
-                        ></span>
-                      </span>
-                    `}"
-                    data-tippy-theme="tooltip"
-                    data-tippy-touch="false"
-                    data-tippy-allowHTML="true"
                     class="button button--primary"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
                       }
+                    `}"
+                    data-ondomcontentloaded="${javascript`
+                      Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                      tippy(this, {
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            Ctrl+Enter or
+                            <span class="keyboard-shortcut--cluster"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `)},
+                        theme: "tooltip",
+                        touch: false,
+                        allowHTML: true,
+                      });
                     `}"
                   >
                     <i class="bi bi-chat-left-text"></i>
@@ -9906,19 +9799,23 @@ ${value}</textarea
                               Cancel
                             </button>
                             <button
-                              data-tippy-content="${html`
-                                <span class="keyboard-shortcut">
-                                  Ctrl+Enter or
-                                  <span class="keyboard-shortcut--cluster"
-                                    ><i class="bi bi-command"></i
-                                    ><i class="bi bi-arrow-return-left"></i
-                                  ></span>
-                                </span>
+                              data-ondomcontentloaded="${javascript`
+                                Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                                tippy(this, {
+                                  content: ${JSON.stringify(html`
+                                    <span class="keyboard-shortcut">
+                                      Ctrl+Enter or
+                                      <span class="keyboard-shortcut--cluster"
+                                        ><i class="bi bi-command"></i
+                                        ><i class="bi bi-arrow-return-left"></i
+                                      ></span>
+                                    </span>
+                                  `)},
+                                  theme: "tooltip",
+                                  touch: false,
+                                  allowHTML: true,
+                                });
                               `}"
-                              data-tippy-theme="tooltip"
-                              data-tippy-touch="false"
-                              data-tippy-allowHTML="true"
-                              class="green"
                             >
                               Change Post
                             </button>
@@ -10028,24 +9925,29 @@ ${value}</textarea
 
               <div>
                 <button
-                  data-tippy-content="${html`
-                    <span class="keyboard-shortcut">
-                      Ctrl+Enter or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-command"></i
-                        ><i class="bi bi-arrow-return-left"></i
-                      ></span>
-                    </span>
-                  `}"
-                  data-tippy-theme="tooltip"
-                  data-tippy-touch="false"
-                  data-tippy-allowHTML="true"
                   class="button button--primary"
                   style="${css`
                     @media (max-width: 400px) {
                       width: 100%;
                     }
                   `}"
+                  data-ondomcontentloaded="${javascript`
+                      Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                      tippy(this, {
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            Ctrl+Enter or
+                            <span class="keyboard-shortcut--cluster"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `)},
+                        theme: "tooltip",
+                        touch: false,
+                        allowHTML: true,
+                      });
+                    `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
                   Post
