@@ -913,8 +913,7 @@ export default async function courselore(
                   line-height: var(--line-height--xs);
 
                   .keyboard-shortcut--cluster {
-                    letter-spacing: var(--letter-spacing--wider);
-                    margin-right: calc(-1 * var(--letter-spacing--wider));
+                    letter-spacing: var(--letter-spacing--widest);
                   }
                 }
 
@@ -7923,19 +7922,24 @@ export default async function courselore(
             `}"
           />
           <span
-            data-tippy-content="${html`
-              <span class="keyboard-shortcut">
-                Ctrl+Shift+P or
-                <span class="keyboard-shortcut--cluster"
-                  ><i class="bi bi-shift"></i
-                  ><i class="bi bi-command"></i>P</span
-                >
-              </span>
-            `}"
-            data-tippy-theme="tooltip"
-            data-tippy-allowHTML="true"
-            data-tippy-touch="false"
             class="button--inline after-toggle"
+            data-ondomcontentloaded="${javascript`
+              tippy(this, {
+                content: ${JSON.stringify(html`
+                  <span class="keyboard-shortcut">
+                    Ctrl+Shift+P or
+                    <span class="keyboard-shortcut--cluster"
+                      ><i class="bi bi-shift"></i
+                      ><i class="bi bi-command"></i>P</span
+                    >
+                  </span>
+                `)},
+                theme: "tooltip",
+                allowHTML: true,
+                touch: false,
+              });
+              // this.closest(".text-editor").querySelector('[name="content"]').
+            `}"
           >
             <i class="bi bi-eyeglasses"></i>
             Preview
@@ -8495,11 +8499,11 @@ export default async function courselore(
             fitTextarea.watch(this);
           `}"
           onkeydown="${javascript`
-            if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyP") {
-              event.preventDefault();
-              this.closest("form").querySelector(".tab--preview").click();
-              return;
-            }
+            // if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.code === "KeyP") {
+            //   event.preventDefault();
+            //   this.closest("form").querySelector(".tab--preview").click();
+            //   return;
+            // }
             if ((event.ctrlKey || event.metaKey) && event.altKey && event.code === "Digit1") {
               event.preventDefault();
               this.closest(".text-editor").querySelector(".tool--heading--1").click();
