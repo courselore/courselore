@@ -7976,19 +7976,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Heading 1
-                <span class="keyboard-shortcut">
-                  (Ctrl+Alt+1 or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-alt"></i
-                    ><i class="bi bi-command"></i>1</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Heading 1
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Alt+1 or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-alt"></i
+                        ><i class="bi bi-command"></i>1</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
@@ -8000,19 +8004,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Heading 2
-                <span class="keyboard-shortcut">
-                  (Ctrl+Alt+2 or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-alt"></i
-                    ><i class="bi bi-command"></i>2</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Heading 2
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Alt+2 or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-alt"></i
+                        ><i class="bi bi-command"></i>2</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
@@ -8024,19 +8032,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Heading 3
-                <span class="keyboard-shortcut">
-                  (Ctrl+Alt+3 or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-alt"></i
-                    ><i class="bi bi-command"></i>3</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Heading 3
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Alt+3 or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-alt"></i
+                        ><i class="bi bi-command"></i>3</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
@@ -8050,18 +8062,22 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Bold
-                <span class="keyboard-shortcut">
-                  (Ctrl+B or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>B</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Bold
+                    <span class="keyboard-shortcut">
+                      (Ctrl+B or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-command"></i>B</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "**");
@@ -8073,18 +8089,22 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Italic
-                <span class="keyboard-shortcut">
-                  (Ctrl+I or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>I</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Italic
+                    <span class="keyboard-shortcut">
+                      (Ctrl+I or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-command"></i>I</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "_");
@@ -8096,18 +8116,22 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Link
-                <span class="keyboard-shortcut">
-                  (Ctrl+K or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>K</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Link
+                    <span class="keyboard-shortcut">
+                      (Ctrl+K or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-command"></i>K</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
@@ -8121,19 +8145,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Bulleted List
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+8 or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>8</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Bulleted List
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+8 or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>8</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
@@ -8145,19 +8173,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Numbered List
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+7 or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>7</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Numbered List
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+7 or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>7</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
@@ -8169,19 +8201,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Checklist
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+9 or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>9</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Checklist
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+9 or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>9</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
@@ -8195,18 +8231,22 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Quote
-                <span class="keyboard-shortcut">
-                  (Ctrl+' or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>'</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Quote
+                    <span class="keyboard-shortcut">
+                      (Ctrl+' or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-command"></i>'</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
@@ -8218,19 +8258,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Table
-                <span class="keyboard-shortcut">
-                  (Ctrl+Alt+T or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-alt"></i
-                    ><i class="bi bi-command"></i>T</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Table
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Alt+T or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-alt"></i
+                        ><i class="bi bi-command"></i>T</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 const gapLength = element.selectionEnd - element.selectionStart + 2;
@@ -8243,19 +8287,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Disclosure
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+D or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>D</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Disclosure
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+D or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>D</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
@@ -8269,18 +8317,22 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Inline Code
-                <span class="keyboard-shortcut">
-                  (Ctrl+E or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-command"></i>E</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Inline Code
+                    <span class="keyboard-shortcut">
+                      (Ctrl+E or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-command"></i>E</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "\`");
@@ -8292,19 +8344,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Code Block
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+E or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>E</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Code Block
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+E or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>E</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
@@ -8318,19 +8374,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Inline Equation
-                <span class="keyboard-shortcut">
-                  (Ctrl+Alt+E or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-alt"></i
-                    ><i class="bi bi-command"></i>E</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Inline Equation
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Alt+E or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-alt"></i
+                        ><i class="bi bi-command"></i>E</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "$");
@@ -8342,19 +8402,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Equation Block
-                <span class="keyboard-shortcut">
-                  (Ctrl+Alt+Shift+E or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
-                    ><i class="bi bi-command"></i>E</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Equation Block
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Alt+Shift+E or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
+                        ><i class="bi bi-command"></i>E</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
@@ -8368,19 +8432,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Mention User
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+U or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>U</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Mention User
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+U or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>U</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 alert("TODO: Mention User");
               `}"
@@ -8390,19 +8458,23 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Refer to Thread or Post
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+J or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>J</span
-                  >)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Refer to Thread or Post
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+J or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>J</span
+                      >)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 alert("TODO: Refer to Thread or Post");
               `}"
@@ -8414,20 +8486,24 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Image
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+I or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>I</span
-                  >
-                  or drag-and-drop or copy-and-paste)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Image
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+I or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>I</span
+                      >
+                      or drag-and-drop or copy-and-paste)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 alert("TODO: Image");
               `}"
@@ -8437,20 +8513,24 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                Attachment
-                <span class="keyboard-shortcut">
-                  (Ctrl+Shift+K or
-                  <span class="keyboard-shortcut--cluster"
-                    ><i class="bi bi-shift"></i
-                    ><i class="bi bi-command"></i>K</span
-                  >
-                  or drag-and-drop or copy-and-paste)
-                </span>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    Attachment
+                    <span class="keyboard-shortcut">
+                      (Ctrl+Shift+K or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>K</span
+                      >
+                      or drag-and-drop or copy-and-paste)
+                    </span>
+                  `)},
+                  theme: "tooltip",
+                  touch: false,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="tooltip"
-              data-tippy-touch="false"
-              data-tippy-allowHTML="true"
               onclick="${javascript`
                 alert("TODO: Attachment");
               `}"
@@ -8462,35 +8542,42 @@ export default async function courselore(
             <button
               type="button"
               class="button--inline"
-              data-tippy-content="${html`
-                <p class="text">
-                  You may style text with
-                  <a
-                    href="https://guides.github.com/features/mastering-markdown/"
-                    target="_blank"
-                    >GitHub Flavored Markdown</a
-                  >
-                  and include mathematical formulas with
-                  <a
-                    href="https://katex.org/docs/supported.html"
-                    target="_blank"
-                    >LaTeX</a
-                  >.
-                </p>
+              data-ondomcontentloaded="${javascript`
+                tippy(this, {
+                  content: this.nextElementSibling.innerHTML,
+                  theme: "dropdown",
+                  trigger: "click",
+                  interactive: true,
+                  allowHTML: true,
+                });
               `}"
-              data-tippy-theme="dropdown"
-              data-tippy-trigger="click"
-              data-tippy-interactive="true"
-              data-tippy-allowHTML="true"
             >
               <span
-                data-tippy-content="Help"
-                data-tippy-theme="tooltip"
-                data-tippy-touch="false"
+                data-ondomcontentloaded="${javascript`
+                  tippy(this, {
+                    content: "Help",
+                    theme: "tooltip",
+                    touch: false,
+                  });
+                `}"
               >
                 <i class="bi bi-info-circle"></i>
               </span>
             </button>
+            <div hidden>
+              <p class="text">
+                You may style text with
+                <a
+                  href="https://guides.github.com/features/mastering-markdown/"
+                  target="_blank"
+                  >GitHub Flavored Markdown</a
+                >
+                and include mathematical formulas with
+                <a href="https://katex.org/docs/supported.html" target="_blank"
+                  >LaTeX</a
+                >.
+              </p>
+            </div>
           </div>
         </div>
         <textarea
