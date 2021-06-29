@@ -94,7 +94,7 @@ export default async function courselore(
     | "emerald"
     | "teal"
     | "cyan"
-    | "light-blue"
+    | "sky"
     | "blue"
     | "indigo"
     | "violet";
@@ -112,7 +112,7 @@ export default async function courselore(
     "emerald",
     "teal",
     "cyan",
-    "light-blue",
+    "sky",
     "blue",
     "indigo",
     "violet",
@@ -197,7 +197,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('purple', 'fuchsia', 'pink', 'rose', 'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'light-blue', 'blue', 'indigo', 'violet')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('purple', 'fuchsia', 'pink', 'rose', 'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet')),
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
