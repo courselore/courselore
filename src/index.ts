@@ -428,6 +428,10 @@ export default async function courselore(
               }
             }
 
+            function localizeTime(element) {
+
+            }
+
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 "input.datetime"
@@ -5799,9 +5803,9 @@ export default async function courselore(
                                       autocomplete="off"
                                       class="input--text datetime"
                                       data-onvalidate="${javascript`
-                                      if (new Date(this.value).getTime() <= Date.now())
-                                        return "Must be in the future";
-                                    `}"
+                                        if (new Date(this.value).getTime() <= Date.now())
+                                          return "Must be in the future";
+                                      `}"
                                     />
                                     <button class="dropdown--item">
                                       <i class="bi bi-pencil"></i>
