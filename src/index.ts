@@ -353,6 +353,7 @@ export default async function courselore(
               .url}/node_modules/mousetrap/mousetrap.min.js"></script>
 
           <script>
+            /* TODO: Extract this into @leafac/javascript */
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 "[data-ondomcontentloaded]"
@@ -367,8 +368,7 @@ export default async function courselore(
                 new Function(element.dataset.ondomcontentloaded).call(element);
               }
             });
-          </script>
-          <script>
+
             (() => {
               const relativizeTimes = () => {
                 // TODO: Extract this into a library?
