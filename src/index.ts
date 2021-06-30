@@ -428,10 +428,6 @@ export default async function courselore(
               }
             }
 
-            function localizeTime(element) {
-
-            }
-
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 "input.datetime"
