@@ -2320,11 +2320,29 @@ export default async function courselore(
                   >
                     <div>
                       <button
-                        class="header--item"
+                        class="header--item $${res.locals.invitations!
+                          .length === 0
+                          ? ""
+                          : "notification-indicator"}"
                         style="${css`
                           display: grid;
                         `}"
                         data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: ${JSON.stringify(
+                              res.locals.invitations!.length === 0
+                                ? "Add"
+                                : `${
+                                    res.locals.invitations!.length
+                                  } pending invitation${
+                                    res.locals.invitations!.length === 1
+                                      ? ""
+                                      : "s"
+                                  }`
+                            )},
+                              theme: "tooltip",
+                              touch: false,
+                          });
                           tippy(this, {
                             content: this.nextElementSibling.innerHTML,
                             theme: "dropdown",
@@ -2334,30 +2352,7 @@ export default async function courselore(
                           });
                         `}"
                       >
-                        <span
-                          $${res.locals.invitations!.length === 0
-                            ? html``
-                            : html`class="notification-indicator"`}
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: ${JSON.stringify(
-                                res.locals.invitations!.length === 0
-                                  ? "Add"
-                                  : `${
-                                      res.locals.invitations!.length
-                                    } pending invitation${
-                                      res.locals.invitations!.length === 1
-                                        ? ""
-                                        : "s"
-                                    }`
-                              )},
-                                theme: "tooltip",
-                                touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-plus-circle"></i>
-                        </span>
+                        <i class="bi bi-plus-circle"></i>
                       </button>
                       <div hidden data-skip-ondomcontentloaded="true">
                         $${res.locals.invitations!.length === 0
@@ -2410,6 +2405,11 @@ export default async function courselore(
                         class="header--item"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
+                            content: ${JSON.stringify(res.locals.user.name)},
+                            theme: "tooltip",
+                            touch: false,
+                          });
+                          tippy(this, {
                             content: this.nextElementSibling.innerHTML,
                             theme: "dropdown",
                             trigger: "click",
@@ -2418,17 +2418,7 @@ export default async function courselore(
                           });
                         `}"
                       >
-                        <span
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: ${JSON.stringify(res.locals.user.name)},
-                              theme: "tooltip",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-person-circle"></i>
-                        </span>
+                        <i class="bi bi-person-circle"></i>
                       </button>
                       <div hidden>
                         <p
@@ -5561,12 +5551,24 @@ export default async function courselore(
                                         ? html`disabled`
                                         : html`
                                             class="button--inline"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "See Invitation Link",
+                                                theme: "tooltip",
+                                                touch: false,
+                                              });
+                                            `}"
                                             onclick="${javascript`
                                               MicroModal.show("modal--invitation--${invitation.reference}", microModalDefaults);
                                             `}"
                                           `}
                                     >
                                       <span
+                                        style="${css`
+                                          font-weight: var(
+                                            --font-weight--semibold
+                                          );
+                                        `}"
                                         $${isExpired
                                           ? html`
                                               tabindex="0"
@@ -5577,20 +5579,7 @@ export default async function courselore(
                                                 });
                                               `}"
                                             `
-                                          : html`
-                                              data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: "See Invitation Link",
-                                                  theme: "tooltip",
-                                                  touch: false,
-                                                });
-                                              `}"
-                                            `}
-                                        style="${css`
-                                          font-weight: var(
-                                            --font-weight--semibold
-                                          );
-                                        `}"
+                                          : html``}
                                       >
                                         ${"*".repeat(
                                           6
@@ -5714,6 +5703,11 @@ export default async function courselore(
                                       class="button--inline"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
+                                          content: "Change Role",
+                                          theme: "tooltip",
+                                          touch: false,
+                                        });
+                                        tippy(this, {
                                           content: this.nextElementSibling.innerHTML,
                                           theme: "dropdown",
                                           trigger: "click",
@@ -5744,15 +5738,7 @@ export default async function courselore(
                                           });
                                         `}"
                                       `
-                                    : html`
-                                        data-ondomcontentloaded="${javascript`
-                                          tippy(this, {
-                                            content: "Change Role",
-                                            theme: "tooltip",
-                                            touch: false,
-                                          });
-                                        `}"
-                                      `}
+                                    : html``}
                                 >
                                   ${lodash.capitalize(invitation.role)}
                                   <i class="bi bi-chevron-down"></i>
@@ -5940,6 +5926,11 @@ export default async function courselore(
                                           `}"
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
+                                              content: "Change Expiration",
+                                              theme: "tooltip",
+                                              touch: false,
+                                            });
+                                            tippy(this, {
                                               content: this.nextElementSibling.innerHTML,
                                               theme: "dropdown",
                                               trigger: "click",
@@ -5949,25 +5940,15 @@ export default async function courselore(
                                           `}"
                                         >
                                           <span
-                                            data-ondomcontentloaded="${javascript`
-                                              tippy(this, {
-                                                content: "Change Expiration",
-                                                theme: "tooltip",
-                                                touch: false,
-                                              });
+                                            style="${css`
+                                              display: inline-flex;
+                                              gap: var(--space--2);
                                             `}"
                                           >
-                                            <span
-                                              style="${css`
-                                                display: inline-flex;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <i class="bi bi-calendar-x"></i>
-                                              Expired
-                                            </span>
-                                            <i class="bi bi-chevron-down"></i>
+                                            <i class="bi bi-calendar-x"></i>
+                                            Expired
                                           </span>
+                                          <i class="bi bi-chevron-down"></i>
                                         </button>
                                         <div hidden>
                                           <h3 class="dropdown--heading">
@@ -6035,6 +6016,11 @@ export default async function courselore(
                                           `}"
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
+                                              content: "Change Expiration",
+                                              theme: "tooltip",
+                                              touch: false,
+                                            });
+                                            tippy(this, {
                                               content: this.nextElementSibling.innerHTML,
                                               theme: "dropdown",
                                               trigger: "click",
@@ -6044,27 +6030,15 @@ export default async function courselore(
                                           `}"
                                         >
                                           <span
-                                            data-ondomcontentloaded="${javascript`
-                                              tippy(this, {
-                                                content: "Change Expiration",
-                                                theme: "tooltip",
-                                                touch: false,
-                                              });
+                                            style="${css`
+                                              display: inline-flex;
+                                              gap: var(--space--2);
                                             `}"
                                           >
-                                            <span
-                                              style="${css`
-                                                display: inline-flex;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-minus"
-                                              ></i>
-                                              Doesn’t Expire
-                                            </span>
-                                            <i class="bi bi-chevron-down"></i>
+                                            <i class="bi bi-calendar-minus"></i>
+                                            Doesn’t Expire
                                           </span>
+                                          <i class="bi bi-chevron-down"></i>
                                         </button>
                                         <div hidden>
                                           <div
@@ -6125,6 +6099,11 @@ export default async function courselore(
                                           `}"
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
+                                              content: "Change Expiration",
+                                              theme: "tooltip",
+                                              touch: false,
+                                            });
+                                            tippy(this, {
                                               content: this.nextElementSibling.innerHTML,
                                               theme: "dropdown",
                                               trigger: "click",
@@ -6134,27 +6113,15 @@ export default async function courselore(
                                           `}"
                                         >
                                           <span
-                                            data-ondomcontentloaded="${javascript`
-                                              tippy(this, {
-                                                content: "Change Expiration",
-                                                theme: "tooltip",
-                                                touch: false,
-                                              });
+                                            style="${css`
+                                              display: inline-flex;
+                                              gap: var(--space--2);
                                             `}"
                                           >
-                                            <span
-                                              style="${css`
-                                                display: inline-flex;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-plus"
-                                              ></i>
-                                              Expires
-                                            </span>
-                                            <i class="bi bi-chevron-down"></i>
+                                            <i class="bi bi-calendar-plus"></i>
+                                            Expires
                                           </span>
+                                          <i class="bi bi-chevron-down"></i>
                                         </button>
                                         <div hidden>
                                           <h3 class="dropdown--heading">
@@ -6732,6 +6699,11 @@ export default async function courselore(
                                   class="button--inline"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
+                                      content: "Change Role",
+                                      theme: "tooltip",
+                                      touch: false,
+                                    });
+                                    tippy(this, {
                                       content: this.nextElementSibling.innerHTML,
                                       theme: "dropdown",
                                       trigger: "click",
@@ -6752,15 +6724,7 @@ export default async function courselore(
                                       });
                                     `}"
                                   `
-                                : html`
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "Change Role",
-                                        theme: "tooltip",
-                                        touch: false,
-                                      });
-                                    `}"
-                                  `}
+                                : html``}
                             >
                               ${lodash.capitalize(enrollment.role)}
                               <i class="bi bi-chevron-down"></i>
@@ -6789,15 +6753,15 @@ export default async function courselore(
                                                   ? html`
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
-                                                      tippy(this, {
-                                                        content: this.nextElementSibling.innerHTML,
-                                                        theme: "dropdown dropdown--rose",
-                                                        trigger: "click",
-                                                        interactive: true,
-                                                        allowHTML: true,
-                                                        appendTo: document.body,
-                                                      });
-                                                    `}"
+                                                        tippy(this, {
+                                                          content: this.nextElementSibling.innerHTML,
+                                                          theme: "dropdown dropdown--rose",
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          allowHTML: true,
+                                                          appendTo: document.body,
+                                                        });
+                                                      `}"
                                                     `
                                                   : html``}
                                                 class="dropdown--item"
@@ -6867,6 +6831,11 @@ export default async function courselore(
                                   class="button--inline button--inline--rose"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
+                                      content: "Remove from the Course",
+                                      theme: "tooltip tooltip--rose",
+                                      touch: false,
+                                    });
+                                    tippy(this, {
                                       content: this.nextElementSibling.innerHTML,
                                       theme: "dropdown dropdown--rose",
                                       trigger: "click",
@@ -6887,15 +6856,7 @@ export default async function courselore(
                                       });
                                     `}"
                                   `
-                                : html`
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "Remove from the Course",
-                                        theme: "tooltip tooltip--rose",
-                                        touch: false,
-                                      });
-                                    `}"
-                                  `}
+                                : html``}
                             >
                               <i class="bi bi-person-dash"></i>
                             </span>
@@ -8564,6 +8525,11 @@ export default async function courselore(
               class="button--inline"
               data-ondomcontentloaded="${javascript`
                 tippy(this, {
+                  content: "Help",
+                  theme: "tooltip",
+                  touch: false,
+                });
+                tippy(this, {
                   content: this.nextElementSibling.innerHTML,
                   theme: "dropdown",
                   trigger: "click",
@@ -8572,17 +8538,7 @@ export default async function courselore(
                 });
               `}"
             >
-              <span
-                data-ondomcontentloaded="${javascript`
-                  tippy(this, {
-                    content: "Help",
-                    theme: "tooltip",
-                    touch: false,
-                  });
-                `}"
-              >
-                <i class="bi bi-info-circle"></i>
-              </span>
+              <i class="bi bi-info-circle"></i>
             </button>
             <div hidden>
               <p class="text">
@@ -9311,6 +9267,11 @@ ${value}</textarea
                           class="button--inline button--inline--gray--cool button--inline--rose"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
+                              content: "Remove Thread",
+                              theme: "tooltip tooltip--rose",
+                              touch: false,
+                            });
+                            tippy(this, {
                               content: this.nextElementSibling.innerHTML,
                               theme: "dropdown dropdown--rose",
                               trigger: "click",
@@ -9319,17 +9280,7 @@ ${value}</textarea
                             });
                           `}"
                         >
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Remove Thread",
-                                theme: "tooltip tooltip--rose",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-trash"></i>
-                          </span>
+                          <i class="bi bi-trash"></i>
                         </button>
                         <div hidden>
                           <form
@@ -9369,6 +9320,11 @@ ${value}</textarea
                           class="button--inline button--inline--gray--cool"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
+                              content: "Edit Title",
+                              theme: "tooltip",
+                              touch: false,
+                            });
+                            tippy(this, {
                               content: this.nextElementSibling.innerHTML,
                               theme: "dropdown",
                               trigger: "click",
@@ -9377,17 +9333,7 @@ ${value}</textarea
                             });
                           `}"
                         >
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Edit Title",
-                                theme: "tooltip",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-pencil"></i>
-                          </span>
+                          <i class="bi bi-pencil"></i>
                         </button>
                         <div hidden>
                           <form
