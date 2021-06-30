@@ -368,6 +368,268 @@ export default async function courselore(
               }
             });
           </script>
+          <script>
+            (() => {
+              const relativizeTimes = () => {
+                // TODO: Extract this into a library?
+                // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
+                // https://github.com/catamphetamine/javascript-time-ago
+                // https://github.com/azer/relative-date
+                // https://benborgers.com/posts/js-relative-date
+                // https://github.com/digplan/time-ago
+                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+                //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
+                // https://day.js.org
+                // http://timeago.yarp.com
+                // https://sugarjs.com
+                const minutes = 60 * 1000;
+                const hours = 60 * minutes;
+                const days = 24 * hours;
+                const weeks = 7 * days;
+                const months = 30 * days;
+                const years = 365 * days;
+                for (const element of document.querySelectorAll(
+                  ".time--relative"
+                )) {
+                  if (element.getAttribute("datetime") === null) {
+                    const datetime = element.textContent.trim();
+                    element.setAttribute("datetime", datetime);
+                    tippy(element, {
+                      content: datetime,
+                      theme: "tooltip",
+                      touch: false,
+                    });
+                  }
+                  const difference =
+                    new Date(element.getAttribute("datetime")).getTime() -
+                    Date.now();
+                  const absoluteDifference = Math.abs(difference);
+                  const [value, unit] =
+                    absoluteDifference < minutes
+                      ? [0, "seconds"]
+                      : absoluteDifference < hours
+                      ? [difference / minutes, "minutes"]
+                      : absoluteDifference < days
+                      ? [difference / hours, "hours"]
+                      : absoluteDifference < weeks
+                      ? [difference / days, "days"]
+                      : absoluteDifference < months
+                      ? [difference / weeks, "weeks"]
+                      : absoluteDifference < years
+                      ? [difference / months, "months"]
+                      : [difference / years, "years"];
+                  element.textContent = new Intl.RelativeTimeFormat("en-US", {
+                    localeMatcher: "lookup",
+                    numeric: "auto",
+                  }).format(
+                    // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                    Math.round(value),
+                    unit
+                  );
+                }
+              };
+
+              document.addEventListener("DOMContentLoaded", relativizeTimes);
+              (function refresh() {
+                relativizeTimes();
+                window.setTimeout(refresh, 60 * 1000);
+              })();
+            })();
+
+            document.addEventListener("DOMContentLoaded", () => {
+              for (const element of document.querySelectorAll(
+                "input.datetime"
+              )) {
+                if (element.dataset.local) continue;
+                element.dataset.local = true;
+                const date = new Date(element.defaultValue);
+                element.defaultValue =
+                  String(date.getFullYear()) +
+                  "-" +
+                  String(date.getMonth() + 1).padStart(2, "0") +
+                  "-" +
+                  String(date.getDate()).padStart(2, "0") +
+                  " " +
+                  String(date.getHours()).padStart(2, "0") +
+                  ":" +
+                  String(date.getMinutes()).padStart(2, "0");
+              }
+            });
+
+            document.addEventListener(
+              "submit",
+              (event) => {
+                if (isValid(event.target)) return;
+                event.preventDefault();
+                event.stopPropagation();
+              },
+              true
+            );
+
+            function isValid(element) {
+              const elementsToValidate = [
+                element,
+                ...element.querySelectorAll("*"),
+              ];
+              const elementsToReset = new Map();
+
+              for (const element of elementsToValidate) {
+                if (
+                  typeof element.reportValidity !== "function" ||
+                  element.matches("[disabled]")
+                )
+                  continue;
+
+                const valueInputByUser = element.value;
+                const customValidity = validate(element);
+                if (element.value !== valueInputByUser)
+                  elementsToReset.set(element, valueInputByUser);
+
+                if (typeof customValidity === "string") {
+                  element.setCustomValidity(customValidity);
+                  element.addEventListener(
+                    "input",
+                    () => {
+                      element.setCustomValidity("");
+                    },
+                    { once: true }
+                  );
+                }
+
+                if (!element.reportValidity()) {
+                  for (const [element, valueInputByUser] of elementsToReset)
+                    element.value = valueInputByUser;
+                  return false;
+                }
+              }
+              return true;
+
+              function validate(element) {
+                if (element.value === "" && !element.matches("[required]"))
+                  return;
+
+                if (
+                  element.matches("[required]") &&
+                  element.value.trim() === ""
+                )
+                  return "Fill out this field";
+
+                if (
+                  element.matches('[type="email"]') &&
+                  !element.value.match(${app.locals.constants.emailRegExp})
+                )
+                  return "Enter an email address";
+
+                if (element.matches("input.datetime")) {
+                  if (
+                    element.value.match(
+                      ${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}
+                    ) === null
+                  )
+                    return "Match the pattern YYYY-MM-DD HH:MM";
+                  const date = new Date(element.value.replace(" ", "T"));
+                  if (isNaN(date.getTime())) return "Invalid datetime";
+                  element.value = date.toISOString();
+                }
+
+                if (element.matches("[data-onvalidate]"))
+                  return new Function(element.dataset.onvalidate).call(element);
+              }
+            }
+
+            (() => {
+              const beforeUnloadHandler = (event) => {
+                if (!isModified(document.body)) return;
+                event.preventDefault();
+                event.returnValue = "";
+              };
+              window.addEventListener("beforeunload", beforeUnloadHandler);
+              document.addEventListener("submit", (event) => {
+                window.removeEventListener("beforeunload", beforeUnloadHandler);
+              });
+            })();
+
+            function isModified(element) {
+              const elementsToCheck = [
+                element,
+                ...element.querySelectorAll("*"),
+              ];
+              for (const element of elementsToCheck) {
+                if (element.dataset.skipIsModified === "true") continue;
+                if (["radio", "checkbox"].includes(element.type)) {
+                  if (element.checked !== element.defaultChecked) return true;
+                } else if (
+                  typeof element.value === "string" &&
+                  typeof element.defaultValue === "string"
+                )
+                  if (element.value !== element.defaultValue) return true;
+              }
+              return false;
+            }
+
+            document.addEventListener("submit", (event) => {
+              for (const button of event.target.querySelectorAll(
+                'button:not([type="button"])'
+              ))
+                button.disabled = true;
+            });
+
+            $${
+              /*res.locals.eventSource*/ false
+                ? javascript`
+                        const eventSource = new EventSource(window.location.href);
+                        /* TODO
+                        eventSource.addEventListener("refresh", async () => {
+                          const response = await fetch(window.location.href);
+                          switch (response.status) {
+                            case 200:
+                              const refreshedDocument = new DOMParser().parseFromString(
+                                await response.text(),
+                                "text/html"
+                              );
+                              document
+                                .querySelector("head")
+                                .append(
+                                  ...refreshedDocument.querySelectorAll("head style")
+                                );
+                              eventSource.dispatchEvent(
+                                new CustomEvent("refreshed", {
+                                  detail: { document: refreshedDocument },
+                                })
+                              );
+                              document.dispatchEvent(new Event("DOMContentLoaded"));
+                              break;
+        
+                            case 404:
+                              alert(
+                                "This page has been removed.\\n\\nYou’ll be redirected now."
+                              );
+                              window.location.href = $${JSON.stringify(
+                                app.locals.settings.url
+                              )};
+                              break;
+        
+                            default:
+                              console.error(response);
+                              break;
+                          }
+                        });
+        
+        
+        
+                        (() => {
+                        // const id = document.currentScript.previousElementSibling.id;
+                        // eventSource.addEventListener("refreshed", (event) => {
+                        //   document
+                        //     .querySelector("#" + id)
+                        //     .replaceWith(event.detail.document.querySelector("#" + id));
+                        // });
+                      })();
+                        */
+                    `
+                : javascript``
+            };
+          </script>
 
           $${head}
         </head>
@@ -1525,6 +1787,7 @@ export default async function courselore(
         </body>
       </html>
     `);
+
   interface Layouts {
     applicationBase: (_: {
       req: express.Request<
@@ -1649,258 +1912,6 @@ export default async function courselore(
             $${body}
           </div>
         </div>
-
-        <script>
-          (() => {
-            const relativizeTimes = () => {
-              // TODO: Extract this into a library?
-              // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
-              // https://github.com/catamphetamine/javascript-time-ago
-              // https://github.com/azer/relative-date
-              // https://benborgers.com/posts/js-relative-date
-              // https://github.com/digplan/time-ago
-              // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-              //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
-              // https://day.js.org
-              // http://timeago.yarp.com
-              // https://sugarjs.com
-              const minutes = 60 * 1000;
-              const hours = 60 * minutes;
-              const days = 24 * hours;
-              const weeks = 7 * days;
-              const months = 30 * days;
-              const years = 365 * days;
-              for (const element of document.querySelectorAll(
-                ".time--relative"
-              )) {
-                if (element.getAttribute("datetime") === null) {
-                  const datetime = element.textContent.trim();
-                  element.setAttribute("datetime", datetime);
-                  tippy(element, {
-                    content: datetime,
-                    theme: "tooltip",
-                    touch: false,
-                  });
-                }
-                const difference =
-                  new Date(element.getAttribute("datetime")).getTime() -
-                  Date.now();
-                const absoluteDifference = Math.abs(difference);
-                const [value, unit] =
-                  absoluteDifference < minutes
-                    ? [0, "seconds"]
-                    : absoluteDifference < hours
-                    ? [difference / minutes, "minutes"]
-                    : absoluteDifference < days
-                    ? [difference / hours, "hours"]
-                    : absoluteDifference < weeks
-                    ? [difference / days, "days"]
-                    : absoluteDifference < months
-                    ? [difference / weeks, "weeks"]
-                    : absoluteDifference < years
-                    ? [difference / months, "months"]
-                    : [difference / years, "years"];
-                element.textContent = new Intl.RelativeTimeFormat("en-US", {
-                  localeMatcher: "lookup",
-                  numeric: "auto",
-                }).format(
-                  // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
-                  Math.round(value),
-                  unit
-                );
-              }
-            };
-
-            document.addEventListener("DOMContentLoaded", relativizeTimes);
-            (function refresh() {
-              relativizeTimes();
-              window.setTimeout(refresh, 60 * 1000);
-            })();
-          })();
-
-          document.addEventListener("DOMContentLoaded", () => {
-            for (const element of document.querySelectorAll("input.datetime")) {
-              if (element.dataset.local) continue;
-              element.dataset.local = true;
-              const date = new Date(element.defaultValue);
-              element.defaultValue =
-                String(date.getFullYear()) +
-                "-" +
-                String(date.getMonth() + 1).padStart(2, "0") +
-                "-" +
-                String(date.getDate()).padStart(2, "0") +
-                " " +
-                String(date.getHours()).padStart(2, "0") +
-                ":" +
-                String(date.getMinutes()).padStart(2, "0");
-            }
-          });
-
-          document.addEventListener(
-            "submit",
-            (event) => {
-              if (isValid(event.target)) return;
-              event.preventDefault();
-              event.stopPropagation();
-            },
-            true
-          );
-
-          function isValid(element) {
-            const elementsToValidate = [
-              element,
-              ...element.querySelectorAll("*"),
-            ];
-            const elementsToReset = new Map();
-
-            for (const element of elementsToValidate) {
-              if (
-                typeof element.reportValidity !== "function" ||
-                element.matches("[disabled]")
-              )
-                continue;
-
-              const valueInputByUser = element.value;
-              const customValidity = validate(element);
-              if (element.value !== valueInputByUser)
-                elementsToReset.set(element, valueInputByUser);
-
-              if (typeof customValidity === "string") {
-                element.setCustomValidity(customValidity);
-                element.addEventListener(
-                  "input",
-                  () => {
-                    element.setCustomValidity("");
-                  },
-                  { once: true }
-                );
-              }
-
-              if (!element.reportValidity()) {
-                for (const [element, valueInputByUser] of elementsToReset)
-                  element.value = valueInputByUser;
-                return false;
-              }
-            }
-            return true;
-
-            function validate(element) {
-              if (element.value === "" && !element.matches("[required]"))
-                return;
-
-              if (element.matches("[required]") && element.value.trim() === "")
-                return "Fill out this field";
-
-              if (
-                element.matches('[type="email"]') &&
-                !element.value.match(${app.locals.constants.emailRegExp})
-              )
-                return "Enter an email address";
-
-              if (element.matches("input.datetime")) {
-                if (
-                  element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}) ===
-                  null
-                )
-                  return "Match the pattern YYYY-MM-DD HH:MM";
-                const date = new Date(element.value.replace(" ", "T"));
-                if (isNaN(date.getTime())) return "Invalid datetime";
-                element.value = date.toISOString();
-              }
-
-              if (element.matches("[data-onvalidate]"))
-                return new Function(element.dataset.onvalidate).call(element);
-            }
-          }
-
-          (() => {
-            const beforeUnloadHandler = (event) => {
-              if (!isModified(document.body)) return;
-              event.preventDefault();
-              event.returnValue = "";
-            };
-            window.addEventListener("beforeunload", beforeUnloadHandler);
-            document.addEventListener("submit", (event) => {
-              window.removeEventListener("beforeunload", beforeUnloadHandler);
-            });
-          })();
-
-          function isModified(element) {
-            const elementsToCheck = [element, ...element.querySelectorAll("*")];
-            for (const element of elementsToCheck) {
-              if (element.dataset.skipIsModified === "true") continue;
-              if (["radio", "checkbox"].includes(element.type)) {
-                if (element.checked !== element.defaultChecked) return true;
-              } else if (
-                typeof element.value === "string" &&
-                typeof element.defaultValue === "string"
-              )
-                if (element.value !== element.defaultValue) return true;
-            }
-            return false;
-          }
-
-          document.addEventListener("submit", (event) => {
-            for (const button of event.target.querySelectorAll(
-              'button:not([type="button"])'
-            ))
-              button.disabled = true;
-          });
-
-          $${res.locals.eventSource
-            ? javascript`
-                const eventSource = new EventSource(window.location.href);
-                /* TODO
-                eventSource.addEventListener("refresh", async () => {
-                  const response = await fetch(window.location.href);
-                  switch (response.status) {
-                    case 200:
-                      const refreshedDocument = new DOMParser().parseFromString(
-                        await response.text(),
-                        "text/html"
-                      );
-                      document
-                        .querySelector("head")
-                        .append(
-                          ...refreshedDocument.querySelectorAll("head style")
-                        );
-                      eventSource.dispatchEvent(
-                        new CustomEvent("refreshed", {
-                          detail: { document: refreshedDocument },
-                        })
-                      );
-                      document.dispatchEvent(new Event("DOMContentLoaded"));
-                      break;
-
-                    case 404:
-                      alert(
-                        "This page has been removed.\\n\\nYou’ll be redirected now."
-                      );
-                      window.location.href = $${JSON.stringify(
-                        app.locals.settings.url
-                      )};
-                      break;
-
-                    default:
-                      console.error(response);
-                      break;
-                  }
-                });
-
-
-
-                (() => {
-                // const id = document.currentScript.previousElementSibling.id;
-                // eventSource.addEventListener("refreshed", (event) => {
-                //   document
-                //     .querySelector("#" + id)
-                //     .replaceWith(event.detail.document.querySelector("#" + id));
-                // });
-              })();
-                */
-            `
-            : javascript``};
-        </script>
       `,
     });
 
