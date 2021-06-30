@@ -6,6 +6,7 @@ import assert from "assert/strict";
 import express from "express";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
+import expressFileUpload from "express-fileupload";
 import { asyncHandler } from "@leafac/express-async-handler";
 import qs from "qs";
 
@@ -2826,6 +2827,7 @@ export default async function courselore(
   };
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
+  app.use(expressFileUpload());
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
   interface AppLocals {
