@@ -428,25 +428,29 @@ export default async function courselore(
               }
             }
 
-            document.addEventListener("DOMContentLoaded", () => {
-              for (const element of document.querySelectorAll(
-                "input.datetime"
-              )) {
-                if (element.dataset.local) continue;
-                element.dataset.local = true;
-                const date = new Date(element.defaultValue);
-                element.defaultValue =
-                  String(date.getFullYear()) +
-                  "-" +
-                  String(date.getMonth() + 1).padStart(2, "0") +
-                  "-" +
-                  String(date.getDate()).padStart(2, "0") +
-                  " " +
-                  String(date.getHours()).padStart(2, "0") +
-                  ":" +
-                  String(date.getMinutes()).padStart(2, "0");
-              }
-            });
+            function localizeTime(element) {
+              const date = new Date(element.defaultValue);
+              element.defaultValue =
+                String(date.getFullYear()) +
+                "-" +
+                String(date.getMonth() + 1).padStart(2, "0") +
+                "-" +
+                String(date.getDate()).padStart(2, "0") +
+                " " +
+                String(date.getHours()).padStart(2, "0") +
+                ":" +
+                String(date.getMinutes()).padStart(2, "0");
+              (element.validators ??= []).push(() => {
+                if (
+                  element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}) ===
+                  null
+                )
+                  return "Match the pattern YYYY-MM-DD HH:MM";
+                const date = new Date(element.value.replace(" ", "T"));
+                if (isNaN(date.getTime())) return "Invalid datetime";
+                element.value = date.toISOString();
+              });
+            }
 
             document.addEventListener(
               "submit",
@@ -512,20 +516,10 @@ export default async function courselore(
                 )
                   return "Enter an email address";
 
-                if (element.matches("input.datetime")) {
-                  if (
-                    element.value.match(
-                      ${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}
-                    ) === null
-                  )
-                    return "Match the pattern YYYY-MM-DD HH:MM";
-                  const date = new Date(element.value.replace(" ", "T"));
-                  if (isNaN(date.getTime())) return "Invalid datetime";
-                  element.value = date.toISOString();
+                for (const validator of element.validators ?? []) {
+                  const customValidity = validator();
+                  if (typeof customValidity === "string") return customValidity;
                 }
-
-                if (element.matches("[data-onvalidate]"))
-                  return new Function(element.dataset.onvalidate).call(element);
               }
             }
 
@@ -5309,32 +5303,32 @@ export default async function courselore(
                         `}"
                         data-ondomcontentloaded="${javascript`
                           fitTextarea.watch(this);
-                        `}"
-                        data-onvalidate="${javascript`
-                          const emails = [];
-                          for (let email of this.value.split(${/[,\n]/})) {
-                            email = email.trim();
-                            let name = null;
-                            const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
-                            if (match !== null) {
-                              email = match.groups.email.trim();
-                              name = match.groups.name.trim();
-                              if (name.startsWith('"') && name.endsWith('"'))
-                                name = name.slice(1, -1);
-                              if (name === "") name = null;
+                          (this.validators ??= []).push(() => {
+                            const emails = [];
+                            for (let email of this.value.split(${/[,\n]/})) {
+                              email = email.trim();
+                              let name = null;
+                              const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                              if (match !== null) {
+                                email = match.groups.email.trim();
+                                name = match.groups.name.trim();
+                                if (name.startsWith('"') && name.endsWith('"'))
+                                  name = name.slice(1, -1);
+                                if (name === "") name = null;
+                              }
+                              if (email === "") continue;
+                              emails.push({ email, name });
                             }
-                            if (email === "") continue;
-                            emails.push({ email, name });
-                          }
-                          if (
-                            emails.length === 0 ||
-                            emails.find(
-                              ({ email }) => !email.match(${
-                                app.locals.constants.emailRegExp
-                              })
-                            ) !== undefined
-                          )
-                            return "Match the requested format";
+                            if (
+                              emails.length === 0 ||
+                              emails.find(
+                                ({ email }) => !email.match(${
+                                  app.locals.constants.emailRegExp
+                                })
+                              ) !== undefined
+                            )
+                              return "Match the requested format";
+                          });
                         `}"
                       ></textarea>
                       <button
@@ -5467,13 +5461,16 @@ export default async function courselore(
                         required
                         autocomplete="off"
                         disabled
-                        class="datetime input--text"
+                        class="input--text"
                         style="${css`
                           padding-right: var(--space--10);
                         `}"
-                        data-onvalidate="${javascript`
-                          if (new Date(this.value).getTime() <= Date.now())
-                            return "Must be in the future";
+                        data-ondomcontentloaded="${javascript`
+                          localizeTime(this);
+                          (this.validators ??= []).push(() => {
+                            if (new Date(this.value).getTime() <= Date.now())
+                              return "Must be in the future";
+                          });
                         `}"
                       />
                       <button
@@ -5797,10 +5794,13 @@ export default async function courselore(
                                       ).toISOString()}"
                                       required
                                       autocomplete="off"
-                                      class="input--text datetime"
-                                      data-onvalidate="${javascript`
-                                        if (new Date(this.value).getTime() <= Date.now())
-                                          return "Must be in the future";
+                                      class="input--text"
+                                      data-ondomcontentloaded="${javascript`
+                                        localizeTime(this);
+                                        (this.validators ??= []).push(() => {
+                                          if (new Date(this.value).getTime() <= Date.now())
+                                            return "Must be in the future";
+                                        });
                                       `}"
                                     />
                                     <button class="dropdown--item">
