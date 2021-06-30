@@ -791,7 +791,11 @@ export default async function courselore(
                     background-color: var(--color--gray--cool--800);
                   }
                 }
-                transition: box-shadow var(--transition-duration);
+                transition-property: var(--transition-property--box-shadow);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
               }
 
               .input--radio--group {
@@ -823,9 +827,11 @@ export default async function courselore(
                     gap: var(--space--2);
                     justify-content: center;
                     cursor: pointer;
-                    transition: color var(--transition-duration),
-                      background-color var(--transition-duration),
-                      border-color var(--transition-duration);
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
                   }
                   &:first-child > span {
                     border-top-left-radius: var(--border-radius--md);
@@ -894,7 +900,11 @@ export default async function courselore(
                 gap: var(--space--2);
                 justify-content: center;
                 align-items: center;
-                transition: background-color var(--transition-duration);
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
 
                 &.button--primary {
                   color: var(--color--primary--50);
@@ -1006,7 +1016,11 @@ export default async function courselore(
                     color: var(--color--primary--700);
                   }
                 }
-                transition: color var(--transition-duration);
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
 
                 &.button--inline--gray--cool {
                   color: var(--color--gray--cool--500);
@@ -1073,7 +1087,11 @@ export default async function courselore(
                     color: var(--color--primary--700);
                   }
                 }
-                transition: color var(--transition-duration);
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
               }
 
               .strong {
@@ -1234,7 +1252,11 @@ export default async function courselore(
                     margin-left: var(--space---2);
                     display: flex;
                     gap: var(--space--2);
-                    transition: background-color var(--transition-duration);
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
 
                     &:hover,
                     &:focus,
@@ -1468,7 +1490,11 @@ export default async function courselore(
                       color: var(--color--primary--700);
                     }
                   }
-                  transition: color var(--transition-duration);
+                  transition-property: var(--transition-property--colors);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--in-out
+                  );
                 }
 
                 pre {
@@ -1840,7 +1866,13 @@ export default async function courselore(
                       position: relative;
                       display: flex;
                       gap: var(--space--2);
-                      transition: box-shadow var(--transition-duration);
+                      transition-property: var(
+                        --transition-property--box-shadow
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--in-out
+                      );
 
                       &:hover,
                       &:focus,
@@ -1953,7 +1985,11 @@ export default async function courselore(
                     color: var(--color--primary--50);
                     * {
                       stroke: var(--color--primary--50);
-                      transition: stroke var(--transition-duration);
+                      transition-property: var(--transition-property--colors);
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--in-out
+                      );
                     }
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--primary--200);
@@ -1989,7 +2025,11 @@ export default async function courselore(
                     display: inline-flex;
                     gap: var(--space--2);
                     align-items: center;
-                    transition: color var(--transition-duration);
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
                   `}"
                   data-ondomcontentloaded="${javascript`
                     const artAnimation = new ArtAnimation({
@@ -2129,7 +2169,11 @@ export default async function courselore(
                     color: var(--color--primary--400);
                   }
                 }
-                transition: color var(--transition-duration);
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
               }
             `}"
           >
@@ -2147,7 +2191,11 @@ export default async function courselore(
                     @media (prefers-color-scheme: dark) {
                       stroke: var(--color--primary--200);
                     }
-                    transition: stroke var(--transition-duration);
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
                   }
                   &:hover,
                   &:focus {
@@ -2478,7 +2526,11 @@ export default async function courselore(
                       text-align: center;
 
                       & + button {
-                        transition: color var(--transition-duration);
+                        transition-property: var(--transition-property--colors);
+                        transition-duration: var(--transition-duration--150);
+                        transition-timing-function: var(
+                          --transition-timing-function--in-out
+                        );
                       }
 
                       &.flash--green {
@@ -4144,8 +4196,15 @@ export default async function courselore(
                               padding: var(--space--1) var(--space--3);
                               border-radius: var(--border-radius--md);
                               display: inline-block;
-                              transition: background-color
-                                var(--transition-duration);
+                              transition-property: var(
+                                --transition-property--colors
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--in-out
+                              );
                             `}"
                           >
                             <i class="bi bi-journal"></i>
@@ -4945,8 +5004,11 @@ export default async function courselore(
                       padding: var(--space--1) var(--space--3);
                       display: flex;
                       gap: var(--space--2);
-                      transition: color var(--transition-duration),
-                        box-shadow var(--transition-duration);
+                      transition-property: var(--transition-property--base);
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--in-out
+                      );
 
                       &:hover,
                       &:focus,
@@ -5928,8 +5990,15 @@ export default async function courselore(
                                             border-radius: var(
                                               --border-radius--md
                                             );
-                                            transition: background-color
-                                              var(--transition-duration);
+                                            transition-property: var(
+                                              --transition-property--colors
+                                            );
+                                            transition-duration: var(
+                                              --transition-duration--150
+                                            );
+                                            transition-timing-function: var(
+                                              --transition-timing-function--in-out
+                                            );
                                           `}"
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
@@ -6022,8 +6091,15 @@ export default async function courselore(
                                             border-radius: var(
                                               --border-radius--md
                                             );
-                                            transition: background-color
-                                              var(--transition-duration);
+                                            transition-property: var(
+                                              --transition-property--colors
+                                            );
+                                            transition-duration: var(
+                                              --transition-duration--150
+                                            );
+                                            transition-timing-function: var(
+                                              --transition-timing-function--in-out
+                                            );
                                           `}"
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
@@ -6105,8 +6181,15 @@ export default async function courselore(
                                             border-radius: var(
                                               --border-radius--md
                                             );
-                                            transition: background-color
-                                              var(--transition-duration);
+                                            transition-property: var(
+                                              --transition-property--colors
+                                            );
+                                            transition-duration: var(
+                                              --transition-duration--150
+                                            );
+                                            transition-timing-function: var(
+                                              --transition-timing-function--in-out
+                                            );
                                           `}"
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
@@ -7061,6 +7144,7 @@ export default async function courselore(
                     Accent Color
                     <button
                       type="button"
+                      class="button--inline button--inline--gray--cool"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "The accent color helps you tell your courses apart.",
@@ -7538,7 +7622,11 @@ export default async function courselore(
               style="${css`
                 display: flex;
                 gap: var(--space--2);
-                transition: color var(--transition-duration);
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
 
                 &:hover,
                 &:focus {
@@ -7580,7 +7668,11 @@ export default async function courselore(
                     border-radius: var(--border-radius--lg);
                     margin-left: var(--space---2);
                     display: block;
-                    transition: background-color var(--transition-duration);
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
 
                     &:hover,
                     &:focus,
