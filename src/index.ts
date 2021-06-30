@@ -2827,7 +2827,8 @@ export default async function courselore(
   };
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
-  app.use(expressFileUpload());
+  // TODO: Make this secure.
+  app.use(expressFileUpload({ createParentPath: true }));
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
   interface AppLocals {
@@ -7992,7 +7993,7 @@ export default async function courselore(
                 loading.hidden = false;
                 preview.hidden = true;
                 preview.innerHTML = await (
-                  await fetch("${app.locals.settings.url}/preview", {
+                  await fetch("${app.locals.settings.url}/text-editor/preview", {
                     method: "POST",
                     body: new URLSearchParams({ content: write.querySelector("textarea").value }),
                   })
@@ -8604,11 +8605,33 @@ export default async function courselore(
                 });
               `}"
               onclick="${javascript`
-                alert("TODO: Image");
+                this.nextElementSibling.click();
               `}"
             >
               <i class="bi bi-image"></i>
             </button>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              data-skip-is-modified="true"
+              onchange="${javascript`
+                (async () => {
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  element.disabled = true;
+                  const body = new FormData();
+                  for (const file of this.files) body.append("files", file);
+                  const response = await (await fetch("${app.locals.settings.url}/text-editor/upload", {
+                    method: "POST",
+                    body,
+                  })).text();
+                  element.disabled = false;
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + response, "\\n\\n");
+                  element.focus();
+                })();
+              `}"
+            />
             <button
               type="button"
               class="button--inline"
@@ -8770,7 +8793,7 @@ ${value}</textarea
   })();
 
   app.post<{}, any, { content?: string }, {}, IsAuthenticatedMiddlewareLocals>(
-    "/preview",
+    "/text-editor/preview",
     ...app.locals.middlewares.isAuthenticated,
     (req, res, next) => {
       if (
@@ -8782,6 +8805,30 @@ ${value}</textarea
       res.send(app.locals.partials.textProcessor(req.body.content));
     }
   );
+
+  app.post<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
+    "/text-editor/upload",
+    ...app.locals.middlewares.isAuthenticated,
+    asyncHandler(async (req, res, next) => {
+      if (req.files!.files === undefined) return next("validation");
+      const responseParts: string[] = [];
+      for (const file of Array.isArray(req.files!.files)
+        ? req.files!.files
+        : [req.files!.files]) {
+        const relativePath = `uploads/${cryptoRandomString({
+          length: 20,
+          type: "numeric",
+        })}/${file.name}`;
+        await file.mv(path.join(rootDirectory, relativePath));
+        responseParts.push(
+          html`<img src="${app.locals.settings.url}/${relativePath}" alt="" />`
+        );
+      }
+      res.send(responseParts.join("\n"));
+    })
+  );
+
+  app.use("/uploads", express.static(rootDirectory));
 
   app.get<
     { courseReference: string },
@@ -10002,34 +10049,34 @@ ${value}</textarea
 
               <div
                 data-ondomcontentloaded="${javascript`
-                const content = this.querySelector('[name="content"]');
-                content.defaultValue =
-                  JSON.parse(
-                    localStorage.getItem("threadsContentsInProgress") ?? "{}"
-                  )[window.location.pathname] ?? "";
-                content.dataset.skipIsModified = "true";
-                content.addEventListener("input", () => {
-                  const threadsContentsInProgress = JSON.parse(
-                    localStorage.getItem("threadsContentsInProgress") ?? "{}"
-                  );
-                  threadsContentsInProgress[window.location.pathname] =
-                    content.value;
-                  localStorage.setItem(
-                    "threadsContentsInProgress",
-                    JSON.stringify(threadsContentsInProgress)
-                  );
-                });
-                content.closest("form").addEventListener("submit", () => {
-                  const threadsContentsInProgress = JSON.parse(
-                    localStorage.getItem("threadsContentsInProgress") ?? "{}"
-                  );
-                  delete threadsContentsInProgress[window.location.pathname];
-                  localStorage.setItem(
-                    "threadsContentsInProgress",
-                    JSON.stringify(threadsContentsInProgress)
-                  );
-                });
-              `}"
+                  const content = this.querySelector('[name="content"]');
+                  content.defaultValue =
+                    JSON.parse(
+                      localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                    )[window.location.pathname] ?? "";
+                  content.dataset.skipIsModified = "true";
+                  content.addEventListener("input", () => {
+                    const threadsContentsInProgress = JSON.parse(
+                      localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                    );
+                    threadsContentsInProgress[window.location.pathname] =
+                      content.value;
+                    localStorage.setItem(
+                      "threadsContentsInProgress",
+                      JSON.stringify(threadsContentsInProgress)
+                    );
+                  });
+                  content.closest("form").addEventListener("submit", () => {
+                    const threadsContentsInProgress = JSON.parse(
+                      localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                    );
+                    delete threadsContentsInProgress[window.location.pathname];
+                    localStorage.setItem(
+                      "threadsContentsInProgress",
+                      JSON.stringify(threadsContentsInProgress)
+                    );
+                  });
+                `}"
               >
                 $${app.locals.partials.textEditor()}
               </div>
