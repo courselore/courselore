@@ -8833,10 +8833,14 @@ ${value}</textarea
                           </label>
                           <button
                             type="button"
-                            data-tippy-content="Pinned threads are listed first."
-                            data-tippy-theme="tooltip"
-                            data-tippy-trigger="click"
                             class="button--inline"
+                            data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Pinned threads are listed first.",
+                              theme: "tooltip",
+                              trigger: "click",
+                            });
+                          `}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
@@ -8863,28 +8867,36 @@ ${value}</textarea
                         : `checked`}
                     />
                     <span
-                      data-tippy-content="Mark as a Question"
-                      data-tippy-theme="tooltip"
-                      data-tippy-touch="false"
                       class="button--inline after-toggle"
                       style="${css`
                         :checked + & {
                           display: none;
                         }
                       `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Mark as a Question",
+                          theme: "tooltip",
+                          touch: false,
+                        });
+                      `}"
                     >
                       <i class="bi bi-patch-question"></i>
                       Not a question
                     </span>
                     <span
-                      data-tippy-content="Mark as Not a Question"
-                      data-tippy-theme="tooltip"
-                      data-tippy-touch="false"
                       class="button--inline after-toggle strong"
                       style="${css`
                         :not(:checked) + * + & {
                           display: none;
                         }
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Mark as Not a Question",
+                          theme: "tooltip",
+                          touch: false,
+                        });
                       `}"
                     >
                       <i class="bi bi-patch-question-fill"></i>
@@ -9296,50 +9308,57 @@ ${value}</textarea
                   ? html`
                       <div>
                         <button
-                          data-tippy-content="${html`
-                            <form
-                              method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/threads/${res.locals
-                                .thread.reference}?_method=DELETE"
-                              style="${css`
-                                padding: var(--space--2) var(--space--0);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <p>
-                                Are you sure you want to remove this thread?
-                              </p>
-                              <p>
-                                <strong
-                                  style="${css`
-                                    font-weight: var(--font-weight--semibold);
-                                  `}"
-                                >
-                                  You may not undo this action!
-                                </strong>
-                              </p>
-                              <button class="button button--rose">
-                                Remove Thread
-                              </button>
-                            </form>
-                          `}"
-                          data-tippy-theme="dropdown dropdown--rose"
-                          data-tippy-trigger="click"
-                          data-tippy-interactive="true"
-                          data-tippy-allowHTML="true"
                           class="button--inline button--inline--gray--cool button--inline--rose"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: this.nextElementSibling.innerHTML,
+                              theme: "dropdown dropdown--rose",
+                              trigger: "click",
+                              interactive: true,
+                              allowHTML: true,
+                            });
+                          `}"
                         >
                           <span
-                            data-tippy-content="Remove Thread"
-                            data-tippy-theme="tooltip tooltip--rose"
-                            data-tippy-touch="false"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Remove Thread",
+                                theme: "tooltip tooltip--rose",
+                                touch: false,
+                              });
+                            `}"
                           >
                             <i class="bi bi-trash"></i>
                           </span>
                         </button>
+                        <div hidden>
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/threads/${res.locals
+                              .thread.reference}?_method=DELETE"
+                            style="${css`
+                              padding: var(--space--2) var(--space--0);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <p>Are you sure you want to remove this thread?</p>
+                            <p>
+                              <strong
+                                style="${css`
+                                  font-weight: var(--font-weight--semibold);
+                                `}"
+                              >
+                                You may not undo this action!
+                              </strong>
+                            </p>
+                            <button class="button button--rose">
+                              Remove Thread
+                            </button>
+                          </form>
+                        </div>
                       </div>
                     `
                   : html``}
@@ -9347,47 +9366,56 @@ ${value}</textarea
                   ? html`
                       <div>
                         <button
-                          data-tippy-content="${html`
-                            <form
-                              method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/threads/${res.locals
-                                .thread.reference}?_method=PATCH"
-                              style="${css`
-                                padding: var(--space--2) var(--space--0);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <input
-                                type="text"
-                                name="title"
-                                value="${res.locals.thread.title}"
-                                required
-                                autocomplete="off"
-                                class="input--text"
-                              />
-                              <button class="button button--primary">
-                                <i class="bi bi-pencil"></i>
-                                Update Title
-                              </button>
-                            </form>
-                          `}"
-                          data-tippy-theme="dropdown"
-                          data-tippy-trigger="click"
-                          data-tippy-interactive="true"
-                          data-tippy-allowHTML="true"
                           class="button--inline button--inline--gray--cool"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: this.nextElementSibling.innerHTML,
+                              theme: "dropdown",
+                              trigger: "click",
+                              interactive: true,
+                              allowHTML: true,
+                            });
+                          `}"
                         >
                           <span
-                            data-tippy-content="Edit Title"
-                            data-tippy-theme="tooltip"
-                            data-tippy-touch="false"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Edit Title",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                            `}"
                           >
                             <i class="bi bi-pencil"></i>
                           </span>
                         </button>
+                        <div hidden>
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/threads/${res.locals
+                              .thread.reference}?_method=PATCH"
+                            style="${css`
+                              padding: var(--space--2) var(--space--0);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              name="title"
+                              value="${res.locals.thread.title}"
+                              required
+                              autocomplete="off"
+                              class="input--text"
+                            />
+                            <button class="button button--primary">
+                              <i class="bi bi-pencil"></i>
+                              Update Title
+                            </button>
+                          </form>
+                        </div>
                       </div>
                     `
                   : html``}
