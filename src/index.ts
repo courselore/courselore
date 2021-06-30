@@ -379,7 +379,7 @@ export default async function courselore(
             // https://day.js.org
             // http://timeago.yarp.com
             // https://sugarjs.com
-            function relativeTime(element) {
+            function relativizeTime(element) {
               const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
                 localeMatcher: "lookup",
                 numeric: "auto",
@@ -5868,7 +5868,7 @@ export default async function courselore(
                                               Used
                                               <time
                                                 data-ondomcontentloaded="${javascript`
-                                                  relativeTime(this);
+                                                  relativizeTime(this);
                                                 `}"
                                               >
                                                 ${new Date(
@@ -5964,7 +5964,7 @@ export default async function courselore(
                                               Expired
                                               <time
                                                 data-ondomcontentloaded="${javascript`
-                                                  relativeTime(this);
+                                                  relativizeTime(this);
                                                 `}"
                                               >
                                                 ${new Date(
@@ -6141,7 +6141,7 @@ export default async function courselore(
                                               Expires
                                               <time
                                                 data-ondomcontentloaded="${javascript`
-                                                  relativeTime(this);
+                                                  relativizeTime(this);
                                                 `}"
                                               >
                                                 ${new Date(
@@ -7647,7 +7647,7 @@ export default async function courselore(
                         #${thread.reference} created
                         <time
                           data-ondomcontentloaded="${javascript`
-                            relativeTime(this);
+                            relativizeTime(this);
                           `}"
                         >
                           ${thread.createdAt}
@@ -7660,7 +7660,7 @@ export default async function courselore(
                               and last updated
                               <time
                                 data-ondomcontentloaded="${javascript`
-                                  relativeTime(this);
+                                  relativizeTime(this);
                                 `}"
                               >
                                 ${thread.updatedAt}
@@ -9530,7 +9530,7 @@ ${value}</textarea
                       said
                       <time
                         data-ondomcontentloaded="${javascript`
-                          relativeTime(this);
+                          relativizeTime(this);
                         `}"
                       >
                         ${post.createdAt}
@@ -9540,7 +9540,7 @@ ${value}</textarea
                             and last edited
                             <time
                               data-ondomcontentloaded="${javascript`
-                                relativeTime(this);
+                                relativizeTime(this);
                               `}"
                             >
                               ${post.updatedAt}
@@ -10391,7 +10391,7 @@ ${value}</textarea
                                   display: inline-block;
                                 `}"
                                 data-ondomcontentloaded="${javascript`
-                                  relativeTime(this);
+                                  relativizeTime(this);
                                 `}"
                               >
                                 ${email.createdAt}
