@@ -369,72 +369,64 @@ export default async function courselore(
               }
             });
 
-            (() => {
-              const relativizeTimes = () => {
-                // TODO: Extract this into a library?
-                // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
-                // https://github.com/catamphetamine/javascript-time-ago
-                // https://github.com/azer/relative-date
-                // https://benborgers.com/posts/js-relative-date
-                // https://github.com/digplan/time-ago
-                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
-                //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
-                // https://day.js.org
-                // http://timeago.yarp.com
-                // https://sugarjs.com
-                const minutes = 60 * 1000;
-                const hours = 60 * minutes;
-                const days = 24 * hours;
-                const weeks = 7 * days;
-                const months = 30 * days;
-                const years = 365 * days;
-                for (const element of document.querySelectorAll(
-                  ".time--relative"
-                )) {
-                  if (element.getAttribute("datetime") === null) {
-                    const datetime = element.textContent.trim();
-                    element.setAttribute("datetime", datetime);
-                    tippy(element, {
-                      content: datetime,
-                      theme: "tooltip",
-                      touch: false,
-                    });
-                  }
-                  const difference =
-                    new Date(element.getAttribute("datetime")).getTime() -
-                    Date.now();
-                  const absoluteDifference = Math.abs(difference);
-                  const [value, unit] =
-                    absoluteDifference < minutes
-                      ? [0, "seconds"]
-                      : absoluteDifference < hours
-                      ? [difference / minutes, "minutes"]
-                      : absoluteDifference < days
-                      ? [difference / hours, "hours"]
-                      : absoluteDifference < weeks
-                      ? [difference / days, "days"]
-                      : absoluteDifference < months
-                      ? [difference / weeks, "weeks"]
-                      : absoluteDifference < years
-                      ? [difference / months, "months"]
-                      : [difference / years, "years"];
-                  element.textContent = new Intl.RelativeTimeFormat("en-US", {
-                    localeMatcher: "lookup",
-                    numeric: "auto",
-                  }).format(
-                    // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
-                    Math.round(value),
-                    unit
-                  );
-                }
-              };
+            // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
+            // https://github.com/catamphetamine/javascript-time-ago
+            // https://github.com/azer/relative-date
+            // https://benborgers.com/posts/js-relative-date
+            // https://github.com/digplan/time-ago
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
+            //   https://blog.webdevsimplified.com/2020-07/relative-time-format/
+            // https://day.js.org
+            // http://timeago.yarp.com
+            // https://sugarjs.com
+            function relativeTime(element) {
+              const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
+                localeMatcher: "lookup",
+                numeric: "auto",
+              });
 
-              document.addEventListener("DOMContentLoaded", relativizeTimes);
-              (function refresh() {
-                relativizeTimes();
-                window.setTimeout(refresh, 60 * 1000);
-              })();
-            })();
+              const minutes = 60 * 1000;
+              const hours = 60 * minutes;
+              const days = 24 * hours;
+              const weeks = 7 * days;
+              const months = 30 * days;
+              const years = 365 * days;
+
+              const datetime = element.textContent.trim();
+              element.setAttribute("datetime", datetime);
+              tippy(element, {
+                content: datetime,
+                theme: "tooltip",
+                touch: false,
+              });
+
+              update();
+              window.setInterval(update, 60 * 1000);
+
+              function update() {
+                const difference = new Date(datetime).getTime() - Date.now();
+                const absoluteDifference = Math.abs(difference);
+                const [value, unit] =
+                  absoluteDifference < minutes
+                    ? [0, "seconds"]
+                    : absoluteDifference < hours
+                    ? [difference / minutes, "minutes"]
+                    : absoluteDifference < days
+                    ? [difference / hours, "hours"]
+                    : absoluteDifference < weeks
+                    ? [difference / days, "days"]
+                    : absoluteDifference < months
+                    ? [difference / weeks, "weeks"]
+                    : absoluteDifference < years
+                    ? [difference / months, "months"]
+                    : [difference / years, "years"];
+                element.textContent = relativeTimeFormat.format(
+                  // FIXME: Should this really be ‘round’, or should it be ‘floor/ceil’?
+                  Math.round(value),
+                  unit
+                );
+              }
+            }
 
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
@@ -5874,7 +5866,11 @@ export default async function courselore(
                                           tippy(this, {
                                             content: ${JSON.stringify(html`
                                               Used
-                                              <time class="time--relative">
+                                              <time
+                                                data-ondomcontentloaded="${javascript`
+                                                  relativeTime(this);
+                                                `}"
+                                              >
                                                 ${new Date(
                                                   invitation.usedAt!
                                                 ).toISOString()}
@@ -5966,7 +5962,11 @@ export default async function courselore(
                                             <i class="bi bi-calendar-x"></i>
                                             <span>
                                               Expired
-                                              <time class="time--relative">
+                                              <time
+                                                data-ondomcontentloaded="${javascript`
+                                                  relativeTime(this);
+                                                `}"
+                                              >
                                                 ${new Date(
                                                   invitation.expiresAt!
                                                 ).toISOString()}
@@ -6139,7 +6139,11 @@ export default async function courselore(
                                             <i class="bi bi-calendar-plus"></i>
                                             <span>
                                               Expires
-                                              <time class="time--relative">
+                                              <time
+                                                data-ondomcontentloaded="${javascript`
+                                                  relativeTime(this);
+                                                `}"
+                                              >
                                                 ${new Date(
                                                   invitation.expiresAt
                                                 ).toISOString()}
@@ -7641,14 +7645,24 @@ export default async function courselore(
                     <div>
                       <div>
                         #${thread.reference} created
-                        <time class="time--relative">${thread.createdAt}</time>
+                        <time
+                          data-ondomcontentloaded="${javascript`
+                            relativeTime(this);
+                          `}"
+                        >
+                          ${thread.createdAt}
+                        </time>
                         by ${thread.authorEnrollment.user.name}
                       </div>
                       $${thread.updatedAt !== thread.createdAt
                         ? html`
                             <div>
                               and last updated
-                              <time class="time--relative">
+                              <time
+                                data-ondomcontentloaded="${javascript`
+                                  relativeTime(this);
+                                `}"
+                              >
                                 ${thread.updatedAt}
                               </time>
                             </div>
@@ -9514,11 +9528,21 @@ ${value}</textarea
                         ${post.authorEnrollment.user.name}
                       </span>
                       said
-                      <time class="time--relative">${post.createdAt}</time>
+                      <time
+                        data-ondomcontentloaded="${javascript`
+                          relativeTime(this);
+                        `}"
+                      >
+                        ${post.createdAt}
+                      </time>
                       $${post.updatedAt !== post.createdAt
                         ? html`
                             and last edited
-                            <time class="time--relative">
+                            <time
+                              data-ondomcontentloaded="${javascript`
+                                relativeTime(this);
+                              `}"
+                            >
                               ${post.updatedAt}
                             </time>
                           `
@@ -10363,9 +10387,11 @@ ${value}</textarea
                             >
                               ${email.to} ·
                               <time
-                                class="time--relative"
                                 style="${css`
                                   display: inline-block;
+                                `}"
+                                data-ondomcontentloaded="${javascript`
+                                  relativeTime(this);
                                 `}"
                               >
                                 ${email.createdAt}
