@@ -8606,7 +8606,7 @@ export default async function courselore(
                 });
               `}"
               onclick="${javascript`
-                this.parentElement.querySelector("input").click();
+                this.closest(".text-editor").querySelector(".attachments").click();
               `}"
             >
               <i class="bi bi-image"></i>
@@ -8634,13 +8634,14 @@ export default async function courselore(
                 });
               `}"
               onclick="${javascript`
-                this.parentElement.querySelector("input").click();
+                this.closest(".text-editor").querySelector(".attachments").click();
               `}"
             >
               <i class="bi bi-paperclip"></i>
             </button>
             <input
               type="file"
+              class="attachments"
               multiple
               hidden
               data-skip-is-modified="true"
@@ -8703,8 +8704,30 @@ export default async function courselore(
           name="content"
           required
           class="input--text"
+          style="${css`
+            transition-property: var(--transition-property--colors);
+            transition-duration: var(--transition-duration--150);
+            transition-timing-function: var(
+              --transition-timing-function--in-out
+            );
+
+            &.drag {
+              background-color: var(--color--primary--200);
+            }
+          `}"
           data-ondomcontentloaded="${javascript`
             fitTextarea.watch(this);
+          `}"
+          ondragenter="${javascript`
+            this.classList.add("drag");
+          `}"
+          ondrop="${javascript`
+            event.preventDefault();
+            this.classList.remove("drag");
+            this.closest(".text-editor").querySelector(".attachments").files = event.dataTransfer.files;
+          `}"
+          ondragleave="${javascript`
+            this.classList.remove("drag");
           `}"
         >
 ${value}</textarea
