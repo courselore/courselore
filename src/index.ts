@@ -8778,7 +8778,7 @@ ${value}</textarea
     })
   );
 
-  app.get(
+  app.get<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/attachments/*",
     ...app.locals.middlewares.isAuthenticated,
     express.static(rootDirectory)
