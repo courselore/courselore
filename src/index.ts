@@ -14,6 +14,7 @@ import { Database, sql } from "@leafac/sqlite";
 import { html, HTML } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
 import javascript from "tagged-template-noop";
+import markdown from "tagged-template-noop";
 
 import unified from "unified";
 import remarkParse from "remark-parse";
@@ -8647,8 +8648,8 @@ export default async function courselore(
                   const element = this.closest(".text-editor").querySelector('[name="content"]');
                   element.disabled = true;
                   const body = new FormData();
-                  for (const file of this.files) body.append("files", file);
-                  const response = await (await fetch("${app.locals.settings.url}/text-editor/upload", {
+                  for (const file of this.files) body.append("attachments", file);
+                  const response = await (await fetch("${app.locals.settings.url}/text-editor/attachments", {
                     method: "POST",
                     body,
                   })).text();
@@ -8753,28 +8754,35 @@ ${value}</textarea
   `;
 
   app.post<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
-    "/text-editor/upload",
+    "/text-editor/attachments",
     ...app.locals.middlewares.isAuthenticated,
     asyncHandler(async (req, res, next) => {
-      if (req.files!.files === undefined) return next("validation");
-      const responseParts: string[] = [];
-      for (const file of Array.isArray(req.files!.files)
-        ? req.files!.files
-        : [req.files!.files]) {
-        const relativePath = `uploads/${cryptoRandomString({
+      if (req.files!.attachments === undefined) return next("validation");
+      const attachmentsMarkdowns: string[] = [];
+      for (const attachment of Array.isArray(req.files!.attachments)
+        ? req.files!.attachments
+        : [req.files!.attachments]) {
+        const relativePath = `attachments/${cryptoRandomString({
           length: 20,
           type: "numeric",
-        })}/${file.name}`;
-        await file.mv(path.join(rootDirectory, relativePath));
-        responseParts.push(
-          html`<img src="${app.locals.settings.url}/${relativePath}" alt="" />`
+        })}/${attachment.name}`;
+        await attachment.mv(path.join(rootDirectory, relativePath));
+        const url = `${app.locals.settings.url}/${relativePath}`;
+        attachmentsMarkdowns.push(
+          attachment.mimetype.startsWith("image/")
+            ? markdown`<img src="${url}" alt="${attachment.name}" />`
+            : markdown`[${attachment.name}](${url})`
         );
       }
-      res.send(responseParts.join("\n"));
+      res.send(attachmentsMarkdowns.join(" "));
     })
   );
 
-  app.use("/uploads", express.static(path.join(rootDirectory, "uploads")));
+  app.get(
+    "/attachments/*",
+    ...app.locals.middlewares.isAuthenticated,
+    express.static(rootDirectory)
+  );
 
   // TODO: Would making this async speed things up in any way?
   // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
