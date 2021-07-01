@@ -2088,53 +2088,52 @@ export default async function courselore(
     return app.locals.layouts.applicationBase({
       req,
       res,
-      head: html`
-        $${head}
-        $${res.locals.enrollment === undefined
-          ? html``
-          : html`
-              <style>
-                :root {
-                  --color--primary--50: var(
-                    --color--${res.locals.enrollment.accentColor}--50
-                  );
-                  --color--primary--100: var(
-                    --color--${res.locals.enrollment.accentColor}--100
-                  );
-                  --color--primary--200: var(
-                    --color--${res.locals.enrollment.accentColor}--200
-                  );
-                  --color--primary--300: var(
-                    --color--${res.locals.enrollment.accentColor}--300
-                  );
-                  --color--primary--400: var(
-                    --color--${res.locals.enrollment.accentColor}--400
-                  );
-                  --color--primary--500: var(
-                    --color--${res.locals.enrollment.accentColor}--500
-                  );
-                  --color--primary--600: var(
-                    --color--${res.locals.enrollment.accentColor}--600
-                  );
-                  --color--primary--700: var(
-                    --color--${res.locals.enrollment.accentColor}--700
-                  );
-                  --color--primary--800: var(
-                    --color--${res.locals.enrollment.accentColor}--800
-                  );
-                  --color--primary--900: var(
-                    --color--${res.locals.enrollment.accentColor}--900
-                  );
-                }
-              </style>
-            `}
-      `,
+      head,
       body: html`
         <div
           style="${css`
             height: 100%;
             display: flex;
             flex-direction: column;
+
+            ${res.locals.enrollment === undefined
+              ? css``
+              : css`
+                  @at-root {
+                    :root {
+                      --color--primary--50: var(
+                        --color--${res.locals.enrollment.accentColor}--50
+                      );
+                      --color--primary--100: var(
+                        --color--${res.locals.enrollment.accentColor}--100
+                      );
+                      --color--primary--200: var(
+                        --color--${res.locals.enrollment.accentColor}--200
+                      );
+                      --color--primary--300: var(
+                        --color--${res.locals.enrollment.accentColor}--300
+                      );
+                      --color--primary--400: var(
+                        --color--${res.locals.enrollment.accentColor}--400
+                      );
+                      --color--primary--500: var(
+                        --color--${res.locals.enrollment.accentColor}--500
+                      );
+                      --color--primary--600: var(
+                        --color--${res.locals.enrollment.accentColor}--600
+                      );
+                      --color--primary--700: var(
+                        --color--${res.locals.enrollment.accentColor}--700
+                      );
+                      --color--primary--800: var(
+                        --color--${res.locals.enrollment.accentColor}--800
+                      );
+                      --color--primary--900: var(
+                        --color--${res.locals.enrollment.accentColor}--900
+                      );
+                    }
+                  }
+                `}
           `}"
         >
           <header
@@ -8605,33 +8604,11 @@ export default async function courselore(
                 });
               `}"
               onclick="${javascript`
-                this.nextElementSibling.click();
+                this.parentElement.querySelector("input").click();
               `}"
             >
               <i class="bi bi-image"></i>
             </button>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              hidden
-              data-skip-is-modified="true"
-              onchange="${javascript`
-                (async () => {
-                  const element = this.closest(".text-editor").querySelector('[name="content"]');
-                  element.disabled = true;
-                  const body = new FormData();
-                  for (const file of this.files) body.append("files", file);
-                  const response = await (await fetch("${app.locals.settings.url}/text-editor/upload", {
-                    method: "POST",
-                    body,
-                  })).text();
-                  element.disabled = false;
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + response, "\\n\\n");
-                  element.focus();
-                })();
-              `}"
-            />
             <button
               type="button"
               class="button--inline"
@@ -8655,11 +8632,32 @@ export default async function courselore(
                 });
               `}"
               onclick="${javascript`
-                alert("TODO: Attachment");
+                this.parentElement.querySelector("input").click();
               `}"
             >
               <i class="bi bi-paperclip"></i>
             </button>
+            <input
+              type="file"
+              multiple
+              hidden
+              data-skip-is-modified="true"
+              onchange="${javascript`
+                (async () => {
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  element.disabled = true;
+                  const body = new FormData();
+                  for (const file of this.files) body.append("files", file);
+                  const response = await (await fetch("${app.locals.settings.url}/text-editor/upload", {
+                    method: "POST",
+                    body,
+                  })).text();
+                  element.disabled = false;
+                  textFieldEdit.wrapSelection(element, response, "");
+                  element.focus();
+                })();
+              `}"
+            />
           </div>
           <div>
             <button
@@ -8754,6 +8752,30 @@ ${value}</textarea
     </div>
   `;
 
+  app.post<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
+    "/text-editor/upload",
+    ...app.locals.middlewares.isAuthenticated,
+    asyncHandler(async (req, res, next) => {
+      if (req.files!.files === undefined) return next("validation");
+      const responseParts: string[] = [];
+      for (const file of Array.isArray(req.files!.files)
+        ? req.files!.files
+        : [req.files!.files]) {
+        const relativePath = `uploads/${cryptoRandomString({
+          length: 20,
+          type: "numeric",
+        })}/${file.name}`;
+        await file.mv(path.join(rootDirectory, relativePath));
+        responseParts.push(
+          html`<img src="${app.locals.settings.url}/${relativePath}" alt="" />`
+        );
+      }
+      res.send(responseParts.join("\n"));
+    })
+  );
+
+  app.use("/uploads", express.static(path.join(rootDirectory, "uploads")));
+
   // TODO: Would making this async speed things up in any way?
   // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
   // TODO: Extract this into a library?
@@ -8805,30 +8827,6 @@ ${value}</textarea
       res.send(app.locals.partials.textProcessor(req.body.content));
     }
   );
-
-  app.post<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
-    "/text-editor/upload",
-    ...app.locals.middlewares.isAuthenticated,
-    asyncHandler(async (req, res, next) => {
-      if (req.files!.files === undefined) return next("validation");
-      const responseParts: string[] = [];
-      for (const file of Array.isArray(req.files!.files)
-        ? req.files!.files
-        : [req.files!.files]) {
-        const relativePath = `uploads/${cryptoRandomString({
-          length: 20,
-          type: "numeric",
-        })}/${file.name}`;
-        await file.mv(path.join(rootDirectory, relativePath));
-        responseParts.push(
-          html`<img src="${app.locals.settings.url}/${relativePath}" alt="" />`
-        );
-      }
-      res.send(responseParts.join("\n"));
-    })
-  );
-
-  app.use("/uploads", express.static(rootDirectory));
 
   app.get<
     { courseReference: string },
