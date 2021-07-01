@@ -8721,10 +8721,16 @@ export default async function courselore(
           ondragenter="${javascript`
             this.classList.add("drag");
           `}"
+          ondragover="${javascript`
+            event.preventDefault(); // TODO: Firefox seems to require this.
+          `}"
           ondrop="${javascript`
+            // TODO: The idea of triggering upload by updating the input type="file" probably won’t fly because of browser inconsistencies.
             event.preventDefault();
             this.classList.remove("drag");
-            this.closest(".text-editor").querySelector(".attachments").files = event.dataTransfer.files;
+            const attachments = this.closest(".text-editor").querySelector(".attachments");
+            attachments.files = event.dataTransfer.files;
+            attachments.dispatchEvent(new Event("change")); // TODO: Chrome seems to need this line; Safari doesn’t want it.
           `}"
           ondragleave="${javascript`
             this.classList.remove("drag");
