@@ -8768,13 +8768,24 @@ ${value}</textarea
           type: "numeric",
         })}/${attachment.name}`;
         await attachment.mv(path.join(rootDirectory, relativePath));
+        // TODO: URI encode relative path.
         const url = `${app.locals.settings.url}/${relativePath}`;
-        attachmentsMarkdowns.push(
-          attachment.mimetype.startsWith("image/")
-            ? markdown`<img src="${url}" alt="${attachment.name}" />`
-            : markdown`[${attachment.name}](${url})`
-        );
+        if (attachment.mimetype.startsWith("image/")) {
+          // TODO: Handle error on sharp constructor.
+          const metadata = await sharp(attachment.data).metadata();
+          if (metadata.width !== undefined && metadata.density !== undefined) {
+            // TODO: Resize big images.
+            attachmentsMarkdowns.push(
+              markdown`<img src="${url}" alt="${attachment.name}" width="${
+                metadata.density < 100 ? metadata.width / 2 : metadata.width
+              }" />`
+            );
+            continue;
+          }
+        }
+        attachmentsMarkdowns.push(markdown`[${attachment.name}](${url})`);
       }
+      // TODO: Handle spacing more intelligently.
       res.send(attachmentsMarkdowns.join(" "));
     })
   );
