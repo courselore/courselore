@@ -2828,7 +2828,7 @@ export default async function courselore(
   };
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
-  // TODO: Make this secure.
+  // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
   app.use(expressFileUpload({ createParentPath: true }));
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
@@ -8647,6 +8647,7 @@ export default async function courselore(
               onchange="${javascript`
                 (async () => {
                   const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  // TODO: Give some visual indication of progress.
                   element.disabled = true;
                   const body = new FormData();
                   for (const file of this.files) body.append("attachments", file);
@@ -8771,7 +8772,7 @@ ${value}</textarea
         // TODO: URI encode relative path.
         const url = `${app.locals.settings.url}/${relativePath}`;
         if (attachment.mimetype.startsWith("image/")) {
-          // TODO: Handle error on sharp constructor.
+          // TODO: Handle error on sharp constructor: https://sharp.pixelplumbing.com/api-constructor / https://sharp.pixelplumbing.com/api-input
           const metadata = await sharp(attachment.data).metadata();
           if (metadata.width !== undefined && metadata.density !== undefined) {
             // TODO: Resize big images.
@@ -8790,6 +8791,7 @@ ${value}</textarea
     })
   );
 
+  // TODO: Verify the security of this: https://expressjs.com/en/4x/api.html#express.static
   app.get<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/attachments/*",
     ...app.locals.middlewares.isAuthenticated,
