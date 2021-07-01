@@ -15,6 +15,7 @@ import { html, HTML } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
 import javascript from "tagged-template-noop";
 import markdown from "tagged-template-noop";
+import dedent from "dedent";
 
 import unified from "unified";
 import remarkParse from "remark-parse";
@@ -30,11 +31,11 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 
-import QRCode from "qrcode";
-import lodash from "lodash";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
-import dedent from "dedent";
+import sharp from "sharp";
+import QRCode from "qrcode";
+import lodash from "lodash";
 
 const VERSION = require("../package.json").version;
 
