@@ -57,7 +57,8 @@
     "sharp": "^0.28.3",
     "shiki": "^0.9.0",
     "tagged-template-noop": "^2.1.1",
-    "unified": "^9.2.0"
+    "unified": "^9.2.0",
+    "unist-util-visit": "^2.0.3"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",

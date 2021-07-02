@@ -29,6 +29,7 @@ import deepMerge from "deepmerge";
 import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
+import unistUtilVisit from "unist-util-visit";
 import rehypeStringify from "rehype-stringify";
 
 import fs from "fs-extra";
@@ -6851,6 +6852,7 @@ export default async function courselore(
                                             />
                                             <div>
                                               <button
+                                                class="dropdown--item"
                                                 $${isSelf
                                                   ? html`
                                                       type="button"
@@ -6866,7 +6868,6 @@ export default async function courselore(
                                                       `}"
                                                     `
                                                   : html``}
-                                                class="dropdown--item"
                                               >
                                                 Convert to
                                                 ${lodash.capitalize(role)}
@@ -8861,6 +8862,14 @@ ${value}</textarea
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
+      .use(() => (tree) => {
+        unistUtilVisit(tree, (node) => {
+          if (node.properties !== undefined && node.position !== undefined)
+            (node.properties as any).dataPosition = JSON.stringify(
+              node.position
+            );
+        });
+      })
       .use(rehypeStringify);
 
     return (text: string) => textProcessor.processSync(text).toString();
@@ -9908,8 +9917,51 @@ ${value}</textarea
                             </div>
                           `;
                     })()}
-                    <div class="text">
+                    <div
+                      class="text"
+                      data-content="${JSON.stringify(post.content)}"
+                      data-ondomcontentloaded="${javascript`
+                        document.addEventListener("selectionchange", (event) => {
+                          const selection = window.getSelection();
+                          if (
+                            !this.contains(selection.anchorNode) ||
+                            !this.contains(selection.focusNode) ||
+                            selection.anchorNode.parentElement.dataset.position === undefined ||
+                            selection.focusNode.parentElement.dataset.position === undefined
+                          ) return;
+                          tippy(selection.anchorNode.parentElement, {
+                            content: this.nextElementSibling.innerHTML,
+                            theme: "dropdown",
+                            trigger: "manual",
+                            interactive: true,
+                            allowHTML: true,
+                          }).show();
+                        });
+                      `}"
+                    >
                       $${app.locals.partials.textProcessor(post.content)}
+                    </div>
+                    <div hidden>
+                      <button
+                        class="dropdown--item"
+                        onclick="${javascript`
+                          const selection = window.getSelection();
+                          const anchorPosition = JSON.parse(
+                            selection.anchorNode.parentElement.dataset.position
+                          );
+                          const focusPosition = JSON.parse(
+                            selection.focusNode.parentElement.dataset.position
+                          );
+                          const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                          const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                          const content = JSON.parse(
+                            selection.anchorNode.parentElement.closest("[data-content]").dataset.content
+                          );
+                          console.log(content.slice(start, end));
+                        `}"
+                      >
+                        <i class="bi bi-chat-left-quote"></i> Quote
+                      </button>
                     </div>
 
                     <div>
