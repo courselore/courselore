@@ -9927,7 +9927,8 @@ ${value}</textarea
                             !this.contains(selection.anchorNode) ||
                             !this.contains(selection.focusNode) ||
                             selection.anchorNode.parentElement.dataset.position === undefined ||
-                            selection.focusNode.parentElement.dataset.position === undefined
+                            selection.focusNode.parentElement.dataset.position === undefined ||
+                            (selection.anchorNode === selection.focusNode && selection.anchorOffset === selection.focusOffset)
                           ) return;
                           tippy(selection.anchorNode.parentElement, {
                             content: this.nextElementSibling.innerHTML,
@@ -9946,6 +9947,7 @@ ${value}</textarea
                         class="dropdown--item"
                         onclick="${javascript`
                           const selection = window.getSelection();
+                          // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
                           const anchorPosition = JSON.parse(
                             selection.anchorNode.parentElement.dataset.position
                           );
@@ -9957,7 +9959,15 @@ ${value}</textarea
                           const content = JSON.parse(
                             selection.anchorNode.parentElement.closest("[data-content]").dataset.content
                           );
-                          console.log(content.slice(start, end));
+                          const element = document.querySelector('.new-post [name="content"]');
+                          textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                            post.authorEnrollment.user.name
+                          )} + " · #" + ${JSON.stringify(
+                          String(res.locals.thread.reference)
+                        )} + "/" + ${JSON.stringify(
+                          String(post.reference)
+                        )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> "), "\\n\\n");
+                          element.focus();
                         `}"
                       >
                         <i class="bi bi-chat-left-quote"></i> Quote
@@ -10150,6 +10160,7 @@ ${value}</textarea
               -->
 
               <div
+                class="new-post"
                 data-ondomcontentloaded="${javascript`
                   const content = this.querySelector('[name="content"]');
                   content.defaultValue =
