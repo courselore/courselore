@@ -1329,7 +1329,7 @@ export default async function courselore(
                 }
               }
 
-              .dropdown--content {
+              .tippy-content--element {
                 :not(.tippy-content) > & {
                   display: none;
                 }
@@ -2274,7 +2274,7 @@ export default async function courselore(
                       </span>
                       <i class="bi bi-chevron-down"></i>
                     </button>
-                    <div class="dropdown--content">
+                    <div class="tippy-content--element">
                       <p class="dropdown--heading">
                         <i class="bi bi-journal-text"></i>
                         ${res.locals.course.name}
@@ -2398,7 +2398,7 @@ export default async function courselore(
                       >
                         <i class="bi bi-plus-circle"></i>
                       </button>
-                      <div class="dropdown--content">
+                      <div class="tippy-content--element">
                         $${res.locals.invitations!.length === 0
                           ? html``
                           : html`
@@ -2464,7 +2464,7 @@ export default async function courselore(
                       >
                         <i class="bi bi-person-circle"></i>
                       </button>
-                      <div class="dropdown--content">
+                      <div class="tippy-content--element">
                         <p
                           style="${css`
                             font-weight: var(--font-weight--semibold);
@@ -5006,7 +5006,7 @@ export default async function courselore(
                   Course Settings
                   <i class="bi bi-chevron-down"></i>
                 </button>
-                <div class="dropdown--content">$${menu}</div>
+                <div class="tippy-content--element">$${menu}</div>
               </div>
             `
           : html``}
@@ -5417,7 +5417,7 @@ export default async function courselore(
                       >
                         <i class="bi bi-info-circle"></i>
                       </button>
-                      <div class="dropdown--content">
+                      <div class="tippy-content--element">
                         <div
                           style="${css`
                             display: flex;
@@ -5719,7 +5719,7 @@ export default async function courselore(
                                             <i class="bi bi-chevron-down"></i>
                                           </span>
                                         </button>
-                                        <div class="dropdown--content">
+                                        <div class="tippy-content--element">
                                           <form
                                             method="POST"
                                             action="${action}?_method=PATCH"
@@ -5809,7 +5809,7 @@ export default async function courselore(
                                   <i class="bi bi-chevron-down"></i>
                                 </span>
                               </button>
-                              <div class="dropdown--content">
+                              <div class="tippy-content--element">
                                 $${app.locals.constants.roles.map((role) =>
                                   role === invitation.role
                                     ? html``
@@ -6029,7 +6029,7 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div class="dropdown--content">
+                                        <div class="tippy-content--element">
                                           <h3 class="dropdown--heading">
                                             <i class="bi bi-calendar-x"></i>
                                             <span>
@@ -6130,7 +6130,7 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div class="dropdown--content">
+                                        <div class="tippy-content--element">
                                           <div
                                             style="${css`
                                               padding-top: var(--space--1);
@@ -6220,7 +6220,7 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div class="dropdown--content">
+                                        <div class="tippy-content--element">
                                           <h3 class="dropdown--heading">
                                             <i class="bi bi-calendar-plus"></i>
                                             <span>
@@ -6834,7 +6834,7 @@ export default async function courselore(
                           $${isOnlyStaff
                             ? html``
                             : html`
-                                <div class="dropdown--content">
+                                <div class="tippy-content--element">
                                   $${app.locals.constants.roles.map((role) =>
                                     role === enrollment.role
                                       ? html``
@@ -6873,7 +6873,7 @@ export default async function courselore(
                                               $${isSelf
                                                 ? html`
                                                     <div
-                                                      class="dropdown--content"
+                                                      class="tippy-content--element"
                                                     >
                                                       <div
                                                         style="${css`
@@ -6967,7 +6967,7 @@ export default async function courselore(
                           $${isOnlyStaff
                             ? html``
                             : html`
-                                <div class="dropdown--content">
+                                <div class="tippy-content--element">
                                   <form
                                     method="POST"
                                     action="${action}?_method=DELETE"
@@ -8688,7 +8688,7 @@ export default async function courselore(
             >
               <i class="bi bi-info-circle"></i>
             </button>
-            <div class="dropdown--content">
+            <div class="tippy-content--element">
               <p class="text">
                 You may style text with
                 <a
@@ -9507,7 +9507,7 @@ ${value}</textarea
                         >
                           <i class="bi bi-trash"></i>
                         </button>
-                        <div class="dropdown--content">
+                        <div class="tippy-content--element">
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
@@ -9560,7 +9560,7 @@ ${value}</textarea
                         >
                           <i class="bi bi-pencil"></i>
                         </button>
-                        <div class="dropdown--content">
+                        <div class="tippy-content--element">
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
@@ -9942,7 +9942,7 @@ ${value}</textarea
                     >
                       $${app.locals.partials.textProcessor(post.content)}
                     </div>
-                    <div class="dropdown--content">
+                    <div class="tippy-content--element">
                       <button
                         class="dropdown--item"
                         onclick="${javascript`
