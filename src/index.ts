@@ -9925,11 +9925,11 @@ ${value}</textarea
                         const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
                         const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
                         if (
+                          selection.isCollapsed ||
                           !this.contains(anchorElement) ||
                           !this.contains(focusElement) ||
                           anchorElement.dataset.position === undefined ||
-                          focusElement.dataset.position === undefined ||
-                          (anchorElement === focusElement && selection.anchorOffset === selection.focusOffset)
+                          focusElement.dataset.position === undefined
                         ) return;
                         tippy(focusElement, {
                           content: this.nextElementSibling.innerHTML,
@@ -9950,17 +9950,11 @@ ${value}</textarea
                           const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
                           const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
                           // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
-                          const anchorPosition = JSON.parse(
-                            anchorElement.dataset.position
-                          );
-                          const focusPosition = JSON.parse(
-                            focusElement.dataset.position
-                          );
+                          const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                          const focusPosition = JSON.parse(focusElement.dataset.position);
                           const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                           const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                          const content = JSON.parse(
-                            anchorElement.closest("[data-content]").dataset.content
-                          );
+                          const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
                           const element = document.querySelector('.new-post [name="content"]');
                           textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                             post.authorEnrollment.user.name
