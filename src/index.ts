@@ -9920,6 +9920,17 @@ ${value}</textarea
                     <div
                       class="text"
                       data-content="${JSON.stringify(post.content)}"
+                      data-ondomcontentloaded="${javascript`
+                        this.tippy = tippy(this, {
+                          content: this.nextElementSibling,
+                          theme: "dropdown",
+                          trigger: "manual",
+                          interactive: true,
+                          allowHTML: true,
+                          offset: [0, 20],
+                          touch: false,
+                        });
+                      `}"
                       onpointerup="${javascript`
                         const selection = window.getSelection();
                         const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
@@ -9931,13 +9942,17 @@ ${value}</textarea
                           anchorElement.dataset.position === undefined ||
                           focusElement.dataset.position === undefined
                         ) return;
-                        tippy(focusElement, {
-                          content: this.nextElementSibling,
-                          theme: "dropdown",
-                          trigger: "manual",
-                          interactive: true,
-                          allowHTML: true,
-                        }).show();
+                        this.tippy.setProps({
+                          getReferenceClientRect: () => ({
+                            width: 0,
+                            height: 0,
+                            top: event.clientY,
+                            right: event.clientX,
+                            bottom: event.clientY,
+                            left: event.clientX,
+                          }),
+                        });
+                        this.tippy.show();
                       `}"
                     >
                       $${app.locals.partials.textProcessor(post.content)}
