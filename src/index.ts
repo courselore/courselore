@@ -362,12 +362,7 @@ export default async function courselore(
               for (const element of document.querySelectorAll(
                 "[data-ondomcontentloaded]"
               )) {
-                if (
-                  element.dataset.ondomcontentloadedExecuted ||
-                  element.closest('[data-skip-ondomcontentloaded="true"]') !==
-                    null
-                )
-                  continue;
+                if (element.dataset.ondomcontentloadedExecuted) continue;
                 element.dataset.ondomcontentloadedExecuted = true;
                 new Function(element.dataset.ondomcontentloaded).call(element);
               }
@@ -1339,6 +1334,12 @@ export default async function courselore(
                 }
               }
 
+              .dropdown--content {
+                :not(.tippy-content) > & {
+                  display: none;
+                }
+              }
+
               .modal {
                 &:not(.is-open) {
                   display: none;
@@ -2258,7 +2259,7 @@ export default async function courselore(
                       `}"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
-                          content: this.nextElementSibling.innerHTML,
+                          content: this.nextElementSibling,
                           theme: "dropdown",
                           trigger: "click",
                           interactive: true,
@@ -2278,7 +2279,7 @@ export default async function courselore(
                       </span>
                       <i class="bi bi-chevron-down"></i>
                     </button>
-                    <div hidden>
+                    <div class="dropdown--content">
                       <p class="dropdown--heading">
                         <i class="bi bi-journal-text"></i>
                         ${res.locals.course.name}
@@ -2392,7 +2393,7 @@ export default async function courselore(
                               touch: false,
                           });
                           tippy(this, {
-                            content: this.nextElementSibling.innerHTML,
+                            content: this.nextElementSibling,
                             theme: "dropdown",
                             trigger: "click",
                             interactive: true,
@@ -2402,7 +2403,7 @@ export default async function courselore(
                       >
                         <i class="bi bi-plus-circle"></i>
                       </button>
-                      <div hidden data-skip-ondomcontentloaded="true">
+                      <div class="dropdown--content">
                         $${res.locals.invitations!.length === 0
                           ? html``
                           : html`
@@ -2458,7 +2459,7 @@ export default async function courselore(
                             touch: false,
                           });
                           tippy(this, {
-                            content: this.nextElementSibling.innerHTML,
+                            content: this.nextElementSibling,
                             theme: "dropdown",
                             trigger: "click",
                             interactive: true,
@@ -2468,7 +2469,7 @@ export default async function courselore(
                       >
                         <i class="bi bi-person-circle"></i>
                       </button>
-                      <div hidden>
+                      <div class="dropdown--content">
                         <p
                           style="${css`
                             font-weight: var(--font-weight--semibold);
@@ -5410,7 +5411,7 @@ export default async function courselore(
                         `}"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
-                            content: this.nextElementSibling.innerHTML,
+                            content: this.nextElementSibling,
                             theme: "tooltip",
                             trigger: "click",
                             allowHTML: true,
@@ -5419,7 +5420,7 @@ export default async function courselore(
                       >
                         <i class="bi bi-info-circle"></i>
                       </button>
-                      <div hidden>
+                      <div class="dropdown--content">
                         <div
                           style="${css`
                             display: flex;
@@ -5684,7 +5685,7 @@ export default async function courselore(
                                                 class="button--inline"
                                                 data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
-                                                    content: this.nextElementSibling.innerHTML,
+                                                    content: this.nextElementSibling,
                                                     theme: "dropdown",
                                                     trigger: "click",
                                                     interactive: true,
@@ -5721,7 +5722,7 @@ export default async function courselore(
                                             <i class="bi bi-chevron-down"></i>
                                           </span>
                                         </button>
-                                        <div hidden>
+                                        <div class="dropdown--content">
                                           <form
                                             method="POST"
                                             action="${action}?_method=PATCH"
@@ -5775,7 +5776,7 @@ export default async function courselore(
                                           touch: false,
                                         });
                                         tippy(this, {
-                                          content: this.nextElementSibling.innerHTML,
+                                          content: this.nextElementSibling,
                                           theme: "dropdown",
                                           trigger: "click",
                                           interactive: true,
@@ -5811,7 +5812,7 @@ export default async function courselore(
                                   <i class="bi bi-chevron-down"></i>
                                 </span>
                               </button>
-                              <div hidden>
+                              <div class="dropdown--content">
                                 $${app.locals.constants.roles.map((role) =>
                                   role === invitation.role
                                     ? html``
@@ -6012,7 +6013,7 @@ export default async function courselore(
                                               touch: false,
                                             });
                                             tippy(this, {
-                                              content: this.nextElementSibling.innerHTML,
+                                              content: this.nextElementSibling,
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
@@ -6031,7 +6032,7 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div hidden>
+                                        <div class="dropdown--content">
                                           <h3 class="dropdown--heading">
                                             <i class="bi bi-calendar-x"></i>
                                             <span>
@@ -6113,7 +6114,7 @@ export default async function courselore(
                                               touch: false,
                                             });
                                             tippy(this, {
-                                              content: this.nextElementSibling.innerHTML,
+                                              content: this.nextElementSibling,
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
@@ -6132,7 +6133,7 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div hidden>
+                                        <div class="dropdown--content">
                                           <div
                                             style="${css`
                                               padding-top: var(--space--1);
@@ -6203,7 +6204,7 @@ export default async function courselore(
                                               touch: false,
                                             });
                                             tippy(this, {
-                                              content: this.nextElementSibling.innerHTML,
+                                              content: this.nextElementSibling,
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
@@ -6222,7 +6223,7 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div hidden>
+                                        <div class="dropdown--content">
                                           <h3 class="dropdown--heading">
                                             <i class="bi bi-calendar-plus"></i>
                                             <span>
@@ -6807,7 +6808,7 @@ export default async function courselore(
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: this.nextElementSibling.innerHTML,
+                                      content: this.nextElementSibling,
                                       theme: "dropdown",
                                       trigger: "click",
                                       interactive: true,
@@ -6836,7 +6837,7 @@ export default async function courselore(
                           $${isOnlyStaff
                             ? html``
                             : html`
-                                <div hidden data-skip-ondomcontentloaded="true">
+                                <div class="dropdown--content">
                                   $${app.locals.constants.roles.map((role) =>
                                     role === enrollment.role
                                       ? html``
@@ -6858,7 +6859,7 @@ export default async function courselore(
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
-                                                          content: this.nextElementSibling.innerHTML,
+                                                          content: this.nextElementSibling,
                                                           theme: "dropdown dropdown--rose",
                                                           trigger: "click",
                                                           interactive: true,
@@ -6874,7 +6875,9 @@ export default async function courselore(
                                               </button>
                                               $${isSelf
                                                 ? html`
-                                                    <div hidden>
+                                                    <div
+                                                      class="dropdown--content"
+                                                    >
                                                       <div
                                                         style="${css`
                                                           padding: var(
@@ -6939,7 +6942,7 @@ export default async function courselore(
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: this.nextElementSibling.innerHTML,
+                                      content: this.nextElementSibling,
                                       theme: "dropdown dropdown--rose",
                                       trigger: "click",
                                       interactive: true,
@@ -6967,7 +6970,7 @@ export default async function courselore(
                           $${isOnlyStaff
                             ? html``
                             : html`
-                                <div hidden>
+                                <div class="dropdown--content">
                                   <form
                                     method="POST"
                                     action="${action}?_method=DELETE"
@@ -8678,7 +8681,7 @@ export default async function courselore(
                   touch: false,
                 });
                 tippy(this, {
-                  content: this.nextElementSibling.innerHTML,
+                  content: this.nextElementSibling,
                   theme: "dropdown",
                   trigger: "click",
                   interactive: true,
@@ -8688,7 +8691,7 @@ export default async function courselore(
             >
               <i class="bi bi-info-circle"></i>
             </button>
-            <div hidden>
+            <div class="dropdown--content">
               <p class="text">
                 You may style text with
                 <a
@@ -9497,7 +9500,7 @@ ${value}</textarea
                               touch: false,
                             });
                             tippy(this, {
-                              content: this.nextElementSibling.innerHTML,
+                              content: this.nextElementSibling,
                               theme: "dropdown dropdown--rose",
                               trigger: "click",
                               interactive: true,
@@ -9507,7 +9510,7 @@ ${value}</textarea
                         >
                           <i class="bi bi-trash"></i>
                         </button>
-                        <div hidden>
+                        <div class="dropdown--content">
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
@@ -9550,7 +9553,7 @@ ${value}</textarea
                               touch: false,
                             });
                             tippy(this, {
-                              content: this.nextElementSibling.innerHTML,
+                              content: this.nextElementSibling,
                               theme: "dropdown",
                               trigger: "click",
                               interactive: true,
@@ -9560,7 +9563,7 @@ ${value}</textarea
                         >
                           <i class="bi bi-pencil"></i>
                         </button>
-                        <div hidden>
+                        <div class="dropdown--content">
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
@@ -9932,7 +9935,7 @@ ${value}</textarea
                           focusElement.dataset.position === undefined
                         ) return;
                         tippy(focusElement, {
-                          content: this.nextElementSibling.innerHTML,
+                          content: this.nextElementSibling,
                           theme: "dropdown",
                           trigger: "manual",
                           interactive: true,
@@ -9942,7 +9945,7 @@ ${value}</textarea
                     >
                       $${app.locals.partials.textProcessor(post.content)}
                     </div>
-                    <div hidden>
+                    <div class="dropdown--content">
                       <button
                         class="dropdown--item"
                         onclick="${javascript`
