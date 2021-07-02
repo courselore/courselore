@@ -9920,24 +9920,22 @@ ${value}</textarea
                     <div
                       class="text"
                       data-content="${JSON.stringify(post.content)}"
-                      data-ondomcontentloaded="${javascript`
-                        document.addEventListener("selectionchange", (event) => {
-                          const selection = window.getSelection();
-                          if (
-                            !this.contains(selection.anchorNode) ||
-                            !this.contains(selection.focusNode) ||
-                            selection.anchorNode.parentElement.dataset.position === undefined ||
-                            selection.focusNode.parentElement.dataset.position === undefined ||
-                            (selection.anchorNode === selection.focusNode && selection.anchorOffset === selection.focusOffset)
-                          ) return;
-                          tippy(selection.anchorNode.parentElement, {
-                            content: this.nextElementSibling.innerHTML,
-                            theme: "dropdown",
-                            trigger: "manual",
-                            interactive: true,
-                            allowHTML: true,
-                          }).show();
-                        });
+                      onpointerup="${javascript`
+                        const selection = window.getSelection();
+                        if (
+                          !this.contains(selection.anchorNode) ||
+                          !this.contains(selection.focusNode) ||
+                          selection.anchorNode.parentElement.dataset.position === undefined ||
+                          selection.focusNode.parentElement.dataset.position === undefined ||
+                          (selection.anchorNode === selection.focusNode && selection.anchorOffset === selection.focusOffset)
+                        ) return;
+                        tippy(selection.focusNode.parentElement, {
+                          content: this.nextElementSibling.innerHTML,
+                          theme: "dropdown",
+                          trigger: "manual",
+                          interactive: true,
+                          allowHTML: true,
+                        }).show();
                       `}"
                     >
                       $${app.locals.partials.textProcessor(post.content)}
