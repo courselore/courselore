@@ -9922,14 +9922,16 @@ ${value}</textarea
                       data-content="${JSON.stringify(post.content)}"
                       onpointerup="${javascript`
                         const selection = window.getSelection();
+                        const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                        const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
                         if (
-                          !this.contains(selection.anchorNode) ||
-                          !this.contains(selection.focusNode) ||
-                          selection.anchorNode.parentElement.dataset.position === undefined ||
-                          selection.focusNode.parentElement.dataset.position === undefined ||
-                          (selection.anchorNode === selection.focusNode && selection.anchorOffset === selection.focusOffset)
+                          !this.contains(anchorElement) ||
+                          !this.contains(focusElement) ||
+                          anchorElement.dataset.position === undefined ||
+                          focusElement.dataset.position === undefined ||
+                          (anchorElement === focusElement && selection.anchorOffset === selection.focusOffset)
                         ) return;
-                        tippy(selection.focusNode.parentElement, {
+                        tippy(focusElement, {
                           content: this.nextElementSibling.innerHTML,
                           theme: "dropdown",
                           trigger: "manual",
@@ -9945,17 +9947,19 @@ ${value}</textarea
                         class="dropdown--item"
                         onclick="${javascript`
                           const selection = window.getSelection();
+                          const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                          const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
                           // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
                           const anchorPosition = JSON.parse(
-                            selection.anchorNode.parentElement.dataset.position
+                            anchorElement.dataset.position
                           );
                           const focusPosition = JSON.parse(
-                            selection.focusNode.parentElement.dataset.position
+                            focusElement.dataset.position
                           );
                           const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                           const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                           const content = JSON.parse(
-                            selection.anchorNode.parentElement.closest("[data-content]").dataset.content
+                            anchorElement.closest("[data-content]").dataset.content
                           );
                           const element = document.querySelector('.new-post [name="content"]');
                           textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
