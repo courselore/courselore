@@ -312,9 +312,6 @@ export default async function courselore(
           <script>
             tippy.setDefaultProps({
               arrow: tippy.roundArrow + tippy.roundArrow,
-              onMount() {
-                document.dispatchEvent(new Event("DOMContentLoaded"));
-              },
               duration: window.matchMedia("(prefers-reduced-motion: reduce)")
                 .matches
                 ? 1
