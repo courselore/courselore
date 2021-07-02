@@ -8645,13 +8645,13 @@ export default async function courselore(
               multiple
               hidden
               data-skip-is-modified="true"
-              onchange="${javascript`
-                (async () => {
+              data-ondomcontentloaded="${javascript`
+                this.upload = async (fileList) => {
                   const element = this.closest(".text-editor").querySelector('[name="content"]');
                   // TODO: Give some visual indication of progress.
                   element.disabled = true;
                   const body = new FormData();
-                  for (const file of this.files) body.append("attachments", file);
+                  for (const file of fileList) body.append("attachments", file);
                   const response = await (await fetch("${app.locals.settings.url}/text-editor/attachments", {
                     method: "POST",
                     body,
@@ -8659,7 +8659,10 @@ export default async function courselore(
                   element.disabled = false;
                   textFieldEdit.wrapSelection(element, response, "");
                   element.focus();
-                })();
+                };
+              `}"
+              onchange="${javascript`
+                this.upload(this.files);
               `}"
             />
           </div>
@@ -8722,15 +8725,13 @@ export default async function courselore(
             this.classList.add("drag");
           `}"
           ondragover="${javascript`
-            event.preventDefault(); // TODO: Firefox seems to require this.
+            event.preventDefault(); // TODO: Firefox seems to require this. Investigate more.
           `}"
           ondrop="${javascript`
-            // TODO: The idea of triggering upload by updating the input type="file" probably won’t fly because of browser inconsistencies.
             event.preventDefault();
+            // TODO: I read somewhere that some browsers also need ‘event.stopPropagation()’. Investigate.
             this.classList.remove("drag");
-            const attachments = this.closest(".text-editor").querySelector(".attachments");
-            attachments.files = event.dataTransfer.files;
-            attachments.dispatchEvent(new Event("change")); // TODO: Chrome seems to need this line; Safari doesn’t want it.
+            this.closest(".text-editor").querySelector(".attachments").upload(event.dataTransfer.files);
           `}"
           ondragleave="${javascript`
             this.classList.remove("drag");
