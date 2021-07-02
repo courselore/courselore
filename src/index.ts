@@ -8737,6 +8737,11 @@ export default async function courselore(
           ondragleave="${javascript`
             this.classList.remove("drag");
           `}"
+          onpaste="${javascript`
+            if (event.clipboardData.files.length === 0) return;
+            event.preventDefault();
+            this.closest(".text-editor").querySelector(".attachments").upload(event.clipboardData.files);
+          `}"
         >
 ${value}</textarea
         >
