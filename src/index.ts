@@ -31,6 +31,7 @@ import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import unistUtilVisit from "unist-util-visit";
 import rehypeStringify from "rehype-stringify";
+import { JSDOM } from "jsdom";
 
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
@@ -8838,10 +8839,22 @@ ${value}</textarea
   // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
   // TODO: Extract this into a library?
   interface Partials {
-    textProcessor: (text: string) => HTML;
+    textProcessor: (
+      text: string,
+      _?: {
+        req?: express.Request<
+          {},
+          any,
+          {},
+          {},
+          IsEnrolledInCourseMiddlewareLocals
+        >;
+        res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+      }
+    ) => HTML;
   }
   app.locals.partials.textProcessor = await (async () => {
-    const textProcessor = unified()
+    const markdownProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm)
       .use(remarkMath)
@@ -8877,7 +8890,59 @@ ${value}</textarea
       })
       .use(rehypeStringify);
 
-    return (text: string) => textProcessor.processSync(text).toString();
+    return (
+      text: string,
+      {
+        req,
+        res,
+      }: {
+        req?: express.Request<
+          {},
+          any,
+          {},
+          {},
+          IsEnrolledInCourseMiddlewareLocals
+        >;
+        res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+      } = {}
+    ) => {
+      const processedMarkdown = markdownProcessor.processSync(text).toString();
+      if (res === undefined) return processedMarkdown;
+      const document = JSDOM.fragment(html`<div>$${processedMarkdown}</div>`);
+      (function traverse(node: Node): void {
+        switch (node.nodeType) {
+          case node.TEXT_NODE:
+            const parentElement = node.parentElement;
+            if (
+              parentElement === null ||
+              parentElement.closest("a, code") !== null
+            )
+              return;
+            const textContent = node.textContent;
+            if (textContent === null) return;
+            let newNodeHTML = html`${textContent}`;
+            newNodeHTML = newNodeHTML.replace(
+              /#(\d+)(?:\/(\d+))?/g,
+              (match, thread, post) => {
+                // TODO: Check that the thread/post is accessible by user.
+                // TODO: Do a tooltip to reveal what would be under the link.
+                return html`<a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/threads/${thread}${post === undefined
+                    ? ""
+                    : `#${post}`}"
+                  >${match}</a
+                >`;
+              }
+            );
+            parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
+            break;
+        }
+        if (node.hasChildNodes())
+          for (const childNode of node.childNodes) traverse(childNode);
+      })(document);
+      return document.firstElementChild!.innerHTML;
+    };
   })();
 
   app.post<{}, any, { content?: string }, {}, IsAuthenticatedMiddlewareLocals>(
@@ -8890,6 +8955,7 @@ ${value}</textarea
       )
         return next("validation");
 
+      // TODO: Pass {req, res} here to enable rendering of mentions and references.
       res.send(app.locals.partials.textProcessor(req.body.content));
     }
   );
@@ -9960,7 +10026,10 @@ ${value}</textarea
                         this.tippy.show();
                       `}"
                     >
-                      $${app.locals.partials.textProcessor(post.content)}
+                      $${app.locals.partials.textProcessor(post.content, {
+                        req,
+                        res,
+                      })}
                     </div>
                     <div class="tippy-content--element">
                       <button

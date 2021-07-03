@@ -622,6 +622,16 @@ Insiders Builds are generated on every push. They’re useful for development an
 <summary>Meetings</summary>
 
 <details>
+<summary>2021-07-03</summary>
+
+- Mentions:
+  - Username (which we don’t have), email, name?
+  - There’s no notion of profile page (for example, https://github.com/leafac), so it’s only for notifications?
+- We’ll do dropdown helpers to pick mentions & references when we do search.
+
+</details>
+
+<details>
 <summary>2021-06-26</summary>
 
 - Styled user-generated content such that nothing breaks the layout and everything looks nice.
