@@ -624,10 +624,35 @@ Insiders Builds are generated on every push. They’re useful for development an
 <details>
 <summary>2021-07-03</summary>
 
+- Progress:
+  - Images & attachments: Upload button; drag-and-drop; copy-and-paste.
+  - References, for example, `#4/3`.
+  - Quoting of selected text.
+  - @leafac/css.
+  - `data-ondomcontentloaded`.
+  - Mousetrap.
 - Mentions:
-  - Username (which we don’t have), email, name?
-  - There’s no notion of profile page (for example, https://github.com/leafac), so it’s only for notifications?
-- We’ll do dropdown helpers to pick mentions & references when we do search.
+  - We’ll use automatically-generated usernames, for example, `@leandro-facchinetti--27348`.
+  - We won’t have a user profile page yet (maybe in the future), so the `@mentions` will not link to anywhere. They just exist for the benefit of the notification system.
+  - Also support things like `@staff` / `@students` / `@channel` / `@group-3`.
+  - We’ll do `@mentions` when we do notifications.
+  - We’ll do dropdown helpers to pick mentions & references when we do search.
+- Use profile (good-to-have in the future):
+  - A little bio.
+  - Accessible to other students, but not to the general public.
+
+- Lightbox modal for resized images.
+- S3.
+- Garbage collection.
+- Cleaning geolocation.
+
+- Dependency between tags.
+
+- Backups. Download backup.
+
+- August 1st: Start marketing.
+
+- https://github.com/zurb/tribute
 
 </details>
 
