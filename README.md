@@ -225,9 +225,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 <details>
 <summary><strong>Backlog</strong></summary>
 
-### Features
-
-#### Courses
+### Courses
 
 - Different course states, for example, archived.
 - Remove course entirely.
@@ -235,12 +233,12 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Control who’s able to create courses, which makes sense for people who self-host.
 
-#### Invitations
+### Invitations
 
 - Limit invitation links to certain domains.
 - Have an option to require approval of enrollment.
 
-#### Conversations
+### Conversations
 
 - Tags:
   - Special:
@@ -259,7 +257,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Different states: Open vs archived.
 - Different visibility: All, staff, or students. A student + staff, for private questions.
 
-#### Notifications
+### Notifications
 
 - **How:** In CourseLore & via email.
 - **What:**
@@ -273,29 +271,33 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
   - Snooze.
 
-#### Anonymity
+### Anonymity
 
 - Allow people to create Personas.
 - Have a completely anonymous mode in which not even the staff has access to that information.
 
-#### API
+### API
 
 - To integrate with other platforms, like, LMSs.
 - To build extensions, for example, ask a question from within the text editor.
 
-#### User Profile
+### Users
 
-- Usual CRUD on user profile (name, and so forth).
-- Gravatar.
-- Multiple emails? Probably not, just the one institutional email (which is the account identifier). If people are affiliated with many institutions it’s likely they’ll be using different CourseLore instances anyway…
+- Avatars.
+  - Gravatar.
+- Multiple emails? Probably not, just the one institutional email (which is the account identifier). If people are affiliated with many institutions it’s likely that these institutions will be using different CourseLore instances anyway…
 - Allow people to remove their accounts.
+- User profile pages:
+  - A little bio.
+  - Accessible to other students, but not to the general public.
+  - Make `@mentions` link to the user profile page.
 
 </details>
 
 <details>
 <summary><strong>Implementation Notes</strong></summary>
 
-#### Email
+### Email
 
 - Have options to use third-parties, but also provide our own email delivery solution. Why?
   - To really protect everyone’s privacy, instead of potentially leaking sensitive information to the third-party who’s delivering the email.
@@ -364,7 +366,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://mailtrap.io/
   - https://mailslurper.com
 
-#### Authentication
+### Authentication
 
 - Passwordless authentication (Magic Authentication Links)
   - https://github.com/nickbalestra/zero
@@ -394,7 +396,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Good-to-have in the future: SSO with Hopkins ID
   - SAML.
 
-#### Text Processor
+### Text Processor
 
 - Add CSS for all the HTML that may be produced (see `hast-util-sanitize/lib/github.json`).
 - Emoji with the `:smile:` form.
@@ -402,12 +404,12 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://github.com/atmos/camo
 - Reference: <https://github.com/gjtorikian/html-pipeline>
 
-#### Landing Page
+### Landing Page
 
 - Try to make animation consume less resources. (Currently it’s making the “this tab is consuming too much energy” warning pop up in Safari.)
   - Maybe it has to do with computing the sine of large numbers? Clamp the values between 0–2π to see if that helps…
 
-#### Forms Niceties
+### Forms Niceties
 
 - Use `maxlength`.
 - Keep the buttons disabled while the form isn’t in a valid state.
@@ -415,7 +417,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://github.com/jcgertig/date-input-polyfill
   - https://github.com/Pikaday/Pikaday
 
-#### Text Editor Niceties
+### Text Editor Niceties
 
 - GitHub-style, not Trix-style.
   - https://typora.io
@@ -430,7 +432,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Paste tables from Excel and have them formatted as Markdown tables.
 - Select part of a post and quote part in your answer.
 
-#### Queues
+### Queues
 
 - For background tasks, such as sending email.
 - Consider follow the **bad practice** of using a database (SQLite, in this case) as a queue.
@@ -439,13 +441,13 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://github.com/kd0kfo/smq/wiki/About-SMQ
   - https://github.com/damoclark/node-persistent-queue
 
-#### Error Pages
+### Error Pages
 
 - 400s.
 - 500s.
 - Form validation errors.
 
-#### Search
+### Search
 
 - In contents of a course (for example, search for `NullPointerException` to find that thread that helped you out).
   - Search within the scope of a course.
@@ -453,19 +455,19 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Reference: GitHub let’s you search in different scopes like that.
 - Courses in the system (for joining a course).
 
-#### Translate to Other Languages
+### Translate to Other Languages
 
-#### Design
+### Design
 
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting.
 - Add support for screen readers.
 - Add support for keyboard navigation.
 
-#### Metrics
+### Metrics
 
 - For courses in which participation is graded.
 
-#### Applications
+### Applications
 
 - Desktop & phone.
 - A registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
@@ -484,19 +486,19 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Improvements
 
-#### Make It Work on Mobile
+### Make It Work on Mobile
 
 - Responsive design.
 - Mobile app may not be necessary, as web applications are capable of some “native” things.
 
-#### Tests
+### Tests
 
 - Approaches:
   - (What we’re doing now) https://github.com/sindresorhus/got + https://github.com/jsdom/jsdom : Simplest and the best for now since we’re doing server-side rendering.
   - https://github.com/puppeteer/puppeteer / https://github.com/smooth-code/jest-puppeteer : It’s a bit more magic, since it actually runs a browser.
   - https://www.cypress.io : Full-blown magic…
 
-#### Page Transitions & Client-Side JavaScript
+### Page Transitions & Client-Side JavaScript
 
 - https://hotwire.dev
   - https://www.npmjs.com/package/express-hotwire
@@ -507,7 +509,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - https://unpoly.com
 - https://youtube.github.io/spfjs/
 
-#### Code Base
+### Code Base
 
 - Consider using **session per request** middleware for database transactions.
   - Considerations:
@@ -535,7 +537,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Use `Cache-control: no-store`.
 - Use database indices where necessary.
 
-#### Deployment
+### Deployment
 
 - Graceful HTTP shutdown
 
@@ -705,15 +707,11 @@ Insiders Builds are generated on every push. They’re useful for development an
   - We’ll do dropdown helpers to pick mentions & references when we do search.
 - Use profile (good-to-have in the future):
 
-  - A little bio.
-  - Accessible to other students, but not to the general public.
 
 - Lightbox modal for resized images.
 - S3.
 - Garbage collection.
 - Cleaning geolocation.
-
-- Dependency between tags.
 
 - Backups. Download backup.
 - Auto-update.
