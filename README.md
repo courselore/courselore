@@ -11,9 +11,9 @@
 
 You may run the CourseLore demonstration server on your own computer to play around, try out the features, and determine if CourseLore works for you.
 
-(**Note:** We say that it’s a **demonstration** server because you shouldn’t run CourseLore this way for an actual course (your students wouldn’t be able to access it) (see [§ Host Your Own CourseLore Instance](#host-your-own-courselore-instance) when you’re ready to take that next step). We **do not** mean demonstration as in “now go buy CourseLore Premium,” or “here are some in-app purchases.” There **are no** CourseLore Premium or in-app purchases. CourseLore is and will always be free and open-source.)
+> **Note:** We say that it’s a **demonstration** server because you shouldn’t run CourseLore this way for an actual course or your students wouldn’t be able to access it. We **do not** mean demonstration as in “now go buy CourseLore Premium,” or “here are some in-app purchases.” There **are no** CourseLore Premium or in-app purchases. CourseLore is and will always be free and open-source.
 
-- **Option 1 (Simplest):** [Download CourseLore](https://github.com/courselore/courselore/releases), run it, and go to `http://localhost:4000`. (To run CourseLore in macOS you’ll need to right-click on the executable, click on Open, and then confirm that you want to open it. CourseLore as downloaded from the the link above is safe, but hasn’t been signed, so macOS makes you confirm that you trust it.)
+- **Option 1 (Simplest):** [Download CourseLore](https://github.com/courselore/courselore/releases/latest), run it, and go to `http://localhost:4000`. (To run CourseLore in macOS you’ll need to right-click on the executable, click on Open, and then confirm that you want to open it. CourseLore as downloaded from the the link above is safe, but hasn’t been signed, so macOS makes you confirm that you trust it.)
 
 - **Option 2 (Advanced):** If you have [Node.js](https://nodejs.org) installed, run:
 
@@ -32,7 +32,7 @@ You may run the CourseLore demonstration server on your own computer to play aro
 
 ### Host Your Own CourseLore Instance
 
-Follow the instructions below to install CourseLore on your own servers. This is the most privacy-preserving way of using CourseLore, because your and your students’ data are under your control. It’s a bit of extra work to setup, but CourseLore has been designed from the beginning to be easy to install and maintain, so it’s an excellent first system administration project. And once it’s been setup, you can mostly forget about it.
+Follow the instructions below to install CourseLore on your own servers. This is the most privacy-preserving way of using CourseLore, because your and your students’ data are under your control. CourseLore has been designed from the beginning to be easy to install and maintain, so it’s an excellent first system administration project. And once it’s been setup, you can mostly forget about it.
 
 #### Requisites
 
@@ -51,7 +51,7 @@ Follow the instructions below to install CourseLore on your own servers. This is
   The important things to keep in mind when you’re getting a server are that you must be able to:
 
   1. Run network services, for example, a web server and an email server. In particular, you must be able to bind services to the network ports 80 and 443 for inbound connections, and you must be able to make outbound connections to port 25. You may also check for firewalls sitting in front of the server.
-  2. Have access to the file system (read and write files). (Most providers of **Platform-as-a-Service (PaaS)**, for example, [Heroku](https://www.heroku.com), fail this criterion.)
+  2. Have access to the file system (read and write files). (Most providers of **Platform-as-a-Service (PaaS)**, for example, [Heroku](https://www.heroku.com), don’t work for hosting CourseLore because of this.)
 
   If you plan on using a server provided by your institution, you may ask your system administrator about these features. Most servers for rent provide these features.
 
@@ -61,42 +61,115 @@ Follow the instructions below to install CourseLore on your own servers. This is
 
 CourseLore has been designed to be a welcoming project for people who are new to contributing to open-source. Here’s what you need to install to get started:
 
-- [Node.js](https://nodejs.org/)
+- [Node.js](https://nodejs.org/), including support for building native extensions
 - [Visual Studio Code](https://code.visualstudio.com) and the following Visual Studio Code extensions:
   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
   - [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html)
-  - [es6-string-css](https://marketplace.visualstudio.com/items?itemName=bashmish.es6-string-css) / [vscode-styled-components](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components)
-  - [es6-string-javascript](https://marketplace.visualstudio.com/items?itemName=zjcompt.es6-string-javascript)
-  - [es6-string-markdown](https://marketplace.visualstudio.com/items?itemName=jeoht.es6-string-markdown)
 - [Git](https://git-scm.com)
 
-<!--
-TODO:
-- Windows setup:
-  - Administrator `cmd.exe`/PowerShell.
-  - `choco install nvm git vscode python visualstudio2017-workload-vctools`
-  - `npm install --global windows-build-tools`
-  - Ctrl-P in VS Code: `ext install esbenp.prettier-vscode Tobermory.es6-string-html bashmish.es6-string-css jeoht.es6-string-markdown` (this actually applies to every system)
-  - You may need to close and reopen `cmd.exe`/PowerShell between these commands.
+The following are detailed instructions on how to install these tools in different operating systems:
 
-- Ubuntu setup:
-```
-curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash -
-sudo apt install git build-essential nodejs
-sudo snap install code --classic
-```
-- Echo brew shellenv & nvm to bashrc as well
+#### Windows Instructions
 
-- macOS setup:
+> **Note:** For most of these commands to work you’ll have to run the Command Prompt or Powershell as administrator. Also, you may have to close and reopen the command line between some commands.
 
-```
-brew install git node visual-studio-code
-```
+1. Install [Chocolatey](https://chocolatey.org/), which is a convenient way to install tools for software development.
 
-Configure git.
--->
+2. Install the following packages:
 
-**Clone and setup the project locally:**
+   ```console
+   > choco install nvm python visualstudio2019-workload-vctools vscode git
+   ```
+
+   <details>
+   <summary>What are these packages?</summary>
+
+   - `nvm`: A tool to manage multiple Node.js installations. At some point you’ll probably need to test things in multiple Node.js versions, so it’s better to install `nvm`.
+   - `python visualstudio2019-workload-vctools`: Build tools necessary to work with native extensions in Node.js (native extensions are Node.js modules written partly in C/C++ and thus have to be compiled in a platform-specific way).
+   - `vscode`: Visual Studio Code.
+   - `git`: Git.
+
+   </details>
+
+3. Open Visual Studio Code and install the extensions mentioned in the beginning of this section.
+
+4. [Configure Git](https://docs.github.com/en/get-started/quickstart/set-up-git).
+
+#### macOS Instructions
+
+1. Install [Homebrew](https://brew.sh/), which is a convenient way to install tools for software development.
+
+2. Install the following packages and follow the instructions given in the output:
+
+   ```console
+   $ brew install nvm visual-studio-code git
+   ```
+
+   <details>
+   <summary>What Are These Packages?</summary>
+
+   - `nvm`: A tool to manage multiple Node.js installations. At some point you’ll probably need to test things in multiple Node.js versions, so it’s better to install `nvm`.
+   - `visual-studio-code`: Visual Studio Code.
+   - `git`: Git.
+
+   </details>
+
+   <details>
+   <summary>What about Node.js Native Extensions?</summary>
+
+   Native extensions are Node.js modules written partly in C/C++ and thus have to be compiled in a platform-specific way and require some extra build tools (something called “Xcode Command Line Tools”). It so happens that Homebrew also needs these tools, so it already installed them in step 1.
+
+   </details>
+
+3. Open Visual Studio Code and install the extensions mentioned in the beginning of this section.
+
+4. [Configure Git](https://docs.github.com/en/get-started/quickstart/set-up-git).
+
+#### Linux (Ubuntu) Instructions
+
+1. Install [Homebrew](https://brew.sh/), which is a convenient way to install tools for software development.
+
+2. Install the following packages and follow the instructions given in the output:
+
+   ```console
+   $ brew install nvm git
+   $ sudo snap install code --classic
+   ```
+
+   <details>
+   <summary>What Are These Packages?</summary>
+
+   - `nvm`: A tool to manage multiple Node.js installations. At some point you’ll probably need to test things in multiple Node.js versions, so it’s better to install `nvm`.
+   - `git`: Git.
+   - `code`: Visual Studio Code.
+
+   </details>
+
+   <details>
+   <summary>What about Node.js Native Extensions?</summary>
+
+   Native extensions are Node.js modules written partly in C/C++ and thus have to be compiled in a platform-specific way and require some extra build tools. It so happens that Homebrew also needs these tools, so it already installed them in step 1.
+
+   </details>
+
+   <details>
+   <summary>Why Homebrew on Linux?</summary>
+
+   Unlike Windows & macOS, most Linux distributions come with their own package managers. In fact, we’re using one of the them (Snap), to install Visual Studio Code. So why add Homebrew to the mix?
+
+   1. Homebrew includes up-to-date versions of packages.
+   2. Homebrew installs the extra packages necessary for Node.js native extensions.
+   3. Homebrew works across multiple distributions.
+
+   </details>
+
+3. Open Visual Studio Code and install the extensions mentioned in the beginning of this section.
+
+4. [Configure Git](https://docs.github.com/en/get-started/quickstart/set-up-git).
+
+### Contributing to CourseLore
+
+Clone and setup the project locally:
 
 ```console
 $ git clone https://github.com/courselore/courselore.git
@@ -105,23 +178,23 @@ $ npm install
 $ code .
 ```
 
-**Run the development server:**
+Run the development server:
 
 ```console
 $ npm start
 ```
 
-**Run the tests:**
+Run the tests:
 
 ```console
 $ npm test
 ```
 
-**Release a new version:**
+Release a new version:
 
 ```console
 $ npm version <major|minor|patch>
-$ git push --tags
+$ git push origin <tag>
 ```
 
 ### Insiders Builds
@@ -638,6 +711,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - We’ll do `@mentions` when we do notifications.
   - We’ll do dropdown helpers to pick mentions & references when we do search.
 - Use profile (good-to-have in the future):
+
   - A little bio.
   - Accessible to other students, but not to the general public.
 
@@ -649,6 +723,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Dependency between tags.
 
 - Backups. Download backup.
+- Auto-update.
 
 - August 1st: Start marketing.
 

@@ -1900,7 +1900,7 @@ export default async function courselore(
                   <button
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
-                        content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the Demonstration Inbox instead.",
+                        content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the Demonstration Inbox instead. Otherwise this is a fully functioning installation of CourseLore, which is and always will be free and open-source.",
                         theme: "tooltip",
                         trigger: "click",
                       });
