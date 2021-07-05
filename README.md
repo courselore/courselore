@@ -224,73 +224,81 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 #### Courses
 
-- Basic CRUD:
-  - Rename course, and that sort of thing
-- Enrollment (user ↔ course) roles
-  - Instructor
-  - Assistant
-  - Student
-- States
-  - Draft
-  - Enrollment
-  - Running
-  - Archived
-- Create roles and manage permissions
-- Tag-based actions
-- Allow course assistants to create courses?
-- Different ways to enroll in the course
-  - Invitation only
-  - By URL
-  - What roles can sign up for themselves
-  - Course manager (instructors?) should confirm sign up
-  - Generate a QR code with link, for instructors to use in class
-- Manage people in the course
-  - Change their roles
-  - Remove them from the course
-  - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
-- Allow people to disenroll from a course (but we get to keep their contributions as “ghost”)
-- Allow people who aren’t even users to sign up & enroll in a single operation
-  - Do it with a simple `redirect` option in the sign up process
-- Enroll with link or with a list of emails.
-  - Different links for different roles.
-  - Expiration dates on links.
+- Different course states, for example, archived.
+- Remove course entirely.
+- Create custom roles (beyond “staff” and “student”) and manage fine-grained permissions.
+- Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
+- Control who’s able to create courses, which makes sense for people who self-host.
 
-#### Forum
+#### Invitations
 
-- Only one kind of post in threads
-- Configurable anonymity
-  - Only instructors may identify the person
-  - Instructors and assistants may identify the person (default)
-  - No-one may identify the person
-- Don’t implement that idea of collaboratively coming up with an answer (like Piazza) (no-one in the courses I was involved with used that; people just write follow-up answers)
-- Notifications
-  - How
-    - Email
-    - In-app
-  - What
-    - Subscribe to threads
-    - Subscribe to whole courses
-    - Staff may send messages that are notified to everyone
-- Tags
-- Reactions & Badges
-  - Only allow positive reactions? (Like Facebook) (Probably yes)
-  - Allow both positive and negative reactions? (like GitHub / Reddit)
-  - Created by/Endorsed by instructor
-- States
-  - Open
-  - Closed
-- Visibility
-  - To students
-  - To staff only (and students that may have posted on it)
+- Limit invitation links to certain domains.
+- Have an option to require approval of enrollment.
+
+#### Conversations
+
+- Tags:
+  - Special:
+    - Pin.
+    - Question & Answer.
+      - Answers by staff or endorsed by staff are presented with a badge.
+  - User-generated, for organizational purposes, for example, “Assignment 3”:
+    - Created & managed by staff.
+    - Give option to make them mandatory to students when creating a conversation (not necessarily when posting).
+    - Tags attach to conversations as well as to entries.
+    - These tags may be private to instructors to allow for tags like “Change for Next Semester”.
+    - Tags may have dependencies, for example, an entry tagged “Patch to Handout” may only occur in a conversation tagged with “Assignment”.
+    - Good-to-have: Actions in the system triggered by tags. This idea is still a bit vague.
+- Likes.
+- Different modes: Forum vs Chat.
+- Different states: Open vs archived.
+- Different visibility: All, staff, or students. A student + staff, for private questions.
+
+#### Notifications
+
+- **How:** In CourseLore & via email.
+- **What:**
+  - Subscribe to whole courses to be notified of everything.
+    - Unsubscribe from certain conversations.
+  - For people who aren’t subscribe to the whole course, give an option to subscribe to threads.
+    - Give option to automatically subscribe them when they post.
+  - Regardless of notification preferences, staff may send messages that are notified to everyone.
+- **When:** Real-time vs digest.
+- **Nice-to-have in the future:**
+  - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
+  - Snooze.
+
+#### Anonymity
+
+- Allow people to create Personas.
+- Have a completely anonymous mode in which not even the staff has access to that information.
 
 #### API
 
-- To integrate with other platforms, like, LMS
-- To ask a question from within the text editor, for example
+- To integrate with other platforms, like, LMSs.
+- To build extensions, for example, ask a question from within the text editor.
+
+#### User Profile
+
+- Usual CRUD on user profile (name, and so forth).
+- Gravatar.
+- Multiple emails? Probably not, just the one institutional email (which is the account identifier). If people are affiliated with many institutions it’s likely they’ll be using different CourseLore instances anyway…
+- Allow people to remove their accounts.
+
+</details>
+
+### Implementation Notes
+
+<details>
+<summary>Implementation Notes</summary>
 
 #### Email
 
-- Requirements
+- Have options to use third-parties, but also provide our own email delivery solution. Why?
+  - To really protect everyone’s privacy, instead of potentially leaking sensitive information to the third-party who’s delivering the email.
+  - More moving parts that may go down.
+  - Cost.
+- Requirements for good deliverability:
   - IPv6.
   - DNS:
     - MX DNS record
@@ -322,11 +330,7 @@ Insiders Builds are generated on every push. They’re useful for development an
       - <https://support.google.com/mail/troubleshooter/2696779>
   - VERP
     - <https://meta.discourse.org/t/handling-bouncing-e-mails/45343>
-- Why not third-party
-  - Share data with third party!
-  - Cost
-  - More stuff to configure
-- Third-parties
+- Third-parties:
   - SendGrid
   - SES
   - https://blog.mailtrap.io/free-smtp-servers/
@@ -359,7 +363,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 #### Authentication
 
-- Passwordless authentication (Magic links)
+- Passwordless authentication (Magic Authentication Links)
   - https://github.com/nickbalestra/zero
   - https://github.com/mxstbr/passport-magic-login
   - https://github.com/vinialbano/passport-magic-link
@@ -383,21 +387,9 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://notes.xoxco.com/post/28288684632/more-on-password-less-login
   - Let’s not use JWT, because you have to check if a token has already been used anyway; at that point, just give a plain token that you stored in the database.
     - https://www.youtube.com/watch?v=dgg1dvs0Bn4
-- Deep links & redirects.
-- Prevent people from trying to brute-force login. Put a limit on the amount of magic links you may generate in a period.
-- SSO with Hopkins ID
-  - SAML
-
-#### User Profile
-
-- Usual CRUD on user profile (name, and so forth).
-- Gravatar.
-- Multiple emails? Probably not, just the one institutional email (which is the account identifier). If people are affiliated with many institutions it’s likely they’ll be using different CourseLore instances anyway…
-- Allow people to remove their accounts.
-
-#### API
-
-- People may want to integrate CourseLore with their existing LMS & other systems.
+- Prevent people from trying to brute-force login. Put a limit on the amount of magic links you may generate in a period. Though I think that’ll be covered by the general rate-limiting solution we end up using.
+- Good-to-have in the future: SSO with Hopkins ID
+  - SAML.
 
 #### Text Processor
 
