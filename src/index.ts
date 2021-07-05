@@ -8801,7 +8801,7 @@ ${value}</textarea
       for (const attachment of Array.isArray(req.files!.attachments)
         ? req.files!.attachments
         : [req.files!.attachments]) {
-        const relativePath = `attachments/${cryptoRandomString({
+        const relativePath = `files/${cryptoRandomString({
           length: 20,
           type: "numeric",
         })}/${attachment.name}`;
@@ -8830,7 +8830,7 @@ ${value}</textarea
 
   // TODO: Verify the security of this: https://expressjs.com/en/4x/api.html#express.static
   app.get<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
-    "/attachments/*",
+    "/files/*",
     ...app.locals.middlewares.isAuthenticated,
     express.static(rootDirectory)
   );
