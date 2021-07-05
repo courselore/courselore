@@ -132,7 +132,7 @@ The following are detailed instructions on how to install these tools in differe
 </details>
 
 <details>
-<summary>Linux (tested on Ubuntu)</summary>
+<summary>Linux (Tested on Ubuntu)</summary>
 
 1. Install [Homebrew](https://brew.sh/), which is a convenient way to install tools for software development.
 
@@ -237,6 +237,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 - Limit invitation links to certain domains.
 - Have an option to require approval of enrollment.
+- Have a public listing of courses in the system and allow people to request to join.
 
 ### Conversations
 
@@ -291,6 +292,77 @@ Insiders Builds are generated on every push. They’re useful for development an
   - A little bio.
   - Accessible to other students, but not to the general public.
   - Make `@mentions` link to the user profile page.
+
+### Text Editor Niceties
+
+- Templates for questions (like GitHub Issues).
+- Paste tables from Excel and have them formatted as Markdown tables.
+
+### Text Processor
+
+- Emoji with the `:smile:` form.
+- Proxy insecure content: https://github.com/atmos/camo
+- Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
+
+### Search
+
+- In contents of a course (for example, search for `NullPointerException` to find that thread that helped you out).
+  - Search within the scope of a course.
+  - Search in all courses you’re taking (for example, search for `deadline extension`).
+  - Reference: GitHub let’s you search in different scopes like that.
+
+### Forms Niceties
+
+- Use `maxlength`.
+- Keep the buttons disabled while the form isn’t in a valid state.
+- Use date pickers:
+  - https://github.com/jcgertig/date-input-polyfill
+  - https://github.com/Pikaday/Pikaday
+
+### Statistics
+
+- How many questions & how fast they were answered.
+- Student engagement for courses in which participation is graded.
+
+### Landing Page
+
+- Try to make animation consume less resources. (Currently it’s making the “this tab is consuming too much energy” warning pop up in Safari.)
+  - Maybe it has to do with computing the sine of large numbers? Clamp the values between 0–2π to see if that helps… Or maybe just cache a bunch results…
+
+### Live Course Communication during the Lectures
+
+- References:
+  - https://www.sli.do
+  - https://pigeonholelive.com/features-qna/
+
+### Native Applications
+
+- Can we get away with not having native applications? How much does it hinder our ability to do things like notifications?
+- Desktop with Electron & mobile with web views? Maybe React Native?
+- Have registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+
+### Translate to Other Languages
+
+### Design & Accessibility
+
+- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
+- Test screen readers.
+
+### Implementation Improvements
+
+- Write more automated tests
+
+### Marketing
+
+- Newsletter
+- Create CourseLore Gravatar
+  - Use in npm
+- Create accounts on:
+  - Patreon
+  - PayPal
+  - Facebook
+  - Instagram
+  - Reddit
 
 </details>
 
@@ -396,120 +468,27 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Good-to-have in the future: SSO with Hopkins ID
   - SAML.
 
-### Text Processor
-
-- Add CSS for all the HTML that may be produced (see `hast-util-sanitize/lib/github.json`).
-- Emoji with the `:smile:` form.
-- Proxy insecure content.
-  - https://github.com/atmos/camo
-- Reference: <https://github.com/gjtorikian/html-pipeline>
-
-### Landing Page
-
-- Try to make animation consume less resources. (Currently it’s making the “this tab is consuming too much energy” warning pop up in Safari.)
-  - Maybe it has to do with computing the sine of large numbers? Clamp the values between 0–2π to see if that helps…
-
-### Forms Niceties
-
-- Use `maxlength`.
-- Keep the buttons disabled while the form isn’t in a valid state.
-- Use date pickers:
-  - https://github.com/jcgertig/date-input-polyfill
-  - https://github.com/Pikaday/Pikaday
-
-### Text Editor Niceties
-
-- GitHub-style, not Trix-style.
-  - https://typora.io
-  - https://www.notion.so
-  - https://marktext.app
-- Store what the user wrote per thread/chat, even if they move to other threads/chats.
-  - Garlic.js does that, but it seems a bit old and requires jQuery. Use localStorage instead.
-- Some helpers to input Markdown & LaTeX (similar to what GitHub has).
-- Upload files (like images), and have them embedded (similar to what GitHub has).
-  - Packages to handle multipart form data: busboy, multer, formidable, multiparty, connect-multiparty, and pez.
-- Templates for questions (like GitHub Issues).
-- Paste tables from Excel and have them formatted as Markdown tables.
-- Select part of a post and quote part in your answer.
-
 ### Queues
 
 - For background tasks, such as sending email.
-- Consider follow the **bad practice** of using a database (SQLite, in this case) as a queue.
+- Consider following the supposedly **bad practice** of using a database (SQLite, in this case) as a queue, because it’s simpler.
   - http://sqlite.1065341.n5.nabble.com/SQLite-is-perfect-for-FILE-based-MESSAGE-QUEUE-td57343.html
   - https://rdrr.io/cran/liteq/man/liteq.html
   - https://github.com/kd0kfo/smq/wiki/About-SMQ
   - https://github.com/damoclark/node-persistent-queue
 
-### Error Pages
-
-- 400s.
-- 500s.
-- Form validation errors.
-
-### Search
-
-- In contents of a course (for example, search for `NullPointerException` to find that thread that helped you out).
-  - Search within the scope of a course.
-  - Search in all courses you’re taking (for example, search for `deadline extension`).
-  - Reference: GitHub let’s you search in different scopes like that.
-- Courses in the system (for joining a course).
-
-### Translate to Other Languages
-
-### Design
-
-- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting.
-- Add support for screen readers.
-- Add support for keyboard navigation.
-
-### Metrics
-
-- For courses in which participation is graded.
-
-### Applications
-
-- Desktop & phone.
-- A registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
-
-### Live Course Communication during the Lectures
-
-- https://www.sli.do
-- https://pigeonholelive.com/features-qna/
-
-### Non-Functional Features
-
-- Easy to self-host
-- Works on mobile (no apps) & desktop
-- Modern & uncluttered interface
-- Fast
-
-### Improvements
-
-### Make It Work on Mobile
-
-- Responsive design.
-- Mobile app may not be necessary, as web applications are capable of some “native” things.
-
-### Tests
-
-- Approaches:
-  - (What we’re doing now) https://github.com/sindresorhus/got + https://github.com/jsdom/jsdom : Simplest and the best for now since we’re doing server-side rendering.
-  - https://github.com/puppeteer/puppeteer / https://github.com/smooth-code/jest-puppeteer : It’s a bit more magic, since it actually runs a browser.
-  - https://www.cypress.io : Full-blown magic…
-
-### Page Transitions & Client-Side JavaScript
+### Page Transitions & Prefetching
 
 - https://hotwire.dev
-  - https://www.npmjs.com/package/express-hotwire
-  - https://github.com/turbolinks/turbolinks
 - https://docs.stimulusreflex.com
 - https://barba.js.org
 - https://swup.js.org/getting-started
 - https://unpoly.com
 - https://youtube.github.io/spfjs/
+- https://getquick.link/
+- https://github.com/defunkt/jquery-pjax
 
-### Code Base
+### Code Base Improvements
 
 - Consider using **session per request** middleware for database transactions.
   - Considerations:
@@ -526,21 +505,14 @@ Insiders Builds are generated on every push. They’re useful for development an
     - https://github.com/jshttp/on-finished
     - https://github.com/pillarjs/router/issues/18
 - Produce native ESM:
-  - It’s too fresh, assess again start 2021-08.
+  - It’s too fresh, assess again starting 2021-08.
   - Blocked by experimental support in ts-node-dev (https://github.com/TypeStrong/ts-node/issues/1007) & Jest (https://jestjs.io/docs/en/ecmascript-modules).
-  - ESM unlocks top-level await and eliminates the need for `appGenerator()`.
-- Consider using a CSS framework:
-  - Bootstrap: The most popular.
-  - TailwindCSS: The hot new option.
+  - ESM unlocks top-level await, which is cool, but I don’t we’d need.
 - <https://github.com/wclr/ts-node-dev/issues/243>: Stop using `--pool` when calling `ts-node-dev`.
 - Call Prettier to check contents of `public/` folders.
 - Use `Cache-control: no-store`.
 - Use database indices where necessary.
-
-### Deployment
-
 - Graceful HTTP shutdown
-
   ```js
   process.on("SIGTERM", () => {
     debug("SIGTERM signal received: closing HTTP server");
@@ -549,46 +521,12 @@ Insiders Builds are generated on every push. They’re useful for development an
     });
   });
   ```
-
   - https://github.com/gajus/http-terminator
-
 - Helmet.
 - csurf.
 - Compression.
-
-- HTTPS:
-
-  - Consider using <https://www.npmjs.com/package/@small-tech/https>
-  - Use Caddy
-    - Manage with https://pm2.keymetrics.io/docs/usage/pm2-api/
-  - Use another reverse-proxy / load balancing solution: https://balance.inlab.net
-  - Use certbot:
-    - <https://www.sitepoint.com/how-to-use-ssltls-with-node-js/>
-  - Or roll out our own thing:
-    - ACME implementations
-      - <https://www.npmjs.com/package/acme-v2>
-      - <https://www.npmjs.com/package/acme-client>
-      - <https://www.npmjs.com/package/acme-middleware>
-      - <https://github.com/publishlab/node-acme-client>
-      - <https://github.com/compulim/acme-http-01-azure-key-vault-middleware>
-      - <https://letsencrypt.org/docs/client-options/>
-    - ACME description: <https://tools.ietf.org/html/rfc8555>
-    - Implementations of cryptography
-      - Node’s crypto
-      - <https://github.com/brix/crypto-js>
-      - <https://github.com/digitalbazaar/forge>
-    - Other considerations:
-      - HSTS:
-        - <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security>
-        - Helmet.
-    - HTTP → HTTPS
-      - <https://www.npmjs.com/package/express-force-https>
-  - Verify: https://www.ssllabs.com
-
 - HTTP/2:
-
   - <https://github.com/expressjs/express/issues/3388>: Express doesn’t work with Node’s http/2 implementation, because the `req` and `res` aren’t compatible.
-  - Using Greenlock: https://git.rootprojects.org/root/greenlock-express.js/src/branch/master/examples/http2/server.js
   - Use the spdy package (seems abandoned, and people said it doesn’t work with recent versions of node: https://github.com/spdy-http2/node-spdy/issues/380)
   - Try express 5.
   - <https://gist.github.com/studentIvan/6c78886c140067936ff379031fd12e14>
@@ -597,56 +535,15 @@ Insiders Builds are generated on every push. They’re useful for development an
     - koa
     - Hapi
     - tinyhttp
-
 - Auto-updater
-- `download.courselore.org` points to installer.
-
-- A version hosted by us for other people to use (not just demo)
-
-  - In addition, or as an alternative, a demo version that self destructs every hour (like Moodle: https://moodle.org/demo)
-
-- Supervisors
-  - systemd
-  - PM2
-  - Nodemon
-  - Forever
-- Packagers
-  - Docker
-  - https://github.com/vercel/pkg/pull/837#issuecomment-775362263
-  - Electron (for demo only, of course)
+- Make a redirect `download.courselore.org` that points to installer.
+- Make a demo version that self destructs every hour (like Moodle: https://moodle.org/demo)
 - “One-click deployment” for different platforms like DigitalOcean, Linode, and so forth.
   - DigitalOcean
   - Linode
   - Amazon
   - Google Cloud
   - https://sandstorm.io
-
-### Documentation
-
-### Open-Source Contributions
-
-- <https://github.com/DefinitelyTyped/DefinitelyTyped/issues/50794>: Add more specific types to better-sqlite3 with generics.
-- <https://github.com/actions/upload-release-asset/issues/56>: Document how to create a release in one GitHub Actions job and upload assets in another.
-- Prettier: Bug Report: When formatting Markdown within a JavaScript tagged template literal, Prettier adds space at the end. This breaks the es6-string-markdown Visual Studio Code extension.
-  - Get rid of the `// prettier-ignore`.
-- <https://github.com/syntax-tree/hast-util-sanitize/pull/21>: Add types to the JSON in hast-util-sanitize.
-- <https://npm.im/hast-util-to-text>: Write types.
-  - <https://github.com/leafac/rehype-shiki/blob/ca1725c13aa720bf552ded5e71be65c129d15967/src/index.ts#L3-L4>
-- Questions about Greenlock
-  - <https://git.rootprojects.org/root/greenlock.js/issues/41>: Does it use https://greenlock.domains or does it go straight to LetsEncrypt?
-  - <https://git.rootprojects.org/root/greenlock-express.js/issues/50>: Can we get TypeScript types?
-
-### Marketing
-
-- Newsletter
-- Create CourseLore Gravatar
-  - Use in npm
-- Create accounts on:
-  - Patreon
-  - PayPal
-  - Facebook
-  - Instagram
-  - Reddit
 
 ### References
 
@@ -683,6 +580,10 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://github.com/awesome-selfhosted/awesome-selfhosted
   - https://selfhosted.show
 - <https://github.com/npm/roadmap/projects/1>: A meta-reference on how to present the roadmap moving forward.
+- References on text editors:
+  - https://typora.io
+  - https://www.notion.so
+  - https://marktext.app
 
 </details>
 
@@ -706,7 +607,6 @@ Insiders Builds are generated on every push. They’re useful for development an
   - We’ll do `@mentions` when we do notifications.
   - We’ll do dropdown helpers to pick mentions & references when we do search.
 - Use profile (good-to-have in the future):
-
 
 - Lightbox modal for resized images.
 - S3.
