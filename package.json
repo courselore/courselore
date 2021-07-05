@@ -70,7 +70,7 @@
     "@types/jsdom": "^16.2.12",
     "@types/lodash": "^4.14.168",
     "@types/method-override": "^0.0.31",
-    "@types/node": "^16.0.0",
+    "@types/node": "^15.0.0",
     "@types/qrcode": "^1.4.0",
     "@types/sharp": "^0.28.3",
     "@types/tough-cookie": "^4.0.0",
