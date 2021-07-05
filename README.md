@@ -268,6 +268,10 @@ Insiders Builds are generated on every push. They’re useful for development an
     - Give option to automatically subscribe them when they post.
   - Regardless of notification preferences, staff may send messages that are notified to everyone.
 - **When:** Real-time vs digest.
+- **Mentions:**
+  - We’ll use automatically-generated usernames, for example, `@leandro-facchinetti--27348`.
+  - We won’t have a user profile page yet (maybe in the future), so the `@mentions` will not link to anywhere. They just exist for the benefit of the notification system.
+  - Also support things like `@staff` / `@students` / `@channel` / `@group-3`.
 - **Nice-to-have in the future:**
   - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
   - Snooze.
@@ -280,6 +284,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### API
 
 - To integrate with other platforms, like, LMSs.
+  - Learning Tools Interoperability (LTI).
 - To build extensions, for example, ask a question from within the text editor.
 
 ### Users
@@ -296,6 +301,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Text Editor Niceties
 
 - Templates for questions (like GitHub Issues).
+- Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
 
 ### Text Processor
@@ -303,6 +309,14 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Emoji with the `:smile:` form.
 - Proxy insecure content: https://github.com/atmos/camo
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
+- Polls.
+- Lightbox modal for resized images.
+
+### File Management
+
+- Let people configure other storage engines (for example, S3).
+- Create a **garbage collection** routine for attachments.
+- Clean geolocation from images.
 
 ### Search
 
@@ -310,6 +324,9 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Search within the scope of a course.
   - Search in all courses you’re taking (for example, search for `deadline extension`).
   - Reference: GitHub let’s you search in different scopes like that.
+- Filter by tags.
+- Dropdown helpers to pick mentions & references.
+  - - https://github.com/zurb/tribute
 
 ### Forms Niceties
 
@@ -347,10 +364,6 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
 - Test screen readers.
-
-### Implementation Improvements
-
-- Write more automated tests
 
 ### Marketing
 
@@ -477,17 +490,6 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://github.com/kd0kfo/smq/wiki/About-SMQ
   - https://github.com/damoclark/node-persistent-queue
 
-### Page Transitions & Prefetching
-
-- https://hotwire.dev
-- https://docs.stimulusreflex.com
-- https://barba.js.org
-- https://swup.js.org/getting-started
-- https://unpoly.com
-- https://youtube.github.io/spfjs/
-- https://getquick.link/
-- https://github.com/defunkt/jquery-pjax
-
 ### Code Base Improvements
 
 - Consider using **session per request** middleware for database transactions.
@@ -544,6 +546,19 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Amazon
   - Google Cloud
   - https://sandstorm.io
+- Page transitions & prefetching
+  - https://hotwire.dev
+  - https://docs.stimulusreflex.com
+  - https://barba.js.org
+  - https://swup.js.org/getting-started
+  - https://unpoly.com
+  - https://youtube.github.io/spfjs/
+  - https://getquick.link/
+  - https://github.com/defunkt/jquery-pjax
+- Backups.
+  - For us, as system administrators.
+  - For users, who may want to migrate data from a hosted version to another.
+    - Rewrite URLs in messages.
 
 ### References
 
@@ -584,6 +599,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - https://typora.io
   - https://www.notion.so
   - https://marktext.app
+- Write more automated tests
 
 </details>
 
@@ -600,25 +616,6 @@ Insiders Builds are generated on every push. They’re useful for development an
   - @leafac/css.
   - `data-ondomcontentloaded`.
   - Mousetrap.
-- Mentions:
-  - We’ll use automatically-generated usernames, for example, `@leandro-facchinetti--27348`.
-  - We won’t have a user profile page yet (maybe in the future), so the `@mentions` will not link to anywhere. They just exist for the benefit of the notification system.
-  - Also support things like `@staff` / `@students` / `@channel` / `@group-3`.
-  - We’ll do `@mentions` when we do notifications.
-  - We’ll do dropdown helpers to pick mentions & references when we do search.
-- Use profile (good-to-have in the future):
-
-- Lightbox modal for resized images.
-- S3.
-- Garbage collection.
-- Cleaning geolocation.
-
-- Backups. Download backup.
-- Auto-update.
-
-- August 1st: Start marketing.
-
-- https://github.com/zurb/tribute
 
 </details>
 
