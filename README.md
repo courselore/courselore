@@ -303,6 +303,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
+- Give the fit-textarea a max-height: https://github.com/fregante/fit-textarea/issues/17
 
 ### Text Processor
 
@@ -311,6 +312,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Lightbox modal for resized images.
+- Add support for videos: Sanitization, dimensions, and so forth.
 
 ### File Management
 
