@@ -57,19 +57,20 @@ Follow the instructions below to install CourseLore on your own servers. This is
 
 <!-- TODO: Continue instructions on how to install and setup everything. -->
 
-### Setup a Development Environment to Contribute to CourseLore
+### Contribute Code to CourseLore
 
 CourseLore has been designed to be a welcoming project for people who are new to contributing to open-source. Here’s what you need to install to get started:
 
-- [Node.js](https://nodejs.org/), including support for building native extensions
+- [Node.js](https://nodejs.org/), including support for building native extensions.
 - [Visual Studio Code](https://code.visualstudio.com) and the following Visual Studio Code extensions:
-  - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-  - [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html)
-- [Git](https://git-scm.com)
+  - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode).
+  - [es6-string-html](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html).
+- [Git](https://git-scm.com).
 
 The following are detailed instructions on how to install these tools in different operating systems:
 
-#### Windows Instructions
+<details>
+<summary>Windows</summary>
 
 > **Note:** For most of these commands to work you’ll have to run the Command Prompt or Powershell as administrator. Also, you may have to close and reopen the command line between some commands.
 
@@ -95,7 +96,10 @@ The following are detailed instructions on how to install these tools in differe
 
 4. [Configure Git](https://docs.github.com/en/get-started/quickstart/set-up-git).
 
-#### macOS Instructions
+</details>
+
+<details>
+<summary>macOS</summary>
 
 1. Install [Homebrew](https://brew.sh/), which is a convenient way to install tools for software development.
 
@@ -125,7 +129,10 @@ The following are detailed instructions on how to install these tools in differe
 
 4. [Configure Git](https://docs.github.com/en/get-started/quickstart/set-up-git).
 
-#### Linux (Ubuntu) Instructions
+</details>
+
+<details>
+<summary>Linux (tested on Ubuntu)</summary>
 
 1. Install [Homebrew](https://brew.sh/), which is a convenient way to install tools for software development.
 
@@ -167,9 +174,9 @@ The following are detailed instructions on how to install these tools in differe
 
 4. [Configure Git](https://docs.github.com/en/get-started/quickstart/set-up-git).
 
-### Contributing to CourseLore
+</details>
 
-Clone and setup the project locally:
+After setting up your development machine, clone and install CourseLore locally:
 
 ```console
 $ git clone https://github.com/courselore/courselore.git
@@ -203,22 +210,20 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Roadmap
 
-|            |                                                                                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                                                                        |
-| 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; generalized live updates. Tags: Mark posts as answers; create arbitrary tags; filter by tags; flag posts to answer later. |
-| 2021-07-17 | Finish tags. Search.                                                                                                                                                                 |
-| 2021-07-24 | Notifications: In-app; via email.                                                                                                                                                    |
-| 2021-07-31 | Finish notifications.                                                                                                                                                                |
-| 2021-08-07 | Access management: Anonymity & private threads.                                                                                                                                      |
-| 2021-08-14 | Continued access management.                                                                                                                                                         |
-| 2021-08-21 | Buffer for things that’ll take longer than we expect.                                                                                                                                |
-| 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                                |
-
-### Backlog
+|     |            |                                                                                                                                                                                      |
+| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ✅  | 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                                                                        |
+|     | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; generalized live updates. Tags: Mark posts as answers; create arbitrary tags; filter by tags; flag posts to answer later. |
+|     | 2021-07-17 | Finish tags. Search.                                                                                                                                                                 |
+|     | 2021-07-24 | Notifications: In-app; via email.                                                                                                                                                    |
+|     | 2021-07-31 | Finish notifications.                                                                                                                                                                |
+|     | 2021-08-07 | Access management: Anonymity & private threads.                                                                                                                                      |
+|     | 2021-08-14 | Continued access management.                                                                                                                                                         |
+|     | 2021-08-21 | Buffer for things that’ll take longer than we expect.                                                                                                                                |
+|     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                                |
 
 <details>
-<summary>Backlog</summary>
+<summary><strong>Backlog</strong></summary>
 
 ### Features
 
@@ -287,10 +292,8 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 </details>
 
-### Implementation Notes
-
 <details>
-<summary>Implementation Notes</summary>
+<summary><strong>Implementation Notes</strong></summary>
 
 #### Email
 
@@ -681,10 +684,8 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 </details>
 
-### Meetings
-
 <details>
-<summary>Meetings</summary>
+<summary><strong>Meetings</strong></summary>
 
 <details>
 <summary>2021-07-03</summary>
