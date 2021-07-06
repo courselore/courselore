@@ -1619,6 +1619,8 @@ export default async function courselore(
 
                 table {
                   border-collapse: collapse;
+                  display: block;
+                  overflow-x: auto;
                   caption {
                     font-style: italic;
                   }
