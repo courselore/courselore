@@ -10058,58 +10058,65 @@ ${value}</textarea
                                 .locals.conversation
                                 .reference}/messages/${message.reference}?_method=PATCH"
                             >
-                              <input
-                                type="hidden"
-                                name="isAnswer"
-                                value="${message.answerAt === null
-                                  ? "true"
-                                  : "false"}"
-                              />
-                              <p>
-                                <button>
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.1em;
+                              $${message.answerAt === null
+                                ? html`
+                                    <input
+                                      type="hidden"
+                                      name="isAnswer"
+                                      value="true"
+                                    />
+                                    <button
+                                      class="button--inline"
+                                      data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "Mark as Answer",
+                                        theme: "tooltip",
+                                        touch: false,
+                                      });
                                     `}"
-                                  >
-                                  </span>
-                                  ${message.answerAt === null
-                                    ? "Not an Answer"
-                                    : "Answer"}
-                                </button>
-                              </p>
+                                    >
+                                      <i class="bi bi-patch-check"></i>
+                                      Not an Answer
+                                    </button>
+                                  `
+                                : html`
+                                    <input
+                                      type="hidden"
+                                      name="isAnswer"
+                                      value="false"
+                                    />
+                                    <button
+                                      class="button--inline strong"
+                                      data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "Mark as Not an Answer",
+                                        theme: "tooltip",
+                                        touch: false,
+                                      });
+                                    `}"
+                                    >
+                                      <i class="bi bi-patch-check-fill"></i>
+                                      Answer
+                                    </button>
+                                  `}
                             </form>
                           `);
                         else if (message.answerAt !== null)
                           content.push(html`
-                            <p>
-                              <span
-                                style="${css`
-                                  position: relative;
-                                  top: 0.1em;
-                                `}"
-                              >
-                                <i class="bi bi-patch-check-fill"></i>
-                              </span>
+                            <div>
+                              <i class="bi bi-patch-check-fill"></i>
                               Answer
-                            </p>
+                            </div>
                           `);
 
                       return content.length === 0
                         ? html``
                         : html`
                             <div
-                              class="secondary"
                               style="${css`
-                                margin-top: -1.5rem;
                                 display: flex;
-
-                                & > * + * {
-                                  margin-left: 1rem;
-                                }
+                                gap: var(--space--4);
                               `}"
-                              hidden
                             >
                               $${content}
                             </div>
@@ -10402,7 +10409,7 @@ ${value}</textarea
                           `}"
                           data-ondomcontentloaded="${javascript`
                           tippy(this, {
-                            content: "Mark as an Answer",
+                            content: "Mark as Answer",
                             theme: "tooltip",
                             touch: false,
                           });
@@ -10639,6 +10646,7 @@ ${value}</textarea
 
       if (typeof req.body.isAnswer === "string")
         if (
+          res.locals.message.reference === "1" ||
           !["true", "false"].includes(req.body.isAnswer) ||
           res.locals.conversation.questionAt === null ||
           (req.body.isAnswer === "true" &&
