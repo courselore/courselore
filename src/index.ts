@@ -8944,7 +8944,7 @@ ${value}</textarea
                     .reference}/conversations/${conversation}${message ===
                   undefined
                     ? ""
-                    : `#${message}`}"
+                    : `#message--${message}`}"
                   >${match}</a
                 >`;
               }
@@ -9853,6 +9853,7 @@ ${value}</textarea
             $${res.locals.messages.map(
               (message) => html`
                 <div
+                  id="message--${message.reference}"
                   data-content="${JSON.stringify(message.content)}"
                   class="message"
                   style="${css`
@@ -9899,7 +9900,8 @@ ${value}</textarea
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/conversations/${res.locals
-                          .conversation.reference}#${message.reference}"
+                          .conversation
+                          .reference}#message--${message.reference}"
                         class="button--inline button--inline--gray--cool"
                         style="${css`
                           font-size: var(--font-size--xs);
@@ -10604,7 +10606,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.conversation.nextMessageReference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
       );
     }
   );
@@ -10659,7 +10661,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.message.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -10721,7 +10723,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.message.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -10750,7 +10752,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.message.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
