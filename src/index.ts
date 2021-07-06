@@ -1552,7 +1552,8 @@ export default async function courselore(
                 img {
                   background-color: var(--color--white);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--white);
+                    background-color: var(--color--gray--cool--100);
+                    filter: brightness(var(--brightness--75));
                   }
                   max-width: 100%;
                   height: auto;
