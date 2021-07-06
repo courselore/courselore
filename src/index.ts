@@ -9695,7 +9695,7 @@ ${value}</textarea
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--4);
+                    gap: var(--space--2);
                   `}"
                 >
                   <button
@@ -9854,6 +9854,7 @@ ${value}</textarea
               (message) => html`
                 <div
                   data-content="${JSON.stringify(message.content)}"
+                  class="message"
                   style="${css`
                     padding-bottom: var(--space--4);
                     border-bottom: var(--border-width--4) solid
@@ -9984,6 +9985,28 @@ ${value}</textarea
                             </div>
                           `
                         : html``}
+                      $${app.locals.helpers.mayEditMessage(req, res, message)
+                        ? html`
+                            <div>
+                              <button
+                                class="button--inline button--inline--gray--cool"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Edit Message",
+                                    theme: "tooltip",
+                                    touch: false,
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  this.closest(".message").querySelector(".message--show").hidden = true;
+                                  this.closest(".message").querySelector(".message--edit").hidden = false;
+                                `}"
+                              >
+                                <i class="bi bi-pencil"></i>
+                              </button>
+                            </div>
+                          `
+                        : html``}
 
                       <div>
                         <button
@@ -10015,34 +10038,9 @@ ${value}</textarea
                         </button>
                       </div>
                     </div>
-
-                    <div hidden>
-                      $${app.locals.helpers.mayEditMessage(req, res, message)
-                        ? html`
-                            <div>
-                              <button
-                                title="Edit Message"
-                                type="button"
-                                class="undecorated"
-                                onclick="${javascript`
-                                  const message = this.closest(".message");
-                                  message.querySelector(".show").hidden = true;
-                                  const edit = message.querySelector(".edit");
-                                  edit.hidden = false;
-                                  const textarea = edit.querySelector('[name="content"]');
-                                  textarea.focus();
-                                  textarea.setSelectionRange(0, 0);
-                                `}"
-                              >
-                                <i class="bi bi-pencil"></i>
-                              </button>
-                            </div>
-                          `
-                        : html``}
-                    </div>
                   </div>
 
-                  <div class="show">
+                  <div class="message--show">
                     $${(() => {
                       const content: HTML[] = [];
 
@@ -10260,30 +10258,24 @@ ${value}</textarea
                             .conversation
                             .reference}/messages/${message.reference}?_method=PATCH"
                           hidden
-                          class="edit"
+                          class="message--edit"
+                          style="${css`
+                            padding-top: var(--space--2);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
                         >
                           $${app.locals.partials.textEditor(message.content)}
-                          <p
+
+                          <div
                             style="${css`
-                              text-align: right;
+                              display: flex;
+                              gap: var(--space--2);
                             `}"
                           >
                             <button
-                              type="reset"
-                              onclick="${javascript`
-                                  const message = this.closest(".message");
-                                  if (isModified(message) && !confirm("Discard changes?")) {
-                                    event.preventDefault();
-                                    return;
-                                  }
-                                  message.querySelector(".show").hidden = false;
-                                  const edit = message.querySelector(".edit");
-                                  edit.hidden = true;
-                                `}"
-                            >
-                              Cancel
-                            </button>
-                            <button
+                              class="button button--primary"
                               data-ondomcontentloaded="${javascript`
                                 Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
                                 tippy(this, {
@@ -10302,9 +10294,21 @@ ${value}</textarea
                                 });
                               `}"
                             >
-                              Change Message
+                              <i class="bi bi-pencil"></i>
+                              Update Message
                             </button>
-                          </p>
+                            <button
+                              type="reset"
+                              class="button button--secondary"
+                              onclick="${javascript`
+                                this.closest(".message").querySelector(".message--show").hidden = false;
+                                this.closest(".message").querySelector(".message--edit").hidden = true;
+                            `}"
+                            >
+                              <i class="bi bi-x-lg"></i>
+                              Cancel
+                            </button>
+                          </div>
                         </form>
                       `
                     : html``}
