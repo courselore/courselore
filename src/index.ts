@@ -9711,44 +9711,47 @@ ${value}</textarea
                       .course.reference}/conversations/${res.locals.conversation
                       .reference}?_method=PATCH"
                   >
-                    <input
-                      type="hidden"
-                      name="isPinned"
-                      value="${res.locals.conversation.pinnedAt === null
-                        ? "true"
-                        : "false"}"
-                    />
-                    <p>
-                      <button>
-                        <span
-                          style="${css`
-                            position: relative;
-                            top: ${res.locals.conversation.pinnedAt === null
-                              ? "0.1em"
-                              : "0.2em"};
-                          `}"
-                        >
-                        </span>
-                        ${res.locals.conversation.pinnedAt === null
-                          ? "Unpinned"
-                          : "Pinned"}
-                      </button>
-                    </p>
+                    $${res.locals.conversation.pinnedAt === null
+                      ? html`
+                          <input type="hidden" name="isPinned" value="true" />
+                          <button
+                            class="button--inline"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Pin",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-pin-angle"></i>
+                            Unpinned
+                          </button>
+                        `
+                      : html`
+                          <input type="hidden" name="isPinned" value="false" />
+                          <button
+                            class="button--inline strong"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Unpin",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-pin-fill"></i>
+                            Pinned
+                          </button>
+                        `}
                   </form>
                 `);
               else if (res.locals.conversation.pinnedAt !== null)
                 content.push(html`
-                  <p>
-                    <span
-                      style="${css`
-                        position: relative;
-                        top: 0.2em;
-                      `}"
-                    >
-                      <i class="bi bi-pin-fill"></i>
-                    </span>
+                  <div>
+                    <i class="bi bi-pin-fill"></i>
                     Pinned
-                  </p>
+                  </div>
                 `);
 
               if (app.locals.helpers.mayEditConversation(req, res))
@@ -9759,57 +9762,60 @@ ${value}</textarea
                       .course.reference}/conversations/${res.locals.conversation
                       .reference}?_method=PATCH"
                   >
-                    <input
-                      type="hidden"
-                      name="isQuestion"
-                      value="${res.locals.conversation.questionAt === null
-                        ? "true"
-                        : "false"}"
-                    />
-                    <p>
-                      <button>
-                        <span
-                          style="${css`
-                            position: relative;
-                            top: 0.2em;
+                    $${res.locals.conversation.questionAt === null
+                      ? html`
+                          <input type="hidden" name="isQuestion" value="true" />
+                          <button
+                            class="button--inline"
+                            data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Mark as a Question",
+                              theme: "tooltip",
+                              touch: false,
+                            });
                           `}"
-                        >
-                        </span>
-                        ${res.locals.conversation.questionAt === null
-                          ? "Not a Question"
-                          : "Question"}
-                      </button>
-                    </p>
+                          >
+                            <i class="bi bi-patch-question"></i>
+                            Not a question
+                          </button>
+                        `
+                      : html`
+                          <input
+                            type="hidden"
+                            name="isQuestion"
+                            value="false"
+                          />
+                          <button
+                            class="button--inline strong"
+                            data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Mark as Not a Question",
+                              theme: "tooltip",
+                              touch: false,
+                            });
+                          `}"
+                          >
+                            <i class="bi bi-patch-question-fill"></i>
+                            Question
+                          </button>
+                        `}
                   </form>
                 `);
               else if (res.locals.conversation.questionAt !== null)
                 content.push(html`
-                  <p>
-                    <span
-                      style="${css`
-                        position: relative;
-                        top: 0.2em;
-                      `}"
-                    >
-                      <i class="bi bi-question-diamond-fill"></i>
-                    </span>
+                  <div>
+                    <i class="bi bi-patch-question-fill"></i>
                     Question
-                  </p>
+                  </div>
                 `);
 
               return content.length === 0
                 ? html``
                 : html`
                     <div
-                      hidden
-                      class="secondary"
                       style="${css`
-                        margin-top: -1.5rem;
                         display: flex;
-
-                        & > * + * {
-                          margin-left: 1rem;
-                        }
+                        gap: var(--space--4);
                       `}"
                     >
                       $${content}
