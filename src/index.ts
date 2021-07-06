@@ -179,7 +179,7 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL,
-        "nextThreadReference" INTEGER NOT NULL DEFAULT 1
+        "nextConversationReference" INTEGER NOT NULL DEFAULT 1
       );
 
       CREATE TABLE "invitations" (
@@ -207,7 +207,7 @@ export default async function courselore(
         UNIQUE ("course", "reference")
       );
 
-      CREATE TABLE "threads" (
+      CREATE TABLE "conversations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
@@ -222,12 +222,12 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "thread" INTEGER NOT NULL REFERENCES "threads" ON DELETE CASCADE,
+        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "content" TEXT NOT NULL,
         "answerAt" TEXT NULL,
-        UNIQUE ("thread", "reference")
+        UNIQUE ("conversation", "reference")
       );
 
       CREATE TABLE "likes" (
@@ -1902,7 +1902,7 @@ export default async function courselore(
                   <button
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
-                        content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, threads, posts, users, and so forth. Also, no emails are actually sent; they show up in the Demonstration Inbox instead. Otherwise this is a fully functioning installation of CourseLore, which is and always will be free and open-source.",
+                        content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, conversations, users, and so forth. Also, no emails are actually sent; they show up in the Demonstration Inbox instead. Otherwise this is a fully functioning installation of CourseLore, which is and always will be free and open-source.",
                         theme: "tooltip",
                         trigger: "click",
                       });
@@ -2285,12 +2285,14 @@ export default async function courselore(
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}"
-                        class="dropdown--item ${req.path.includes("threads")
+                        class="dropdown--item ${req.path.includes(
+                          "conversations"
+                        )
                           ? "active"
                           : ""}"
                       >
                         <i class="bi bi-chat-left-text"></i>
-                        Threads
+                        Conversations
                       </a>
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
@@ -3050,7 +3052,7 @@ export default async function courselore(
         id: number;
         reference: string;
         name: string;
-        nextThreadReference: number;
+        nextConversationReference: number;
       };
       reference: string;
       role: Role;
@@ -3135,7 +3137,7 @@ export default async function courselore(
           courseId: number;
           courseReference: string;
           courseName: string;
-          courseNextThreadReference: number;
+          courseNextConversationReference: number;
           reference: string;
           role: Role;
           accentColor: AccentColor;
@@ -3145,7 +3147,7 @@ export default async function courselore(
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
                    "courses"."name" AS "courseName",
-                   "courses"."nextThreadReference" AS "courseNextThreadReference",
+                   "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "enrollments"."reference",
                    "enrollments"."role",
                    "enrollments"."accentColor"
@@ -3161,7 +3163,8 @@ export default async function courselore(
             id: enrollment.courseId,
             reference: enrollment.courseReference,
             name: enrollment.courseName,
-            nextThreadReference: enrollment.courseNextThreadReference,
+            nextConversationReference:
+              enrollment.courseNextConversationReference,
           },
           reference: enrollment.reference,
           role: enrollment.role,
@@ -4461,7 +4464,7 @@ export default async function courselore(
     course: IsAuthenticatedMiddlewareLocals["enrollments"][number]["course"];
     enrollment: IsAuthenticatedMiddlewareLocals["enrollments"][number];
     otherEnrollments: IsAuthenticatedMiddlewareLocals["enrollments"];
-    threads: {
+    conversations: {
       id: number;
       reference: string;
       title: string;
@@ -4492,7 +4495,7 @@ export default async function courselore(
         } else res.locals.otherEnrollments.push(enrollment);
       if (res.locals.enrollment === undefined) return next("route");
 
-      res.locals.threads = app.locals.database
+      res.locals.conversations = app.locals.database
         .all<{
           id: number;
           reference: string;
@@ -4502,19 +4505,19 @@ export default async function courselore(
           questionAt: string | null;
         }>(
           sql`
-            SELECT "threads"."id",
-                   "threads"."reference",
-                   "threads"."title",
-                   "threads"."nextPostReference",
-                   "threads"."pinnedAt",
-                   "threads"."questionAt"
-            FROM "threads"
-            WHERE "threads"."course" = ${res.locals.course.id}
-            ORDER BY "threads"."pinnedAt" IS NOT NULL DESC,
-                     "threads"."id" DESC
+            SELECT "conversations"."id",
+                   "conversations"."reference",
+                   "conversations"."title",
+                   "conversations"."nextPostReference",
+                   "conversations"."pinnedAt",
+                   "conversations"."questionAt"
+            FROM "conversations"
+            WHERE "conversations"."course" = ${res.locals.course.id}
+            ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
+                     "conversations"."id" DESC
           `
         )
-        .map((thread) => {
+        .map((conversation) => {
           // FIXME: Try to get rid of these n+1 queries.
           const originalPost = app.locals.database.get<{
             createdAt: string;
@@ -4537,7 +4540,7 @@ export default async function courselore(
               LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
               LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
               LEFT JOIN "likes" ON "posts"."id" = "likes"."post"
-              WHERE "posts"."thread" = ${thread.id} AND
+              WHERE "posts"."conversation" = ${conversation.id} AND
                     "posts"."reference" = ${"1"}
               GROUP BY "posts"."id"
             `
@@ -4548,22 +4551,22 @@ export default async function courselore(
             sql`
               SELECT "posts"."updatedAt"
               FROM "posts"
-              WHERE "posts"."thread" = ${thread.id}
+              WHERE "posts"."conversation" = ${conversation.id}
               ORDER BY "posts"."updatedAt" DESC
               LIMIT 1
             `
           )!;
           const postsCount = app.locals.database.get<{ postsCount: number }>(
-            sql`SELECT COUNT(*) AS "postsCount" FROM "posts" WHERE "posts"."thread" = ${thread.id}`
+            sql`SELECT COUNT(*) AS "postsCount" FROM "posts" WHERE "posts"."conversation" = ${conversation.id}`
           )!.postsCount;
 
           return {
-            id: thread.id,
-            reference: thread.reference,
-            title: thread.title,
-            nextPostReference: thread.nextPostReference,
-            pinnedAt: thread.pinnedAt,
-            questionAt: thread.questionAt,
+            id: conversation.id,
+            reference: conversation.reference,
+            title: conversation.title,
+            nextPostReference: conversation.nextPostReference,
+            pinnedAt: conversation.pinnedAt,
+            questionAt: conversation.questionAt,
             createdAt: originalPost.createdAt,
             updatedAt: mostRecentlyUpdatedPost.updatedAt,
             authorEnrollment:
@@ -4620,7 +4623,7 @@ export default async function courselore(
     "/courses/:courseReference",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
-      if (res.locals.threads.length === 0)
+      if (res.locals.conversations.length === 0)
         return res.send(
           app.locals.layouts.main({
             req,
@@ -4648,10 +4651,11 @@ export default async function courselore(
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         Get started by inviting other people to the course or by
-                        creating the first thread.
+                        starting the first conversation.
                       `
                     : html`
-                        This is a new course. Be the first to create a thread.
+                        This is a new course. Be the first to start a
+                        conversation.
                       `}
                 </p>
                 <div
@@ -4681,13 +4685,13 @@ export default async function courselore(
                     : html``}
                   <a
                     href="${app.locals.settings.url}/courses/${res.locals.course
-                      .reference}/threads/new"
+                      .reference}/conversations/new"
                     class="button $${res.locals.enrollment.role === "staff"
                       ? "button--secondary"
                       : "button--primary"}"
                   >
                     <i class="bi bi-chat-left-text"></i>
-                    Create the First Thread
+                    Start the First Conversation
                   </a>
                 </div>
               </div>
@@ -4696,7 +4700,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.threads[0].reference}?redirected=true`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?redirected=true`
       );
     }
   );
@@ -7567,27 +7571,27 @@ export default async function courselore(
   );
 
   interface Layouts {
-    thread: (_: {
+    conversation: (_: {
       req: express.Request<
-        { courseReference: string; threadReference?: string },
+        { courseReference: string; conversationReference?: string },
         HTML,
         {},
         {},
         IsEnrolledInCourseMiddlewareLocals &
-          Partial<IsThreadAccessibleMiddlewareLocals> &
+          Partial<IsConversationAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       res: express.Response<
         HTML,
         IsEnrolledInCourseMiddlewareLocals &
-          Partial<IsThreadAccessibleMiddlewareLocals> &
+          Partial<IsConversationAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       head: HTML;
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.thread = ({ req, res, head, body }) => {
+  app.locals.layouts.conversation = ({ req, res, head, body }) => {
     const sidebar = html`
       <!--
 <button class="button--inline">
@@ -7626,7 +7630,7 @@ export default async function courselore(
           >
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/threads/new"
+                .reference}/conversations/new"
               style="${css`
                 display: flex;
                 gap: var(--space--2);
@@ -7649,7 +7653,7 @@ export default async function courselore(
               `}"
             >
               <i class="bi bi-chat-left-text"></i>
-              Create a New Thread
+              Start a New Conversation
             </a>
           </div>
 
@@ -7664,12 +7668,14 @@ export default async function courselore(
               this.classList.add("active--cancel");
             `}"
           >
-            $${res.locals.threads.map(
-              (thread) => html`
+            $${res.locals.conversations.map(
+              (conversation) => html`
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/threads/${thread.reference}"
-                  class="${thread.id === res.locals.thread?.id ? "active" : ""}"
+                    .reference}/conversations/${conversation.reference}"
+                  class="${conversation.id === res.locals.conversation?.id
+                    ? "active"
+                    : ""}"
                   style="${css`
                     width: calc(100% + 2 * var(--space--2));
                     padding: var(--space--2) var(--space--2);
@@ -7731,7 +7737,7 @@ export default async function courselore(
                       }
                     `}"
                   >
-                    ${thread.title}
+                    ${conversation.title}
                   </h3>
                   <div
                     style="${css`
@@ -7744,17 +7750,17 @@ export default async function courselore(
                   >
                     <div>
                       <div>
-                        #${thread.reference} created
+                        #${conversation.reference} created
                         <time
                           data-ondomcontentloaded="${javascript`
                             relativizeTime(this);
                           `}"
                         >
-                          ${thread.createdAt}
+                          ${conversation.createdAt}
                         </time>
-                        by ${thread.authorEnrollment.user.name}
+                        by ${conversation.authorEnrollment.user.name}
                       </div>
-                      $${thread.updatedAt !== thread.createdAt
+                      $${conversation.updatedAt !== conversation.createdAt
                         ? html`
                             <div>
                               and last updated
@@ -7763,7 +7769,7 @@ export default async function courselore(
                                   relativizeTime(this);
                                 `}"
                               >
-                                ${thread.updatedAt}
+                                ${conversation.updatedAt}
                               </time>
                             </div>
                           `
@@ -7780,7 +7786,7 @@ export default async function courselore(
                         }
                       `}"
                     >
-                      $${thread.pinnedAt !== null
+                      $${conversation.pinnedAt !== null
                         ? html`
                             <div>
                               <i class="bi bi-pin"></i>
@@ -7788,7 +7794,7 @@ export default async function courselore(
                             </div>
                           `
                         : html``}
-                      $${thread.questionAt !== null
+                      $${conversation.questionAt !== null
                         ? html`
                             <div>
                               <i class="bi bi-patch-question"></i>
@@ -7798,16 +7804,16 @@ export default async function courselore(
                         : html``}
                       <div>
                         <i class="bi bi-chat-left-text"></i>
-                        ${thread.postsCount}
-                        post${thread.postsCount === 1 ? "" : "s"}
+                        ${conversation.postsCount}
+                        post${conversation.postsCount === 1 ? "" : "s"}
                       </div>
-                      $${thread.likesCount === 0
+                      $${conversation.likesCount === 0
                         ? html``
                         : html`
                             <div>
                               <i class="bi bi-hand-thumbs-up"></i>
-                              ${thread.likesCount}
-                              like${thread.likesCount === 1 ? "" : "s"}
+                              ${conversation.likesCount}
+                              like${conversation.likesCount === 1 ? "" : "s"}
                             </div>
                           `}
                     </div>
@@ -7861,7 +7867,7 @@ export default async function courselore(
                   `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
-                  Threads
+                  Conversations
                   <i class="bi bi-chevron-bar-expand"></i>
                 </button>
               </div>
@@ -8565,7 +8571,7 @@ export default async function courselore(
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
-                    Refer to Thread or Post
+                    Refer to Conversation or Post
                     <span class="keyboard-shortcut">
                       (Ctrl+Shift+J or
                       <span class="keyboard-shortcut--cluster"
@@ -8580,7 +8586,7 @@ export default async function courselore(
                 });
               `}"
               onclick="${javascript`
-                alert("TODO: Refer to Thread or Post");
+                alert("TODO: Refer to Conversation or Post");
               `}"
             >
               <i class="bi bi-hash"></i>
@@ -8831,6 +8837,7 @@ ${value}</textarea
   );
 
   // TODO: Verify the security of this: https://expressjs.com/en/4x/api.html#express.static
+  // TODO: Move this route to a more generic place.
   app.get<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/files/*",
     ...app.locals.middlewares.isAuthenticated,
@@ -8838,8 +8845,6 @@ ${value}</textarea
   );
 
   // TODO: Would making this async speed things up in any way?
-  // TODO: Convert references to other threads like ‘#57’ and ‘#43/2’ into links.
-  // TODO: Extract this into a library?
   interface Partials {
     textProcessor: (
       text: string,
@@ -8925,12 +8930,13 @@ ${value}</textarea
             let newNodeHTML = html`${textContent}`;
             newNodeHTML = newNodeHTML.replace(
               /#(\d+)(?:\/(\d+))?/g,
-              (match, thread, post) => {
-                // TODO: Check that the thread/post is accessible by user.
+              (match, conversation, post) => {
+                // TODO: Check that the conversation/post is accessible by user.
                 // TODO: Do a tooltip to reveal what would be under the link.
                 return html`<a
                   href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/threads/${thread}${post === undefined
+                    .reference}/conversations/${conversation}${post ===
+                  undefined
                     ? ""
                     : `#${post}`}"
                   >${match}</a
@@ -8969,17 +8975,17 @@ ${value}</textarea
     {},
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/new",
+    "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
-        app.locals.layouts.thread({
+        app.locals.layouts.conversation({
           req,
           res,
           head: html`
             <title>
-              Create a New Thread · ${res.locals.course.name} · CourseLore
+              Start a New Conversation · ${res.locals.course.name} · CourseLore
             </title>
           `,
           body: html`
@@ -8992,13 +8998,13 @@ ${value}</textarea
             >
               <h2 class="heading--2">
                 <i class="bi bi-chat-left-text"></i>
-                Create a New Thread
+                Start a New Conversation
               </h2>
 
               <form
                 method="POST"
                 action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/threads"
+                  .reference}/conversations"
                 style="${css`
                   display: flex;
                   flex-direction: column;
@@ -9090,7 +9096,7 @@ ${value}</textarea
                             class="button--inline"
                             data-ondomcontentloaded="${javascript`
                             tippy(this, {
-                              content: "Pinned threads are listed first.",
+                              content: "Pinned conversations are listed first.",
                               theme: "tooltip",
                               trigger: "click",
                             });
@@ -9188,7 +9194,7 @@ ${value}</textarea
                     `}"
                   >
                     <i class="bi bi-chat-left-text"></i>
-                    Create Thread
+                    Start Conversation
                   </button>
                 </div>
               </form>
@@ -9221,7 +9227,7 @@ ${value}</textarea
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/threads",
+    "/courses/:courseReference/conversations",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
@@ -9236,18 +9242,18 @@ ${value}</textarea
       app.locals.database.run(
         sql`
           UPDATE "courses"
-          SET "nextThreadReference" = ${
-            res.locals.course.nextThreadReference + 1
+          SET "nextConversationReference" = ${
+            res.locals.course.nextConversationReference + 1
           }
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      const threadId = app.locals.database.run(
+      const conversationId = app.locals.database.run(
         sql`
-          INSERT INTO "threads" ("course", "reference", "title", "nextPostReference", "pinnedAt", "questionAt")
+          INSERT INTO "conversations" ("course", "reference", "title", "nextPostReference", "pinnedAt", "questionAt")
           VALUES (
             ${res.locals.course.id},
-            ${String(res.locals.course.nextThreadReference)},
+            ${String(res.locals.course.nextConversationReference)},
             ${req.body.title},
             ${"2"},
             ${req.body.isPinned ? new Date().toISOString() : null},
@@ -9257,9 +9263,9 @@ ${value}</textarea
       ).lastInsertRowid;
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content")
+          INSERT INTO "posts" ("conversation", "reference", "authorEnrollment", "content")
           VALUES (
-            ${threadId},
+            ${conversationId},
             ${"1"},
             ${res.locals.enrollment.id},
             ${req.body.content}
@@ -9270,45 +9276,46 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.course.nextThreadReference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
       );
     }
   );
 
   interface Middlewares {
-    isThreadAccessible: express.RequestHandler<
-      { courseReference: string; threadReference: string },
+    isConversationAccessible: express.RequestHandler<
+      { courseReference: string; conversationReference: string },
       HTML,
       {},
       {},
-      IsThreadAccessibleMiddlewareLocals
+      IsConversationAccessibleMiddlewareLocals
     >[];
   }
-  interface IsThreadAccessibleMiddlewareLocals
+  interface IsConversationAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
-    thread: IsEnrolledInCourseMiddlewareLocals["threads"][number];
+    conversation: IsEnrolledInCourseMiddlewareLocals["conversations"][number];
     posts: {
       id: number;
       createdAt: string;
       updatedAt: string;
       reference: string;
-      authorEnrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
+      authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
       content: string;
       answerAt: string | null;
       likes: {
         id: number;
-        enrollment: IsThreadAccessibleMiddlewareLocals["thread"]["authorEnrollment"];
+        enrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
       }[];
     }[];
   }
-  app.locals.middlewares.isThreadAccessible = [
+  app.locals.middlewares.isConversationAccessible = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      const thread = res.locals.threads.find(
-        (thread) => thread.reference === req.params.threadReference
+      const conversation = res.locals.conversations.find(
+        (conversation) =>
+          conversation.reference === req.params.conversationReference
       );
-      if (thread === undefined) return next("route");
-      res.locals.thread = thread;
+      if (conversation === undefined) return next("route");
+      res.locals.conversation = conversation;
       res.locals.posts = app.locals.database
         .all<{
           id: number;
@@ -9338,7 +9345,7 @@ ${value}</textarea
             FROM "posts"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-            WHERE "posts"."thread" = ${thread.id}
+            WHERE "posts"."conversation" = ${conversation.id}
             ORDER BY "posts"."id" ASC
           `
         )
@@ -9414,35 +9421,35 @@ ${value}</textarea
   ];
 
   interface Helpers {
-    mayEditThread: (
+    mayEditConversation: (
       req: express.Request<
-        { courseReference: string; threadReference: string },
+        { courseReference: string; conversationReference: string },
         any,
         {},
         {},
-        IsThreadAccessibleMiddlewareLocals
+        IsConversationAccessibleMiddlewareLocals
       >,
-      res: express.Response<any, IsThreadAccessibleMiddlewareLocals>
+      res: express.Response<any, IsConversationAccessibleMiddlewareLocals>
     ) => boolean;
   }
-  app.locals.helpers.mayEditThread = (
+  app.locals.helpers.mayEditConversation = (
     req: express.Request<
-      { courseReference: string; threadReference: string },
+      { courseReference: string; conversationReference: string },
       any,
       {},
       {},
-      IsThreadAccessibleMiddlewareLocals
+      IsConversationAccessibleMiddlewareLocals
     >,
-    res: express.Response<any, IsThreadAccessibleMiddlewareLocals>
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>
   ): boolean =>
     res.locals.enrollment.role === "staff" ||
-    res.locals.thread.authorEnrollment.id === res.locals.enrollment.id;
+    res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
 
   interface Middlewares {
     postExists: express.RequestHandler<
       {
         courseReference: string;
-        threadReference: string;
+        conversationReference: string;
         postReference: string;
       },
       any,
@@ -9452,11 +9459,11 @@ ${value}</textarea
     >[];
   }
   interface PostExistsMiddlewareLocals
-    extends IsThreadAccessibleMiddlewareLocals {
-    post: IsThreadAccessibleMiddlewareLocals["posts"][number];
+    extends IsConversationAccessibleMiddlewareLocals {
+    post: IsConversationAccessibleMiddlewareLocals["posts"][number];
   }
   app.locals.middlewares.postExists = [
-    ...app.locals.middlewares.isThreadAccessible,
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       const post = res.locals.posts.find(
         (post) => post.reference === req.params.postReference
@@ -9470,13 +9477,13 @@ ${value}</textarea
   interface Helpers {
     mayEditPost: (
       req: express.Request<
-        { courseReference: string; threadReference: string },
+        { courseReference: string; conversationReference: string },
         any,
         {},
         {},
-        IsThreadAccessibleMiddlewareLocals
+        IsConversationAccessibleMiddlewareLocals
       >,
-      res: express.Response<any, IsThreadAccessibleMiddlewareLocals>,
+      res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
       post: PostExistsMiddlewareLocals["post"]
     ) => boolean;
   }
@@ -9488,7 +9495,7 @@ ${value}</textarea
     mayEditPost: express.RequestHandler<
       {
         courseReference: string;
-        threadReference: string;
+        conversationReference: string;
         postReference: string;
       },
       any,
@@ -9508,23 +9515,23 @@ ${value}</textarea
   ];
 
   app.get<
-    { courseReference: string; threadReference: string },
+    { courseReference: string; conversationReference: string },
     HTML,
     {},
     {},
-    IsThreadAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
+    IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference",
-    ...app.locals.middlewares.isThreadAccessible,
+    "/courses/:courseReference/conversations/:conversationReference",
+    ...app.locals.middlewares.isConversationAccessible,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
-        app.locals.layouts.thread({
+        app.locals.layouts.conversation({
           req,
           res,
           head: html`
             <title>
-              ${res.locals.thread.title} · ${res.locals.course.name} ·
+              ${res.locals.conversation.title} · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
@@ -9538,17 +9545,18 @@ ${value}</textarea
               `}"
             >
               <h2>
-                <span class="heading--1">${res.locals.thread.title}</span>
+                <span class="heading--1">${res.locals.conversation.title}</span>
 
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/threads/${res.locals.thread.reference}"
+                    .reference}/conversations/${res.locals.conversation
+                    .reference}"
                   class="button--inline button--inline--gray--cool"
                   style="${css`
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
                   `}"
-                  >#${res.locals.thread.reference}</a
+                  >#${res.locals.conversation.reference}</a
                 >
               </h2>
 
@@ -9565,7 +9573,7 @@ ${value}</textarea
                           class="button--inline button--inline--gray--cool button--inline--rose"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
-                              content: "Remove Thread",
+                              content: "Remove Conversation",
                               theme: "tooltip tooltip--rose",
                               touch: false,
                             });
@@ -9584,8 +9592,8 @@ ${value}</textarea
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/threads/${res.locals
-                              .thread.reference}?_method=DELETE"
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation.reference}?_method=DELETE"
                             style="${css`
                               padding: var(--space--2) var(--space--0);
                               display: flex;
@@ -9593,7 +9601,9 @@ ${value}</textarea
                               gap: var(--space--4);
                             `}"
                           >
-                            <p>Are you sure you want to remove this thread?</p>
+                            <p>
+                              Are you sure you want to remove this conversation?
+                            </p>
                             <p>
                               <strong
                                 style="${css`
@@ -9604,14 +9614,14 @@ ${value}</textarea
                               </strong>
                             </p>
                             <button class="button button--rose">
-                              Remove Thread
+                              Remove Conversation
                             </button>
                           </form>
                         </div>
                       </div>
                     `
                   : html``}
-                $${app.locals.helpers.mayEditThread(req, res)
+                $${app.locals.helpers.mayEditConversation(req, res)
                   ? html`
                       <div>
                         <button
@@ -9637,8 +9647,8 @@ ${value}</textarea
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/threads/${res.locals
-                              .thread.reference}?_method=PATCH"
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation.reference}?_method=PATCH"
                             style="${css`
                               padding: var(--space--2) var(--space--0);
                               display: flex;
@@ -9649,7 +9659,7 @@ ${value}</textarea
                             <input
                               type="text"
                               name="title"
-                              value="${res.locals.thread.title}"
+                              value="${res.locals.conversation.title}"
                               required
                               autocomplete="off"
                               class="input--text"
@@ -9674,13 +9684,13 @@ ${value}</textarea
                   <form
                     method="POST"
                     action="${app.locals.settings.url}/courses/${res.locals
-                      .course.reference}/threads/${res.locals.thread
+                      .course.reference}/conversations/${res.locals.conversation
                       .reference}?_method=PATCH"
                   >
                     <input
                       type="hidden"
                       name="isPinned"
-                      value="${res.locals.thread.pinnedAt === null
+                      value="${res.locals.conversation.pinnedAt === null
                         ? "true"
                         : "false"}"
                     />
@@ -9689,20 +9699,20 @@ ${value}</textarea
                         <span
                           style="${css`
                             position: relative;
-                            top: ${res.locals.thread.pinnedAt === null
+                            top: ${res.locals.conversation.pinnedAt === null
                               ? "0.1em"
                               : "0.2em"};
                           `}"
                         >
                         </span>
-                        ${res.locals.thread.pinnedAt === null
+                        ${res.locals.conversation.pinnedAt === null
                           ? "Unpinned"
                           : "Pinned"}
                       </button>
                     </p>
                   </form>
                 `);
-              else if (res.locals.thread.pinnedAt !== null)
+              else if (res.locals.conversation.pinnedAt !== null)
                 content.push(html`
                   <p>
                     <span
@@ -9717,18 +9727,18 @@ ${value}</textarea
                   </p>
                 `);
 
-              if (app.locals.helpers.mayEditThread(req, res))
+              if (app.locals.helpers.mayEditConversation(req, res))
                 content.push(html`
                   <form
                     method="POST"
                     action="${app.locals.settings.url}/courses/${res.locals
-                      .course.reference}/threads/${res.locals.thread
+                      .course.reference}/conversations/${res.locals.conversation
                       .reference}?_method=PATCH"
                   >
                     <input
                       type="hidden"
                       name="isQuestion"
-                      value="${res.locals.thread.questionAt === null
+                      value="${res.locals.conversation.questionAt === null
                         ? "true"
                         : "false"}"
                     />
@@ -9741,14 +9751,14 @@ ${value}</textarea
                           `}"
                         >
                         </span>
-                        ${res.locals.thread.questionAt === null
+                        ${res.locals.conversation.questionAt === null
                           ? "Not a Question"
                           : "Question"}
                       </button>
                     </p>
                   </form>
                 `);
-              else if (res.locals.thread.questionAt !== null)
+              else if (res.locals.conversation.questionAt !== null)
                 content.push(html`
                   <p>
                     <span
@@ -9822,14 +9832,15 @@ ${value}</textarea
                         : html``}
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/threads/${res.locals.thread
-                          .reference}#${post.reference}"
+                          .course.reference}/conversations/${res.locals
+                          .conversation.reference}#${post.reference}"
                         class="button--inline button--inline--gray--cool"
                         style="${css`
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
                         `}"
-                        >#${res.locals.thread.reference}/${post.reference}</a
+                        >#${res.locals.conversation
+                          .reference}/${post.reference}</a
                       >
                     </div>
 
@@ -9840,8 +9851,8 @@ ${value}</textarea
                             <form
                               method="POST"
                               action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/threads/${res.locals
-                                .thread
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation
                                 .reference}/posts/${post.reference}?_method=DELETE"
                             >
                               <div>
@@ -9894,7 +9905,7 @@ ${value}</textarea
                             const quote = ((newPostContent.selectionStart > 0) ? "\\n\\n" : "") +
                             ${JSON.stringify(
                               `> **In response to #${
-                                res.locals.thread.reference
+                                res.locals.conversation.reference
                               }/${post.reference} by ${
                                 post.authorEnrollment.user.name
                               }**\n>\n${post.content
@@ -9929,8 +9940,8 @@ ${value}</textarea
                             <form
                               method="POST"
                               action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/threads/${res.locals
-                                .thread
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation
                                 .reference}/posts/${post.reference}?_method=PATCH"
                             >
                               <input
@@ -10050,7 +10061,7 @@ ${value}</textarea
                           textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                             post.authorEnrollment.user.name
                           )} + " · #" + ${JSON.stringify(
-                          String(res.locals.thread.reference)
+                          String(res.locals.conversation.reference)
                         )} + "/" + ${JSON.stringify(
                           String(post.reference)
                         )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> "), "\\n\\n");
@@ -10073,8 +10084,8 @@ ${value}</textarea
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/threads/${res.locals
-                              .thread
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation
                               .reference}/posts/${post.reference}/likes${isLiked
                               ? "?_method=DELETE"
                               : ""}"
@@ -10128,8 +10139,8 @@ ${value}</textarea
                         <form
                           method="POST"
                           action="${app.locals.settings.url}/courses/${res
-                            .locals.course.reference}/threads/${res.locals
-                            .thread
+                            .locals.course.reference}/conversations/${res.locals
+                            .conversation
                             .reference}/posts/${post.reference}?_method=PATCH"
                           hidden
                           class="edit"
@@ -10187,7 +10198,8 @@ ${value}</textarea
             <form
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/threads/${res.locals.thread.reference}/posts"
+                .reference}/conversations/${res.locals.conversation
+                .reference}/posts"
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -10202,7 +10214,7 @@ ${value}</textarea
                 }
               `}"
               >
-                $${res.locals.thread.questionAt !== null
+                $${res.locals.conversation.questionAt !== null
                 ? html`
                     <label>
                       <input
@@ -10252,28 +10264,28 @@ ${value}</textarea
                   const content = this.querySelector('[name="content"]');
                   content.defaultValue =
                     JSON.parse(
-                      localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                      localStorage.getItem("conversationsContentsInProgress") ?? "{}"
                     )[window.location.pathname] ?? "";
                   content.dataset.skipIsModified = "true";
                   content.addEventListener("input", () => {
-                    const threadsContentsInProgress = JSON.parse(
-                      localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                    const conversationsContentsInProgress = JSON.parse(
+                      localStorage.getItem("conversationsContentsInProgress") ?? "{}"
                     );
-                    threadsContentsInProgress[window.location.pathname] =
+                    conversationsContentsInProgress[window.location.pathname] =
                       content.value;
                     localStorage.setItem(
-                      "threadsContentsInProgress",
-                      JSON.stringify(threadsContentsInProgress)
+                      "conversationsContentsInProgress",
+                      JSON.stringify(conversationsContentsInProgress)
                     );
                   });
                   content.closest("form").addEventListener("submit", () => {
-                    const threadsContentsInProgress = JSON.parse(
-                      localStorage.getItem("threadsContentsInProgress") ?? "{}"
+                    const conversationsContentsInProgress = JSON.parse(
+                      localStorage.getItem("conversationsContentsInProgress") ?? "{}"
                     );
-                    delete threadsContentsInProgress[window.location.pathname];
+                    delete conversationsContentsInProgress[window.location.pathname];
                     localStorage.setItem(
-                      "threadsContentsInProgress",
-                      JSON.stringify(threadsContentsInProgress)
+                      "conversationsContentsInProgress",
+                      JSON.stringify(conversationsContentsInProgress)
                     );
                   });
                 `}"
@@ -10319,7 +10331,7 @@ ${value}</textarea
   );
 
   app.patch<
-    { courseReference: string; threadReference: string },
+    { courseReference: string; conversationReference: string },
     HTML,
     {
       title?: string;
@@ -10327,17 +10339,17 @@ ${value}</textarea
       isQuestion?: "true" | "false";
     },
     {},
-    IsThreadAccessibleMiddlewareLocals
+    IsConversationAccessibleMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference",
-    ...app.locals.middlewares.isThreadAccessible,
+    "/courses/:courseReference/conversations/:conversationReference",
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
-      if (!app.locals.helpers.mayEditThread(req, res)) return next();
+      if (!app.locals.helpers.mayEditConversation(req, res)) return next();
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
         else
           app.locals.database.run(
-            sql`UPDATE "threads" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.thread.id}`
+            sql`UPDATE "conversations" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.conversation.id}`
           );
 
       if (typeof req.body.isPinned === "string")
@@ -10345,18 +10357,19 @@ ${value}</textarea
           !["true", "false"].includes(req.body.isPinned) ||
           res.locals.enrollment.role !== "staff" ||
           (req.body.isPinned === "true" &&
-            res.locals.thread.pinnedAt !== null) ||
-          (req.body.isPinned === "false" && res.locals.thread.pinnedAt === null)
+            res.locals.conversation.pinnedAt !== null) ||
+          (req.body.isPinned === "false" &&
+            res.locals.conversation.pinnedAt === null)
         )
           return next("validation");
         else
           app.locals.database.run(
             sql`
-              UPDATE "threads"
+              UPDATE "conversations"
               SET "pinnedAt" = ${
                 req.body.isPinned === "true" ? new Date().toISOString() : null
               }
-              WHERE "id" = ${res.locals.thread.id}
+              WHERE "id" = ${res.locals.conversation.id}
             `
           );
 
@@ -10364,43 +10377,43 @@ ${value}</textarea
         if (
           !["true", "false"].includes(req.body.isQuestion) ||
           (req.body.isQuestion === "true" &&
-            res.locals.thread.questionAt !== null) ||
+            res.locals.conversation.questionAt !== null) ||
           (req.body.isQuestion === "false" &&
-            res.locals.thread.questionAt === null)
+            res.locals.conversation.questionAt === null)
         )
           return next("validation");
         else
           app.locals.database.run(
             sql`
-              UPDATE "threads"
+              UPDATE "conversations"
               SET "questionAt" = ${
                 req.body.isQuestion === "true" ? new Date().toISOString() : null
               }
-              WHERE "id" = ${res.locals.thread.id}
+              WHERE "id" = ${res.locals.conversation.id}
             `
           );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
 
   app.delete<
-    { courseReference: string; threadReference: string },
+    { courseReference: string; conversationReference: string },
     HTML,
     { title?: string },
     {},
-    IsCourseStaffMiddlewareLocals & IsThreadAccessibleMiddlewareLocals
+    IsCourseStaffMiddlewareLocals & IsConversationAccessibleMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference",
+    "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isCourseStaff,
-    ...app.locals.middlewares.isThreadAccessible,
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res) => {
       app.locals.database.run(
-        sql`DELETE FROM "threads" WHERE "id" = ${res.locals.thread.id}`
+        sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
@@ -10412,35 +10425,37 @@ ${value}</textarea
   );
 
   app.post<
-    { courseReference: string; threadReference: string },
+    { courseReference: string; conversationReference: string },
     HTML,
     { content?: string; isAnswer?: boolean },
     {},
-    IsThreadAccessibleMiddlewareLocals
+    IsConversationAccessibleMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference/posts",
-    ...app.locals.middlewares.isThreadAccessible,
+    "/courses/:courseReference/conversations/:conversationReference/posts",
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
-        (req.body.isAnswer && res.locals.thread.questionAt === null)
+        (req.body.isAnswer && res.locals.conversation.questionAt === null)
       )
         return next("validation");
 
       app.locals.database.run(
         sql`
-          UPDATE "threads"
-          SET "nextPostReference" = ${res.locals.thread.nextPostReference + 1}
-          WHERE "id" = ${res.locals.thread.id}
+          UPDATE "conversations"
+          SET "nextPostReference" = ${
+            res.locals.conversation.nextPostReference + 1
+          }
+          WHERE "id" = ${res.locals.conversation.id}
         `
       );
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("thread", "reference", "authorEnrollment", "content", "answerAt")
+          INSERT INTO "posts" ("conversation", "reference", "authorEnrollment", "content", "answerAt")
           VALUES (
-            ${res.locals.thread.id},
-            ${String(res.locals.thread.nextPostReference)},
+            ${res.locals.conversation.id},
+            ${String(res.locals.conversation.nextPostReference)},
             ${res.locals.enrollment.id},
             ${req.body.content},
             ${req.body.isAnswer ? new Date().toISOString() : null}
@@ -10451,19 +10466,23 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.thread.nextPostReference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.conversation.nextPostReference}`
       );
     }
   );
 
   app.patch<
-    { courseReference: string; threadReference: string; postReference: string },
+    {
+      courseReference: string;
+      conversationReference: string;
+      postReference: string;
+    },
     any,
     { content?: string; isAnswer?: "true" | "false" },
     {},
     MayEditPostMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference/posts/:postReference",
+    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference",
     ...app.locals.middlewares.mayEditPost,
     (req, res, next) => {
       if (typeof req.body.content === "string")
@@ -10481,7 +10500,7 @@ ${value}</textarea
       if (typeof req.body.isAnswer === "string")
         if (
           !["true", "false"].includes(req.body.isAnswer) ||
-          res.locals.thread.questionAt === null ||
+          res.locals.conversation.questionAt === null ||
           (req.body.isAnswer === "true" && res.locals.post.answerAt !== null) ||
           (req.body.isAnswer === "false" && res.locals.post.answerAt === null)
         )
@@ -10500,19 +10519,23 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.post.reference}`
       );
     }
   );
 
   app.delete<
-    { courseReference: string; threadReference: string; postReference: string },
+    {
+      courseReference: string;
+      conversationReference: string;
+      postReference: string;
+    },
     any,
     { content?: string },
     {},
     IsCourseStaffMiddlewareLocals & PostExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference/posts/:postReference",
+    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference",
     ...app.locals.middlewares.isCourseStaff,
     ...app.locals.middlewares.postExists,
     (req, res, next) => {
@@ -10525,19 +10548,23 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
 
   app.post<
-    { courseReference: string; threadReference: string; postReference: string },
+    {
+      courseReference: string;
+      conversationReference: string;
+      postReference: string;
+    },
     any,
     { content?: string },
     {},
     PostExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference/posts/:postReference/likes",
+    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference/likes",
     ...app.locals.middlewares.postExists,
     (req, res, next) => {
       if (
@@ -10554,19 +10581,23 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.post.reference}`
       );
     }
   );
 
   app.delete<
-    { courseReference: string; threadReference: string; postReference: string },
+    {
+      courseReference: string;
+      conversationReference: string;
+      postReference: string;
+    },
     any,
     { content?: string },
     {},
     PostExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/threads/:threadReference/posts/:postReference/likes",
+    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference/likes",
     ...app.locals.middlewares.postExists,
     (req, res, next) => {
       const like = res.locals.post.likes.find(
@@ -10579,7 +10610,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/threads/${res.locals.thread.reference}#${res.locals.post.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.post.reference}`
       );
     }
   );
