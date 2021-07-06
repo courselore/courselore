@@ -10122,9 +10122,11 @@ ${value}</textarea
                             </div>
                           `;
                     })()}
-                    <div
-                      class="text"
-                      data-ondomcontentloaded="${javascript`
+
+                    <div>
+                      <div
+                        class="text"
+                        data-ondomcontentloaded="${javascript`
                         this.tippy = tippy(this, {
                           content: this.nextElementSibling,
                           theme: "dropdown",
@@ -10135,7 +10137,7 @@ ${value}</textarea
                           touch: false,
                         });
                       `}"
-                      onpointerup="${javascript`
+                        onpointerup="${javascript`
                         const selection = window.getSelection();
                         const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
                         const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
@@ -10158,16 +10160,16 @@ ${value}</textarea
                         });
                         this.tippy.show();
                       `}"
-                    >
-                      $${app.locals.partials.textProcessor(message.content, {
-                        req,
-                        res,
-                      })}
-                    </div>
-                    <div class="tippy-content--element">
-                      <button
-                        class="dropdown--item"
-                        onclick="${javascript`
+                      >
+                        $${app.locals.partials.textProcessor(message.content, {
+                          req,
+                          res,
+                        })}
+                      </div>
+                      <div class="tippy-content--element">
+                        <button
+                          class="dropdown--item"
+                          onclick="${javascript`
                           tippy.hideAll();
                           const selection = window.getSelection();
                           const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
@@ -10185,15 +10187,16 @@ ${value}</textarea
                           textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                             message.authorEnrollment.user.name
                           )} + " · #" + ${JSON.stringify(
-                          res.locals.conversation.reference
-                        )} + "/" + ${JSON.stringify(
-                          message.reference
-                        )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                            res.locals.conversation.reference
+                          )} + "/" + ${JSON.stringify(
+                            message.reference
+                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
                           element.focus();
                         `}"
-                      >
-                        <i class="bi bi-chat-left-quote"></i> Quote
-                      </button>
+                        >
+                          <i class="bi bi-chat-left-quote"></i> Quote
+                        </button>
+                      </div>
                     </div>
 
                     <div>
