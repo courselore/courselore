@@ -9566,6 +9566,13 @@ ${value}</textarea
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                     `}"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "Permanent Link to Conversation",
+                        theme: "tooltip",
+                        touch: false,
+                      });
+                    `}"
                     >#${res.locals.conversation.reference}</a
                   >
                 </h2>
@@ -9709,9 +9716,9 @@ ${value}</textarea
                     });
                   `}"
                     onclick="${javascript`
-                    this.closest(".title").querySelector(".title--show").hidden = false;
-                    this.closest(".title").querySelector(".title--edit").hidden = true;
-                  `}"
+                      this.closest(".title").querySelector(".title--show").hidden = false;
+                      this.closest(".title").querySelector(".title--edit").hidden = true;
+                    `}"
                   >
                     <i class="bi bi-x-lg"></i>
                   </button>
@@ -9787,12 +9794,12 @@ ${value}</textarea
                           <button
                             class="button--inline"
                             data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Mark as a Question",
-                              theme: "tooltip",
-                              touch: false,
-                            });
-                          `}"
+                              tippy(this, {
+                                content: "Mark as a Question",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                            `}"
                           >
                             <i class="bi bi-patch-question"></i>
                             Not a Question
@@ -9807,12 +9814,12 @@ ${value}</textarea
                           <button
                             class="button--inline strong"
                             data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Mark as Not a Question",
-                              theme: "tooltip",
-                              touch: false,
-                            });
-                          `}"
+                              tippy(this, {
+                                content: "Mark as Not a Question",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                            `}"
                           >
                             <i class="bi bi-patch-question-fill"></i>
                             Question
@@ -9854,7 +9861,13 @@ ${value}</textarea
                     margin: var(--space--4) var(--space--0);
                   `}"
                 >
-                  <div>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--4);
+                      justify-content: space-between;
+                    `}"
+                  >
                     <div>
                       <span class="strong">
                         ${message.authorEnrollment.user.name}
@@ -9888,37 +9901,89 @@ ${value}</textarea
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
                         `}"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Permanent Link to Message",
+                            theme: "tooltip",
+                            touch: false,
+                          });
+                        `}"
                         >#${res.locals.conversation
                           .reference}/${message.reference}</a
                       >
                     </div>
 
-                    <div hidden>
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--2);
+                      `}"
+                    >
                       $${res.locals.enrollment.role === "staff" &&
                       message.reference !== "1"
                         ? html`
-                            <form
-                              method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/conversations/${res
-                                .locals.conversation
-                                .reference}/messages/${message.reference}?_method=DELETE"
-                            >
-                              <div>
-                                <button
-                                  title="Remove Message"
-                                  class="undecorated red"
-                                  onclick="${javascript`
-                                    if (!confirm("Remove message?\\n\\nYou may not undo this action!"))
-                                      event.preventDefault();
+                            <div>
+                              <button
+                                class="button--inline button--inline--gray--cool button--inline--rose"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Remove Message",
+                                    theme: "tooltip tooltip--rose",
+                                    touch: false,
+                                  });
+                                  tippy(this, {
+                                    content: this.nextElementSibling,
+                                    theme: "dropdown dropdown--rose",
+                                    trigger: "click",
+                                    interactive: true,
+                                    allowHTML: true,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
+                              <div class="tippy-content--element">
+                                <form
+                                  method="POST"
+                                  action="${app.locals.settings
+                                    .url}/courses/${res.locals.course
+                                    .reference}/conversations/${res.locals
+                                    .conversation
+                                    .reference}/messages/${message.reference}?_method=DELETE"
+                                  style="${css`
+                                    padding: var(--space--2) var(--space--0);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
                                   `}"
                                 >
-                                  <i class="bi bi-trash"></i>
-                                </button>
+                                  <p>
+                                    Are you sure you want to remove this
+                                    message?
+                                  </p>
+                                  <p>
+                                    <strong
+                                      style="${css`
+                                        font-weight: var(
+                                          --font-weight--semibold
+                                        );
+                                      `}"
+                                    >
+                                      You may not undo this action!
+                                    </strong>
+                                  </p>
+                                  <button class="button button--rose">
+                                    <i class="bi bi-trash"></i>
+                                    Remove Message
+                                  </button>
+                                </form>
                               </div>
-                            </form>
+                            </div>
                           `
                         : html``}
+                    </div>
+
+                    <div hidden>
                       $${app.locals.helpers.mayEditMessage(req, res, message)
                         ? html`
                             <div>
