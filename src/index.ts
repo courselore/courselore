@@ -9665,7 +9665,11 @@ ${value}</textarea
                 class="title--edit"
                 style="${css`
                   display: flex;
-                  gap: var(--space--4);
+                  gap: var(--space--2);
+                  @media (max-width: 400px) {
+                    flex-direction: column;
+                  }
+                  padding-bottom: var(--space--4);
                 `}"
               >
                 <input
@@ -9679,27 +9683,39 @@ ${value}</textarea
                     flex: 1;
                   `}"
                 />
-                <button class="button button--primary">
-                  <i class="bi bi-pencil"></i>
-                  Update Title
-                </button>
-                <button
-                  type="reset"
-                  class="button--inline button--inline--gray--cool button--inline--rose"
-                  data-ondomcontentloaded="${javascript`
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <button
+                    class="button button--primary"
+                    style="${css`
+                      flex: 1;
+                    `}"
+                  >
+                    <i class="bi bi-pencil"></i>
+                    Update Title
+                  </button>
+                  <button
+                    type="reset"
+                    class="button--inline button--inline--gray--cool button--inline--rose"
+                    data-ondomcontentloaded="${javascript`
                     tippy(this, {
                       content: "Cancel",
                       theme: "tooltip tooltip--rose",
                       touch: false,
                     });
                   `}"
-                  onclick="${javascript`
+                    onclick="${javascript`
                     this.closest(".title").querySelector(".title--show").hidden = false;
                     this.closest(".title").querySelector(".title--edit").hidden = true;
                   `}"
-                >
-                  <i class="bi bi-x-lg"></i>
-                </button>
+                  >
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
               </form>
             </div>
 
