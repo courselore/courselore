@@ -762,7 +762,7 @@ module.exports = (require) => {
                       </div>
                     </div>
                     <div>
-                      <h4>…and your post looks like</h4>
+                      <h4>…and your message looks like</h4>
                       <div class="text">
                         $${app.locals.partials.textProcessor(text)}
                       </div>
@@ -790,7 +790,7 @@ module.exports = (require) => {
                       <p>
                         Markdown is a simple way to include bold text, links,
                         lists, and many other forms of rich-text formatting in
-                        your posts, for example:
+                        your messages, for example:
                       </p>
                       $${textProcessorExample(
                         markdown`
@@ -836,7 +836,7 @@ module.exports = (require) => {
                       <h3 class="heading--1">What’s LaTeX?</h3>
                       <p>
                         LaTeX is a simple way to include mathematical formulas
-                        in your posts, for example:
+                        in your messages, for example:
                       </p>
                       $${textProcessorExample(
                         markdown`
@@ -877,7 +877,7 @@ module.exports = (require) => {
                       <h3 class="heading--1">What’s Syntax Highlighting?</h3>
                       <p>
                         Syntax highlighting is the colors that make code
-                        snippets in your posts easier to read, for example:
+                        snippets in your messages easier to read, for example:
                       </p>
                       $${textProcessorExample(
                         // prettier-ignore
@@ -896,7 +896,7 @@ module.exports = (require) => {
                         <a href="https://shiki.matsu.io/"
                           >the same syntax highlighter as Visual Studio Code</a
                         >, which supports all popular programming languages so
-                        your posts will always look awesome.
+                        your messages will always look awesome.
                       </p>
                     </div>
                   </div>

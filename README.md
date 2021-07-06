@@ -561,6 +561,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - For us, as system administrators.
   - For users, who may want to migrate data from a hosted version to another.
     - Rewrite URLs in messages.
+- Update to `@types/node@16.0.0`.
 
 ### References
 
