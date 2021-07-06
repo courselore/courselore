@@ -212,13 +212,13 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "title" TEXT NOT NULL,
-        "nextPostReference" INTEGER NOT NULL DEFAULT 1,
+        "nextMessageReference" INTEGER NOT NULL DEFAULT 1,
         "pinnedAt" TEXT NULL,
         "questionAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
 
-      CREATE TABLE "posts" (
+      CREATE TABLE "messages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -233,9 +233,9 @@ export default async function courselore(
       CREATE TABLE "likes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "post" INTEGER NOT NULL REFERENCES "posts" ON DELETE CASCADE,
+        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        UNIQUE ("post", "enrollment")
+        UNIQUE ("message", "enrollment")
       );
 
       CREATE TABLE "emailsQueue" (
@@ -4468,7 +4468,7 @@ export default async function courselore(
       id: number;
       reference: string;
       title: string;
-      nextPostReference: number;
+      nextMessageReference: number;
       pinnedAt: string | null;
       questionAt: string | null;
       createdAt: string;
@@ -4480,7 +4480,7 @@ export default async function courselore(
             role: Role;
           }
         | AnonymousEnrollment;
-      postsCount: number;
+      messagesCount: number;
       likesCount: number;
     }[];
   }
@@ -4500,7 +4500,7 @@ export default async function courselore(
           id: number;
           reference: string;
           title: string;
-          nextPostReference: number;
+          nextMessageReference: number;
           pinnedAt: string | null;
           questionAt: string | null;
         }>(
@@ -4508,7 +4508,7 @@ export default async function courselore(
             SELECT "conversations"."id",
                    "conversations"."reference",
                    "conversations"."title",
-                   "conversations"."nextPostReference",
+                   "conversations"."nextMessageReference",
                    "conversations"."pinnedAt",
                    "conversations"."questionAt"
             FROM "conversations"
@@ -4519,7 +4519,7 @@ export default async function courselore(
         )
         .map((conversation) => {
           // FIXME: Try to get rid of these n+1 queries.
-          const originalPost = app.locals.database.get<{
+          const originalMessage = app.locals.database.get<{
             createdAt: string;
             authorEnrollmentId: number | null;
             authorUserId: number | null;
@@ -4529,64 +4529,66 @@ export default async function courselore(
             likesCount: number;
           }>(
             sql`
-              SELECT "posts"."createdAt",
+              SELECT "messages"."createdAt",
                      "authorEnrollment"."id" AS "authorEnrollmentId",
                      "authorUser"."id" AS "authorUserId",
                      "authorUser"."email" AS "authorUserEmail",
                      "authorUser"."name" AS "authorUserName",
                      "authorEnrollment"."role" AS "authorEnrollmentRole",
                      COUNT("likes"."id") AS "likesCount"
-              FROM "posts"
-              LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
+              FROM "messages"
+              LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
               LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-              LEFT JOIN "likes" ON "posts"."id" = "likes"."post"
-              WHERE "posts"."conversation" = ${conversation.id} AND
-                    "posts"."reference" = ${"1"}
-              GROUP BY "posts"."id"
+              LEFT JOIN "likes" ON "messages"."id" = "likes"."message"
+              WHERE "messages"."conversation" = ${conversation.id} AND
+                    "messages"."reference" = ${"1"}
+              GROUP BY "messages"."id"
             `
           )!;
-          const mostRecentlyUpdatedPost = app.locals.database.get<{
+          const mostRecentlyUpdatedMessage = app.locals.database.get<{
             updatedAt: string;
           }>(
             sql`
-              SELECT "posts"."updatedAt"
-              FROM "posts"
-              WHERE "posts"."conversation" = ${conversation.id}
-              ORDER BY "posts"."updatedAt" DESC
+              SELECT "messages"."updatedAt"
+              FROM "messages"
+              WHERE "messages"."conversation" = ${conversation.id}
+              ORDER BY "messages"."updatedAt" DESC
               LIMIT 1
             `
           )!;
-          const postsCount = app.locals.database.get<{ postsCount: number }>(
-            sql`SELECT COUNT(*) AS "postsCount" FROM "posts" WHERE "posts"."conversation" = ${conversation.id}`
-          )!.postsCount;
+          const messagesCount = app.locals.database.get<{
+            messagesCount: number;
+          }>(
+            sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
+          )!.messagesCount;
 
           return {
             id: conversation.id,
             reference: conversation.reference,
             title: conversation.title,
-            nextPostReference: conversation.nextPostReference,
+            nextMessageReference: conversation.nextMessageReference,
             pinnedAt: conversation.pinnedAt,
             questionAt: conversation.questionAt,
-            createdAt: originalPost.createdAt,
-            updatedAt: mostRecentlyUpdatedPost.updatedAt,
+            createdAt: originalMessage.createdAt,
+            updatedAt: mostRecentlyUpdatedMessage.updatedAt,
             authorEnrollment:
-              originalPost.authorEnrollmentId !== null &&
-              originalPost.authorUserId !== null &&
-              originalPost.authorUserEmail !== null &&
-              originalPost.authorUserName !== null &&
-              originalPost.authorEnrollmentRole !== null
+              originalMessage.authorEnrollmentId !== null &&
+              originalMessage.authorUserId !== null &&
+              originalMessage.authorUserEmail !== null &&
+              originalMessage.authorUserName !== null &&
+              originalMessage.authorEnrollmentRole !== null
                 ? {
-                    id: originalPost.authorEnrollmentId,
+                    id: originalMessage.authorEnrollmentId,
                     user: {
-                      id: originalPost.authorUserId,
-                      email: originalPost.authorUserEmail,
-                      name: originalPost.authorUserName,
+                      id: originalMessage.authorUserId,
+                      email: originalMessage.authorUserEmail,
+                      name: originalMessage.authorUserName,
                     },
-                    role: originalPost.authorEnrollmentRole,
+                    role: originalMessage.authorEnrollmentRole,
                   }
                 : app.locals.constants.anonymousEnrollment,
-            postsCount,
-            likesCount: originalPost.likesCount,
+            messagesCount,
+            likesCount: originalMessage.likesCount,
           };
         });
 
@@ -7804,8 +7806,8 @@ export default async function courselore(
                         : html``}
                       <div>
                         <i class="bi bi-chat-left-text"></i>
-                        ${conversation.postsCount}
-                        post${conversation.postsCount === 1 ? "" : "s"}
+                        ${conversation.messagesCount}
+                        message${conversation.messagesCount === 1 ? "" : "s"}
                       </div>
                       $${conversation.likesCount === 0
                         ? html``
@@ -8571,7 +8573,7 @@ export default async function courselore(
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
-                    Refer to Conversation or Post
+                    Refer to Conversation or Message
                     <span class="keyboard-shortcut">
                       (Ctrl+Shift+J or
                       <span class="keyboard-shortcut--cluster"
@@ -8586,7 +8588,7 @@ export default async function courselore(
                 });
               `}"
               onclick="${javascript`
-                alert("TODO: Refer to Conversation or Post");
+                alert("TODO: Refer to Conversation or Message");
               `}"
             >
               <i class="bi bi-hash"></i>
@@ -8930,15 +8932,15 @@ ${value}</textarea
             let newNodeHTML = html`${textContent}`;
             newNodeHTML = newNodeHTML.replace(
               /#(\d+)(?:\/(\d+))?/g,
-              (match, conversation, post) => {
-                // TODO: Check that the conversation/post is accessible by user.
+              (match, conversation, message) => {
+                // TODO: Check that the conversation/message is accessible by user.
                 // TODO: Do a tooltip to reveal what would be under the link.
                 return html`<a
                   href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/conversations/${conversation}${post ===
+                    .reference}/conversations/${conversation}${message ===
                   undefined
                     ? ""
-                    : `#${post}`}"
+                    : `#${message}`}"
                   >${match}</a
                 >`;
               }
@@ -9250,7 +9252,7 @@ ${value}</textarea
       );
       const conversationId = app.locals.database.run(
         sql`
-          INSERT INTO "conversations" ("course", "reference", "title", "nextPostReference", "pinnedAt", "questionAt")
+          INSERT INTO "conversations" ("course", "reference", "title", "nextMessageReference", "pinnedAt", "questionAt")
           VALUES (
             ${res.locals.course.id},
             ${String(res.locals.course.nextConversationReference)},
@@ -9263,7 +9265,7 @@ ${value}</textarea
       ).lastInsertRowid;
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("conversation", "reference", "authorEnrollment", "content")
+          INSERT INTO "messages" ("conversation", "reference", "authorEnrollment", "content")
           VALUES (
             ${conversationId},
             ${"1"},
@@ -9293,7 +9295,7 @@ ${value}</textarea
   interface IsConversationAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
     conversation: IsEnrolledInCourseMiddlewareLocals["conversations"][number];
-    posts: {
+    messages: {
       id: number;
       createdAt: string;
       updatedAt: string;
@@ -9316,7 +9318,7 @@ ${value}</textarea
       );
       if (conversation === undefined) return next("route");
       res.locals.conversation = conversation;
-      res.locals.posts = app.locals.database
+      res.locals.messages = app.locals.database
         .all<{
           id: number;
           createdAt: string;
@@ -9331,47 +9333,47 @@ ${value}</textarea
           answerAt: string | null;
         }>(
           sql`
-            SELECT "posts"."id",
-                   "posts"."createdAt",
-                   "posts"."updatedAt",
-                   "posts"."reference",
+            SELECT "messages"."id",
+                   "messages"."createdAt",
+                   "messages"."updatedAt",
+                   "messages"."reference",
                    "authorEnrollment"."id" AS "authorEnrollmentId",
                    "authorUser"."id" AS "authorUserId",
                    "authorUser"."email" AS "authorUserEmail",
                    "authorUser"."name" AS "authorUserName",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
-                   "posts"."content",
-                   "posts"."answerAt"
-            FROM "posts"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "posts"."authorEnrollment" = "authorEnrollment"."id"
+                   "messages"."content",
+                   "messages"."answerAt"
+            FROM "messages"
+            LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-            WHERE "posts"."conversation" = ${conversation.id}
-            ORDER BY "posts"."id" ASC
+            WHERE "messages"."conversation" = ${conversation.id}
+            ORDER BY "messages"."id" ASC
           `
         )
-        .map((post) => ({
-          id: post.id,
-          createdAt: post.createdAt,
-          updatedAt: post.updatedAt,
-          reference: post.reference,
+        .map((message) => ({
+          id: message.id,
+          createdAt: message.createdAt,
+          updatedAt: message.updatedAt,
+          reference: message.reference,
           authorEnrollment:
-            post.authorEnrollmentId !== null &&
-            post.authorUserId !== null &&
-            post.authorUserEmail !== null &&
-            post.authorUserName !== null &&
-            post.authorEnrollmentRole !== null
+            message.authorEnrollmentId !== null &&
+            message.authorUserId !== null &&
+            message.authorUserEmail !== null &&
+            message.authorUserName !== null &&
+            message.authorEnrollmentRole !== null
               ? {
-                  id: post.authorEnrollmentId,
+                  id: message.authorEnrollmentId,
                   user: {
-                    id: post.authorUserId,
-                    email: post.authorUserEmail,
-                    name: post.authorUserName,
+                    id: message.authorUserId,
+                    email: message.authorUserEmail,
+                    name: message.authorUserName,
                   },
-                  role: post.authorEnrollmentRole,
+                  role: message.authorEnrollmentRole,
                 }
               : app.locals.constants.anonymousEnrollment,
-          content: post.content,
-          answerAt: post.answerAt,
+          content: message.content,
+          answerAt: message.answerAt,
           // FIXME: Try to get rid of this n+1 query.
           likes: app.locals.database
             .all<{
@@ -9392,7 +9394,7 @@ ${value}</textarea
                 FROM "likes"
                 LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
                 LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
-                WHERE "likes"."post" = ${post.id}
+                WHERE "likes"."message" = ${message.id}
               `
             )
             .map((like) => ({
@@ -9446,36 +9448,36 @@ ${value}</textarea
     res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
 
   interface Middlewares {
-    postExists: express.RequestHandler<
+    messageExists: express.RequestHandler<
       {
         courseReference: string;
         conversationReference: string;
-        postReference: string;
+        messageReference: string;
       },
       any,
       {},
       {},
-      PostExistsMiddlewareLocals
+      MessageExistsMiddlewareLocals
     >[];
   }
-  interface PostExistsMiddlewareLocals
+  interface MessageExistsMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {
-    post: IsConversationAccessibleMiddlewareLocals["posts"][number];
+    message: IsConversationAccessibleMiddlewareLocals["messages"][number];
   }
-  app.locals.middlewares.postExists = [
+  app.locals.middlewares.messageExists = [
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
-      const post = res.locals.posts.find(
-        (post) => post.reference === req.params.postReference
+      const message = res.locals.messages.find(
+        (message) => message.reference === req.params.messageReference
       );
-      if (post === undefined) return next("route");
-      res.locals.post = post;
+      if (message === undefined) return next("route");
+      res.locals.message = message;
       next();
     },
   ];
 
   interface Helpers {
-    mayEditPost: (
+    mayEditMessage: (
       req: express.Request<
         { courseReference: string; conversationReference: string },
         any,
@@ -9484,31 +9486,32 @@ ${value}</textarea
         IsConversationAccessibleMiddlewareLocals
       >,
       res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
-      post: PostExistsMiddlewareLocals["post"]
+      message: MessageExistsMiddlewareLocals["message"]
     ) => boolean;
   }
-  app.locals.helpers.mayEditPost = (req, res, post) =>
+  app.locals.helpers.mayEditMessage = (req, res, message) =>
     res.locals.enrollment.role === "staff" ||
-    post.authorEnrollment.id === res.locals.enrollment.id;
+    message.authorEnrollment.id === res.locals.enrollment.id;
 
   interface Middlewares {
-    mayEditPost: express.RequestHandler<
+    mayEditMessage: express.RequestHandler<
       {
         courseReference: string;
         conversationReference: string;
-        postReference: string;
+        messageReference: string;
       },
       any,
       {},
       {},
-      MayEditPostMiddlewareLocals
+      MayEditMessageMiddlewareLocals
     >[];
   }
-  interface MayEditPostMiddlewareLocals extends PostExistsMiddlewareLocals {}
-  app.locals.middlewares.mayEditPost = [
-    ...app.locals.middlewares.postExists,
+  interface MayEditMessageMiddlewareLocals
+    extends MessageExistsMiddlewareLocals {}
+  app.locals.middlewares.mayEditMessage = [
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
-      if (app.locals.helpers.mayEditPost(req, res, res.locals.post))
+      if (app.locals.helpers.mayEditMessage(req, res, res.locals.message))
         return next();
       next("route");
     },
@@ -9792,8 +9795,8 @@ ${value}</textarea
                     </div>
                   `;
             })()}
-            $${res.locals.posts.map(
-              (post) => html`
+            $${res.locals.messages.map(
+              (message) => html`
                 <div
                   style="${css`
                     padding-bottom: var(--space--4);
@@ -9808,7 +9811,7 @@ ${value}</textarea
                   <div>
                     <div>
                       <span class="strong">
-                        ${post.authorEnrollment.user.name}
+                        ${message.authorEnrollment.user.name}
                       </span>
                       said
                       <time
@@ -9816,9 +9819,9 @@ ${value}</textarea
                           relativizeTime(this);
                         `}"
                       >
-                        ${post.createdAt}
+                        ${message.createdAt}
                       </time>
-                      $${post.updatedAt !== post.createdAt
+                      $${message.updatedAt !== message.createdAt
                         ? html`
                             and last edited
                             <time
@@ -9826,41 +9829,41 @@ ${value}</textarea
                                 relativizeTime(this);
                               `}"
                             >
-                              ${post.updatedAt}
+                              ${message.updatedAt}
                             </time>
                           `
                         : html``}
                       <a
                         href="${app.locals.settings.url}/courses/${res.locals
                           .course.reference}/conversations/${res.locals
-                          .conversation.reference}#${post.reference}"
+                          .conversation.reference}#${message.reference}"
                         class="button--inline button--inline--gray--cool"
                         style="${css`
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
                         `}"
                         >#${res.locals.conversation
-                          .reference}/${post.reference}</a
+                          .reference}/${message.reference}</a
                       >
                     </div>
 
                     <div hidden>
                       $${res.locals.enrollment.role === "staff" &&
-                      post.reference !== "1"
+                      message.reference !== "1"
                         ? html`
                             <form
                               method="POST"
                               action="${app.locals.settings.url}/courses/${res
                                 .locals.course.reference}/conversations/${res
                                 .locals.conversation
-                                .reference}/posts/${post.reference}?_method=DELETE"
+                                .reference}/messages/${message.reference}?_method=DELETE"
                             >
                               <div>
                                 <button
-                                  title="Remove Post"
+                                  title="Remove Message"
                                   class="undecorated red"
                                   onclick="${javascript`
-                                    if (!confirm("Remove post?\\n\\nYou may not undo this action!"))
+                                    if (!confirm("Remove message?\\n\\nYou may not undo this action!"))
                                       event.preventDefault();
                                   `}"
                                 >
@@ -9870,17 +9873,17 @@ ${value}</textarea
                             </form>
                           `
                         : html``}
-                      $${app.locals.helpers.mayEditPost(req, res, post)
+                      $${app.locals.helpers.mayEditMessage(req, res, message)
                         ? html`
                             <div>
                               <button
-                                title="Edit Post"
+                                title="Edit Message"
                                 type="button"
                                 class="undecorated"
                                 onclick="${javascript`
-                                  const post = this.closest(".post");
-                                  post.querySelector(".show").hidden = true;
-                                  const edit = post.querySelector(".edit");
+                                  const message = this.closest(".message");
+                                  message.querySelector(".show").hidden = true;
+                                  const edit = message.querySelector(".edit");
                                   edit.hidden = false;
                                   const textarea = edit.querySelector('[name="content"]');
                                   textarea.focus();
@@ -9899,29 +9902,29 @@ ${value}</textarea
                           type="button"
                           class="undecorated"
                           onclick="${javascript`
-                            const newPost = document.querySelector("#new-post");
-                            newPost.querySelector(".write").click();
-                            const newPostContent = newPost.querySelector('[name="content"]');
-                            const quote = ((newPostContent.selectionStart > 0) ? "\\n\\n" : "") +
+                            const newMessage = document.querySelector("#new-message");
+                            newMessage.querySelector(".write").click();
+                            const newMessageContent = newMessage.querySelector('[name="content"]');
+                            const quote = ((newMessageContent.selectionStart > 0) ? "\\n\\n" : "") +
                             ${JSON.stringify(
                               `> **In response to #${
                                 res.locals.conversation.reference
-                              }/${post.reference} by ${
-                                post.authorEnrollment.user.name
-                              }**\n>\n${post.content
+                              }/${message.reference} by ${
+                                message.authorEnrollment.user.name
+                              }**\n>\n${message.content
                                 .split("\n")
                                 .map((line) => `> ${line}`)
                                 .join("\n")}\n\n`
                             )};
-                            const selectionStart = newPostContent.selectionStart + quote.length;
-                            const selectionEnd = newPostContent.selectionEnd + quote.length;
-                            newPostContent.value =
-                              newPostContent.value.slice(0, newPostContent.selectionStart) +
+                            const selectionStart = newMessageContent.selectionStart + quote.length;
+                            const selectionEnd = newMessageContent.selectionEnd + quote.length;
+                            newMessageContent.value =
+                              newMessageContent.value.slice(0, newMessageContent.selectionStart) +
                               quote +
-                              newPostContent.value.slice(newPostContent.selectionStart);
-                            newPostContent.dispatchEvent(new Event("input"));
-                            newPostContent.focus();
-                            newPostContent.setSelectionRange(selectionStart, selectionEnd);
+                              newMessageContent.value.slice(newMessageContent.selectionStart);
+                            newMessageContent.dispatchEvent(new Event("input"));
+                            newMessageContent.focus();
+                            newMessageContent.setSelectionRange(selectionStart, selectionEnd);
                           `}"
                         >
                           <i class="bi bi-reply"></i>
@@ -9934,20 +9937,22 @@ ${value}</textarea
                     $${(() => {
                       const content: HTML[] = [];
 
-                      if (post.reference !== "1")
-                        if (app.locals.helpers.mayEditPost(req, res, post))
+                      if (message.reference !== "1")
+                        if (
+                          app.locals.helpers.mayEditMessage(req, res, message)
+                        )
                           content.push(html`
                             <form
                               method="POST"
                               action="${app.locals.settings.url}/courses/${res
                                 .locals.course.reference}/conversations/${res
                                 .locals.conversation
-                                .reference}/posts/${post.reference}?_method=PATCH"
+                                .reference}/messages/${message.reference}?_method=PATCH"
                             >
                               <input
                                 type="hidden"
                                 name="isAnswer"
-                                value="${post.answerAt === null
+                                value="${message.answerAt === null
                                   ? "true"
                                   : "false"}"
                               />
@@ -9960,14 +9965,14 @@ ${value}</textarea
                                     `}"
                                   >
                                   </span>
-                                  ${post.answerAt === null
+                                  ${message.answerAt === null
                                     ? "Not an Answer"
                                     : "Answer"}
                                 </button>
                               </p>
                             </form>
                           `);
-                        else if (post.answerAt !== null)
+                        else if (message.answerAt !== null)
                           content.push(html`
                             <p>
                               <span
@@ -10003,7 +10008,7 @@ ${value}</textarea
                     })()}
                     <div
                       class="text"
-                      data-content="${JSON.stringify(post.content)}"
+                      data-content="${JSON.stringify(message.content)}"
                       data-ondomcontentloaded="${javascript`
                         this.tippy = tippy(this, {
                           content: this.nextElementSibling,
@@ -10039,7 +10044,7 @@ ${value}</textarea
                         this.tippy.show();
                       `}"
                     >
-                      $${app.locals.partials.textProcessor(post.content, {
+                      $${app.locals.partials.textProcessor(message.content, {
                         req,
                         res,
                       })}
@@ -10057,13 +10062,13 @@ ${value}</textarea
                           const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                           const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                           const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                          const element = document.querySelector('.new-post [name="content"]');
+                          const element = document.querySelector('.new-message [name="content"]');
                           textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                            post.authorEnrollment.user.name
+                            message.authorEnrollment.user.name
                           )} + " · #" + ${JSON.stringify(
                           String(res.locals.conversation.reference)
                         )} + "/" + ${JSON.stringify(
-                          String(post.reference)
+                          String(message.reference)
                         )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> "), "\\n\\n");
                           element.focus();
                         `}"
@@ -10074,11 +10079,11 @@ ${value}</textarea
 
                     <div>
                       $${(() => {
-                        const isLiked = post.likes.find(
+                        const isLiked = message.likes.find(
                           (like) =>
                             like.enrollment.id === res.locals.enrollment.id
                         );
-                        const likesCount = post.likes.length;
+                        const likesCount = message.likes.length;
 
                         return html`
                           <form
@@ -10086,7 +10091,7 @@ ${value}</textarea
                             action="${app.locals.settings.url}/courses/${res
                               .locals.course.reference}/conversations/${res
                               .locals.conversation
-                              .reference}/posts/${post.reference}/likes${isLiked
+                              .reference}/messages/${message.reference}/likes${isLiked
                               ? "?_method=DELETE"
                               : ""}"
                             onsubmit="${javascript`
@@ -10134,18 +10139,18 @@ ${value}</textarea
                     </div>
                   </div>
 
-                  $${app.locals.helpers.mayEditPost(req, res, post)
+                  $${app.locals.helpers.mayEditMessage(req, res, message)
                     ? html`
                         <form
                           method="POST"
                           action="${app.locals.settings.url}/courses/${res
                             .locals.course.reference}/conversations/${res.locals
                             .conversation
-                            .reference}/posts/${post.reference}?_method=PATCH"
+                            .reference}/messages/${message.reference}?_method=PATCH"
                           hidden
                           class="edit"
                         >
-                          $${app.locals.partials.textEditor(post.content)}
+                          $${app.locals.partials.textEditor(message.content)}
                           <p
                             style="${css`
                               text-align: right;
@@ -10154,13 +10159,13 @@ ${value}</textarea
                             <button
                               type="reset"
                               onclick="${javascript`
-                                  const post = this.closest(".post");
-                                  if (isModified(post) && !confirm("Discard changes?")) {
+                                  const message = this.closest(".message");
+                                  if (isModified(message) && !confirm("Discard changes?")) {
                                     event.preventDefault();
                                     return;
                                   }
-                                  post.querySelector(".show").hidden = false;
-                                  const edit = post.querySelector(".edit");
+                                  message.querySelector(".show").hidden = false;
+                                  const edit = message.querySelector(".edit");
                                   edit.hidden = true;
                                 `}"
                             >
@@ -10185,7 +10190,7 @@ ${value}</textarea
                                 });
                               `}"
                             >
-                              Change Post
+                              Change Message
                             </button>
                           </p>
                         </form>
@@ -10199,7 +10204,7 @@ ${value}</textarea
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/conversations/${res.locals.conversation
-                .reference}/posts"
+                .reference}/messages"
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -10259,7 +10264,7 @@ ${value}</textarea
               -->
 
               <div
-                class="new-post"
+                class="new-message"
                 data-ondomcontentloaded="${javascript`
                   const content = this.querySelector('[name="content"]');
                   content.defaultValue =
@@ -10320,7 +10325,7 @@ ${value}</textarea
                     `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
-                  Post
+                  Message
                 </button>
               </div>
             </form>
@@ -10431,7 +10436,7 @@ ${value}</textarea
     {},
     IsConversationAccessibleMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/:conversationReference/posts",
+    "/courses/:courseReference/conversations/:conversationReference/messages",
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       if (
@@ -10444,18 +10449,18 @@ ${value}</textarea
       app.locals.database.run(
         sql`
           UPDATE "conversations"
-          SET "nextPostReference" = ${
-            res.locals.conversation.nextPostReference + 1
+          SET "nextMessageReference" = ${
+            res.locals.conversation.nextMessageReference + 1
           }
           WHERE "id" = ${res.locals.conversation.id}
         `
       );
       app.locals.database.run(
         sql`
-          INSERT INTO "posts" ("conversation", "reference", "authorEnrollment", "content", "answerAt")
+          INSERT INTO "messages" ("conversation", "reference", "authorEnrollment", "content", "answerAt")
           VALUES (
             ${res.locals.conversation.id},
-            ${String(res.locals.conversation.nextPostReference)},
+            ${String(res.locals.conversation.nextMessageReference)},
             ${res.locals.enrollment.id},
             ${req.body.content},
             ${req.body.isAnswer ? new Date().toISOString() : null}
@@ -10466,7 +10471,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.conversation.nextPostReference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.conversation.nextMessageReference}`
       );
     }
   );
@@ -10475,25 +10480,25 @@ ${value}</textarea
     {
       courseReference: string;
       conversationReference: string;
-      postReference: string;
+      messageReference: string;
     },
     any,
     { content?: string; isAnswer?: "true" | "false" },
     {},
-    MayEditPostMiddlewareLocals
+    MayEditMessageMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference",
-    ...app.locals.middlewares.mayEditPost,
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
+    ...app.locals.middlewares.mayEditMessage,
     (req, res, next) => {
       if (typeof req.body.content === "string")
         if (req.body.content.trim() === "") return next("validation");
         else
           app.locals.database.run(
             sql`
-              UPDATE "posts"
+              UPDATE "messages"
               SET "content" = ${req.body.content},
                   "updatedAt" = ${new Date().toISOString()}
-              WHERE "id" = ${res.locals.post.id}
+              WHERE "id" = ${res.locals.message.id}
             `
           );
 
@@ -10501,25 +10506,27 @@ ${value}</textarea
         if (
           !["true", "false"].includes(req.body.isAnswer) ||
           res.locals.conversation.questionAt === null ||
-          (req.body.isAnswer === "true" && res.locals.post.answerAt !== null) ||
-          (req.body.isAnswer === "false" && res.locals.post.answerAt === null)
+          (req.body.isAnswer === "true" &&
+            res.locals.message.answerAt !== null) ||
+          (req.body.isAnswer === "false" &&
+            res.locals.message.answerAt === null)
         )
           return next("validation");
         else
           app.locals.database.run(
             sql`
-              UPDATE "posts"
+              UPDATE "messages"
               SET "answerAt" = ${
                 req.body.isAnswer === "true" ? new Date().toISOString() : null
               }
-              WHERE "id" = ${res.locals.post.id}
+              WHERE "id" = ${res.locals.message.id}
             `
           );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.post.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.message.reference}`
       );
     }
   );
@@ -10528,21 +10535,21 @@ ${value}</textarea
     {
       courseReference: string;
       conversationReference: string;
-      postReference: string;
+      messageReference: string;
     },
     any,
     { content?: string },
     {},
-    IsCourseStaffMiddlewareLocals & PostExistsMiddlewareLocals
+    IsCourseStaffMiddlewareLocals & MessageExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference",
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...app.locals.middlewares.isCourseStaff,
-    ...app.locals.middlewares.postExists,
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
-      if (res.locals.post.reference === "1") return next("validation");
+      if (res.locals.message.reference === "1") return next("validation");
 
       app.locals.database.run(
-        sql`DELETE FROM "posts" WHERE "id" = ${res.locals.post.id}`
+        sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
@@ -10557,31 +10564,31 @@ ${value}</textarea
     {
       courseReference: string;
       conversationReference: string;
-      postReference: string;
+      messageReference: string;
     },
     any,
     { content?: string },
     {},
-    PostExistsMiddlewareLocals
+    MessageExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference/likes",
-    ...app.locals.middlewares.postExists,
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
-        res.locals.post.likes.find(
+        res.locals.message.likes.find(
           (like) => like.enrollment.id === res.locals.enrollment.id
         ) !== undefined
       )
         return next("validation");
 
       app.locals.database.run(
-        sql`INSERT INTO "likes" ("post", "enrollment") VALUES (${res.locals.post.id}, ${res.locals.enrollment.id})`
+        sql`INSERT INTO "likes" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
       );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.post.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.message.reference}`
       );
     }
   );
@@ -10590,17 +10597,17 @@ ${value}</textarea
     {
       courseReference: string;
       conversationReference: string;
-      postReference: string;
+      messageReference: string;
     },
     any,
     { content?: string },
     {},
-    PostExistsMiddlewareLocals
+    MessageExistsMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/:conversationReference/posts/:postReference/likes",
-    ...app.locals.middlewares.postExists,
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
-      const like = res.locals.post.likes.find(
+      const like = res.locals.message.likes.find(
         (like) => like.enrollment.id === res.locals.enrollment.id
       );
       if (like === undefined) return next("validation");
@@ -10610,7 +10617,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.post.reference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#${res.locals.message.reference}`
       );
     }
   );
