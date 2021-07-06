@@ -7979,9 +7979,9 @@ export default async function courselore(
             autocomplete="off"
             checked
             onclick="${javascript`
-              this.closest(".text-editor").querySelector(".panel--write").hidden = false;
-              this.closest(".text-editor").querySelector(".panel--loading").hidden = true;
-              this.closest(".text-editor").querySelector(".panel--preview").hidden = true;
+              this.closest(".text-editor").querySelector(".text-editor--write").hidden = false;
+              this.closest(".text-editor").querySelector(".text-editor--loading").hidden = true;
+              this.closest(".text-editor").querySelector(".text-editor--preview").hidden = true;
             `}"
           />
           <span class="button--inline after-toggle">
@@ -7996,9 +7996,9 @@ export default async function courselore(
             autocomplete="off"
             onclick="${javascript`
               (async () => {
-                const write = this.closest(".text-editor").querySelector(".panel--write");
-                const loading = this.closest(".text-editor").querySelector(".panel--loading");
-                const preview = this.closest(".text-editor").querySelector(".panel--preview");
+                const write = this.closest(".text-editor").querySelector(".text-editor--write");
+                const loading = this.closest(".text-editor").querySelector(".text-editor--loading");
+                const preview = this.closest(".text-editor").querySelector(".text-editor--preview");
                 if (!isValid(write)) {
                   event.preventDefault();
                   return;
@@ -8044,7 +8044,7 @@ export default async function courselore(
         </label>
       </div>
       <div
-        class="panel--write"
+        class="text-editor--write"
         style="${css`
           background-color: var(--color--white);
           @media (prefers-color-scheme: dark) {
@@ -8761,7 +8761,7 @@ ${value}</textarea
 
       <div
         hidden
-        class="panel--loading strong"
+        class="text-editor--loading strong"
         style="${css`
           background-color: var(--color--white);
           @media (prefers-color-scheme: dark) {
@@ -8788,7 +8788,7 @@ ${value}</textarea
 
       <div
         hidden
-        class="panel--preview text"
+        class="text-editor--preview text"
         style="${css`
           background-color: var(--color--white);
           @media (prefers-color-scheme: dark) {
@@ -9540,42 +9540,46 @@ ${value}</textarea
             </title>
           `,
           body: html`
-            <div
-              style="${css`
-                display: flex;
-                justify-content: space-between;
-                align-items: baseline;
-                gap: var(--space--4);
-              `}"
-            >
-              <h2>
-                <span class="heading--1">${res.locals.conversation.title}</span>
-
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/conversations/${res.locals.conversation
-                    .reference}"
-                  class="button--inline button--inline--gray--cool"
-                  style="${css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                  `}"
-                  >#${res.locals.conversation.reference}</a
-                >
-              </h2>
-
+            <div class="title">
               <div
+                class="title--show"
                 style="${css`
                   display: flex;
-                  gap: var(--space--2);
+                  justify-content: space-between;
+                  align-items: baseline;
+                  gap: var(--space--4);
                 `}"
               >
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
-                      <div>
-                        <button
-                          class="button--inline button--inline--gray--cool button--inline--rose"
-                          data-ondomcontentloaded="${javascript`
+                <h2>
+                  <span class="heading--1"
+                    >${res.locals.conversation.title}</span
+                  >
+
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/conversations/${res.locals.conversation
+                      .reference}"
+                    class="button--inline button--inline--gray--cool"
+                    style="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                    `}"
+                    >#${res.locals.conversation.reference}</a
+                  >
+                </h2>
+
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <div>
+                          <button
+                            class="button--inline button--inline--gray--cool button--inline--rose"
+                            data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Remove Conversation",
                               theme: "tooltip tooltip--rose",
@@ -9589,45 +9593,45 @@ ${value}</textarea
                               allowHTML: true,
                             });
                           `}"
-                        >
-                          <i class="bi bi-trash"></i>
-                        </button>
-                        <div class="tippy-content--element">
-                          <form
-                            method="POST"
-                            action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/conversations/${res
-                              .locals.conversation.reference}?_method=DELETE"
-                            style="${css`
-                              padding: var(--space--2) var(--space--0);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
                           >
-                            <p>
-                              Are you sure you want to remove this conversation?
-                            </p>
-                            <p>
-                              <strong
-                                style="${css`
-                                  font-weight: var(--font-weight--semibold);
-                                `}"
-                              >
-                                You may not undo this action!
-                              </strong>
-                            </p>
-                            <button class="button button--rose">
-                              Remove Conversation
-                            </button>
-                          </form>
+                            <i class="bi bi-trash"></i>
+                          </button>
+                          <div class="tippy-content--element">
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation.reference}?_method=DELETE"
+                              style="${css`
+                                padding: var(--space--2) var(--space--0);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                Are you sure you want to remove this
+                                conversation?
+                              </p>
+                              <p>
+                                <strong
+                                  style="${css`
+                                    font-weight: var(--font-weight--semibold);
+                                  `}"
+                                >
+                                  You may not undo this action!
+                                </strong>
+                              </p>
+                              <button class="button button--rose">
+                                Remove Conversation
+                              </button>
+                            </form>
+                          </div>
                         </div>
-                      </div>
-                    `
-                  : html``}
-                $${app.locals.helpers.mayEditConversation(req, res)
-                  ? html`
-                      <div>
+                      `
+                    : html``}
+                  $${app.locals.helpers.mayEditConversation(req, res)
+                    ? html`
                         <button
                           class="button--inline button--inline--gray--cool"
                           data-ondomcontentloaded="${javascript`
@@ -9636,48 +9640,64 @@ ${value}</textarea
                               theme: "tooltip",
                               touch: false,
                             });
-                            tippy(this, {
-                              content: this.nextElementSibling,
-                              theme: "dropdown",
-                              trigger: "click",
-                              interactive: true,
-                              allowHTML: true,
-                            });
+                          `}"
+                          onclick="${javascript`
+                            this.closest(".title").querySelector(".title--show").hidden = true;
+                            this.closest(".title").querySelector(".title--edit").hidden = false;
                           `}"
                         >
                           <i class="bi bi-pencil"></i>
                         </button>
-                        <div class="tippy-content--element">
-                          <form
-                            method="POST"
-                            action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/conversations/${res
-                              .locals.conversation.reference}?_method=PATCH"
-                            style="${css`
-                              padding: var(--space--2) var(--space--0);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              name="title"
-                              value="${res.locals.conversation.title}"
-                              required
-                              autocomplete="off"
-                              class="input--text"
-                            />
-                            <button class="button button--primary">
-                              <i class="bi bi-pencil"></i>
-                              Update Title
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    `
-                  : html``}
+                      `
+                    : html``}
+                </div>
               </div>
+
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/conversations/${res.locals.conversation
+                  .reference}?_method=PATCH"
+                hidden
+                class="title--edit"
+                style="${css`
+                  display: flex;
+                  gap: var(--space--4);
+                `}"
+              >
+                <input
+                  type="text"
+                  name="title"
+                  value="${res.locals.conversation.title}"
+                  required
+                  autocomplete="off"
+                  class="input--text"
+                  style="${css`
+                    flex: 1;
+                  `}"
+                />
+                <button class="button button--primary">
+                  <i class="bi bi-pencil"></i>
+                  Update Title
+                </button>
+                <button
+                  type="reset"
+                  class="button--inline button--inline--gray--cool button--inline--rose"
+                  data-ondomcontentloaded="${javascript`
+                    tippy(this, {
+                      content: "Cancel",
+                      theme: "tooltip tooltip--rose",
+                      touch: false,
+                    });
+                  `}"
+                  onclick="${javascript`
+                    this.closest(".title").querySelector(".title--show").hidden = false;
+                    this.closest(".title").querySelector(".title--edit").hidden = true;
+                  `}"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </form>
             </div>
 
             $${(() => {
