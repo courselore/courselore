@@ -7005,7 +7005,8 @@ export default async function courselore(
                                       </strong>
                                     </p>
                                     <button class="button button--rose">
-                                      Remove from the course
+                                      <i class="bi bi-person-dash"></i>
+                                      Remove from the Course
                                     </button>
                                   </form>
                                 </div>
@@ -9624,6 +9625,7 @@ ${value}</textarea
                                 </strong>
                               </p>
                               <button class="button button--rose">
+                                <i class="bi bi-trash"></i>
                                 Remove Conversation
                               </button>
                             </form>
