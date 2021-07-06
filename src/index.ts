@@ -9023,6 +9023,9 @@ ${value}</textarea
                   autofocus
                   class="input--text"
                 />
+
+                $${app.locals.partials.textEditor()}
+
                 <div
                   style="${css`
                     display: flex;
@@ -9145,7 +9148,7 @@ ${value}</textarea
                       `}"
                     >
                       <i class="bi bi-patch-question"></i>
-                      Not a question
+                      Not a Question
                     </span>
                     <span
                       class="button--inline after-toggle strong"
@@ -9167,8 +9170,6 @@ ${value}</textarea
                     </span>
                   </label>
                 </div>
-
-                $${app.locals.partials.textEditor()}
 
                 <div>
                   <button
@@ -9776,7 +9777,7 @@ ${value}</textarea
                           `}"
                           >
                             <i class="bi bi-patch-question"></i>
-                            Not a question
+                            Not a Question
                           </button>
                         `
                       : html`
@@ -10238,58 +10239,6 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
-              <!--
-              <span
-                style="${css`
-                & > * + * {
-                  margin-left: 1rem;
-                }
-              `}"
-              >
-                $${res.locals.conversation.questionAt !== null
-                ? html`
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="isAnswer"
-                        $${res.locals.enrollment.role === "staff"
-                          ? `checked`
-                          : ``}
-                        autocomplete="off"
-                        class="undecorated"
-                        style="${css`
-                          width: 1em;
-                          height: 1em;
-                          background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                            "TODO"
-                            // app.locals.icons["patch-check"].replace(
-                            //   "currentColor",
-                            //   "gray"
-                            // )
-                          ).toString("base64")}");
-                          &:checked {
-                            background-image: url("data:image/svg+xml;base64,${Buffer.from(
-                              "TODO"
-                              // app.locals.icons["patch-check-fill"]
-                            ).toString("base64")}");
-                          }
-                          background-repeat: no-repeat;
-                          background-size: contain;
-                          position: relative;
-                          top: 0.1em;
-
-                          &:not(:checked) + * {
-                            color: gray;
-                          }
-                        `}"
-                      />
-                      <span>Answer</span>
-                    </label>
-                  `
-                : html``}
-              </span>
-              -->
-
               <div
                 class="new-message"
                 data-ondomcontentloaded="${javascript`
@@ -10325,6 +10274,72 @@ ${value}</textarea
                 $${app.locals.partials.textEditor()}
               </div>
 
+              $${res.locals.conversation.questionAt === null
+                ? html``
+                : html`
+                    <div
+                      style="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <label
+                        style="${css`
+                          display: grid;
+                          cursor: pointer;
+
+                          & > * {
+                            grid-area: 1 / 1;
+                          }
+                        `}"
+                      >
+                        <input
+                          type="checkbox"
+                          name="isAnswer"
+                          autocomplete="off"
+                          $${res.locals.enrollment.role === "staff"
+                            ? `checked`
+                            : ``}
+                        />
+                        <span
+                          class="button--inline after-toggle"
+                          style="${css`
+                            :checked + & {
+                              display: none;
+                            }
+                          `}"
+                          data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Mark as an Answer",
+                            theme: "tooltip",
+                            touch: false,
+                          });
+                        `}"
+                        >
+                          <i class="bi bi-patch-check"></i>
+                          Not an Answer
+                        </span>
+                        <span
+                          class="button--inline after-toggle strong"
+                          style="${css`
+                            :not(:checked) + * + & {
+                              display: none;
+                            }
+                          `}"
+                          data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Mark as Not an Answer",
+                            theme: "tooltip",
+                            touch: false,
+                          });
+                        `}"
+                        >
+                          <i class="bi bi-patch-check-fill"></i>
+                          Answer
+                        </span>
+                      </label>
+                    </div>
+                  `}
+
               <div>
                 <button
                   class="button button--primary"
@@ -10352,7 +10367,7 @@ ${value}</textarea
                     `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
-                  Message
+                  Send Message
                 </button>
               </div>
             </form>
