@@ -7979,6 +7979,7 @@ export default async function courselore(
             name="text-editor--mode"
             autocomplete="off"
             checked
+            class="text-editor--button--write"
             onclick="${javascript`
               this.closest(".text-editor").querySelector(".text-editor--write").hidden = false;
               this.closest(".text-editor").querySelector(".text-editor--loading").hidden = true;
@@ -7995,6 +7996,7 @@ export default async function courselore(
             type="radio"
             name="text-editor--mode"
             autocomplete="off"
+            class="text-editor--button--preview"
             onclick="${javascript`
               (async () => {
                 const write = this.closest(".text-editor").querySelector(".text-editor--write");
@@ -9851,6 +9853,7 @@ ${value}</textarea
             $${res.locals.messages.map(
               (message) => html`
                 <div
+                  data-content="${JSON.stringify(message.content)}"
                   style="${css`
                     padding-bottom: var(--space--4);
                     border-bottom: var(--border-width--4) solid
@@ -9981,6 +9984,36 @@ ${value}</textarea
                             </div>
                           `
                         : html``}
+
+                      <div>
+                        <button
+                          class="button--inline button--inline--gray--cool"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Reply",
+                              theme: "tooltip",
+                              touch: false,
+                            });
+                          `}"
+                          onclick="${javascript`
+                            const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                            const newMessage = document.querySelector(".new-message");
+                            newMessage.querySelector(".text-editor--button--write").click();
+                            const element = newMessage.querySelector('[name="content"]');
+                            // TODO: Use something like ‘@Leandro-Facchinetti-2342’
+                            textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                              message.authorEnrollment.user.name
+                            )} + " · #" + ${JSON.stringify(
+                            res.locals.conversation.reference
+                          )} + "/" + ${JSON.stringify(
+                            message.reference
+                          )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                            element.focus();
+                            `}"
+                        >
+                          <i class="bi bi-reply"></i>
+                        </button>
+                      </div>
                     </div>
 
                     <div hidden>
@@ -10006,41 +10039,6 @@ ${value}</textarea
                             </div>
                           `
                         : html``}
-
-                      <div>
-                        <button
-                          title="Reply"
-                          type="button"
-                          class="undecorated"
-                          onclick="${javascript`
-                            const newMessage = document.querySelector("#new-message");
-                            newMessage.querySelector(".write").click();
-                            const newMessageContent = newMessage.querySelector('[name="content"]');
-                            const quote = ((newMessageContent.selectionStart > 0) ? "\\n\\n" : "") +
-                            ${JSON.stringify(
-                              `> **In response to #${
-                                res.locals.conversation.reference
-                              }/${message.reference} by ${
-                                message.authorEnrollment.user.name
-                              }**\n>\n${message.content
-                                .split("\n")
-                                .map((line) => `> ${line}`)
-                                .join("\n")}\n\n`
-                            )};
-                            const selectionStart = newMessageContent.selectionStart + quote.length;
-                            const selectionEnd = newMessageContent.selectionEnd + quote.length;
-                            newMessageContent.value =
-                              newMessageContent.value.slice(0, newMessageContent.selectionStart) +
-                              quote +
-                              newMessageContent.value.slice(newMessageContent.selectionStart);
-                            newMessageContent.dispatchEvent(new Event("input"));
-                            newMessageContent.focus();
-                            newMessageContent.setSelectionRange(selectionStart, selectionEnd);
-                          `}"
-                        >
-                          <i class="bi bi-reply"></i>
-                        </button>
-                      </div>
                     </div>
                   </div>
 
@@ -10119,7 +10117,6 @@ ${value}</textarea
                     })()}
                     <div
                       class="text"
-                      data-content="${JSON.stringify(message.content)}"
                       data-ondomcontentloaded="${javascript`
                         this.tippy = tippy(this, {
                           content: this.nextElementSibling,
@@ -10164,6 +10161,7 @@ ${value}</textarea
                       <button
                         class="dropdown--item"
                         onclick="${javascript`
+                          tippy.hideAll();
                           const selection = window.getSelection();
                           const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
                           const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
@@ -10173,14 +10171,17 @@ ${value}</textarea
                           const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                           const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                           const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                          const element = document.querySelector('.new-message [name="content"]');
+                          const newMessage = document.querySelector(".new-message");
+                          newMessage.querySelector(".text-editor--button--write").click();
+                          const element = newMessage.querySelector('[name="content"]');
+                          // TODO: Use something like ‘@Leandro-Facchinetti-2342’
                           textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                             message.authorEnrollment.user.name
                           )} + " · #" + ${JSON.stringify(
-                          String(res.locals.conversation.reference)
+                          res.locals.conversation.reference
                         )} + "/" + ${JSON.stringify(
-                          String(message.reference)
-                        )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> "), "\\n\\n");
+                          message.reference
+                        )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
                           element.focus();
                         `}"
                       >
