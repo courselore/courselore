@@ -9673,12 +9673,12 @@ ${value}</textarea
                 hidden
                 class="title--edit"
                 style="${css`
+                  padding-bottom: var(--space--4);
                   display: flex;
                   gap: var(--space--2);
                   @media (max-width: 400px) {
                     flex-direction: column;
                   }
-                  padding-bottom: var(--space--4);
                 `}"
               >
                 <input
@@ -10272,6 +10272,9 @@ ${value}</textarea
                             style="${css`
                               display: flex;
                               gap: var(--space--2);
+                              @media (max-width: 400px) {
+                                flex-direction: column;
+                              }
                             `}"
                           >
                             <button
