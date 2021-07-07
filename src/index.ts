@@ -9591,19 +9591,19 @@ ${value}</textarea
                           <button
                             class="button--inline button--inline--gray--cool button--inline--rose"
                             data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Remove Conversation",
-                              theme: "tooltip tooltip--rose",
-                              touch: false,
-                            });
-                            tippy(this, {
-                              content: this.nextElementSibling,
-                              theme: "dropdown dropdown--rose",
-                              trigger: "click",
-                              interactive: true,
-                              allowHTML: true,
-                            });
-                          `}"
+                              tippy(this, {
+                                content: "Remove Conversation",
+                                theme: "tooltip tooltip--rose",
+                                touch: false,
+                              });
+                              tippy(this, {
+                                content: this.nextElementSibling,
+                                theme: "dropdown dropdown--rose",
+                                trigger: "click",
+                                interactive: true,
+                                allowHTML: true,
+                              });
+                            `}"
                           >
                             <i class="bi bi-trash"></i>
                           </button>
@@ -9711,12 +9711,12 @@ ${value}</textarea
                     type="reset"
                     class="button--inline button--inline--gray--cool button--inline--rose"
                     data-ondomcontentloaded="${javascript`
-                    tippy(this, {
-                      content: "Cancel",
-                      theme: "tooltip tooltip--rose",
-                      touch: false,
-                    });
-                  `}"
+                      tippy(this, {
+                        content: "Cancel",
+                        theme: "tooltip tooltip--rose",
+                        touch: false,
+                      });
+                    `}"
                     onclick="${javascript`
                       this.closest(".title").querySelector(".title--show").hidden = false;
                       this.closest(".title").querySelector(".title--edit").hidden = true;
@@ -10088,12 +10088,12 @@ ${value}</textarea
                                     <button
                                       class="button--inline strong"
                                       data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "Mark as Not an Answer",
-                                        theme: "tooltip",
-                                        touch: false,
-                                      });
-                                    `}"
+                                        tippy(this, {
+                                          content: "Mark as Not an Answer",
+                                          theme: "tooltip",
+                                          touch: false,
+                                        });
+                                      `}"
                                     >
                                       <i class="bi bi-patch-check-fill"></i>
                                       Answer
@@ -10170,36 +10170,41 @@ ${value}</textarea
                         <button
                           class="dropdown--item"
                           onclick="${javascript`
-                          tippy.hideAll();
-                          const selection = window.getSelection();
-                          const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                          const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
-                          // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
-                          const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                          const focusPosition = JSON.parse(focusElement.dataset.position);
-                          const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                          const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                          const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                          const newMessage = document.querySelector(".new-message");
-                          newMessage.querySelector(".text-editor--button--write").click();
-                          const element = newMessage.querySelector('[name="content"]');
-                          // TODO: Use something like ‘@Leandro-Facchinetti-2342’
-                          textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                            message.authorEnrollment.user.name
-                          )} + " · #" + ${JSON.stringify(
+                            tippy.hideAll();
+                            const selection = window.getSelection();
+                            const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                            const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
+                            // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
+                            const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                            const focusPosition = JSON.parse(focusElement.dataset.position);
+                            const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                            const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                            const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
+                            const newMessage = document.querySelector(".new-message");
+                            newMessage.querySelector(".text-editor--button--write").click();
+                            const element = newMessage.querySelector('[name="content"]');
+                            // TODO: Use something like ‘@Leandro-Facchinetti-2342’
+                            textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                              message.authorEnrollment.user.name
+                            )} + " · #" + ${JSON.stringify(
                             res.locals.conversation.reference
                           )} + "/" + ${JSON.stringify(
                             message.reference
                           )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                          element.focus();
-                        `}"
+                            element.focus();
+                          `}"
                         >
                           <i class="bi bi-chat-left-quote"></i> Quote
                         </button>
                       </div>
                     </div>
 
-                    <div>
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--4);
+                      `}"
+                    >
                       $${(() => {
                         const isLiked = message.likes.find(
                           (like) =>
@@ -10217,44 +10222,40 @@ ${value}</textarea
                               ? "?_method=DELETE"
                               : ""}"
                             onsubmit="${javascript`
-                          event.preventDefault();
-                          fetch(this.action, { method: this.method });
-                        `}"
-                            hidden
+                              event.preventDefault();
+                              fetch(this.action, { method: this.method });
+                            `}"
                           >
-                            <p
-                              style="${css`
-                                margin-top: -0.5rem;
-                              `}"
-                            >
-                              <span
-                                class="secondary"
-                                style="${css`
-                                  & > * + * {
-                                    margin-left: 0.5rem;
-                                  }
-                                `}"
-                              >
-                                <button
-                                  class="undecorated ${isLiked ? "green" : ""}"
-                                >
-                                  <span
-                                    style="${css`
-                                      position: relative;
-                                      top: 0.05em;
+                            <button
+                              class="button--inline button--inline--gray--cool ${isLiked
+                                ? "strong"
+                                : ""}"
+                              $${likesCount === 0
+                                ? html``
+                                : html`
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: ${JSON.stringify(
+                                          isLiked ? "Remove Like" : "Like"
+                                        )},
+                                        theme: "tooltip",
+                                        touch: false,
+                                      });
                                     `}"
-                                  >
-                                  </span>
-                                  $${isLiked ? html`Liked` : html`Like`}
-                                  $${likesCount > 0
-                                    ? html`
-                                        · ${likesCount}
-                                        like${likesCount === 1 ? "" : "s"}
-                                      `
-                                    : html``}
-                                </button>
-                              </span>
-                            </p>
+                                  `}
+                            >
+                              $${isLiked
+                                ? html`
+                                    <i class="bi bi-hand-thumbs-up-fill"></i>
+                                  `
+                                : html`<i class="bi bi-hand-thumbs-up"></i>`}
+                              $${likesCount === 0
+                                ? html`Like`
+                                : html`
+                                    ${likesCount}
+                                    Like${likesCount === 1 ? "" : "s"}
+                                  `}
+                            </button>
                           </form>
                         `;
                       })()}
