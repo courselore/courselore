@@ -560,36 +560,60 @@ export default async function courselore(
               ))
                 button.disabled = true;
             });
+          </script>
 
-            $${res?.locals.eventSource
-              ? javascript`
+          $${res?.locals.eventSource
+            ? html`
+                <script src="${app.locals.settings
+                    .url}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
+
+                <script>
                   const eventSource = new EventSource(window.location.href);
                   eventSource.addEventListener("refresh", async () => {
                     const response = await fetch(window.location.href);
                     switch (response.status) {
                       case 200:
-                        const refreshedDocument = new DOMParser().parseFromString(
-                          await response.text(),
-                          "text/html"
+                        morphdom(
+                          document.documentElement,
+                          new DOMParser().parseFromString(
+                            await response.text(),
+                            "text/html"
+                          ).documentElement,
+                          {
+                            /*
+                            onBeforeElUpdated(fromElement, toElement) {
+                              if (
+                                fromElement.dataset.ondomcontentloaded ===
+                                  toElement.dataset.ondomcontentloaded &&
+                                fromElement.dataset
+                                  .ondomcontentloadedExecuted === "true"
+                              )
+                                toElement.dataset.ondomcontentloadedExecuted =
+                                  "true";
+                            },
+                            */
+                            // onElUpdated(element) {
+                            //   console.log(element);
+                            // }
+                          }
                         );
-                        document.querySelector("html").innerHTML = refreshedDocument.querySelector("html").innerHTML;
                         //document
                         //  .querySelector("head")
                         //  .append(
                         //    ...refreshedDocument.querySelectorAll("head style")
                         //  );
-                        document.dispatchEvent(new Event("DOMContentLoaded"));
+                        // document.dispatchEvent(new Event("DOMContentLoaded"));
                         break;
-  
+
                       case 404:
                         alert(
                           "This page has been removed.\\n\\nYou’ll be redirected now."
                         );
-                        window.location.href = ${JSON.stringify(
+                        window.location.href = $${JSON.stringify(
                           app.locals.settings.url
                         )};
                         break;
-  
+
                       default:
                         console.error(response);
                         break;
@@ -606,10 +630,9 @@ export default async function courselore(
                     });
                   })();
                   */
-                `
-              : javascript``};
-          </script>
-
+                </script>
+              `
+            : html``}
           $${head}
         </head>
         <body
