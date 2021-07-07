@@ -253,8 +253,14 @@ export default async function courselore(
 
   interface Layouts {
     base: (_: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req?: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<EventSourceMiddlewareLocals>
+      >;
+      res?: express.Response<any, Partial<EventSourceMiddlewareLocals>>;
       head: HTML;
       body: HTML;
     }) => HTML;
@@ -555,61 +561,57 @@ export default async function courselore(
                 button.disabled = true;
             });
 
-            $${
-              /*res.locals.eventSource*/ false
-                ? javascript`
-                        const eventSource = new EventSource(window.location.href);
-                        /* TODO
-                        eventSource.addEventListener("refresh", async () => {
-                          const response = await fetch(window.location.href);
-                          switch (response.status) {
-                            case 200:
-                              const refreshedDocument = new DOMParser().parseFromString(
-                                await response.text(),
-                                "text/html"
-                              );
-                              document
-                                .querySelector("head")
-                                .append(
-                                  ...refreshedDocument.querySelectorAll("head style")
-                                );
-                              eventSource.dispatchEvent(
-                                new CustomEvent("refreshed", {
-                                  detail: { document: refreshedDocument },
-                                })
-                              );
-                              document.dispatchEvent(new Event("DOMContentLoaded"));
-                              break;
+            $${res?.locals.eventSource
+              ? javascript`
+                  const eventSource = new EventSource(window.location.href);
+                  /* TODO
+                  eventSource.addEventListener("refresh", async () => {
+                    const response = await fetch(window.location.href);
+                    switch (response.status) {
+                      case 200:
+                        const refreshedDocument = new DOMParser().parseFromString(
+                          await response.text(),
+                          "text/html"
+                        );
+                        document
+                          .querySelector("head")
+                          .append(
+                            ...refreshedDocument.querySelectorAll("head style")
+                          );
+                        eventSource.dispatchEvent(
+                          new CustomEvent("refreshed", {
+                            detail: { document: refreshedDocument },
+                          })
+                        );
+                        document.dispatchEvent(new Event("DOMContentLoaded"));
+                        break;
+  
+                      case 404:
+                        alert(
+                          "This page has been removed.\\n\\nYou’ll be redirected now."
+                        );
+                        window.location.href = $${JSON.stringify(
+                          app.locals.settings.url
+                        )};
+                        break;
+  
+                      default:
+                        console.error(response);
+                        break;
+                    }
+                  });
         
-                            case 404:
-                              alert(
-                                "This page has been removed.\\n\\nYou’ll be redirected now."
-                              );
-                              window.location.href = $${JSON.stringify(
-                                app.locals.settings.url
-                              )};
-                              break;
-        
-                            default:
-                              console.error(response);
-                              break;
-                          }
-                        });
-        
-        
-        
-                        (() => {
-                        // const id = document.currentScript.previousElementSibling.id;
-                        // eventSource.addEventListener("refreshed", (event) => {
-                        //   document
-                        //     .querySelector("#" + id)
-                        //     .replaceWith(event.detail.document.querySelector("#" + id));
-                        // });
-                      })();
-                        */
-                    `
-                : javascript``
-            };
+                  (() => {
+                    const id = document.currentScript.previousElementSibling.id;
+                    eventSource.addEventListener("refreshed", (event) => {
+                      document
+                        .querySelector("#" + id)
+                        .replaceWith(event.detail.document.querySelector("#" + id));
+                    });
+                  })();
+                  */
+                `
+              : javascript``};
           </script>
 
           $${head}
