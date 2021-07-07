@@ -2862,7 +2862,7 @@ export default async function courselore(
       res.on("close", () => {
         app.locals.eventSources.delete(res);
       });
-      res.type("text/event-stream").write("");
+      res.type("text/event-stream").flushHeaders();
     },
   ];
 
