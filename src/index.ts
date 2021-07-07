@@ -365,11 +365,8 @@ export default async function courselore(
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 "[data-ondomcontentloaded]"
-              )) {
-                if (element.dataset.ondomcontentloadedExecuted) continue;
-                element.dataset.ondomcontentloadedExecuted = true;
+              ))
                 new Function(element.dataset.ondomcontentloaded).call(element);
-              }
             });
 
             // TODO: Maybe use relative times more selectively? Copy whatever Mail.app & GitHub are doing…
@@ -573,36 +570,21 @@ export default async function courselore(
                     const response = await fetch(window.location.href);
                     switch (response.status) {
                       case 200:
+                        const refreshedDocument = new DOMParser().parseFromString(
+                          await response.text(),
+                          "text/html"
+                        );
+                        for (const element of refreshedDocument.querySelectorAll(
+                          "[data-ondomcontentloaded]"
+                        ))
+                          new Function(element.dataset.ondomcontentloaded).call(
+                            element
+                          );
+
                         morphdom(
                           document.documentElement,
-                          new DOMParser().parseFromString(
-                            await response.text(),
-                            "text/html"
-                          ).documentElement,
-                          {
-                            /*
-                            onBeforeElUpdated(fromElement, toElement) {
-                              if (
-                                fromElement.dataset.ondomcontentloaded ===
-                                  toElement.dataset.ondomcontentloaded &&
-                                fromElement.dataset
-                                  .ondomcontentloadedExecuted === "true"
-                              )
-                                toElement.dataset.ondomcontentloadedExecuted =
-                                  "true";
-                            },
-                            */
-                            // onElUpdated(element) {
-                            //   console.log(element);
-                            // }
-                          }
+                          refreshedDocument.documentElement
                         );
-                        //document
-                        //  .querySelector("head")
-                        //  .append(
-                        //    ...refreshedDocument.querySelectorAll("head style")
-                        //  );
-                        // document.dispatchEvent(new Event("DOMContentLoaded"));
                         break;
 
                       case 404:
