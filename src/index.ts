@@ -564,7 +564,6 @@ export default async function courselore(
             $${res?.locals.eventSource
               ? javascript`
                   const eventSource = new EventSource(window.location.href);
-                  /* TODO
                   eventSource.addEventListener("refresh", async () => {
                     const response = await fetch(window.location.href);
                     switch (response.status) {
@@ -573,16 +572,12 @@ export default async function courselore(
                           await response.text(),
                           "text/html"
                         );
-                        document
-                          .querySelector("head")
-                          .append(
-                            ...refreshedDocument.querySelectorAll("head style")
-                          );
-                        eventSource.dispatchEvent(
-                          new CustomEvent("refreshed", {
-                            detail: { document: refreshedDocument },
-                          })
-                        );
+                        document.querySelector("html").innerHTML = refreshedDocument.querySelector("html").innerHTML;
+                        //document
+                        //  .querySelector("head")
+                        //  .append(
+                        //    ...refreshedDocument.querySelectorAll("head style")
+                        //  );
                         document.dispatchEvent(new Event("DOMContentLoaded"));
                         break;
   
@@ -590,7 +585,7 @@ export default async function courselore(
                         alert(
                           "This page has been removed.\\n\\nYou’ll be redirected now."
                         );
-                        window.location.href = $${JSON.stringify(
+                        window.location.href = ${JSON.stringify(
                           app.locals.settings.url
                         )};
                         break;
@@ -600,7 +595,8 @@ export default async function courselore(
                         break;
                     }
                   });
-        
+
+                  /*
                   (() => {
                     const id = document.currentScript.previousElementSibling.id;
                     eventSource.addEventListener("refreshed", (event) => {
