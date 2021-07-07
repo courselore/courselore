@@ -7597,11 +7597,6 @@ export default async function courselore(
   }
   app.locals.layouts.conversation = ({ req, res, head, body }) => {
     const sidebar = html`
-      <!--
-<button class="button--inline">
-            <i class="bi bi-share"></i>
-          </button>
-    -->
       <div
         style="${css`
           color: var(--color--primary--200);
