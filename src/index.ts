@@ -1341,12 +1341,6 @@ export default async function courselore(
                 }
               }
 
-              .tippy-content--element {
-                :not(.tippy-content) > & {
-                  display: none;
-                }
-              }
-
               .modal {
                 &:not(.is-open) {
                   display: none;
@@ -2269,7 +2263,7 @@ export default async function courselore(
                       `}"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
-                          content: this.nextElementSibling,
+                          content: this.nextElementSibling.firstElementChild,
                           theme: "dropdown",
                           trigger: "click",
                           interactive: true,
@@ -2289,81 +2283,83 @@ export default async function courselore(
                       </span>
                       <i class="bi bi-chevron-down"></i>
                     </button>
-                    <div class="tippy-content--element">
-                      <p class="dropdown--heading">
-                        <i class="bi bi-journal-text"></i>
-                        ${res.locals.course.name}
-                      </p>
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}"
-                        class="dropdown--item ${req.path.includes(
-                          "conversations"
-                        )
-                          ? "active"
-                          : ""}"
-                      >
-                        <i class="bi bi-chat-left-text"></i>
-                        Conversations
-                      </a>
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/settings"
-                        class="dropdown--item ${req.path.includes("settings")
-                          ? "active"
-                          : ""}"
-                      >
-                        <i class="bi bi-sliders"></i>
-                        Course Settings
-                      </a>
-                      $${res.locals.otherEnrollments!.length === 0
-                        ? html``
-                        : html`
-                            <hr class="dropdown--separator" />
-                            <p class="dropdown--heading">
-                              <i class="bi bi-arrow-left-right"></i>
-                              Switch to Another Course
-                            </p>
-                            $${res.locals.otherEnrollments!.map(
-                              (otherEnrollment) => html`
-                                <a
-                                  href="${app.locals.settings
-                                    .url}/courses/${otherEnrollment.course
-                                    .reference}"
-                                  class="dropdown--item"
-                                  style="${css`
-                                    color: var(
-                                      --color--${otherEnrollment.accentColor}--50
-                                    );
-                                    background-color: var(
-                                      --color--${otherEnrollment.accentColor}--500
-                                    );
-                                    &:hover {
-                                      background-color: var(
-                                        --color--${otherEnrollment.accentColor}--400
-                                      );
-                                    }
-                                    @media (prefers-color-scheme: dark) {
+                    <div hidden>
+                      <div>
+                        <p class="dropdown--heading">
+                          <i class="bi bi-journal-text"></i>
+                          ${res.locals.course.name}
+                        </p>
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}"
+                          class="dropdown--item ${req.path.includes(
+                            "conversations"
+                          )
+                            ? "active"
+                            : ""}"
+                        >
+                          <i class="bi bi-chat-left-text"></i>
+                          Conversations
+                        </a>
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}/settings"
+                          class="dropdown--item ${req.path.includes("settings")
+                            ? "active"
+                            : ""}"
+                        >
+                          <i class="bi bi-sliders"></i>
+                          Course Settings
+                        </a>
+                        $${res.locals.otherEnrollments!.length === 0
+                          ? html``
+                          : html`
+                              <hr class="dropdown--separator" />
+                              <p class="dropdown--heading">
+                                <i class="bi bi-arrow-left-right"></i>
+                                Switch to Another Course
+                              </p>
+                              $${res.locals.otherEnrollments!.map(
+                                (otherEnrollment) => html`
+                                  <a
+                                    href="${app.locals.settings
+                                      .url}/courses/${otherEnrollment.course
+                                      .reference}"
+                                    class="dropdown--item"
+                                    style="${css`
                                       color: var(
-                                        --color--${otherEnrollment.accentColor}--200
+                                        --color--${otherEnrollment.accentColor}--50
                                       );
                                       background-color: var(
-                                        --color--${otherEnrollment.accentColor}--700
+                                        --color--${otherEnrollment.accentColor}--500
                                       );
                                       &:hover {
                                         background-color: var(
-                                          --color--${otherEnrollment.accentColor}--600
+                                          --color--${otherEnrollment.accentColor}--400
                                         );
                                       }
-                                    }
-                                  `}"
-                                >
-                                  <i class="bi bi-journal-text"></i>
-                                  ${otherEnrollment.course.name}
-                                </a>
-                              `
-                            )}
-                          `}
+                                      @media (prefers-color-scheme: dark) {
+                                        color: var(
+                                          --color--${otherEnrollment.accentColor}--200
+                                        );
+                                        background-color: var(
+                                          --color--${otherEnrollment.accentColor}--700
+                                        );
+                                        &:hover {
+                                          background-color: var(
+                                            --color--${otherEnrollment.accentColor}--600
+                                          );
+                                        }
+                                      }
+                                    `}"
+                                  >
+                                    <i class="bi bi-journal-text"></i>
+                                    ${otherEnrollment.course.name}
+                                  </a>
+                                `
+                              )}
+                            `}
+                      </div>
                     </div>
                   </div>
                 `}
@@ -2405,7 +2401,7 @@ export default async function courselore(
                               touch: false,
                           });
                           tippy(this, {
-                            content: this.nextElementSibling,
+                            content: this.nextElementSibling.firstElementChild,
                             theme: "dropdown",
                             trigger: "click",
                             interactive: true,
@@ -2415,50 +2411,52 @@ export default async function courselore(
                       >
                         <i class="bi bi-plus-circle"></i>
                       </button>
-                      <div class="tippy-content--element">
-                        $${res.locals.invitations!.length === 0
-                          ? html``
-                          : html`
-                              <h3 class="dropdown--heading">
-                                <i class="bi bi-journal-arrow-down"></i>
-                                Invitations
-                              </h3>
-                              $${res.locals.invitations!.map(
-                                (invitation) => html`
-                                  <a
-                                    href="${app.locals.settings
-                                      .url}/courses/${invitation.course
-                                      .reference}/invitations/${invitation.reference}"
-                                    class="dropdown--item"
-                                  >
-                                    <i class="bi bi-journal-arrow-down"></i>
-                                    Enroll in ${invitation.course.name} as
-                                    ${lodash.capitalize(invitation.role)}
-                                  </a>
-                                `
-                              )}
-                              <hr class="dropdown--separator" />
-                            `}
-                        <button
-                          class="dropdown--item"
-                          data-ondomcontentloaded="${javascript`
+                      <div hidden>
+                        <div>
+                          $${res.locals.invitations!.length === 0
+                            ? html``
+                            : html`
+                                <h3 class="dropdown--heading">
+                                  <i class="bi bi-journal-arrow-down"></i>
+                                  Invitations
+                                </h3>
+                                $${res.locals.invitations!.map(
+                                  (invitation) => html`
+                                    <a
+                                      href="${app.locals.settings
+                                        .url}/courses/${invitation.course
+                                        .reference}/invitations/${invitation.reference}"
+                                      class="dropdown--item"
+                                    >
+                                      <i class="bi bi-journal-arrow-down"></i>
+                                      Enroll in ${invitation.course.name} as
+                                      ${lodash.capitalize(invitation.role)}
+                                    </a>
+                                  `
+                                )}
+                                <hr class="dropdown--separator" />
+                              `}
+                          <button
+                            class="dropdown--item"
+                            data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                               theme: "tooltip",
                               trigger: "click",
                             });
                           `}"
-                        >
-                          <i class="bi bi-journal-arrow-down"></i>
-                          Enroll in an Existing Course
-                        </button>
-                        <a
-                          href="${app.locals.settings.url}/courses/new"
-                          class="dropdown--item"
-                        >
-                          <i class="bi bi-journal-plus"></i>
-                          Create a New Course
-                        </a>
+                          >
+                            <i class="bi bi-journal-arrow-down"></i>
+                            Enroll in an Existing Course
+                          </button>
+                          <a
+                            href="${app.locals.settings.url}/courses/new"
+                            class="dropdown--item"
+                          >
+                            <i class="bi bi-journal-plus"></i>
+                            Create a New Course
+                          </a>
+                        </div>
                       </div>
                     </div>
                     <div>
@@ -2471,7 +2469,7 @@ export default async function courselore(
                             touch: false,
                           });
                           tippy(this, {
-                            content: this.nextElementSibling,
+                            content: this.nextElementSibling.firstElementChild,
                             theme: "dropdown",
                             trigger: "click",
                             interactive: true,
@@ -2481,46 +2479,48 @@ export default async function courselore(
                       >
                         <i class="bi bi-person-circle"></i>
                       </button>
-                      <div class="tippy-content--element">
-                        <p
-                          style="${css`
-                            font-weight: var(--font-weight--semibold);
-                            color: var(--color--primary--900);
-                            @media (prefers-color-scheme: dark) {
-                              color: var(--color--primary--50);
-                            }
-                          `}"
-                        >
-                          ${res.locals.user.name}
-                        </p>
-                        <p
-                          style="${css`
-                            color: var(--color--primary--500);
-                            @media (prefers-color-scheme: dark) {
-                              color: var(--color--primary--300);
-                            }
-                          `}"
-                        >
-                          ${res.locals.user.email}
-                        </p>
-                        <hr class="dropdown--separator" />
-                        <a
-                          class="dropdown--item"
-                          href="${app.locals.settings.url}/settings"
-                        >
-                          <i class="bi bi-sliders"></i>
-                          User Settings
-                        </a>
-                        <form
-                          method="POST"
-                          action="${app.locals.settings
-                            .url}/authenticate?_method=DELETE"
-                        >
-                          <button class="dropdown--item">
-                            <i class="bi bi-box-arrow-right"></i>
-                            Sign Out
-                          </button>
-                        </form>
+                      <div hidden>
+                        <div>
+                          <p
+                            style="${css`
+                              font-weight: var(--font-weight--semibold);
+                              color: var(--color--primary--900);
+                              @media (prefers-color-scheme: dark) {
+                                color: var(--color--primary--50);
+                              }
+                            `}"
+                          >
+                            ${res.locals.user.name}
+                          </p>
+                          <p
+                            style="${css`
+                              color: var(--color--primary--500);
+                              @media (prefers-color-scheme: dark) {
+                                color: var(--color--primary--300);
+                              }
+                            `}"
+                          >
+                            ${res.locals.user.email}
+                          </p>
+                          <hr class="dropdown--separator" />
+                          <a
+                            class="dropdown--item"
+                            href="${app.locals.settings.url}/settings"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            User Settings
+                          </a>
+                          <form
+                            method="POST"
+                            action="${app.locals.settings
+                              .url}/authenticate?_method=DELETE"
+                          >
+                            <button class="dropdown--item">
+                              <i class="bi bi-box-arrow-right"></i>
+                              Sign Out
+                            </button>
+                          </form>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -5069,7 +5069,7 @@ export default async function courselore(
                   `}"
                   data-ondomcontentloaded="${javascript`
                     tippy(this, {
-                      content: this.nextElementSibling,
+                      content: this.nextElementSibling.firstElementChild,
                       theme: "dropdown",
                       trigger: "click",
                       interactive: true,
@@ -5081,7 +5081,7 @@ export default async function courselore(
                   Course Settings
                   <i class="bi bi-chevron-down"></i>
                 </button>
-                <div class="tippy-content--element">$${menu}</div>
+                <div hidden><div>$${menu}</div></div>
               </div>
             `
           : html``}
@@ -5483,7 +5483,7 @@ export default async function courselore(
                         `}"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
-                            content: this.nextElementSibling,
+                            content: this.nextElementSibling.firstElementChild,
                             theme: "tooltip",
                             trigger: "click",
                             allowHTML: true,
@@ -5492,7 +5492,7 @@ export default async function courselore(
                       >
                         <i class="bi bi-info-circle"></i>
                       </button>
-                      <div class="tippy-content--element">
+                      <div hidden>
                         <div
                           style="${css`
                             display: flex;
@@ -5757,7 +5757,7 @@ export default async function courselore(
                                                 class="button--inline"
                                                 data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
-                                                    content: this.nextElementSibling,
+                                                    content: this.nextElementSibling.firstElementChild,
                                                     theme: "dropdown",
                                                     trigger: "click",
                                                     interactive: true,
@@ -5794,7 +5794,7 @@ export default async function courselore(
                                             <i class="bi bi-chevron-down"></i>
                                           </span>
                                         </button>
-                                        <div class="tippy-content--element">
+                                        <div hidden>
                                           <form
                                             method="POST"
                                             action="${action}?_method=PATCH"
@@ -5848,7 +5848,7 @@ export default async function courselore(
                                           touch: false,
                                         });
                                         tippy(this, {
-                                          content: this.nextElementSibling,
+                                          content: this.nextElementSibling.firstElementChild,
                                           theme: "dropdown",
                                           trigger: "click",
                                           interactive: true,
@@ -5884,27 +5884,29 @@ export default async function courselore(
                                   <i class="bi bi-chevron-down"></i>
                                 </span>
                               </button>
-                              <div class="tippy-content--element">
-                                $${app.locals.constants.roles.map((role) =>
-                                  role === invitation.role
-                                    ? html``
-                                    : html`
-                                        <form
-                                          method="POST"
-                                          action="${action}?_method=PATCH"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="role"
-                                            value="${role}"
-                                          />
-                                          <button class="dropdown--item">
-                                            Change Invitation Role to
-                                            ${lodash.capitalize(role)}
-                                          </button>
-                                        </form>
-                                      `
-                                )}
+                              <div hidden>
+                                <div>
+                                  $${app.locals.constants.roles.map((role) =>
+                                    role === invitation.role
+                                      ? html``
+                                      : html`
+                                          <form
+                                            method="POST"
+                                            action="${action}?_method=PATCH"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="role"
+                                              value="${role}"
+                                            />
+                                            <button class="dropdown--item">
+                                              Change Invitation Role to
+                                              ${lodash.capitalize(role)}
+                                            </button>
+                                          </form>
+                                        `
+                                  )}
+                                </div>
                               </div>
                             </div>
 
@@ -6085,7 +6087,7 @@ export default async function courselore(
                                               touch: false,
                                             });
                                             tippy(this, {
-                                              content: this.nextElementSibling,
+                                              content: this.nextElementSibling.firstElementChild,
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
@@ -6104,26 +6106,28 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div class="tippy-content--element">
-                                          <h3 class="dropdown--heading">
-                                            <i class="bi bi-calendar-x"></i>
-                                            <span>
-                                              Expired
-                                              <time
-                                                data-ondomcontentloaded="${javascript`
-                                                  relativizeTime(this);
-                                                `}"
-                                              >
-                                                ${new Date(
-                                                  invitation.expiresAt!
-                                                ).toISOString()}
-                                              </time>
-                                            </span>
-                                          </h3>
-                                          <hr class="dropdown--separator" />
-                                          $${changeExpirationForm}
-                                          <hr class="dropdown--separator" />
-                                          $${removeExpirationForm}
+                                        <div hidden>
+                                          <div>
+                                            <h3 class="dropdown--heading">
+                                              <i class="bi bi-calendar-x"></i>
+                                              <span>
+                                                Expired
+                                                <time
+                                                  data-ondomcontentloaded="${javascript`
+                                                    relativizeTime(this);
+                                                  `}"
+                                                >
+                                                  ${new Date(
+                                                    invitation.expiresAt!
+                                                  ).toISOString()}
+                                                </time>
+                                              </span>
+                                            </h3>
+                                            <hr class="dropdown--separator" />
+                                            $${changeExpirationForm}
+                                            <hr class="dropdown--separator" />
+                                            $${removeExpirationForm}
+                                          </div>
                                         </div>
                                       </div>
                                     `
@@ -6186,7 +6190,7 @@ export default async function courselore(
                                               touch: false,
                                             });
                                             tippy(this, {
-                                              content: this.nextElementSibling,
+                                              content: this.nextElementSibling.firstElementChild,
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
@@ -6205,7 +6209,7 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div class="tippy-content--element">
+                                        <div hidden>
                                           <div
                                             style="${css`
                                               padding-top: var(--space--1);
@@ -6276,7 +6280,7 @@ export default async function courselore(
                                               touch: false,
                                             });
                                             tippy(this, {
-                                              content: this.nextElementSibling,
+                                              content: this.nextElementSibling.firstElementChild,
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
@@ -6295,27 +6299,31 @@ export default async function courselore(
                                           </span>
                                           <i class="bi bi-chevron-down"></i>
                                         </button>
-                                        <div class="tippy-content--element">
-                                          <h3 class="dropdown--heading">
-                                            <i class="bi bi-calendar-plus"></i>
-                                            <span>
-                                              Expires
-                                              <time
-                                                data-ondomcontentloaded="${javascript`
+                                        <div hidden>
+                                          <div>
+                                            <h3 class="dropdown--heading">
+                                              <i
+                                                class="bi bi-calendar-plus"
+                                              ></i>
+                                              <span>
+                                                Expires
+                                                <time
+                                                  data-ondomcontentloaded="${javascript`
                                                   relativizeTime(this);
                                                 `}"
-                                              >
-                                                ${new Date(
-                                                  invitation.expiresAt
-                                                ).toISOString()}
-                                              </time>
-                                            </span>
-                                          </h3>
-                                          <hr class="dropdown--separator" />
-                                          $${changeExpirationForm}
-                                          <hr class="dropdown--separator" />
-                                          $${removeExpirationForm}
-                                          $${expireForm}
+                                                >
+                                                  ${new Date(
+                                                    invitation.expiresAt
+                                                  ).toISOString()}
+                                                </time>
+                                              </span>
+                                            </h3>
+                                            <hr class="dropdown--separator" />
+                                            $${changeExpirationForm}
+                                            <hr class="dropdown--separator" />
+                                            $${removeExpirationForm}
+                                            $${expireForm}
+                                          </div>
                                         </div>
                                       </div>
                                     `;
@@ -6880,7 +6888,7 @@ export default async function courselore(
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: this.nextElementSibling,
+                                      content: this.nextElementSibling.firstElementChild,
                                       theme: "dropdown",
                                       trigger: "click",
                                       interactive: true,
@@ -6909,94 +6917,97 @@ export default async function courselore(
                           $${isOnlyStaff
                             ? html``
                             : html`
-                                <div class="tippy-content--element">
-                                  $${app.locals.constants.roles.map((role) =>
-                                    role === enrollment.role
-                                      ? html``
-                                      : html`
-                                          <form
-                                            method="POST"
-                                            action="${action}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="role"
-                                              value="${role}"
-                                            />
-                                            <div>
-                                              <button
-                                                class="dropdown--item"
+                                <div hidden>
+                                  <div>
+                                    $${app.locals.constants.roles.map((role) =>
+                                      role === enrollment.role
+                                        ? html``
+                                        : html`
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="role"
+                                                value="${role}"
+                                              />
+                                              <div>
+                                                <button
+                                                  class="dropdown--item"
+                                                  $${isSelf
+                                                    ? html`
+                                                        type="button"
+                                                        data-ondomcontentloaded="${javascript`
+                                                          tippy(this, {
+                                                            content: this.nextElementSibling.firstElementChild,
+                                                            theme: "dropdown dropdown--rose",
+                                                            trigger: "click",
+                                                            interactive: true,
+                                                            allowHTML: true,
+                                                            appendTo: document.body,
+                                                          });
+                                                        `}"
+                                                      `
+                                                    : html``}
+                                                >
+                                                  Convert to
+                                                  ${lodash.capitalize(role)}
+                                                </button>
                                                 $${isSelf
                                                   ? html`
-                                                      type="button"
-                                                      data-ondomcontentloaded="${javascript`
-                                                        tippy(this, {
-                                                          content: this.nextElementSibling,
-                                                          theme: "dropdown dropdown--rose",
-                                                          trigger: "click",
-                                                          interactive: true,
-                                                          allowHTML: true,
-                                                          appendTo: document.body,
-                                                        });
-                                                      `}"
-                                                    `
-                                                  : html``}
-                                              >
-                                                Convert to
-                                                ${lodash.capitalize(role)}
-                                              </button>
-                                              $${isSelf
-                                                ? html`
-                                                    <div
-                                                      class="tippy-content--element"
-                                                    >
-                                                      <div
-                                                        style="${css`
-                                                          padding: var(
-                                                              --space--2
-                                                            )
-                                                            var(--space--0);
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--space--4);
-                                                        `}"
-                                                      >
-                                                        <p>
-                                                          Are you sure you want
-                                                          to convert yourself
-                                                          into ${role}?
-                                                        </p>
-                                                        <p>
-                                                          <strong
-                                                            style="${css`
-                                                              font-weight: var(
-                                                                --font-weight--semibold
-                                                              );
-                                                            `}"
-                                                          >
-                                                            You may not undo
-                                                            this action!
-                                                          </strong>
-                                                        </p>
-                                                        <button
-                                                          class="button button--rose"
-                                                          onclick="${javascript`
-                                                            document.querySelector('[aria-describedby="' + this.closest("[data-tippy-root]").id + '"]').closest("form").submit();
+                                                      <div hidden>
+                                                        <div
+                                                          style="${css`
+                                                            padding: var(
+                                                                --space--2
+                                                              )
+                                                              var(--space--0);
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            gap: var(
+                                                              --space--4
+                                                            );
                                                           `}"
                                                         >
-                                                          Convert to
-                                                          ${lodash.capitalize(
-                                                            role
-                                                          )}
-                                                        </button>
+                                                          <p>
+                                                            Are you sure you
+                                                            want to convert
+                                                            yourself into
+                                                            ${role}?
+                                                          </p>
+                                                          <p>
+                                                            <strong
+                                                              style="${css`
+                                                                font-weight: var(
+                                                                  --font-weight--semibold
+                                                                );
+                                                              `}"
+                                                            >
+                                                              You may not undo
+                                                              this action!
+                                                            </strong>
+                                                          </p>
+                                                          <button
+                                                            class="button button--rose"
+                                                            onclick="${javascript`
+                                                            document.querySelector('[aria-describedby="' + this.closest("[data-tippy-root]").id + '"]').closest("form").submit();
+                                                          `}"
+                                                          >
+                                                            Convert to
+                                                            ${lodash.capitalize(
+                                                              role
+                                                            )}
+                                                          </button>
+                                                        </div>
                                                       </div>
-                                                    </div>
-                                                  `
-                                                : html``}
-                                            </div>
-                                          </form>
-                                        `
-                                  )}
+                                                    `
+                                                  : html``}
+                                              </div>
+                                            </form>
+                                          `
+                                    )}
+                                  </div>
                                 </div>
                               `}
                         </div>
@@ -7014,7 +7025,7 @@ export default async function courselore(
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: this.nextElementSibling,
+                                      content: this.nextElementSibling.firstElementChild,
                                       theme: "dropdown dropdown--rose",
                                       trigger: "click",
                                       interactive: true,
@@ -7042,7 +7053,7 @@ export default async function courselore(
                           $${isOnlyStaff
                             ? html``
                             : html`
-                                <div class="tippy-content--element">
+                                <div hidden>
                                   <form
                                     method="POST"
                                     action="${action}?_method=DELETE"
@@ -8784,7 +8795,7 @@ export default async function courselore(
                   touch: false,
                 });
                 tippy(this, {
-                  content: this.nextElementSibling,
+                  content: this.nextElementSibling.firstElementChild,
                   theme: "dropdown",
                   trigger: "click",
                   interactive: true,
@@ -8794,19 +8805,23 @@ export default async function courselore(
             >
               <i class="bi bi-info-circle"></i>
             </button>
-            <div class="tippy-content--element">
-              <p class="text">
-                You may style text with
-                <a
-                  href="https://guides.github.com/features/mastering-markdown/"
-                  target="_blank"
-                  >GitHub Flavored Markdown</a
-                >
-                and include mathematical formulas with
-                <a href="https://katex.org/docs/supported.html" target="_blank"
-                  >LaTeX</a
-                >.
-              </p>
+            <div hidden>
+              <div>
+                <p class="text">
+                  You may style text with
+                  <a
+                    href="https://guides.github.com/features/mastering-markdown/"
+                    target="_blank"
+                    >GitHub Flavored Markdown</a
+                  >
+                  and include mathematical formulas with
+                  <a
+                    href="https://katex.org/docs/supported.html"
+                    target="_blank"
+                    >LaTeX</a
+                  >.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -9736,7 +9751,7 @@ ${value}</textarea
                                 touch: false,
                               });
                               tippy(this, {
-                                content: this.nextElementSibling,
+                                content: this.nextElementSibling.firstElementChild,
                                 theme: "dropdown dropdown--rose",
                                 trigger: "click",
                                 interactive: true,
@@ -9746,7 +9761,7 @@ ${value}</textarea
                           >
                             <i class="bi bi-trash"></i>
                           </button>
-                          <div class="tippy-content--element">
+                          <div hidden>
                             <form
                               method="POST"
                               action="${app.locals.settings.url}/courses/${res
@@ -10077,7 +10092,7 @@ ${value}</textarea
                                     touch: false,
                                   });
                                   tippy(this, {
-                                    content: this.nextElementSibling,
+                                    content: this.nextElementSibling.firstElementChild,
                                     theme: "dropdown dropdown--rose",
                                     trigger: "click",
                                     interactive: true,
@@ -10087,7 +10102,7 @@ ${value}</textarea
                               >
                                 <i class="bi bi-trash"></i>
                               </button>
-                              <div class="tippy-content--element">
+                              <div hidden>
                                 <form
                                   method="POST"
                                   action="${app.locals.settings
@@ -10417,49 +10432,50 @@ ${value}</textarea
                       <div
                         class="text"
                         data-ondomcontentloaded="${javascript`
-                        this.tippy = tippy(this, {
-                          content: this.nextElementSibling,
-                          theme: "dropdown",
-                          trigger: "manual",
-                          interactive: true,
-                          allowHTML: true,
-                          offset: [0, 20],
-                          touch: false,
-                        });
-                      `}"
+                          this.tippy = tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            theme: "dropdown",
+                            trigger: "manual",
+                            interactive: true,
+                            allowHTML: true,
+                            offset: [0, 20],
+                            touch: false,
+                          });
+                        `}"
                         onpointerup="${javascript`
-                        const selection = window.getSelection();
-                        const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                        const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
-                        if (
-                          selection.isCollapsed ||
-                          !this.contains(anchorElement) ||
-                          !this.contains(focusElement) ||
-                          anchorElement.dataset.position === undefined ||
-                          focusElement.dataset.position === undefined
-                        ) return;
-                        this.tippy.setProps({
-                          getReferenceClientRect: () => ({
-                            width: 0,
-                            height: 0,
-                            top: event.clientY,
-                            right: event.clientX,
-                            bottom: event.clientY,
-                            left: event.clientX,
-                          }),
-                        });
-                        this.tippy.show();
-                      `}"
+                          const selection = window.getSelection();
+                          const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                          const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
+                          if (
+                            selection.isCollapsed ||
+                            !this.contains(anchorElement) ||
+                            !this.contains(focusElement) ||
+                            anchorElement.dataset.position === undefined ||
+                            focusElement.dataset.position === undefined
+                          ) return;
+                          this.tippy.setProps({
+                            getReferenceClientRect: () => ({
+                              width: 0,
+                              height: 0,
+                              top: event.clientY,
+                              right: event.clientX,
+                              bottom: event.clientY,
+                              left: event.clientX,
+                            }),
+                          });
+                          this.tippy.show();
+                        `}"
                       >
                         $${app.locals.partials.textProcessor(message.content, {
                           req,
                           res,
                         })}
                       </div>
-                      <div class="tippy-content--element">
-                        <button
-                          class="dropdown--item"
-                          onclick="${javascript`
+                      <div hidden>
+                        <div>
+                          <button
+                            class="dropdown--item"
+                            onclick="${javascript`
                             tippy.hideAll();
                             const selection = window.getSelection();
                             const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
@@ -10477,15 +10493,16 @@ ${value}</textarea
                             textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                               message.authorEnrollment.user.name
                             )} + " · #" + ${JSON.stringify(
-                            res.locals.conversation.reference
-                          )} + "/" + ${JSON.stringify(
-                            message.reference
-                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                              res.locals.conversation.reference
+                            )} + "/" + ${JSON.stringify(
+                              message.reference
+                            )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
                             element.focus();
                           `}"
-                        >
-                          <i class="bi bi-chat-left-quote"></i> Quote
-                        </button>
+                          >
+                            <i class="bi bi-chat-left-quote"></i> Quote
+                          </button>
+                        </div>
                       </div>
                     </div>
 
