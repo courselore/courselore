@@ -7831,9 +7831,9 @@ export default async function courselore(
                     gap: var(--space--2);
                   `}"
                   data-ondomcontentloaded="${javascript`
-              if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
-              this.classList.add("active--cancel");
-            `}"
+                    if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
+                    this.classList.add("active--cancel");
+                  `}"
                 >
                   $${res.locals.conversations.map(
                     (conversation) => html`
