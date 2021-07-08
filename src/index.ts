@@ -7826,6 +7826,7 @@ export default async function courselore(
 
                 <div
                   style="${css`
+                    padding-bottom: var(--space--4);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
