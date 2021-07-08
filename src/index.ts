@@ -7950,7 +7950,7 @@ export default async function courselore(
                   padding: var(--space--1) var(--space--4);
                   display: flex;
                   justify-content: center;
-                  @media (min-width: 1280px) {
+                  @media (min-width: 900px) {
                     display: none;
                   }
                 `}"
