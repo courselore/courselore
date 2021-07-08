@@ -10002,6 +10002,8 @@ ${value}</textarea
                 : html`
                     <div
                       style="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
                         display: flex;
                         gap: var(--space--4);
                       `}"
@@ -10425,6 +10427,8 @@ ${value}</textarea
                         : html`
                             <div
                               style="${css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
                                 display: flex;
                                 gap: var(--space--4);
                               `}"
@@ -10514,6 +10518,8 @@ ${value}</textarea
 
                     <div
                       style="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
                         display: flex;
                         gap: var(--space--4);
                       `}"
