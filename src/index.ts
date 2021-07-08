@@ -230,6 +230,14 @@ export default async function courselore(
         UNIQUE ("conversation", "reference")
       );
 
+      CREATE TABLE "endorsements" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+        "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        UNIQUE ("message", "enrollment")
+      );
+
       CREATE TABLE "likes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -4485,6 +4493,16 @@ export default async function courselore(
           }
         | AnonymousEnrollment;
       messagesCount: number;
+      endorsements: {
+        id: number;
+        enrollment:
+          | {
+              id: number;
+              user: { id: number; email: string; name: string };
+              role: Role;
+            }
+          | AnonymousEnrollment;
+      }[];
       likesCount: number;
     }[];
   }
@@ -4565,6 +4583,49 @@ export default async function courselore(
           }>(
             sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
           )!.messagesCount;
+          const endorsements = app.locals.database
+            .all<{
+              id: number;
+              enrollmentId: number | null;
+              userId: number | null;
+              userEmail: string | null;
+              userName: string | null;
+              enrollmentRole: Role | null;
+            }>(
+              sql`
+                SELECT "endorsements"."id",
+                       "enrollments"."id" AS "enrollmentId",
+                       "users"."id" AS "userId",
+                       "users"."email" AS "userEmail",
+                       "users"."name" AS "userName",
+                       "enrollments"."role" AS "enrollmentRole"
+                FROM "endorsements"
+                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                JOIN "messages" ON "endorsements"."message" = "messages"."id"
+                WHERE "messages"."conversation" = ${conversation.id}
+                ORDER BY "endorsements"."id" ASC
+              `
+            )
+            .map((endorsement) => ({
+              id: endorsement.id,
+              enrollment:
+                endorsement.enrollmentId !== null &&
+                endorsement.userId !== null &&
+                endorsement.userEmail !== null &&
+                endorsement.userName !== null &&
+                endorsement.enrollmentRole !== null
+                  ? {
+                      id: endorsement.enrollmentId,
+                      user: {
+                        id: endorsement.userId,
+                        email: endorsement.userEmail,
+                        name: endorsement.userName,
+                      },
+                      role: endorsement.enrollmentRole,
+                    }
+                  : app.locals.constants.anonymousEnrollment,
+            }));
 
           return {
             id: conversation.id,
@@ -4592,6 +4653,7 @@ export default async function courselore(
                   }
                 : app.locals.constants.anonymousEnrollment,
             messagesCount,
+            endorsements,
             likesCount: originalMessage.likesCount,
           };
         });
@@ -7807,15 +7869,46 @@ export default async function courselore(
                       <div>
                         <i class="bi bi-chat-left-text"></i>
                         ${conversation.messagesCount}
-                        message${conversation.messagesCount === 1 ? "" : "s"}
+                        Message${conversation.messagesCount === 1 ? "" : "s"}
                       </div>
+                      $${conversation.endorsements.length === 0
+                        ? html``
+                        : html`
+                            <div
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: ${JSON.stringify(
+                                    `Endorsed by ${
+                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                        "en"
+                                      ).format(
+                                        conversation.endorsements.map(
+                                          (endorsement) =>
+                                            endorsement.enrollment.user.name
+                                        )
+                                      )
+                                    }`
+                                  )},
+                                  theme: "tooltip",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-award"></i>
+                              ${conversation.endorsements.length} Staff
+                              Endorsement${conversation.endorsements.length ===
+                              1
+                                ? ""
+                                : "s"}
+                            </div>
+                          `}
                       $${conversation.likesCount === 0
                         ? html``
                         : html`
                             <div>
                               <i class="bi bi-hand-thumbs-up"></i>
                               ${conversation.likesCount}
-                              like${conversation.likesCount === 1 ? "" : "s"}
+                              Like${conversation.likesCount === 1 ? "" : "s"}
                             </div>
                           `}
                     </div>
@@ -9306,6 +9399,7 @@ ${value}</textarea
       authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
       content: string;
       answerAt: string | null;
+      endorsements: IsConversationAccessibleMiddlewareLocals["conversation"]["endorsements"];
       likes: {
         id: number;
         enrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
@@ -9354,31 +9448,51 @@ ${value}</textarea
             ORDER BY "messages"."id" ASC
           `
         )
-        .map((message) => ({
-          id: message.id,
-          createdAt: message.createdAt,
-          updatedAt: message.updatedAt,
-          reference: message.reference,
-          authorEnrollment:
-            message.authorEnrollmentId !== null &&
-            message.authorUserId !== null &&
-            message.authorUserEmail !== null &&
-            message.authorUserName !== null &&
-            message.authorEnrollmentRole !== null
-              ? {
-                  id: message.authorEnrollmentId,
-                  user: {
-                    id: message.authorUserId,
-                    email: message.authorUserEmail,
-                    name: message.authorUserName,
-                  },
-                  role: message.authorEnrollmentRole,
-                }
-              : app.locals.constants.anonymousEnrollment,
-          content: message.content,
-          answerAt: message.answerAt,
-          // FIXME: Try to get rid of this n+1 query.
-          likes: app.locals.database
+        .map((message) => {
+          // FIXME: Try to get rid of these n+1 queries.
+          const endorsements = app.locals.database
+            .all<{
+              id: number;
+              enrollmentId: number | null;
+              userId: number | null;
+              userEmail: string | null;
+              userName: string | null;
+              enrollmentRole: Role | null;
+            }>(
+              sql`
+                SELECT "endorsements"."id",
+                       "enrollments"."id" AS "enrollmentId",
+                       "users"."id" AS "userId",
+                       "users"."email" AS "userEmail",
+                       "users"."name" AS "userName",
+                       "enrollments"."role" AS "enrollmentRole"
+                FROM "endorsements"
+                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                WHERE "endorsements"."message" = ${message.id}
+                ORDER BY "endorsements"."id" ASC
+              `
+            )
+            .map((endorsement) => ({
+              id: endorsement.id,
+              enrollment:
+                endorsement.enrollmentId !== null &&
+                endorsement.userId !== null &&
+                endorsement.userEmail !== null &&
+                endorsement.userName !== null &&
+                endorsement.enrollmentRole !== null
+                  ? {
+                      id: endorsement.enrollmentId,
+                      user: {
+                        id: endorsement.userId,
+                        email: endorsement.userEmail,
+                        name: endorsement.userName,
+                      },
+                      role: endorsement.enrollmentRole,
+                    }
+                  : app.locals.constants.anonymousEnrollment,
+            }));
+          const likes = app.locals.database
             .all<{
               id: number;
               enrollmentId: number | null;
@@ -9418,8 +9532,35 @@ ${value}</textarea
                       role: like.enrollmentRole,
                     }
                   : app.locals.constants.anonymousEnrollment,
-            })),
-        }));
+            }));
+
+          return {
+            id: message.id,
+            createdAt: message.createdAt,
+            updatedAt: message.updatedAt,
+            reference: message.reference,
+            authorEnrollment:
+              message.authorEnrollmentId !== null &&
+              message.authorUserId !== null &&
+              message.authorUserEmail !== null &&
+              message.authorUserName !== null &&
+              message.authorEnrollmentRole !== null
+                ? {
+                    id: message.authorEnrollmentId,
+                    user: {
+                      id: message.authorUserId,
+                      email: message.authorUserEmail,
+                      name: message.authorUserName,
+                    },
+                    role: message.authorEnrollmentRole,
+                  }
+                : app.locals.constants.anonymousEnrollment,
+            content: message.content,
+            answerAt: message.answerAt,
+            endorsements,
+            likes,
+          };
+        });
 
       next();
     },
@@ -10044,68 +10185,219 @@ ${value}</textarea
                     $${(() => {
                       const content: HTML[] = [];
 
-                      if (message.reference !== "1")
-                        if (
-                          app.locals.helpers.mayEditMessage(req, res, message)
-                        )
-                          content.push(html`
-                            <form
-                              method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/conversations/${res
-                                .locals.conversation
-                                .reference}/messages/${message.reference}?_method=PATCH"
-                            >
-                              $${message.answerAt === null
-                                ? html`
-                                    <input
-                                      type="hidden"
-                                      name="isAnswer"
-                                      value="true"
-                                    />
-                                    <button
-                                      class="button--inline"
-                                      data-ondomcontentloaded="${javascript`
+                      if (
+                        app.locals.helpers.mayEditMessage(req, res, message) &&
+                        message.reference !== "1" &&
+                        res.locals.conversation.questionAt !== null
+                      )
+                        content.push(html`
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation
+                              .reference}/messages/${message.reference}?_method=PATCH"
+                          >
+                            $${message.answerAt === null
+                              ? html`
+                                  <input
+                                    type="hidden"
+                                    name="isAnswer"
+                                    value="true"
+                                  />
+                                  <button
+                                    class="button--inline"
+                                    data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "Mark as Answer",
                                         theme: "tooltip",
                                         touch: false,
                                       });
                                     `}"
-                                    >
-                                      <i class="bi bi-patch-check"></i>
-                                      Not an Answer
-                                    </button>
-                                  `
-                                : html`
-                                    <input
-                                      type="hidden"
-                                      name="isAnswer"
-                                      value="false"
-                                    />
-                                    <button
-                                      class="button--inline strong"
-                                      data-ondomcontentloaded="${javascript`
+                                  >
+                                    <i class="bi bi-patch-check"></i>
+                                    Not an Answer
+                                  </button>
+                                `
+                              : html`
+                                  <input
+                                    type="hidden"
+                                    name="isAnswer"
+                                    value="false"
+                                  />
+                                  <button
+                                    class="button--inline strong"
+                                    data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "Mark as Not an Answer",
                                           theme: "tooltip",
                                           touch: false,
                                         });
                                       `}"
-                                    >
-                                      <i class="bi bi-patch-check-fill"></i>
-                                      Answer
-                                    </button>
-                                  `}
-                            </form>
-                          `);
-                        else if (message.answerAt !== null)
-                          content.push(html`
-                            <div>
-                              <i class="bi bi-patch-check-fill"></i>
-                              Answer
-                            </div>
-                          `);
+                                  >
+                                    <i class="bi bi-patch-check-fill"></i>
+                                    Answer
+                                  </button>
+                                `}
+                          </form>
+                        `);
+                      else if (
+                        res.locals.conversation.questionAt !== null &&
+                        message.answerAt !== null
+                      )
+                        content.push(html`
+                          <div>
+                            <i class="bi bi-patch-check-fill"></i>
+                            Answer
+                          </div>
+                        `);
+
+                      if (
+                        app.locals.helpers.mayEndorseMessage(req, res, message)
+                      ) {
+                        const isEndorsed =
+                          message.endorsements.find(
+                            (endorsement) =>
+                              endorsement.enrollment.id ===
+                              res.locals.enrollment.id
+                          ) !== undefined;
+
+                        content.push(html`
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation
+                              .reference}/messages/${message.reference}/endorsements${isEndorsed
+                              ? "?_method=DELETE"
+                              : ""}"
+                          >
+                            $${isEndorsed
+                              ? html`
+                                  <input
+                                    type="hidden"
+                                    name="isEndorsed"
+                                    value="false"
+                                  />
+                                  <button
+                                    class="button--inline strong"
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: ${JSON.stringify(
+                                          `Remove Endorsement${
+                                            message.endorsements.length > 1
+                                              ? ` (Also endorsed by ${
+                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                                    "en"
+                                                  ).format(
+                                                    message.endorsements
+                                                      .filter(
+                                                        (endorsement) =>
+                                                          endorsement.enrollment
+                                                            .id !==
+                                                          res.locals.enrollment
+                                                            .id
+                                                      )
+                                                      .map(
+                                                        (endorsement) =>
+                                                          endorsement.enrollment
+                                                            .user.name
+                                                      )
+                                                  )
+                                                })`
+                                              : ``
+                                          }`
+                                        )},
+                                        theme: "tooltip",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-award-fill"></i>
+                                    ${message.endorsements.length} Staff
+                                    Endorsement${message.endorsements.length ===
+                                    1
+                                      ? ""
+                                      : "s"}
+                                  </button>
+                                `
+                              : html`
+                                  <input
+                                    type="hidden"
+                                    name="isEndorsed"
+                                    value="true"
+                                  />
+                                  <button
+                                    class="button--inline"
+                                    $${message.endorsements.length === 0
+                                      ? html``
+                                      : html`
+                                          data-ondomcontentloaded="${javascript`
+                                            tippy(this, {
+                                              content: ${JSON.stringify(
+                                                `Endorse (Already endorsed by ${
+                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                                    "en"
+                                                  ).format(
+                                                    message.endorsements.map(
+                                                      (endorsement) =>
+                                                        endorsement.enrollment
+                                                          .user.name
+                                                    )
+                                                  )
+                                                })`
+                                              )},
+                                              theme: "tooltip",
+                                              touch: false,
+                                            });
+                                          `}"
+                                        `}
+                                  >
+                                    <i class="bi bi-award"></i>
+                                    ${message.endorsements.length === 0
+                                      ? `Endorse`
+                                      : `${message.endorsements.length}
+                                        Staff Endorsement${
+                                          message.endorsements.length === 1
+                                            ? ""
+                                            : "s"
+                                        }`}
+                                  </button>
+                                `}
+                          </form>
+                        `);
+                      } else if (
+                        res.locals.conversation.questionAt !== null &&
+                        message.endorsements.length > 0
+                      )
+                        content.push(html`
+                          <div
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: ${JSON.stringify(
+                                  `Endorsed by ${
+                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                      "en"
+                                    ).format(
+                                      message.endorsements.map(
+                                        (endorsement) =>
+                                          endorsement.enrollment.user.name
+                                      )
+                                    )
+                                  }`
+                                )},
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-award"></i>
+                            ${message.endorsements.length} Staff
+                            Endorsement${message.endorsements.length === 1
+                              ? ""
+                              : "s"}
+                          </div>
+                        `);
 
                       return content.length === 0
                         ? html``
@@ -10712,7 +11004,7 @@ ${value}</textarea
       messageReference: string;
     },
     any,
-    { content?: string },
+    {},
     {},
     MessageExistsMiddlewareLocals
   >(
@@ -10745,7 +11037,7 @@ ${value}</textarea
       messageReference: string;
     },
     any,
-    { content?: string },
+    {},
     {},
     MessageExistsMiddlewareLocals
   >(
@@ -10758,6 +11050,118 @@ ${value}</textarea
       if (like === undefined) return next("validation");
 
       app.locals.database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
+
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+      );
+    }
+  );
+
+  interface Helpers {
+    mayEndorseMessage: (
+      req: express.Request<
+        {
+          courseReference: string;
+          conversationReference: string;
+        },
+        any,
+        {},
+        {},
+        IsConversationAccessibleMiddlewareLocals
+      >,
+      res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
+      message: MessageExistsMiddlewareLocals["message"]
+    ) => boolean;
+  }
+  app.locals.helpers.mayEndorseMessage = (req, res, message) =>
+    res.locals.enrollment.role === "staff" &&
+    res.locals.conversation.questionAt !== null &&
+    message.reference !== "1" &&
+    message.answerAt !== null &&
+    message.authorEnrollment.role !== "staff";
+
+  interface Middlewares {
+    mayEndorseMessage: express.RequestHandler<
+      {
+        courseReference: string;
+        conversationReference: string;
+        messageReference: string;
+      },
+      any,
+      {},
+      {},
+      MayEndorseMessageMiddlewareLocals
+    >[];
+  }
+  interface MayEndorseMessageMiddlewareLocals
+    extends MessageExistsMiddlewareLocals {}
+  app.locals.middlewares.mayEndorseMessage = [
+    ...app.locals.middlewares.messageExists,
+    (req, res, next) => {
+      if (app.locals.helpers.mayEndorseMessage(req, res, res.locals.message))
+        return next();
+      next("route");
+    },
+  ];
+
+  app.post<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    any,
+    {},
+    {},
+    MayEndorseMessageMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
+    ...app.locals.middlewares.mayEndorseMessage,
+    (req, res, next) => {
+      if (
+        res.locals.message.endorsements.find(
+          (endorsement) =>
+            endorsement.enrollment.id === res.locals.enrollment.id
+        ) !== undefined
+      )
+        return next("validation");
+
+      app.locals.database.run(
+        sql`INSERT INTO "endorsements" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
+      );
+
+      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+      );
+    }
+  );
+
+  app.delete<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    any,
+    {},
+    {},
+    MayEndorseMessageMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
+    ...app.locals.middlewares.mayEndorseMessage,
+    (req, res, next) => {
+      const endorsement = res.locals.message.endorsements.find(
+        (endorsement) => endorsement.enrollment.id === res.locals.enrollment.id
+      );
+      if (endorsement === undefined) return next("validation");
+
+      app.locals.database.run(
+        sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
+      );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
