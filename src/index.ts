@@ -7671,269 +7671,8 @@ export default async function courselore(
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.conversation = ({ req, res, head, body }) => {
-    const sidebar = html`
-      <div
-        style="${css`
-          color: var(--color--primary--200);
-          background-color: var(--color--primary--900);
-          @media (prefers-color-scheme: dark) {
-            color: var(--color--primary--200);
-            background-color: var(--color--primary--900);
-          }
-          flex: 1;
-          padding: var(--space--4);
-          display: flex;
-          justify-content: center;
-          overflow: auto;
-        `}"
-      >
-        <div
-          style="${css`
-            flex: 1;
-            max-width: var(--width--2xl);
-            display: flex;
-            flex-direction: column;
-            gap: var(--space--4);
-          `}"
-        >
-          <div
-            style="${css`
-              display: flex;
-              justify-content: center;
-              font-weight: var(--font-weight--semibold);
-            `}"
-          >
-            <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/conversations/new"
-              style="${css`
-                display: flex;
-                gap: var(--space--2);
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-
-                &:hover,
-                &:focus {
-                  color: var(--color--primary--50);
-                }
-                @media (prefers-color-scheme: dark) {
-                  &:hover,
-                  &:focus {
-                    color: var(--color--primary--50);
-                  }
-                }
-              `}"
-            >
-              <i class="bi bi-chat-left-text"></i>
-              Start a New Conversation
-            </a>
-          </div>
-
-          <div
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-            data-ondomcontentloaded="${javascript`
-              if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
-              this.classList.add("active--cancel");
-            `}"
-          >
-            $${res.locals.conversations.map(
-              (conversation) => html`
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/conversations/${conversation.reference}"
-                  class="${conversation.id === res.locals.conversation?.id
-                    ? "active"
-                    : ""}"
-                  style="${css`
-                    width: calc(100% + 2 * var(--space--2));
-                    padding: var(--space--2) var(--space--2);
-                    border-radius: var(--border-radius--lg);
-                    margin-left: var(--space---2);
-                    display: block;
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-
-                    &:hover,
-                    &:focus,
-                    &.active:focus {
-                      background-color: var(--color--primary--600);
-                    }
-                    &:active {
-                      background-color: var(--color--primary--700);
-                    }
-                    @media (max-width: 899px) {
-                      :not(.active--cancel) > &.active {
-                        background-color: var(--color--primary--700);
-                      }
-                    }
-                    @media (min-width: 900px) {
-                      &.active {
-                        background-color: var(--color--primary--700);
-                      }
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus,
-                      &.active:focus {
-                        background-color: var(--color--primary--600);
-                      }
-                      &:active {
-                        background-color: var(--color--primary--700);
-                      }
-                      @media (max-width: 899px) {
-                        :not(.active--cancel) > &.active {
-                          background-color: var(--color--primary--700);
-                        }
-                      }
-                      @media (min-width: 900px) {
-                        &.active {
-                          background-color: var(--color--primary--700);
-                        }
-                      }
-                    }
-                  `}"
-                >
-                  <h3
-                    style="${css`
-                      font-weight: var(--font-weight--semibold);
-                      color: var(--color--primary--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--100);
-                      }
-                    `}"
-                  >
-                    ${conversation.title}
-                  </h3>
-                  <div
-                    style="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--0-5);
-                    `}"
-                  >
-                    <div>
-                      <div>
-                        #${conversation.reference} created
-                        <time
-                          data-ondomcontentloaded="${javascript`
-                            relativizeTime(this);
-                          `}"
-                        >
-                          ${conversation.createdAt}
-                        </time>
-                        by ${conversation.authorEnrollment.user.name}
-                      </div>
-                      $${conversation.updatedAt !== conversation.createdAt
-                        ? html`
-                            <div>
-                              and last updated
-                              <time
-                                data-ondomcontentloaded="${javascript`
-                                  relativizeTime(this);
-                                `}"
-                              >
-                                ${conversation.updatedAt}
-                              </time>
-                            </div>
-                          `
-                        : html``}
-                    </div>
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--4);
-
-                        & > * {
-                          display: flex;
-                          gap: var(--space--1);
-                        }
-                      `}"
-                    >
-                      $${conversation.pinnedAt !== null
-                        ? html`
-                            <div>
-                              <i class="bi bi-pin"></i>
-                              Pinned
-                            </div>
-                          `
-                        : html``}
-                      $${conversation.questionAt !== null
-                        ? html`
-                            <div>
-                              <i class="bi bi-patch-question"></i>
-                              Question
-                            </div>
-                          `
-                        : html``}
-                      <div>
-                        <i class="bi bi-chat-left-text"></i>
-                        ${conversation.messagesCount}
-                        Message${conversation.messagesCount === 1 ? "" : "s"}
-                      </div>
-                      $${conversation.endorsements.length === 0
-                        ? html``
-                        : html`
-                            <div
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: ${JSON.stringify(
-                                    `Endorsed by ${
-                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                        "en"
-                                      ).format(
-                                        conversation.endorsements.map(
-                                          (endorsement) =>
-                                            endorsement.enrollment.user.name
-                                        )
-                                      )
-                                    }`
-                                  )},
-                                  theme: "tooltip",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-award"></i>
-                              ${conversation.endorsements.length} Staff
-                              Endorsement${conversation.endorsements.length ===
-                              1
-                                ? ""
-                                : "s"}
-                            </div>
-                          `}
-                      $${conversation.likesCount === 0
-                        ? html``
-                        : html`
-                            <div>
-                              <i class="bi bi-hand-thumbs-up"></i>
-                              ${conversation.likesCount}
-                              Like${conversation.likesCount === 1 ? "" : "s"}
-                            </div>
-                          `}
-                    </div>
-                  </div>
-                </a>
-              `
-            )}
-          </div>
-        </div>
-      </div>
-    `;
-
-    return app.locals.layouts.application({
+  app.locals.layouts.conversation = ({ req, res, head, body }) =>
+    app.locals.layouts.application({
       req,
       res,
       head,
@@ -8024,7 +7763,273 @@ export default async function courselore(
             }
           `}"
         >
-          <div id="sidebar" class="single-column--hidden">$${sidebar}</div>
+          <div id="sidebar" class="single-column--hidden">
+            <div
+              style="${css`
+                color: var(--color--primary--200);
+                background-color: var(--color--primary--900);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--primary--200);
+                  background-color: var(--color--primary--900);
+                }
+                flex: 1;
+                padding: var(--space--4);
+                display: flex;
+                justify-content: center;
+                overflow: auto;
+              `}"
+            >
+              <div
+                style="${css`
+                  flex: 1;
+                  max-width: var(--width--2xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <div
+                  style="${css`
+                    display: flex;
+                    justify-content: center;
+                    font-weight: var(--font-weight--semibold);
+                  `}"
+                >
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/conversations/new"
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      transition-property: var(--transition-property--colors);
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--in-out
+                      );
+
+                      &:hover,
+                      &:focus {
+                        color: var(--color--primary--50);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        &:hover,
+                        &:focus {
+                          color: var(--color--primary--50);
+                        }
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Start a New Conversation
+                  </a>
+                </div>
+
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
+                  data-ondomcontentloaded="${javascript`
+              if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
+              this.classList.add("active--cancel");
+            `}"
+                >
+                  $${res.locals.conversations.map(
+                    (conversation) => html`
+                      <a
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course
+                          .reference}/conversations/${conversation.reference}"
+                        class="${conversation.id === res.locals.conversation?.id
+                          ? "active"
+                          : ""}"
+                        style="${css`
+                          width: calc(100% + 2 * var(--space--2));
+                          padding: var(--space--2) var(--space--2);
+                          border-radius: var(--border-radius--lg);
+                          margin-left: var(--space---2);
+                          display: block;
+                          transition-property: var(
+                            --transition-property--colors
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--in-out
+                          );
+
+                          &:hover,
+                          &:focus,
+                          &.active:focus {
+                            background-color: var(--color--primary--600);
+                          }
+                          &:active {
+                            background-color: var(--color--primary--700);
+                          }
+                          @media (max-width: 899px) {
+                            :not(.active--cancel) > &.active {
+                              background-color: var(--color--primary--700);
+                            }
+                          }
+                          @media (min-width: 900px) {
+                            &.active {
+                              background-color: var(--color--primary--700);
+                            }
+                          }
+                          @media (prefers-color-scheme: dark) {
+                            &:hover,
+                            &:focus,
+                            &.active:focus {
+                              background-color: var(--color--primary--600);
+                            }
+                            &:active {
+                              background-color: var(--color--primary--700);
+                            }
+                            @media (max-width: 899px) {
+                              :not(.active--cancel) > &.active {
+                                background-color: var(--color--primary--700);
+                              }
+                            }
+                            @media (min-width: 900px) {
+                              &.active {
+                                background-color: var(--color--primary--700);
+                              }
+                            }
+                          }
+                        `}"
+                      >
+                        <h3
+                          style="${css`
+                            font-weight: var(--font-weight--semibold);
+                            color: var(--color--primary--100);
+                            @media (prefers-color-scheme: dark) {
+                              color: var(--color--primary--100);
+                            }
+                          `}"
+                        >
+                          ${conversation.title}
+                        </h3>
+                        <div
+                          style="${css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--0-5);
+                          `}"
+                        >
+                          <div>
+                            <div>
+                              #${conversation.reference} created
+                              <time
+                                data-ondomcontentloaded="${javascript`
+                            relativizeTime(this);
+                          `}"
+                              >
+                                ${conversation.createdAt}
+                              </time>
+                              by ${conversation.authorEnrollment.user.name}
+                            </div>
+                            $${conversation.updatedAt !== conversation.createdAt
+                              ? html`
+                                  <div>
+                                    and last updated
+                                    <time
+                                      data-ondomcontentloaded="${javascript`
+                                  relativizeTime(this);
+                                `}"
+                                    >
+                                      ${conversation.updatedAt}
+                                    </time>
+                                  </div>
+                                `
+                              : html``}
+                          </div>
+                          <div
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--4);
+
+                              & > * {
+                                display: flex;
+                                gap: var(--space--1);
+                              }
+                            `}"
+                          >
+                            $${conversation.pinnedAt !== null
+                              ? html`
+                                  <div>
+                                    <i class="bi bi-pin"></i>
+                                    Pinned
+                                  </div>
+                                `
+                              : html``}
+                            $${conversation.questionAt !== null
+                              ? html`
+                                  <div>
+                                    <i class="bi bi-patch-question"></i>
+                                    Question
+                                  </div>
+                                `
+                              : html``}
+                            <div>
+                              <i class="bi bi-chat-left-text"></i>
+                              ${conversation.messagesCount}
+                              Message${conversation.messagesCount === 1
+                                ? ""
+                                : "s"}
+                            </div>
+                            $${conversation.endorsements.length === 0
+                              ? html``
+                              : html`
+                                  <div
+                                    data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: ${JSON.stringify(
+                                    `Endorsed by ${
+                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                        "en"
+                                      ).format(
+                                        conversation.endorsements.map(
+                                          (endorsement) =>
+                                            endorsement.enrollment.user.name
+                                        )
+                                      )
+                                    }`
+                                  )},
+                                  theme: "tooltip",
+                                  touch: false,
+                                });
+                              `}"
+                                  >
+                                    <i class="bi bi-award"></i>
+                                    ${conversation.endorsements.length} Staff
+                                    Endorsement${conversation.endorsements
+                                      .length === 1
+                                      ? ""
+                                      : "s"}
+                                  </div>
+                                `}
+                            $${conversation.likesCount === 0
+                              ? html``
+                              : html`
+                                  <div>
+                                    <i class="bi bi-hand-thumbs-up"></i>
+                                    ${conversation.likesCount}
+                                    Like${conversation.likesCount === 1
+                                      ? ""
+                                      : "s"}
+                                  </div>
+                                `}
+                          </div>
+                        </div>
+                      </a>
+                    `
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
           <div id="main">
             <div
               style="${css`
@@ -8040,7 +8045,6 @@ export default async function courselore(
         </div>
       `,
     });
-  };
 
   interface Partials {
     textEditor: (value?: string) => HTML;
