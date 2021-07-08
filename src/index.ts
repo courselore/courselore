@@ -4583,16 +4583,19 @@ export default async function courselore(
           }>(
             sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
           )!.messagesCount;
-          const endorsements = app.locals.database
-            .all<{
-              id: number;
-              enrollmentId: number | null;
-              userId: number | null;
-              userEmail: string | null;
-              userName: string | null;
-              enrollmentRole: Role | null;
-            }>(
-              sql`
+          const endorsements =
+            conversation.questionAt === null
+              ? []
+              : app.locals.database
+                  .all<{
+                    id: number;
+                    enrollmentId: number | null;
+                    userId: number | null;
+                    userEmail: string | null;
+                    userName: string | null;
+                    enrollmentRole: Role | null;
+                  }>(
+                    sql`
                 SELECT "endorsements"."id",
                        "enrollments"."id" AS "enrollmentId",
                        "users"."id" AS "userId",
@@ -4606,26 +4609,26 @@ export default async function courselore(
                 WHERE "messages"."conversation" = ${conversation.id}
                 ORDER BY "endorsements"."id" ASC
               `
-            )
-            .map((endorsement) => ({
-              id: endorsement.id,
-              enrollment:
-                endorsement.enrollmentId !== null &&
-                endorsement.userId !== null &&
-                endorsement.userEmail !== null &&
-                endorsement.userName !== null &&
-                endorsement.enrollmentRole !== null
-                  ? {
-                      id: endorsement.enrollmentId,
-                      user: {
-                        id: endorsement.userId,
-                        email: endorsement.userEmail,
-                        name: endorsement.userName,
-                      },
-                      role: endorsement.enrollmentRole,
-                    }
-                  : app.locals.constants.anonymousEnrollment,
-            }));
+                  )
+                  .map((endorsement) => ({
+                    id: endorsement.id,
+                    enrollment:
+                      endorsement.enrollmentId !== null &&
+                      endorsement.userId !== null &&
+                      endorsement.userEmail !== null &&
+                      endorsement.userName !== null &&
+                      endorsement.enrollmentRole !== null
+                        ? {
+                            id: endorsement.enrollmentId,
+                            user: {
+                              id: endorsement.userId,
+                              email: endorsement.userEmail,
+                              name: endorsement.userName,
+                            },
+                            role: endorsement.enrollmentRole,
+                          }
+                        : app.locals.constants.anonymousEnrollment,
+                  }));
 
           return {
             id: conversation.id,
@@ -7985,23 +7988,24 @@ export default async function courselore(
                               : html`
                                   <div
                                     data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: ${JSON.stringify(
-                                    `Endorsed by ${
-                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                        "en"
-                                      ).format(
-                                        conversation.endorsements.map(
-                                          (endorsement) =>
-                                            endorsement.enrollment.user.name
-                                        )
-                                      )
-                                    }`
-                                  )},
-                                  theme: "tooltip",
-                                  touch: false,
-                                });
-                              `}"
+                                      tippy(this, {
+                                        content: ${JSON.stringify(
+                                          `Endorsed by ${
+                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                              "en"
+                                            ).format(
+                                              conversation.endorsements.map(
+                                                (endorsement) =>
+                                                  endorsement.enrollment.user
+                                                    .name
+                                              )
+                                            )
+                                          }`
+                                        )},
+                                        theme: "tooltip",
+                                        touch: false,
+                                      });
+                                    `}"
                                   >
                                     <i class="bi bi-award"></i>
                                     ${conversation.endorsements.length} Staff
