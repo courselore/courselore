@@ -7685,6 +7685,7 @@ export default async function courselore(
           padding: var(--space--4);
           display: flex;
           justify-content: center;
+          overflow: auto;
         `}"
       >
         <div
