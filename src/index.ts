@@ -7227,89 +7227,153 @@ export default async function courselore(
               <form
                 method="POST"
                 action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/tags?_method=PATCH"
+                  .reference}/settings/tags?_method=PUT"
                 style="${css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
                 `}"
               >
+                <div hidden class="new-tag">
+                  <div
+                    class="tag"
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: baseline;
+                    `}"
+                  >
+                    <i class="bi bi-tag"></i>
+                    <div
+                      style="${css`
+                        flex: 1;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        name="newTags[][name]"
+                        class="input--text"
+                        required
+                        autocomplete="off"
+                        data-ondomcontentloaded="${javascript`
+                        this.disabled = this.closest(".new-tag") !== null;
+                      `}"
+                      />
+                    </div>
+                    <label class="button--inline button--inline--gray--cool">
+                      <select
+                        name="newTags[][visibility]"
+                        required
+                        autocomplete="off"
+                        data-ondomcontentloaded="${javascript`
+                          this.disabled = this.closest(".new-tag") !== null;
+                        `}"
+                      >
+                        <option value="everyone">Visible by Everyone</option>
+                        <option value="staff">Visible by Staff Only</option>
+                      </select>
+                      <i class="bi bi-chevron-down"></i>
+                    </label>
+                    <div>
+                      <button
+                        type="button"
+                        class="button--inline button--inline--gray--cool button--inline--rose"
+                        data-ondomcontentloaded="${javascript`
+                          if (this.closest(".new-tag") !== null) return;
+                          tippy(this, {
+                            content: "Remove Tag",
+                            theme: "tooltip tooltip--rose",
+                            touch: false,
+                          });
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            theme: "dropdown dropdown--rose",
+                            trigger: "click",
+                            interactive: true,
+                            allowHTML: true,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                      <div hidden>
+                        <div
+                          style="${css`
+                            padding: var(--space--2) var(--space--0);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
+                        >
+                          <p>Are you sure you want to remove this tag?</p>
+                          <p>
+                            <strong
+                              style="${css`
+                                font-weight: var(--font-weight--semibold);
+                              `}"
+                            >
+                              The tag will be removed from all conversations and
+                              messages, and you may not undo this action!
+                            </strong>
+                          </p>
+                          <button
+                            class="button button--rose"
+                            onclick="${javascript`
+                              this.closest(".tag").remove();
+                            `}"
+                          >
+                            <i class="bi bi-trash"></i>
+                            Remove Tag
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div
                   style="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--1);
+                    gap: var(--space--2);
                   `}"
                 >
-                  <p
+                  <div
+                    class="tags"
                     style="${css`
                       display: flex;
+                      flex-direction: column;
                       gap: var(--space--2);
                     `}"
-                  >
-                    Accent Color
-                    <button
-                      type="button"
-                      class="button--inline button--inline--gray--cool"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "The accent color helps you tell your courses apart.",
-                          theme: "tooltip",
-                          trigger: "click",
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                  </p>
+                  ></div>
                   <div
                     style="${css`
                       display: flex;
-                      gap: var(--space--2);
-                      flex-wrap: wrap;
+                      justify-content: center;
                     `}"
                   >
-                    $${app.locals.constants.accentColors.map(
-                      (accentColor) => html`
-                        <input
-                          type="radio"
-                          name="accentColor"
-                          value="${accentColor}"
-                          required
-                          autocomplete="off"
-                          $${accentColor === res.locals.enrollment.accentColor
-                            ? html`checked`
-                            : html``}
-                          style="${css`
-                            background-color: var(--color--${accentColor}--500);
-                            @media (prefers-color-scheme: dark) {
-                              background-color: var(
-                                --color--${accentColor}--700
-                              );
-                            }
-                            width: var(--space--5);
-                            height: var(--space--5);
-                            border-radius: var(--border-radius--circle);
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            cursor: pointer;
-
-                            &:checked::before {
-                              content: "";
-                              display: block;
-                              width: var(--space--2);
-                              height: var(--space--2);
-                              border-radius: var(--border-radius--circle);
-                              background-color: var(--color--gray--cool--50);
-                              @media (prefers-color-scheme: dark) {
-                                background-color: var(--color--gray--cool--900);
-                              }
-                            }
-                          `}"
-                        />
-                      `
-                    )}
+                    <button
+                      type="button"
+                      class="button button--secondary"
+                      style="${css`
+                        @media (max-width: 400px) {
+                          width: 100%;
+                        }
+                      `}"
+                      onclick="${javascript`
+                        const form = this.closest("form");
+                        const newTag = form.querySelector(".new-tag").firstElementChild.cloneNode(true);
+                        for (const element of newTag.querySelectorAll(
+                          "[data-ondomcontentloaded]"
+                        ))
+                          new Function(element.dataset.ondomcontentloaded).call(
+                            element
+                          );
+                        form.querySelector(".tags").insertAdjacentElement("beforeend", newTag);
+                    `}"
+                    >
+                      <i class="bi bi-plus-circle"></i>
+                      Add Tag
+                    </button>
                   </div>
                 </div>
                 <div>
@@ -7322,7 +7386,7 @@ export default async function courselore(
                     `}"
                   >
                     <i class="bi bi-pencil"></i>
-                    Update Your Enrollment
+                    Update Tags
                   </button>
                 </div>
               </form>
