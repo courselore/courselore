@@ -246,6 +246,17 @@ export default async function courselore(
         UNIQUE ("message", "enrollment")
       );
 
+      CREATE TABLE "tags" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "reference" TEXT NOT NULL,
+        "name" TEXT NOT NULL,
+        "mayTag" TEXT NOT NULL CHECK ("mayTag" IN ('anything', 'conversations', 'messages')),
+        "visibleBy" TEXT NOT NULL CHECK ("visibleBy" IN ('everyone', 'staff')),
+        UNIQUE ("course", "reference")
+      );
+
       CREATE TABLE "emailsQueue" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -7235,110 +7246,6 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <div hidden class="new-tag">
-                  <div
-                    class="tag"
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                      align-items: baseline;
-                    `}"
-                  >
-                    <i class="bi bi-tag"></i>
-                    <div
-                      style="${css`
-                        flex: 1;
-                      `}"
-                    >
-                      <input
-                        type="text"
-                        name="tags[{index}][name]"
-                        class="input--text"
-                        required
-                        autocomplete="off"
-                        disabled
-                        data-ondomcontentloaded="${javascript`
-                          const tags = this.closest(".tags");
-                          if (tags === null) return;
-                          this.disabled = false;
-                          this.name = this.name.replace("{index}", tags.dataset.nextIndex);
-                        `}"
-                      />
-                    </div>
-                    <label class="button--inline button--inline--gray--cool">
-                      <select
-                        name="tags[{index}][visibility]"
-                        required
-                        autocomplete="off"
-                        disabled
-                        data-ondomcontentloaded="${javascript`
-                          const tags = this.closest(".tags");
-                          if (tags === null) return;
-                          this.disabled = false;
-                          this.name = this.name.replace("{index}", tags.dataset.nextIndex);
-                        `}"
-                      >
-                        <option value="everyone">Visible by Everyone</option>
-                        <option value="staff">Visible by Staff Only</option>
-                      </select>
-                      <i class="bi bi-chevron-down"></i>
-                    </label>
-                    <div>
-                      <button
-                        type="button"
-                        class="button--inline button--inline--gray--cool button--inline--rose"
-                        data-ondomcontentloaded="${javascript`
-                          if (this.closest(".tags") === null) return;
-                          tippy(this, {
-                            content: "Remove Tag",
-                            theme: "tooltip tooltip--rose",
-                            touch: false,
-                          });
-                          tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
-                            theme: "dropdown dropdown--rose",
-                            trigger: "click",
-                            interactive: true,
-                            allowHTML: true,
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-trash"></i>
-                      </button>
-                      <div hidden>
-                        <div
-                          style="${css`
-                            padding: var(--space--2) var(--space--0);
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
-                        >
-                          <p>Are you sure you want to remove this tag?</p>
-                          <p>
-                            <strong
-                              style="${css`
-                                font-weight: var(--font-weight--semibold);
-                              `}"
-                            >
-                              The tag will be removed from all conversations and
-                              messages, and you may not undo this action!
-                            </strong>
-                          </p>
-                          <button
-                            class="button button--rose"
-                            onclick="${javascript`
-                              this.closest(".tag").remove();
-                            `}"
-                          >
-                            <i class="bi bi-trash"></i>
-                            Remove Tag
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div
                   style="${css`
                     display: flex;
@@ -7370,22 +7277,143 @@ export default async function courselore(
                         }
                       `}"
                       onclick="${javascript`
-                        const form = this.closest("form");
-                        const newTag = form.querySelector(".new-tag").firstElementChild.cloneNode(true);
-                        const tags = form.querySelector(".tags");
-                        tags.insertAdjacentElement("beforeend", newTag);
-                        for (const element of newTag.querySelectorAll(
-                          "[data-ondomcontentloaded]"
-                        ))
-                          new Function(element.dataset.ondomcontentloaded).call(
-                            element
-                          );
-                        tags.dataset.nextIndex = Number(tags.dataset.nextIndex) + 1;
+                        const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
+                        this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
+                        for (const element of newTag.querySelectorAll("[data-ondomcontentloaded]"))
+                          new Function(element.dataset.ondomcontentloaded).call(element);
                       `}"
                     >
                       <i class="bi bi-plus-circle"></i>
                       Add Tag
                     </button>
+                    <div
+                      hidden
+                      data-ondomcontentloaded="${javascript`
+                        for (const element of this.querySelectorAll("[required]")) element.disabled = true;
+                      `}"
+                    >
+                      <div class="tag">
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: baseline;
+                          `}"
+                          data-ondomcontentloaded="${javascript`
+                            const tags = this.closest(".tags");
+                            if (tags === null) return;
+                            for (const element of this.querySelectorAll("[required]")) element.disabled = false;
+                            for (const element of this.querySelectorAll("[name]")) element.name = element.name.replace("{index}", tags.dataset.nextIndex);
+                            tags.dataset.nextIndex = Number(tags.dataset.nextIndex) + 1;
+                          `}"
+                        >
+                          <i class="bi bi-tag"></i>
+                          <div
+                            style="${css`
+                              flex: 1;
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              name="tags[{index}][name]"
+                              class="input--text"
+                              required
+                              autocomplete="off"
+                            />
+                          </div>
+                          <label
+                            class="button--inline button--inline--gray--cool"
+                          >
+                            <select
+                              name="tags[{index}][mayTag]"
+                              required
+                              autocomplete="off"
+                            >
+                              <option value="anything">May Tag Anything</option>
+                              <option value="conversations">
+                                May Tag Conversations Only
+                              </option>
+                              <option value="messages">
+                                May Tag Messages Only
+                              </option>
+                            </select>
+                            <i class="bi bi-chevron-down"></i>
+                          </label>
+                          <label
+                            class="button--inline button--inline--gray--cool"
+                          >
+                            <select
+                              name="tags[{index}][visibleBy]"
+                              required
+                              autocomplete="off"
+                            >
+                              <option value="everyone">
+                                Visible by Everyone
+                              </option>
+                              <option value="staff">
+                                Visible by Staff Only
+                              </option>
+                            </select>
+                            <i class="bi bi-chevron-down"></i>
+                          </label>
+                          <div>
+                            <button
+                              type="button"
+                              class="button--inline button--inline--gray--cool button--inline--rose"
+                              data-ondomcontentloaded="${javascript`
+                                if (this.closest(".tags") === null) return;
+                                tippy(this, {
+                                  content: "Remove Tag",
+                                  theme: "tooltip tooltip--rose",
+                                  touch: false,
+                                });
+                                tippy(this, {
+                                  content: this.nextElementSibling.firstElementChild,
+                                  theme: "dropdown dropdown--rose",
+                                  trigger: "click",
+                                  interactive: true,
+                                  allowHTML: true,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-trash"></i>
+                            </button>
+                            <div hidden>
+                              <div
+                                style="${css`
+                                  padding: var(--space--2) var(--space--0);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `}"
+                              >
+                                <p>Are you sure you want to remove this tag?</p>
+                                <p>
+                                  <strong
+                                    style="${css`
+                                      font-weight: var(--font-weight--semibold);
+                                    `}"
+                                  >
+                                    The tag will be removed from all
+                                    conversations and messages, and you may not
+                                    undo this action!
+                                  </strong>
+                                </p>
+                                <button
+                                  class="button button--rose"
+                                  onclick="${javascript`
+                                  this.closest(".tag").remove();
+                                `}"
+                                >
+                                  <i class="bi bi-trash"></i>
+                                  Remove Tag
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -7416,7 +7444,7 @@ export default async function courselore(
       tags?: {
         reference?: string;
         name?: string;
-        visibility?: "everyone" | "staff";
+        visibleBy?: "everyone" | "staff";
       }[];
     },
     {},
@@ -7430,8 +7458,8 @@ export default async function courselore(
         !req.body.tags.every(
           (tag) =>
             typeof tag.name === "string" &&
-            typeof tag.visibility === "string" &&
-            ["everyone", "staff"].includes(tag.visibility)
+            typeof tag.visibleBy === "string" &&
+            ["everyone", "staff"].includes(tag.visibleBy)
         )
       )
         return next("validation");
