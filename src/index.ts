@@ -5031,6 +5031,16 @@ export default async function courselore(
             </a>
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings/tags"
+              class="dropdown--item ${req.path.endsWith("/settings/tags")
+                ? "active"
+                : ""}"
+            >
+              <i class="bi bi-tags"></i>
+              Tags
+            </a>
+            <a
+              href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/enrollment"
               class="dropdown--item ${req.path.endsWith("/settings/enrollment")
                 ? "active"
@@ -7174,6 +7184,149 @@ export default async function courselore(
         isSelf
           ? `${app.locals.settings.url}/`
           : `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/tags",
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res) => {
+      res.send(
+        app.locals.layouts.courseSettings({
+          req,
+          res,
+          head: html`
+            <title>
+              Tags · Course Settings · ${res.locals.course.name} · CourseLore
+            </title>
+          `,
+          body: html`
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <h2 class="heading--2">
+                <i class="bi bi-sliders"></i>
+                Course Settings ·
+                <i class="bi bi-tags"></i>
+                Tags
+              </h2>
+
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/tags?_method=PATCH"
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--1);
+                  `}"
+                >
+                  <p
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    Accent Color
+                    <button
+                      type="button"
+                      class="button--inline button--inline--gray--cool"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "The accent color helps you tell your courses apart.",
+                          theme: "tooltip",
+                          trigger: "click",
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </p>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      flex-wrap: wrap;
+                    `}"
+                  >
+                    $${app.locals.constants.accentColors.map(
+                      (accentColor) => html`
+                        <input
+                          type="radio"
+                          name="accentColor"
+                          value="${accentColor}"
+                          required
+                          autocomplete="off"
+                          $${accentColor === res.locals.enrollment.accentColor
+                            ? html`checked`
+                            : html``}
+                          style="${css`
+                            background-color: var(--color--${accentColor}--500);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(
+                                --color--${accentColor}--700
+                              );
+                            }
+                            width: var(--space--5);
+                            height: var(--space--5);
+                            border-radius: var(--border-radius--circle);
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            cursor: pointer;
+
+                            &:checked::before {
+                              content: "";
+                              display: block;
+                              width: var(--space--2);
+                              height: var(--space--2);
+                              border-radius: var(--border-radius--circle);
+                              background-color: var(--color--gray--cool--50);
+                              @media (prefers-color-scheme: dark) {
+                                background-color: var(--color--gray--cool--900);
+                              }
+                            }
+                          `}"
+                        />
+                      `
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <button
+                    class="button button--primary"
+                    style="${css`
+                      @media (max-width: 400px) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-pencil"></i>
+                    Update Your Enrollment
+                  </button>
+                </div>
+              </form>
+            </div>
+          `,
+        })
       );
     }
   );
