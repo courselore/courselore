@@ -7256,8 +7256,8 @@ export default async function courselore(
                         required
                         autocomplete="off"
                         data-ondomcontentloaded="${javascript`
-                        this.disabled = this.closest(".new-tag") !== null;
-                      `}"
+                          this.disabled = this.closest(".new-tag") !== null;
+                        `}"
                       />
                     </div>
                     <label class="button--inline button--inline--gray--cool">
