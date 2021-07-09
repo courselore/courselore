@@ -772,7 +772,7 @@ export default async function courselore(
                 &::placeholder {
                   color: var(--color--gray--cool--600);
                 }
-                &:focus {
+                &:focus-within {
                   box-shadow: inset var(--border-width--0)
                     var(--border-width--0) var(--border-width--0)
                     var(--border-width--2) var(--color--primary--400);
@@ -787,7 +787,7 @@ export default async function courselore(
                   &::placeholder {
                     color: var(--color--gray--cool--400);
                   }
-                  &:focus {
+                  &:focus-within {
                     box-shadow: inset var(--border-width--0)
                       var(--border-width--0) var(--border-width--0)
                       var(--border-width--2) var(--color--primary--800);
@@ -916,7 +916,7 @@ export default async function courselore(
                   color: var(--color--primary--50);
                   background-color: var(--color--primary--700);
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     background-color: var(--color--primary--600);
                   }
                   &:active {
@@ -926,7 +926,7 @@ export default async function courselore(
                     color: var(--color--primary--200);
                     background-color: var(--color--primary--800);
                     &:hover,
-                    &:focus {
+                    &:focus-within {
                       background-color: var(--color--primary--700);
                     }
                     &:active {
@@ -937,7 +937,7 @@ export default async function courselore(
 
                 &.button--secondary {
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     background-color: var(--color--gray--cool--200);
                   }
                   &:active {
@@ -945,7 +945,7 @@ export default async function courselore(
                   }
                   @media (prefers-color-scheme: dark) {
                     &:hover,
-                    &:focus {
+                    &:focus-within {
                       background-color: var(--color--gray--cool--800);
                     }
                     &:active {
@@ -958,7 +958,7 @@ export default async function courselore(
                   color: var(--color--rose--50);
                   background-color: var(--color--rose--700);
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     background-color: var(--color--rose--600);
                   }
                   &:active {
@@ -968,7 +968,7 @@ export default async function courselore(
                     color: var(--color--rose--200);
                     background-color: var(--color--rose--800);
                     &:hover,
-                    &:focus {
+                    &:focus-within {
                       background-color: var(--color--rose--700);
                     }
                     &:active {
@@ -981,7 +981,7 @@ export default async function courselore(
                   color: var(--color--green--50);
                   background-color: var(--color--green--700);
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     background-color: var(--color--green--600);
                   }
                   &:active {
@@ -991,7 +991,7 @@ export default async function courselore(
                     color: var(--color--green--200);
                     background-color: var(--color--green--800);
                     &:hover,
-                    &:focus {
+                    &:focus-within {
                       background-color: var(--color--green--600);
                     }
                     &:active {
@@ -1004,7 +1004,7 @@ export default async function courselore(
               .button--inline {
                 color: var(--color--gray--cool--800);
                 &:hover,
-                &:focus,
+                &:focus-within,
                 :focus ~ &.after-toggle {
                   color: var(--color--primary--500);
                 }
@@ -1014,7 +1014,7 @@ export default async function courselore(
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--gray--cool--300);
                   &:hover,
-                  &:focus,
+                  &:focus-within,
                   :focus ~ &.after-toggle {
                     color: var(--color--primary--500);
                   }
@@ -1027,11 +1027,12 @@ export default async function courselore(
                 transition-timing-function: var(
                   --transition-timing-function--in-out
                 );
+                cursor: pointer;
 
                 &.button--inline--gray--cool {
                   color: var(--color--gray--cool--500);
                   &:hover,
-                  &:focus,
+                  &:focus-within,
                   :focus ~ &.after-toggle {
                     color: var(--color--primary--500);
                   }
@@ -1041,7 +1042,7 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--gray--cool--600);
                     &:hover,
-                    &:focus,
+                    &:focus-within,
                     :focus ~ &.after-toggle {
                       color: var(--color--primary--600);
                     }
@@ -1053,7 +1054,7 @@ export default async function courselore(
 
                 &.button--inline--rose {
                   &:hover,
-                  &:focus,
+                  &:focus-within,
                   :focus ~ &.after-toggle {
                     color: var(--color--rose--500);
                   }
@@ -1062,7 +1063,7 @@ export default async function courselore(
                   }
                   @media (prefers-color-scheme: dark) {
                     &:hover,
-                    &:focus,
+                    &:focus-within,
                     :focus ~ &.after-toggle {
                       color: var(--color--rose--500);
                     }
@@ -1077,7 +1078,7 @@ export default async function courselore(
                 text-decoration: underline;
                 color: var(--color--primary--600);
                 &:hover,
-                &:focus {
+                &:focus-within {
                   color: var(--color--primary--400);
                 }
                 &:active {
@@ -1086,7 +1087,7 @@ export default async function courselore(
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--primary--500);
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     color: var(--color--primary--300);
                   }
                   &:active {
@@ -1265,7 +1266,7 @@ export default async function courselore(
                     );
 
                     &:hover,
-                    &:focus,
+                    &:focus-within,
                     &.active:focus {
                       background-color: var(--color--primary--100);
                     }
@@ -1275,7 +1276,7 @@ export default async function courselore(
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
-                      &:focus,
+                      &:focus-within,
                       &.active:focus {
                         background-color: var(--color--primary--600);
                       }
@@ -1480,7 +1481,7 @@ export default async function courselore(
                   text-decoration: underline;
                   color: var(--color--primary--600);
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     color: var(--color--primary--400);
                   }
                   &:active {
@@ -1489,7 +1490,7 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--primary--500);
                     &:hover,
-                    &:focus {
+                    &:focus-within {
                       color: var(--color--primary--300);
                     }
                     &:active {
@@ -1884,7 +1885,7 @@ export default async function courselore(
                       );
 
                       &:hover,
-                      &:focus,
+                      &:focus-within,
                       &.active:focus {
                         box-shadow: inset 0 calc(-1 * var(--border-width--4))
                           var(--color--rose--700);
@@ -2007,7 +2008,7 @@ export default async function courselore(
                       }
                     }
                     &:hover,
-                    &:focus {
+                    &:focus-within {
                       color: var(--color--primary--200);
                       * {
                         stroke: var(--color--primary--200);
@@ -2162,7 +2163,7 @@ export default async function courselore(
 
               .header--item {
                 &:hover,
-                &:focus {
+                &:focus-within {
                   color: var(--color--primary--200);
                 }
                 &:active {
@@ -2170,7 +2171,7 @@ export default async function courselore(
                 }
                 @media (prefers-color-scheme: dark) {
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     color: var(--color--white);
                   }
                   &:active {
@@ -2206,7 +2207,7 @@ export default async function courselore(
                     );
                   }
                   &:hover,
-                  &:focus {
+                  &:focus-within {
                     * {
                       stroke: var(--color--primary--200);
                       @media (prefers-color-scheme: dark) {
@@ -3921,7 +3922,7 @@ export default async function courselore(
                             width: 100%;
                             justify-content: space-between;
                             &:hover,
-                            &:focus {
+                            &:focus-within {
                               background-color: var(--color--primary--200);
                             }
                             &:active {
@@ -3929,7 +3930,7 @@ export default async function courselore(
                             }
                             @media (prefers-color-scheme: dark) {
                               &:hover,
-                              &:focus {
+                              &:focus-within {
                                 background-color: var(--color--primary--800);
                               }
                               &:active {
@@ -3963,7 +3964,7 @@ export default async function courselore(
                             width: 100%;
                             justify-content: space-between;
                             &:hover,
-                            &:focus {
+                            &:focus-within {
                               background-color: var(--color--primary--200);
                             }
                             &:active {
@@ -3971,7 +3972,7 @@ export default async function courselore(
                             }
                             @media (prefers-color-scheme: dark) {
                               &:hover,
-                              &:focus {
+                              &:focus-within {
                                 background-color: var(--color--primary--800);
                               }
                               &:active {
@@ -3996,7 +3997,7 @@ export default async function courselore(
                         style="${css`
                           justify-content: space-between;
                           &:hover,
-                          &:focus {
+                          &:focus-within {
                             background-color: var(--color--primary--200);
                           }
                           &:active {
@@ -4004,7 +4005,7 @@ export default async function courselore(
                           }
                           @media (prefers-color-scheme: dark) {
                             &:hover,
-                            &:focus {
+                            &:focus-within {
                               background-color: var(--color--primary--800);
                             }
                             &:active {
@@ -5148,7 +5149,7 @@ export default async function courselore(
                       );
 
                       &:hover,
-                      &:focus,
+                      &:focus-within,
                       &.active:focus {
                         color: var(--color--gray--cool--900);
                         box-shadow: inset var(--border-width--4) 0
@@ -6053,7 +6054,7 @@ export default async function courselore(
                                               --color--rose--100
                                             );
                                             &:hover,
-                                            &:focus {
+                                            &:focus-within {
                                               background-color: var(
                                                 --color--rose--200
                                               );
@@ -6069,7 +6070,7 @@ export default async function courselore(
                                                 --color--rose--900
                                               );
                                               &:hover,
-                                              &:focus {
+                                              &:focus-within {
                                                 background-color: var(
                                                   --color--rose--700
                                                 );
@@ -6156,7 +6157,7 @@ export default async function courselore(
                                               --color--blue--100
                                             );
                                             &:hover,
-                                            &:focus {
+                                            &:focus-within {
                                               background-color: var(
                                                 --color--blue--200
                                               );
@@ -6172,7 +6173,7 @@ export default async function courselore(
                                                 --color--blue--900
                                               );
                                               &:hover,
-                                              &:focus {
+                                              &:focus-within {
                                                 background-color: var(
                                                   --color--blue--700
                                                 );
@@ -6246,7 +6247,7 @@ export default async function courselore(
                                               --color--yellow--100
                                             );
                                             &:hover,
-                                            &:focus {
+                                            &:focus-within {
                                               background-color: var(
                                                 --color--yellow--200
                                               );
@@ -6262,7 +6263,7 @@ export default async function courselore(
                                                 --color--yellow--900
                                               );
                                               &:hover,
-                                              &:focus {
+                                              &:focus-within {
                                                 background-color: var(
                                                   --color--yellow--700
                                                 );
@@ -7234,7 +7235,7 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <div hidden class="new-tag">
+                <div hidden class="new-tag" data-next-index="0">
                   <div
                     class="tag"
                     style="${css`
@@ -7251,22 +7252,28 @@ export default async function courselore(
                     >
                       <input
                         type="text"
-                        name="newTags[][name]"
+                        name="tags[{index}][name]"
                         class="input--text"
                         required
                         autocomplete="off"
+                        disabled
                         data-ondomcontentloaded="${javascript`
-                          this.disabled = this.closest(".new-tag") !== null;
+                          if (this.closest(".new-tag") !== null) return;
+                          this.disabled = false;
+                          this.name = this.name.replace("{index}", this.closest("form").querySelector(".new-tag").dataset.nextIndex);
                         `}"
                       />
                     </div>
                     <label class="button--inline button--inline--gray--cool">
                       <select
-                        name="newTags[][visibility]"
+                        name="tags[{index}][visibility]"
                         required
                         autocomplete="off"
+                        disabled
                         data-ondomcontentloaded="${javascript`
-                          this.disabled = this.closest(".new-tag") !== null;
+                          if (this.closest(".new-tag") !== null) return;
+                          this.disabled = false;
+                          this.name = this.name.replace("{index}", this.closest("form").querySelector(".new-tag").dataset.nextIndex);
                         `}"
                       >
                         <option value="everyone">Visible by Everyone</option>
@@ -7361,15 +7368,17 @@ export default async function courselore(
                       `}"
                       onclick="${javascript`
                         const form = this.closest("form");
-                        const newTag = form.querySelector(".new-tag").firstElementChild.cloneNode(true);
-                        for (const element of newTag.querySelectorAll(
+                        const newTag = form.querySelector(".new-tag");
+                        const newTagTemplate = newTag.firstElementChild.cloneNode(true);
+                        form.querySelector(".tags").insertAdjacentElement("beforeend", newTagTemplate);
+                        for (const element of newTagTemplate.querySelectorAll(
                           "[data-ondomcontentloaded]"
                         ))
                           new Function(element.dataset.ondomcontentloaded).call(
                             element
                           );
-                        form.querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                    `}"
+                        newTag.dataset.nextIndex = Number(newTag.dataset.nextIndex) + 1;
+                      `}"
                     >
                       <i class="bi bi-plus-circle"></i>
                       Add Tag
@@ -7393,6 +7402,55 @@ export default async function courselore(
             </div>
           `,
         })
+      );
+    }
+  );
+
+  app.put<
+    { courseReference: string },
+    HTML,
+    {
+      tags?: {
+        reference?: string;
+        name: string;
+        visibility: "everyone" | "staff";
+      }[];
+    },
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/tags",
+    ...app.locals.middlewares.isCourseStaff,
+    (req, res, next) => {
+      console.log(JSON.stringify(req.body));
+
+      /*
+      if (typeof req.body.role === "string") {
+        if (!app.locals.constants.roles.includes(req.body.role))
+          return next("validation");
+        app.locals.database.run(
+          sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
+        );
+
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div class="flash flash--green">
+              Enrollment updated successfully.
+            </div>
+          `
+        );
+
+        if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
+          return res.redirect(
+            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
+          );
+      }
+      */
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/tags`
       );
     }
   );
@@ -8030,12 +8088,12 @@ export default async function courselore(
                       );
 
                       &:hover,
-                      &:focus {
+                      &:focus-within {
                         color: var(--color--primary--50);
                       }
                       @media (prefers-color-scheme: dark) {
                         &:hover,
-                        &:focus {
+                        &:focus-within {
                           color: var(--color--primary--50);
                         }
                       }
@@ -8082,7 +8140,7 @@ export default async function courselore(
                           );
 
                           &:hover,
-                          &:focus,
+                          &:focus-within,
                           &.active:focus {
                             background-color: var(--color--primary--600);
                           }
@@ -8101,7 +8159,7 @@ export default async function courselore(
                           }
                           @media (prefers-color-scheme: dark) {
                             &:hover,
-                            &:focus,
+                            &:focus-within,
                             &.active:focus {
                               background-color: var(--color--primary--600);
                             }
