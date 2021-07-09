@@ -5041,8 +5041,10 @@ export default async function courselore(
             </a>
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/enrollment"
-              class="dropdown--item ${req.path.endsWith("/settings/enrollment")
+                .reference}/settings/your-enrollment"
+              class="dropdown--item ${req.path.endsWith(
+                "/settings/your-enrollment"
+              )
                 ? "active"
                 : ""}"
             >
@@ -5319,7 +5321,7 @@ export default async function courselore(
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollment`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -7338,7 +7340,7 @@ export default async function courselore(
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/settings/enrollment",
+    "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
@@ -7369,7 +7371,7 @@ export default async function courselore(
               <form
                 method="POST"
                 action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/enrollment?_method=PATCH"
+                  .reference}/settings/your-enrollment?_method=PATCH"
                 style="${css`
                   display: flex;
                   flex-direction: column;
@@ -7482,7 +7484,7 @@ export default async function courselore(
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/settings/enrollment",
+    "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
@@ -7504,7 +7506,7 @@ export default async function courselore(
       );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollment`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
