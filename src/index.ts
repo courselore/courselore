@@ -7402,8 +7402,8 @@ export default async function courselore(
                                 <button
                                   class="button button--rose"
                                   onclick="${javascript`
-                                  this.closest(".tag").remove();
-                                `}"
+                                    this.closest(".tag").remove();
+                                  `}"
                                 >
                                   <i class="bi bi-trash"></i>
                                   Remove Tag
