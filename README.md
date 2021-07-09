@@ -225,6 +225,16 @@ Insiders Builds are generated on every push. They’re useful for development an
 <details>
 <summary><strong>Backlog</strong></summary>
 
+### Minor Improvements
+
+- Manage answer tags more intelligently:
+  - Answered at all.
+  - Answered by staff.
+- Styles issues.
+  - Simplify icons in sidebar (they’re wrapping now).
+  - Tippy & live reload.
+    - Reset Tippy somehow?
+
 ### Courses
 
 - Different course states, for example, archived.
