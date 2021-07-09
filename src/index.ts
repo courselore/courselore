@@ -7415,8 +7415,8 @@ export default async function courselore(
     {
       tags?: {
         reference?: string;
-        name: string;
-        visibility: "everyone" | "staff";
+        name?: string;
+        visibility?: "everyone" | "staff";
       }[];
     },
     {},
@@ -7425,7 +7425,18 @@ export default async function courselore(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
-      console.log(JSON.stringify(req.body));
+      if (
+        !Array.isArray(req.body.tags) ||
+        !req.body.tags.every(
+          (tag) =>
+            typeof tag.name === "string" &&
+            typeof tag.visibility === "string" &&
+            ["everyone", "staff"].includes(tag.visibility)
+        )
+      )
+        return next("validation");
+
+      const tags = app.locals.database.all<{}>(sql``);
 
       /*
       if (typeof req.body.role === "string") {
