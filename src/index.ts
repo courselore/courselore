@@ -7235,7 +7235,7 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <div hidden class="new-tag" data-next-index="0">
+                <div hidden class="new-tag">
                   <div
                     class="tag"
                     style="${css`
@@ -7258,9 +7258,10 @@ export default async function courselore(
                         autocomplete="off"
                         disabled
                         data-ondomcontentloaded="${javascript`
-                          if (this.closest(".new-tag") !== null) return;
+                          const tags = this.closest(".tags");
+                          if (tags === null) return;
                           this.disabled = false;
-                          this.name = this.name.replace("{index}", this.closest("form").querySelector(".new-tag").dataset.nextIndex);
+                          this.name = this.name.replace("{index}", tags.dataset.nextIndex);
                         `}"
                       />
                     </div>
@@ -7271,9 +7272,10 @@ export default async function courselore(
                         autocomplete="off"
                         disabled
                         data-ondomcontentloaded="${javascript`
-                          if (this.closest(".new-tag") !== null) return;
+                          const tags = this.closest(".tags");
+                          if (tags === null) return;
                           this.disabled = false;
-                          this.name = this.name.replace("{index}", this.closest("form").querySelector(".new-tag").dataset.nextIndex);
+                          this.name = this.name.replace("{index}", tags.dataset.nextIndex);
                         `}"
                       >
                         <option value="everyone">Visible by Everyone</option>
@@ -7286,7 +7288,7 @@ export default async function courselore(
                         type="button"
                         class="button--inline button--inline--gray--cool button--inline--rose"
                         data-ondomcontentloaded="${javascript`
-                          if (this.closest(".new-tag") !== null) return;
+                          if (this.closest(".tags") === null) return;
                           tippy(this, {
                             content: "Remove Tag",
                             theme: "tooltip tooltip--rose",
@@ -7345,6 +7347,7 @@ export default async function courselore(
                   `}"
                 >
                   <div
+                    data-next-index="0"
                     class="tags"
                     style="${css`
                       display: flex;
@@ -7368,16 +7371,16 @@ export default async function courselore(
                       `}"
                       onclick="${javascript`
                         const form = this.closest("form");
-                        const newTag = form.querySelector(".new-tag");
-                        const newTagTemplate = newTag.firstElementChild.cloneNode(true);
-                        form.querySelector(".tags").insertAdjacentElement("beforeend", newTagTemplate);
-                        for (const element of newTagTemplate.querySelectorAll(
+                        const newTag = form.querySelector(".new-tag").firstElementChild.cloneNode(true);
+                        const tags = form.querySelector(".tags");
+                        tags.insertAdjacentElement("beforeend", newTag);
+                        for (const element of newTag.querySelectorAll(
                           "[data-ondomcontentloaded]"
                         ))
                           new Function(element.dataset.ondomcontentloaded).call(
                             element
                           );
-                        newTag.dataset.nextIndex = Number(newTag.dataset.nextIndex) + 1;
+                        tags.dataset.nextIndex = Number(tags.dataset.nextIndex) + 1;
                       `}"
                     >
                       <i class="bi bi-plus-circle"></i>
