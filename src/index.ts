@@ -4172,9 +4172,123 @@ export default async function courselore(
                   style="${css`
                     display: flex;
                     gap: var(--space--4);
-                    align-items: center;
+                    @media (max-width: 400px) {
+                      flex-direction: column;
+                    }
                   `}"
                 >
+                  <div
+                    class="avatar--empty"
+                    $${res.locals.user.avatar === null ? html`` : html`hidden`}
+                  >
+                    <button
+                      type="button"
+                      class="avatar avatar--lg avatar--anonymous"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Add Avatar",
+                          theme: "tooltip",
+                          touch: false,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        this.closest("form").querySelector(".avatar--upload").click();
+                      `}"
+                    ></button>
+                  </div>
+                  <div
+                    class="avatar--filled"
+                    $${res.locals.user.avatar === null ? html`hidden` : html``}
+                    style="${css`
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
+                    `}"
+                  >
+                    <button
+                      type="button"
+                      style="${css`
+                        place-self: center;
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Change Avatar",
+                          theme: "tooltip",
+                          touch: false,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        this.closest("form").querySelector(".avatar--upload").click();
+                      `}"
+                    >
+                      <img
+                        src="${res.locals.user.avatar ?? ""}"
+                        alt="Avatar"
+                        class="avatar avatar--lg"
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      class="button button--rose"
+                      style="${css`
+                        place-self: end;
+                        width: var(--font-size--2xl);
+                        height: var(--font-size--2xl);
+                        padding: var(--space--0);
+                        border-radius: var(--border-radius--circle);
+                        margin-right: var(--space--2);
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Remove Avatar",
+                          theme: "tooltip tooltip--rose",
+                          touch: false,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        const form = this.closest("form");
+                        form.querySelector('[name="avatar"]').value = "";
+                        form.querySelector(".avatar--empty").hidden = false;
+                        form.querySelector(".avatar--filled").hidden = true;
+                      `}"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                  <input
+                    type="file"
+                    class="avatar--upload"
+                    accept="image/*"
+                    autocomplete="off"
+                    hidden
+                    onchange="${javascript`
+                      (async () => {
+                        // TODO: Give some visual indication of progress.
+                        // TODO: Work with drag-and-drop.
+                        // TODO: Update image preview.
+                        const body = new FormData();
+                        body.append("avatar", this.files[0]);
+                        const avatar = await (await fetch("${app.locals.settings.url}/settings/avatar", {
+                          method: "POST",
+                          body,
+                        })).text();
+                        const form = this.closest("form");
+                        form.querySelector('[name="avatar"]').value = avatar;
+                        form.querySelector(".avatar--empty").hidden = true;
+                        const avatarFilled = form.querySelector(".avatar--filled");
+                        avatarFilled.hidden = false;
+                        avatarFilled.querySelector("img").setAttribute("src", avatar);
+                      })();
+                    `}"
+                  />
+                  <input
+                    type="hidden"
+                    name="avatar"
+                    value="${res.locals.user.avatar ?? ""}"
+                    autocomplete="off"
+                  />
+
                   <div
                     style="${css`
                       flex: 1;
@@ -4212,115 +4326,6 @@ export default async function courselore(
                         />
                       </span>
                     </label>
-                  </div>
-
-                  <div
-                    style="${css`
-                      display: flex;
-                      justify-content: flex-start;
-                    `}"
-                  >
-                    <div
-                      class="avatar--empty"
-                      $${res.locals.user.avatar === null
-                        ? html``
-                        : html`hidden`}
-                    >
-                      <button
-                        type="button"
-                        class="avatar avatar--lg avatar--anonymous"
-                        data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Add Avatar",
-                          theme: "tooltip",
-                          touch: false,
-                        });
-                      `}"
-                        onclick="${javascript`
-                        this.closest("form").querySelector(".avatar--upload").click();
-                      `}"
-                      ></button>
-                    </div>
-                    <div
-                      class="avatar--filled"
-                      $${res.locals.user.avatar === null
-                        ? html`hidden`
-                        : html``}
-                      style="${css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                        }
-                      `}"
-                    >
-                      <button
-                        type="button"
-                        data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Change Avatar",
-                          theme: "tooltip",
-                          touch: false,
-                        });
-                      `}"
-                      >
-                        <img
-                          src="${res.locals.user.avatar ?? ""}"
-                          alt="Avatar"
-                          class="avatar avatar--lg"
-                        />
-                      </button>
-                      <button
-                        type="button"
-                        class="button button--rose"
-                        style="${css`
-                          place-self: end;
-                          width: var(--font-size--2xl);
-                          height: var(--font-size--2xl);
-                          padding: var(--space--0);
-                          border-radius: var(--border-radius--circle);
-                          margin-right: var(--space--2);
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Remove Avatar",
-                          theme: "tooltip tooltip--rose",
-                          touch: false,
-                        });
-                      `}"
-                        onclick="${javascript`
-                        this.closest("form").querySelector('[name="avatar"]').value = "";
-                      `}"
-                      >
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                    <input
-                      type="file"
-                      class="avatar--upload"
-                      accept="image/*"
-                      autocomplete="off"
-                      hidden
-                      onchange="${javascript`
-                      (async () => {
-                        // TODO: Give some visual indication of progress.
-                        // TODO: Work with drag-and-drop.
-                        // TODO: Update image preview.
-                        const body = new FormData();
-                        body.append("avatar", this.files[0]);
-                        const response = await (await fetch("${app.locals.settings.url}/settings/avatar", {
-                          method: "POST",
-                          body,
-                        })).text();
-                        this.closest("form").querySelector('[name="avatar"]').value = response;
-                      })();
-                    `}"
-                    />
-                    <input
-                      type="hidden"
-                      name="avatar"
-                      value="${res.locals.user.avatar ?? ""}"
-                      autocomplete="off"
-                    />
                   </div>
                 </div>
 
