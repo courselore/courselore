@@ -4198,7 +4198,7 @@ export default async function courselore(
                   />
                 </label>
 
-                <label
+                <div
                   style="${css`
                     display: flex;
                     justify-content: flex-start;
@@ -4273,13 +4273,13 @@ export default async function courselore(
                       })();
                     `}"
                   />
-                </label>
-                <input
-                  type="hidden"
-                  name="avatar"
-                  value="${res.locals.user.avatar ?? ""}"
-                  autocomplete="off"
-                />
+                  <input
+                    type="hidden"
+                    name="avatar"
+                    value="${res.locals.user.avatar ?? ""}"
+                    autocomplete="off"
+                  />
+                </div>
 
                 <label>
                   Biography
