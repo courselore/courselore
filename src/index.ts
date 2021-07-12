@@ -128,12 +128,24 @@ export default async function courselore(
   }
   interface AnonymousEnrollment {
     id: null;
-    user: { id: null; email: null; name: "Anonymous" };
+    user: {
+      id: null;
+      email: "anonymous@courselore.org";
+      name: null;
+      avatar: null;
+      biography: null;
+    };
     role: null;
   }
   app.locals.constants.anonymousEnrollment = {
     id: null,
-    user: { id: null, email: null, name: "Anonymous" },
+    user: {
+      id: null,
+      email: "anonymous@courselore.org",
+      name: null,
+      avatar: null,
+      biography: null,
+    },
     role: null,
   };
 
@@ -581,6 +593,7 @@ export default async function courselore(
 
           $${res?.locals.eventSource
             ? html`
+                <!-- TODO: Improve this such that the diff is done on the server. -->
                 <script src="${app.locals.settings
                     .url}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
 
@@ -1117,6 +1130,10 @@ export default async function courselore(
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--gray--cool--600);
                 }
+              }
+
+              .avatar {
+                border-radius: var(--border-radius--circle);
               }
 
               .notification-indicator {
@@ -2466,7 +2483,9 @@ export default async function courselore(
                         class="header--item"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
-                            content: ${JSON.stringify(res.locals.user.name)},
+                            content: ${JSON.stringify(
+                              res.locals.user.name ?? res.locals.user.email
+                            )},
                             theme: "tooltip",
                             touch: false,
                           });
@@ -2479,7 +2498,16 @@ export default async function courselore(
                           });
                         `}"
                       >
-                        <i class="bi bi-person-circle"></i>
+                        $${res.locals.user.avatar === null
+                          ? html`<i class="bi bi-person-circle"></i>`
+                          : html`
+                              <img
+                                src="${res.locals.user.avatar}"
+                                alt="${res.locals.user.name ??
+                                res.locals.user.email}"
+                                class="avatar"
+                              />
+                            `}
                       </button>
                       <div hidden>
                         <div>
@@ -2492,18 +2520,22 @@ export default async function courselore(
                               }
                             `}"
                           >
-                            ${res.locals.user.name}
+                            ${res.locals.user.name ?? res.locals.user.email}
                           </p>
-                          <p
-                            style="${css`
-                              color: var(--color--primary--500);
-                              @media (prefers-color-scheme: dark) {
-                                color: var(--color--primary--300);
-                              }
-                            `}"
-                          >
-                            ${res.locals.user.email}
-                          </p>
+                          $${res.locals.user.name === null
+                            ? html``
+                            : html`
+                                <p
+                                  style="${css`
+                                    color: var(--color--primary--500);
+                                    @media (prefers-color-scheme: dark) {
+                                      color: var(--color--primary--300);
+                                    }
+                                  `}"
+                                >
+                                  ${res.locals.user.email}
+                                </p>
+                              `}
                           <hr class="dropdown--separator" />
                           <a
                             class="dropdown--item"
@@ -3092,7 +3124,7 @@ export default async function courselore(
                  "users"."email" AS "userEmail",
                  "users"."name" AS "userName",
                  "users"."avatar" AS "userAvatar",
-                 "users"."biography" AS "userBiography",
+                 "users"."biography" AS "userBiography"
           FROM "sessions"
           JOIN "users" ON "sessions"."user" = "users"."id"
           WHERE "sessions"."token" = ${req.cookies.session} AND
@@ -3538,6 +3570,10 @@ export default async function courselore(
       const email = app.locals.helpers.authenticationNonce.verify(
         req.params.nonce
       );
+      const name =
+        typeof req.query.name === "string" && req.query.name.trim() !== ""
+          ? req.query.name
+          : null;
       if (email === undefined)
         return res.send(
           app.locals.layouts.box({
@@ -3610,7 +3646,7 @@ export default async function courselore(
         )?.id ??
         app.locals.database.get<{ id: number }>(
           // FIXME: Add quotes around ‘id’. https://github.com/JoshuaWise/better-sqlite3/issues/657
-          sql`INSERT INTO "users" ("email") VALUES (${email}) RETURNING id`
+          sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${name}) RETURNING id`
         )!.id;
       app.locals.helpers.session.open(req, res, userId);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
@@ -3643,17 +3679,19 @@ export default async function courselore(
       const otherUser =
         otherUserEmail === undefined || isSelf
           ? undefined
-          : app.locals.database.get<{ name: string }>(
+          : app.locals.database.get<{ name: string | null }>(
               sql`SELECT "name" FROM "users" WHERE "email" = ${otherUserEmail}`
             );
-      const currentUserHTML = html`${res.locals.user.name}
-      ${`<${res.locals.user.email}>`}`;
+      const currentUserHTML =
+        res.locals.user.name === null
+          ? html`${res.locals.user.email}`
+          : html`${res.locals.user.name} ${`<${res.locals.user.email}>`}`;
       const otherUserHTML =
         otherUserEmail === undefined
           ? undefined
           : isSelf
           ? html`yourself`
-          : otherUser === undefined
+          : otherUser === undefined || otherUser.name === null
           ? html`${otherUserEmail}`
           : html`${otherUser.name} ${`<${otherUserEmail}>`}`;
       res.send(
@@ -3913,8 +3951,8 @@ export default async function courselore(
                   </div>
 
                   <p>
-                    Get started by enrolling in an existing course or by
-                    creating a new course.
+                    Get started by either enrolling in an existing course,
+                    creating a new course, or filling in your user profile.
                   </p>
                   <div
                     style="${css`
@@ -3942,6 +3980,7 @@ export default async function courselore(
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
                     </button>
+
                     <a
                       href="${app.locals.settings.url}/courses/new"
                       class="button button--secondary"
@@ -3950,6 +3989,18 @@ export default async function courselore(
                       Create a New Course
                     </a>
                   </div>
+                  <a
+                    href="${app.locals.settings.url}/settings"
+                    class="button button--secondary"
+                    style="${css`
+                      @media (max-width: 510px) {
+                        width: 100%;
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-person-circle"></i>
+                    Fill in Your User Profile
+                  </a>
                 </div>
               `,
             })
@@ -4079,22 +4130,13 @@ export default async function courselore(
               <form
                 method="POST"
                 action="${app.locals.settings.url}/settings?_method=PATCH"
+                enctype="multipart/form-data"
                 style="${css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
                 `}"
               >
-                <label>
-                  Name
-                  <input
-                    type="text"
-                    name="name"
-                    value="${res.locals.user.name}"
-                    class="input--text"
-                    required
-                  />
-                </label>
                 <label>
                   Email
                   <span
@@ -4113,6 +4155,34 @@ export default async function courselore(
                       disabled
                     />
                   </span>
+                </label>
+                <label>
+                  Name
+                  <input
+                    type="text"
+                    name="name"
+                    value="${res.locals.user.name ?? ""}"
+                    class="input--text"
+                  />
+                </label>
+                <label>
+                  Avatar
+                  <input type="file" name="avatar" autocomplete="off" hidden />
+                  <div>
+                    $${res.locals.user.avatar === null
+                      ? html`<i class="bi bi-person-circle"></i>`
+                      : html`<img
+                          src="res.locals.user.avatar"
+                          alt="Avatar"
+                          class="avatar"
+                        />`}
+                  </div>
+                </label>
+                <label>
+                  Biography
+                  $${app.locals.partials.textEditor(
+                    res.locals.user.biography ?? ""
+                  )}
                 </label>
                 <div>
                   <button
