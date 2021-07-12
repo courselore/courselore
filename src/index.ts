@@ -4171,11 +4171,13 @@ export default async function courselore(
                   <div>
                     $${res.locals.user.avatar === null
                       ? html`<i class="bi bi-person-circle"></i>`
-                      : html`<img
-                          src="res.locals.user.avatar"
-                          alt="Avatar"
-                          class="avatar"
-                        />`}
+                      : html`
+                          <img
+                            src="res.locals.user.avatar"
+                            alt="Avatar"
+                            class="avatar"
+                          />
+                        `}
                   </div>
                 </label>
                 <label>
