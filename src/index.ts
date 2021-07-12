@@ -1133,6 +1133,7 @@ export default async function courselore(
               }
 
               .avatar {
+                /* TODO: Filter brightness on dark mode. */
                 width: var(--space--6);
                 height: var(--space--6);
                 border-radius: var(--border-radius--circle);
