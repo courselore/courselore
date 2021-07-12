@@ -4130,7 +4130,6 @@ export default async function courselore(
               <form
                 method="POST"
                 action="${app.locals.settings.url}/settings?_method=PATCH"
-                enctype="multipart/form-data"
                 style="${css`
                   display: flex;
                   flex-direction: column;
@@ -4165,28 +4164,64 @@ export default async function courselore(
                     class="input--text"
                   />
                 </label>
-                <label>
-                  Avatar
-                  <input
-                    type="file"
-                    name="avatar"
-                    accept="image/*"
-                    autocomplete="off"
-                    hidden
-                  />
-                  <!-- TODO: Remove avatar -->
-                  <div>
-                    $${res.locals.user.avatar === null
-                      ? html`<i class="bi bi-person-circle"></i>`
-                      : html`
-                          <img
-                            src="res.locals.user.avatar"
-                            alt="Avatar"
-                            class="avatar"
-                          />
-                        `}
-                  </div>
-                </label>
+                <div>
+                  <label>
+                    Avatar
+                    <input
+                      type="hidden"
+                      name="avatar"
+                      value="${res.locals.user.avatar ?? ""}"
+                      autocomplete="off"
+                    />
+                    <div>
+                      $${res.locals.user.avatar === null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`
+                            <img
+                              src="${res.locals.user.avatar}"
+                              alt="Avatar"
+                              class="avatar"
+                            />
+                          `}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      autocomplete="off"
+                      hidden
+                      onchange="${javascript`
+                        (async () => {
+                          // TODO: Give some visual indication of progress.
+                          // TODO: Work with drag-and-drop.
+                          // TODO: Update image preview.
+                          const body = new FormData();
+                          body.append("avatar", this.files[0]);
+                          const response = await (await fetch("${app.locals.settings.url}/settings/avatar", {
+                            method: "POST",
+                            body,
+                          })).text();
+                          this.closest("form").querySelector('[name="avatar"]').value = response;
+                        })();
+                      `}"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    class="button--inline button--inline--gray--cool button--inline--rose"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "Remove Avatar",
+                        theme: "tooltip tooltip--rose",
+                        touch: false,
+                      });
+                    `}"
+                    onclick="${javascript`
+                      this.closest("form").querySelector('[name="avatar"]').value = "";
+                    `}"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
                 <label>
                   Biography
                   $${app.locals.partials.textEditor({
@@ -4219,61 +4254,32 @@ export default async function courselore(
   app.patch<
     {},
     any,
-    { name?: string; biography?: string },
+    { name?: string; avatar?: string; biography?: string },
     {},
     IsAuthenticatedMiddlewareLocals
   >(
     "/settings",
     ...app.locals.middlewares.isAuthenticated,
-    asyncHandler(async (req, res, next) => {
-      if (typeof req.body.name === "string")
-        app.locals.database.run(
-          sql`UPDATE "users" SET "name" = ${
-            req.body.name.trim() === "" ? null : req.body.name
-          } WHERE "id" = ${res.locals.user.id}`
-        );
+    (req, res, next) => {
+      if (
+        typeof req.body.name !== "string" ||
+        typeof req.body.avatar !== "string" ||
+        typeof req.body.biography !== "string"
+      )
+        return next("validation");
 
-      if (req.files?.avatar !== undefined) {
-        if (Array.isArray(req.files.avatar) && req.files.avatar.length !== 1)
-          return next("validation");
-        const avatar = Array.isArray(req.files.avatar)
-          ? req.files.avatar[0]
-          : req.files.avatar;
-        if (!avatar.mimetype.startsWith("image/")) return next("validation");
-        const relativePathOriginal = `files/${cryptoRandomString({
-          length: 20,
-          type: "numeric",
-        })}/${avatar.name}`;
-        await avatar.mv(path.join(rootDirectory, relativePathOriginal));
-        const ext = path.extname(relativePathOriginal);
-        const relativePathAvatar = path.join(
-          path.dirname(relativePathOriginal),
-          `${relativePathOriginal.slice(0, -ext.length)}--avatar${ext}`
-        );
-        await sharp(avatar.data)
-          .resize(200, 200, {
-            position: sharp.strategy.attention,
-          })
-          .toFile(relativePathAvatar);
-        app.locals.database.run(
-          sql`
+      app.locals.database.run(
+        sql`
             UPDATE "users"
-            SET "avatar" = ${`${app.locals.settings.url}/${relativePathAvatar}`}
-            WHERE "id" = ${res.locals.user.id}
-          `
-        );
-      }
-
-      if (typeof req.body.biography === "string")
-        app.locals.database.run(
-          sql`
-            UPDATE "users"
-            SET "biography" = ${
-              req.body.biography.trim() === "" ? null : req.body.biography
-            }
-            WHERE "id" = ${res.locals.user.id}
-          `
-        );
+            SET "name" = ${req.body.name.trim() === "" ? null : req.body.name},
+                "avatar" = ${
+                  req.body.avatar.trim() === "" ? null : req.body.avatar
+                },
+                "biography" = ${
+                  req.body.biography.trim() === "" ? null : req.body.biography
+                }
+            WHERE "id" = ${res.locals.user.id}`
+      );
 
       app.locals.helpers.flash.set(
         req,
@@ -4286,6 +4292,34 @@ export default async function courselore(
       );
 
       res.redirect(`${app.locals.settings.url}/settings`);
+    }
+  );
+
+  app.post<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
+    "/settings/avatar",
+    asyncHandler(async (req, res, next) => {
+      if (
+        req.files?.avatar === undefined ||
+        Array.isArray(req.files.avatar) ||
+        !req.files.avatar.mimetype.startsWith("image/")
+      )
+        return next("validation");
+      const relativePathOriginal = `files/${cryptoRandomString({
+        length: 20,
+        type: "numeric",
+      })}/${req.files.avatar.name}`;
+      await req.files.avatar.mv(path.join(rootDirectory, relativePathOriginal));
+      const ext = path.extname(relativePathOriginal);
+      const relativePathAvatar = `${relativePathOriginal.slice(
+        0,
+        -ext.length
+      )}--avatar${ext}`;
+      await sharp(req.files.avatar.data)
+        .resize(200, 200, {
+          position: sharp.strategy.attention,
+        })
+        .toFile(path.join(rootDirectory, relativePathAvatar));
+      res.send(`${app.locals.settings.url}/${relativePathAvatar}`);
     })
   );
 
