@@ -4187,6 +4187,7 @@ export default async function courselore(
                     />
                   </span>
                 </label>
+
                 <label>
                   Name
                   <input
@@ -4196,86 +4197,90 @@ export default async function courselore(
                     class="input--text"
                   />
                 </label>
-                <div>
-                  <label>
-                    Avatar
-                    <div
-                      style="${css`
-                        display: flex;
-                        justify-content: flex-start;
-                      `}"
-                    >
-                      <div
-                        style="${css`
-                          cursor: pointer;
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Upload Avatar",
-                            theme: "tooltip",
-                            touch: false,
-                          });
-                        `}"
-                      >
-                        $${res.locals.user.avatar === null
-                          ? html`
-                              <div
-                                class="avatar avatar--lg avatar--anonymous"
-                              ></div>
-                            `
-                          : html`
-                              <img
-                                src="${res.locals.user.avatar}"
-                                alt="Avatar"
-                                class="avatar avatar--lg"
-                              />
-                            `}
-                      </div>
-                    </div>
-                    <input
-                      type="hidden"
-                      name="avatar"
-                      value="${res.locals.user.avatar ?? ""}"
-                      autocomplete="off"
-                    />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      autocomplete="off"
-                      hidden
-                      onchange="${javascript`
-                        (async () => {
-                          // TODO: Give some visual indication of progress.
-                          // TODO: Work with drag-and-drop.
-                          // TODO: Update image preview.
-                          const body = new FormData();
-                          body.append("avatar", this.files[0]);
-                          const response = await (await fetch("${app.locals.settings.url}/settings/avatar", {
-                            method: "POST",
-                            body,
-                          })).text();
-                          this.closest("form").querySelector('[name="avatar"]').value = response;
-                        })();
-                      `}"
-                    />
-                  </label>
-                  <button
-                    type="button"
-                    class="button--inline button--inline--gray--cool button--inline--rose"
+
+                <label
+                  style="${css`
+                    display: flex;
+                    justify-content: flex-start;
+                  `}"
+                >
+                  <div
+                    style="${css`
+                      cursor: pointer;
+                    `}"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
-                        content: "Remove Avatar",
-                        theme: "tooltip tooltip--rose",
+                        content: "Upload Avatar",
+                        theme: "tooltip",
                         touch: false,
                       });
                     `}"
-                    onclick="${javascript`
-                      this.closest("form").querySelector('[name="avatar"]').value = "";
-                    `}"
                   >
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
+                    <div
+                      class="avatar--empty"
+                      $${res.locals.user.avatar === null
+                        ? html``
+                        : html`hidden`}
+                    >
+                      <div class="avatar avatar--lg avatar--anonymous"></div>
+                    </div>
+                    <div
+                      class="avatar--filled"
+                      $${res.locals.user.avatar === null
+                        ? html`hidden`
+                        : html``}
+                    >
+                      <img
+                        src="${res.locals.user.avatar ?? ""}"
+                        alt="Avatar"
+                        class="avatar avatar--lg"
+                      />
+                      <button
+                        type="button"
+                        class="button--inline button--inline--gray--cool button--inline--rose"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Remove Avatar",
+                            theme: "tooltip tooltip--rose",
+                            touch: false,
+                          });
+                        `}"
+                        onclick="${javascript`
+                          this.closest("form").querySelector('[name="avatar"]').value = "";
+                        `}"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    autocomplete="off"
+                    hidden
+                    onchange="${javascript`
+                      (async () => {
+                        // TODO: Give some visual indication of progress.
+                        // TODO: Work with drag-and-drop.
+                        // TODO: Update image preview.
+                        const body = new FormData();
+                        body.append("avatar", this.files[0]);
+                        const response = await (await fetch("${app.locals.settings.url}/settings/avatar", {
+                          method: "POST",
+                          body,
+                        })).text();
+                        this.closest("form").querySelector('[name="avatar"]').value = response;
+                      })();
+                    `}"
+                  />
+                </label>
+                <input
+                  type="hidden"
+                  name="avatar"
+                  value="${res.locals.user.avatar ?? ""}"
+                  autocomplete="off"
+                />
+
                 <label>
                   Biography
                   $${app.locals.partials.textEditor({
