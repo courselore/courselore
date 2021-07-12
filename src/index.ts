@@ -4266,7 +4266,6 @@ export default async function courselore(
                       (async () => {
                         // TODO: Give some visual indication of progress.
                         // TODO: Work with drag-and-drop.
-                        // TODO: Update image preview.
                         const body = new FormData();
                         body.append("avatar", this.files[0]);
                         const avatar = await (await fetch("${app.locals.settings.url}/settings/avatar", {
@@ -4312,11 +4311,11 @@ export default async function courselore(
                       <span
                         tabindex="0"
                         data-ondomcontentloaded="${javascript`
-                    tippy(this, {
-                      content: "Your email is your identity in CourseLore and may not be changed.",
-                      theme: "tooltip",
-                    });
-                  `}"
+                          tippy(this, {
+                            content: "Your email is your identity in CourseLore and may not be changed.",
+                            theme: "tooltip",
+                          });
+                        `}"
                       >
                         <input
                           type="email"
