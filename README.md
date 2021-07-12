@@ -227,6 +227,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Minor Improvements
 
+- Fix occurrences of `user.name`.
 - Manage answer tags more intelligently:
   - Answered at all.
   - Answered by staff.

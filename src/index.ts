@@ -156,7 +156,9 @@ export default async function courselore(
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "email" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL
+        "name" TEXT NULL,
+        "avatar" TEXT NULL,
+        "biography" TEXT NULL
       );
 
       CREATE TABLE "sessions" (
@@ -252,7 +254,6 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "name" TEXT NOT NULL,
-        "mayTag" TEXT NOT NULL CHECK ("mayTag" IN ('anything', 'conversations', 'messages')),
         "visibleBy" TEXT NOT NULL CHECK ("visibleBy" IN ('everyone', 'staff')),
         UNIQUE ("course", "reference")
       );
@@ -620,17 +621,6 @@ export default async function courselore(
                         break;
                     }
                   });
-
-                  /*
-                  (() => {
-                    const id = document.currentScript.previousElementSibling.id;
-                    eventSource.addEventListener("refreshed", (event) => {
-                      document
-                        .querySelector("#" + id)
-                        .replaceWith(event.detail.document.querySelector("#" + id));
-                    });
-                  })();
-                  */
                 </script>
               `
             : html``}
@@ -3058,7 +3048,9 @@ export default async function courselore(
     user: {
       id: number;
       email: string;
-      name: string;
+      name: string | null;
+      avatar: string | null;
+      biography: string | null;
     };
     invitations: {
       id: number;
@@ -3090,13 +3082,17 @@ export default async function courselore(
         expiresAt: string;
         userId: number;
         userEmail: string;
-        userName: string;
+        userName: string | null;
+        userAvatar: string | null;
+        userBiography: string | null;
       }>(
         sql`
           SELECT "sessions"."expiresAt",
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
-                 "users"."name" AS "userName"
+                 "users"."name" AS "userName",
+                 "users"."avatar" AS "userAvatar",
+                 "users"."biography" AS "userBiography",
           FROM "sessions"
           JOIN "users" ON "sessions"."user" = "users"."id"
           WHERE "sessions"."token" = ${req.cookies.session} AND
@@ -3118,6 +3114,8 @@ export default async function courselore(
         id: session.userId,
         email: session.userEmail,
         name: session.userName,
+        avatar: session.userAvatar,
+        biography: session.userBiography,
       };
       res.locals.invitations = app.locals.database
         .all<{
@@ -3606,219 +3604,18 @@ export default async function courselore(
             `,
           })
         );
-      const user = app.locals.database.get<{ id: number }>(
-        sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
-      );
-      if (user === undefined)
-        return res.send(
-          app.locals.layouts.box({
-            req,
-            res,
-            head: html`<title>Sign up · CourseLore</title>`,
-            body: html`
-              <div
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                <h2
-                  class="heading--2"
-                  style="${css`
-                    color: var(--color--primary--200);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--200);
-                    }
-                  `}"
-                >
-                  <i class="bi bi-person-plus"></i>
-                  Sign up
-                </h2>
-                <form
-                  method="POST"
-                  action="${app.locals.settings.url}/users?${qs.stringify({
-                    redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
-                  })}"
-                  style="${css`
-                    color: var(--color--primary--800);
-                    background-color: var(--color--primary--100);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--200);
-                      background-color: var(--color--primary--900);
-                    }
-                    padding: var(--space--4);
-                    border-radius: var(--border-radius--xl);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-
-                    .input--text {
-                      color: var(--color--primary--800);
-                      background-color: var(--color--primary--50);
-                      &:disabled {
-                        color: var(--color--primary--700);
-                        background-color: var(--color--primary--300);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--50);
-                        background-color: var(--color--primary--700);
-                        &:disabled {
-                          color: var(--color--primary--300);
-                          background-color: var(--color--primary--800);
-                        }
-                      }
-                    }
-                  `}"
-                >
-                  <input
-                    type="hidden"
-                    name="nonce"
-                    value="${app.locals.helpers.authenticationNonce.create(
-                      email
-                    )}"
-                  />
-                  <label>
-                    Name
-                    <input
-                      type="text"
-                      name="name"
-                      value="${req.query.name ?? ""}"
-                      required
-                      autofocus
-                      class="input--text"
-                    />
-                  </label>
-
-                  <label>
-                    Email
-                    <span
-                      tabindex="0"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "This is the email that you confirmed by having followed the Magic Authentication Link; it’s your identity in CourseLore and may not be changed anymore.",
-                          theme: "tooltip",
-                        });
-                      `}"
-                    >
-                      <input
-                        type="email"
-                        value="${email}"
-                        disabled
-                        class="input--text"
-                      />
-                    </span>
-                  </label>
-
-                  <button class="button button--primary">
-                    <i class="bi bi-person-plus"></i>
-                    Sign up
-                  </button>
-                </form>
-              </div>
-            `,
-          })
-        );
-      app.locals.helpers.session.open(req, res, user.id);
+      const userId =
+        app.locals.database.get<{ id: number }>(
+          sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
+        )?.id ??
+        app.locals.database.get<{ id: number }>(
+          // FIXME: Add quotes around ‘id’. https://github.com/JoshuaWise/better-sqlite3/issues/657
+          sql`INSERT INTO "users" ("email") VALUES (${email}) RETURNING id`
+        )!.id;
+      app.locals.helpers.session.open(req, res, userId);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
     }
   );
-
-  app.post<
-    {},
-    HTML,
-    { nonce?: string; name?: string },
-    { redirect?: string; email?: string; name?: string },
-    IsUnauthenticatedMiddlewareLocals
-  >("/users", ...app.locals.middlewares.isUnauthenticated, (req, res, next) => {
-    if (
-      typeof req.body.nonce !== "string" ||
-      req.body.nonce.trim() === "" ||
-      typeof req.body.name !== "string" ||
-      req.body.name.trim() === ""
-    )
-      return next("validation");
-
-    const email = app.locals.helpers.authenticationNonce.verify(req.body.nonce);
-    if (
-      email === undefined ||
-      app.locals.database.get<{ exists: number }>(
-        sql`SELECT EXISTS(SELECT 1 FROM "users" WHERE "email" = ${email}) AS "exists"`
-      )!.exists === 1
-    )
-      return res.send(
-        app.locals.layouts.box({
-          req,
-          res,
-          head: html`<title>Sign up · CourseLore</title>`,
-          body: html`
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `}"
-            >
-              <h2
-                class="heading--2"
-                style="${css`
-                  color: var(--color--primary--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                  }
-                `}"
-              >
-                <i class="bi bi-person-plus"></i>
-                Sign up
-              </h2>
-              <div
-                style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <p>Something went wrong in your sign up.</p>
-                <p>
-                  <a
-                    href="${app.locals.settings
-                      .url}/authenticate?${qs.stringify({
-                      redirect: req.query.redirect,
-                      email: req.query.email,
-                      name: req.query.name,
-                    })}"
-                    class="button button--primary"
-                    style="${css`
-                      width: 100%;
-                    `}"
-                  >
-                    <i class="bi bi-chevron-left"></i>
-                    Start Over
-                  </a>
-                </p>
-              </div>
-            </div>
-          `,
-        })
-      );
-    const userId = Number(
-      app.locals.database.run(
-        sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${req.body.name})`
-      ).lastInsertRowid
-    );
-    app.locals.helpers.session.open(req, res, userId);
-    res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
-  });
 
   app.delete<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "/authenticate",
