@@ -1142,6 +1142,25 @@ export default async function courselore(
                   width: var(--space--28);
                   height: var(--space--28);
                 }
+
+                &.avatar--anonymous::before {
+                  content: "\\f4d7";
+                  font-family: bootstrap-icons !important;
+                }
+
+                &.avatar--anonymous.avatar--lg {
+                  font-size: var(--font-size--8xl);
+                  line-height: var(--line-height--8xl);
+                  color: var(--color--gray--cool--200);
+                  background-color: var(--color--gray--cool--50);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--gray--cool--600);
+                    background-color: var(--color--gray--cool--800);
+                  }
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                }
               }
 
               .notification-indicator {
@@ -4179,23 +4198,45 @@ export default async function courselore(
                 <div>
                   <label>
                     Avatar
+                    <div
+                      style="${css`
+                        display: flex;
+                        justify-content: flex-start;
+                      `}"
+                    >
+                      <div
+                        style="${css`
+                          cursor: pointer;
+                        `}"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Upload Avatar",
+                            theme: "tooltip",
+                            touch: false,
+                          });
+                        `}"
+                      >
+                        $${res.locals.user.avatar === null
+                          ? html`
+                              <div
+                                class="avatar avatar--lg avatar--anonymous"
+                              ></div>
+                            `
+                          : html`
+                              <img
+                                src="${res.locals.user.avatar}"
+                                alt="Avatar"
+                                class="avatar avatar--lg"
+                              />
+                            `}
+                      </div>
+                    </div>
                     <input
                       type="hidden"
                       name="avatar"
                       value="${res.locals.user.avatar ?? ""}"
                       autocomplete="off"
                     />
-                    <div>
-                      $${res.locals.user.avatar === null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`
-                            <img
-                              src="${res.locals.user.avatar}"
-                              alt="Avatar"
-                              class="avatar avatar--lg"
-                            />
-                          `}
-                    </div>
                     <input
                       type="file"
                       accept="image/*"
