@@ -4205,56 +4205,78 @@ export default async function courselore(
                   `}"
                 >
                   <div
+                    class="avatar--empty"
+                    $${res.locals.user.avatar === null ? html`` : html`hidden`}
+                  >
+                    <button
+                      type="button"
+                      class="avatar avatar--lg avatar--anonymous"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Add Avatar",
+                          theme: "tooltip",
+                          touch: false,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        this.closest("form").querySelector(".avatar--upload").click();
+                      `}"
+                    ></button>
+                  </div>
+                  <div
+                    class="avatar--filled"
+                    $${res.locals.user.avatar === null ? html`hidden` : html``}
                     style="${css`
-                      cursor: pointer;
-                    `}"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Upload Avatar",
-                        theme: "tooltip",
-                        touch: false,
-                      });
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
                     `}"
                   >
-                    <div
-                      class="avatar--empty"
-                      $${res.locals.user.avatar === null
-                        ? html``
-                        : html`hidden`}
-                    >
-                      <div class="avatar avatar--lg avatar--anonymous"></div>
-                    </div>
-                    <div
-                      class="avatar--filled"
-                      $${res.locals.user.avatar === null
-                        ? html`hidden`
-                        : html``}
+                    <button
+                      type="button"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Change Avatar",
+                          theme: "tooltip",
+                          touch: false,
+                        });
+                      `}"
                     >
                       <img
                         src="${res.locals.user.avatar ?? ""}"
                         alt="Avatar"
                         class="avatar avatar--lg"
                       />
-                      <button
-                        type="button"
-                        class="button--inline button--inline--gray--cool button--inline--rose"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Remove Avatar",
-                            theme: "tooltip tooltip--rose",
-                            touch: false,
-                          });
-                        `}"
-                        onclick="${javascript`
-                          this.closest("form").querySelector('[name="avatar"]').value = "";
-                        `}"
-                      >
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
+                    </button>
+                    <button
+                      type="button"
+                      class="button button--rose"
+                      style="${css`
+                        place-self: end;
+                        width: var(--font-size--2xl);
+                        height: var(--font-size--2xl);
+                        padding: var(--space--0);
+                        border-radius: var(--border-radius--circle);
+                        margin-right: var(--space--2);
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Remove Avatar",
+                          theme: "tooltip tooltip--rose",
+                          touch: false,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        this.closest("form").querySelector('[name="avatar"]').value = "";
+                      `}"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </div>
                   <input
                     type="file"
+                    class="avatar--upload"
                     accept="image/*"
                     autocomplete="off"
                     hidden
