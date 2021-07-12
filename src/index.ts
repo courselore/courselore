@@ -1133,7 +1133,15 @@ export default async function courselore(
               }
 
               .avatar {
+                width: var(--space--6);
+                height: var(--space--6);
                 border-radius: var(--border-radius--circle);
+                display: block;
+
+                &.avatar--lg {
+                  width: var(--space--28);
+                  height: var(--space--28);
+                }
               }
 
               .notification-indicator {
@@ -2478,7 +2486,11 @@ export default async function courselore(
                         </div>
                       </div>
                     </div>
-                    <div>
+                    <div
+                      style="${css`
+                        display: flex;
+                      `}"
+                    >
                       <button
                         class="header--item"
                         data-ondomcontentloaded="${javascript`
@@ -4180,7 +4192,7 @@ export default async function courselore(
                             <img
                               src="${res.locals.user.avatar}"
                               alt="Avatar"
-                              class="avatar"
+                              class="avatar avatar--lg"
                             />
                           `}
                     </div>
@@ -4315,7 +4327,7 @@ export default async function courselore(
         -ext.length
       )}--avatar${ext}`;
       await sharp(req.files.avatar.data)
-        .resize(200, 200, {
+        .resize(/* var(--space--56) */ 224, 224, {
           position: sharp.strategy.attention,
         })
         .toFile(path.join(rootDirectory, relativePathAvatar));
