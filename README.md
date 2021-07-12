@@ -210,17 +210,17 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Roadmap
 
-|     |            |                                                                                                                                                                                            |
-| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ✅  | 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                                                                              |
-| ✅  | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; Generalized live updates. Tags: Mark posts as answers; Endorsements.                                                            |
-|     | 2021-07-17 | Finish arbitrary tags: Create arbitrary tags; Flag posts to answer later. Categories: Question, Announcement, Other. Demo class for showing people staring August. Search; Filter by tags. |
-|     | 2021-07-24 | Notifications: In-app; via email.                                                                                                                                                          |
-|     | 2021-07-31 | Finish notifications.                                                                                                                                                                      |
-|     | 2021-08-07 | Access management: Anonymity & private threads.                                                                                                                                            |
-|     | 2021-08-14 | Continued access management.                                                                                                                                                               |
-|     | 2021-08-21 | Buffer for things that’ll take longer than we expect.                                                                                                                                      |
-|     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                                      |
+|     |            |                                                                                                                                                                                                                          |
+| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ✅  | 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                                                                                                            |
+| ✅  | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; Generalized live updates. Tags: Mark posts as answers; Endorsements.                                                                                          |
+|     | 2021-07-17 | Finish arbitrary tags: Create arbitrary tags; Manage tags in conversations; Flag posts to answer later. Categories: Question, Announcement, Other. Demo class for showing people staring August. Search; Filter by tags. |
+|     | 2021-07-24 | Notifications: In-app; via email.                                                                                                                                                                                        |
+|     | 2021-07-31 | Finish notifications.                                                                                                                                                                                                    |
+|     | 2021-08-07 | Access management: Anonymity & private threads.                                                                                                                                                                          |
+|     | 2021-08-14 | Continued access management.                                                                                                                                                                                             |
+|     | 2021-08-21 | Buffer for things that’ll take longer than we expect.                                                                                                                                                                    |
+|     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                                                                    |
 
 <details>
 <summary><strong>Backlog</strong></summary>
