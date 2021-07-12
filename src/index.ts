@@ -4182,9 +4182,9 @@ export default async function courselore(
                 </label>
                 <label>
                   Biography
-                  $${app.locals.partials.textEditor(
-                    res.locals.user.biography ?? ""
-                  )}
+                  $${app.locals.partials.textEditor({
+                    value: res.locals.user.biography ?? "",
+                  })}
                 </label>
                 <div>
                   <button
@@ -8240,9 +8240,9 @@ export default async function courselore(
     });
 
   interface Partials {
-    textEditor: (value?: string) => HTML;
+    textEditor: (_?: { value?: string }) => HTML;
   }
-  app.locals.partials.textEditor = (value = ""): HTML => html`
+  app.locals.partials.textEditor = ({ value = "" } = {}): HTML => html`
     <div class="text-editor">
       <div
         style="${css`
@@ -10790,7 +10790,9 @@ ${value}</textarea
                             gap: var(--space--2);
                           `}"
                         >
-                          $${app.locals.partials.textEditor(message.content)}
+                          $${app.locals.partials.textEditor({
+                            value: message.content,
+                          })}
 
                           <div
                             style="${css`
