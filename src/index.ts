@@ -4183,7 +4183,9 @@ export default async function courselore(
                 <label>
                   Biography
                   $${app.locals.partials.textEditor({
+                    name: "biography",
                     value: res.locals.user.biography ?? "",
+                    required: false,
                   })}
                 </label>
                 <div>
@@ -8240,9 +8242,17 @@ export default async function courselore(
     });
 
   interface Partials {
-    textEditor: (_?: { value?: string }) => HTML;
+    textEditor: (_?: {
+      name?: string;
+      value?: string;
+      required?: boolean;
+    }) => HTML;
   }
-  app.locals.partials.textEditor = ({ value = "" } = {}): HTML => html`
+  app.locals.partials.textEditor = ({
+    name = "content",
+    value = "",
+    required = true,
+  } = {}): HTML => html`
     <div class="text-editor">
       <div
         style="${css`
@@ -8302,7 +8312,11 @@ export default async function courselore(
                 const write = this.closest(".text-editor").querySelector(".text-editor--write");
                 const loading = this.closest(".text-editor").querySelector(".text-editor--loading");
                 const preview = this.closest(".text-editor").querySelector(".text-editor--preview");
-                if (!isValid(write)) {
+                const textarea = write.querySelector("textarea");
+                textarea.required = true;
+                const isWriteValid = isValid(write);
+                textarea.required = ${JSON.stringify(required)};
+                if (!isWriteValid) {
                   event.preventDefault();
                   return;
                 }
@@ -8310,9 +8324,11 @@ export default async function courselore(
                 loading.hidden = false;
                 preview.hidden = true;
                 preview.innerHTML = await (
-                  await fetch("${app.locals.settings.url}/text-editor/preview", {
+                  await fetch("${
+                    app.locals.settings.url
+                  }/text-editor/preview", {
                     method: "POST",
-                    body: new URLSearchParams({ content: write.querySelector("textarea").value }),
+                    body: new URLSearchParams({ content: textarea.value }),
                   })
                 ).text();
                 write.hidden = true;
@@ -9024,8 +9040,8 @@ export default async function courselore(
           </div>
         </div>
         <textarea
-          name="content"
-          required
+          name="${name}"
+          $${required ? html`required` : html``}
           class="input--text"
           style="${css`
             transition-property: var(--transition-property--colors);
