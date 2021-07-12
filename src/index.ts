@@ -4167,7 +4167,14 @@ export default async function courselore(
                 </label>
                 <label>
                   Avatar
-                  <input type="file" name="avatar" autocomplete="off" hidden />
+                  <input
+                    type="file"
+                    name="avatar"
+                    accept="image/*"
+                    autocomplete="off"
+                    hidden
+                  />
+                  <!-- TODO: Remove avatar -->
                   <div>
                     $${res.locals.user.avatar === null
                       ? html`<i class="bi bi-person-circle"></i>`
@@ -4209,15 +4216,64 @@ export default async function courselore(
     }
   );
 
-  app.patch<{}, any, { name?: string }, {}, IsAuthenticatedMiddlewareLocals>(
+  app.patch<
+    {},
+    any,
+    { name?: string; biography?: string },
+    {},
+    IsAuthenticatedMiddlewareLocals
+  >(
     "/settings",
     ...app.locals.middlewares.isAuthenticated,
-    (req, res, next) => {
-      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
-        return next("validation");
-      app.locals.database.run(
-        sql`UPDATE "users" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.user.id}`
-      );
+    asyncHandler(async (req, res, next) => {
+      if (typeof req.body.name === "string")
+        app.locals.database.run(
+          sql`UPDATE "users" SET "name" = ${
+            req.body.name.trim() === "" ? null : req.body.name
+          } WHERE "id" = ${res.locals.user.id}`
+        );
+
+      if (req.files?.avatar !== undefined) {
+        if (Array.isArray(req.files.avatar) && req.files.avatar.length !== 1)
+          return next("validation");
+        const avatar = Array.isArray(req.files.avatar)
+          ? req.files.avatar[0]
+          : req.files.avatar;
+        if (!avatar.mimetype.startsWith("image/")) return next("validation");
+        const relativePathOriginal = `files/${cryptoRandomString({
+          length: 20,
+          type: "numeric",
+        })}/${avatar.name}`;
+        await avatar.mv(path.join(rootDirectory, relativePathOriginal));
+        const ext = path.extname(relativePathOriginal);
+        const relativePathAvatar = path.join(
+          path.dirname(relativePathOriginal),
+          `${relativePathOriginal.slice(0, -ext.length)}--avatar${ext}`
+        );
+        await sharp(avatar.data)
+          .resize(200, 200, {
+            position: sharp.strategy.attention,
+          })
+          .toFile(relativePathAvatar);
+        app.locals.database.run(
+          sql`
+            UPDATE "users"
+            SET "avatar" = ${`${app.locals.settings.url}/${relativePathAvatar}`}
+            WHERE "id" = ${res.locals.user.id}
+          `
+        );
+      }
+
+      if (typeof req.body.biography === "string")
+        app.locals.database.run(
+          sql`
+            UPDATE "users"
+            SET "biography" = ${
+              req.body.biography.trim() === "" ? null : req.body.biography
+            }
+            WHERE "id" = ${res.locals.user.id}
+          `
+        );
 
       app.locals.helpers.flash.set(
         req,
@@ -4230,7 +4286,7 @@ export default async function courselore(
       );
 
       res.redirect(`${app.locals.settings.url}/settings`);
-    }
+    })
   );
 
   app.get<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
@@ -9130,11 +9186,11 @@ ${value}</textarea
     "/text-editor/attachments",
     ...app.locals.middlewares.isAuthenticated,
     asyncHandler(async (req, res, next) => {
-      if (req.files!.attachments === undefined) return next("validation");
+      if (req.files?.attachments === undefined) return next("validation");
       const attachmentsMarkdowns: string[] = [];
-      for (const attachment of Array.isArray(req.files!.attachments)
-        ? req.files!.attachments
-        : [req.files!.attachments]) {
+      for (const attachment of Array.isArray(req.files.attachments)
+        ? req.files.attachments
+        : [req.files.attachments]) {
         const relativePath = `files/${cryptoRandomString({
           length: 20,
           type: "numeric",
