@@ -4181,6 +4181,7 @@ export default async function courselore(
                     style="${css`
                       display: flex;
                       justify-content: center;
+                      align-items: center;
                     `}"
                   >
                     <div
@@ -4389,15 +4390,16 @@ export default async function courselore(
 
       app.locals.database.run(
         sql`
-            UPDATE "users"
-            SET "name" = ${req.body.name.trim() === "" ? null : req.body.name},
-                "avatar" = ${
-                  req.body.avatar.trim() === "" ? null : req.body.avatar
-                },
-                "biography" = ${
-                  req.body.biography.trim() === "" ? null : req.body.biography
-                }
-            WHERE "id" = ${res.locals.user.id}`
+          UPDATE "users"
+          SET "name" = ${req.body.name.trim() === "" ? null : req.body.name},
+              "avatar" = ${
+                req.body.avatar.trim() === "" ? null : req.body.avatar
+              },
+              "biography" = ${
+                req.body.biography.trim() === "" ? null : req.body.biography
+              }
+          WHERE "id" = ${res.locals.user.id}
+        `
       );
 
       app.locals.helpers.flash.set(
