@@ -22,7 +22,7 @@
     "access": "public"
   },
   "scripts": {
-    "postinstall": "npm --prefix public install",
+    "postinstall": "node postinstall.js",
     "start": "ts-node-dev --poll src/index.ts",
     "start:customized": "npm start customization-example/configuration.js",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
@@ -39,6 +39,7 @@
     "crypto-random-string": "^3.3.1",
     "dedent": "^0.7.0",
     "deepmerge": "^4.2.2",
+    "execa": "^4.1.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "fs-extra": "^8.1.0",
@@ -75,6 +76,7 @@
     "@types/sharp": "^0.28.3",
     "@types/tough-cookie": "^4.0.0",
     "caxa": "^2.0.0",
+    "download": "^8.0.0",
     "got": "^11.8.1",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
