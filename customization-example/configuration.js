@@ -12,7 +12,7 @@ module.exports = async (require) => {
     .use(customization(app))
     .use(app)
     .listen(4000, "127.0.0.1");
-  const reverseProxy = execa(
+  await execa(
     "caddy",
     [
       "reverse-proxy",
@@ -23,10 +23,5 @@ module.exports = async (require) => {
     ],
     { preferLocal: true, stdio: "inherit" }
   );
-  reverseProxy.on("close", () => {
-    server.close();
-  });
-  server.on("close", () => {
-    reverseProxy.cancel();
-  });
+  server.close();
 };

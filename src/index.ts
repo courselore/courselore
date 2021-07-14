@@ -39,8 +39,6 @@ import sharp from "sharp";
 import QRCode from "qrcode";
 import lodash from "lodash";
 
-const VERSION = require("../package.json").version;
-
 export default async function courselore(
   rootDirectory: string
 ): Promise<express.Express> {
@@ -307,7 +305,6 @@ export default async function courselore(
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1"
           />
-          <meta name="generator" content="CourseLore/${VERSION}" />
           <meta name="description" content="The Open-Source Student Forum" />
 
           <link
@@ -12028,17 +12025,4 @@ ${value}</textarea
   return app;
 }
 
-if (require.main === module)
-  (async () => {
-    console.log(`CourseLore/${VERSION}`);
-    if (process.argv[2] === undefined) {
-      const app = await courselore(path.join(process.cwd(), "data"));
-      app.listen(new URL(app.locals.settings.url).port, () => {
-        console.log(`Server started at ${app.locals.settings.url}`);
-      });
-    } else {
-      const configurationFile = path.resolve(process.argv[2]);
-      await require(configurationFile)(require);
-      console.log(`Configuration loaded from ‘${configurationFile}’.`);
-    }
-  })();
+if (require.main === module) require(path.resolve(process.argv[2]))(require);
