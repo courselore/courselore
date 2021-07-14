@@ -6,7 +6,7 @@ module.exports = async (require) => {
   const execa = require("execa");
   const caddyfile = require("dedent");
   const courselore = require(".").default;
-  const customization = require(path.join(__dirname, "../customization-example"))(require);
+  const customization = require(path.join(__dirname, "customization"))(require);
 
   const app = await courselore(path.join(__dirname, "data"));
 
