@@ -9,7 +9,6 @@ module.exports = async (require) => {
   try {
     await require("../local.js")({ require, app });
   } catch (error) {}
-
   const server = express()
     .use(customization(app))
     .use(app)

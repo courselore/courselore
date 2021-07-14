@@ -1,37 +1,47 @@
 module.exports = async (require) => {
+  const os = require("os");
   const path = require("path");
+  const fs = require("fs-extra");
   const express = require("express");
-  const AutoEncrypt = require("@small-tech/auto-encrypt");
+  const execa = require("execa");
+  const caddyfile = require("dedent");
   const courselore = require(".").default;
-  const customization = require(path.join(__dirname, "customization"))(require);
+  const customization = require(path.join(__dirname, "../customization-example"))(require);
 
   const app = await courselore(path.join(__dirname, "data"));
 
   app.locals.settings.url = "https://courselore.org";
   app.locals.settings.administrator = "mailto:administrator@courselore.org";
 
-  const reverseProxy = express();
+  const server = express()
+    .use(customization(app))
+    .use(app)
+    .listen(4000, "127.0.0.1");
 
-  reverseProxy.use((req, res, next) => {
-    if (req.hostname !== new URL(app.locals.settings.url).hostname)
-      return res.redirect(`${app.locals.settings.url}${req.originalUrl}`);
-    next();
+  const caddyfilePath = path.join(os.tmpdir(), "Caddyfile");
+  await fs.writeFile(
+    caddyfilePath,
+    caddyfile`
+      courselore.org {
+        reverse_proxy localhost:5000
+      }
+
+      www.courselore.org {
+        redir https://courselore.org{uri}
+      }
+
+      courselore.com {
+        redir https://courselore.org{uri}
+      }
+
+      www.courselore.com {
+        redir https://courselore.org{uri}
+      }
+    `
+  );
+  await execa("caddy", ["run", "--config", caddyfilePath], {
+    preferLocal: true,
+    stdio: "inherit",
   });
-  reverseProxy.use(customization(app));
-  reverseProxy.use(app);
-
-  AutoEncrypt.https
-    .createServer(
-      {
-        domains: [
-          "courselore.org",
-          "www.courselore.org",
-          "courselore.com",
-          "www.courselore.com",
-        ],
-        settingsPath: path.join(__dirname, "data/keys/tls"),
-      },
-      reverseProxy
-    )
-    .listen(443);
+  server.close();
 };
