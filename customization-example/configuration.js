@@ -6,7 +6,9 @@ module.exports = async (require) => {
   const customization = require(__dirname)(require);
 
   const app = await courselore(path.join(__dirname, "../data"));
-  app.locals.settings.url = "https://leafac.local";
+  try {
+    await require("../local.js")({ require, app });
+  } catch (error) {}
 
   const server = express()
     .use(customization(app))
