@@ -23,7 +23,7 @@ module.exports = async (require) => {
     caddyfilePath,
     caddyfile`
       courselore.org {
-        reverse_proxy localhost:5000
+        reverse_proxy 127.0.0.1:4000
       }
 
       www.courselore.org {
