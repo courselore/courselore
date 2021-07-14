@@ -1144,6 +1144,7 @@ export default async function courselore(
                 &.avatar--anonymous::before {
                   content: "\\f4d7";
                   font-family: bootstrap-icons !important;
+                  font-size: var(--font-size--2xl);
                 }
 
                 &.avatar--anonymous.avatar--lg {
@@ -2528,7 +2529,7 @@ export default async function courselore(
                         `}"
                       >
                         $${res.locals.user.avatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
+                          ? html`<div class="avatar avatar--anonymous"></div>`
                           : html`
                               <img
                                 src="${res.locals.user.avatar}"
@@ -6903,7 +6904,9 @@ export default async function courselore(
         id: number;
         userId: number;
         userEmail: string;
-        userName: string;
+        userName: string | null;
+        userAvatar: string | null;
+        userBiography: string | null;
         reference: string;
         role: Role;
       }>(
@@ -6912,6 +6915,8 @@ export default async function courselore(
                  "users"."id" AS "userId",
                  "users"."email" AS "userEmail",
                  "users"."name" AS "userName",
+                 "users"."avatar" AS "userAvatar",
+                 "users"."biography" AS "userBiography",
                  "enrollments"."reference",
                  "enrollments"."role"
           FROM "enrollments"
@@ -6962,6 +6967,18 @@ export default async function courselore(
                         display: flex;
                       `}"
                     >
+                      <div style="${css`width: var(--space--8);`}">
+                        $${enrollment.userAvatar === null
+                          ? html`<div class="avatar avatar--anonymous"></div>`
+                          : html`
+                              <img
+                                src="${enrollment.userAvatar}"
+                                alt="${enrollment.userName ??
+                                enrollment.userEmail}"
+                                class="avatar"
+                              />
+                            `}
+                      </div>
                       <div
                         style="${css`
                           flex: 1;
@@ -6969,8 +6986,12 @@ export default async function courselore(
                           flex-direction: column;
                         `}"
                       >
-                        <div class="strong">${enrollment.userName}</div>
-                        <div>${enrollment.userEmail}</div>
+                        <div class="strong">
+                          ${enrollment.userName ?? enrollment.userEmail}
+                        </div>
+                        $${enrollment.userName === null
+                          ? html``
+                          : html`<div>${enrollment.userEmail}</div>`}
                       </div>
                       <div
                         style="${css`
