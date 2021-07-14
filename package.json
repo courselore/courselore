@@ -23,7 +23,7 @@
   },
   "scripts": {
     "postinstall": "node postinstall.js",
-    "start": "node-dev src/index.ts customization-example/configuration.js",
+    "start": "node-dev src/index.ts",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"
   },

@@ -12025,4 +12025,8 @@ ${value}</textarea
   return app;
 }
 
-if (require.main === module) require(path.resolve(process.argv[2]))(require);
+if (require.main === module)
+  require(path.resolve(
+    process.argv[2] ??
+      path.join(__dirname, "../customization-example/configuration.js")
+  ))(require);
