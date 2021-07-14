@@ -56,7 +56,7 @@ export default async function courselore(
     administrator: string;
     demonstration: boolean;
   }
-  app.locals.settings.url = "http://localhost:5000";
+  app.locals.settings.url = "https://localhost:5000";
   app.locals.settings.administrator =
     "mailto:demonstration-development@courselore.org";
   app.locals.settings.demonstration = true;
