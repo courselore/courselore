@@ -52,6 +52,7 @@ export default async function courselore(
     settings: Settings;
   }
   interface Settings {
+    env: string;
     url: string;
     administrator: string;
     demonstration: boolean;
@@ -1906,11 +1907,11 @@ export default async function courselore(
                         var(--color--rose--900);
                     }
                     display: flex;
-                    @media (max-width: 329px) {
+                    @media (max-width: 409px) {
                       flex-direction: column;
                       align-items: center;
                     }
-                    @media (min-width: 330px) {
+                    @media (min-width: 410px) {
                       gap: var(--space--2);
                       justify-content: center;
                     }
@@ -1971,6 +1972,20 @@ export default async function courselore(
                     <i class="bi bi-inbox"></i>
                     Demonstration Inbox
                   </a>
+                  $${app.locals.settings.env === "production"
+                    ? html``
+                    : html`
+                        <form
+                          method="POST"
+                          action="${app.locals.settings
+                            .url}/turn-off?_method=DELETE"
+                        >
+                          <button>
+                            <i class="bi bi-power"></i>
+                            Turn off
+                          </button>
+                        </form>
+                      `}
                 </nav>
               `
             : html``}
@@ -11838,6 +11853,60 @@ ${value}</textarea
       })
     );
   });
+
+  if (
+    app.locals.settings.demonstration &&
+    app.locals.settings.env !== "production"
+  )
+    app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res) => {
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`<title>Turn off · CourseLore</title>`,
+          body: html`
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <h2
+                class="heading--2"
+                style="${css`
+                  color: var(--color--primary--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                  }
+                `}"
+              >
+                <i class="bi bi-power"></i>
+                Turn off
+              </h2>
+              <div
+                style="${css`
+                  color: var(--color--primary--800);
+                  background-color: var(--color--primary--100);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <p>The demonstration server was turned off.</p>
+              </div>
+            </div>
+          `,
+        })
+      );
+      process.exit(0);
+    });
 
   app.all<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "*",
