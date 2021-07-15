@@ -4,14 +4,10 @@ module.exports = async (require) => {
     const path = require("path");
     const execa = require("execa");
     const subprocesses = [
-      execa(
-        "node",
-        [path.join(__dirname, "../lib/index.js"), __filename, "server"],
-        {
-          preferLocal: true,
-          stdio: "inherit",
-        }
-      ),
+      execa(process.argv[0], [process.argv[1], __filename, "server"], {
+        preferLocal: true,
+        stdio: "inherit",
+      }),
       execa(
         "caddy",
         ["reverse-proxy", "--from", url, "--to", "localhost:4000"],

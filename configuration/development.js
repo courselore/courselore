@@ -3,7 +3,7 @@ module.exports = async (require) => {
   if (process.argv[3] === undefined) {
     const execa = require("execa");
     const subprocesses = [
-      execa("node-dev", ["src/index.ts", __filename, "server"], {
+      execa("node-dev", [process.argv[1], __filename, "server"], {
         preferLocal: true,
         stdio: "inherit",
       }),
