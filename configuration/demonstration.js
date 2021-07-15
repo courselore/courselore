@@ -1,12 +1,17 @@
 module.exports = async (require) => {
   const url = process.env.URL ?? "https://localhost:5000";
   if (process.argv[3] === undefined) {
+    const path = require("path");
     const execa = require("execa");
     const subprocesses = [
-      execa("node-dev", ["src/index.ts", __filename, "server"], {
-        preferLocal: true,
-        stdio: "inherit",
-      }),
+      execa(
+        "node",
+        [path.join(__dirname, "../lib/index.js"), __filename, "server"],
+        {
+          preferLocal: true,
+          stdio: "inherit",
+        }
+      ),
       execa(
         "caddy",
         ["reverse-proxy", "--from", url, "--to", "localhost:4000"],
@@ -19,11 +24,8 @@ module.exports = async (require) => {
     const path = require("path");
     const express = require("express");
     const courselore = require(".").default;
-    const customization = require(path.join(__dirname, "../customization"))(
-      require
-    );
     const app = await courselore(path.join(process.cwd(), "data"));
     app.locals.settings.url = url;
-    express().use(customization(app)).use(app).listen(4000, "127.0.0.1");
+    express().use(app).listen(4000, "127.0.0.1");
   }
 };

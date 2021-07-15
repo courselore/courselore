@@ -12052,5 +12052,5 @@ ${value}</textarea
 
 if (require.main === module)
   require(path.resolve(
-    process.argv[2] ?? path.join(__dirname, "../configuration.js")
+    process.argv[2] ?? path.join(__dirname, "../configuration/demonstration.js")
   ))(require);
