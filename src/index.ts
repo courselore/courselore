@@ -6967,7 +6967,11 @@ export default async function courselore(
                         display: flex;
                       `}"
                     >
-                      <div style="${css`width: var(--space--8);`}">
+                      <div
+                        style="${css`
+                          width: var(--space--8);
+                        `}"
+                      >
                         $${enrollment.userAvatar === null
                           ? html`<div class="avatar avatar--anonymous"></div>`
                           : html`
@@ -12048,6 +12052,5 @@ ${value}</textarea
 
 if (require.main === module)
   require(path.resolve(
-    process.argv[2] ??
-      path.join(__dirname, "../customization-example/configuration.js")
+    process.argv[2] ?? path.join(__dirname, "../configuration.js")
   ))(require);
