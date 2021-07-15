@@ -1,6 +1,7 @@
 module.exports = async (require) => {
   if (process.argv[3] === undefined) {
     const os = require("os");
+    const path = require("path");
     const fs = require("fs-extra");
     const execa = require("execa");
     const caddyfile = require("dedent");
