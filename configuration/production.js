@@ -21,6 +21,7 @@ module.exports = async (require) => {
       execa(process.argv[0], [process.argv[1], __filename, "server"], {
         preferLocal: true,
         stdio: "inherit",
+        env: { NODE_ENV: "production" },
       }),
       execa("caddy", ["run", "--config", caddyfilePath], {
         preferLocal: true,
