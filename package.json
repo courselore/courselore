@@ -22,8 +22,8 @@
     "access": "public"
   },
   "scripts": {
-    "postinstall": "node scripts/postinstall.js",
-    "start": "node scripts/start.development.js",
+    "postinstall": "node scripts.js postinstall",
+    "start": "node scripts.js start:development",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"
   },
