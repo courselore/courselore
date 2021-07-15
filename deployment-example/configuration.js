@@ -26,15 +26,7 @@ module.exports = async (require) => {
         reverse_proxy 127.0.0.1:4000
       }
 
-      www.courselore.org {
-        redir https://courselore.org{uri}
-      }
-
-      courselore.com {
-        redir https://courselore.org{uri}
-      }
-
-      www.courselore.com {
+      www.courselore.org, courselore.com, www.courselore.com {
         redir https://courselore.org{uri}
       }
     `
