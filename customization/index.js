@@ -551,7 +551,7 @@ module.exports = (require) => {
                                     0 100%
                                   );
                                   @media (prefers-color-scheme: dark) {
-                                    filter: brightness(var(--brightness--75));
+                                    filter: brightness(var(--brightness--90));
                                   }
                                 }
 

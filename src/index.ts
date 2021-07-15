@@ -1131,35 +1131,11 @@ export default async function courselore(
               }
 
               .avatar {
-                /* TODO: Filter brightness on dark mode. */
-                width: var(--space--6);
-                height: var(--space--6);
+                width: var(--font-size--xl);
+                height: var(--font-size--xl);
                 border-radius: var(--border-radius--circle);
-                display: block;
-
-                &.avatar--lg {
-                  width: var(--space--28);
-                  height: var(--space--28);
-                }
-
-                &.avatar--anonymous::before {
-                  content: "\\f4d7";
-                  font-family: bootstrap-icons !important;
-                  font-size: var(--font-size--2xl);
-                }
-
-                &.avatar--anonymous.avatar--lg {
-                  font-size: var(--font-size--8xl);
-                  line-height: var(--line-height--8xl);
-                  color: var(--color--gray--cool--200);
-                  background-color: var(--color--gray--cool--50);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--cool--600);
-                    background-color: var(--color--gray--cool--800);
-                  }
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
+                @media (prefers-color-scheme: dark) {
+                  filter: brightness(var(--brightness--90));
                 }
               }
 
@@ -1604,7 +1580,7 @@ export default async function courselore(
                   background-color: var(--color--white);
                   @media (prefers-color-scheme: dark) {
                     background-color: var(--color--gray--cool--100);
-                    filter: brightness(var(--brightness--75));
+                    filter: brightness(var(--brightness--90));
                   }
                   max-width: 100%;
                   height: auto;
@@ -2221,6 +2197,7 @@ export default async function courselore(
               }
 
               .header--item {
+                display: flex;
                 &:hover,
                 &:focus-within {
                   color: var(--color--primary--200);
@@ -2433,6 +2410,7 @@ export default async function courselore(
                       display: flex;
                       gap: var(--space--4);
                       justify-content: flex-end;
+                      align-items: center;
                     `}"
                   >
                     <div>
@@ -2519,11 +2497,7 @@ export default async function courselore(
                         </div>
                       </div>
                     </div>
-                    <div
-                      style="${css`
-                        display: flex;
-                      `}"
-                    >
+                    <div>
                       <button
                         class="header--item"
                         data-ondomcontentloaded="${javascript`
@@ -2544,7 +2518,7 @@ export default async function courselore(
                         `}"
                       >
                         $${res.locals.user.avatar === null
-                          ? html`<div class="avatar avatar--anonymous"></div>`
+                          ? html`<i class="bi bi-person-circle"></i>`
                           : html`
                               <img
                                 src="${res.locals.user.avatar}"
@@ -4195,6 +4169,10 @@ export default async function courselore(
                       display: flex;
                       justify-content: center;
                       align-items: center;
+                      & > * {
+                        width: var(--space--28);
+                        height: var(--space--28);
+                      }
                     `}"
                   >
                     <div
@@ -4205,7 +4183,33 @@ export default async function courselore(
                     >
                       <button
                         type="button"
-                        class="avatar avatar--lg avatar--anonymous"
+                        class="button--inline"
+                        style="${css`
+                          font-size: var(--space--20);
+                          width: 100%;
+                          height: 100%;
+                          border-radius: var(--border-radius--circle);
+                          color: var(--color--gray--cool--400);
+                          &:hover,
+                          &:focus-within {
+                            color: var(--color--primary--500);
+                          }
+                          &:active {
+                            color: var(--color--primary--700);
+                          }
+                          background-color: var(--color--gray--cool--200);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--gray--cool--400);
+                            background-color: var(--color--gray--cool--700);
+                            &:hover,
+                            &:focus-within {
+                              color: var(--color--primary--500);
+                            }
+                            &:active {
+                              color: var(--color--primary--700);
+                            }
+                          }
+                        `}"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Add Avatar",
@@ -4216,7 +4220,9 @@ export default async function courselore(
                         onclick="${javascript`
                         this.closest("form").querySelector(".avatar--upload").click();
                       `}"
-                      ></button>
+                      >
+                        <i class="bi bi-person-circle"></i>
+                      </button>
                     </div>
                     <div
                       class="avatar--filled"
@@ -4249,7 +4255,11 @@ export default async function courselore(
                         <img
                           src="${res.locals.user.avatar ?? ""}"
                           alt="Avatar"
-                          class="avatar avatar--lg"
+                          class="avatar"
+                          style="${css`
+                            width: 100%;
+                            height: 100%;
+                          `}"
                         />
                       </button>
                       <button
