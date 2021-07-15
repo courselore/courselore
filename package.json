@@ -22,7 +22,7 @@
     "access": "public"
   },
   "scripts": {
-    "postinstall": "node scripts.js postinstall",
+    "postinstall": "node postinstall.js",
     "start": "npx ts-node src/index.ts configuration/development.js",
     "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"
