@@ -1,7 +1,6 @@
 module.exports = async (require) => {
   const url = process.env.URL ?? "https://localhost:5000";
   if (process.argv[3] === undefined) {
-    const path = require("path");
     const execa = require("execa");
     const subprocesses = [
       execa(process.argv[0], [process.argv[1], __filename, "server"], {
