@@ -69,9 +69,9 @@ jobs:
 
           ssh root@courselore.org "mkdir -p courselore"
           rsync -a courselore root@courselore.org:courselore/courselore
-          rsync -a --delete customization-example/ root@courselore.org:courselore/customization/
-          rsync -a deployment-example/configuration.js root@courselore.org:courselore/configuration.js
-          rsync -a deployment-example/courselore.service root@courselore.org:/etc/systemd/system/courselore.service
+          rsync -a --delete customization/ root@courselore.org:courselore/customization/
+          rsync -a configuration/production.js root@courselore.org:courselore/configuration.js
+          rsync -a configuration/courselore.service root@courselore.org:/etc/systemd/system/courselore.service
 
           ssh root@courselore.org << "EOF"
           rm courselore/data/courselore.db
