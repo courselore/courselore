@@ -26,11 +26,14 @@ switch (process.argv[2]) {
 
   case "start:development":
     const concurrently = require("concurrently");
-    concurrently([
-      "node-dev src/index.ts",
-      `caddy reverse-proxy --from ${
-        process.env.URL ?? "https://localhost:5000"
-      } --to localhost:4000`,
-    ]);
+    concurrently(
+      [
+        "node-dev src/index.ts",
+        `caddy reverse-proxy --from ${
+          process.env.URL ?? "https://localhost:5000"
+        } --to localhost:4000`,
+      ],
+      { killOthers: ["success", "failure"] }
+    );
     break;
 }
