@@ -11,6 +11,7 @@ module.exports = async (require) => {
       caddyfile`
         courselore.org {
           reverse_proxy 127.0.0.1:4000
+          encode zstd gzip
         }
   
         www.courselore.org, courselore.com, www.courselore.com {
@@ -35,12 +36,18 @@ module.exports = async (require) => {
     const path = require("path");
     const express = require("express");
     const courselore = require(".").default;
-    const customization = require(path.join(__dirname, "customization"))(
-      require
-    );
+    const customization = require("../customization")(require);
+    const { version } = require("../package.json");
     const app = await courselore(path.join(__dirname, "data"));
     app.locals.settings.url = "https://courselore.org";
     app.locals.settings.administrator = "mailto:administrator@courselore.org";
-    express().use(customization(app)).use(app).listen(4000, "127.0.0.1");
+    express()
+      .use(customization(app))
+      .use(app)
+      .listen(4000, "127.0.0.1", () => {
+        console.log(
+          `CourseLore/${version} started at ${app.locals.settings.url}`
+        );
+      });
   }
 };
