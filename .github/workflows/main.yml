@@ -69,7 +69,6 @@ jobs:
 
           ssh root@courselore.org "mkdir -p courselore"
           rsync -a courselore root@courselore.org:courselore/courselore
-          rsync -a --delete customization/ root@courselore.org:courselore/customization/
           rsync -a configuration/production.js root@courselore.org:courselore/configuration.js
           rsync -a configuration/courselore.service root@courselore.org:/etc/systemd/system/courselore.service
 
