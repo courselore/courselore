@@ -4218,8 +4218,8 @@ export default async function courselore(
                           });
                         `}"
                         onclick="${javascript`
-                        this.closest("form").querySelector(".avatar--upload").click();
-                      `}"
+                          this.closest("form").querySelector(".avatar--upload").click();
+                        `}"
                       >
                         <i class="bi bi-person-circle"></i>
                       </button>
@@ -4249,8 +4249,8 @@ export default async function courselore(
                           });
                         `}"
                         onclick="${javascript`
-                        this.closest("form").querySelector(".avatar--upload").click();
-                      `}"
+                          this.closest("form").querySelector(".avatar--upload").click();
+                        `}"
                       >
                         <img
                           src="${res.locals.user.avatar ?? ""}"
@@ -4274,12 +4274,12 @@ export default async function courselore(
                           margin-right: var(--space--2);
                         `}"
                         data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Remove Avatar",
-                          theme: "tooltip tooltip--rose",
-                          touch: false,
-                        });
-                      `}"
+                          tippy(this, {
+                            content: "Remove Avatar",
+                            theme: "tooltip tooltip--rose",
+                            touch: false,
+                          });
+                        `}"
                         onclick="${javascript`
                           const form = this.closest("form");
                           form.querySelector('[name="avatar"]').value = "";
@@ -4302,7 +4302,6 @@ export default async function courselore(
                           // TODO: Work with drag-and-drop.
                           const body = new FormData();
                           body.append("avatar", this.files[0]);
-                          // TODO: Do this next line in other upload form in ‘textEditor’.
                           this.value = "";
                           const avatar = await (await fetch("${app.locals.settings.url}/settings/avatar", {
                             method: "POST",
@@ -6998,7 +6997,7 @@ export default async function courselore(
                         `}"
                       >
                         $${enrollment.userAvatar === null
-                          ? html`<div class="avatar avatar--anonymous"></div>`
+                          ? html`<i class="bi bi-person-circle"></i>`
                           : html`
                               <img
                                 src="${enrollment.userAvatar}"
