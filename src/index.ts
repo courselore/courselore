@@ -7502,24 +7502,6 @@ export default async function courselore(
                             class="button--inline button--inline--gray--cool"
                           >
                             <select
-                              name="tags[{index}][mayTag]"
-                              required
-                              autocomplete="off"
-                            >
-                              <option value="anything">May Tag Anything</option>
-                              <option value="conversations">
-                                May Tag Conversations Only
-                              </option>
-                              <option value="messages">
-                                May Tag Messages Only
-                              </option>
-                            </select>
-                            <i class="bi bi-chevron-down"></i>
-                          </label>
-                          <label
-                            class="button--inline button--inline--gray--cool"
-                          >
-                            <select
                               name="tags[{index}][visibleBy]"
                               required
                               autocomplete="off"
@@ -7577,6 +7559,7 @@ export default async function courselore(
                                   </strong>
                                 </p>
                                 <button
+                                  type="button"
                                   class="button button--rose"
                                   onclick="${javascript`
                                     this.closest(".tag").remove();
