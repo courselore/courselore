@@ -5648,8 +5648,8 @@ export default async function courselore(
                             }
                             if (
                               emails.length === 0 ||
-                              !emails.every(
-                                ({ email }) => email.match(${
+                              emails.some(
+                                ({ email }) => !email.match(${
                                   app.locals.constants.emailRegExp
                                 })
                               )
@@ -6741,8 +6741,8 @@ export default async function courselore(
           }
           if (
             emails.length === 0 ||
-            !emails.every(({ email }) =>
-              email.match(app.locals.constants.emailRegExp)
+            emails.some(
+              ({ email }) => !email.match(app.locals.constants.emailRegExp)
             )
           )
             return next("validation");
@@ -7636,21 +7636,33 @@ export default async function courselore(
       req.body.tags ??= [];
       if (
         !Array.isArray(req.body.tags) ||
-        !req.body.tags.every(
+        req.body.tags.some(
           (tag) =>
-            (tag.reference === undefined ||
-              res.locals.tags.some(
-                (existingTag) => tag.reference === existingTag.reference
-              )) &&
-            typeof tag.name === "string" &&
-            typeof tag.visibleBy === "string" &&
+            tag.reference === undefined ||
+            res.locals.tags.some(
+              (existingTag) => tag.reference === existingTag.reference
+            ) ||
+            typeof tag.name !== "string" ||
+            tag.name.trim() === "" ||
+            typeof tag.visibleBy !== "string" ||
             ["everyone", "staff"].includes(tag.visibleBy)
         )
       )
         return next("validation");
 
       /* TODO: Create */
-      // for ()
+      for (const tag of req.body.tags.filter(
+        (tag) => tag.reference !== undefined
+      ))
+        app.locals.database.run(
+          sql`
+            INSERT INTO "tags" ("course", "reference", "name", "visibleBy")
+            VALUES (${res.locals.course.id}, ${cryptoRandomString({
+            length: 10,
+            type: "numeric",
+          })}, ${req.body})
+          `
+        );
       /* TODO: Update */
       /* TODO: Delete */
 
