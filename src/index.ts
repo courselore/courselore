@@ -8513,7 +8513,9 @@ export default async function courselore(
                                               conversation.endorsements.map(
                                                 (endorsement) =>
                                                   endorsement.enrollment.user
-                                                    .name
+                                                    .name ??
+                                                  endorsement.enrollment
+                                                    .reference
                                               )
                                             )
                                           }`
@@ -10785,7 +10787,7 @@ ${value}</textarea
                             const element = newMessage.querySelector('[name="content"]');
                             // TODO: Use something like ‘@Leandro-Facchinetti-2342’
                             textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                              message.authorEnrollment.user.name
+                              message.authorEnrollment.reference
                             )} + " · #" + ${JSON.stringify(
                             res.locals.conversation.reference
                           )} + "/" + ${JSON.stringify(
@@ -10920,7 +10922,9 @@ ${value}</textarea
                                                       .map(
                                                         (endorsement) =>
                                                           endorsement.enrollment
-                                                            .user.name
+                                                            .user.name ??
+                                                          endorsement.enrollment
+                                                            .reference
                                                       )
                                                   )
                                                 })`
@@ -10961,7 +10965,9 @@ ${value}</textarea
                                                     message.endorsements.map(
                                                       (endorsement) =>
                                                         endorsement.enrollment
-                                                          .user.name
+                                                          .user.name ??
+                                                        endorsement.enrollment
+                                                          .reference
                                                     )
                                                   )
                                                 })`
@@ -11000,7 +11006,8 @@ ${value}</textarea
                                     ).format(
                                       message.endorsements.map(
                                         (endorsement) =>
-                                          endorsement.enrollment.user.name
+                                          endorsement.enrollment.user.name ??
+                                          endorsement.enrollment.reference
                                       )
                                     )
                                   }`
@@ -11097,7 +11104,7 @@ ${value}</textarea
                             const element = newMessage.querySelector('[name="content"]');
                             // TODO: Use something like ‘@Leandro-Facchinetti-2342’
                             textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                              message.authorEnrollment.user.name
+                              message.authorEnrollment.reference
                             )} + " · #" + ${JSON.stringify(
                               res.locals.conversation.reference
                             )} + "/" + ${JSON.stringify(
