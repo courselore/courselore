@@ -7614,6 +7614,7 @@ export default async function courselore(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
+      req.body.tags ??= [];
       if (
         !Array.isArray(req.body.tags) ||
         !req.body.tags.every(
