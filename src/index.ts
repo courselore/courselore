@@ -1130,7 +1130,11 @@ export default async function courselore(
                 }
               }
 
-              .avatar {
+              .avatar--icon {
+                font-size: var(--font-size--xl);
+              }
+
+              .avatar--image {
                 width: var(--font-size--xl);
                 height: var(--font-size--xl);
                 border-radius: var(--border-radius--circle);
@@ -2518,13 +2522,17 @@ export default async function courselore(
                         `}"
                       >
                         $${res.locals.user.avatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
+                          ? html`
+                              <div class="avatar--icon">
+                                <i class="bi bi-person-circle"></i>
+                              </div>
+                            `
                           : html`
                               <img
                                 src="${res.locals.user.avatar}"
                                 alt="${res.locals.user.name ??
                                 res.locals.user.email}"
-                                class="avatar"
+                                class="avatar--image"
                               />
                             `}
                       </button>
@@ -4183,7 +4191,7 @@ export default async function courselore(
                     >
                       <button
                         type="button"
-                        class="button--inline"
+                        class="button--inline avatar--icon"
                         style="${css`
                           font-size: var(--space--20);
                           width: 100%;
@@ -4255,7 +4263,7 @@ export default async function courselore(
                         <img
                           src="${res.locals.user.avatar ?? ""}"
                           alt="Avatar"
-                          class="avatar"
+                          class="avatar--image"
                           style="${css`
                             width: 100%;
                             height: 100%;
@@ -6997,13 +7005,17 @@ export default async function courselore(
                         `}"
                       >
                         $${enrollment.userAvatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
+                          ? html`
+                              <div class="avatar--icon">
+                                <i class="bi bi-person-circle"></i>
+                              </div>
+                            `
                           : html`
                               <img
                                 src="${enrollment.userAvatar}"
                                 alt="${enrollment.userName ??
                                 enrollment.userEmail}"
-                                class="avatar"
+                                class="avatar--image"
                               />
                             `}
                       </div>
