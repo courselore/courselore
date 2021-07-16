@@ -10597,18 +10597,25 @@ ${value}</textarea
                       display: flex;
                       gap: var(--space--4);
                       justify-content: space-between;
+                      align-items: center;
                     `}"
                   >
-                    <div>
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--2);
+                        align-items: center;
+                      `}"
+                    >
                       $${message.authorEnrollment.user.avatar === null
                         ? html`
-                            <span
+                            <div
                               style="${css`
                                 font-size: var(--font-size--2xl);
                               `}"
                             >
                               <i class="bi bi-person-circle"></i>
-                            </span>
+                            </div>
                           `
                         : html`
                             <img
@@ -10619,53 +10626,54 @@ ${value}</textarea
                               style="${css`
                                 width: var(--font-size--2xl);
                                 height: var(--font-size--2xl);
-                                vertical-align: -0.125em;
                               `}"
                             />
                           `}
-                      <span class="strong">
-                        ${message.authorEnrollment.user.name}
-                      </span>
-                      said
-                      <time
-                        data-ondomcontentloaded="${javascript`
-                          relativizeTime(this);
-                        `}"
-                      >
-                        ${message.createdAt}
-                      </time>
-                      $${message.updatedAt !== message.createdAt
-                        ? html`
-                            and last edited
-                            <time
-                              data-ondomcontentloaded="${javascript`
-                                relativizeTime(this);
-                              `}"
-                            >
-                              ${message.updatedAt}
-                            </time>
-                          `
-                        : html``}
-                      <a
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/conversations/${res.locals
-                          .conversation
-                          .reference}#message--${message.reference}"
-                        class="button--inline button--inline--gray--cool"
-                        style="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Permanent Link to Message",
-                            theme: "tooltip",
-                            touch: false,
-                          });
-                        `}"
-                        >#${res.locals.conversation
-                          .reference}/${message.reference}</a
-                      >
+                      <div>
+                        <span class="strong">
+                          ${message.authorEnrollment.user.name}
+                        </span>
+                        said
+                        <time
+                          data-ondomcontentloaded="${javascript`
+                            relativizeTime(this);
+                          `}"
+                        >
+                          ${message.createdAt}
+                        </time>
+                        $${message.updatedAt !== message.createdAt
+                          ? html`
+                              and last edited
+                              <time
+                                data-ondomcontentloaded="${javascript`
+                                  relativizeTime(this);
+                                `}"
+                              >
+                                ${message.updatedAt}
+                              </time>
+                            `
+                          : html``}
+                        <a
+                          href="${app.locals.settings.url}/courses/${res.locals
+                            .course.reference}/conversations/${res.locals
+                            .conversation
+                            .reference}#message--${message.reference}"
+                          class="button--inline button--inline--gray--cool"
+                          style="${css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                          `}"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Permanent Link to Message",
+                              theme: "tooltip",
+                              touch: false,
+                            });
+                          `}"
+                          >#${res.locals.conversation
+                            .reference}/${message.reference}</a
+                        >
+                      </div>
                     </div>
 
                     <div
