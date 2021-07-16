@@ -7638,58 +7638,55 @@ export default async function courselore(
         !Array.isArray(req.body.tags) ||
         req.body.tags.some(
           (tag) =>
-            tag.reference === undefined ||
-            res.locals.tags.some(
-              (existingTag) => tag.reference === existingTag.reference
-            ) ||
+            (tag.reference !== undefined &&
+              !res.locals.tags.some(
+                (existingTag) => tag.reference === existingTag.reference
+              )) ||
             typeof tag.name !== "string" ||
             tag.name.trim() === "" ||
             typeof tag.visibleBy !== "string" ||
-            ["everyone", "staff"].includes(tag.visibleBy)
+            !["everyone", "staff"].includes(tag.visibleBy)
         )
       )
         return next("validation");
 
-      /* TODO: Create */
-      for (const tag of req.body.tags.filter(
-        (tag) => tag.reference !== undefined
-      ))
-        app.locals.database.run(
-          sql`
-            INSERT INTO "tags" ("course", "reference", "name", "visibleBy")
-            VALUES (${res.locals.course.id}, ${cryptoRandomString({
-            length: 10,
-            type: "numeric",
-          })}, ${req.body})
+      for (const tag of req.body.tags)
+        if (tag.reference === undefined)
+          app.locals.database.run(
+            sql`
+              INSERT INTO "tags" ("course", "reference", "name", "visibleBy")
+              VALUES (
+                ${res.locals.course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${tag.name},
+                ${tag.visibleBy}
+              )
           `
-        );
-      /* TODO: Update */
-      /* TODO: Delete */
-
-      /*
-      if (typeof req.body.role === "string") {
-        if (!app.locals.constants.roles.includes(req.body.role))
-          return next("validation");
-        app.locals.database.run(
-          sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
-        );
-
-        app.locals.helpers.flash.set(
-          req,
-          res,
-          html`
-            <div class="flash flash--green">
-              Enrollment updated successfully.
-            </div>
-          `
-        );
-
-        if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
-          return res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
           );
-      }
-      */
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "tags"
+              SET "name" = ${tag.name}, "visibleBy" = ${tag.visibleBy}
+              WHERE "reference" = ${tag.reference}
+            `
+          );
+
+      for (const existingTag of res.locals.tags)
+        if (
+          !req.body.tags.some((tag) => existingTag.reference === tag.reference)
+        )
+          app.locals.database.run(
+            sql`
+              DELETE FROM "tags" WHERE "reference" = ${existingTag.reference}
+            `
+          );
+
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`<div class="flash flash--green">Tags updated successfully.</div>`
+      );
 
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/tags`
