@@ -8438,7 +8438,7 @@ export default async function courselore(
                                         .avatar}"
                                       alt="${conversation.authorEnrollment.user
                                         .name ??
-                                      conversation.authorEnrollment.user.email}"
+                                      conversation.authorEnrollment.reference}"
                                       class="avatar"
                                       style="${css`
                                         width: var(--font-size--xs);
@@ -10621,7 +10621,7 @@ ${value}</textarea
                             <img
                               src="${message.authorEnrollment.user.avatar}"
                               alt="${message.authorEnrollment.user.name ??
-                              message.authorEnrollment.user.email}"
+                              message.authorEnrollment.reference}"
                               class="avatar"
                               style="${css`
                                 width: var(--font-size--2xl);
@@ -10631,7 +10631,8 @@ ${value}</textarea
                           `}
                       <div>
                         <span class="strong">
-                          ${message.authorEnrollment.user.name}
+                          ${message.authorEnrollment.user.name ??
+                          message.authorEnrollment.reference}
                         </span>
                         said
                         <time
