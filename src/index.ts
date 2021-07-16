@@ -4640,6 +4640,12 @@ export default async function courselore(
       }[];
       likesCount: number;
     }[];
+    tags: {
+      id: number;
+      reference: string;
+      name: string;
+      visibleBy: "everyone" | "staff";
+    }[];
   }
   app.locals.middlewares.isEnrolledInCourse = [
     ...app.locals.middlewares.isAuthenticated,
@@ -4813,6 +4819,19 @@ export default async function courselore(
             likesCount: originalMessage.likesCount,
           };
         });
+
+      res.locals.tags = app.locals.database.all<{
+        id: number;
+        reference: string;
+        name: string;
+        visibleBy: "everyone" | "staff";
+      }>(
+        sql`
+          SELECT "id", "reference", "name", "visibleBy"
+          FROM "tags"
+          WHERE "course" = ${res.locals.course.id}
+        `
+      );
 
       next();
     },
@@ -5629,11 +5648,11 @@ export default async function courselore(
                             }
                             if (
                               emails.length === 0 ||
-                              emails.find(
-                                ({ email }) => !email.match(${
+                              !emails.every(
+                                ({ email }) => email.match(${
                                   app.locals.constants.emailRegExp
                                 })
-                              ) !== undefined
+                              )
                             )
                               return "Match the requested format";
                           });
@@ -6722,9 +6741,9 @@ export default async function courselore(
           }
           if (
             emails.length === 0 ||
-            emails.find(
-              ({ email }) => !email.match(app.locals.constants.emailRegExp)
-            ) !== undefined
+            !emails.every(({ email }) =>
+              email.match(app.locals.constants.emailRegExp)
+            )
           )
             return next("validation");
 
@@ -7603,7 +7622,7 @@ export default async function courselore(
     HTML,
     {
       tags?: {
-        reference?: string;
+        reference?: string | undefined;
         name?: string;
         visibleBy?: "everyone" | "staff";
       }[];
@@ -7619,6 +7638,10 @@ export default async function courselore(
         !Array.isArray(req.body.tags) ||
         !req.body.tags.every(
           (tag) =>
+            (tag.reference === undefined ||
+              res.locals.tags.some(
+                (existingTag) => tag.reference === existingTag.reference
+              )) &&
             typeof tag.name === "string" &&
             typeof tag.visibleBy === "string" &&
             ["everyone", "staff"].includes(tag.visibleBy)
@@ -7626,7 +7649,10 @@ export default async function courselore(
       )
         return next("validation");
 
-      const tags = app.locals.database.all<{}>(sql``);
+      /* TODO: Create */
+      // for ()
+      /* TODO: Update */
+      /* TODO: Delete */
 
       /*
       if (typeof req.body.role === "string") {
@@ -10861,12 +10887,11 @@ ${value}</textarea
                       if (
                         app.locals.helpers.mayEndorseMessage(req, res, message)
                       ) {
-                        const isEndorsed =
-                          message.endorsements.find(
-                            (endorsement) =>
-                              endorsement.enrollment.id ===
-                              res.locals.enrollment.id
-                          ) !== undefined;
+                        const isEndorsed = message.endorsements.some(
+                          (endorsement) =>
+                            endorsement.enrollment.id ===
+                            res.locals.enrollment.id
+                        );
 
                         content.push(html`
                           <form
@@ -11113,7 +11138,7 @@ ${value}</textarea
                       `}"
                     >
                       $${(() => {
-                        const isLiked = message.likes.find(
+                        const isLiked = message.likes.some(
                           (like) =>
                             like.enrollment.id === res.locals.enrollment.id
                         );
@@ -11631,9 +11656,9 @@ ${value}</textarea
     ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
-        res.locals.message.likes.find(
+        res.locals.message.likes.some(
           (like) => like.enrollment.id === res.locals.enrollment.id
-        ) !== undefined
+        )
       )
         return next("validation");
 
@@ -11740,10 +11765,10 @@ ${value}</textarea
     ...app.locals.middlewares.mayEndorseMessage,
     (req, res, next) => {
       if (
-        res.locals.message.endorsements.find(
+        res.locals.message.endorsements.some(
           (endorsement) =>
             endorsement.enrollment.id === res.locals.enrollment.id
-        ) !== undefined
+        )
       )
         return next("validation");
 
