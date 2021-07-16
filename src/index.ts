@@ -129,22 +129,24 @@ export default async function courselore(
     id: null;
     user: {
       id: null;
-      email: "anonymous@courselore.org";
-      name: null;
+      email: null;
+      name: "Anonymous";
       avatar: null;
       biography: null;
     };
+    reference: null;
     role: null;
   }
   app.locals.constants.anonymousEnrollment = {
     id: null,
     user: {
       id: null,
-      email: "anonymous@courselore.org",
-      name: null,
+      email: null,
+      name: "Anonymous",
       avatar: null,
       biography: null,
     },
+    reference: null,
     role: null,
   };
 
@@ -4612,7 +4614,14 @@ export default async function courselore(
       authorEnrollment:
         | {
             id: number;
-            user: { id: number; email: string; name: string };
+            user: {
+              id: number;
+              email: string;
+              name: string | null;
+              avatar: string | null;
+              biography: string | null;
+            };
+            reference: string;
             role: Role;
           }
         | AnonymousEnrollment;
@@ -4622,7 +4631,14 @@ export default async function courselore(
         enrollment:
           | {
               id: number;
-              user: { id: number; email: string; name: string };
+              user: {
+                id: number;
+                email: string;
+                name: string | null;
+                avatar: string | null;
+                biography: string | null;
+              };
+              reference: string;
               role: Role;
             }
           | AnonymousEnrollment;
@@ -4671,6 +4687,9 @@ export default async function courselore(
             authorUserId: number | null;
             authorUserEmail: string | null;
             authorUserName: string | null;
+            authorUserAvatar: string | null;
+            authorUserBiography: string | null;
+            authorEnrollmentReference: string | null;
             authorEnrollmentRole: Role | null;
             likesCount: number;
           }>(
@@ -4680,6 +4699,9 @@ export default async function courselore(
                      "authorUser"."id" AS "authorUserId",
                      "authorUser"."email" AS "authorUserEmail",
                      "authorUser"."name" AS "authorUserName",
+                     "authorUser"."avatar" AS "authorUserAvatar",
+                     "authorUser"."biography" AS "authorUserBiography",
+                     "authorEnrollment"."reference" AS "authorEnrollmentReference",
                      "authorEnrollment"."role" AS "authorEnrollmentRole",
                      COUNT("likes"."id") AS "likesCount"
               FROM "messages"
@@ -4717,22 +4739,28 @@ export default async function courselore(
                     userId: number | null;
                     userEmail: string | null;
                     userName: string | null;
+                    userAvatar: string | null;
+                    userBiography: string | null;
+                    enrollmentReference: string | null;
                     enrollmentRole: Role | null;
                   }>(
                     sql`
-                SELECT "endorsements"."id",
-                       "enrollments"."id" AS "enrollmentId",
-                       "users"."id" AS "userId",
-                       "users"."email" AS "userEmail",
-                       "users"."name" AS "userName",
-                       "enrollments"."role" AS "enrollmentRole"
-                FROM "endorsements"
-                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                JOIN "messages" ON "endorsements"."message" = "messages"."id"
-                WHERE "messages"."conversation" = ${conversation.id}
-                ORDER BY "endorsements"."id" ASC
-              `
+                      SELECT "endorsements"."id",
+                            "enrollments"."id" AS "enrollmentId",
+                            "users"."id" AS "userId",
+                            "users"."email" AS "userEmail",
+                            "users"."name" AS "userName",
+                            "users"."avatar" AS "userAvatar",
+                            "users"."biography" AS "userBiography",      
+                            "enrollments"."reference" AS "enrollmentReference",
+                            "enrollments"."role" AS "enrollmentRole"
+                      FROM "endorsements"
+                      JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                      JOIN "messages" ON "endorsements"."message" = "messages"."id"
+                      WHERE "messages"."conversation" = ${conversation.id}
+                      ORDER BY "endorsements"."id" ASC
+                    `
                   )
                   .map((endorsement) => ({
                     id: endorsement.id,
@@ -4740,7 +4768,7 @@ export default async function courselore(
                       endorsement.enrollmentId !== null &&
                       endorsement.userId !== null &&
                       endorsement.userEmail !== null &&
-                      endorsement.userName !== null &&
+                      endorsement.enrollmentReference !== null &&
                       endorsement.enrollmentRole !== null
                         ? {
                             id: endorsement.enrollmentId,
@@ -4748,7 +4776,10 @@ export default async function courselore(
                               id: endorsement.userId,
                               email: endorsement.userEmail,
                               name: endorsement.userName,
+                              avatar: endorsement.userAvatar,
+                              biography: endorsement.userBiography,
                             },
+                            reference: endorsement.enrollmentReference,
                             role: endorsement.enrollmentRole,
                           }
                         : app.locals.constants.anonymousEnrollment,
@@ -4767,7 +4798,7 @@ export default async function courselore(
               originalMessage.authorEnrollmentId !== null &&
               originalMessage.authorUserId !== null &&
               originalMessage.authorUserEmail !== null &&
-              originalMessage.authorUserName !== null &&
+              originalMessage.authorEnrollmentReference !== null &&
               originalMessage.authorEnrollmentRole !== null
                 ? {
                     id: originalMessage.authorEnrollmentId,
@@ -4775,7 +4806,10 @@ export default async function courselore(
                       id: originalMessage.authorUserId,
                       email: originalMessage.authorUserEmail,
                       name: originalMessage.authorUserName,
+                      avatar: originalMessage.authorUserAvatar,
+                      biography: originalMessage.authorUserBiography,
                     },
+                    reference: originalMessage.authorEnrollmentReference,
                     role: originalMessage.authorEnrollmentRole,
                   }
                 : app.locals.constants.anonymousEnrollment,
@@ -6630,14 +6664,14 @@ export default async function courselore(
           });
           app.locals.database.run(
             sql`
-            INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
-            VALUES (
-              ${req.body.expiresAt},
-              ${res.locals.course.id},
-              ${invitationReference},
-              ${req.body.role}
-            )
-          `
+              INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
+              VALUES (
+                ${req.body.expiresAt},
+                ${res.locals.course.id},
+                ${invitationReference},
+                ${req.body.role}
+              )
+            `
           );
 
           app.locals.helpers.flash.set(
@@ -6703,14 +6737,14 @@ export default async function courselore(
             if (
               app.locals.database.get<{ exists: number }>(
                 sql`
-                SELECT EXISTS(
-                  SELECT 1
-                  FROM "enrollments"
-                  JOIN "users" ON "enrollments"."user" = "users"."id"
-                  WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                        "users"."email" = ${email}
-                ) AS "exists"
-              `
+                  SELECT EXISTS(
+                    SELECT 1
+                    FROM "enrollments"
+                    JOIN "users" ON "enrollments"."user" = "users"."id"
+                    WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                          "users"."email" = ${email}
+                  ) AS "exists"
+                `
               )!.exists === 1
             )
               continue;
@@ -6720,22 +6754,22 @@ export default async function courselore(
               name: string | null;
             }>(
               sql`
-              SELECT "id", "name"
-              FROM "invitations"
-              WHERE "course" = ${res.locals.course.id} AND
-                    "email" = ${email} AND
-                    "usedAt" IS NULL
-            `
+                SELECT "id", "name"
+                FROM "invitations"
+                WHERE "course" = ${res.locals.course.id} AND
+                      "email" = ${email} AND
+                      "usedAt" IS NULL
+              `
             );
             if (existingUnusedInvitation !== undefined) {
               app.locals.database.run(
                 sql`
-                UPDATE "invitations"
-                SET "expiresAt" = ${req.body.expiresAt},
-                    "name" = ${name ?? existingUnusedInvitation.name},
-                    "role" = ${req.body.role}
-                WHERE "id" = ${existingUnusedInvitation.id}
-              `
+                  UPDATE "invitations"
+                  SET "expiresAt" = ${req.body.expiresAt},
+                      "name" = ${name ?? existingUnusedInvitation.name},
+                      "role" = ${req.body.role}
+                  WHERE "id" = ${existingUnusedInvitation.id}
+                `
               );
               continue;
             }
@@ -8391,7 +8425,9 @@ export default async function courselore(
                               >
                                 ${conversation.createdAt}
                               </time>
-                              by ${conversation.authorEnrollment.user.name}
+                              by
+                              ${conversation.authorEnrollment.user.name ??
+                              conversation.authorEnrollment.reference}
                             </div>
                             $${conversation.updatedAt !== conversation.createdAt
                               ? html`
@@ -9926,6 +9962,9 @@ ${value}</textarea
           authorUserId: number | null;
           authorUserEmail: string | null;
           authorUserName: string | null;
+          authorUserAvatar: string | null;
+          authorUserBiography: string | null;
+          authorEnrollmentReference: Role | null;
           authorEnrollmentRole: Role | null;
           content: string;
           answerAt: string | null;
@@ -9939,6 +9978,9 @@ ${value}</textarea
                    "authorUser"."id" AS "authorUserId",
                    "authorUser"."email" AS "authorUserEmail",
                    "authorUser"."name" AS "authorUserName",
+                   "authorUser"."avatar" AS "authorUserAvatar",
+                   "authorUser"."biography" AS "authorUserBiography",
+                   "authorEnrollment"."reference" AS "authorEnrollmentReference",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
                    "messages"."content",
                    "messages"."answerAt"
@@ -9958,6 +10000,9 @@ ${value}</textarea
               userId: number | null;
               userEmail: string | null;
               userName: string | null;
+              userAvatar: string | null;
+              userBiography: string | null;
+              enrollmentReference: string | null;
               enrollmentRole: Role | null;
             }>(
               sql`
@@ -9966,6 +10011,9 @@ ${value}</textarea
                        "users"."id" AS "userId",
                        "users"."email" AS "userEmail",
                        "users"."name" AS "userName",
+                       "users"."avatar" AS "userAvatar",
+                       "users"."biography" AS "userBiography",
+                       "enrollments"."reference" AS "enrollmentReference",
                        "enrollments"."role" AS "enrollmentRole"
                 FROM "endorsements"
                 JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
@@ -9980,7 +10028,7 @@ ${value}</textarea
                 endorsement.enrollmentId !== null &&
                 endorsement.userId !== null &&
                 endorsement.userEmail !== null &&
-                endorsement.userName !== null &&
+                endorsement.enrollmentReference !== null &&
                 endorsement.enrollmentRole !== null
                   ? {
                       id: endorsement.enrollmentId,
@@ -9988,7 +10036,10 @@ ${value}</textarea
                         id: endorsement.userId,
                         email: endorsement.userEmail,
                         name: endorsement.userName,
+                        avatar: endorsement.userAvatar,
+                        biography: endorsement.userBiography,
                       },
+                      reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
                     }
                   : app.locals.constants.anonymousEnrollment,
@@ -10000,6 +10051,9 @@ ${value}</textarea
               userId: number | null;
               userEmail: string | null;
               userName: string | null;
+              userAvatar: string | null;
+              userBiography: string | null;
+              enrollmentReference: string | null;
               enrollmentRole: Role | null;
             }>(
               sql`
@@ -10008,6 +10062,9 @@ ${value}</textarea
                        "users"."id" AS "userId",
                        "users"."email" AS "userEmail",
                        "users"."name" AS "userName",
+                       "users"."avatar" AS "userAvatar",
+                       "users"."biography" AS "userBiography",
+                       "enrollments"."reference" AS "enrollmentReference",
                        "enrollments"."role" AS "enrollmentRole"
                 FROM "likes"
                 LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
@@ -10021,7 +10078,7 @@ ${value}</textarea
                 like.enrollmentId !== null &&
                 like.userId !== null &&
                 like.userEmail !== null &&
-                like.userName !== null &&
+                like.enrollmentReference !== null &&
                 like.enrollmentRole !== null
                   ? {
                       id: like.enrollmentId,
@@ -10029,7 +10086,10 @@ ${value}</textarea
                         id: like.userId,
                         email: like.userEmail,
                         name: like.userName,
+                        avatar: like.userAvatar,
+                        biography: like.userBiography,
                       },
+                      reference: like.enrollmentReference,
                       role: like.enrollmentRole,
                     }
                   : app.locals.constants.anonymousEnrollment,
@@ -10044,7 +10104,7 @@ ${value}</textarea
               message.authorEnrollmentId !== null &&
               message.authorUserId !== null &&
               message.authorUserEmail !== null &&
-              message.authorUserName !== null &&
+              message.authorEnrollmentReference !== null &&
               message.authorEnrollmentRole !== null
                 ? {
                     id: message.authorEnrollmentId,
@@ -10052,7 +10112,10 @@ ${value}</textarea
                       id: message.authorUserId,
                       email: message.authorUserEmail,
                       name: message.authorUserName,
+                      avatar: message.authorUserAvatar,
+                      biography: message.authorUserBiography,
                     },
+                    reference: message.authorEnrollmentReference,
                     role: message.authorEnrollmentRole,
                   }
                 : app.locals.constants.anonymousEnrollment,
@@ -10516,6 +10579,20 @@ ${value}</textarea
                     `}"
                   >
                     <div>
+                      $${message.authorEnrollment.user.avatar === null
+                        ? html`
+                            <div class="avatar--icon">
+                              <i class="bi bi-person-circle"></i>
+                            </div>
+                          `
+                        : html`
+                            <img
+                              src="${message.authorEnrollment.user.avatar}"
+                              alt="${message.authorEnrollment.user.name ??
+                              message.authorEnrollment.user.email}"
+                              class="avatar--image"
+                            />
+                          `}
                       <span class="strong">
                         ${message.authorEnrollment.user.name}
                       </span>
