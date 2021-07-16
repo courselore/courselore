@@ -1132,13 +1132,7 @@ export default async function courselore(
                 }
               }
 
-              .avatar--icon {
-                font-size: var(--font-size--xl);
-              }
-
-              .avatar--image {
-                width: var(--font-size--xl);
-                height: var(--font-size--xl);
+              .avatar {
                 border-radius: var(--border-radius--circle);
                 @media (prefers-color-scheme: dark) {
                   filter: brightness(var(--brightness--90));
@@ -2524,17 +2518,18 @@ export default async function courselore(
                         `}"
                       >
                         $${res.locals.user.avatar === null
-                          ? html`
-                              <div class="avatar--icon">
-                                <i class="bi bi-person-circle"></i>
-                              </div>
-                            `
+                          ? html`<i class="bi bi-person-circle"></i>`
                           : html`
+                              <!-- TODO: :focus-within & :active -->
                               <img
                                 src="${res.locals.user.avatar}"
                                 alt="${res.locals.user.name ??
                                 res.locals.user.email}"
-                                class="avatar--image"
+                                class="avatar"
+                                style="${css`
+                                  width: var(--font-size--xl);
+                                  height: var(--font-size--xl);
+                                `}"
                               />
                             `}
                       </button>
@@ -4193,7 +4188,7 @@ export default async function courselore(
                     >
                       <button
                         type="button"
-                        class="button--inline avatar--icon"
+                        class="button--inline"
                         style="${css`
                           font-size: var(--space--20);
                           width: 100%;
@@ -4265,7 +4260,7 @@ export default async function courselore(
                         <img
                           src="${res.locals.user.avatar ?? ""}"
                           alt="Avatar"
-                          class="avatar--image"
+                          class="avatar"
                           style="${css`
                             width: 100%;
                             height: 100%;
@@ -7040,7 +7035,11 @@ export default async function courselore(
                       >
                         $${enrollment.userAvatar === null
                           ? html`
-                              <div class="avatar--icon">
+                              <div
+                                style="${css`
+                                  font-size: var(--font-size--xl);
+                                `}"
+                              >
                                 <i class="bi bi-person-circle"></i>
                               </div>
                             `
@@ -7049,7 +7048,11 @@ export default async function courselore(
                                 src="${enrollment.userAvatar}"
                                 alt="${enrollment.userName ??
                                 enrollment.userEmail}"
-                                class="avatar--image"
+                                class="avatar"
+                                style="${css`
+                                  width: var(--font-size--xl);
+                                  height: var(--font-size--xl);
+                                `}"
                               />
                             `}
                       </div>
@@ -8420,19 +8423,15 @@ export default async function courselore(
                               #${conversation.reference} created
                               <time
                                 data-ondomcontentloaded="${javascript`
-                            relativizeTime(this);
-                          `}"
+                                  relativizeTime(this);
+                                `}"
                               >
                                 ${conversation.createdAt}
                               </time>
                               by
                               $${conversation.authorEnrollment.user.avatar ===
                               null
-                                ? html`
-                                    <span class="avatar--icon">
-                                      <i class="bi bi-person-circle"></i>
-                                    </span>
-                                  `
+                                ? html`<i class="bi bi-person-circle"></i>`
                                 : html`
                                     <img
                                       src="${conversation.authorEnrollment.user
@@ -8440,7 +8439,12 @@ export default async function courselore(
                                       alt="${conversation.authorEnrollment.user
                                         .name ??
                                       conversation.authorEnrollment.user.email}"
-                                      class="avatar--image"
+                                      class="avatar"
+                                      style="${css`
+                                        width: var(--font-size--xs);
+                                        height: var(--font-size--xs);
+                                        vertical-align: -0.125em;
+                                      `}"
                                     />
                                   `}
                               ${conversation.authorEnrollment.user.name ??
@@ -8452,8 +8456,8 @@ export default async function courselore(
                                     and last updated
                                     <time
                                       data-ondomcontentloaded="${javascript`
-                                  relativizeTime(this);
-                                `}"
+                                        relativizeTime(this);
+                                      `}"
                                     >
                                       ${conversation.updatedAt}
                                     </time>
@@ -10598,16 +10602,25 @@ ${value}</textarea
                     <div>
                       $${message.authorEnrollment.user.avatar === null
                         ? html`
-                            <div class="avatar--icon">
+                            <span
+                              style="${css`
+                                font-size: var(--font-size--2xl);
+                              `}"
+                            >
                               <i class="bi bi-person-circle"></i>
-                            </div>
+                            </span>
                           `
                         : html`
                             <img
                               src="${message.authorEnrollment.user.avatar}"
                               alt="${message.authorEnrollment.user.name ??
                               message.authorEnrollment.user.email}"
-                              class="avatar--image"
+                              class="avatar"
+                              style="${css`
+                                width: var(--font-size--2xl);
+                                height: var(--font-size--2xl);
+                                vertical-align: -0.125em;
+                              `}"
                             />
                           `}
                       <span class="strong">
