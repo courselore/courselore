@@ -9263,7 +9263,10 @@ export default async function courselore(
                 };
               `}"
               onchange="${javascript`
-                this.upload(this.files);
+                (async () => {
+                  await this.upload(this.files);
+                  this.value = "";
+                })();
               `}"
             />
           </div>
