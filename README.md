@@ -227,9 +227,6 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Minor Improvements
 
-- Verify occurrences of:
-  - `user.name`.
-  - `SELECT FROM "users"`.
 - Manage answer tags more intelligently:
   - Answered at all.
   - Answered by staff.
@@ -237,6 +234,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Simplify icons in sidebar (they’re wrapping now).
   - Tippy & live reload.
     - Reset Tippy somehow?
+  - Don’t breakpoint Demonstration Mode bar on phone if “Turn off” doesn’t show up.
 
 ### Courses
 
@@ -310,6 +308,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - A little bio.
   - Accessible to other students, but not to the general public.
   - Make `@mentions` link to the user profile page.
+- Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
 
 ### Text Editor Niceties
 
