@@ -8426,6 +8426,23 @@ export default async function courselore(
                                 ${conversation.createdAt}
                               </time>
                               by
+                              $${conversation.authorEnrollment.user.avatar ===
+                              null
+                                ? html`
+                                    <span class="avatar--icon">
+                                      <i class="bi bi-person-circle"></i>
+                                    </span>
+                                  `
+                                : html`
+                                    <img
+                                      src="${conversation.authorEnrollment.user
+                                        .avatar}"
+                                      alt="${conversation.authorEnrollment.user
+                                        .name ??
+                                      conversation.authorEnrollment.user.email}"
+                                      class="avatar--image"
+                                    />
+                                  `}
                               ${conversation.authorEnrollment.user.name ??
                               conversation.authorEnrollment.reference}
                             </div>
