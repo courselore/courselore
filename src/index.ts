@@ -7474,14 +7474,15 @@ export default async function courselore(
                           style="${css`
                             display: flex;
                             gap: var(--space--2);
-                            align-items: baseline;
+                            align-items: center;
                           `}"
                           data-ondomcontentloaded="${javascript`
                             const tags = this.closest(".tags");
                             if (tags === null) return;
                             for (const element of this.querySelectorAll("[required]")) element.disabled = false;
-                            for (const element of this.querySelectorAll("[name]")) element.name = element.name.replace("{index}", tags.dataset.nextIndex);
-                            tags.dataset.nextIndex = Number(tags.dataset.nextIndex) + 1;
+                            const nextIndex = tags.dataset.nextIndex;
+                            for (const element of this.querySelectorAll("[name]")) element.name = element.name.replace("{{index}}", nextIndex);
+                            tags.dataset.nextIndex = Number(nextIndex) + 1;
                           `}"
                         >
                           <i class="bi bi-tag"></i>
@@ -7492,7 +7493,7 @@ export default async function courselore(
                           >
                             <input
                               type="text"
-                              name="tags[{index}][name]"
+                              name="tags[{{index}}][name]"
                               class="input--text"
                               required
                               autocomplete="off"
@@ -7502,7 +7503,7 @@ export default async function courselore(
                             class="button--inline button--inline--gray--cool"
                           >
                             <select
-                              name="tags[{index}][visibleBy]"
+                              name="tags[{{index}}][visibleBy]"
                               required
                               autocomplete="off"
                             >
