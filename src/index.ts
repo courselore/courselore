@@ -4325,7 +4325,6 @@ export default async function courselore(
                       type="hidden"
                       name="avatar"
                       value="${res.locals.user.avatar ?? ""}"
-                      autocomplete="off"
                     />
                   </div>
 
@@ -4830,6 +4829,7 @@ export default async function courselore(
           SELECT "id", "reference", "name", "visibleBy"
           FROM "tags"
           WHERE "course" = ${res.locals.course.id}
+          ORDER BY "id" ASC
         `
       );
 
@@ -7450,14 +7450,135 @@ export default async function courselore(
                   `}"
                 >
                   <div
-                    data-next-index="0"
+                    data-next-index="${res.locals.tags.length}"
                     class="tags"
                     style="${css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
                     `}"
-                  ></div>
+                  >
+                    $${res.locals.tags.map(
+                      (tag, index) => html`
+                        <div class="tag">
+                          <div
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: center;
+                            `}"
+                          >
+                            <input
+                              type="hidden"
+                              name="tags[${index}][reference]"
+                              value="${tag.reference}"
+                            />
+                            <i class="bi bi-tag"></i>
+                            <div
+                              style="${css`
+                                flex: 1;
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                name="tags[${index}][name]"
+                                value="${tag.name}"
+                                class="input--text"
+                                required
+                                autocomplete="off"
+                              />
+                            </div>
+                            <label
+                              class="button--inline button--inline--gray--cool"
+                            >
+                              <select
+                                name="tags[${index}][visibleBy]"
+                                required
+                                autocomplete="off"
+                              >
+                                <option
+                                  value="everyone"
+                                  $${tag.visibleBy === "everyone"
+                                    ? html`selected`
+                                    : html``}
+                                >
+                                  Visible by Everyone
+                                </option>
+                                <option
+                                  value="staff"
+                                  $${tag.visibleBy === "staff"
+                                    ? html`selected`
+                                    : html``}
+                                >
+                                  Visible by Staff Only
+                                </option>
+                              </select>
+                              <i class="bi bi-chevron-down"></i>
+                            </label>
+                            <div>
+                              <button
+                                type="button"
+                                class="button--inline button--inline--gray--cool button--inline--rose"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Remove Tag",
+                                    theme: "tooltip tooltip--rose",
+                                    touch: false,
+                                  });
+                                  tippy(this, {
+                                    content: this.nextElementSibling.firstElementChild,
+                                    theme: "dropdown dropdown--rose",
+                                    trigger: "click",
+                                    interactive: true,
+                                    allowHTML: true,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
+                              <div hidden>
+                                <div
+                                  style="${css`
+                                    padding: var(--space--2) var(--space--0);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `}"
+                                >
+                                  <p>
+                                    Are you sure you want to remove this tag?
+                                  </p>
+                                  <p>
+                                    <strong
+                                      style="${css`
+                                        font-weight: var(
+                                          --font-weight--semibold
+                                        );
+                                      `}"
+                                    >
+                                      The tag will be removed from all
+                                      conversations and you may not undo this
+                                      action!
+                                    </strong>
+                                  </p>
+                                  <button
+                                    type="button"
+                                    class="button button--rose"
+                                    onclick="${javascript`
+                                      this.closest(".tag").remove();
+                                    `}"
+                                  >
+                                    <i class="bi bi-trash"></i>
+                                    Remove Tag
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      `
+                    )}
+                  </div>
                   <div
                     style="${css`
                       display: flex;
@@ -7574,8 +7695,8 @@ export default async function courselore(
                                     `}"
                                   >
                                     The tag will be removed from all
-                                    conversations and messages, and you may not
-                                    undo this action!
+                                    conversations and you may not undo this
+                                    action!
                                   </strong>
                                 </p>
                                 <button
@@ -10113,6 +10234,7 @@ ${value}</textarea
                 LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
                 LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
                 WHERE "likes"."message" = ${message.id}
+                ORDER BY "likes"."id" ASC
               `
             )
             .map((like) => ({
