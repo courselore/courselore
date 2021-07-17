@@ -7769,6 +7769,13 @@ export default async function courselore(
                         width: 100%;
                       }
                     `}"
+                    data-ondomcontentloaded="${javascript`
+                      (this.validators ??= []).push(() => {
+                        alert(this.closest("form").querySelector(".tags").children.length);
+                        if (this.closest("form").querySelector(".tags").children.length === 0)
+                          return "Add at least one tag";
+                      });
+                    `}"
                   >
                     <i class="bi bi-pencil"></i>
                     Update Tags
@@ -7788,10 +7795,10 @@ export default async function courselore(
     {
       tags?: {
         reference?: string | undefined;
+        delete?: "true" | "false";
         name?: string;
         visibleBy?: "everyone" | "staff";
       }[];
-      tagReferencesToDelete?: string[];
     },
     {},
     IsCourseStaffMiddlewareLocals
@@ -7799,28 +7806,25 @@ export default async function courselore(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
-      req.body.tags ??= [];
-      req.body.tagReferencesToDelete ??= [];
       if (
         !Array.isArray(req.body.tags) ||
+        req.body.tags.length === 0 ||
         req.body.tags.some(
           (tag) =>
+            (tag.reference === undefined &&
+              (typeof tag.name !== "string" ||
+                tag.name.trim() === "" ||
+                typeof tag.visibleBy !== "string" ||
+                !["everyone", "staff"].includes(tag.visibleBy))) ||
             (tag.reference !== undefined &&
-              !res.locals.tags.some(
+              (!res.locals.tags.some(
                 (existingTag) => tag.reference === existingTag.reference
-              )) ||
-            typeof tag.name !== "string" ||
-            tag.name.trim() === "" ||
-            typeof tag.visibleBy !== "string" ||
-            !["everyone", "staff"].includes(tag.visibleBy)
-        ) ||
-        !Array.isArray(req.body.tagReferencesToDelete) ||
-        req.body.tagReferencesToDelete.some(
-          (tagReferenceToDelete) =>
-            typeof tagReferenceToDelete !== "string" ||
-            !res.locals.tags.some(
-              (existingTag) => tagReferenceToDelete === existingTag.reference
-            )
+              ) ||
+                (tag.delete !== "true" &&
+                  (typeof tag.name !== "string" ||
+                    tag.name.trim() === "" ||
+                    typeof tag.visibleBy !== "string" ||
+                    !["everyone", "staff"].includes(tag.visibleBy)))))
         )
       )
         return next("validation");
@@ -7836,7 +7840,13 @@ export default async function courselore(
                 ${tag.name},
                 ${tag.visibleBy}
               )
-          `
+            `
+          );
+        else if (tag.delete === "true")
+          app.locals.database.run(
+            sql`
+              DELETE FROM "tags" WHERE "reference" = ${tag.reference}
+            `
           );
         else
           app.locals.database.run(
@@ -7846,13 +7856,6 @@ export default async function courselore(
               WHERE "reference" = ${tag.reference}
             `
           );
-
-      for (const tagReferenceToDelete of req.body.tagReferencesToDelete)
-        app.locals.database.run(
-          sql`
-              DELETE FROM "tags" WHERE "reference" = ${tagReferenceToDelete}
-            `
-        );
 
       app.locals.helpers.flash.set(
         req,
