@@ -9737,7 +9737,7 @@ ${value}</textarea
           dark: await shiki.getHighlighter({ theme: "dark-plus" }),
         },
       })
-      .use(rehypeKatex, { maxSize: 25, maxExpand: 10 })
+      .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(() => (tree) => {
         unistUtilVisit(tree, (node) => {
           if (node.properties !== undefined && node.position !== undefined)
