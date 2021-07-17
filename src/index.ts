@@ -7493,7 +7493,6 @@ export default async function courselore(
                     : html``}
 
                   <div
-                    data-next-index="${res.locals.tags.length}"
                     class="tags"
                     style="${css`
                       display: flex;
@@ -7700,13 +7699,6 @@ export default async function courselore(
                           gap: var(--space--2);
                           align-items: center;
                         `}"
-                        data-onmount="${javascript`
-                          const tags = this.closest(".tags");
-                          for (const element of this.querySelectorAll("[required]")) element.disabled = false;
-                          const nextIndex = tags.dataset.nextIndex;
-                          for (const element of this.querySelectorAll("[name]")) element.name = element.name.replace("{{index}}", nextIndex);
-                          tags.dataset.nextIndex = Number(nextIndex) + 1;
-                        `}"
                       >
                         <i class="bi bi-tag"></i>
                         <div
@@ -7716,19 +7708,29 @@ export default async function courselore(
                         >
                           <input
                             type="text"
-                            name="tags[{{index}}][name]"
                             class="input--text"
                             required
                             autocomplete="off"
+                            disabled
+                            data-onmount="${javascript`
+                              this.disabled = false;
+                              const tag = this.closest(".tag");
+                              this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
+                            `}"
                           />
                         </div>
                         <label
                           class="button--inline button--inline--gray--cool"
                         >
                           <select
-                            name="tags[{{index}}][visibleBy]"
                             required
                             autocomplete="off"
+                            disabled
+                            data-onmount="${javascript`
+                              this.disabled = false;
+                              const tag = this.closest(".tag");
+                              this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
+                            `}"
                           >
                             <option value="everyone">
                               Visible by Everyone
