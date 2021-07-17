@@ -271,6 +271,14 @@ export default async function courselore(
         UNIQUE ("course", "reference")
       );
 
+      CREATE TABLE "taggings" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+        "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
+        UNIQUE ("conversation", "tag")
+      );
+
       CREATE TABLE "emailsQueue" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -4829,6 +4837,11 @@ export default async function courselore(
           SELECT "id", "reference", "name", "visibleBy"
           FROM "tags"
           WHERE "course" = ${res.locals.course.id}
+                $${
+                  res.locals.enrollment.role === "student"
+                    ? sql`AND "visibleBy" = 'everyone'`
+                    : sql``
+                }
           ORDER BY "id" ASC
         `
       );
@@ -7450,6 +7463,29 @@ export default async function courselore(
                   `}"
                 >
                   <div
+                    class="tags--empty"
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      align-items: center;
+                    `}"
+                    hidden
+                    data-ondomcontentloaded="${javascript`
+                      const tags = this.closest("form").querySelector(".tags");
+                      const showOrHide = () => {
+                        this.hidden = tags.childElementCount > 0;
+                      };
+                      showOrHide();
+                      new MutationObserver(showOrHide).observe(tags, { childList: true });
+                    `}"
+                  >
+                    <div class="decorative-icon">
+                      <i class="bi bi-tags"></i>
+                    </div>
+                    <p>Organize your conversations with tags.</p>
+                  </div>
+                  <div
                     data-next-index="${res.locals.tags.length}"
                     class="tags"
                     style="${css`
@@ -9964,6 +10000,15 @@ ${value}</textarea
                       Question
                     </span>
                   </label>
+
+                  $${res.locals.tags.length === 0
+                    ? html``
+                    : html`
+                        <button type="button" class="button--inline">
+                          <i class="bi bi-tags"></i>
+                          Tags
+                        </button>
+                      `}
                 </div>
 
                 <div>
@@ -12148,50 +12193,7 @@ ${value}</textarea
   )
     app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res) => {
       res.send(
-        app.locals.layouts.box({
-          req,
-          res,
-          head: html`<title>Turn off · CourseLore</title>`,
-          body: html`
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `}"
-            >
-              <h2
-                class="heading--2"
-                style="${css`
-                  color: var(--color--primary--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                  }
-                `}"
-              >
-                <i class="bi bi-power"></i>
-                Turn off
-              </h2>
-              <div
-                style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <p>The demonstration server was turned off.</p>
-              </div>
-            </div>
-          `,
-        })
+        `The demonstration server was turned off. Thanks for trying out CourseLore.`
       );
       process.exit(0);
     });
