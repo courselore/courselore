@@ -579,9 +579,16 @@ export default async function courselore(
                 ...element.querySelectorAll("*"),
               ];
               for (const element of elementsToCheck) {
-                if (element.dataset.skipIsModified === "true") continue;
+                if (
+                  element.dataset.skipIsModified === "true" ||
+                  element.closest("[disabled]") !== null
+                )
+                  continue;
+                if (element.dataset.forceIsModified === "true") return true;
                 if (["radio", "checkbox"].includes(element.type)) {
                   if (element.checked !== element.defaultChecked) return true;
+                } else if (element.tagName.toLowerCase() === "option") {
+                  if (element.selected !== element.defaultSelected) return true;
                 } else if (
                   typeof element.value === "string" &&
                   typeof element.defaultValue === "string"
@@ -4295,7 +4302,9 @@ export default async function courselore(
                         `}"
                         onclick="${javascript`
                           const form = this.closest("form");
-                          form.querySelector('[name="avatar"]').value = "";
+                          const avatar = form.querySelector('[name="avatar"]')
+                          avatar.value = "";
+                          avatar.dataset.forceIsModified = true;
                           form.querySelector(".avatar--empty").hidden = false;
                           form.querySelector(".avatar--filled").hidden = true;
                         `}"
@@ -4316,16 +4325,18 @@ export default async function courselore(
                           const body = new FormData();
                           body.append("avatar", this.files[0]);
                           this.value = "";
-                          const avatar = await (await fetch("${app.locals.settings.url}/settings/avatar", {
+                          const avatarURL = await (await fetch("${app.locals.settings.url}/settings/avatar", {
                             method: "POST",
                             body,
                           })).text();
                           const form = this.closest("form");
-                          form.querySelector('[name="avatar"]').value = avatar;
+                          const avatar = form.querySelector('[name="avatar"]')
+                          avatar.value = avatarURL;
+                          avatar.dataset.forceIsModified = true;
                           form.querySelector(".avatar--empty").hidden = true;
                           const avatarFilled = form.querySelector(".avatar--filled");
                           avatarFilled.hidden = false;
-                          avatarFilled.querySelector("img").setAttribute("src", avatar);
+                          avatarFilled.querySelector("img").setAttribute("src", avatarURL);
                         })();
                       `}"
                     />
@@ -7455,6 +7466,7 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
+                <input type="hidden" name="tagReferencesToDelete" value="[]" />
                 <div
                   style="${css`
                     display: flex;
@@ -7601,7 +7613,14 @@ export default async function courselore(
                                     type="button"
                                     class="button button--rose"
                                     onclick="${javascript`
-                                      this.closest(".tag").remove();
+                                      const tag = this.closest(".tag");
+                                      const reference = tag.querySelector('[name$="[reference]"]');
+                                      if (reference !== null) {
+                                        const tagReferencesToDelete = this.closest("form").querySelector('[name="tagReferencesToDelete"]');
+                                        tagReferencesToDelete.value = JSON.stringify([...JSON.parse(tagReferencesToDelete.value), reference.value]);
+                                        tagReferencesToDelete.dataset.forceIsModified = true;
+                                      }
+                                      tag.remove();
                                     `}"
                                   >
                                     <i class="bi bi-trash"></i>
@@ -7783,6 +7802,7 @@ export default async function courselore(
         name?: string;
         visibleBy?: "everyone" | "staff";
       }[];
+      tagReferencesToDelete?: string;
     },
     {},
     IsCourseStaffMiddlewareLocals
@@ -7803,6 +7823,23 @@ export default async function courselore(
             tag.name.trim() === "" ||
             typeof tag.visibleBy !== "string" ||
             !["everyone", "staff"].includes(tag.visibleBy)
+        ) ||
+        typeof req.body.tagReferencesToDelete !== "string"
+      )
+        return next("validation");
+      let tagReferencesToDelete;
+      try {
+        tagReferencesToDelete = JSON.parse(req.body.tagReferencesToDelete);
+      } catch (_) {
+        return next("validation");
+      }
+      if (
+        !Array.isArray(tagReferencesToDelete) ||
+        tagReferencesToDelete.some(
+          (tagReferenceToDelete) =>
+            !res.locals.tags.some(
+              (existingTag) => tagReferenceToDelete === existingTag.reference
+            )
         )
       )
         return next("validation");
@@ -7829,15 +7866,12 @@ export default async function courselore(
             `
           );
 
-      for (const existingTag of res.locals.tags)
-        if (
-          !req.body.tags.some((tag) => existingTag.reference === tag.reference)
-        )
-          app.locals.database.run(
-            sql`
-              DELETE FROM "tags" WHERE "reference" = ${existingTag.reference}
+      for (const tagReferenceToDelete of tagReferencesToDelete)
+        app.locals.database.run(
+          sql`
+              DELETE FROM "tags" WHERE "reference" = ${tagReferenceToDelete}
             `
-          );
+        );
 
       app.locals.helpers.flash.set(
         req,
