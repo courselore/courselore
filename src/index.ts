@@ -7495,7 +7495,7 @@ export default async function courselore(
                     <div class="decorative-icon">
                       <i class="bi bi-tags"></i>
                     </div>
-                    <p>Organize your conversations with tags.</p>
+                    <p>Organize conversations with tags.</p>
                   </div>
                   <div
                     data-next-index="${res.locals.tags.length}"
