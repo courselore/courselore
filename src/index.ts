@@ -539,9 +539,6 @@ export default async function courselore(
               return true;
 
               function validate(element) {
-                if (element.value === "" && !element.matches("[required]"))
-                  return;
-
                 if (
                   element.matches("[required]") &&
                   element.value.trim() === ""
@@ -550,6 +547,7 @@ export default async function courselore(
 
                 if (
                   element.matches('[type="email"]') &&
+                  element.value.trim() !== "" &&
                   !element.value.match(${app.locals.constants.emailRegExp})
                 )
                   return "Enter an email address";
@@ -7771,7 +7769,6 @@ export default async function courselore(
                     `}"
                     data-ondomcontentloaded="${javascript`
                       (this.validators ??= []).push(() => {
-                        alert(this.closest("form").querySelector(".tags").children.length);
                         if (this.closest("form").querySelector(".tags").children.length === 0)
                           return "Add at least one tag";
                       });
