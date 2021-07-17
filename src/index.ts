@@ -7711,6 +7711,7 @@ export default async function courselore(
                             autocomplete="off"
                             disabled
                             data-onmount="${javascript`
+                              this.dataset.forceIsModified = true;
                               this.disabled = false;
                               const tag = this.closest(".tag");
                               this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
@@ -7725,6 +7726,7 @@ export default async function courselore(
                             autocomplete="off"
                             disabled
                             data-onmount="${javascript`
+                              this.dataset.forceIsModified = true;
                               this.disabled = false;
                               const tag = this.closest(".tag");
                               this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
