@@ -1,5 +1,6 @@
 module.exports = async (require) => {
-  const url = process.env.URL ?? "https://localhost:5000";
+  const os = require("os");
+  const url = `https://${os.hostname()}`;
   if (process.argv[3] === undefined) {
     const execa = require("execa");
     const caddyfile = require("dedent");
@@ -13,9 +14,15 @@ module.exports = async (require) => {
         stdout: "inherit",
         stderr: "inherit",
         input: caddyfile`
-          ${url}
-          reverse_proxy 127.0.0.1:4000
-          encode zstd gzip
+          {
+            admin off
+            local_certs
+          }
+
+          ${url} {
+            reverse_proxy 127.0.0.1:4000
+            encode zstd gzip
+          }
         `,
       }),
     ];

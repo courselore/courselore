@@ -1,4 +1,6 @@
 module.exports = async (require) => {
+  const url = "https://courselore.org";
+  const email = "administrator@courselore.org";
   if (process.argv[3] === undefined) {
     const execa = require("execa");
     const caddyfile = require("dedent");
@@ -13,7 +15,12 @@ module.exports = async (require) => {
         stdout: "inherit",
         stderr: "inherit",
         input: caddyfile`
-          courselore.org {
+          {
+            admin off
+            email ${email}
+          }
+
+          ${url} {
             reverse_proxy 127.0.0.1:4000
             encode zstd gzip
           }
@@ -33,8 +40,8 @@ module.exports = async (require) => {
     const customization = require("../customization")(require);
     const { version } = require("../package.json");
     const app = await courselore(path.join(__dirname, "data"));
-    app.locals.settings.url = "https://courselore.org";
-    app.locals.settings.administrator = "mailto:administrator@courselore.org";
+    app.locals.settings.url = url;
+    app.locals.settings.administrator = `mailto:${email}`;
     express()
       .use(customization(app))
       .use(app)
