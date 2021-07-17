@@ -7473,29 +7473,25 @@ export default async function courselore(
                     gap: var(--space--2);
                   `}"
                 >
-                  <div
-                    class="tags--empty"
-                    style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                      align-items: center;
-                    `}"
-                    hidden
-                    data-ondomcontentloaded="${javascript`
-                      const tags = this.closest("form").querySelector(".tags");
-                      const showOrHide = () => {
-                        this.hidden = tags.childElementCount > 0;
-                      };
-                      showOrHide();
-                      new MutationObserver(showOrHide).observe(tags, { childList: true });
-                    `}"
-                  >
-                    <div class="decorative-icon">
-                      <i class="bi bi-tags"></i>
-                    </div>
-                    <p>Organize conversations with tags.</p>
-                  </div>
+                  $${res.locals.tags.length === 0
+                    ? html`
+                        <div
+                          class="tags--empty"
+                          style="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                            align-items: center;
+                          `}"
+                        >
+                          <div class="decorative-icon">
+                            <i class="bi bi-tags"></i>
+                          </div>
+                          <p>Organize conversations with tags.</p>
+                        </div>
+                      `
+                    : html``}
+
                   <div
                     data-next-index="${res.locals.tags.length}"
                     class="tags"
@@ -7520,6 +7516,11 @@ export default async function courselore(
                               name="tags[${index}][reference]"
                               value="${tag.reference}"
                             />
+                            <input
+                              type="hidden"
+                              name="tags[${index}][delete]"
+                              value="false"
+                            />
                             <i class="bi bi-tag"></i>
                             <div
                               style="${css`
@@ -7530,7 +7531,7 @@ export default async function courselore(
                                 type="text"
                                 name="tags[${index}][name]"
                                 value="${tag.name}"
-                                class="input--text"
+                                class="input--text disable-on-delete"
                                 required
                                 autocomplete="off"
                               />
@@ -7542,6 +7543,7 @@ export default async function courselore(
                                 name="tags[${index}][visibleBy]"
                                 required
                                 autocomplete="off"
+                                class="disable-on-delete"
                               >
                                 <option
                                   value="everyone"
@@ -7562,7 +7564,13 @@ export default async function courselore(
                               </select>
                               <i class="bi bi-chevron-down"></i>
                             </label>
-                            <div>
+                            <div
+                              style="${css`
+                                .tag.deleted & {
+                                  display: none;
+                                }
+                              `}"
+                            >
                               <button
                                 type="button"
                                 class="button--inline button--inline--gray--cool button--inline--rose"
@@ -7613,10 +7621,11 @@ export default async function courselore(
                                     class="button button--rose"
                                     onclick="${javascript`
                                       const tag = this.closest(".tag");
-                                      const reference = tag.querySelector('[name$="[reference]"]');
-                                      if (reference !== null)
-                                        this.closest("form").insertAdjacentHTML("beforeend", '<input type="hidden" name="tagReferencesToDelete[]" value="' + reference.value + '" data-force-is-modified="true">');
-                                      tag.remove();
+                                      tag.classList.add("deleted");
+                                      const deleteField = tag.querySelector('[name$="[delete]"]');
+                                      deleteField.value = "true";
+                                      deleteField.dataset.forceIsModified = true;
+                                      for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
                                     `}"
                                   >
                                     <i class="bi bi-trash"></i>
@@ -7624,6 +7633,35 @@ export default async function courselore(
                                   </button>
                                 </div>
                               </div>
+                            </div>
+                            <div
+                              style="${css`
+                                .tag:not(.deleted) & {
+                                  display: none;
+                                }
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button--inline button--inline--gray--cool"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Don’t Remove Tag",
+                                    theme: "tooltip",
+                                    touch: false,
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  const tag = this.closest(".tag");
+                                  tag.classList.remove("deleted");
+                                  const deleteField = tag.querySelector('[name$="[delete]"]');
+                                  deleteField.value = "false";
+                                  deleteField.dataset.forceIsModified = false;
+                                  for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
+                                `}"
+                              >
+                                <i class="bi bi-recycle"></i>
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -7647,122 +7685,75 @@ export default async function courselore(
                       onclick="${javascript`
                         const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
                         this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                        for (const element of newTag.querySelectorAll("[data-ondomcontentloaded]"))
-                          new Function(element.dataset.ondomcontentloaded).call(element);
+                        for (const element of newTag.querySelectorAll("[data-onmount]"))
+                          new Function(element.dataset.onmount).call(element);
                       `}"
                     >
                       <i class="bi bi-plus-circle"></i>
                       Add Tag
                     </button>
-                    <div
-                      hidden
-                      data-ondomcontentloaded="${javascript`
-                        for (const element of this.querySelectorAll("[required]")) element.disabled = true;
-                      `}"
-                    >
-                      <div class="tag">
+                    <div hidden>
+                      <div
+                        class="tag"
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: center;
+                        `}"
+                        data-onmount="${javascript`
+                          const tags = this.closest(".tags");
+                          for (const element of this.querySelectorAll("[required]")) element.disabled = false;
+                          const nextIndex = tags.dataset.nextIndex;
+                          for (const element of this.querySelectorAll("[name]")) element.name = element.name.replace("{{index}}", nextIndex);
+                          tags.dataset.nextIndex = Number(nextIndex) + 1;
+                        `}"
+                      >
+                        <i class="bi bi-tag"></i>
                         <div
                           style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                            align-items: center;
-                          `}"
-                          data-ondomcontentloaded="${javascript`
-                            const tags = this.closest(".tags");
-                            if (tags === null) return;
-                            for (const element of this.querySelectorAll("[required]")) element.disabled = false;
-                            const nextIndex = tags.dataset.nextIndex;
-                            for (const element of this.querySelectorAll("[name]")) element.name = element.name.replace("{{index}}", nextIndex);
-                            tags.dataset.nextIndex = Number(nextIndex) + 1;
+                            flex: 1;
                           `}"
                         >
-                          <i class="bi bi-tag"></i>
-                          <div
-                            style="${css`
-                              flex: 1;
+                          <input
+                            type="text"
+                            name="tags[{{index}}][name]"
+                            class="input--text"
+                            required
+                            autocomplete="off"
+                          />
+                        </div>
+                        <label
+                          class="button--inline button--inline--gray--cool"
+                        >
+                          <select
+                            name="tags[{{index}}][visibleBy]"
+                            required
+                            autocomplete="off"
+                          >
+                            <option value="everyone">
+                              Visible by Everyone
+                            </option>
+                            <option value="staff">Visible by Staff Only</option>
+                          </select>
+                          <i class="bi bi-chevron-down"></i>
+                        </label>
+                        <div>
+                          <button
+                            type="button"
+                            class="button--inline button--inline--gray--cool button--inline--rose"
+                            data-onmount="${javascript`
+                              tippy(this, {
+                                content: "Remove Tag",
+                                theme: "tooltip tooltip--rose",
+                                touch: false,
+                              });
+                            `}"
+                            onclick="${javascript`
+                              this.closest(".tag").remove();
                             `}"
                           >
-                            <input
-                              type="text"
-                              name="tags[{{index}}][name]"
-                              class="input--text"
-                              required
-                              autocomplete="off"
-                            />
-                          </div>
-                          <label
-                            class="button--inline button--inline--gray--cool"
-                          >
-                            <select
-                              name="tags[{{index}}][visibleBy]"
-                              required
-                              autocomplete="off"
-                            >
-                              <option value="everyone">
-                                Visible by Everyone
-                              </option>
-                              <option value="staff">
-                                Visible by Staff Only
-                              </option>
-                            </select>
-                            <i class="bi bi-chevron-down"></i>
-                          </label>
-                          <div>
-                            <button
-                              type="button"
-                              class="button--inline button--inline--gray--cool button--inline--rose"
-                              data-ondomcontentloaded="${javascript`
-                                if (this.closest(".tags") === null) return;
-                                tippy(this, {
-                                  content: "Remove Tag",
-                                  theme: "tooltip tooltip--rose",
-                                  touch: false,
-                                });
-                                tippy(this, {
-                                  content: this.nextElementSibling.firstElementChild,
-                                  theme: "dropdown dropdown--rose",
-                                  trigger: "click",
-                                  interactive: true,
-                                  allowHTML: true,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-trash"></i>
-                            </button>
-                            <div hidden>
-                              <div
-                                style="${css`
-                                  padding: var(--space--2) var(--space--0);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `}"
-                              >
-                                <p>Are you sure you want to remove this tag?</p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--semibold);
-                                    `}"
-                                  >
-                                    The tag will be removed from all
-                                    conversations and you may not undo this
-                                    action!
-                                  </strong>
-                                </p>
-                                <button
-                                  type="button"
-                                  class="button button--rose"
-                                  onclick="${javascript`
-                                    this.closest(".tag").remove();
-                                  `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                  Remove Tag
-                                </button>
-                              </div>
-                            </div>
-                          </div>
+                            <i class="bi bi-trash"></i>
+                          </button>
                         </div>
                       </div>
                     </div>
