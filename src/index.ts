@@ -7454,6 +7454,25 @@ export default async function courselore(
                 Tags
               </h2>
 
+              $${res.locals.tags.length === 0
+                ? html`
+                    <div
+                      class="tags--empty"
+                      style="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                        align-items: center;
+                      `}"
+                    >
+                      <div class="decorative-icon">
+                        <i class="bi bi-tags"></i>
+                      </div>
+                      <p>Organize conversations with tags.</p>
+                    </div>
+                  `
+                : html``}
+
               <form
                 method="POST"
                 action="${app.locals.settings.url}/courses/${res.locals.course
@@ -7471,25 +7490,6 @@ export default async function courselore(
                     gap: var(--space--2);
                   `}"
                 >
-                  $${res.locals.tags.length === 0
-                    ? html`
-                        <div
-                          class="tags--empty"
-                          style="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                            align-items: center;
-                          `}"
-                        >
-                          <div class="decorative-icon">
-                            <i class="bi bi-tags"></i>
-                          </div>
-                          <p>Organize conversations with tags.</p>
-                        </div>
-                      `
-                    : html``}
-
                   <div
                     class="tags"
                     style="${css`
