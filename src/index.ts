@@ -7466,7 +7466,6 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <input type="hidden" name="tagReferencesToDelete" value="[]" />
                 <div
                   style="${css`
                     display: flex;
@@ -7615,11 +7614,8 @@ export default async function courselore(
                                     onclick="${javascript`
                                       const tag = this.closest(".tag");
                                       const reference = tag.querySelector('[name$="[reference]"]');
-                                      if (reference !== null) {
-                                        const tagReferencesToDelete = this.closest("form").querySelector('[name="tagReferencesToDelete"]');
-                                        tagReferencesToDelete.value = JSON.stringify([...JSON.parse(tagReferencesToDelete.value), reference.value]);
-                                        tagReferencesToDelete.dataset.forceIsModified = true;
-                                      }
+                                      if (reference !== null)
+                                        this.closest("form").insertAdjacentHTML("beforeend", '<input type="hidden" name="tagReferencesToDelete[]" value="' + reference.value + '" data-force-is-modified="true">');
                                       tag.remove();
                                     `}"
                                   >
@@ -7802,7 +7798,7 @@ export default async function courselore(
         name?: string;
         visibleBy?: "everyone" | "staff";
       }[];
-      tagReferencesToDelete?: string;
+      tagReferencesToDelete?: string[];
     },
     {},
     IsCourseStaffMiddlewareLocals
@@ -7811,6 +7807,7 @@ export default async function courselore(
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       req.body.tags ??= [];
+      req.body.tagReferencesToDelete ??= [];
       if (
         !Array.isArray(req.body.tags) ||
         req.body.tags.some(
@@ -7824,19 +7821,10 @@ export default async function courselore(
             typeof tag.visibleBy !== "string" ||
             !["everyone", "staff"].includes(tag.visibleBy)
         ) ||
-        typeof req.body.tagReferencesToDelete !== "string"
-      )
-        return next("validation");
-      let tagReferencesToDelete;
-      try {
-        tagReferencesToDelete = JSON.parse(req.body.tagReferencesToDelete);
-      } catch (_) {
-        return next("validation");
-      }
-      if (
-        !Array.isArray(tagReferencesToDelete) ||
-        tagReferencesToDelete.some(
+        !Array.isArray(req.body.tagReferencesToDelete) ||
+        req.body.tagReferencesToDelete.some(
           (tagReferenceToDelete) =>
+            typeof tagReferenceToDelete !== "string" ||
             !res.locals.tags.some(
               (existingTag) => tagReferenceToDelete === existingTag.reference
             )
@@ -7866,7 +7854,7 @@ export default async function courselore(
             `
           );
 
-      for (const tagReferenceToDelete of tagReferencesToDelete)
+      for (const tagReferenceToDelete of req.body.tagReferencesToDelete)
         app.locals.database.run(
           sql`
               DELETE FROM "tags" WHERE "reference" = ${tagReferenceToDelete}
