@@ -511,26 +511,18 @@ export default async function courselore(
 
               for (const element of elementsToValidate) {
                 if (
-                  typeof element.reportValidity !== "function" ||
+                  typeof element.setCustomValidity !== "function" ||
                   element.matches("[disabled]")
                 )
                   continue;
 
                 const valueInputByUser = element.value;
                 const customValidity = validate(element);
+                element.setCustomValidity(
+                  typeof customValidity === "string" ? customValidity : ""
+                );
                 if (element.value !== valueInputByUser)
                   elementsToReset.set(element, valueInputByUser);
-
-                if (typeof customValidity === "string") {
-                  element.setCustomValidity(customValidity);
-                  element.addEventListener(
-                    "input",
-                    () => {
-                      element.setCustomValidity("");
-                    },
-                    { once: true }
-                  );
-                }
 
                 if (!element.reportValidity()) {
                   for (const [element, valueInputByUser] of elementsToReset)
