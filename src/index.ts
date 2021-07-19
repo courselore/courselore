@@ -650,6 +650,20 @@ export default async function courselore(
                 </script>
               `
             : html``}
+
+          <script>
+            const liveReload = new EventSource(
+              "${app.locals.settings.url}/live-reload"
+            );
+            liveReload.addEventListener("error", (event) => {
+              liveReload.close();
+              (async function reload() {
+                if ((await fetch("${app.locals.settings.url}/live-reload")).ok)
+                  location.reload();
+                else window.setTimeout(reload, 200);
+              })();
+            });
+          </script>
           $${head}
         </head>
         <body
@@ -2916,6 +2930,11 @@ export default async function courselore(
   // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
   app.use(expressFileUpload({ createParentPath: true }));
 
+  app.get("/live-reload", (req, res) => {
+    // FIXME: https://github.com/caddyserver/caddy/issues/4247
+    res.type("text/event-stream").write(":\n\n");
+  });
+
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
   interface AppLocals {
     eventSources: Set<express.Response<any, Record<string, any>>>;
@@ -2944,7 +2963,8 @@ export default async function courselore(
       res.on("close", () => {
         app.locals.eventSources.delete(res);
       });
-      res.type("text/event-stream").flushHeaders();
+      // FIXME: https://github.com/caddyserver/caddy/issues/4247
+      res.type("text/event-stream").write(":\n\n");
     },
   ];
 
