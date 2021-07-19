@@ -7546,7 +7546,18 @@ export default async function courselore(
                               disabled
                               data-force-is-modified="true"
                             />
-                            <i class="bi bi-tag"></i>
+                            <div
+                              style="${css`
+                                .deleted & {
+                                  color: var(--color--rose--800);
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--rose--200);
+                                  }
+                                }
+                              `}"
+                            >
+                              <i class="bi bi-tag"></i>
+                            </div>
                             <div
                               style="${css`
                                 flex: 1;
@@ -7559,10 +7570,28 @@ export default async function courselore(
                                 class="input--text disable-on-delete"
                                 required
                                 autocomplete="off"
+                                style="${css`
+                                  .deleted & {
+                                    color: var(--color--rose--800);
+                                    background-color: var(--color--rose--200);
+                                    @media (prefers-color-scheme: dark) {
+                                      color: var(--color--rose--200);
+                                      background-color: var(--color--rose--900);
+                                    }
+                                  }
+                                `}"
                               />
                             </div>
                             <label
                               class="button--inline button--inline--gray--cool"
+                              style="${css`
+                                .deleted & {
+                                  color: var(--color--rose--800);
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--rose--200);
+                                  }
+                                }
+                              `}"
                             >
                               <select
                                 name="tags[${index}][visibleBy]"
