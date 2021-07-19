@@ -7516,7 +7516,9 @@ export default async function courselore(
                             <input
                               type="hidden"
                               name="tags[${index}][delete]"
-                              value="false"
+                              value="true"
+                              disabled
+                              data-force-is-modified="true"
                             />
                             <i class="bi bi-tag"></i>
                             <div
@@ -7620,8 +7622,7 @@ export default async function courselore(
                                       const tag = this.closest(".tag");
                                       tag.classList.add("deleted");
                                       const deleteField = tag.querySelector('[name$="[delete]"]');
-                                      deleteField.value = "true";
-                                      deleteField.dataset.forceIsModified = true;
+                                      deleteField.disabled = false;
                                       for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
                                     `}"
                                   >
@@ -7652,8 +7653,7 @@ export default async function courselore(
                                   const tag = this.closest(".tag");
                                   tag.classList.remove("deleted");
                                   const deleteField = tag.querySelector('[name$="[delete]"]');
-                                  deleteField.value = "false";
-                                  deleteField.dataset.forceIsModified = false;
+                                  deleteField.disabled = true;
                                   for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
                                 `}"
                               >
