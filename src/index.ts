@@ -7817,8 +7817,8 @@ export default async function courselore(
     HTML,
     {
       tags?: {
-        reference?: string | undefined;
-        delete?: "true" | "false";
+        reference?: string;
+        delete?: "true";
         name?: string;
         visibleBy?: "everyone" | "staff";
       }[];
