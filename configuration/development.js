@@ -36,6 +36,7 @@ module.exports = async (require) => {
     const { version } = require("../package.json");
     const app = await courselore(path.join(process.cwd(), "data"));
     app.locals.settings.url = url;
+    app.locals.settings.liveReload = true;
     express()
       .use(customization(app))
       .use(app)

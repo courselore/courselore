@@ -56,11 +56,13 @@ export default async function courselore(
     url: string;
     administrator: string;
     demonstration: boolean;
+    liveReload: boolean;
   }
   app.locals.settings.url = "https://localhost:5000";
   app.locals.settings.administrator =
     "mailto:demonstration-development@courselore.org";
   app.locals.settings.demonstration = true;
+  app.locals.settings.liveReload = false;
 
   interface AppLocals {
     constants: Constants;
@@ -650,20 +652,26 @@ export default async function courselore(
                 </script>
               `
             : html``}
-
-          <script>
-            const liveReload = new EventSource(
-              "${app.locals.settings.url}/live-reload"
-            );
-            liveReload.addEventListener("error", (event) => {
-              liveReload.close();
-              (async function reload() {
-                if ((await fetch("${app.locals.settings.url}/live-reload")).ok)
-                  location.reload();
-                else window.setTimeout(reload, 200);
-              })();
-            });
-          </script>
+          $${app.locals.settings.liveReload
+            ? html`
+                <script>
+                  const liveReload = new EventSource(
+                    "${app.locals.settings.url}/live-reload"
+                  );
+                  liveReload.addEventListener("error", (event) => {
+                    liveReload.close();
+                    (async function reload() {
+                      if (
+                        (await fetch("${app.locals.settings.url}/live-reload"))
+                          .ok
+                      )
+                        location.reload();
+                      else window.setTimeout(reload, 200);
+                    })();
+                  });
+                </script>
+              `
+            : html``}
           $${head}
         </head>
         <body
@@ -2930,7 +2938,8 @@ export default async function courselore(
   // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
   app.use(expressFileUpload({ createParentPath: true }));
 
-  app.get("/live-reload", (req, res) => {
+  app.get("/live-reload", (req, res, next) => {
+    if (!app.locals.settings.liveReload) return next();
     // FIXME: https://github.com/caddyserver/caddy/issues/4247
     res.type("text/event-stream").write(":\n\n");
   });
