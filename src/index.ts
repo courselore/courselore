@@ -518,11 +518,16 @@ export default async function courselore(
 
                 const valueInputByUser = element.value;
                 const customValidity = validate(element);
-                element.setCustomValidity(
-                  typeof customValidity === "string" ? customValidity : ""
-                );
                 if (element.value !== valueInputByUser)
                   elementsToReset.set(element, valueInputByUser);
+                if (typeof customValidity === "string") {
+                  element.setCustomValidity(customValidity);
+                  element.addEventListener("click", reset, { once: true });
+                  element.addEventListener("input", reset, { once: true });
+                  function reset() {
+                    element.setCustomValidity("");
+                  }
+                }
 
                 if (!element.reportValidity()) {
                   for (const [element, valueInputByUser] of elementsToReset)
