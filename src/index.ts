@@ -2438,13 +2438,7 @@ export default async function courselore(
                   >
                     <div>
                       <button
-                        class="header--item $${res.locals.invitations!
-                          .length === 0
-                          ? ""
-                          : "notification-indicator"}"
-                        style="${css`
-                          display: grid;
-                        `}"
+                        class="header--item"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: ${JSON.stringify(
@@ -2470,7 +2464,13 @@ export default async function courselore(
                           });
                         `}"
                       >
-                        <i class="bi bi-plus-circle"></i>
+                        <div
+                          $${res.locals.invitations!.length === 0
+                            ? html``
+                            : html`class="notification-indicator"`}
+                        >
+                          <i class="bi bi-plus-circle"></i>
+                        </div>
                       </button>
                       <div hidden>
                         <div>
