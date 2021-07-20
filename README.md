@@ -622,6 +622,24 @@ Insiders Builds are generated on every push. They’re useful for development an
 <summary><strong>Meetings</strong></summary>
 
 <details>
+<summary>2021-07-17</summary>
+
+- Improved user profiles.
+  - Optional names.
+  - Avatars & Biographies.
+- Implemented a unified solution to a bunch of problems:
+  - No HTTPS/2 in production.
+    - Prevents more than 6 connections for server-sent events.
+  - No HTTPS in development.
+  - No compression on responses.
+  - The solution was to use Caddy as a reverse proxy, instead of letting the Node.js process itself exposed to the world.
+- Button to turn off server in demonstration mode.
+- Finished tag management screen.
+- Started learning about FTS.
+
+</details>
+
+<details>
 <summary>2021-07-10</summary>
 
 - Finish basics of threads screen: Editing & deleting posts; Likes; Endorsements; Generalized live updates. Tags: Mark posts as answers; Create arbitrary tags.
