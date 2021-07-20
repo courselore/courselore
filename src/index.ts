@@ -2264,6 +2264,7 @@ export default async function courselore(
                 display: flex;
                 gap: var(--space--4);
                 align-items: center;
+                min-width: 0;
               `}"
             >
               <a
@@ -2299,6 +2300,7 @@ export default async function courselore(
                     <div
                       style="${css`
                         flex: 1;
+                        min-width: 0;
                       `}"
                     >
                       <button
@@ -2308,18 +2310,17 @@ export default async function courselore(
                           line-height: var(--line-height--base);
                           font-weight: var(--font-weight--semibold);
                           max-width: 100%;
-                          display: flex;
                           gap: var(--space--2);
                         `}"
                         data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
-                          theme: "dropdown",
-                          trigger: "click",
-                          interactive: true,
-                          allowHTML: true,
-                        });
-                      `}"
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            theme: "dropdown",
+                            trigger: "click",
+                            interactive: true,
+                            allowHTML: true,
+                          });
+                        `}"
                       >
                         <i class="bi bi-journal-text"></i>
                         <span
