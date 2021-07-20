@@ -2263,17 +2263,13 @@ export default async function courselore(
                 flex: 1;
                 display: flex;
                 gap: var(--space--4);
+                align-items: center;
               `}"
             >
-              <div
-                style="${css`
-                  display: flex;
-                `}"
-              >
-                <a
-                  href="${app.locals.settings.url}/"
-                  class="header--item"
-                  data-ondomcontentloaded="${javascript`
+              <a
+                href="${app.locals.settings.url}/"
+                class="header--item"
+                data-ondomcontentloaded="${javascript`
                     const artAnimation = new ArtAnimation({
                       element: this,
                       speed: 0.001,
@@ -2293,10 +2289,9 @@ export default async function courselore(
                       artAnimation.stop();
                     });
                   `}"
-                >
-                  $${app.locals.partials.art.small}
-                </a>
-              </div>
+              >
+                $${app.locals.partials.art.small}
+              </a>
 
               $${res.locals.course === undefined
                 ? html``
@@ -2304,8 +2299,6 @@ export default async function courselore(
                     <div
                       style="${css`
                         flex: 1;
-                        display: flex;
-                        align-items: center;
                       `}"
                     >
                       <button
@@ -2432,7 +2425,6 @@ export default async function courselore(
                       line-height: var(--line-height--xl);
                       display: flex;
                       gap: var(--space--4);
-                      justify-content: flex-end;
                       align-items: center;
                     `}"
                   >
@@ -2500,12 +2492,12 @@ export default async function courselore(
                           <button
                             class="dropdown--item"
                             data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                              theme: "tooltip",
-                              trigger: "click",
-                            });
-                          `}"
+                              tippy(this, {
+                                content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                                theme: "tooltip",
+                                trigger: "click",
+                              });
+                            `}"
                           >
                             <i class="bi bi-journal-arrow-down"></i>
                             Enroll in an Existing Course
