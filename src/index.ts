@@ -1475,41 +1475,45 @@ export default async function courselore(
                 h4,
                 h5,
                 h6 {
-                  font-size: var(--font-size--base);
-                  line-height: var(--line-height--base);
-                  font-weight: var(--font-weight--semibold);
+                  &:not(:first-child) {
+                    margin-top: var(--space--6);
+                  }
+                }
+
+                h1 {
+                  color: var(--color--primary--800);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--300);
+                  }
+                }
+
+                h2,
+                h3,
+                h4,
+                h5,
+                h6 {
                   color: var(--color--gray--cool--800);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--gray--cool--300);
                   }
-                  &:not(:first-child) {
-                    margin-top: var(--space--6);
-                  }
-                  &::before {
-                    color: var(--color--gray--cool--500);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--cool--600);
-                    }
-                    margin-right: var(--space--2);
-                  }
                 }
-                h1::before {
-                  content: "#";
+
+                h1,
+                h2,
+                h3 {
+                  font-size: var(--font-size--base);
+                  line-height: var(--line-height--base);
                 }
-                h2::before {
-                  content: "##";
+
+                h1,
+                h4,
+                h5,
+                h6 {
+                  font-weight: var(--font-weight--semibold);
                 }
-                h3::before {
-                  content: "###";
-                }
-                h4::before {
-                  content: "####";
-                }
-                h5::before {
-                  content: "#####";
-                }
-                h6::before {
-                  content: "######";
+
+                h2 {
+                  font-style: italic;
                 }
 
                 b,
@@ -7526,7 +7530,7 @@ export default async function courselore(
                   >
                     $${res.locals.tags.map(
                       (tag, index) => html`
-                      <!-- TODO: Add link to see all conversations tagged with this tag -->
+                        <!-- TODO: Add link to see all conversations tagged with this tag -->
                         <div class="tag">
                           <div
                             style="${css`
