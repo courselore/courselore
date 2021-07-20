@@ -2252,6 +2252,9 @@ export default async function courselore(
                 transition-timing-function: var(
                   --transition-timing-function--in-out
                 );
+                * {
+                  stroke: currentColor;
+                }
               }
             `}"
           >
@@ -2269,29 +2272,7 @@ export default async function courselore(
               >
                 <a
                   href="${app.locals.settings.url}/"
-                  style="${css`
-                    display: flex;
-                    * {
-                      stroke: var(--color--primary--50);
-                      @media (prefers-color-scheme: dark) {
-                        stroke: var(--color--primary--200);
-                      }
-                      transition-property: var(--transition-property--colors);
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--in-out
-                      );
-                    }
-                    &:hover,
-                    &:focus-within {
-                      * {
-                        stroke: var(--color--primary--200);
-                        @media (prefers-color-scheme: dark) {
-                          stroke: var(--color--primary--300);
-                        }
-                      }
-                    }
-                  `}"
+                  class="header--item"
                   data-ondomcontentloaded="${javascript`
                     const artAnimation = new ArtAnimation({
                       element: this,
