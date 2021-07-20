@@ -2226,11 +2226,8 @@ export default async function courselore(
               }
               padding: var(--space--2) var(--space--4);
               display: flex;
+              gap: var(--space--4);
               justify-content: space-between;
-              align-items: center;
-              & > * {
-                width: var(--space--20);
-              }
 
               .header--item {
                 display: flex;
@@ -2258,83 +2255,89 @@ export default async function courselore(
               }
             `}"
           >
-            <h1
+            <div
               style="${css`
+                flex: 1;
                 display: flex;
+                gap: var(--space--4);
               `}"
             >
-              <a
-                href="${app.locals.settings.url}/"
+              <div
                 style="${css`
-                  display: inline-flex;
-                  * {
-                    stroke: var(--color--primary--50);
-                    @media (prefers-color-scheme: dark) {
-                      stroke: var(--color--primary--200);
-                    }
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                  }
-                  &:hover,
-                  &:focus-within {
-                    * {
-                      stroke: var(--color--primary--200);
-                      @media (prefers-color-scheme: dark) {
-                        stroke: var(--color--primary--300);
-                      }
-                    }
-                  }
-                `}"
-                data-ondomcontentloaded="${javascript`
-                  const artAnimation = new ArtAnimation({
-                    element: this,
-                    speed: 0.001,
-                    amount: 1,
-                    startupDuration: 500,
-                  });
-                  this.addEventListener("mouseover", () => {
-                    artAnimation.start();
-                  });
-                  this.addEventListener("mouseout", () => {
-                    artAnimation.stop();
-                  });
-                  this.addEventListener("focus", () => {
-                    artAnimation.start();
-                  });
-                  this.addEventListener("blur", () => {
-                    artAnimation.stop();
-                  });
+                  display: flex;
                 `}"
               >
-                $${app.locals.partials.art.small}
-                <span class="visually-hidden">CourseLore</span>
-              </a>
-            </h1>
+                <a
+                  href="${app.locals.settings.url}/"
+                  style="${css`
+                    display: flex;
+                    * {
+                      stroke: var(--color--primary--50);
+                      @media (prefers-color-scheme: dark) {
+                        stroke: var(--color--primary--200);
+                      }
+                      transition-property: var(--transition-property--colors);
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--in-out
+                      );
+                    }
+                    &:hover,
+                    &:focus-within {
+                      * {
+                        stroke: var(--color--primary--200);
+                        @media (prefers-color-scheme: dark) {
+                          stroke: var(--color--primary--300);
+                        }
+                      }
+                    }
+                  `}"
+                  data-ondomcontentloaded="${javascript`
+                    const artAnimation = new ArtAnimation({
+                      element: this,
+                      speed: 0.001,
+                      amount: 1,
+                      startupDuration: 500,
+                    });
+                    this.addEventListener("mouseover", () => {
+                      artAnimation.start();
+                    });
+                    this.addEventListener("mouseout", () => {
+                      artAnimation.stop();
+                    });
+                    this.addEventListener("focus", () => {
+                      artAnimation.start();
+                    });
+                    this.addEventListener("blur", () => {
+                      artAnimation.stop();
+                    });
+                  `}"
+                >
+                  $${app.locals.partials.art.small}
+                </a>
+              </div>
 
-            $${res.locals.course === undefined
-              ? html``
-              : html`
-                  <div
-                    style="${css`
-                      flex: 1;
-                      display: flex;
-                      justify-content: center;
-                    `}"
-                  >
-                    <button
-                      class="header--item"
+              $${res.locals.course === undefined
+                ? html``
+                : html`
+                    <div
                       style="${css`
-                        font-size: var(--font-size--base);
-                        line-height: var(--line-height--base);
-                        font-weight: var(--font-weight--semibold);
-                        max-width: 100%;
+                        flex: 1;
                         display: flex;
-                        gap: var(--space--2);
+                        align-items: center;
                       `}"
-                      data-ondomcontentloaded="${javascript`
+                    >
+                      <button
+                        class="header--item"
+                        style="${css`
+                          font-size: var(--font-size--base);
+                          line-height: var(--line-height--base);
+                          font-weight: var(--font-weight--semibold);
+                          max-width: 100%;
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                        data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
                           theme: "dropdown",
@@ -2343,99 +2346,102 @@ export default async function courselore(
                           allowHTML: true,
                         });
                       `}"
-                    >
-                      <i class="bi bi-journal-text"></i>
-                      <span
-                        style="${css`
-                          white-space: nowrap;
-                          overflow: hidden;
-                          text-overflow: ellipsis;
-                        `}"
                       >
-                        ${res.locals.course.name}
-                      </span>
-                      <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div hidden>
-                      <div>
-                        <p class="dropdown--heading">
-                          <i class="bi bi-journal-text"></i>
+                        <i class="bi bi-journal-text"></i>
+                        <span
+                          style="${css`
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                          `}"
+                        >
                           ${res.locals.course.name}
-                        </p>
-                        <a
-                          href="${app.locals.settings.url}/courses/${res.locals
-                            .course.reference}"
-                          class="dropdown--item ${req.path.includes(
-                            "conversations"
-                          )
-                            ? "active"
-                            : ""}"
-                        >
-                          <i class="bi bi-chat-left-text"></i>
-                          Conversations
-                        </a>
-                        <a
-                          href="${app.locals.settings.url}/courses/${res.locals
-                            .course.reference}/settings"
-                          class="dropdown--item ${req.path.includes("settings")
-                            ? "active"
-                            : ""}"
-                        >
-                          <i class="bi bi-sliders"></i>
-                          Course Settings
-                        </a>
-                        $${res.locals.otherEnrollments!.length === 0
-                          ? html``
-                          : html`
-                              <hr class="dropdown--separator" />
-                              <p class="dropdown--heading">
-                                <i class="bi bi-arrow-left-right"></i>
-                                Switch to Another Course
-                              </p>
-                              $${res.locals.otherEnrollments!.map(
-                                (otherEnrollment) => html`
-                                  <a
-                                    href="${app.locals.settings
-                                      .url}/courses/${otherEnrollment.course
-                                      .reference}"
-                                    class="dropdown--item"
-                                    style="${css`
-                                      color: var(
-                                        --color--${otherEnrollment.accentColor}--50
-                                      );
-                                      background-color: var(
-                                        --color--${otherEnrollment.accentColor}--500
-                                      );
-                                      &:hover {
-                                        background-color: var(
-                                          --color--${otherEnrollment.accentColor}--400
-                                        );
-                                      }
-                                      @media (prefers-color-scheme: dark) {
+                        </span>
+                        <i class="bi bi-chevron-down"></i>
+                      </button>
+                      <div hidden>
+                        <div>
+                          <p class="dropdown--heading">
+                            <i class="bi bi-journal-text"></i>
+                            ${res.locals.course.name}
+                          </p>
+                          <a
+                            href="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}"
+                            class="dropdown--item ${req.path.includes(
+                              "conversations"
+                            )
+                              ? "active"
+                              : ""}"
+                          >
+                            <i class="bi bi-chat-left-text"></i>
+                            Conversations
+                          </a>
+                          <a
+                            href="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/settings"
+                            class="dropdown--item ${req.path.includes(
+                              "settings"
+                            )
+                              ? "active"
+                              : ""}"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            Course Settings
+                          </a>
+                          $${res.locals.otherEnrollments!.length === 0
+                            ? html``
+                            : html`
+                                <hr class="dropdown--separator" />
+                                <p class="dropdown--heading">
+                                  <i class="bi bi-arrow-left-right"></i>
+                                  Switch to Another Course
+                                </p>
+                                $${res.locals.otherEnrollments!.map(
+                                  (otherEnrollment) => html`
+                                    <a
+                                      href="${app.locals.settings
+                                        .url}/courses/${otherEnrollment.course
+                                        .reference}"
+                                      class="dropdown--item"
+                                      style="${css`
                                         color: var(
-                                          --color--${otherEnrollment.accentColor}--200
+                                          --color--${otherEnrollment.accentColor}--50
                                         );
                                         background-color: var(
-                                          --color--${otherEnrollment.accentColor}--700
+                                          --color--${otherEnrollment.accentColor}--500
                                         );
                                         &:hover {
                                           background-color: var(
-                                            --color--${otherEnrollment.accentColor}--600
+                                            --color--${otherEnrollment.accentColor}--400
                                           );
                                         }
-                                      }
-                                    `}"
-                                  >
-                                    <i class="bi bi-journal-text"></i>
-                                    ${otherEnrollment.course.name}
-                                  </a>
-                                `
-                              )}
-                            `}
+                                        @media (prefers-color-scheme: dark) {
+                                          color: var(
+                                            --color--${otherEnrollment.accentColor}--200
+                                          );
+                                          background-color: var(
+                                            --color--${otherEnrollment.accentColor}--700
+                                          );
+                                          &:hover {
+                                            background-color: var(
+                                              --color--${otherEnrollment.accentColor}--600
+                                            );
+                                          }
+                                        }
+                                      `}"
+                                    >
+                                      <i class="bi bi-journal-text"></i>
+                                      ${otherEnrollment.course.name}
+                                    </a>
+                                  `
+                                )}
+                              `}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                `}
+                  `}
+            </div>
             $${res.locals.user === undefined
               ? html``
               : html`
