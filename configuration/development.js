@@ -1,6 +1,5 @@
 module.exports = async (require) => {
-  const os = require("os");
-  const url = `https://${os.hostname()}`;
+  const url = process.env.URL ?? `https://localhost:5000`;
   if (process.argv[3] === undefined) {
     const execa = require("execa");
     const caddyfile = require("dedent");
