@@ -2000,12 +2000,12 @@ export default async function courselore(
             style="${css`
               flex: 1;
               overflow: hidden;
-              display: flex;
             `}"
           >
             <div
               style="${css`
-                flex: 1;
+                width: 100%;
+                height: 100%;
                 overflow: auto;
               `}"
             >
@@ -2066,6 +2066,7 @@ export default async function courselore(
           <div
             style="${css`
               max-width: var(--width--sm);
+              margin: var(--space--4);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -2117,6 +2118,7 @@ export default async function courselore(
                   }
                   display: flex;
                   gap: var(--space--2);
+                  justify-content: center;
                   align-items: center;
                   transition-property: var(--transition-property--colors);
                   transition-duration: var(--transition-duration--150);
@@ -2125,25 +2127,25 @@ export default async function courselore(
                   );
                 `}"
                 data-ondomcontentloaded="${javascript`
-                    const artAnimation = new ArtAnimation({
-                      element: this,
-                      speed: 0.001,
-                      amount: 1,
-                      startupDuration: 500,
-                    });
-                    this.addEventListener("mouseover", () => {
-                      artAnimation.start();
-                    });
-                    this.addEventListener("mouseout", () => {
-                      artAnimation.stop();
-                    });
-                    this.addEventListener("focus", () => {
-                      artAnimation.start();
-                    });
-                    this.addEventListener("blur", () => {
-                      artAnimation.stop();
-                    });
-                  `}"
+                  const artAnimation = new ArtAnimation({
+                    element: this,
+                    speed: 0.001,
+                    amount: 1,
+                    startupDuration: 500,
+                  });
+                  this.addEventListener("mouseover", () => {
+                    artAnimation.start();
+                  });
+                  this.addEventListener("mouseout", () => {
+                    artAnimation.stop();
+                  });
+                  this.addEventListener("focus", () => {
+                    artAnimation.start();
+                  });
+                  this.addEventListener("blur", () => {
+                    artAnimation.stop();
+                  });
+                `}"
               >
                 $${app.locals.partials.art.small} CourseLore
               </a>
