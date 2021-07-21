@@ -2057,6 +2057,7 @@ export default async function courselore(
         >
           <div
             style="${css`
+              flex: 1;
               max-width: var(--width--sm);
               margin: var(--space--4);
               display: flex;
@@ -2726,6 +2727,7 @@ export default async function courselore(
     });
   };
 
+  // FIXME: REMOVE THIS
   app.get("/application", (req, res) => {
     res.send(
       app.locals.layouts.application({
@@ -2764,8 +2766,6 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            flex: 1;
-            min-width: var(--width--0);
             display: flex;
             justify-content: center;
           `}"
@@ -2774,8 +2774,7 @@ export default async function courselore(
             style="${css`
               flex: 1;
               max-width: var(--width--2xl);
-              padding: var(--space--4);
-              overflow: auto;
+              margin: var(--space--4);
             `}"
           >
             $${body}
@@ -2783,6 +2782,18 @@ export default async function courselore(
         </div>
       `,
     });
+
+  // FIXME: REMOVE THIS
+  app.get("/main", (req, res) => {
+    res.send(
+      app.locals.layouts.main({
+        req,
+        res,
+        head: html``,
+        body: html` ${"CONTENT ".repeat(10000)} `,
+      })
+    );
+  });
 
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
   interface Partials {
@@ -2938,7 +2949,7 @@ export default async function courselore(
   // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
   app.use(expressFileUpload({ createParentPath: true }));
 
-  app.get("/live-reload", (req, res, next) => {
+  app.get<{}, any, {}, {}, {}>("/live-reload", (req, res, next) => {
     if (!app.locals.settings.liveReload) return next();
     // FIXME: https://github.com/caddyserver/caddy/issues/4247
     res.type("text/event-stream").write(":\n\n");
