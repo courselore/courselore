@@ -1999,18 +1999,10 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
-              overflow: hidden;
+              overflow: auto;
             `}"
           >
-            <div
-              style="${css`
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-              `}"
-            >
-              $${body}
-            </div>
+            $${body}
           </div>
         </div>
       `,
@@ -2724,18 +2716,10 @@ export default async function courselore(
                 background-color: var(--color--gray--cool--900);
               }
               flex: 1;
-              overflow: hidden;
+              overflow: auto;
             `}"
           >
-            <div
-              style="${css`
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-              `}"
-            >
-              $${body}
-            </div>
+            $${body}
           </div>
         </div>
       `,
