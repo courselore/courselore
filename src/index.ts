@@ -2018,6 +2018,8 @@ export default async function courselore(
         body: html`
           <div
             style="${css`
+              width: 100%;
+              height: 100%;
               overflow: auto;
             `}"
           >
@@ -2058,22 +2060,26 @@ export default async function courselore(
             }
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow: auto;
           `}"
         >
           <div
             style="${css`
-              max-width: var(--width--sm);
-              flex: 1;
+              min-width: 100%;
+              min-height: 100%;
               display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-              overflow: auto;
+              justify-content: center;
+              align-items: center;
             `}"
           >
-            <header>
+            <div
+              style="${css`
+                max-width: var(--width--sm);
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
               <h1 class="heading--display--1">
                 <a
                   href="${app.locals.settings.url}/"
@@ -2151,15 +2157,25 @@ export default async function courselore(
                   $${app.locals.partials.art.small} CourseLore
                 </a>
               </h1>
-            </header>
-            <main>$${body}</main>
+              <div>$${body}</div>
+            </div>
           </div>
         </div>
       `,
     });
 
   // FIXME: REMOVE THIS
-  app.get("/box", (req, res) => {
+  app.get("/box-1", (req, res) => {
+    res.send(
+      app.locals.layouts.box({
+        req,
+        res,
+        head: html``,
+        body: html` ${"CONTENT ".repeat(100)} `,
+      })
+    );
+  });
+  app.get("/box-2", (req, res) => {
     res.send(
       app.locals.layouts.box({
         req,
@@ -2243,7 +2259,7 @@ export default async function courselore(
                 `}
           `}"
         >
-          <header
+          <div
             style="${css`
               color: var(--color--primary--50);
               background-color: var(--color--primary--700);
@@ -2626,7 +2642,7 @@ export default async function courselore(
                     </div>
                   </div>
                 `}
-          </header>
+          </div>
           $${extraHeaders ?? html``}
           $${flash === undefined
             ? html``
@@ -2725,7 +2741,7 @@ export default async function courselore(
                   </button>
                 </div>
               `}
-          <main
+          <div
             style="${css`
               color: var(--color--gray--cool--500);
               background-color: var(--color--gray--cool--100);
@@ -2739,7 +2755,7 @@ export default async function courselore(
             `}"
           >
             $${body}
-          </main>
+          </div>
         </div>
       `,
     });
