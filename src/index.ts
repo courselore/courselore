@@ -2000,7 +2000,6 @@ export default async function courselore(
             style="${css`
               flex: 1;
               overflow: hidden;
-              display: flex;
             `}"
           >
             $${body}
@@ -2057,7 +2056,8 @@ export default async function courselore(
                 var(--color--purple--900) 100%
               );
             }
-            flex: 1;
+            width: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
