@@ -2077,43 +2077,21 @@ export default async function courselore(
                 href="${app.locals.settings.url}/"
                 style="${css`
                   color: var(--color--primary--50);
-                  * {
-                    stroke: var(--color--primary--50);
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    * {
-                      stroke: var(--color--primary--200);
-                    }
-                  }
                   &:hover,
                   &:focus-within {
                     color: var(--color--primary--200);
-                    * {
-                      stroke: var(--color--primary--200);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--300);
-                      * {
-                        stroke: var(--color--primary--300);
-                      }
-                    }
                   }
                   &:active {
                     color: var(--color--primary--400);
-                    * {
-                      stroke: var(--color--primary--400);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    &:hover,
+                    &:focus-within {
+                      color: var(--color--primary--300);
                     }
-                    @media (prefers-color-scheme: dark) {
+                    &:active {
                       color: var(--color--primary--500);
-                      * {
-                        stroke: var(--color--primary--500);
-                      }
                     }
                   }
                   display: flex;
@@ -2125,6 +2103,9 @@ export default async function courselore(
                   transition-timing-function: var(
                     --transition-timing-function--in-out
                   );
+                  * {
+                    stroke: currentColor;
+                  }
                 `}"
                 data-ondomcontentloaded="${javascript`
                   const artAnimation = new ArtAnimation({
@@ -2207,6 +2188,7 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
+            width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -2742,16 +2724,34 @@ export default async function courselore(
                 background-color: var(--color--gray--cool--900);
               }
               flex: 1;
-              overflow: auto;
-              display: flex;
+              overflow: hidden;
             `}"
           >
-            $${body}
+            <div
+              style="${css`
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+              `}"
+            >
+              $${body}
+            </div>
           </div>
         </div>
       `,
     });
   };
+
+  app.get("/application", (req, res) => {
+    res.send(
+      app.locals.layouts.application({
+        req,
+        res,
+        head: html``,
+        body: html` ${"CONTENT ".repeat(10000)} `,
+      })
+    );
+  });
 
   interface Layouts {
     main: (_: {
