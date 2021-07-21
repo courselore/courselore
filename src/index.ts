@@ -2000,9 +2000,17 @@ export default async function courselore(
             style="${css`
               flex: 1;
               overflow: hidden;
+              display: flex;
             `}"
           >
-            $${body}
+            <div
+              style="${css`
+                flex: 1;
+                overflow: auto;
+              `}"
+            >
+              $${body}
+            </div>
           </div>
         </div>
       `,
@@ -2015,17 +2023,7 @@ export default async function courselore(
         req,
         res,
         head: html``,
-        body: html`
-          <div
-            style="${css`
-              width: 100%;
-              height: 100%;
-              overflow: auto;
-            `}"
-          >
-            ${"CONTENT ".repeat(10000)}
-          </div>
-        `,
+        body: html`${"CONTENT ".repeat(10000)}`,
       })
     );
   });
@@ -2058,82 +2056,75 @@ export default async function courselore(
                 var(--color--purple--900) 100%
               );
             }
-            width: 100%;
-            height: 100%;
-            overflow: auto;
+            min-width: 100%;
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
           `}"
         >
           <div
             style="${css`
-              min-width: 100%;
-              min-height: 100%;
+              max-width: var(--width--sm);
               display: flex;
-              justify-content: center;
-              align-items: center;
+              flex-direction: column;
+              gap: var(--space--4);
             `}"
           >
-            <div
-              style="${css`
-                max-width: var(--width--sm);
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <h1 class="heading--display--1">
-                <a
-                  href="${app.locals.settings.url}/"
-                  style="${css`
-                    color: var(--color--primary--50);
-                    * {
-                      stroke: var(--color--primary--50);
-                      transition-property: var(--transition-property--colors);
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--in-out
-                      );
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--200);
-                      * {
-                        stroke: var(--color--primary--200);
-                      }
-                    }
-                    &:hover,
-                    &:focus-within {
-                      color: var(--color--primary--200);
-                      * {
-                        stroke: var(--color--primary--200);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--300);
-                        * {
-                          stroke: var(--color--primary--300);
-                        }
-                      }
-                    }
-                    &:active {
-                      color: var(--color--primary--400);
-                      * {
-                        stroke: var(--color--primary--400);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--500);
-                        * {
-                          stroke: var(--color--primary--500);
-                        }
-                      }
-                    }
-                    display: flex;
-                    gap: var(--space--2);
-                    align-items: center;
+            <h1 class="heading--display--1">
+              <a
+                href="${app.locals.settings.url}/"
+                style="${css`
+                  color: var(--color--primary--50);
+                  * {
+                    stroke: var(--color--primary--50);
                     transition-property: var(--transition-property--colors);
                     transition-duration: var(--transition-duration--150);
                     transition-timing-function: var(
                       --transition-timing-function--in-out
                     );
-                  `}"
-                  data-ondomcontentloaded="${javascript`
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    * {
+                      stroke: var(--color--primary--200);
+                    }
+                  }
+                  &:hover,
+                  &:focus-within {
+                    color: var(--color--primary--200);
+                    * {
+                      stroke: var(--color--primary--200);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--300);
+                      * {
+                        stroke: var(--color--primary--300);
+                      }
+                    }
+                  }
+                  &:active {
+                    color: var(--color--primary--400);
+                    * {
+                      stroke: var(--color--primary--400);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--500);
+                      * {
+                        stroke: var(--color--primary--500);
+                      }
+                    }
+                  }
+                  display: flex;
+                  gap: var(--space--2);
+                  align-items: center;
+                  transition-property: var(--transition-property--colors);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--in-out
+                  );
+                `}"
+                data-ondomcontentloaded="${javascript`
                     const artAnimation = new ArtAnimation({
                       element: this,
                       speed: 0.001,
@@ -2153,12 +2144,11 @@ export default async function courselore(
                       artAnimation.stop();
                     });
                   `}"
-                >
-                  $${app.locals.partials.art.small} CourseLore
-                </a>
-              </h1>
-              <div>$${body}</div>
-            </div>
+              >
+                $${app.locals.partials.art.small} CourseLore
+              </a>
+            </h1>
+            <div>$${body}</div>
           </div>
         </div>
       `,
