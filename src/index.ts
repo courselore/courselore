@@ -5290,6 +5290,7 @@ export default async function courselore(
             ? html`
                 <div
                   style="${css`
+                    margin-top: var(--space---2);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
