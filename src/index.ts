@@ -403,7 +403,7 @@ export default async function courselore(
               .url}/node_modules/mousetrap/mousetrap.min.js"></script>
 
           <script>
-            /* TODO: Extract this into @leafac/javascript */
+            /* TODO: Extract the following global auxiliary functions into @leafac/javascript */
             document.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 "[data-ondomcontentloaded]"
@@ -1896,7 +1896,6 @@ export default async function courselore(
             left: 0;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
           `}"
         >
           $${app.locals.settings.demonstration
@@ -1919,14 +1918,9 @@ export default async function courselore(
                         var(--color--rose--900);
                     }
                     display: flex;
-                    @media (max-width: 409px) {
-                      flex-direction: column;
-                      align-items: center;
-                    }
-                    @media (min-width: 410px) {
-                      gap: var(--space--2);
-                      justify-content: center;
-                    }
+                    column-gap: var(--space--2);
+                    justify-content: center;
+                    flex-wrap: wrap;
 
                     & > * {
                       padding: var(--space--1) var(--space--2);
@@ -2005,7 +1999,8 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
-              overflow: auto;
+              overflow: hidden;
+              display: flex;
             `}"
           >
             $${body}
@@ -2013,6 +2008,26 @@ export default async function courselore(
         </div>
       `,
     });
+
+  // FIXME: REMOVE THIS
+  app.get("/applicationBase", (req, res) => {
+    res.send(
+      app.locals.layouts.applicationBase({
+        req,
+        res,
+        head: html``,
+        body: html`
+          <div
+            style="${css`
+              overflow: auto;
+            `}"
+          >
+            ${"CONTENT ".repeat(10000)}
+          </div>
+        `,
+      })
+    );
+  });
 
   interface Layouts {
     box: (_: {
@@ -2030,7 +2045,6 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            min-height: 100%;
             background-image: linear-gradient(
               135deg,
               var(--color--fuchsia--400) 0%,
@@ -2043,7 +2057,7 @@ export default async function courselore(
                 var(--color--purple--900) 100%
               );
             }
-            padding: var(--space--4);
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -2056,6 +2070,7 @@ export default async function courselore(
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
+              overflow: auto;
             `}"
           >
             <header>
@@ -2103,7 +2118,7 @@ export default async function courselore(
                         }
                       }
                     }
-                    display: inline-flex;
+                    display: flex;
                     gap: var(--space--2);
                     align-items: center;
                     transition-property: var(--transition-property--colors);
@@ -2142,6 +2157,18 @@ export default async function courselore(
         </div>
       `,
     });
+
+  // FIXME: REMOVE THIS
+  app.get("/box", (req, res) => {
+    res.send(
+      app.locals.layouts.box({
+        req,
+        res,
+        head: html``,
+        body: html` ${"CONTENT ".repeat(10000)} `,
+      })
+    );
+  });
 
   interface Layouts {
     application: (_: {
