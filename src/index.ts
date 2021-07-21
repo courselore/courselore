@@ -2008,18 +2008,6 @@ export default async function courselore(
       `,
     });
 
-  // FIXME: REMOVE THIS
-  app.get("/applicationBase", (req, res) => {
-    res.send(
-      app.locals.layouts.applicationBase({
-        req,
-        res,
-        head: html``,
-        body: html`${"CONTENT ".repeat(10000)}`,
-      })
-    );
-  });
-
   interface Layouts {
     box: (_: {
       req: express.Request<{}, any, {}, {}, {}>;
@@ -2129,28 +2117,6 @@ export default async function courselore(
         </div>
       `,
     });
-
-  // FIXME: REMOVE THIS
-  app.get("/box-1", (req, res) => {
-    res.send(
-      app.locals.layouts.box({
-        req,
-        res,
-        head: html``,
-        body: html` ${"CONTENT ".repeat(100)} `,
-      })
-    );
-  });
-  app.get("/box-2", (req, res) => {
-    res.send(
-      app.locals.layouts.box({
-        req,
-        res,
-        head: html``,
-        body: html` ${"CONTENT ".repeat(10000)} `,
-      })
-    );
-  });
 
   interface Layouts {
     application: (_: {
@@ -2727,18 +2693,6 @@ export default async function courselore(
     });
   };
 
-  // FIXME: REMOVE THIS
-  app.get("/application", (req, res) => {
-    res.send(
-      app.locals.layouts.application({
-        req,
-        res,
-        head: html``,
-        body: html` ${"CONTENT ".repeat(10000)} `,
-      })
-    );
-  });
-
   interface Layouts {
     main: (_: {
       req: express.Request<
@@ -2782,18 +2736,6 @@ export default async function courselore(
         </div>
       `,
     });
-
-  // FIXME: REMOVE THIS
-  app.get("/main", (req, res) => {
-    res.send(
-      app.locals.layouts.main({
-        req,
-        res,
-        head: html``,
-        body: html` ${"CONTENT ".repeat(10000)} `,
-      })
-    );
-  });
 
   // https://www.youtube.com/watch?v=dSK-MW-zuAc
   interface Partials {
