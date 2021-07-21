@@ -5248,7 +5248,7 @@ export default async function courselore(
                   padding: var(--space--1) var(--space--4);
                   display: flex;
                   justify-content: center;
-                  @media (min-width: 768px) {
+                  @media (min-width: 700px) {
                     display: none;
                   }
                 `}"
@@ -5280,33 +5280,22 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            flex: 1;
-            overflow: auto;
-            @media (min-width: 768px) and (max-width: 1099px) {
-              display: flex;
-            }
-            @media (min-width: 1100px) {
-              display: grid;
-              grid-template-columns: 1fr calc(var(--space--80) * 2) 1fr;
-              gap: var(--space--12);
-            }
+            margin: var(--space--4);
+            display: flex;
+            justify-content: center;
+            gap: var(--space--8);
           `}"
         >
           $${res.locals.enrollment.role === "staff"
             ? html`
                 <div
                   style="${css`
-                    padding: var(--space--2-5) var(--space--4) var(--space--4);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
-                    overflow: auto;
 
-                    @media (max-width: 767px) {
+                    @media (max-width: 699px) {
                       display: none;
-                    }
-                    @media (min-width: 1100px) {
-                      justify-self: end;
                     }
 
                     .dropdown--item {
@@ -5355,26 +5344,11 @@ export default async function courselore(
             : html``}
           <div
             style="${css`
-              padding: var(--space--4);
-              overflow: auto;
-              display: flex;
-              justify-content: center;
-              @media (min-width: 768px) and (max-width: 1099px) {
-                flex: 1;
-              }
-              @media (min-width: 1100px) {
-                grid-area: 1 / 2;
-              }
+              flex: 1;
+              max-width: var(--width--2xl);
             `}"
           >
-            <div
-              style="${css`
-                flex: 1;
-                max-width: var(--width--2xl);
-              `}"
-            >
-              $${body}
-            </div>
+            $${body}
           </div>
         </div>
       `,
