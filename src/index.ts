@@ -9975,33 +9975,84 @@ ${value}</textarea
                   $${res.locals.tags.length === 0
                     ? html``
                     : html`
-                        <button
-                          type="button"
-                          class="button--inline"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: this.nextElementSibling.firstElementChild,
-                              theme: "dropdown",
-                              trigger: "click",
-                              interactive: true,
-                            });
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--4);
+                            align-items: baseline;
                           `}"
                         >
-                          <i class="bi bi-tags"></i>
-                          Tags
-                        </button>
-                        <div hidden>
-                          <div>
-                            $${res.locals.tags.map(
-                              (tag) =>
-                                html`
-                                  <label>
-                                    <input type="checkbox" hidden />
-                                    ${tag.name}
-                                  </label>
-                                `
-                            )}
+                          <button
+                            type="button"
+                            class="button--inline"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Add Tag",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                theme: "dropdown",
+                                trigger: "click",
+                                interactive: true,
+                              });
+                            `}"
+                          >
+                            <span>
+                              <i class="bi bi-tags"></i>
+                              Tags
+                            </span>
+                          </button>
+                          <div hidden>
+                            <div>
+                              $${res.locals.tags.map(
+                                (tag) =>
+                                  html`
+                                    <button
+                                      type="button"
+                                      class="dropdown--item"
+                                    >
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </button>
+                                  `
+                              )}
+                            </div>
                           </div>
+                          $${res.locals.tags.map(
+                            (tag) =>
+                              html`
+                                <div class="tag--${tag.reference}" hidden>
+                                  <input
+                                    type="hidden"
+                                    name="tags[]"
+                                    value="${tag.reference}"
+                                    disabled
+                                  />
+                                  <button
+                                    type="button"
+                                    class="button--inline"
+                                    style="${css`
+                                      font-size: var(--font-size--xs);
+                                      line-height: var(--line-height--xs);
+                                    `}"
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "Remove Tag",
+                                        theme: "tooltip",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <span>
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </span>
+                                  </button>
+                                </div>
+                              `
+                          )}
                         </div>
                       `}
                 </div>
