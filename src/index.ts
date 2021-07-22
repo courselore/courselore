@@ -2294,7 +2294,6 @@ export default async function courselore(
                             theme: "dropdown",
                             trigger: "click",
                             interactive: true,
-                            allowHTML: true,
                           });
                         `}"
                       >
@@ -2429,7 +2428,6 @@ export default async function courselore(
                             theme: "dropdown",
                             trigger: "click",
                             interactive: true,
-                            allowHTML: true,
                           });
                         `}"
                       >
@@ -2505,7 +2503,6 @@ export default async function courselore(
                             theme: "dropdown",
                             trigger: "click",
                             interactive: true,
-                            allowHTML: true,
                           });
                         `}"
                       >
@@ -5264,7 +5261,6 @@ export default async function courselore(
                       theme: "dropdown",
                       trigger: "click",
                       interactive: true,
-                      allowHTML: true,
                     });
                   `}"
                 >
@@ -5652,7 +5648,6 @@ export default async function courselore(
                             content: this.nextElementSibling.firstElementChild,
                             theme: "tooltip",
                             trigger: "click",
-                            allowHTML: true,
                           });
                         `}"
                       >
@@ -5927,7 +5922,6 @@ export default async function courselore(
                                                     theme: "dropdown",
                                                     trigger: "click",
                                                     interactive: true,
-                                                    allowHTML: true,
                                                   });
                                                 `}"
                                               `}
@@ -6018,7 +6012,6 @@ export default async function courselore(
                                           theme: "dropdown",
                                           trigger: "click",
                                           interactive: true,
-                                          allowHTML: true,
                                         });
                                       `}"
                                     `}
@@ -6257,7 +6250,6 @@ export default async function courselore(
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
-                                              allowHTML: true,
                                             });
                                           `}"
                                         >
@@ -6360,7 +6352,6 @@ export default async function courselore(
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
-                                              allowHTML: true,
                                             });
                                           `}"
                                         >
@@ -6450,7 +6441,6 @@ export default async function courselore(
                                               theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
-                                              allowHTML: true,
                                             });
                                           `}"
                                         >
@@ -7094,7 +7084,6 @@ export default async function courselore(
                                       theme: "dropdown",
                                       trigger: "click",
                                       interactive: true,
-                                      allowHTML: true,
                                     });
                                   `}"
                                 `}
@@ -7146,7 +7135,6 @@ export default async function courselore(
                                                             theme: "dropdown dropdown--rose",
                                                             trigger: "click",
                                                             interactive: true,
-                                                            allowHTML: true,
                                                           });
                                                         `}"
                                                       `
@@ -7227,7 +7215,6 @@ export default async function courselore(
                                       theme: "dropdown dropdown--rose",
                                       trigger: "click",
                                       interactive: true,
-                                      allowHTML: true,
                                     });
                                   `}"
                                 `}
@@ -7567,7 +7554,6 @@ export default async function courselore(
                                     theme: "dropdown dropdown--rose",
                                     trigger: "click",
                                     interactive: true,
-                                    allowHTML: true,
                                   });
                                 `}"
                               >
@@ -9507,7 +9493,6 @@ export default async function courselore(
                   theme: "dropdown",
                   trigger: "click",
                   interactive: true,
-                  allowHTML: true,
                 });
               `}"
             >
@@ -9999,7 +9984,6 @@ ${value}</textarea
                               theme: "dropdown",
                               trigger: "click",
                               interactive: true,
-                              // allowHTML: true,
                             });
                           `}"
                         >
@@ -10525,7 +10509,6 @@ ${value}</textarea
                                 theme: "dropdown dropdown--rose",
                                 trigger: "click",
                                 interactive: true,
-                                allowHTML: true,
                               });
                             `}"
                           >
@@ -10900,7 +10883,6 @@ ${value}</textarea
                                     theme: "dropdown dropdown--rose",
                                     trigger: "click",
                                     interactive: true,
-                                    allowHTML: true,
                                   });
                                 `}"
                               >
@@ -11247,7 +11229,6 @@ ${value}</textarea
                             theme: "dropdown",
                             trigger: "manual",
                             interactive: true,
-                            allowHTML: true,
                             offset: [0, 20],
                             touch: false,
                           });
