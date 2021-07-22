@@ -8402,11 +8402,18 @@ export default async function courselore(
         <div
           class="conversation--layout"
           style="${css`
-            & > * > * {
-              margin: var(--space--4);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            & > * {
+              overflow: auto;
+              & > * {
+                margin: var(--space--4);
+              }
             }
             @media (max-width: 899px) {
               & > * {
+                flex: 1;
                 display: flex;
                 justify-content: center;
                 & > * {
@@ -8416,14 +8423,6 @@ export default async function courselore(
               }
               & > .single-column--hidden {
                 display: none;
-              }
-            }
-            @media (min-width: 900px) {
-              width: 100%;
-              height: 100%;
-              display: flex;
-              & > * {
-                overflow: auto;
               }
             }
           `}"
@@ -8442,7 +8441,7 @@ export default async function courselore(
               }
             `}"
           >
-            <div>$${"SIDEBAR ".repeat(1000)}</div>
+            <div>$${"SIDEBAR ".repeat(10000)}</div>
             <div
               hidden
               style="${css`
