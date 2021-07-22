@@ -227,6 +227,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Minor Improvements
 
+- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Manage answer tags more intelligently:
   - Answered at all.
   - Answered by staff.
@@ -235,6 +236,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Tippy & live reload.
     - Reset Tippy somehow?
   - Don’t breakpoint Demonstration Mode bar on phone if “Turn off” doesn’t show up.
+  - `heading--2` needs `flex-wrap`, for example, `/settings/your-enrollment` at 320px wide.
 
 ### Courses
 

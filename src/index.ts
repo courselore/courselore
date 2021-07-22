@@ -1335,7 +1335,7 @@ export default async function courselore(
                       }
                       &:active,
                       &.active {
-                        background-color: var(--color--primary--900);
+                        background-color: var(--color--primary--700);
                       }
                     }
                   }
@@ -8384,8 +8384,8 @@ export default async function courselore(
                     this.parentElement.remove();
                   `}"
                   onclick="${javascript`
-                    document.querySelector("#sidebar").classList.toggle("single-column--hidden");
-                    document.querySelector("#main").classList.toggle("single-column--hidden");
+                    document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
+                    document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
                     this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
                     this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
                   `}"
@@ -8400,49 +8400,51 @@ export default async function courselore(
       `,
       body: html`
         <div
+          class="conversation--layout"
           style="${css`
-            flex: 1;
-            overflow: auto;
-
-            & > * {
-              display: flex;
-              overflow: auto;
-              justify-content: center;
+            & > * > * {
+              margin: var(--space--4);
             }
-
             @media (max-width: 899px) {
-              display: flex;
-              justify-content: center;
-
               & > * {
-                flex: 1;
+                display: flex;
+                justify-content: center;
+                & > * {
+                  flex: 1;
+                  max-width: var(--width--2xl);
+                }
               }
-
               & > .single-column--hidden {
                 display: none;
               }
             }
-
-            @media (min-width: 900px) and (max-width: 1279px) {
+            @media (min-width: 900px) {
+              width: 100%;
+              height: 100%;
               display: flex;
-
-              & > #sidebar {
-                width: var(--space--80);
+              & > * {
+                overflow: auto;
               }
-
-              & > #main {
-                flex: 1;
-              }
-            }
-
-            @media (min-width: 1280px) {
-              display: grid;
-              grid-template-columns: var(--space--80) auto var(--space--80);
             }
           `}"
         >
-          <div id="sidebar" class="single-column--hidden">
+          <div
+            class="conversation--layout--sidebar single-column--hidden"
+            style="${css`
+              color: var(--color--primary--200);
+              background-color: var(--color--primary--900);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--primary--200);
+                background-color: var(--color--primary--900);
+              }
+              @media (min-width: 900px) {
+                width: var(--width--sm);
+              }
+            `}"
+          >
+            <div>$${"SIDEBAR ".repeat(1000)}</div>
             <div
+              hidden
               style="${css`
                 color: var(--color--primary--200);
                 background-color: var(--color--primary--900);
@@ -8732,16 +8734,24 @@ export default async function courselore(
               </div>
             </div>
           </div>
-          <div id="main">
+          <div
+            class="conversation--layout--main"
+            style="${css`
+              @media (min-width: 900px) {
+                flex: 1;
+              }
+            `}"
+          >
             <div
               style="${css`
-                flex: 1;
-                max-width: var(--width--2xl);
-                padding: var(--space--4);
-                overflow: auto;
+                @media (min-width: 900px) {
+                  max-width: var(--width--2xl);
+                  margin-left: var(--space--8);
+                }
               `}"
             >
-              $${body}
+              $${"MAIN ".repeat(10000)}
+              <div hidden>$${body}</div>
             </div>
           </div>
         </div>
