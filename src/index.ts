@@ -9990,10 +9990,35 @@ ${value}</textarea
                   $${res.locals.tags.length === 0
                     ? html``
                     : html`
-                        <button type="button" class="button--inline">
+                        <button
+                          type="button"
+                          class="button--inline"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: this.nextElementSibling.firstElementChild,
+                              theme: "dropdown",
+                              trigger: "click",
+                              interactive: true,
+                              // allowHTML: true,
+                            });
+                          `}"
+                        >
                           <i class="bi bi-tags"></i>
                           Tags
                         </button>
+                        <div hidden>
+                          <div>
+                            $${res.locals.tags.map(
+                              (tag) =>
+                                html`
+                                  <label>
+                                    <input type="checkbox" hidden />
+                                    ${tag.name}
+                                  </label>
+                                `
+                            )}
+                          </div>
+                        </div>
                       `}
                 </div>
 
