@@ -8868,9 +8868,15 @@ export default async function courselore(
       >
         <div
           style="${css`
+            background-color: var(--color--white);
+            @media (prefers-color-scheme: dark) {
+              background-color: var(--color--gray--cool--700);
+            }
             padding: var(--space--2) var(--space--0);
             margin: var(--space--0) var(--space--4);
             overflow-x: auto;
+            position: sticky;
+            top: 0;
             display: flex;
             gap: var(--space--5);
             & > * {
