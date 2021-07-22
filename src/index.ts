@@ -8351,48 +8351,44 @@ export default async function courselore(
       res,
       head,
       extraHeaders: html`
-        $${res.locals.enrollment.role === "staff"
-          ? html`
-              <div
-                style="${css`
-                  color: var(--color--primary--100);
-                  background-color: var(--color--primary--800);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
-                  }
-                  padding: var(--space--1) var(--space--4);
-                  display: flex;
-                  justify-content: center;
-                  @media (min-width: 900px) {
-                    display: none;
-                  }
-                `}"
-              >
-                <button
-                  style="${css`
-                    display: flex;
-                    gap: var(--space--2);
-                  `}"
-                  data-ondomcontentloaded="${javascript`
+        <div
+          style="${css`
+            color: var(--color--primary--100);
+            background-color: var(--color--primary--800);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--primary--200);
+              background-color: var(--color--primary--900);
+            }
+            padding: var(--space--1) var(--space--4);
+            display: flex;
+            justify-content: center;
+            @media (min-width: 900px) {
+              display: none;
+            }
+          `}"
+        >
+          <button
+            style="${css`
+              display: flex;
+              gap: var(--space--2);
+            `}"
+            data-ondomcontentloaded="${javascript`
                     if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
                     this.click();
                     this.parentElement.remove();
                   `}"
-                  onclick="${javascript`
+            onclick="${javascript`
                     document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
                     document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
                     this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
                     this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
                   `}"
-                >
-                  <i class="bi bi-chat-left-text"></i>
-                  Conversations
-                  <i class="bi bi-chevron-bar-expand"></i>
-                </button>
-              </div>
-            `
-          : html``}
+          >
+            <i class="bi bi-chat-left-text"></i>
+            Conversations
+            <i class="bi bi-chevron-bar-expand"></i>
+          </button>
+        </div>
       `,
       body: html`
         <div
