@@ -7147,7 +7147,6 @@ export default async function courselore(
                                                             trigger: "click",
                                                             interactive: true,
                                                             allowHTML: true,
-                                                            appendTo: document.body,
                                                           });
                                                         `}"
                                                       `
@@ -7192,9 +7191,6 @@ export default async function courselore(
                                                           </p>
                                                           <button
                                                             class="button button--rose"
-                                                            onclick="${javascript`
-                                                            document.querySelector('[aria-describedby="' + this.closest("[data-tippy-root]").id + '"]').closest("form").submit();
-                                                          `}"
                                                           >
                                                             Convert to
                                                             ${lodash.capitalize(
