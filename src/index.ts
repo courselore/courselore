@@ -8486,13 +8486,29 @@ export default async function courselore(
                 style="${css`
                   display: flex;
                   justify-content: center;
-                  font-weight: var(--font-weight--semibold);
                 `}"
               >
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/conversations/new"
                   style="${css`
+                    font-weight: var(--font-weight--semibold);
+                    &:hover,
+                    &:focus-within {
+                      color: var(--color--primary--50);
+                    }
+                    &:active {
+                      color: var(--color--primary--100);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      &:hover,
+                      &:focus-within {
+                        color: var(--color--primary--50);
+                      }
+                      &:active {
+                        color: var(--color--primary--100);
+                      }
+                    }
                     display: flex;
                     gap: var(--space--2);
                     transition-property: var(--transition-property--colors);
@@ -8500,23 +8516,78 @@ export default async function courselore(
                     transition-timing-function: var(
                       --transition-timing-function--in-out
                     );
-
-                    &:hover,
-                    &:focus-within {
-                      color: var(--color--primary--50);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within {
-                        color: var(--color--primary--50);
-                      }
-                    }
                   `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
                   Start a New Conversation
                 </a>
               </div>
+
+              $${res.locals.tags.length > 0
+                ? html`
+                    <div>
+                      <button
+                        style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                          &:hover,
+                          &:focus-within {
+                            color: var(--color--primary--50);
+                          }
+                          &:active {
+                            color: var(--color--primary--100);
+                          }
+                          @media (prefers-color-scheme: dark) {
+                            &:hover,
+                            &:focus-within {
+                              color: var(--color--primary--50);
+                            }
+                            &:active {
+                              color: var(--color--primary--100);
+                            }
+                          }
+                          transition-property: var(
+                            --transition-property--colors
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--in-out
+                          );
+                        `}"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            theme: "dropdown",
+                            trigger: "click",
+                            interactive: true,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-funnel"></i>
+                        Filter by Tag
+                      </button>
+                      <div hidden>
+                        <div>
+                          $${res.locals.tags.map(
+                            (tag) => html`
+                              <form>
+                                <input
+                                  type="hidden"
+                                  name="tag"
+                                  value="${tag.reference}"
+                                />
+                                <button class="dropdown--item">
+                                  <i class="bi bi-tag"></i>
+                                  ${tag.name}
+                                </button>
+                              </form>
+                            `
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  `
+                : html``}
 
               <div
                 style="${css`
