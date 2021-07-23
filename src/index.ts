@@ -9983,80 +9983,99 @@ ${value}</textarea
                             align-items: baseline;
                           `}"
                         >
-                          <button
-                            type="button"
-                            class="tags--button button--inline"
-                            data-ondomcontentloaded="${javascript`
-                              this.addTag = tippy(this, {
-                                content: "Add Tag",
-                                theme: "tooltip",
-                                touch: false,
-                              });
-                              this.noMoreTagsToAdd = tippy(this, {
-                                content: "No more tags to add",
-                                theme: "tooltip",
-                                touch: false,
-                              });
-                              this.noMoreTagsToAdd.disable();
-                              this.dropdownContent = this.nextElementSibling.firstElementChild;
-                              this.dropdown = tippy(this, {
-                                content: this.dropdownContent,
-                                theme: "dropdown",
-                                trigger: "click",
-                                interactive: true,
-                              });
+                          <div
+                            style="${css`
+                              display: grid;
+                              & > * {
+                                grid-area: 1 / 1;
+                              }
                             `}"
                           >
-                            <span>
-                              <i class="bi bi-tags"></i>
-                              Tags
-                            </span>
-                          </button>
-                          <div hidden>
-                            <div
-                              style="${css`
-                                max-height: var(--space--40);
-                                overflow: auto;
-                                margin: var(--space--0) var(--space---2);
+                            <button
+                              type="button"
+                              class="tags--button button--inline"
+                              data-ondomcontentloaded="${javascript`
+                                this.addTag = tippy(this, {
+                                  content: "Add Tag",
+                                  theme: "tooltip",
+                                  touch: false,
+                                });
+                                this.noMoreTagsToAdd = tippy(this, {
+                                  content: "No more tags to add",
+                                  theme: "tooltip",
+                                  touch: false,
+                                });
+                                this.noMoreTagsToAdd.disable();
+                                this.dropdownContent = this.nextElementSibling.firstElementChild;
+                                this.dropdown = tippy(this, {
+                                  content: this.dropdownContent,
+                                  theme: "dropdown",
+                                  trigger: "click",
+                                  interactive: true,
+                                });
                               `}"
                             >
+                              <span>
+                                <i class="bi bi-tags"></i>
+                                Tags
+                              </span>
+                            </button>
+                            <div hidden>
                               <div
                                 style="${css`
-                                  margin: var(--space--0) var(--space--2);
+                                  max-height: var(--space--40);
+                                  overflow: auto;
+                                  margin: var(--space--0) var(--space---2);
                                 `}"
                               >
-                                $${res.locals.tags.map(
-                                  (tag) =>
-                                    html`
-                                      <button
-                                        type="button"
-                                        class="tag--${tag.reference}--enable dropdown--item"
-                                        onclick="${javascript`
-                                        (async () => {
-                                          const tags = this.closest(".tags");
-                                          const tag = tags.querySelector(".tag--${tag.reference}");
-                                          tag.hidden = false;
-                                          const input = tag.querySelector("input");
-                                          input.disabled = false;
-                                          input.dataset.forceIsModified = true;
-                                          if ([...this.parentElement.children].filter((element) => !element.hidden).length === 1) {
-                                            const tagsButton = tags.querySelector(".tags--button");
-                                            tagsButton.addTag.disable();
-                                            tagsButton.noMoreTagsToAdd.enable();
-                                            tagsButton.dropdown.disable();
-                                            await new Promise((resolve) => window.setTimeout(resolve, tippy.defaultProps.duration));
-                                          }
-                                          this.hidden = true;
-                                        })();
-                                      `}"
-                                      >
-                                        <i class="bi bi-tag"></i>
-                                        ${tag.name}
-                                      </button>
-                                    `
-                                )}
+                                <div
+                                  style="${css`
+                                    margin: var(--space--0) var(--space--2);
+                                  `}"
+                                >
+                                  $${res.locals.tags.map(
+                                    (tag) =>
+                                      html`
+                                        <button
+                                          type="button"
+                                          class="tag--${tag.reference}--enable dropdown--item"
+                                          onclick="${javascript`
+                                            (async () => {
+                                              const tags = this.closest(".tags");
+                                              const tag = tags.querySelector(".tag--${tag.reference}");
+                                              tag.hidden = false;
+                                              const input = tag.querySelector("input");
+                                              input.disabled = false;
+                                              input.dataset.forceIsModified = true;
+                                              if ([...this.parentElement.children].filter((element) => !element.hidden).length === 1) {
+                                                const tagsButton = tags.querySelector(".tags--button");
+                                                tagsButton.addTag.disable();
+                                                tagsButton.noMoreTagsToAdd.enable();
+                                                tagsButton.dropdown.disable();
+                                                await new Promise((resolve) => window.setTimeout(resolve, tippy.defaultProps.duration));
+                                              }
+                                              this.hidden = true;
+                                            })();
+                                          `}"
+                                        >
+                                          <i class="bi bi-tag"></i>
+                                          ${tag.name}
+                                        </button>
+                                      `
+                                  )}
+                                </div>
                               </div>
                             </div>
+                            <input
+                              type="radio"
+                              data-ondomcontentloaded="${javascript`
+                                (this.validators ??= []).push(() => {
+                                  if (this.closest(".tags").querySelector('[name="tags[]"]:not([disabled])') === null)
+                                    return "Select at least one tag";
+                                });
+                                this.closest(".tags").querySelector(".tags--button").addEventListener("click", () => { this.click(); });
+                              `}"
+                            />
                           </div>
                           $${res.locals.tags.map(
                             (tag) =>
