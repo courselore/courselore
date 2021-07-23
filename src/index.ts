@@ -8434,9 +8434,9 @@ export default async function courselore(
               gap: var(--space--2);
             `}"
             data-ondomcontentloaded="${javascript`
-              if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
-              this.click();
-              this.parentElement.remove();
+              const search = new URLSearchParams(window.location.search);
+              if (search.get("redirected") === "true" || search.get("tag") !== null) this.click();              
+              if (search.get("redirected") === "true") this.parentElement.remove();
             `}"
             onclick="${javascript`
               document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
@@ -8644,8 +8644,8 @@ export default async function courselore(
                   gap: var(--space--2);
                 `}"
                 data-ondomcontentloaded="${javascript`
-                  if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
-                  this.classList.add("active--cancel");
+                  if (new URLSearchParams(window.location.search).get("redirected") === "true")
+                    this.classList.add("active--cancel");
                 `}"
               >
                 $${res.locals.conversations.map(
