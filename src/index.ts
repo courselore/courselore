@@ -4603,6 +4603,12 @@ export default async function courselore(
     course: IsAuthenticatedMiddlewareLocals["enrollments"][number]["course"];
     enrollment: IsAuthenticatedMiddlewareLocals["enrollments"][number];
     otherEnrollments: IsAuthenticatedMiddlewareLocals["enrollments"];
+    tags: {
+      id: number;
+      reference: string;
+      name: string;
+      visibleBy: TagVisibleBy;
+    }[];
     conversations: {
       id: number;
       reference: string;
@@ -4655,12 +4661,6 @@ export default async function courselore(
         };
       }[];
     }[];
-    tags: {
-      id: number;
-      reference: string;
-      name: string;
-      visibleBy: TagVisibleBy;
-    }[];
   }
   app.locals.middlewares.isEnrolledInCourse = [
     ...app.locals.middlewares.isAuthenticated,
@@ -4672,6 +4672,25 @@ export default async function courselore(
           res.locals.course = enrollment.course;
         } else res.locals.otherEnrollments.push(enrollment);
       if (res.locals.enrollment === undefined) return next("route");
+
+      res.locals.tags = app.locals.database.all<{
+        id: number;
+        reference: string;
+        name: string;
+        visibleBy: TagVisibleBy;
+      }>(
+        sql`
+          SELECT "id", "reference", "name", "visibleBy"
+          FROM "tags"
+          WHERE "course" = ${res.locals.course.id}
+                $${
+                  res.locals.enrollment.role === "student"
+                    ? sql`AND "visibleBy" = 'everyone'`
+                    : sql``
+                }
+          ORDER BY "id" ASC
+        `
+      );
 
       res.locals.conversations = app.locals.database
         .all<{
@@ -4869,25 +4888,6 @@ export default async function courselore(
             taggings,
           };
         });
-
-      res.locals.tags = app.locals.database.all<{
-        id: number;
-        reference: string;
-        name: string;
-        visibleBy: TagVisibleBy;
-      }>(
-        sql`
-          SELECT "id", "reference", "name", "visibleBy"
-          FROM "tags"
-          WHERE "course" = ${res.locals.course.id}
-                $${
-                  res.locals.enrollment.role === "student"
-                    ? sql`AND "visibleBy" = 'everyone'`
-                    : sql``
-                }
-          ORDER BY "id" ASC
-        `
-      );
 
       next();
     },
