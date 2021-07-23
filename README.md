@@ -210,23 +210,24 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Roadmap
 
-|     |            |                                                                                                                                                                                                                          |
-| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ✅  | 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                                                                                                            |
-| ✅  | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; Generalized live updates. Tags: Mark posts as answers; Endorsements.                                                                                          |
-|     | 2021-07-17 | Finish arbitrary tags: Create arbitrary tags; Manage tags in conversations; Flag posts to answer later. Categories: Question, Announcement, Other. Demo class for showing people staring August. Search; Filter by tags. |
-|     | 2021-07-24 | Notifications: In-app; via email.                                                                                                                                                                                        |
-|     | 2021-07-31 | Finish notifications.                                                                                                                                                                                                    |
-|     | 2021-08-07 | Access management: Anonymity & private threads.                                                                                                                                                                          |
-|     | 2021-08-14 | Continued access management.                                                                                                                                                                                             |
-|     | 2021-08-21 | Buffer for things that’ll take longer than we expect.                                                                                                                                                                    |
-|     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                                                                    |
+|     |            |                                                                                                                                 |
+| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| ✅  | 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                   |
+| ✅  | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; Generalized live updates. Tags: Mark posts as answers; Endorsements. |
+| ✅  | 2021-07-17 | Continue the work on tags. User profiles with avatars, and biographies, and so forth. Prepare deployment of HTTP/2.             |
+|     | 2021-07-24 | Finish tags: Create tags; Manage tags in conversations; Filter conversations by tag. Search.                                    |
+|     | 2021-07-31 | Demo class for showing people staring August. Notifications: In-app; via email.                                                 |
+|     | 2021-08-07 | Continue work on notifications.                                                                                                 |
+|     | 2021-08-14 | Access management: Anonymity & private threads.                                                                                 |
+|     | 2021-08-21 | Continued access management.                                                                                                    |
+|     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                           |
 
 <details>
 <summary><strong>Backlog</strong></summary>
 
 ### Minor Improvements
 
+- Generalize conversation category: Question, Announcement, Other.
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Manage answer tags more intelligently:
   - Answered at all.
@@ -271,6 +272,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Different modes: Forum vs Chat.
 - Different states: Open vs archived.
 - Different visibility: All, staff, or students. A student + staff, for private questions.
+- Flag messages to answer later.
 
 ### Notifications
 
@@ -343,7 +345,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Reference: GitHub let’s you search in different scopes like that.
 - Filter by tags.
 - Dropdown helpers to pick mentions & references.
-  - - https://github.com/zurb/tribute
+  - https://github.com/zurb/tribute
 
 ### Forms Niceties
 
