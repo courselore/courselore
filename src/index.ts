@@ -10577,6 +10577,28 @@ ${value}</textarea
     res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
 
   interface Middlewares {
+    mayEditConversation: express.RequestHandler<
+      {
+        courseReference: string;
+        conversationReference: string;
+      },
+      any,
+      {},
+      {},
+      MayEditConversationMiddlewareLocals
+    >[];
+  }
+  interface MayEditConversationMiddlewareLocals
+    extends IsConversationAccessibleMiddlewareLocals {}
+  app.locals.middlewares.mayEditConversation = [
+    ...app.locals.middlewares.isConversationAccessible,
+    (req, res, next) => {
+      if (app.locals.helpers.mayEditConversation(req, res)) return next();
+      next("route");
+    },
+  ];
+
+  interface Middlewares {
     messageExists: express.RequestHandler<
       {
         courseReference: string;
@@ -11907,12 +11929,11 @@ ${value}</textarea
       isQuestion?: "true" | "false";
     },
     {},
-    IsConversationAccessibleMiddlewareLocals
+    MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.locals.middlewares.isConversationAccessible,
+    ...app.locals.middlewares.mayEditConversation,
     (req, res, next) => {
-      if (!app.locals.helpers.mayEditConversation(req, res)) return next();
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
         else
