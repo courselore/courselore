@@ -10017,15 +10017,21 @@ ${value}</textarea
                               style="${css`
                                 max-height: var(--space--40);
                                 overflow: auto;
+                                margin: var(--space--0) var(--space---2);
                               `}"
                             >
-                              $${res.locals.tags.map(
-                                (tag) =>
-                                  html`
-                                    <button
-                                      type="button"
-                                      class="tag--${tag.reference}--enable dropdown--item"
-                                      onclick="${javascript`
+                              <div
+                                style="${css`
+                                  margin: var(--space--0) var(--space--2);
+                                `}"
+                              >
+                                $${res.locals.tags.map(
+                                  (tag) =>
+                                    html`
+                                      <button
+                                        type="button"
+                                        class="tag--${tag.reference}--enable dropdown--item"
+                                        onclick="${javascript`
                                         (async () => {
                                           const tags = this.closest(".tags");
                                           const tag = tags.querySelector(".tag--${tag.reference}");
@@ -10043,12 +10049,13 @@ ${value}</textarea
                                           this.hidden = true;
                                         })();
                                       `}"
-                                    >
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </button>
-                                  `
-                              )}
+                                      >
+                                        <i class="bi bi-tag"></i>
+                                        ${tag.name}
+                                      </button>
+                                    `
+                                )}
+                              </div>
                             </div>
                           </div>
                           $${res.locals.tags.map(
