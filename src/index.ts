@@ -4594,7 +4594,7 @@ export default async function courselore(
       { courseReference: string },
       any,
       {},
-      {},
+      { tag?: string },
       IsEnrolledInCourseMiddlewareLocals
     >[];
   }
@@ -4609,6 +4609,7 @@ export default async function courselore(
       name: string;
       visibleBy: TagVisibleBy;
     }[];
+    tagFilter?: IsEnrolledInCourseMiddlewareLocals["tags"][number];
     conversations: {
       id: number;
       reference: string;
@@ -4692,6 +4693,11 @@ export default async function courselore(
         `
       );
 
+      if (typeof req.query.tag === "string")
+        res.locals.tagFilter = res.locals.tags.find(
+          (tag) => tag.reference === req.query.tag
+        );
+
       res.locals.conversations = app.locals.database
         .all<{
           id: number;
@@ -4709,7 +4715,21 @@ export default async function courselore(
                    "conversations"."pinnedAt",
                    "conversations"."questionAt"
             FROM "conversations"
+            $${
+              res.locals.tagFilter === undefined
+                ? sql``
+                : sql`
+                    JOIN "taggings" ON "conversations"."id" = "taggings"."conversation"
+                  `
+            }
             WHERE "conversations"."course" = ${res.locals.course.id}
+            $${
+              res.locals.tagFilter === undefined
+                ? sql``
+                : sql`
+                    AND "taggings"."id" = ${res.locals.tagFilter.id}
+                  `
+            }
             ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
                      "conversations"."id" DESC
           `
@@ -9915,7 +9935,7 @@ ${value}</textarea
     { courseReference: string },
     HTML,
     {},
-    {},
+    { tag?: string },
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
@@ -10928,7 +10948,7 @@ ${value}</textarea
     { courseReference: string; conversationReference: string },
     HTML,
     {},
-    {},
+    { tag?: string },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
