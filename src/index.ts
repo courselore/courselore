@@ -9976,6 +9976,7 @@ ${value}</textarea
                     ? html``
                     : html`
                         <div
+                          class="tags"
                           style="${css`
                             display: flex;
                             gap: var(--space--4);
@@ -9984,15 +9985,22 @@ ${value}</textarea
                         >
                           <button
                             type="button"
-                            class="button--inline"
+                            class="tags--button button--inline"
                             data-ondomcontentloaded="${javascript`
-                              tippy(this, {
+                              this.addTag = tippy(this, {
                                 content: "Add Tag",
                                 theme: "tooltip",
                                 touch: false,
                               });
-                              tippy(this, {
-                                content: this.nextElementSibling.firstElementChild,
+                              this.noMoreTagsToAdd = tippy(this, {
+                                content: "No more tags to add",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                              this.noMoreTagsToAdd.disable();
+                              this.dropdownContent = this.nextElementSibling.firstElementChild;
+                              this.dropdown = tippy(this, {
+                                content: this.dropdownContent,
                                 theme: "dropdown",
                                 trigger: "click",
                                 interactive: true,
@@ -10005,13 +10013,27 @@ ${value}</textarea
                             </span>
                           </button>
                           <div hidden>
+                            <!-- TODO: Check a very long list of tags… -->
                             <div>
                               $${res.locals.tags.map(
                                 (tag) =>
                                   html`
                                     <button
                                       type="button"
-                                      class="dropdown--item"
+                                      class="tag--${tag.reference}--enable dropdown--item"
+                                      onclick="${javascript`
+                                        this.hidden = true;
+                                        const tags = this.closest(".tags");
+                                        if (![...this.parentElement.children].some((element) => !element.hidden)) {
+                                          const tagsButton = tags.querySelector(".tags--button");
+                                          tagsButton.addTag.disable();
+                                          tagsButton.noMoreTagsToAdd.enable();
+                                          tagsButton.dropdown.disable();
+                                        }
+                                        const tag = tags.querySelector(".tag--${tag.reference}");
+                                        tag.hidden = false;
+                                        tag.querySelector("input").disabled = false;
+                                      `}"
                                     >
                                       <i class="bi bi-tag"></i>
                                       ${tag.name}
@@ -10043,6 +10065,16 @@ ${value}</textarea
                                         theme: "tooltip",
                                         touch: false,
                                       });
+                                    `}"
+                                    onclick="${javascript`
+                                      const tag = this.closest(".tag--${tag.reference}");
+                                      tag.hidden = true;
+                                      tag.querySelector("input").disabled = true;
+                                      const tagsButton = this.closest(".tags").querySelector(".tags--button")
+                                      tagsButton.addTag.enable();
+                                      tagsButton.noMoreTagsToAdd.disable();
+                                      tagsButton.dropdown.enable();
+                                      tagsButton.dropdownContent.querySelector(".tag--${tag.reference}--enable").hidden = false;
                                     `}"
                                   >
                                     <span>
