@@ -8391,7 +8391,7 @@ export default async function courselore(
         { courseReference: string; conversationReference?: string },
         HTML,
         {},
-        {},
+        { search?: string; tag?: string },
         IsEnrolledInCourseMiddlewareLocals &
           Partial<IsConversationAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
@@ -8543,26 +8543,76 @@ export default async function courselore(
                 </a>
               </div>
 
-              $${res.locals.tags.length > 0
-                ? html`
-                    <div>
-                      <button
-                        style="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                          ${res.locals.tagFilter === undefined
-                            ? css``
-                            : css`
-                                font-weight: var(--font-weight--semibold);
-                              `}
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--primary--50);
-                          }
-                          &:active {
-                            color: var(--color--primary--100);
-                          }
-                          @media (prefers-color-scheme: dark) {
+              <div
+                style="${css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+                `}"
+              >
+                <form
+                  style="${css`
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                      color: var(--color--primary--200);
+                      &::placeholder {
+                        color: var(--color--primary--300);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--200);
+                        &::placeholder {
+                          color: var(--color--primary--300);
+                        }
+                      }
+                    }
+                  `}"
+                >
+                  <input
+                    type="search"
+                    name="search"
+                    value="${req.query.search ?? ""}"
+                    placeholder="Search…"
+                    required
+                    class="input--text"
+                    style="${css`
+                      background-color: var(--color--primary--700);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--primary--700);
+                      }
+                      padding-right: var(--space--8);
+                    `}"
+                    data-skip-is-modified="true"
+                  />
+                  <button
+                    class="button--inline"
+                    style="${css`
+                      justify-self: end;
+                      margin-right: var(--space--2);
+                    `}"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "Search",
+                        theme: "tooltip",
+                        touch: false,
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-search"></i>
+                  </button>
+                </form>
+                $${res.locals.tags.length > 0
+                  ? html`
+                      <div>
+                        <button
+                          style="${css`
+                            ${res.locals.tagFilter === undefined
+                              ? css``
+                              : css`
+                                  font-weight: var(--font-weight--semibold);
+                                `}
                             &:hover,
                             &:focus-within {
                               color: var(--color--primary--50);
@@ -8570,16 +8620,26 @@ export default async function courselore(
                             &:active {
                               color: var(--color--primary--100);
                             }
-                          }
-                          transition-property: var(
-                            --transition-property--colors
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--in-out
-                          );
-                        `}"
-                        data-ondomcontentloaded="${javascript`
+                            @media (prefers-color-scheme: dark) {
+                              &:hover,
+                              &:focus-within {
+                                color: var(--color--primary--50);
+                              }
+                              &:active {
+                                color: var(--color--primary--100);
+                              }
+                            }
+                            transition-property: var(
+                              --transition-property--colors
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--in-out
+                            );
+                          `}"
+                          data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: this.nextElementSibling.firstElementChild,
                             theme: "dropdown",
@@ -8587,55 +8647,54 @@ export default async function courselore(
                             interactive: true,
                           });
                         `}"
-                      >
-                        $${res.locals.tagFilter === undefined
-                          ? html`
-                              <i class="bi bi-funnel"></i>
-                              Filter by Tag
-                            `
-                          : html`
-                              <i class="bi bi-funnel-fill"></i>
-                              Filtering by <i class="bi bi-tag"></i>
-                              ${res.locals.tagFilter.name}
-                            `}
-                      </button>
-                      <div hidden>
-                        <div
-                          style="${css`
-                            max-height: var(--space--40);
-                            overflow: auto;
-                            margin: var(--space--0) var(--space---2);
-                          `}"
                         >
+                          $${res.locals.tagFilter === undefined
+                            ? html`
+                                <i class="bi bi-funnel"></i>
+                                Filter by Tag
+                              `
+                            : html`
+                                <i class="bi bi-funnel-fill"></i>
+                                Filtering by <i class="bi bi-tag"></i>
+                                ${res.locals.tagFilter.name}
+                              `}
+                        </button>
+                        <div hidden>
                           <div
                             style="${css`
-                              margin: var(--space--0) var(--space--2);
+                              max-height: var(--space--40);
+                              overflow: auto;
+                              margin: var(--space--0) var(--space---2);
                             `}"
                           >
-                            $${res.locals.tags.map((tag) => {
-                              const isTagFilter =
-                                tag.id === res.locals.tagFilter?.id;
-                              return html`
-                                <a
-                                  href="?${qs.stringify({
-                                    ...req.query,
-                                    tag: isTagFilter
-                                      ? null
-                                      : tag.reference,
-                                  })}"
-                                  class="dropdown--item ${isTagFilter
-                                    ? "active"
-                                    : ""}"
-                                  ><i class="bi bi-tag"></i> ${tag.name}</a
-                                >
-                              `;
-                            })}
+                            <div
+                              style="${css`
+                                margin: var(--space--0) var(--space--2);
+                              `}"
+                            >
+                              $${res.locals.tags.map((tag) => {
+                                const isTagFilter =
+                                  tag.id === res.locals.tagFilter?.id;
+                                return html`
+                                  <a
+                                    href="?${qs.stringify({
+                                      ...req.query,
+                                      tag: isTagFilter ? null : tag.reference,
+                                    })}"
+                                    class="dropdown--item ${isTagFilter
+                                      ? "active"
+                                      : ""}"
+                                    ><i class="bi bi-tag"></i> ${tag.name}</a
+                                  >
+                                `;
+                              })}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  `
-                : html``}
+                    `
+                  : html``}
+              </div>
 
               <div
                 style="${css`
@@ -8815,26 +8874,25 @@ export default async function courselore(
                             : html`
                                 <div
                                   data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: ${JSON.stringify(
-                                          `Endorsed by ${
-                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                              "en"
-                                            ).format(
-                                              conversation.endorsements.map(
-                                                (endorsement) =>
-                                                  endorsement.enrollment.user
-                                                    .name ??
-                                                  endorsement.enrollment
-                                                    .reference
-                                              )
+                                    tippy(this, {
+                                      content: ${JSON.stringify(
+                                        `Endorsed by ${
+                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                            "en"
+                                          ).format(
+                                            conversation.endorsements.map(
+                                              (endorsement) =>
+                                                endorsement.enrollment.user
+                                                  .name ??
+                                                endorsement.enrollment.reference
                                             )
-                                          }`
-                                        )},
-                                        theme: "tooltip",
-                                        touch: false,
-                                      });
-                                    `}"
+                                          )
+                                        }`
+                                      )},
+                                      theme: "tooltip",
+                                      touch: false,
+                                    });
+                                  `}"
                                 >
                                   <i class="bi bi-award"></i>
                                   ${conversation.endorsements.length} Staff
