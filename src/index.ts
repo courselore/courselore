@@ -12399,6 +12399,7 @@ ${value}</textarea
     ...app.locals.middlewares.mayEditConversation,
     (req, res, next) => {
       if (
+        res.locals.conversation.taggings.length === 1 ||
         typeof req.body.reference !== "string" ||
         !res.locals.conversation.taggings.some(
           (tagging) => req.body.reference === tagging.tag.reference
