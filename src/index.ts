@@ -10013,8 +10013,12 @@ ${value}</textarea
                             </span>
                           </button>
                           <div hidden>
-                            <!-- TODO: Check a very long list of tags… -->
-                            <div>
+                            <div
+                              style="${css`
+                                max-height: var(--space--40);
+                                overflow: auto;
+                              `}"
+                            >
                               $${res.locals.tags.map(
                                 (tag) =>
                                   html`
