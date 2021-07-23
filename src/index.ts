@@ -8571,7 +8571,7 @@ export default async function courselore(
                   `}"
                 >
                   <input
-                    type="search"
+                    type="text"
                     name="search"
                     value="${req.query.search ?? ""}"
                     placeholder="Search…"
