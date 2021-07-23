@@ -10026,7 +10026,9 @@ ${value}</textarea
                                           const tags = this.closest(".tags");
                                           const tag = tags.querySelector(".tag--${tag.reference}");
                                           tag.hidden = false;
-                                          tag.querySelector("input").disabled = false;
+                                          const input = tag.querySelector("input");
+                                          input.disabled = false;
+                                          input.dataset.forceIsModified = true;
                                           if ([...this.parentElement.children].filter((element) => !element.hidden).length === 1) {
                                             const tagsButton = tags.querySelector(".tags--button");
                                             tagsButton.addTag.disable();
@@ -10072,7 +10074,9 @@ ${value}</textarea
                                     onclick="${javascript`
                                       const tag = this.closest(".tag--${tag.reference}");
                                       tag.hidden = true;
-                                      tag.querySelector("input").disabled = true;
+                                      const input = tag.querySelector("input");
+                                      input.disabled = true;
+                                      input.dataset.forceIsModified = false;
                                       const tagsButton = this.closest(".tags").querySelector(".tags--button")
                                       tagsButton.addTag.enable();
                                       tagsButton.noMoreTagsToAdd.disable();
