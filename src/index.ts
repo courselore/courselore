@@ -152,6 +152,12 @@ export default async function courselore(
     role: null,
   };
 
+  interface Constants {
+    tagVisibleBy: TagVisibleBy[];
+  }
+  type TagVisibleBy = "everyone" | "staff";
+  app.locals.constants.tagVisibleBy = ["everyone", "staff"];
+
   interface AppLocals {
     database: Database;
   }
@@ -4639,12 +4645,21 @@ export default async function courselore(
           | AnonymousEnrollment;
       }[];
       likesCount: number;
+      taggings: {
+        id: number;
+        tag: {
+          id: number;
+          reference: string;
+          name: string;
+          visibleBy: TagVisibleBy;
+        };
+      }[];
     }[];
     tags: {
       id: number;
       reference: string;
       name: string;
-      visibleBy: "everyone" | "staff";
+      visibleBy: TagVisibleBy;
     }[];
   }
   app.locals.middlewares.isEnrolledInCourse = [
@@ -4785,6 +4800,40 @@ export default async function courselore(
                           }
                         : app.locals.constants.anonymousEnrollment,
                   }));
+          const taggings = app.locals.database
+            .all<{
+              id: number;
+              tagId: number;
+              tagReference: string;
+              tagName: string;
+              tagVisibleBy: TagVisibleBy;
+            }>(
+              sql`
+            SELECT "taggings"."id",
+                   "tags"."id" AS "tagId",
+                   "tags"."reference" AS "tagReference",
+                   "tags"."name" AS "tagName",
+                   "tags"."visibleBy" AS "tagVisibleBy"
+            FROM "taggings"
+            JOIN "tags" ON "taggings"."tag" = "tags"."id"
+            WHERE "taggings"."conversation" = ${conversation.id}
+            $${
+              res.locals.enrollment.role === "student"
+                ? sql`AND "tags"."visibleBy" = 'everyone'`
+                : sql``
+            }
+            ORDER BY "tags"."id" ASC
+          `
+            )
+            .map((tagging) => ({
+              id: tagging.id,
+              tag: {
+                id: tagging.tagId,
+                reference: tagging.tagReference,
+                name: tagging.tagName,
+                visibleBy: tagging.tagVisibleBy,
+              },
+            }));
 
           return {
             id: conversation.id,
@@ -4817,6 +4866,7 @@ export default async function courselore(
             messagesCount,
             endorsements,
             likesCount: originalMessage.likesCount,
+            taggings,
           };
         });
 
@@ -4824,7 +4874,7 @@ export default async function courselore(
         id: number;
         reference: string;
         name: string;
-        visibleBy: "everyone" | "staff";
+        visibleBy: TagVisibleBy;
       }>(
         sql`
           SELECT "id", "reference", "name", "visibleBy"
@@ -7766,7 +7816,7 @@ export default async function courselore(
         reference?: string;
         delete?: "true";
         name?: string;
-        visibleBy?: "everyone" | "staff";
+        visibleBy?: TagVisibleBy;
       }[];
     },
     {},
@@ -7784,7 +7834,7 @@ export default async function courselore(
               (typeof tag.name !== "string" ||
                 tag.name.trim() === "" ||
                 typeof tag.visibleBy !== "string" ||
-                !["everyone", "staff"].includes(tag.visibleBy))) ||
+                !app.locals.constants.tagVisibleBy.includes(tag.visibleBy))) ||
             (tag.reference !== undefined &&
               (!res.locals.tags.some(
                 (existingTag) => tag.reference === existingTag.reference
@@ -7793,7 +7843,9 @@ export default async function courselore(
                   (typeof tag.name !== "string" ||
                     tag.name.trim() === "" ||
                     typeof tag.visibleBy !== "string" ||
-                    !["everyone", "staff"].includes(tag.visibleBy)))))
+                    !app.locals.constants.tagVisibleBy.includes(
+                      tag.visibleBy
+                    )))))
         )
       )
         return next("validation");
@@ -8682,6 +8734,18 @@ export default async function courselore(
                                   Like${conversation.likesCount === 1
                                     ? ""
                                     : "s"}
+                                </div>
+                              `}
+                          $${conversation.taggings.length === 0
+                            ? html``
+                            : html`
+                                <div>
+                                  $${conversation.taggings.map(
+                                    (tagging) => html`
+                                      <i class="bi bi-tag"></i>
+                                      ${tagging.tag.name}
+                                    `
+                                  )}
                                 </div>
                               `}
                         </div>
