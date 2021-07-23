@@ -10253,7 +10253,14 @@ ${value}</textarea
         app.locals.database.run(
           sql`
             INSERT INTO "taggings" ("conversation", "tag")
-            VALUES (${conversation.id}, ${tagReference})
+            VALUES (
+              ${conversation.id},
+              ${
+                res.locals.tags.find(
+                  (existingTag) => existingTag.reference === tagReference
+                )!.id
+              }
+            )
           `
         );
 
