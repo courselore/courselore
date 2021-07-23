@@ -8600,23 +8600,37 @@ export default async function courselore(
                             `}
                       </button>
                       <div hidden>
-                        <div>
-                          $${res.locals.tags.map((tag) => {
-                            const isTagFilter =
-                              tag.id === res.locals.tagFilter?.id;
-                            return html`
-                              <a
-                                href="?${qs.stringify({
-                                  ...req.query,
-                                  tag: isTagFilter ? undefined : tag.reference,
-                                })}"
-                                class="dropdown--item ${isTagFilter
-                                  ? "active"
-                                  : ""}"
-                                ><i class="bi bi-tag"></i> ${tag.name}</a
-                              >
-                            `;
-                          })}
+                        <div
+                          style="${css`
+                            max-height: var(--space--40);
+                            overflow: auto;
+                            margin: var(--space--0) var(--space---2);
+                          `}"
+                        >
+                          <div
+                            style="${css`
+                              margin: var(--space--0) var(--space--2);
+                            `}"
+                          >
+                            $${res.locals.tags.map((tag) => {
+                              const isTagFilter =
+                                tag.id === res.locals.tagFilter?.id;
+                              return html`
+                                <a
+                                  href="?${qs.stringify({
+                                    ...req.query,
+                                    tag: isTagFilter
+                                      ? undefined
+                                      : tag.reference,
+                                  })}"
+                                  class="dropdown--item ${isTagFilter
+                                    ? "active"
+                                    : ""}"
+                                  ><i class="bi bi-tag"></i> ${tag.name}</a
+                                >
+                              `;
+                            })}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -11303,29 +11317,41 @@ ${value}</textarea
                         Tags
                       </button>
                       <div hidden>
-                        <div>
-                          $${remainingTags.map(
-                            (tag) =>
-                              html`
-                                <form
-                                  method="POST"
-                                  action="${app.locals.settings
-                                    .url}/courses/${res.locals.course
-                                    .reference}/conversations/${res.locals
-                                    .conversation.reference}/taggings"
-                                >
-                                  <input
-                                    type="hidden"
-                                    name="reference"
-                                    value="${tag.reference}"
-                                  />
-                                  <button class="dropdown--item">
-                                    <i class="bi bi-tag"></i>
-                                    ${tag.name}
-                                  </button>
-                                </form>
-                              `
-                          )}
+                        <div
+                          style="${css`
+                            max-height: var(--space--40);
+                            overflow: auto;
+                            margin: var(--space--0) var(--space---2);
+                          `}"
+                        >
+                          <div
+                            style="${css`
+                              margin: var(--space--0) var(--space--2);
+                            `}"
+                          >
+                            $${remainingTags.map(
+                              (tag) =>
+                                html`
+                                  <form
+                                    method="POST"
+                                    action="${app.locals.settings
+                                      .url}/courses/${res.locals.course
+                                      .reference}/conversations/${res.locals
+                                      .conversation.reference}/taggings"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="reference"
+                                      value="${tag.reference}"
+                                    />
+                                    <button class="dropdown--item">
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </button>
+                                  </form>
+                                `
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
