@@ -10960,6 +10960,106 @@ ${value}</textarea
                   </div>
                 `);
 
+              const tagsContent: HTML[] = [];
+              if (app.locals.helpers.mayEditConversation(req, res)) {
+                const remainingTags = res.locals.tags.filter(
+                  (tag) =>
+                    !res.locals.conversation.taggings.some(
+                      (tagging) => tag.id === tagging.tag.id
+                    )
+                );
+                if (remainingTags.length > 0)
+                  tagsContent.push(html`
+                    <div>
+                      <button
+                        class="button--inline"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Add Tag",
+                            theme: "tooltip",
+                            touch: false,
+                          });
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            theme: "dropdown",
+                            trigger: "click",
+                            interactive: true,
+                           });
+                        `}"
+                      >
+                        <i class="bi bi-tags"></i>
+                        Tags
+                      </button>
+                      <div hidden>
+                        $${remainingTags.map(
+                          (tag) =>
+                            html`
+                              <form
+                                method="POST"
+                                action="${app.locals.settings.url}/courses/${res
+                                  .locals.course.reference}/conversations/${res
+                                  .locals.conversation.reference}/taggings"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="reference"
+                                  value="${tag.reference}"
+                                />
+                                <button type="button" class="dropdown--item">
+                                  <i class="bi bi-tag"></i>
+                                  ${tag.name}
+                                </button>
+                              </form>
+                            `
+                        )}
+                      </div>
+                    </div>
+                  `);
+                for (const tagging of res.locals.conversation.taggings)
+                  tagsContent.push(html`
+                    <form
+                      method="POST"
+                      action="${app.locals.settings.url}/courses/${res.locals
+                        .course.reference}/conversations/${res.locals
+                        .conversation.reference}/taggings?_method=DELETE"
+                    >
+                      <input
+                        type="hidden"
+                        name="reference"
+                        value="${tagging.tag.reference}"
+                      />
+                      <button
+                        type="button"
+                        class="button--inline"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Remove Tag",
+                            theme: "tooltip",
+                            touch: false,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-tag"></i>
+                        ${tagging.tag.name}
+                      </button>
+                    </form>
+                  `);
+              } else {
+                // TODO
+              }
+              if (tagsContent.length > 0)
+                // TODO: Test with too many tags (here and on the sidebar)
+                content.push(html`
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    $${tagsContent}
+                  </div>
+                `);
+
               return content.length === 0
                 ? html``
                 : html`
