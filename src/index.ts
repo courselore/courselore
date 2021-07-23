@@ -11040,7 +11040,9 @@ ${value}</textarea
                       </div>
                     </div>
                   `);
-                for (const tagging of res.locals.conversation.taggings)
+                for (const tagging of res.locals.conversation.taggings) {
+                  const isOnlyTag =
+                    res.locals.conversation.taggings.length === 1;
                   tagsContent.push(html`
                     <form
                       method="POST"
@@ -11053,21 +11055,40 @@ ${value}</textarea
                         name="reference"
                         value="${tagging.tag.reference}"
                       />
-                      <button
-                        class="button--inline"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Remove Tag",
-                            theme: "tooltip",
-                            touch: false,
-                          });
-                        `}"
+                      <span
+                        $${isOnlyTag
+                          ? html`
+                              tabindex="0"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Can’t remove tag because a conversation must have at least one tag",
+                                  theme: "tooltip tooltip--rose",
+                                  touch: false,
+                                });
+                              `}"
+                            `
+                          : html``}
                       >
-                        <i class="bi bi-tag"></i>
-                        ${tagging.tag.name}
-                      </button>
+                        <button
+                          class="button--inline ${isOnlyTag
+                            ? "button--inline--rose"
+                            : ""}"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Remove Tag",
+                              theme: "tooltip",
+                              touch: false,
+                            });
+                          `}"
+                          $${isOnlyTag ? html`disabled` : html``}
+                        >
+                          <i class="bi bi-tag"></i>
+                          ${tagging.tag.name}
+                        </button>
+                      </span>
                     </form>
                   `);
+                }
               } else {
                 // TODO
               }
