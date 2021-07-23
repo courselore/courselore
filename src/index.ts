@@ -8620,7 +8620,7 @@ export default async function courselore(
                                   href="?${qs.stringify({
                                     ...req.query,
                                     tag: isTagFilter
-                                      ? undefined
+                                      ? null
                                       : tag.reference,
                                   })}"
                                   class="dropdown--item ${isTagFilter
