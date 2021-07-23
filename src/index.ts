@@ -3656,15 +3656,14 @@ export default async function courselore(
             `,
           })
         );
-      const userId =
+      const user =
         app.locals.database.get<{ id: number }>(
           sql`SELECT "id" FROM "users" WHERE "email" = ${email}`
-        )?.id ??
+        ) ??
         app.locals.database.get<{ id: number }>(
-          // FIXME: Add quotes around ‘id’. https://github.com/JoshuaWise/better-sqlite3/issues/657
-          sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${name}) RETURNING id`
-        )!.id;
-      app.locals.helpers.session.open(req, res, userId);
+          sql`INSERT INTO "users" ("email", "name") VALUES (${email}, ${name}) RETURNING *`
+        )!;
+      app.locals.helpers.session.open(req, res, user.id);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
     }
   );
@@ -4536,26 +4535,32 @@ export default async function courselore(
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      const courseReference = cryptoRandomString({
-        length: 10,
-        type: "numeric",
-      });
-      const newCourseId = app.locals.database.run(
-        sql`INSERT INTO "courses" ("reference", "name") VALUES (${courseReference}, ${req.body.name})`
-      ).lastInsertRowid;
+      const course = app.locals.database.get<{
+        id: number;
+        reference: string;
+      }>(
+        sql`
+          INSERT INTO "courses" ("reference", "name")
+          VALUES (
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${req.body.name}
+          )
+          RETURNING *
+        `
+      )!;
       app.locals.database.run(
         sql`
           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
             ${res.locals.user.id},
-            ${newCourseId},
+            ${course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${"staff"},
             ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
-      res.redirect(`${app.locals.settings.url}/courses/${courseReference}`);
+      res.redirect(`${app.locals.settings.url}/courses/${course.reference}`);
     }
   );
 
@@ -6757,32 +6762,30 @@ export default async function courselore(
               continue;
             }
 
-            const invitation = {
-              expiresAt: req.body.expiresAt ?? null,
-              usedAt: null,
-              reference: cryptoRandomString({ length: 10, type: "numeric" }),
-              email,
-              name,
-              role: req.body.role,
-            };
-            const invitationId = Number(
-              app.locals.database.run(
-                sql`
+            const invitation = app.locals.database.get<{
+              id: number;
+              expiresAt: string | null;
+              usedAt: string | null;
+              reference: string;
+              email: string | null;
+              name: string | null;
+              role: Role;
+            }>(
+              sql`
                 INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
                 VALUES (
-                  ${invitation.expiresAt},
+                  ${req.body.expiresAt ?? null},
                   ${res.locals.course.id},
-                  ${invitation.reference},
-                  ${invitation.email},
-                  ${invitation.name},
-                  ${invitation.role}
+                  ${cryptoRandomString({ length: 10, type: "numeric" })},
+                  ${email},
+                  ${name},
+                  ${req.body.role}
                 )
+                RETURNING *
               `
-              ).lastInsertRowid
-            );
+            )!;
 
             app.locals.helpers.sendInvitationEmail({
-              id: invitationId,
               ...invitation,
               course: res.locals.course,
             });
@@ -10070,7 +10073,7 @@ ${value}</textarea
                               type="radio"
                               data-ondomcontentloaded="${javascript`
                                 (this.validators ??= []).push(() => {
-                                  if (this.closest(".tags").querySelector('[name="tags[]"]:not([disabled])') === null)
+                                  if (this.closest(".tags").querySelector('[name="tagsReferences[]"]:not([disabled])') === null)
                                     return "Select at least one tag";
                                 });
                                 this.closest(".tags").querySelector(".tags--button").addEventListener("click", () => { this.click(); });
@@ -10083,7 +10086,7 @@ ${value}</textarea
                                 <div class="tag--${tag.reference}" hidden>
                                   <input
                                     type="hidden"
-                                    name="tags[]"
+                                    name="tagsReferences[]"
                                     value="${tag.reference}"
                                     disabled
                                   />
@@ -10182,6 +10185,7 @@ ${value}</textarea
       content?: string;
       isPinned?: boolean;
       isQuestion?: boolean;
+      tagsReferences?: string[];
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -10189,12 +10193,25 @@ ${value}</textarea
     "/courses/:courseReference/conversations",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
+      req.body.tagsReferences ??= [];
       if (
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
-        (req.body.isPinned && res.locals.enrollment.role !== "staff")
+        (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
+        !Array.isArray(req.body.tagsReferences) ||
+        (res.locals.tags.length > 0 &&
+          (req.body.tagsReferences.length === 0 ||
+            new Set(req.body.tagsReferences).size <
+              req.body.tagsReferences.length ||
+            req.body.tagsReferences.some(
+              (tagReference) =>
+                typeof tagReference !== "string" ||
+                !res.locals.tags.some(
+                  (existingTag) => tagReference === existingTag.reference
+                )
+            )))
       )
         return next("validation");
 
@@ -10207,7 +10224,7 @@ ${value}</textarea
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      const conversationId = app.locals.database.run(
+      const conversation = app.locals.database.get<{ id: number }>(
         sql`
           INSERT INTO "conversations" ("course", "reference", "title", "nextMessageReference", "pinnedAt", "questionAt")
           VALUES (
@@ -10218,19 +10235,27 @@ ${value}</textarea
             ${req.body.isPinned ? new Date().toISOString() : null},
             ${req.body.isQuestion ? new Date().toISOString() : null}
           )
+          RETURNING *
         `
-      ).lastInsertRowid;
+      )!;
       app.locals.database.run(
         sql`
           INSERT INTO "messages" ("conversation", "reference", "authorEnrollment", "content")
           VALUES (
-            ${conversationId},
+            ${conversation.id},
             ${"1"},
             ${res.locals.enrollment.id},
             ${req.body.content}
           )
         `
       );
+      for (const tagReference of req.body.tagsReferences)
+        app.locals.database.run(
+          sql`
+            INSERT INTO "taggings" ("conversation", "tag")
+            VALUES (${conversation.id}, ${tagReference})
+          `
+        );
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
