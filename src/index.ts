@@ -8434,16 +8434,16 @@ export default async function courselore(
               gap: var(--space--2);
             `}"
             data-ondomcontentloaded="${javascript`
-                    if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
-                    this.click();
-                    this.parentElement.remove();
-                  `}"
+              if (new URLSearchParams(window.location.search).get("redirected") !== "true") return;
+              this.click();
+              this.parentElement.remove();
+            `}"
             onclick="${javascript`
-                    document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
-                    document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
-                    this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
-                    this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
-                  `}"
+              document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
+              document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
+              this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
+              this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
+            `}"
           >
             <i class="bi bi-chat-left-text"></i>
             Conversations
