@@ -8550,6 +8550,11 @@ export default async function courselore(
                         style="${css`
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
+                          ${res.locals.tagFilter === undefined
+                            ? css``
+                            : css`
+                                font-weight: var(--font-weight--semibold);
+                              `}
                           &:hover,
                           &:focus-within {
                             color: var(--color--primary--50);
@@ -8583,26 +8588,40 @@ export default async function courselore(
                           });
                         `}"
                       >
-                        <i class="bi bi-funnel"></i>
-                        Filter by Tag
+                        $${res.locals.tagFilter === undefined
+                          ? html`
+                              <i class="bi bi-funnel"></i>
+                              Filter by Tag
+                            `
+                          : html`
+                              <i class="bi bi-funnel-fill"></i>
+                              Filtering by <i class="bi bi-tag"></i>
+                              ${res.locals.tagFilter.name}
+                            `}
                       </button>
                       <div hidden>
                         <div>
-                          $${res.locals.tags.map(
-                            (tag) => html`
+                          $${res.locals.tags.map((tag) => {
+                            const isTagFilter =
+                              tag.id === res.locals.tagFilter?.id;
+                            return html`
                               <form>
                                 <input
                                   type="hidden"
                                   name="tag"
-                                  value="${tag.reference}"
+                                  value="${isTagFilter ? "" : tag.reference}"
                                 />
-                                <button class="dropdown--item">
+                                <button
+                                  class="dropdown--item ${isTagFilter
+                                    ? "active"
+                                    : ""}"
+                                >
                                   <i class="bi bi-tag"></i>
                                   ${tag.name}
                                 </button>
                               </form>
-                            `
-                          )}
+                            `;
+                          })}
                         </div>
                       </div>
                     </div>
