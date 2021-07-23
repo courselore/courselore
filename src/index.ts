@@ -11005,7 +11005,7 @@ ${value}</textarea
                                   name="reference"
                                   value="${tag.reference}"
                                 />
-                                <button type="button" class="dropdown--item">
+                                <button class="dropdown--item">
                                   <i class="bi bi-tag"></i>
                                   ${tag.name}
                                 </button>
@@ -11029,7 +11029,6 @@ ${value}</textarea
                         value="${tagging.tag.reference}"
                       />
                       <button
-                        type="button"
                         class="button--inline"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
@@ -12298,6 +12297,10 @@ ${value}</textarea
       );
     }
   );
+
+  // app.post<{
+  //   courseReference: string;
+  //   conversationReference: string;}, any, {reference?: string;}, {}, >("/courses/:courseReference/conversations/:conversationReference/taggings");
 
   interface Helpers {
     sendEmail: ({
