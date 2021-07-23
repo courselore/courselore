@@ -10437,12 +10437,197 @@ ${value}</textarea
   app.locals.middlewares.isConversationAccessible = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      const conversation = res.locals.conversations.find(
-        (conversation) =>
-          conversation.reference === req.params.conversationReference
+      const conversation = app.locals.database.get<{
+        id: number;
+        reference: string;
+        title: string;
+        nextMessageReference: number;
+        pinnedAt: string | null;
+        questionAt: string | null;
+      }>(
+        sql`
+          SELECT "conversations"."id",
+                 "conversations"."reference",
+                 "conversations"."title",
+                 "conversations"."nextMessageReference",
+                 "conversations"."pinnedAt",
+                 "conversations"."questionAt"
+          FROM "conversations"
+          WHERE "conversations"."reference" = ${req.params.conversationReference}
+        `
       );
       if (conversation === undefined) return next("route");
-      res.locals.conversation = conversation;
+      const originalMessage = app.locals.database.get<{
+        createdAt: string;
+        authorEnrollmentId: number | null;
+        authorUserId: number | null;
+        authorUserEmail: string | null;
+        authorUserName: string | null;
+        authorUserAvatar: string | null;
+        authorUserBiography: string | null;
+        authorEnrollmentReference: string | null;
+        authorEnrollmentRole: Role | null;
+        likesCount: number;
+      }>(
+        sql`
+          SELECT "messages"."createdAt",
+                 "authorEnrollment"."id" AS "authorEnrollmentId",
+                 "authorUser"."id" AS "authorUserId",
+                 "authorUser"."email" AS "authorUserEmail",
+                 "authorUser"."name" AS "authorUserName",
+                 "authorUser"."avatar" AS "authorUserAvatar",
+                 "authorUser"."biography" AS "authorUserBiography",
+                 "authorEnrollment"."reference" AS "authorEnrollmentReference",
+                 "authorEnrollment"."role" AS "authorEnrollmentRole",
+                 COUNT("likes"."id") AS "likesCount"
+          FROM "messages"
+          LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+          LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+          LEFT JOIN "likes" ON "messages"."id" = "likes"."message"
+          WHERE "messages"."conversation" = ${conversation.id} AND
+                "messages"."reference" = ${"1"}
+          GROUP BY "messages"."id"
+        `
+      )!;
+      const mostRecentlyUpdatedMessage = app.locals.database.get<{
+        updatedAt: string;
+      }>(
+        sql`
+          SELECT "messages"."updatedAt"
+          FROM "messages"
+          WHERE "messages"."conversation" = ${conversation.id}
+          ORDER BY "messages"."updatedAt" DESC
+          LIMIT 1
+        `
+      )!;
+      const messagesCount = app.locals.database.get<{
+        messagesCount: number;
+      }>(
+        sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
+      )!.messagesCount;
+      const endorsements =
+        conversation.questionAt === null
+          ? []
+          : app.locals.database
+              .all<{
+                id: number;
+                enrollmentId: number | null;
+                userId: number | null;
+                userEmail: string | null;
+                userName: string | null;
+                userAvatar: string | null;
+                userBiography: string | null;
+                enrollmentReference: string | null;
+                enrollmentRole: Role | null;
+              }>(
+                sql`
+                    SELECT "endorsements"."id",
+                           "enrollments"."id" AS "enrollmentId",
+                           "users"."id" AS "userId",
+                           "users"."email" AS "userEmail",
+                           "users"."name" AS "userName",
+                           "users"."avatar" AS "userAvatar",
+                           "users"."biography" AS "userBiography",      
+                           "enrollments"."reference" AS "enrollmentReference",
+                           "enrollments"."role" AS "enrollmentRole"
+                    FROM "endorsements"
+                    JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+                    JOIN "users" ON "enrollments"."user" = "users"."id"
+                    JOIN "messages" ON "endorsements"."message" = "messages"."id"
+                    WHERE "messages"."conversation" = ${conversation.id}
+                    ORDER BY "endorsements"."id" ASC
+                  `
+              )
+              .map((endorsement) => ({
+                id: endorsement.id,
+                enrollment:
+                  endorsement.enrollmentId !== null &&
+                  endorsement.userId !== null &&
+                  endorsement.userEmail !== null &&
+                  endorsement.enrollmentReference !== null &&
+                  endorsement.enrollmentRole !== null
+                    ? {
+                        id: endorsement.enrollmentId,
+                        user: {
+                          id: endorsement.userId,
+                          email: endorsement.userEmail,
+                          name: endorsement.userName,
+                          avatar: endorsement.userAvatar,
+                          biography: endorsement.userBiography,
+                        },
+                        reference: endorsement.enrollmentReference,
+                        role: endorsement.enrollmentRole,
+                      }
+                    : app.locals.constants.anonymousEnrollment,
+              }));
+      const taggings = app.locals.database
+        .all<{
+          id: number;
+          tagId: number;
+          tagReference: string;
+          tagName: string;
+          tagVisibleBy: TagVisibleBy;
+        }>(
+          sql`
+          SELECT "taggings"."id",
+                 "tags"."id" AS "tagId",
+                 "tags"."reference" AS "tagReference",
+                 "tags"."name" AS "tagName",
+                 "tags"."visibleBy" AS "tagVisibleBy"
+          FROM "taggings"
+          JOIN "tags" ON "taggings"."tag" = "tags"."id"
+          WHERE "taggings"."conversation" = ${conversation.id}
+          $${
+            res.locals.enrollment.role === "student"
+              ? sql`AND "tags"."visibleBy" = 'everyone'`
+              : sql``
+          }
+          ORDER BY "tags"."id" ASC
+        `
+        )
+        .map((tagging) => ({
+          id: tagging.id,
+          tag: {
+            id: tagging.tagId,
+            reference: tagging.tagReference,
+            name: tagging.tagName,
+            visibleBy: tagging.tagVisibleBy,
+          },
+        }));
+      res.locals.conversation = {
+        id: conversation.id,
+        reference: conversation.reference,
+        title: conversation.title,
+        nextMessageReference: conversation.nextMessageReference,
+        pinnedAt: conversation.pinnedAt,
+        questionAt: conversation.questionAt,
+        createdAt: originalMessage.createdAt,
+        updatedAt: mostRecentlyUpdatedMessage.updatedAt,
+        authorEnrollment:
+          originalMessage.authorEnrollmentId !== null &&
+          originalMessage.authorUserId !== null &&
+          originalMessage.authorUserEmail !== null &&
+          originalMessage.authorEnrollmentReference !== null &&
+          originalMessage.authorEnrollmentRole !== null
+            ? {
+                id: originalMessage.authorEnrollmentId,
+                user: {
+                  id: originalMessage.authorUserId,
+                  email: originalMessage.authorUserEmail,
+                  name: originalMessage.authorUserName,
+                  avatar: originalMessage.authorUserAvatar,
+                  biography: originalMessage.authorUserBiography,
+                },
+                reference: originalMessage.authorEnrollmentReference,
+                role: originalMessage.authorEnrollmentRole,
+              }
+            : app.locals.constants.anonymousEnrollment,
+        messagesCount,
+        endorsements,
+        likesCount: originalMessage.likesCount,
+        taggings,
+      };
+
       res.locals.messages = app.locals.database
         .all<{
           id: number;
