@@ -11089,9 +11089,15 @@ ${value}</textarea
                     </form>
                   `);
                 }
-              } else {
-                // TODO
-              }
+              } else
+                for (const tagging of res.locals.conversation.taggings)
+                  tagsContent.push(html`
+                    <div>
+                      <i class="bi bi-tag"></i>
+                      ${tagging.tag.name}
+                    </div>
+                  `);
+
               if (tagsContent.length > 0)
                 // TODO: Test with too many tags (here and on the sidebar)
                 content.push(html`
