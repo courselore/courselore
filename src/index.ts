@@ -10022,17 +10022,20 @@ ${value}</textarea
                                       type="button"
                                       class="tag--${tag.reference}--enable dropdown--item"
                                       onclick="${javascript`
-                                        this.hidden = true;
-                                        const tags = this.closest(".tags");
-                                        if (![...this.parentElement.children].some((element) => !element.hidden)) {
-                                          const tagsButton = tags.querySelector(".tags--button");
-                                          tagsButton.addTag.disable();
-                                          tagsButton.noMoreTagsToAdd.enable();
-                                          tagsButton.dropdown.disable();
-                                        }
-                                        const tag = tags.querySelector(".tag--${tag.reference}");
-                                        tag.hidden = false;
-                                        tag.querySelector("input").disabled = false;
+                                        (async () => {
+                                          const tags = this.closest(".tags");
+                                          const tag = tags.querySelector(".tag--${tag.reference}");
+                                          tag.hidden = false;
+                                          tag.querySelector("input").disabled = false;
+                                          if ([...this.parentElement.children].filter((element) => !element.hidden).length === 1) {
+                                            const tagsButton = tags.querySelector(".tags--button");
+                                            tagsButton.addTag.disable();
+                                            tagsButton.noMoreTagsToAdd.enable();
+                                            tagsButton.dropdown.disable();
+                                            await new Promise((resolve) => window.setTimeout(resolve, tippy.defaultProps.duration));
+                                          }
+                                          this.hidden = true;
+                                        })();
                                       `}"
                                     >
                                       <i class="bi bi-tag"></i>
