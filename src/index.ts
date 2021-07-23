@@ -8605,21 +8605,16 @@ export default async function courselore(
                             const isTagFilter =
                               tag.id === res.locals.tagFilter?.id;
                             return html`
-                              <form>
-                                <input
-                                  type="hidden"
-                                  name="tag"
-                                  value="${isTagFilter ? "" : tag.reference}"
-                                />
-                                <button
-                                  class="dropdown--item ${isTagFilter
-                                    ? "active"
-                                    : ""}"
-                                >
-                                  <i class="bi bi-tag"></i>
-                                  ${tag.name}
-                                </button>
-                              </form>
+                              <a
+                                href="?${qs.stringify({
+                                  ...req.query,
+                                  tag: isTagFilter ? undefined : tag.reference,
+                                })}"
+                                class="dropdown--item ${isTagFilter
+                                  ? "active"
+                                  : ""}"
+                                ><i class="bi bi-tag"></i> ${tag.name}</a
+                              >
                             `;
                           })}
                         </div>
