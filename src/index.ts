@@ -12319,9 +12319,86 @@ ${value}</textarea
     }
   );
 
-  // app.post<{
-  //   courseReference: string;
-  //   conversationReference: string;}, any, {reference?: string;}, {}, >("/courses/:courseReference/conversations/:conversationReference/taggings");
+  app.post<
+    {
+      courseReference: string;
+      conversationReference: string;
+    },
+    any,
+    { reference?: string },
+    {},
+    MayEditConversationMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/taggings",
+    ...app.locals.middlewares.mayEditConversation,
+    (req, res, next) => {
+      if (
+        typeof req.body.reference !== "string" ||
+        !res.locals.tags.some((tag) => req.body.reference === tag.reference) ||
+        res.locals.conversation.taggings.some(
+          (tagging) => req.body.reference === tagging.tag.reference
+        )
+      )
+        return next("validation");
+
+      app.locals.database.run(
+        sql`
+            INSERT INTO "taggings" ("conversation", "tag")
+            VALUES (
+              ${res.locals.conversation.id},
+              ${
+                res.locals.tags.find(
+                  (tag) => req.body.reference === tag.reference
+                )!.id
+              }
+            )
+          `
+      );
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+      );
+    }
+  );
+
+  app.delete<
+    {
+      courseReference: string;
+      conversationReference: string;
+    },
+    any,
+    { reference?: string },
+    {},
+    MayEditConversationMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/taggings",
+    ...app.locals.middlewares.mayEditConversation,
+    (req, res, next) => {
+      if (
+        typeof req.body.reference !== "string" ||
+        !res.locals.conversation.taggings.some(
+          (tagging) => req.body.reference === tagging.tag.reference
+        )
+      )
+        return next("validation");
+
+      app.locals.database.run(
+        sql`
+          DELETE FROM "taggings"
+          WHERE "conversation" = ${res.locals.conversation.id} AND
+                "tag" = ${
+                  res.locals.tags.find(
+                    (tag) => req.body.reference === tag.reference
+                  )!.id
+                }
+        `
+      );
+
+      res.redirect(
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+      );
+    }
+  );
 
   interface Helpers {
     sendEmail: ({
