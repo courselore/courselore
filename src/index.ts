@@ -4727,7 +4727,7 @@ export default async function courselore(
               res.locals.tagFilter === undefined
                 ? sql``
                 : sql`
-                    AND "taggings"."id" = ${res.locals.tagFilter.id}
+                    AND "taggings"."tag" = ${res.locals.tagFilter.id}
                   `
             }
             ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
