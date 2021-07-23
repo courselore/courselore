@@ -11013,27 +11013,30 @@ ${value}</textarea
                         Tags
                       </button>
                       <div hidden>
-                        $${remainingTags.map(
-                          (tag) =>
-                            html`
-                              <form
-                                method="POST"
-                                action="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/conversations/${res
-                                  .locals.conversation.reference}/taggings"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="reference"
-                                  value="${tag.reference}"
-                                />
-                                <button class="dropdown--item">
-                                  <i class="bi bi-tag"></i>
-                                  ${tag.name}
-                                </button>
-                              </form>
-                            `
-                        )}
+                        <div>
+                          $${remainingTags.map(
+                            (tag) =>
+                              html`
+                                <form
+                                  method="POST"
+                                  action="${app.locals.settings
+                                    .url}/courses/${res.locals.course
+                                    .reference}/conversations/${res.locals
+                                    .conversation.reference}/taggings"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="reference"
+                                    value="${tag.reference}"
+                                  />
+                                  <button class="dropdown--item">
+                                    <i class="bi bi-tag"></i>
+                                    ${tag.name}
+                                  </button>
+                                </form>
+                              `
+                          )}
+                        </div>
                       </div>
                     </div>
                   `);
