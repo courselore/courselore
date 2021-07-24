@@ -10067,7 +10067,9 @@ ${value}</textarea
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
-        app.locals.layouts.conversation({
+        (res.locals.course.nextConversationReference === 1
+          ? app.locals.layouts.main
+          : app.locals.layouts.conversation)({
           req,
           res,
           head: html`
