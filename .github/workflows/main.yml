@@ -3,7 +3,8 @@ jobs:
   insiders-build:
     strategy:
       matrix:
-        os: [windows, macos, ubuntu]
+        # os: [windows, macos, ubuntu]
+        os: [ubuntu]
         include:
           - os: windows
             build: npx caxa --input . --output "courselore--windows--${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/lib/index.js"
