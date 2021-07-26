@@ -8431,6 +8431,7 @@ export default async function courselore(
         {},
         {
           onlyConversationLayoutSidebarOnSmallScreens?: "true";
+          conversationLayoutSidebarOpenOnSmallScreens?: "true";
           search?: string;
           tag?: string;
         },
@@ -8524,7 +8525,8 @@ export default async function courselore(
         >
           <div
             class="conversation--layout--sidebar ${req.query
-              .onlyConversationLayoutSidebarOnSmallScreens === "true"
+              .onlyConversationLayoutSidebarOnSmallScreens === "true" ||
+            req.query.conversationLayoutSidebarOpenOnSmallScreens === "true"
               ? ""
               : "single-column--hidden"}"
             style="${css`
@@ -8723,7 +8725,11 @@ export default async function courselore(
                                   <a
                                     href="?${qs.stringify({
                                       onlyConversationLayoutSidebarOnSmallScreens:
+                                        req.query
+                                          .onlyConversationLayoutSidebarOnSmallScreens,
+                                      conversationLayoutSidebarOpenOnSmallScreens:
                                         "true",
+                                      search: req.query.search,
                                       tag: isTagFilter
                                         ? undefined
                                         : tag.reference,
@@ -8783,7 +8789,12 @@ export default async function courselore(
                           <a
                             href="${app.locals.settings.url}/courses/${res
                               .locals.course
-                              .reference}/conversations/${conversation.reference}"
+                              .reference}/conversations/${conversation.reference}?${qs.stringify(
+                              {
+                                search: req.query.search,
+                                tag: req.query.tag,
+                              }
+                            )}"
                             class="${conversation.id ===
                             res.locals.conversation?.id
                               ? "active"
@@ -9019,7 +9030,8 @@ export default async function courselore(
           </div>
           <div
             class="conversation--layout--main ${req.query
-              .onlyConversationLayoutSidebarOnSmallScreens === "true"
+              .onlyConversationLayoutSidebarOnSmallScreens === "true" ||
+            req.query.conversationLayoutSidebarOpenOnSmallScreens === "true"
               ? "single-column--hidden"
               : ""}"
             style="${css`
@@ -11127,6 +11139,7 @@ ${value}</textarea
     {},
     {
       onlyConversationLayoutSidebarOnSmallScreens?: "true";
+      conversationLayoutSidebarOpenOnSmallScreens?: "true";
       search?: string;
       tag?: string;
     },
