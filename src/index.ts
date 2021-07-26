@@ -8719,7 +8719,9 @@ export default async function courselore(
                                   <a
                                     href="?${qs.stringify({
                                       conversationsListOnMobile: "true",
-                                      tag: isTagFilter ? undefined : tag.reference,
+                                      tag: isTagFilter
+                                        ? undefined
+                                        : tag.reference,
                                     })}"
                                     class="dropdown--item ${isTagFilter
                                       ? "active"
@@ -8736,183 +8738,218 @@ export default async function courselore(
                   : html``}
               </div>
 
-              <div
-                class="${req.query.conversationsListOnMobile === "true"
-                  ? "active--cancel"
-                  : ""}"
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                $${res.locals.conversations.map(
-                  (conversation) => html`
-                    <a
-                      href="${app.locals.settings.url}/courses/${res.locals
-                        .course
-                        .reference}/conversations/${conversation.reference}"
-                      class="${conversation.id === res.locals.conversation?.id
-                        ? "active"
-                        : ""}"
+              $${res.locals.conversations.length === 0
+                ? html`
+                    <div
                       style="${css`
-                        width: calc(100% + 2 * var(--space--2));
-                        padding: var(--space--2) var(--space--2);
-                        border-radius: var(--border-radius--lg);
-                        margin-left: var(--space---2);
-                        display: block;
-                        transition-property: var(--transition-property--colors);
-                        transition-duration: var(--transition-duration--150);
-                        transition-timing-function: var(
-                          --transition-timing-function--in-out
-                        );
-
-                        &:hover,
-                        &:focus-within,
-                        &.active:focus {
-                          background-color: var(--color--primary--600);
-                        }
-                        &:active {
-                          background-color: var(--color--primary--700);
-                        }
-                        @media (max-width: 899px) {
-                          :not(.active--cancel) > &.active {
-                            background-color: var(--color--primary--700);
-                          }
-                        }
-                        @media (min-width: 900px) {
-                          &.active {
-                            background-color: var(--color--primary--700);
-                          }
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          &:hover,
-                          &:focus-within,
-                          &.active:focus {
-                            background-color: var(--color--primary--600);
-                          }
-                          &:active {
-                            background-color: var(--color--primary--700);
-                          }
-                          @media (max-width: 899px) {
-                            :not(.active--cancel) > &.active {
-                              background-color: var(--color--primary--700);
-                            }
-                          }
-                          @media (min-width: 900px) {
-                            &.active {
-                              background-color: var(--color--primary--700);
-                            }
-                          }
-                        }
+                        color: var(--color--primary--500);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                        align-items: center;
                       `}"
                     >
-                      <h3
-                        style="${css`
-                          font-weight: var(--font-weight--semibold);
-                          color: var(--color--primary--100);
-                          @media (prefers-color-scheme: dark) {
-                            color: var(--color--primary--100);
-                          }
-                        `}"
-                      >
-                        ${conversation.title}
-                      </h3>
                       <div
+                        class="decorative-icon"
                         style="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--0-5);
+                          color: var(--color--primary--600);
+                          background-color: var(--color--primary--800);
                         `}"
                       >
-                        <div>
-                          <div>
-                            #${conversation.reference} created
-                            <time
-                              data-ondomcontentloaded="${javascript`
-                                  relativizeTime(this);
-                                `}"
+                        <i class="bi bi-chat-left-text"></i>
+                      </div>
+                      No conversation found.
+                    </div>
+                  `
+                : html`
+                    <div
+                      class="${req.query.conversationsListOnMobile === "true"
+                        ? "active--cancel"
+                        : ""}"
+                      style="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      $${res.locals.conversations.map(
+                        (conversation) => html`
+                          <a
+                            href="${app.locals.settings.url}/courses/${res
+                              .locals.course
+                              .reference}/conversations/${conversation.reference}"
+                            class="${conversation.id ===
+                            res.locals.conversation?.id
+                              ? "active"
+                              : ""}"
+                            style="${css`
+                              width: calc(100% + 2 * var(--space--2));
+                              padding: var(--space--2) var(--space--2);
+                              border-radius: var(--border-radius--lg);
+                              margin-left: var(--space---2);
+                              display: block;
+                              transition-property: var(
+                                --transition-property--colors
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--in-out
+                              );
+
+                              &:hover,
+                              &:focus-within,
+                              &.active:focus {
+                                background-color: var(--color--primary--600);
+                              }
+                              &:active {
+                                background-color: var(--color--primary--700);
+                              }
+                              @media (max-width: 899px) {
+                                :not(.active--cancel) > &.active {
+                                  background-color: var(--color--primary--700);
+                                }
+                              }
+                              @media (min-width: 900px) {
+                                &.active {
+                                  background-color: var(--color--primary--700);
+                                }
+                              }
+                              @media (prefers-color-scheme: dark) {
+                                &:hover,
+                                &:focus-within,
+                                &.active:focus {
+                                  background-color: var(--color--primary--600);
+                                }
+                                &:active {
+                                  background-color: var(--color--primary--700);
+                                }
+                                @media (max-width: 899px) {
+                                  :not(.active--cancel) > &.active {
+                                    background-color: var(
+                                      --color--primary--700
+                                    );
+                                  }
+                                }
+                                @media (min-width: 900px) {
+                                  &.active {
+                                    background-color: var(
+                                      --color--primary--700
+                                    );
+                                  }
+                                }
+                              }
+                            `}"
+                          >
+                            <h3
+                              style="${css`
+                                font-weight: var(--font-weight--semibold);
+                                color: var(--color--primary--100);
+                                @media (prefers-color-scheme: dark) {
+                                  color: var(--color--primary--100);
+                                }
+                              `}"
                             >
-                              ${conversation.createdAt}
-                            </time>
-                            by
-                            $${conversation.authorEnrollment.user.avatar ===
-                            null
-                              ? html`<i class="bi bi-person-circle"></i>`
-                              : html`
-                                  <img
-                                    src="${conversation.authorEnrollment.user
-                                      .avatar}"
-                                    alt="${conversation.authorEnrollment.user
-                                      .name ??
-                                    conversation.authorEnrollment.reference}"
-                                    class="avatar"
-                                    style="${css`
-                                      width: var(--font-size--xs);
-                                      height: var(--font-size--xs);
-                                      vertical-align: -0.125em;
-                                    `}"
-                                  />
-                                `}
-                            ${conversation.authorEnrollment.user.name ??
-                            conversation.authorEnrollment.reference}
-                          </div>
-                          $${conversation.updatedAt !== conversation.createdAt
-                            ? html`
+                              ${conversation.title}
+                            </h3>
+                            <div
+                              style="${css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--0-5);
+                              `}"
+                            >
+                              <div>
                                 <div>
-                                  and last updated
+                                  #${conversation.reference} created
                                   <time
                                     data-ondomcontentloaded="${javascript`
+                                  relativizeTime(this);
+                                `}"
+                                  >
+                                    ${conversation.createdAt}
+                                  </time>
+                                  by
+                                  $${conversation.authorEnrollment.user
+                                    .avatar === null
+                                    ? html`<i class="bi bi-person-circle"></i>`
+                                    : html`
+                                        <img
+                                          src="${conversation.authorEnrollment
+                                            .user.avatar}"
+                                          alt="${conversation.authorEnrollment
+                                            .user.name ??
+                                          conversation.authorEnrollment
+                                            .reference}"
+                                          class="avatar"
+                                          style="${css`
+                                            width: var(--font-size--xs);
+                                            height: var(--font-size--xs);
+                                            vertical-align: -0.125em;
+                                          `}"
+                                        />
+                                      `}
+                                  ${conversation.authorEnrollment.user.name ??
+                                  conversation.authorEnrollment.reference}
+                                </div>
+                                $${conversation.updatedAt !==
+                                conversation.createdAt
+                                  ? html`
+                                      <div>
+                                        and last updated
+                                        <time
+                                          data-ondomcontentloaded="${javascript`
                                         relativizeTime(this);
                                       `}"
-                                  >
-                                    ${conversation.updatedAt}
-                                  </time>
-                                </div>
-                              `
-                            : html``}
-                        </div>
-                        <div
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--4);
+                                        >
+                                          ${conversation.updatedAt}
+                                        </time>
+                                      </div>
+                                    `
+                                  : html``}
+                              </div>
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  gap: var(--space--4);
 
-                            & > * {
-                              display: flex;
-                              gap: var(--space--1);
-                            }
-                          `}"
-                        >
-                          $${conversation.pinnedAt !== null
-                            ? html`
+                                  & > * {
+                                    display: flex;
+                                    gap: var(--space--1);
+                                  }
+                                `}"
+                              >
+                                $${conversation.pinnedAt !== null
+                                  ? html`
+                                      <div>
+                                        <i class="bi bi-pin"></i>
+                                        Pinned
+                                      </div>
+                                    `
+                                  : html``}
+                                $${conversation.questionAt !== null
+                                  ? html`
+                                      <div>
+                                        <i class="bi bi-patch-question"></i>
+                                        Question
+                                      </div>
+                                    `
+                                  : html``}
                                 <div>
-                                  <i class="bi bi-pin"></i>
-                                  Pinned
+                                  <i class="bi bi-chat-left-text"></i>
+                                  ${conversation.messagesCount}
+                                  Message${conversation.messagesCount === 1
+                                    ? ""
+                                    : "s"}
                                 </div>
-                              `
-                            : html``}
-                          $${conversation.questionAt !== null
-                            ? html`
-                                <div>
-                                  <i class="bi bi-patch-question"></i>
-                                  Question
-                                </div>
-                              `
-                            : html``}
-                          <div>
-                            <i class="bi bi-chat-left-text"></i>
-                            ${conversation.messagesCount}
-                            Message${conversation.messagesCount === 1
-                              ? ""
-                              : "s"}
-                          </div>
-                          $${conversation.endorsements.length === 0
-                            ? html``
-                            : html`
-                                <div
-                                  data-ondomcontentloaded="${javascript`
+                                $${conversation.endorsements.length === 0
+                                  ? html``
+                                  : html`
+                                      <div
+                                        data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: ${JSON.stringify(
                                         `Endorsed by ${
@@ -8932,44 +8969,46 @@ export default async function courselore(
                                       touch: false,
                                     });
                                   `}"
-                                >
-                                  <i class="bi bi-award"></i>
-                                  ${conversation.endorsements.length} Staff
-                                  Endorsement${conversation.endorsements
-                                    .length === 1
-                                    ? ""
-                                    : "s"}
-                                </div>
-                              `}
-                          $${conversation.likesCount === 0
-                            ? html``
-                            : html`
-                                <div>
-                                  <i class="bi bi-hand-thumbs-up"></i>
-                                  ${conversation.likesCount}
-                                  Like${conversation.likesCount === 1
-                                    ? ""
-                                    : "s"}
-                                </div>
-                              `}
-                          $${conversation.taggings.length === 0
-                            ? html``
-                            : html`
-                                <div>
-                                  $${conversation.taggings.map(
-                                    (tagging) => html`
-                                      <i class="bi bi-tag"></i>
-                                      ${tagging.tag.name}
-                                    `
-                                  )}
-                                </div>
-                              `}
-                        </div>
-                      </div>
-                    </a>
-                  `
-                )}
-              </div>
+                                      >
+                                        <i class="bi bi-award"></i>
+                                        ${conversation.endorsements.length}
+                                        Staff
+                                        Endorsement${conversation.endorsements
+                                          .length === 1
+                                          ? ""
+                                          : "s"}
+                                      </div>
+                                    `}
+                                $${conversation.likesCount === 0
+                                  ? html``
+                                  : html`
+                                      <div>
+                                        <i class="bi bi-hand-thumbs-up"></i>
+                                        ${conversation.likesCount}
+                                        Like${conversation.likesCount === 1
+                                          ? ""
+                                          : "s"}
+                                      </div>
+                                    `}
+                                $${conversation.taggings.length === 0
+                                  ? html``
+                                  : html`
+                                      <div>
+                                        $${conversation.taggings.map(
+                                          (tagging) => html`
+                                            <i class="bi bi-tag"></i>
+                                            ${tagging.tag.name}
+                                          `
+                                        )}
+                                      </div>
+                                    `}
+                              </div>
+                            </div>
+                          </a>
+                        `
+                      )}
+                    </div>
+                  `}
             </div>
           </div>
           <div
