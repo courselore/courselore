@@ -4761,14 +4761,14 @@ export default async function courselore(
                   ON "conversations"."id" = "conversationsSearch"."rowid" AND
                      "conversationsSearch" MATCH ${req.query.search}
                   LEFT JOIN (
-                    SELECT "conversations"."id",
+                    SELECT "conversations"."id" AS "conversationId",
                            MAX("messagesSearch"."rank") AS "rank"
                     FROM "conversations"
                     JOIN "messages" ON "conversations"."id" = "messages"."conversation"
                     JOIN "messagesSearch" ON "messages"."id" = "messagesSearch"."rowid"
                     WHERE "messagesSearch" MATCH ${req.query.search}
                     GROUP BY "conversations"."id"
-                  ) AS "messagesSearch" ON "conversations"."id" = "messagesSearch"."id"
+                  ) AS "messagesSearch" ON "conversations"."id" = "messagesSearch"."conversationId"
                 `
             }
             $${
