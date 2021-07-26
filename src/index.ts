@@ -4777,8 +4777,8 @@ export default async function courselore(
                 ? sql``
                 : sql`
                   AND (
-                    ("conversationsSearch"."rank" IS NOT NULL) OR
-                    ("messagesSearch"."rank" IS NOT NULL)
+                    "conversationsSearch"."rank" IS NOT NULL OR
+                    "messagesSearch"."rank" IS NOT NULL
                   )
                 `
             }
@@ -4795,7 +4795,7 @@ export default async function courselore(
                        req.query.search === undefined
                          ? sql``
                          : sql`
-                            MAX("conversationsSearch"."rank" OR -1, "messagesSearch"."rank" OR -1) ASC,
+                            MAX("conversationsSearch"."rank" OR -999999, MAX("messagesSearch"."rank") OR -999999) ASC,
                           `
                      }
                      "conversations"."id" DESC
