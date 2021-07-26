@@ -4757,7 +4757,22 @@ export default async function courselore(
               req.query.search === undefined
                 ? sql``
                 : sql`
-                  JOIN "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."rowid"
+                  LEFT JOIN (
+                    SELECT "conversations"."id",
+                           "conversationsSearch"."rank"
+                    FROM "conversations"
+                    JOIN "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."rowid"
+                    WHERE "conversationsSearch" MATCH ${req.query.search}
+                  ) AS "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."id"
+                  LEFT JOIN (
+                    SELECT "conversations"."id",
+                           MAX("messagesSearch"."rank") AS "rank"
+                    FROM "conversations"
+                    JOIN "messages" ON "conversations"."id" = "messages"."conversation"
+                    JOIN "messagesSearch" ON "messages"."id" = "messagesSearch"."rowid"
+                    WHERE "messagesSearch" MATCH ${req.query.search}
+                    GROUP BY "conversations"."id"
+                  ) AS "messagesSearch" ON "conversations"."id" = "messagesSearch"."id"
                 `
             }
             $${
@@ -4772,8 +4787,11 @@ export default async function courselore(
               req.query.search === undefined
                 ? sql``
                 : sql`
-                    AND "conversationsSearch" MATCH ${req.query.search}
-                  `
+              AND (
+                ("conversationsSearch"."rank" IS NOT NULL) OR
+                ("messagesSearch"."rank" IS NOT NULL)
+              )
+            `
             }
             $${
               res.locals.tagFilter === undefined
@@ -4783,6 +4801,13 @@ export default async function courselore(
                   `
             }
             ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
+                     $${
+                       req.query.search === undefined
+                         ? sql``
+                         : sql`
+                            MAX("conversationsSearch"."rank" OR -1, "messagesSearch"."rank" OR -1) ASC,
+                          `
+                     }
                      "conversations"."id" DESC
           `
         )
