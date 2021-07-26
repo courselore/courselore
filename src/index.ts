@@ -8450,44 +8450,43 @@ export default async function courselore(
       res,
       head,
       extraHeaders: html`
-        <div
-          style="${css`
-            color: var(--color--primary--100);
-            background-color: var(--color--primary--800);
-            @media (prefers-color-scheme: dark) {
-              color: var(--color--primary--200);
-              background-color: var(--color--primary--900);
-            }
-            padding: var(--space--1) var(--space--4);
-            display: flex;
-            justify-content: center;
-            @media (min-width: 900px) {
-              display: none;
-            }
-          `}"
-        >
-          <button
-            style="${css`
-              display: flex;
-              gap: var(--space--2);
-            `}"
-            data-ondomcontentloaded="${javascript`
-              const search = new URLSearchParams(window.location.search);
-              if (search.get("conversationsListOnMobile") === "true" || search.get("tag") !== null) this.click();              
-              if (search.get("conversationsListOnMobile") === "true") this.parentElement.remove();
-            `}"
-            onclick="${javascript`
-              document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
-              document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
-              this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
-              this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
-            `}"
-          >
-            <i class="bi bi-chat-left-text"></i>
-            Conversations
-            <i class="bi bi-chevron-bar-expand"></i>
-          </button>
-        </div>
+        $${req.query.conversationsListOnMobile === "true"
+          ? html``
+          : html`
+              <div
+                style="${css`
+                  color: var(--color--primary--100);
+                  background-color: var(--color--primary--800);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--200);
+                    background-color: var(--color--primary--900);
+                  }
+                  padding: var(--space--1) var(--space--4);
+                  display: flex;
+                  justify-content: center;
+                  @media (min-width: 900px) {
+                    display: none;
+                  }
+                `}"
+              >
+                <button
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                  onclick="${javascript`
+                    document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
+                    document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
+                    this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
+                    this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
+                  `}"
+                >
+                  <i class="bi bi-chat-left-text"></i>
+                  Conversations
+                  <i class="bi bi-chevron-bar-expand"></i>
+                </button>
+              </div>
+            `}
       `,
       body: html`
         <div
@@ -8520,7 +8519,10 @@ export default async function courselore(
           `}"
         >
           <div
-            class="conversation--layout--sidebar single-column--hidden"
+            class="conversation--layout--sidebar ${req.query
+              .conversationsListOnMobile === "true"
+              ? ""
+              : "single-column--hidden"}"
             style="${css`
               color: var(--color--primary--200);
               background-color: var(--color--primary--900);
@@ -8735,14 +8737,13 @@ export default async function courselore(
               </div>
 
               <div
+                class="${req.query.conversationsListOnMobile === "true"
+                  ? "active--cancel"
+                  : ""}"
                 style="${css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--2);
-                `}"
-                data-ondomcontentloaded="${javascript`
-                  if (new URLSearchParams(window.location.search).get("conversationsListOnMobile") === "true")
-                    this.classList.add("active--cancel");
                 `}"
               >
                 $${res.locals.conversations.map(
@@ -8972,7 +8973,10 @@ export default async function courselore(
             </div>
           </div>
           <div
-            class="conversation--layout--main"
+            class="conversation--layout--main ${req.query
+              .conversationsListOnMobile === "true"
+              ? "single-column--hidden"
+              : ""}"
             style="${css`
               @media (min-width: 900px) {
                 flex: 1;
