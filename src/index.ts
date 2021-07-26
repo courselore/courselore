@@ -8616,6 +8616,30 @@ export default async function courselore(
                     }
                   `}"
                 >
+                  $${req.query.onlyConversationLayoutSidebarOnSmallScreens ===
+                  "true"
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="onlyConversationLayoutSidebarOnSmallScreens"
+                          value="true"
+                        />
+                      `
+                    : html``}
+                  <input
+                    type="hidden"
+                    name="conversationLayoutSidebarOpenOnSmallScreens"
+                    value="true"
+                  />
+                  $${req.query.tag !== undefined
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="tag"
+                          value="${req.query.tag}"
+                        />
+                      `
+                    : html``}
                   <input
                     type="text"
                     name="search"
@@ -8628,45 +8652,73 @@ export default async function courselore(
                       @media (prefers-color-scheme: dark) {
                         background-color: var(--color--primary--700);
                       }
-                      padding-right: var(--space--8);
+                      padding-right: var(--space--12);
                     `}"
                     data-skip-is-modified="true"
                   />
-                  <button
-                    class="button--inline"
+                  <div
                     style="${css`
                       justify-self: end;
                       margin-right: var(--space--2);
-                    `}"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Search",
-                        theme: "tooltip",
-                        touch: false,
-                      });
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: center;
                     `}"
                   >
-                    <i class="bi bi-search"></i>
-                  </button>
+                    $${req.query.search !== undefined
+                      ? html`
+                          <a
+                            href="?${qs.stringify({
+                              onlyConversationLayoutSidebarOnSmallScreens:
+                                req.query
+                                  .onlyConversationLayoutSidebarOnSmallScreens,
+                              conversationLayoutSidebarOpenOnSmallScreens:
+                                "true",
+                              tag: req.query.tag,
+                            })}"
+                            class="button--inline"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Remove Search",
+                                theme: "tooltip",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-x-lg"></i>
+                          </a>
+                        `
+                      : html``}
+                    <button
+                      class="button--inline"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Search",
+                          theme: "tooltip",
+                          touch: false,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </div>
                 </form>
                 $${res.locals.tags.length > 0
                   ? html`
-                      <div>
-                        <button
-                          style="${css`
-                            ${res.locals.tagFilter === undefined
-                              ? css``
-                              : css`
-                                  font-weight: var(--font-weight--semibold);
-                                `}
-                            &:hover,
-                            &:focus-within {
-                              color: var(--color--primary--50);
-                            }
-                            &:active {
-                              color: var(--color--primary--100);
-                            }
-                            @media (prefers-color-scheme: dark) {
+                      <div
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div>
+                          <button
+                            style="${css`
+                              ${res.locals.tagFilter === undefined
+                                ? css``
+                                : css`
+                                    font-weight: var(--font-weight--semibold);
+                                  `}
                               &:hover,
                               &:focus-within {
                                 color: var(--color--primary--50);
@@ -8674,76 +8726,109 @@ export default async function courselore(
                               &:active {
                                 color: var(--color--primary--100);
                               }
-                            }
-                            transition-property: var(
-                              --transition-property--colors
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--in-out
-                            );
-                          `}"
-                          data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
-                            theme: "dropdown",
-                            trigger: "click",
-                            interactive: true,
-                          });
-                        `}"
-                        >
-                          $${res.locals.tagFilter === undefined
-                            ? html`
-                                <i class="bi bi-funnel"></i>
-                                Filter by Tag
-                              `
-                            : html`
-                                <i class="bi bi-funnel-fill"></i>
-                                Filtering by <i class="bi bi-tag"></i>
-                                ${res.locals.tagFilter.name}
-                              `}
-                        </button>
-                        <div hidden>
-                          <div
-                            style="${css`
-                              max-height: var(--space--40);
-                              overflow: auto;
-                              margin: var(--space--0) var(--space---2);
+                              @media (prefers-color-scheme: dark) {
+                                &:hover,
+                                &:focus-within {
+                                  color: var(--color--primary--50);
+                                }
+                                &:active {
+                                  color: var(--color--primary--100);
+                                }
+                              }
+                              transition-property: var(
+                                --transition-property--colors
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--in-out
+                              );
+                            `}"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                theme: "dropdown",
+                                trigger: "click",
+                                interactive: true,
+                              });
                             `}"
                           >
+                            $${res.locals.tagFilter === undefined
+                              ? html`
+                                  <i class="bi bi-funnel"></i>
+                                  Filter by Tag
+                                `
+                              : html`
+                                  <i class="bi bi-funnel-fill"></i>
+                                  Filtering by <i class="bi bi-tag"></i>
+                                  ${res.locals.tagFilter.name}
+                                `}
+                          </button>
+                          <div hidden>
                             <div
                               style="${css`
-                                margin: var(--space--0) var(--space--2);
+                                max-height: var(--space--40);
+                                overflow: auto;
+                                margin: var(--space--0) var(--space---2);
                               `}"
                             >
-                              $${res.locals.tags.map((tag) => {
-                                const isTagFilter =
-                                  tag.id === res.locals.tagFilter?.id;
-                                return html`
-                                  <a
-                                    href="?${qs.stringify({
-                                      onlyConversationLayoutSidebarOnSmallScreens:
-                                        req.query
-                                          .onlyConversationLayoutSidebarOnSmallScreens,
-                                      conversationLayoutSidebarOpenOnSmallScreens:
-                                        "true",
-                                      search: req.query.search,
-                                      tag: isTagFilter
-                                        ? undefined
-                                        : tag.reference,
-                                    })}"
-                                    class="dropdown--item ${isTagFilter
-                                      ? "active"
-                                      : ""}"
-                                    ><i class="bi bi-tag"></i> ${tag.name}</a
-                                  >
-                                `;
-                              })}
+                              <div
+                                style="${css`
+                                  margin: var(--space--0) var(--space--2);
+                                `}"
+                              >
+                                $${res.locals.tags.map((tag) => {
+                                  const isTagFilter =
+                                    tag.id === res.locals.tagFilter?.id;
+                                  return html`
+                                    <a
+                                      href="?${qs.stringify({
+                                        onlyConversationLayoutSidebarOnSmallScreens:
+                                          req.query
+                                            .onlyConversationLayoutSidebarOnSmallScreens,
+                                        conversationLayoutSidebarOpenOnSmallScreens:
+                                          "true",
+                                        search: req.query.search,
+                                        tag: isTagFilter
+                                          ? undefined
+                                          : tag.reference,
+                                      })}"
+                                      class="dropdown--item ${isTagFilter
+                                        ? "active"
+                                        : ""}"
+                                      ><i class="bi bi-tag"></i> ${tag.name}</a
+                                    >
+                                  `;
+                                })}
+                              </div>
                             </div>
                           </div>
                         </div>
+                        $${res.locals.tagFilter === undefined
+                          ? html``
+                          : html`
+                              <a
+                                href="?${qs.stringify({
+                                  onlyConversationLayoutSidebarOnSmallScreens:
+                                    req.query
+                                      .onlyConversationLayoutSidebarOnSmallScreens,
+                                  conversationLayoutSidebarOpenOnSmallScreens:
+                                    "true",
+                                  search: req.query.search,
+                                })}"
+                                class="button--inline"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Remove Filter",
+                                    theme: "tooltip",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-x-lg"></i>
+                              </a>
+                            `}
                       </div>
                     `
                   : html``}

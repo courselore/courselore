@@ -239,6 +239,7 @@ Insiders Builds are generated on every push. They’re useful for development an
     - Reset Tippy somehow?
   - Don’t breakpoint Demonstration Mode bar on phone if “Turn off” doesn’t show up.
   - `heading--2` needs `flex-wrap`, for example, `/settings/your-enrollment` at 320px wide.
+  - The Search box doesn’t align with the highlighted conversation.
 - Test that pins are working…
 
 ### Courses
