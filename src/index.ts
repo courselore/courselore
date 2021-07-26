@@ -4795,7 +4795,7 @@ export default async function courselore(
                        req.query.search === undefined
                          ? sql``
                          : sql`
-                            MAX("conversationsSearch"."rank" OR -999999, MAX("messagesSearch"."rank") OR -999999) ASC,
+                            min(coalesce("conversationsSearch"."rank", 0), coalesce(min("messagesSearch"."rank"), 0)) ASC,
                           `
                      }
                      "conversations"."id" DESC
