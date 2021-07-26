@@ -351,6 +351,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Filter by tags.
 - Dropdown helpers to pick mentions & references.
   - https://github.com/zurb/tribute
+- Include snippets of search results. This is challenging because the contents of messages are Markdown, and the snippet must be aware of the parsing structure.
 
 ### Forms Niceties
 
