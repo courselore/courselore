@@ -5057,7 +5057,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?redirected=true`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?conversationsListOnMobile=true`
       );
     }
   );
@@ -8429,7 +8429,7 @@ export default async function courselore(
         { courseReference: string; conversationReference?: string },
         HTML,
         {},
-        { redirected?: "true"; search?: string; tag?: string },
+        { conversationsListOnMobile?: "true"; search?: string; tag?: string },
         IsEnrolledInCourseMiddlewareLocals &
           Partial<IsConversationAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
@@ -8473,8 +8473,8 @@ export default async function courselore(
             `}"
             data-ondomcontentloaded="${javascript`
               const search = new URLSearchParams(window.location.search);
-              if (search.get("redirected") === "true" || search.get("tag") !== null) this.click();              
-              if (search.get("redirected") === "true") this.parentElement.remove();
+              if (search.get("conversationsListOnMobile") === "true" || search.get("tag") !== null) this.click();              
+              if (search.get("conversationsListOnMobile") === "true") this.parentElement.remove();
             `}"
             onclick="${javascript`
               document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
@@ -8741,7 +8741,7 @@ export default async function courselore(
                   gap: var(--space--2);
                 `}"
                 data-ondomcontentloaded="${javascript`
-                  if (new URLSearchParams(window.location.search).get("redirected") === "true")
+                  if (new URLSearchParams(window.location.search).get("conversationsListOnMobile") === "true")
                     this.classList.add("active--cancel");
                 `}"
               >
@@ -11076,7 +11076,7 @@ ${value}</textarea
     { courseReference: string; conversationReference: string },
     HTML,
     {},
-    { redirected?: "true"; search?: string; tag?: string },
+    { conversationsListOnMobile?: "true"; search?: string; tag?: string },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
