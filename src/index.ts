@@ -8539,6 +8539,41 @@ export default async function courselore(
               @media (min-width: 900px) {
                 width: var(--width--sm);
               }
+
+              .button--inline--sidebar {
+                color: var(--color--primary--200);
+                &:hover,
+                &:focus-within {
+                  color: var(--color--primary--50);
+                }
+                &:active {
+                  color: var(--color--primary--100);
+                }
+                @media (prefers-color-scheme: dark) {
+                  &:hover,
+                  &:focus-within {
+                    color: var(--color--primary--50);
+                  }
+                  &:active {
+                    color: var(--color--primary--100);
+                  }
+                }
+              }
+
+              .input--text--sidebar {
+                color: var(--color--primary--200);
+                background-color: var(--color--primary--700);
+                &::placeholder {
+                  color: var(--color--primary--300);
+                }
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--primary--200);
+                  background-color: var(--color--primary--700);
+                  &::placeholder {
+                    color: var(--color--primary--300);
+                  }
+                }
+              }
             `}"
           >
             <div
@@ -8557,31 +8592,11 @@ export default async function courselore(
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/conversations/new"
+                  class="button--inline button--inline--sidebar"
                   style="${css`
                     font-weight: var(--font-weight--semibold);
-                    &:hover,
-                    &:focus-within {
-                      color: var(--color--primary--50);
-                    }
-                    &:active {
-                      color: var(--color--primary--100);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within {
-                        color: var(--color--primary--50);
-                      }
-                      &:active {
-                        color: var(--color--primary--100);
-                      }
-                    }
                     display: flex;
                     gap: var(--space--2);
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
                   `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
@@ -8603,16 +8618,6 @@ export default async function courselore(
                     display: grid;
                     & > * {
                       grid-area: 1 / 1;
-                      color: var(--color--primary--200);
-                      &::placeholder {
-                        color: var(--color--primary--300);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--200);
-                        &::placeholder {
-                          color: var(--color--primary--300);
-                        }
-                      }
                     }
                   `}"
                 >
@@ -8646,12 +8651,8 @@ export default async function courselore(
                     value="${req.query.search ?? ""}"
                     placeholder="Search…"
                     required
-                    class="input--text"
+                    class="input--text input--text--sidebar"
                     style="${css`
-                      background-color: var(--color--primary--700);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--primary--700);
-                      }
                       padding-right: var(--space--12);
                     `}"
                     data-skip-is-modified="true"
@@ -8676,7 +8677,7 @@ export default async function courselore(
                                 "true",
                               tag: req.query.tag,
                             })}"
-                            class="button--inline"
+                            class="button--inline button--inline--sidebar"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Search",
@@ -8690,7 +8691,7 @@ export default async function courselore(
                         `
                       : html``}
                     <button
-                      class="button--inline"
+                      class="button--inline button--inline--sidebar"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Search",
@@ -8713,37 +8714,13 @@ export default async function courselore(
                       >
                         <div>
                           <button
+                            class="button--inline button--inline--sidebar"
                             style="${css`
                               ${res.locals.tagFilter === undefined
                                 ? css``
                                 : css`
                                     font-weight: var(--font-weight--semibold);
                                   `}
-                              &:hover,
-                              &:focus-within {
-                                color: var(--color--primary--50);
-                              }
-                              &:active {
-                                color: var(--color--primary--100);
-                              }
-                              @media (prefers-color-scheme: dark) {
-                                &:hover,
-                                &:focus-within {
-                                  color: var(--color--primary--50);
-                                }
-                                &:active {
-                                  color: var(--color--primary--100);
-                                }
-                              }
-                              transition-property: var(
-                                --transition-property--colors
-                              );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--in-out
-                              );
                             `}"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
@@ -8817,7 +8794,7 @@ export default async function courselore(
                                     "true",
                                   search: req.query.search,
                                 })}"
-                                class="button--inline"
+                                class="button--inline button--inline--sidebar"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Filter",
