@@ -4754,6 +4754,13 @@ export default async function courselore(
                    "conversations"."questionAt"
             FROM "conversations"
             $${
+              req.query.search === undefined
+                ? sql``
+                : sql`
+                  JOIN "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."rowid"
+                `
+            }
+            $${
               res.locals.tagFilter === undefined
                 ? sql``
                 : sql`
@@ -4761,6 +4768,13 @@ export default async function courselore(
                   `
             }
             WHERE "conversations"."course" = ${res.locals.course.id}
+            $${
+              req.query.search === undefined
+                ? sql``
+                : sql`
+                    AND "conversationsSearch" MATCH ${req.query.search}
+                  `
+            }
             $${
               res.locals.tagFilter === undefined
                 ? sql``
