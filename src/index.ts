@@ -4632,7 +4632,7 @@ export default async function courselore(
       { courseReference: string },
       any,
       {},
-      { tag?: string },
+      { search?: string; tag?: string },
       IsEnrolledInCourseMiddlewareLocals
     >[];
   }
@@ -10059,7 +10059,7 @@ ${value}</textarea
     { courseReference: string },
     HTML,
     {},
-    { tag?: string },
+    { search?: string; tag?: string },
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
@@ -11076,7 +11076,7 @@ ${value}</textarea
     { courseReference: string; conversationReference: string },
     HTML,
     {},
-    { tag?: string },
+    { search?: string; tag?: string },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
