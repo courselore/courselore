@@ -5057,7 +5057,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?conversationsListOnlyOnMobile=true`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?onlyConversationLayoutSidebarOnSmallScreens=true`
       );
     }
   );
@@ -8430,7 +8430,7 @@ export default async function courselore(
         HTML,
         {},
         {
-          conversationsListOnlyOnMobile?: "true";
+          onlyConversationLayoutSidebarOnSmallScreens?: "true";
           search?: string;
           tag?: string;
         },
@@ -8454,7 +8454,7 @@ export default async function courselore(
       res,
       head,
       extraHeaders: html`
-        $${req.query.conversationsListOnlyOnMobile === "true"
+        $${req.query.onlyConversationLayoutSidebarOnSmallScreens === "true"
           ? html``
           : html`
               <div
@@ -8524,7 +8524,7 @@ export default async function courselore(
         >
           <div
             class="conversation--layout--sidebar ${req.query
-              .conversationsListOnlyOnMobile === "true"
+              .onlyConversationLayoutSidebarOnSmallScreens === "true"
               ? ""
               : "single-column--hidden"}"
             style="${css`
@@ -8722,7 +8722,8 @@ export default async function courselore(
                                 return html`
                                   <a
                                     href="?${qs.stringify({
-                                      conversationsListOnlyOnMobile: "true",
+                                      onlyConversationLayoutSidebarOnSmallScreens:
+                                        "true",
                                       tag: isTagFilter
                                         ? undefined
                                         : tag.reference,
@@ -8767,8 +8768,8 @@ export default async function courselore(
                   `
                 : html`
                     <div
-                      class="${req.query.conversationsListOnlyOnMobile ===
-                      "true"
+                      class="${req.query
+                        .onlyConversationLayoutSidebarOnSmallScreens === "true"
                         ? "active--cancel"
                         : ""}"
                       style="${css`
@@ -9018,7 +9019,7 @@ export default async function courselore(
           </div>
           <div
             class="conversation--layout--main ${req.query
-              .conversationsListOnlyOnMobile === "true"
+              .onlyConversationLayoutSidebarOnSmallScreens === "true"
               ? "single-column--hidden"
               : ""}"
             style="${css`
@@ -11124,7 +11125,11 @@ ${value}</textarea
     { courseReference: string; conversationReference: string },
     HTML,
     {},
-    { conversationsListOnlyOnMobile?: "true"; search?: string; tag?: string },
+    {
+      onlyConversationLayoutSidebarOnSmallScreens?: "true";
+      search?: string;
+      tag?: string;
+    },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
