@@ -4739,7 +4739,10 @@ export default async function courselore(
       const search =
         req.query.search === undefined
           ? undefined
-          : `"${req.query.search.replaceAll('"', '""')}"`;
+          : req.query.search
+              .split(/\s+/)
+              .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
+              .join(" ");
 
       res.locals.conversations = app.locals.database
         .all<{
