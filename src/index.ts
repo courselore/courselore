@@ -8718,8 +8718,8 @@ export default async function courselore(
                                 return html`
                                   <a
                                     href="?${qs.stringify({
-                                      ...req.query,
-                                      tag: isTagFilter ? null : tag.reference,
+                                      conversationsListOnMobile: "true",
+                                      tag: isTagFilter ? undefined : tag.reference,
                                     })}"
                                     class="dropdown--item ${isTagFilter
                                       ? "active"
