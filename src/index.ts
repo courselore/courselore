@@ -8429,7 +8429,7 @@ export default async function courselore(
         { courseReference: string; conversationReference?: string },
         HTML,
         {},
-        { search?: string; tag?: string },
+        { redirected?: "true"; search?: string; tag?: string },
         IsEnrolledInCourseMiddlewareLocals &
           Partial<IsConversationAccessibleMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
@@ -11076,7 +11076,7 @@ ${value}</textarea
     { courseReference: string; conversationReference: string },
     HTML,
     {},
-    { search?: string; tag?: string },
+    { redirected?: "true"; search?: string; tag?: string },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
