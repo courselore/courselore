@@ -4736,6 +4736,11 @@ export default async function courselore(
           (tag) => tag.reference === req.query.tag
         );
 
+      const search =
+        req.query.search === undefined
+          ? undefined
+          : `"${req.query.search.replaceAll('"', '""')}"`;
+
       res.locals.conversations = app.locals.database
         .all<{
           id: number;
@@ -4754,14 +4759,14 @@ export default async function courselore(
                    "conversations"."questionAt"
             FROM "conversations"
             $${
-              req.query.search === undefined
+              search === undefined
                 ? sql``
                 : sql`
                   LEFT JOIN "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."rowid" AND
-                                                     "conversationsSearch" MATCH ${req.query.search}
+                                                     "conversationsSearch" MATCH ${search}
                   LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation"
                   LEFT JOIN "messagesSearch" ON "messages"."id" = "messagesSearch"."rowid" AND
-                                                "messagesSearch" MATCH ${req.query.search}
+                                                "messagesSearch" MATCH ${search}
                 `
             }
             $${
@@ -4773,7 +4778,7 @@ export default async function courselore(
             }
             WHERE "conversations"."course" = ${res.locals.course.id}
             $${
-              req.query.search === undefined
+              search === undefined
                 ? sql``
                 : sql`
                   AND (
