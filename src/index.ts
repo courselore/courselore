@@ -4757,13 +4757,9 @@ export default async function courselore(
               req.query.search === undefined
                 ? sql``
                 : sql`
-                  LEFT JOIN (
-                    SELECT "conversations"."id",
-                           "conversationsSearch"."rank"
-                    FROM "conversations"
-                    JOIN "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."rowid"
-                    WHERE "conversationsSearch" MATCH ${req.query.search}
-                  ) AS "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."id"
+                  LEFT JOIN "conversationsSearch"
+                  ON "conversations"."id" = "conversationsSearch"."rowid" AND
+                     "conversationsSearch" MATCH ${req.query.search}
                   LEFT JOIN (
                     SELECT "conversations"."id",
                            MAX("messagesSearch"."rank") AS "rank"
@@ -4787,11 +4783,11 @@ export default async function courselore(
               req.query.search === undefined
                 ? sql``
                 : sql`
-              AND (
-                ("conversationsSearch"."rank" IS NOT NULL) OR
-                ("messagesSearch"."rank" IS NOT NULL)
-              )
-            `
+                  AND (
+                    ("conversationsSearch"."rank" IS NOT NULL) OR
+                    ("messagesSearch"."rank" IS NOT NULL)
+                  )
+                `
             }
             $${
               res.locals.tagFilter === undefined
