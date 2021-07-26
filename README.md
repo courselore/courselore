@@ -277,7 +277,10 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Notifications
 
-- **How:** In CourseLore & via email.
+- **How:**
+  - Via email.
+  - In CourseLore as **read indicators**.
+  - In CourseLore as a dedicated alerts kind of thing.
 - **What:**
   - Subscribe to whole courses to be notified of everything.
     - Unsubscribe from certain conversations.
@@ -626,6 +629,20 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-07-24</summary>
+
+- Requests from last meeting:
+  - Heading styles.
+  - Moved Course menu to the left.
+  - Scrolling issues.
+- Tags.
+  - Tag conversations.
+  - Filter by tag.
+- Search is just missing a `SELECT`…
+
+</details>
 
 <details>
 <summary>2021-07-17</summary>
