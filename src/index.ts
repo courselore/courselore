@@ -2014,6 +2014,7 @@ export default async function courselore(
                   >
                     <i class="bi bi-easel"></i>
                     Demonstration Mode
+                    <i class="bi bi-info-circle"></i>
                   </button>
                   <a
                     href="${app.locals.settings.url}/demonstration-inbox"
