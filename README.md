@@ -225,6 +225,13 @@ Insiders Builds are generated on every push. They’re useful for development an
 <details>
 <summary><strong>Backlog</strong></summary>
 
+### Demonstration Fixtures
+
+- https://github.com/Marak/Faker.js
+- https://github.com/chancejs/chancejs
+- https://github.com/boo1ean/casual
+- https://github.com/rosiejs/rosie
+
 ### Minor Improvements
 
 - Get rid of fitTextarea & position sticky.
