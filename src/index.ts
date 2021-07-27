@@ -13261,38 +13261,35 @@ ${value}</textarea
   app.post<{}, any, {}, {}, {}>("/demonstration-data", (req, res, next) => {
     if (!app.locals.settings.demonstration) return next();
 
-    const users: { id: number }[] = [];
-    for (const index of new Array(500).keys()) {
-      const isDemonstrationUser = index === 0;
-      const card = faker.helpers.contextualCard();
-      users.push(
+    const card = faker.helpers.contextualCard();
+    const demonstrationUser = app.locals.database.get<{ id: number }>(
+      sql`
+        INSERT INTO "users" ("email", "name", "avatar", "biography")
+        VALUES (
+          ${card.email},
+          ${card.name},
+          ${card.avatar},
+          ${faker.lorem.paragraph()}
+        )
+        RETURNING *
+      `
+    )!;
+
+    const users = [...new Array(500)].map(
+      (_) =>
         app.locals.database.get<{ id: number }>(
           sql`
-            INSERT INTO "users" ("email", "name", "avatar", "biography")
-            VALUES (
-              ${card.email},
-              ${
-                isDemonstrationUser
-                  ? card.name
-                  : faker.helpers.randomize([card.name, null])
-              },
-              ${
-                isDemonstrationUser
-                  ? card.avatar
-                  : faker.helpers.randomize([card.avatar, null])
-              },
-              ${
-                isDemonstrationUser
-                  ? faker.lorem.paragraph()
-                  : faker.helpers.randomize([faker.lorem.paragraph(), null])
-              }
-            )
-            RETURNING *
-          `
+        INSERT INTO "users" ("email", "name", "avatar", "biography")
+        VALUES (
+          ${card.email},
+          ${faker.helpers.randomize([card.name, null])},
+          ${faker.helpers.randomize([card.avatar, null])},
+          ${faker.helpers.randomize([faker.lorem.paragraph(), null])}
+        )
+        RETURNING *
+      `
         )!
-      );
-    }
-    const demonstrationUser = users[0];
+    );
 
     app.locals.helpers.session.open(req, res, demonstrationUser.id);
     app.locals.helpers.flash.set(
