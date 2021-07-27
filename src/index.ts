@@ -13266,7 +13266,7 @@ ${value}</textarea
       sql`
         INSERT INTO "users" ("email", "name", "avatar", "biography")
         VALUES (
-          ${`${card.username}--${cryptoRandomString({
+          ${`${card.username.toLowerCase()}--${cryptoRandomString({
             length: 10,
             type: "numeric",
           })}@courselore.org`},
@@ -13322,7 +13322,7 @@ ${value}</textarea
 
     const enrollments = [
       ...courses.map(
-        (course) =>
+        (course, index) =>
           app.locals.database.get<{ id: number }>(
             sql`
               INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
@@ -13330,26 +13330,28 @@ ${value}</textarea
                 ${demonstrationUser.id},
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${faker.helpers.randomize(["student", "staff"])},
-                ${faker.helpers.randomize([
-                  "purple",
-                  "fuchsia",
-                  "pink",
-                  "rose",
-                  "red",
-                  "orange",
-                  "amber",
-                  "yellow",
-                  "lime",
-                  "green",
-                  "emerald",
-                  "teal",
-                  "cyan",
-                  "sky",
-                  "blue",
-                  "indigo",
-                  "violet",
-                ])}
+                ${["staff", "student", "staff", "staff", "student"][index]},
+                ${
+                  [
+                    "purple",
+                    "fuchsia",
+                    "pink",
+                    "rose",
+                    "red",
+                    "orange",
+                    "amber",
+                    "yellow",
+                    "lime",
+                    "green",
+                    "emerald",
+                    "teal",
+                    "cyan",
+                    "sky",
+                    "blue",
+                    "indigo",
+                    "violet",
+                  ][index]
+                }
               )
               RETURNING *
             `
@@ -13365,7 +13367,7 @@ ${value}</textarea
                 ${user.id},
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${faker.helpers.randomize(["student", "staff"])},
+                ${Math.random() < 0.1 ? "staff" : "student"},
                 ${faker.helpers.randomize([
                   "purple",
                   "fuchsia",
