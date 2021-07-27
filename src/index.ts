@@ -13279,15 +13279,38 @@ ${value}</textarea
       (_) =>
         app.locals.database.get<{ id: number }>(
           sql`
-        INSERT INTO "users" ("email", "name", "avatar", "biography")
-        VALUES (
-          ${card.email},
-          ${faker.helpers.randomize([card.name, null])},
-          ${faker.helpers.randomize([card.avatar, null])},
-          ${faker.helpers.randomize([faker.lorem.paragraph(), null])}
-        )
-        RETURNING *
-      `
+            INSERT INTO "users" ("email", "name", "avatar", "biography")
+            VALUES (
+              ${card.email},
+              ${faker.helpers.randomize([card.name, null])},
+              ${faker.helpers.randomize([card.avatar, null])},
+              ${faker.helpers.randomize([faker.lorem.paragraph(), null])}
+            )
+            RETURNING *
+          `
+        )!
+    );
+
+    const courses = [...new Array(5).keys()].map(
+      (index) =>
+        app.locals.database.get<{ id: number }>(
+          sql`
+            INSERT INTO "courses" ("reference", "name", "nextConversationReference")
+            VALUES (
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${
+                [
+                  "Introduction to Statistics",
+                  "Advanced Harmony",
+                  "Computer Graphics",
+                  "Pharmacology",
+                  "Macroeconomy",
+                ][index]
+              },
+              ${51}
+            )
+            RETURNING *
+          `
         )!
     );
 
