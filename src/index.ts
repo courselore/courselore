@@ -13262,12 +13262,19 @@ ${value}</textarea
     if (!app.locals.settings.demonstration) return next();
 
     const card = faker.helpers.contextualCard();
-    app.locals.database.run(sql`
+    const user = app.locals.database.get<{ id: number }>(sql`
       INSERT INTO "users" ("email", "name", "avatar", "biography")
-      VALUES (${card.email}, ${card.name}, ${
-      card.avatar
-    }, ${faker.lorem.paragraph()});
-    `);
+      VALUES (
+        ${card.email},
+        ${card.name},
+        ${card.avatar},
+        ${faker.lorem.paragraph()}
+      )
+      RETURNING *
+    `)!;
+    app.locals.helpers.session.open(req, res, user.id);
+
+    res.redirect(app.locals.settings.url);
   });
 
   app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res, next) => {
