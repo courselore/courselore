@@ -38,6 +38,7 @@ import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
 import QRCode from "qrcode";
 import lodash from "lodash";
+import faker from "faker";
 
 export default async function courselore(
   rootDirectory: string
@@ -2018,10 +2019,55 @@ export default async function courselore(
                     class="${req.path === "/demonstration-inbox"
                       ? "active"
                       : ""}"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "CourseLore is running in Demonstration Mode so it doesn’t send emails. The emails that would have been sent show up in the Demonstration Inbox.",
+                          theme: "tooltip",
+                          touch: false,
+                      });
+                    `}"
                   >
                     <i class="bi bi-inbox"></i>
                     Demonstration Inbox
                   </a>
+                  <div>
+                    <button
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          theme: "dropdown",
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-server"></i>
+                      Create Demonstration Data
+                    </button>
+                    <div hidden>
+                      <form
+                        method="POST"
+                        action="${app.locals.settings.url}/demonstration-data"
+                        style="${css`
+                          padding: var(--space--2) var(--space--0);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
+                        <p>
+                          This will create demonstration data including users,
+                          courses, conversations, and so forth, and sign you in
+                          as a demonstration user. It gives you a better idea of
+                          what CourseLore looks like in use.
+                        </p>
+                        <button class="button button--primary">
+                          <i class="bi bi-server"></i>
+                          Create Demonstration Data
+                        </button>
+                      </form>
+                    </div>
+                  </div>
                   $${app.locals.settings.env === "production"
                     ? html``
                     : html`
@@ -13208,16 +13254,30 @@ ${value}</textarea
     );
   });
 
-  if (
-    app.locals.settings.demonstration &&
-    app.locals.settings.env !== "production"
-  )
-    app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res) => {
-      res.send(
-        `The demonstration server was turned off. Thanks for trying out CourseLore.`
-      );
-      process.exit(0);
-    });
+  app.post<{}, any, {}, {}, {}>("/demonstration-data", (req, res, next) => {
+    if (!app.locals.settings.demonstration) return next();
+
+    const card = faker.helpers.contextualCard();
+    app.locals.database.run(sql`
+      INSERT INTO "users" ("email", "name", "avatar", "biography")
+      VALUES (${card.email}, ${card.name}, ${
+      card.avatar
+    }, ${faker.lorem.paragraph()});
+    `);
+  });
+
+  app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res, next) => {
+    if (
+      !app.locals.settings.demonstration ||
+      app.locals.settings.env === "production"
+    )
+      return next();
+
+    res.send(
+      `The demonstration server was turned off. Thanks for trying out CourseLore.`
+    );
+    process.exit(0);
+  });
 
   app.all<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
     "*",
