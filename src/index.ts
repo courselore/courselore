@@ -13278,10 +13278,10 @@ ${value}</textarea
       `
     )!;
 
-    const users = [...new Array(500)].map(
-      (_) =>
-        app.locals.database.get<{ id: number }>(
-          sql`
+    const users = [...new Array(500)].map((_) => {
+      const card = faker.helpers.contextualCard();
+      return app.locals.database.get<{ id: number }>(
+        sql`
             INSERT INTO "users" ("email", "name", "avatar", "biography")
             VALUES (
               ${`${card.username}--${cryptoRandomString({
@@ -13294,8 +13294,8 @@ ${value}</textarea
             )
             RETURNING *
           `
-        )!
-    );
+      )!;
+    });
 
     const courses = [...new Array(5).keys()].map(
       (index) =>
@@ -13319,6 +13319,79 @@ ${value}</textarea
           `
         )!
     );
+
+    const enrollments = [
+      ...courses.map(
+        (course) =>
+          app.locals.database.get<{ id: number }>(
+            sql`
+              INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+              VALUES (
+                ${demonstrationUser.id},
+                ${course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${faker.helpers.randomize(["student", "staff"])},
+                ${faker.helpers.randomize([
+                  "purple",
+                  "fuchsia",
+                  "pink",
+                  "rose",
+                  "red",
+                  "orange",
+                  "amber",
+                  "yellow",
+                  "lime",
+                  "green",
+                  "emerald",
+                  "teal",
+                  "cyan",
+                  "sky",
+                  "blue",
+                  "indigo",
+                  "violet",
+                ])}
+              )
+              RETURNING *
+            `
+          )!
+      ),
+      ...courses.flatMap((course) =>
+        faker.random.arrayElements(users, 99).map(
+          (user) =>
+            app.locals.database.get<{ id: number }>(
+              sql`
+              INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+              VALUES (
+                ${user.id},
+                ${course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${faker.helpers.randomize(["student", "staff"])},
+                ${faker.helpers.randomize([
+                  "purple",
+                  "fuchsia",
+                  "pink",
+                  "rose",
+                  "red",
+                  "orange",
+                  "amber",
+                  "yellow",
+                  "lime",
+                  "green",
+                  "emerald",
+                  "teal",
+                  "cyan",
+                  "sky",
+                  "blue",
+                  "indigo",
+                  "violet",
+                ])}
+              )
+              RETURNING *
+            `
+            )!
+        )
+      ),
+    ];
 
     app.locals.helpers.session.open(req, res, demonstrationUser.id);
     app.locals.helpers.flash.set(
