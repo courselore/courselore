@@ -1967,7 +1967,7 @@ export default async function courselore(
                     justify-content: center;
                     flex-wrap: wrap;
 
-                    & > * {
+                    .button--demonstration-mode {
                       padding: var(--space--1) var(--space--2);
                       position: relative;
                       display: flex;
@@ -2003,6 +2003,7 @@ export default async function courselore(
                   `}"
                 >
                   <button
+                    class="button--demonstration-mode"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, conversations, users, and so forth. Also, no emails are actually sent; they show up in the Demonstration Inbox instead. Otherwise this is a fully functioning installation of CourseLore, which is and always will be free and open-source.",
@@ -2016,12 +2017,13 @@ export default async function courselore(
                   </button>
                   <a
                     href="${app.locals.settings.url}/demonstration-inbox"
-                    class="${req.path === "/demonstration-inbox"
+                    class="button--demonstration-mode ${req.path ===
+                    "/demonstration-inbox"
                       ? "active"
                       : ""}"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
-                        content: "CourseLore is running in Demonstration Mode so it doesn’t send emails. The emails that would have been sent show up in the Demonstration Inbox.",
+                        content: "CourseLore doesn’t send emails in Demonstration Mode. Emails that would have been sent will show up in the Demonstration Inbox instead.",
                           theme: "tooltip",
                           touch: false,
                       });
@@ -2032,6 +2034,7 @@ export default async function courselore(
                   </a>
                   <div>
                     <button
+                      class="button--demonstration-mode"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
@@ -2076,7 +2079,7 @@ export default async function courselore(
                           action="${app.locals.settings
                             .url}/turn-off?_method=DELETE"
                         >
-                          <button>
+                          <button class="button--demonstration-mode">
                             <i class="bi bi-power"></i>
                             Turn off
                           </button>
@@ -3629,7 +3632,7 @@ export default async function courselore(
                         <i class="bi bi-easel"></i> Demonstration Mode
                       </h3>
                       <p>
-                        CourseLore doesn’t send emails in demonstration mode.
+                        CourseLore doesn’t send emails in Demonstration Mode.
                       </p>
                       <div
                         style="${css`
@@ -6991,7 +6994,7 @@ export default async function courselore(
                 $${app.locals.settings.demonstration
                   ? html`
                       <br />
-                      CourseLore doesn’t send emails in demonstration mode.
+                      CourseLore doesn’t send emails in Demonstration Mode.
                       <a
                         href="${app.locals.settings.url}/demonstration-inbox"
                         class="link"
@@ -13081,7 +13084,7 @@ ${value}</textarea
         )
       `
     );
-    // TODO: The worker that sends emails on non-demonstration mode. Kick the worker to wake up from here (as well as periodically just in case…)
+    // TODO: The worker that sends emails on non-Demonstration Mode. Kick the worker to wake up from here (as well as periodically just in case…)
   };
 
   app.get<{}, HTML, {}, {}, {}>("/demonstration-inbox", (req, res, next) => {
@@ -13126,7 +13129,7 @@ ${value}</textarea
                 Demonstration Inbox
               </h2>
               <p>
-                CourseLore doesn’t send emails in demonstration mode.
+                CourseLore doesn’t send emails in Demonstration Mode.
                 $${emails.length === 0
                   ? html`Emails that would have been sent will show up here
                     instead.`
