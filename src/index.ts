@@ -13266,7 +13266,10 @@ ${value}</textarea
       sql`
         INSERT INTO "users" ("email", "name", "avatar", "biography")
         VALUES (
-          ${card.email},
+          ${`${card.username}--${cryptoRandomString({
+            length: 10,
+            type: "numeric",
+          })}@courselore.org`},
           ${card.name},
           ${card.avatar},
           ${faker.lorem.paragraph()}
@@ -13281,7 +13284,10 @@ ${value}</textarea
           sql`
             INSERT INTO "users" ("email", "name", "avatar", "biography")
             VALUES (
-              ${card.email},
+              ${`${card.username}--${cryptoRandomString({
+                length: 10,
+                type: "numeric",
+              })}@courselore.org`},
               ${faker.helpers.randomize([card.name, null])},
               ${faker.helpers.randomize([card.avatar, null])},
               ${faker.helpers.randomize([faker.lorem.paragraph(), null])}
