@@ -13504,6 +13504,8 @@ ${value}</textarea
             `
             ).lastInsertRowid
           );
+
+          // TODO: endorsements, likes, tags, taggings
         }
       }
     }
