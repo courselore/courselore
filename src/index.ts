@@ -2033,7 +2033,7 @@ export default async function courselore(
                     <i class="bi bi-inbox"></i>
                     Demonstration Inbox
                   </a>
-                  <div hidden>
+                  <div>
                     <button
                       class="button--demonstration-mode"
                       data-ondomcontentloaded="${javascript`
@@ -2045,7 +2045,7 @@ export default async function courselore(
                         });
                       `}"
                     >
-                      <i class="bi bi-server"></i>
+                      <i class="bi bi-stars"></i>
                       Create Demonstration Data
                     </button>
                     <div hidden>
@@ -2066,7 +2066,7 @@ export default async function courselore(
                           what CourseLore looks like in use.
                         </p>
                         <button class="button button--primary">
-                          <i class="bi bi-server"></i>
+                          <i class="bi bi-stars"></i>
                           Create Demonstration Data
                         </button>
                       </form>
