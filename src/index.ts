@@ -241,7 +241,6 @@ export default async function courselore(
         "questionAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
-
       CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
         content = "conversations",
         content_rowid = "id",
@@ -272,7 +271,6 @@ export default async function courselore(
         "answerAt" TEXT NULL,
         UNIQUE ("conversation", "reference")
       );
-
       CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
         content = "messages",
         content_rowid = "id",
@@ -13334,7 +13332,12 @@ ${value}</textarea
           null,
         ]);
         const usedAt =
-          user === null ? null : faker.date.past(0.1, expiresAt ?? new Date());
+          user === null
+            ? null
+            : faker.helpers.randomize([
+                faker.date.past(0.1, new Date()),
+                null,
+              ]);
         app.locals.database.run(
           sql`
             INSERT INTO "invitations" (
@@ -13347,8 +13350,8 @@ ${value}</textarea
               "role"
             )
             VALUES (
-              ${expiresAt},
-              ${usedAt},
+              ${expiresAt === null ? null : expiresAt.toISOString()},
+              ${usedAt === null ? null : usedAt.toISOString()},
               ${course.id},
               ${cryptoRandomString({ length: 10, type: "numeric" })},
               ${user?.email},
