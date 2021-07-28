@@ -13284,18 +13284,18 @@ ${value}</textarea
         name: string | null;
       }>(
         sql`
-            INSERT INTO "users" ("email", "name", "avatar", "biography")
-            VALUES (
-              ${`${card.username}--${cryptoRandomString({
-                length: 10,
-                type: "numeric",
-              })}@courselore.org`},
-              ${faker.helpers.randomize([card.name, null])},
-              ${faker.helpers.randomize([card.avatar, null])},
-              ${faker.helpers.randomize([faker.lorem.paragraph(), null])}
-            )
-            RETURNING *
-          `
+          INSERT INTO "users" ("email", "name", "avatar", "biography")
+          VALUES (
+            ${`${card.username}--${cryptoRandomString({
+              length: 10,
+              type: "numeric",
+            })}@courselore.org`},
+            ${faker.helpers.randomize([card.name, null])},
+            ${faker.helpers.randomize([card.avatar, null])},
+            ${faker.helpers.randomize([faker.lorem.paragraph(), null])}
+          )
+          RETURNING *
+        `
       )!;
     });
 
@@ -13308,14 +13308,14 @@ ${value}</textarea
     ].map((course) => ({
       ...app.locals.database.get<{ id: number }>(
         sql`
-            INSERT INTO "courses" ("reference", "name", "nextConversationReference")
-            VALUES (
-              ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${course.name},
-              ${51}
-            )
-            RETURNING *
-          `
+          INSERT INTO "courses" ("reference", "name", "nextConversationReference")
+          VALUES (
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${course.name},
+            ${51}
+          )
+          RETURNING *
+        `
       )!,
       enrollments: [] as { id: number }[],
       staff: [] as { id: number }[],
