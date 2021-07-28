@@ -13326,13 +13326,14 @@ ${value}</textarea
         accentColor: "red",
       },
     ]) {
+      const conversationsCount = faker.datatype.number({ min: 30, max: 50 });
       const course = app.locals.database.get<{ id: number }>(
         sql`
           INSERT INTO "courses" ("reference", "name", "nextConversationReference")
           VALUES (
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${name},
-            ${51}
+            ${String(conversationsCount + 1)}
           )
           RETURNING *
         `
@@ -13430,7 +13431,9 @@ ${value}</textarea
         if (enrollment.role === "staff") staff.push(enrollment);
       }
 
-      for (const conversationReference of lodash.range(1, 51).map(String)) {
+      for (const conversationReference of lodash
+        .range(1, conversationsCount + 1)
+        .map(String)) {
         const messagesCount = faker.datatype.number({ min: 1, max: 25 });
         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
         const conversationId = Number(
