@@ -13429,6 +13429,31 @@ ${value}</textarea
         enrollments.push(enrollment);
         if (enrollment.role === "staff") staff.push(enrollment);
       }
+
+      for (const conversationReference of lodash.range(1, 51).map(String)) {
+        const messagesCount = faker.datatype.number({ min: 1, max: 25 });
+        // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+        const conversationId = app.locals.database.run(
+          sql`
+            INSERT INTO "conversations" (
+              "course",
+              "reference",
+              "title",
+              "nextMessageReference",
+              "pinnedAt",
+              "questionAt"
+            )
+            VALUES (
+              ${course.id},
+              ${conversationReference},
+              ${lodash.capitalize(faker.lorem.words())},
+              ${String(messagesCount + 1)},
+              ${Math.random() < 0.05 ? faker.date.past(0.2) : null}
+            )
+            RETURNING *
+          `
+        )!;
+      }
     }
 
     app.locals.helpers.session.open(req, res, demonstrationUser.id);
