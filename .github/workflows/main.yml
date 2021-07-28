@@ -46,7 +46,7 @@ jobs:
   #     - run: npm install-ci-test
 
   deploy:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     # FIXME:
     # needs: [insiders-build, test]
     needs: insiders-build
