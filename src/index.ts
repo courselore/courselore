@@ -2033,7 +2033,7 @@ export default async function courselore(
                     <i class="bi bi-inbox"></i>
                     Demonstration Inbox
                   </a>
-                  <div>
+                  <div hidden>
                     <button
                       class="button--demonstration-mode"
                       data-ondomcontentloaded="${javascript`
