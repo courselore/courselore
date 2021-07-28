@@ -13297,22 +13297,20 @@ ${value}</textarea
       )!;
     });
 
-    const courses = [...new Array(5).keys()].map(
-      (index) =>
+    const courses = [
+      { name: "Introduction to Statistics" },
+      { name: "Advanced Harmony" },
+      { name: "Computer Graphics" },
+      { name: "Pharmacology" },
+      { name: "Macroeconomy" },
+    ].map(
+      (course) =>
         app.locals.database.get<{ id: number }>(
           sql`
             INSERT INTO "courses" ("reference", "name", "nextConversationReference")
             VALUES (
               ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${
-                [
-                  "Introduction to Statistics",
-                  "Advanced Harmony",
-                  "Computer Graphics",
-                  "Pharmacology",
-                  "Macroeconomy",
-                ][index]
-              },
+              ${course.name},
               ${51}
             )
             RETURNING *
@@ -13321,37 +13319,43 @@ ${value}</textarea
     );
 
     const enrollments = [
-      ...courses.map(
-        (course, index) =>
+      ...[
+        {
+          course: courses[0],
+          role: "staff",
+          accentColor: "purple",
+        },
+        {
+          course: courses[1],
+          role: "student",
+          accentColor: "fuchsia",
+        },
+        {
+          course: courses[2],
+          role: "staff",
+          accentColor: "pink",
+        },
+        {
+          course: courses[3],
+          role: "staff",
+          accentColor: "rose",
+        },
+        {
+          course: courses[4],
+          role: "student",
+          accentColor: "red",
+        },
+      ].map(
+        (enrollment) =>
           app.locals.database.get<{ id: number }>(
             sql`
               INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
               VALUES (
                 ${demonstrationUser.id},
-                ${course.id},
+                ${enrollment.course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${["staff", "student", "staff", "staff", "student"][index]},
-                ${
-                  [
-                    "purple",
-                    "fuchsia",
-                    "pink",
-                    "rose",
-                    "red",
-                    "orange",
-                    "amber",
-                    "yellow",
-                    "lime",
-                    "green",
-                    "emerald",
-                    "teal",
-                    "cyan",
-                    "sky",
-                    "blue",
-                    "indigo",
-                    "violet",
-                  ][index]
-                }
+                ${enrollment.role},
+                ${enrollment.accentColor}
               )
               RETURNING *
             `
@@ -13367,7 +13371,7 @@ ${value}</textarea
                 ${user.id},
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${Math.random() < 0.1 ? "staff" : "student"},
+                ${Math.random() < 1 / 10 ? "staff" : "student"},
                 ${faker.helpers.randomize([
                   "purple",
                   "fuchsia",
