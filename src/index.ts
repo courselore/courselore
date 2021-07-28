@@ -13280,7 +13280,11 @@ ${value}</textarea
 
     const users = [...new Array(500)].map((_) => {
       const card = faker.helpers.contextualCard();
-      return app.locals.database.get<{ id: number }>(
+      return app.locals.database.get<{
+        id: number;
+        email: string;
+        name: string | null;
+      }>(
         sql`
             INSERT INTO "users" ("email", "name", "avatar", "biography")
             VALUES (
@@ -13317,6 +13321,43 @@ ${value}</textarea
           `
         )!
     );
+
+    for (const course of courses)
+      for (const _ of new Array(20)) {
+        const expiresAt = faker.helpers.randomize([
+          faker.date.past(0.3),
+          faker.date.future(0.3),
+          null,
+        ]);
+        const user = faker.helpers.randomize([
+          faker.helpers.randomize(users),
+          null,
+        ]);
+        const usedAt =
+          user === null ? null : faker.date.past(0.1, expiresAt ?? new Date());
+        app.locals.database.run(
+          sql`
+            INSERT INTO "invitations" (
+              "expiresAt",
+              "usedAt",
+              "course",
+              "reference",
+              "email",
+              "name",
+              "role"
+            )
+            VALUES (
+              ${expiresAt},
+              ${usedAt},
+              ${course.id},
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${user?.email},
+              ${faker.helpers.randomize([user?.name, null])},
+              ${faker.helpers.randomize(app.locals.constants.roles)}
+            )
+          `
+        );
+      }
 
     const enrollments = [
       ...[
