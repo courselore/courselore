@@ -13299,29 +13299,45 @@ ${value}</textarea
       )!;
     });
 
-    const courses = [
-      { name: "Introduction to Statistics" },
-      { name: "Advanced Harmony" },
-      { name: "Computer Graphics" },
-      { name: "Pharmacology" },
-      { name: "Macroeconomy" },
-    ].map((course) => ({
-      ...app.locals.database.get<{ id: number }>(
+    for (const { name, role, accentColor } of [
+      {
+        name: "Introduction to Statistics",
+        role: "staff",
+        accentColor: "purple",
+      },
+      {
+        name: "Advanced Harmony",
+        role: "student",
+        accentColor: "fuchsia",
+      },
+      {
+        name: "Computer Graphics",
+        role: "staff",
+        accentColor: "pink",
+      },
+      {
+        name: "Pharmacology",
+        role: "staff",
+        accentColor: "rose",
+      },
+      {
+        name: "Macroeconomy",
+        role: "student",
+        accentColor: "red",
+      },
+    ]) {
+      const course = app.locals.database.get<{ id: number }>(
         sql`
           INSERT INTO "courses" ("reference", "name", "nextConversationReference")
           VALUES (
             ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${course.name},
+            ${name},
             ${51}
           )
           RETURNING *
         `
-      )!,
-      enrollments: [] as { id: number }[],
-      staff: [] as { id: number }[],
-    }));
+      )!;
 
-    for (const course of courses)
       for (const _ of new Array(20)) {
         const expiresAt = faker.helpers.randomize([
           faker.date.past(0.3),
@@ -13360,34 +13376,9 @@ ${value}</textarea
         );
       }
 
-    for (const { course, role, accentColor } of [
-      {
-        course: courses[0],
-        role: "staff",
-        accentColor: "purple",
-      },
-      {
-        course: courses[1],
-        role: "student",
-        accentColor: "fuchsia",
-      },
-      {
-        course: courses[2],
-        role: "staff",
-        accentColor: "pink",
-      },
-      {
-        course: courses[3],
-        role: "staff",
-        accentColor: "rose",
-      },
-      {
-        course: courses[4],
-        role: "student",
-        accentColor: "red",
-      },
-    ]) {
-      const enrollment = app.locals.database.get<{ id: number }>(
+      const enrollments: { id: number }[] = [];
+      const staff: { id: number }[] = [];
+      const enrollment = app.locals.database.get<{ id: number; role: Role }>(
         sql`
           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
@@ -13400,11 +13391,9 @@ ${value}</textarea
           RETURNING *
         `
       )!;
-      course.enrollments.push(enrollment);
-      if (role === "staff") course.staff.push(enrollment);
-    }
+      enrollments.push(enrollment);
+      if (enrollment.role === "staff") staff.push(enrollment);
 
-    for (const course of courses)
       for (const user of faker.random.arrayElements(users, 99)) {
         const enrollment = app.locals.database.get<{ id: number; role: Role }>(
           sql`
@@ -13437,9 +13426,10 @@ ${value}</textarea
             RETURNING *
           `
         )!;
-        course.enrollments.push(enrollment);
-        if (enrollment.role === "staff") course.staff.push(enrollment);
+        enrollments.push(enrollment);
+        if (enrollment.role === "staff") staff.push(enrollment);
       }
+    }
 
     app.locals.helpers.session.open(req, res, demonstrationUser.id);
     app.locals.helpers.flash.set(
