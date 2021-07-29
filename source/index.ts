@@ -2955,6 +2955,10 @@ export default async function courselore(
         res: express.Response<any, {}>,
         user: { id: number }
       ) => void;
+      get: (
+        req: express.Request<{}, any, {}, {}, {}>,
+        res: express.Response<any, {}>
+      ) => { user: number } | undefined;
       close: (
         req: express.Request<{}, any, {}, {}, {}>,
         res: express.Response<any, {}>
@@ -2982,6 +2986,20 @@ export default async function courselore(
         ...app.locals.settings.cookieOptions(),
         maxAge,
       });
+    },
+
+    get(req, res) {
+      if (req.cookies.session === undefined) return;
+      const session = app.locals.database.get<{ user: number }>(
+        sql`
+          SELECT "user"
+          FROM "sessions"
+          WHERE "token" = ${req.cookies.session} AND
+                datetime(${new Date().toISOString()}) < datetime("expiresAt")
+        `
+      );
+      if (session === undefined) app.locals.helpers.session.close(req, res);
+      return session;
     },
 
     close(req, res) {
@@ -3035,6 +3053,32 @@ export default async function courselore(
       res.clearCookie("flash", app.locals.settings.cookieOptions());
       return flash?.content;
     },
+  };
+
+  interface Helpers {
+    isAuthenticated: (
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>
+    ) => boolean;
+  }
+  app.locals.helpers.isAuthenticated = (req, res) => {
+    if (req.cookies.session === undefined) return false;
+    if (
+      app.locals.database.get<{ exists: number }>(
+        sql`
+          SELECT EXISTS(
+            SELECT 1
+            FROM "sessions"
+            WHERE "token" = ${req.cookies.session} AND
+                  datetime(${new Date().toISOString()}) < datetime("expiresAt")
+          ) AS "exists"
+        `
+      )!.exists === 0
+    ) {
+      app.locals.helpers.session.close(req, res);
+      return false;
+    }
+    return true;
   };
 
   interface Middlewares {
@@ -11069,16 +11113,7 @@ ${value}</textarea
       res: express.Response<any, IsConversationAccessibleMiddlewareLocals>
     ) => boolean;
   }
-  app.locals.helpers.mayEditConversation = (
-    req: express.Request<
-      { courseReference: string; conversationReference: string },
-      any,
-      {},
-      {},
-      IsConversationAccessibleMiddlewareLocals
-    >,
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>
-  ): boolean =>
+  app.locals.helpers.mayEditConversation = (req, res) =>
     res.locals.enrollment.role === "staff" ||
     res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
 
