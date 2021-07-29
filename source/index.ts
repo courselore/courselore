@@ -271,7 +271,6 @@ export default async function courselore(
       CREATE TABLE "sessions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NOT NULL,
         "token" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
       );
@@ -286,7 +285,6 @@ export default async function courselore(
       CREATE TABLE "emailsQueue" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "tryAfter" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
         "reference" TEXT NOT NULL,
         "to" TEXT NOT NULL,
