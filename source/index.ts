@@ -35,6 +35,7 @@ import { JSDOM } from "jsdom";
 
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
+import argon2 from "argon2";
 import sharp from "sharp";
 import QRCode from "qrcode";
 import lodash from "lodash";
@@ -87,43 +88,8 @@ export default async function courselore(
   interface Constants {
     accentColors: AccentColor[];
   }
-  type AccentColor =
-    | "purple"
-    | "fuchsia"
-    | "pink"
-    | "rose"
-    | "red"
-    | "orange"
-    | "amber"
-    | "yellow"
-    | "lime"
-    | "green"
-    | "emerald"
-    | "teal"
-    | "cyan"
-    | "sky"
-    | "blue"
-    | "indigo"
-    | "violet";
-  app.locals.constants.accentColors = [
-    "purple",
-    "fuchsia",
-    "pink",
-    "rose",
-    "red",
-    "orange",
-    "amber",
-    "yellow",
-    "lime",
-    "green",
-    "emerald",
-    "teal",
-    "cyan",
-    "sky",
-    "blue",
-    "indigo",
-    "violet",
-  ];
+  type AccentColor = "amber" | "teal" | "blue" | "purple";
+  app.locals.constants.accentColors = ["amber", "teal", "blue", "purple"];
 
   interface Constants {
     anonymousEnrollment: AnonymousEnrollment;
@@ -166,36 +132,14 @@ export default async function courselore(
   app.locals.database = new Database(path.join(rootDirectory, "courselore.db"));
   app.locals.database.migrate(
     sql`
-      CREATE TABLE "authenticationNonces" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "email" TEXT NOT NULL UNIQUE
-      );
-
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "email" TEXT NOT NULL UNIQUE,
-        "name" TEXT NULL,
+        "password" TEXT NOT NULL,
+        "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL
-      );
-
-      CREATE TABLE "sessions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "expiresAt" TEXT NOT NULL,
-        "token" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
-      );
-
-      CREATE TABLE "flashes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "nonce" TEXT NOT NULL UNIQUE,
-        "content" TEXT NOT NULL
       );
 
       CREATE TABLE "courses" (
@@ -226,7 +170,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('purple', 'fuchsia', 'pink', 'rose', 'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('amber', 'teal', 'blue', 'purple')),
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
@@ -263,7 +207,7 @@ export default async function courselore(
       CREATE TABLE "messages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "updatedAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "updatedAt" TEXT NULL,
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
@@ -322,6 +266,21 @@ export default async function courselore(
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
         "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
         UNIQUE ("conversation", "tag")
+      );
+
+      CREATE TABLE "sessions" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "expiresAt" TEXT NOT NULL,
+        "token" TEXT NOT NULL UNIQUE,
+        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+      );
+
+      CREATE TABLE "flashes" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "nonce" TEXT NOT NULL UNIQUE,
+        "content" TEXT NOT NULL
       );
 
       CREATE TABLE "emailsQueue" (
@@ -13404,25 +13363,7 @@ ${value}</textarea
               ${course.id},
               ${cryptoRandomString({ length: 10, type: "numeric" })},
               ${Math.random() < 1 / 10 ? "staff" : "student"},
-              ${faker.helpers.randomize([
-                "purple",
-                "fuchsia",
-                "pink",
-                "rose",
-                "red",
-                "orange",
-                "amber",
-                "yellow",
-                "lime",
-                "green",
-                "emerald",
-                "teal",
-                "cyan",
-                "sky",
-                "blue",
-                "indigo",
-                "violet",
-              ])}
+              ${faker.helpers.randomize(app.locals.constants.accentColors)}
             )
             RETURNING *
           `
