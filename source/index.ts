@@ -692,21 +692,6 @@ export default async function courselore(
                 cursor: pointer;
               }
 
-              ::selection {
-                color: var(--color--primary--50);
-                background-color: var(--color--primary--800);
-              }
-
-              img,
-              svg {
-                max-width: 100%;
-                height: auto;
-              }
-
-              :disabled {
-                cursor: not-allowed;
-              }
-
               /* COMPONENTS */
 
               .heading--display--1 {
@@ -1870,23 +1855,15 @@ export default async function courselore(
         >
           $${app.locals.settings.demonstration
             ? html`
-                <nav
+                <div
                   style="${css`
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
-                    color: var(--color--rose--50);
-                    background-color: var(--color--rose--500);
+                    background-color: var(--color--gray--cool--200);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--rose--200);
-                      background-color: var(--color--rose--700);
+                      background-color: var(--color--gray--cool--900);
                     }
-                    padding: var(--space--0) var(--space--2);
-                    box-shadow: inset 0 calc(-1 * var(--border-width--1))
-                      var(--color--rose--600);
-                    @media (prefers-color-scheme: dark) {
-                      box-shadow: inset 0 calc(-1 * var(--border-width--1))
-                        var(--color--rose--900);
-                    }
+                    padding: var(--space--0) var(--space--4);
                     display: flex;
                     column-gap: var(--space--2);
                     justify-content: center;
@@ -1894,41 +1871,11 @@ export default async function courselore(
 
                     .button--demonstration-mode {
                       padding: var(--space--1) var(--space--2);
-                      position: relative;
-                      display: flex;
-                      gap: var(--space--2);
-                      transition-property: var(
-                        --transition-property--box-shadow
-                      );
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--in-out
-                      );
-
-                      &:hover,
-                      &:focus-within,
-                      &.active:focus {
-                        box-shadow: inset 0 calc(-1 * var(--border-width--4))
-                          var(--color--rose--700);
-                        @media (prefers-color-scheme: dark) {
-                          box-shadow: inset 0 calc(-1 * var(--border-width--4))
-                            var(--color--rose--800);
-                        }
-                      }
-                      &:active,
-                      &.active {
-                        box-shadow: inset 0 calc(-1 * var(--line-height--xl))
-                          var(--color--rose--700);
-                        @media (prefers-color-scheme: dark) {
-                          box-shadow: inset 0 calc(-1 * var(--line-height--xl))
-                            var(--color--rose--800);
-                        }
-                      }
                     }
                   `}"
                 >
                   <button
-                    class="button--demonstration-mode"
+                    class="button button--secondary"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, conversations, users, and so forth. Also, no emails are actually sent; they show up in the Demonstration Inbox instead. Otherwise this is a fully functioning installation of CourseLore, which is and always will be free and open-source.",
@@ -1943,7 +1890,7 @@ export default async function courselore(
                   </button>
                   <a
                     href="${app.locals.settings.url}/demonstration-inbox"
-                    class="button--demonstration-mode ${req.path ===
+                    class="button button--secondary ${req.path ===
                     "/demonstration-inbox"
                       ? "active"
                       : ""}"
@@ -1960,7 +1907,7 @@ export default async function courselore(
                   </a>
                   <div>
                     <button
-                      class="button--demonstration-mode"
+                      class="button button--secondary"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
@@ -2005,13 +1952,13 @@ export default async function courselore(
                           action="${app.locals.settings
                             .url}/turn-off?_method=DELETE"
                         >
-                          <button class="button--demonstration-mode">
+                          <button class="button button--secondary">
                             <i class="bi bi-power"></i>
                             Turn off
                           </button>
                         </form>
                       `}
-                </nav>
+                </div>
               `
             : html``}
 
@@ -3241,110 +3188,120 @@ export default async function courselore(
     IsUnauthenticatedMiddlewareLocals
   >("/sign-in", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
     res.send(
-      app.locals.layouts.box({
+      app.locals.layouts.applicationBase({
         req,
         res,
-        head: html`<title>Sign in · CourseLore · The Open-Source Student Forum</title>`,
-        body: html`
-          <div
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-          >
-            <h2
-              class="heading--2"
-              style="${css`
-                color: var(--color--primary--200);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--primary--200);
-                }
-              `}"
-            >
-              <i class="bi bi-box-arrow-in-right"></i>
-              Authenticate
-            </h2>
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/authenticate?${qs.stringify({
-                redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
-              })}"
-            >
-              <div
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                <div
-                  style="${css`
-                    display: grid;
-                    & > * {
-                      grid-area: 1 / 1;
-                    }
-                  `}"
-                >
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value="${req.query.email ?? ""}"
-                    required
-                    autofocus
-                    class="input--text"
-                    style="${css`
-                      padding-right: var(--space--36);
-                    `}"
-                  />
-                  <div
-                    style="${css`
-                      justify-self: end;
-                      padding: var(--space--1);
-                      display: flex;
-                      gap: var(--space--2);
-                    `}"
-                  >
-                    <button
-                      type="button"
-                      class="button--inline"
-                      data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
-                            theme: "tooltip",
-                            trigger: "click",
-                          });
-                        `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                    <button class="button button--primary">
-                      Continue <i class="bi bi-chevron-right"></i>
-                    </button>
-                  </div>
-                </div>
-                <p
-                  style="${css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    color: var(--color--primary--300);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--300);
-                    }
-                  `}"
-                >
-                  We recommend using the email address you use at your
-                  educational institution.
-                </p>
-              </div>
-            </form>
-          </div>
-        `,
+        head: html``,
+        body: html`HELLO`,
       })
     );
+    // res.send(
+    //   app.locals.layouts.box({
+    //     req,
+    //     res,
+    //     head: html`<title>
+    //       Sign in · CourseLore · The Open-Source Student Forum
+    //     </title>`,
+    //     body: html`
+    //       <div
+    //         style="${css`
+    //           display: flex;
+    //           flex-direction: column;
+    //           gap: var(--space--2);
+    //         `}"
+    //       >
+    //         <h2
+    //           class="heading--2"
+    //           style="${css`
+    //             color: var(--color--primary--200);
+    //             @media (prefers-color-scheme: dark) {
+    //               color: var(--color--primary--200);
+    //             }
+    //           `}"
+    //         >
+    //           <i class="bi bi-box-arrow-in-right"></i>
+    //           Authenticate
+    //         </h2>
+    //         <form
+    //           method="POST"
+    //           action="${app.locals.settings.url}/authenticate?${qs.stringify({
+    //             redirect: req.query.redirect,
+    //             email: req.query.email,
+    //             name: req.query.name,
+    //           })}"
+    //         >
+    //           <div
+    //             style="${css`
+    //               display: flex;
+    //               flex-direction: column;
+    //               gap: var(--space--2);
+    //             `}"
+    //           >
+    //             <div
+    //               style="${css`
+    //                 display: grid;
+    //                 & > * {
+    //                   grid-area: 1 / 1;
+    //                 }
+    //               `}"
+    //             >
+    //               <input
+    //                 type="email"
+    //                 name="email"
+    //                 placeholder="Email"
+    //                 value="${req.query.email ?? ""}"
+    //                 required
+    //                 autofocus
+    //                 class="input--text"
+    //                 style="${css`
+    //                   padding-right: var(--space--36);
+    //                 `}"
+    //               />
+    //               <div
+    //                 style="${css`
+    //                   justify-self: end;
+    //                   padding: var(--space--1);
+    //                   display: flex;
+    //                   gap: var(--space--2);
+    //                 `}"
+    //               >
+    //                 <button
+    //                   type="button"
+    //                   class="button--inline"
+    //                   data-ondomcontentloaded="${javascript`
+    //                       tippy(this, {
+    //                         content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
+    //                         theme: "tooltip",
+    //                         trigger: "click",
+    //                       });
+    //                     `}"
+    //                 >
+    //                   <i class="bi bi-info-circle"></i>
+    //                 </button>
+    //                 <button class="button button--primary">
+    //                   Continue <i class="bi bi-chevron-right"></i>
+    //                 </button>
+    //               </div>
+    //             </div>
+    //             <p
+    //               style="${css`
+    //                 font-size: var(--font-size--xs);
+    //                 line-height: var(--line-height--xs);
+    //                 color: var(--color--primary--300);
+    //                 @media (prefers-color-scheme: dark) {
+    //                   color: var(--color--primary--300);
+    //                 }
+    //               `}"
+    //             >
+    //               We recommend using the email address you use at your
+    //               educational institution.
+    //             </p>
+    //           </div>
+    //         </form>
+    //       </div>
+    //     `,
+    //   })
+    // );
   });
 
   // app.post<
