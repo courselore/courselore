@@ -2950,6 +2950,7 @@ export default async function courselore(
 
   interface Helpers {
     session: {
+      maxAge: number;
       open: (
         req: express.Request<{}, any, {}, {}, {}>,
         res: express.Response<any, {}>,
@@ -2966,16 +2967,15 @@ export default async function courselore(
     };
   }
   app.locals.helpers.session = {
+    maxAge: 180 * 24 * 60 * 60 * 1000,
+
     open(req, res, user) {
-      const maxAge = 180 * 24 * 60 * 60 * 1000;
       const session = app.locals.database.get<{
-        expiresAt: string;
         token: string;
       }>(
         sql`
-          INSERT INTO "sessions" ("expiresAt", "token", "user")
+          INSERT INTO "sessions" ("token", "user")
           VALUES (
-            ${new Date(Date.now() + maxAge).toISOString()},
             ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
             ${user.id}
           )
@@ -2984,21 +2984,33 @@ export default async function courselore(
       )!;
       res.cookie("session", session.token, {
         ...app.locals.settings.cookieOptions(),
-        maxAge,
+        maxAge: app.locals.helpers.session.maxAge,
       });
     },
 
     get(req, res) {
       if (req.cookies.session === undefined) return;
-      const session = app.locals.database.get<{ user: number }>(
-        sql`
-          SELECT "user"
-          FROM "sessions"
-          WHERE "token" = ${req.cookies.session} AND
-                datetime(${new Date().toISOString()}) < datetime("expiresAt")
-        `
+      const session = app.locals.database.get<{
+        createdAt: string;
+        user: number;
+      }>(
+        sql`SELECT "createdAt", "user" FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
-      if (session === undefined) app.locals.helpers.session.close(req, res);
+      if (
+        session === undefined ||
+        new Date(session.createdAt).getTime() +
+          app.locals.helpers.session.maxAge <
+          Date.now()
+      )
+        app.locals.helpers.session.close(req, res);
+      else if (
+        new Date(session.createdAt).getTime() +
+          app.locals.helpers.session.maxAge / 2 <
+        Date.now()
+      ) {
+        app.locals.helpers.session.close(req, res);
+        app.locals.helpers.session.open(req, res, { id: session.user });
+      }
       return session;
     },
 
