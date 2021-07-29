@@ -1858,56 +1858,50 @@ export default async function courselore(
                     flex-wrap: wrap;
                   `}"
                 >
-                  <button
-                    class="button"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, conversations, users, and so forth.",
-                        theme: "tooltip",
-                        trigger: "click",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-easel"></i>
-                    Demonstration Mode
-                  </button>
                   <div>
                     <button
                       class="button"
                       data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
-                          theme: "dropdown",
-                          trigger: "click",
-                          interactive: true,
-                        });
-                      `}"
+                      tippy(this, {
+                        content: this.nextElementSibling.firstElementChild,
+                        theme: "dropdown",
+                        trigger: "click",
+                        interactive: true,
+                      });
+                    `}"
                     >
-                      <i class="bi bi-stars"></i>
-                      Create Demonstration Data
+                      <i class="bi bi-easel"></i>
+                      Demonstration Mode
                     </button>
                     <div hidden>
-                      <form
-                        method="POST"
-                        action="${app.locals.settings.url}/demonstration-data"
-                        style="${css`
-                          padding: var(--space--2) var(--space--0);
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--4);
-                        `}"
-                      >
+                      <div>
                         <p>
-                          This will create demonstration data including users,
-                          courses, conversations, and so forth, and sign you in
-                          as a demonstration user. It gives you a better idea of
-                          what CourseLore looks like in use.
+                          CourseLore is running in Demonstration Mode. All data
+                          may be lost, including courses, conversations, users,
+                          and so forth.
                         </p>
-                        <button class="button button--primary">
-                          <i class="bi bi-stars"></i>
-                          Create Demonstration Data
-                        </button>
-                      </form>
+                        <form
+                          method="POST"
+                          action="${app.locals.settings.url}/demonstration-data"
+                          style="${css`
+                            padding: var(--space--2) var(--space--0);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
+                        >
+                          <p>
+                            This will create demonstration data including users,
+                            courses, conversations, and so forth, and sign you
+                            in as a demonstration user. It gives you a better
+                            idea of what CourseLore looks like in use.
+                          </p>
+                          <button class="button button--primary">
+                            <i class="bi bi-stars"></i>
+                            Create Demonstration Data
+                          </button>
+                        </form>
+                      </div>
                     </div>
                   </div>
                   $${app.locals.settings.env === "production"
