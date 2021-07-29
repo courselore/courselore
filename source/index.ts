@@ -3067,32 +3067,6 @@ export default async function courselore(
     },
   };
 
-  interface Helpers {
-    isAuthenticated: (
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>
-    ) => boolean;
-  }
-  app.locals.helpers.isAuthenticated = (req, res) => {
-    if (req.cookies.session === undefined) return false;
-    if (
-      app.locals.database.get<{ exists: number }>(
-        sql`
-          SELECT EXISTS(
-            SELECT 1
-            FROM "sessions"
-            WHERE "token" = ${req.cookies.session} AND
-                  datetime(${new Date().toISOString()}) < datetime("expiresAt")
-          ) AS "exists"
-        `
-      )!.exists === 0
-    ) {
-      app.locals.helpers.session.close(req, res);
-      return false;
-    }
-    return true;
-  };
-
   interface Middlewares {
     isUnauthenticated: express.RequestHandler<
       {},
@@ -3105,23 +3079,9 @@ export default async function courselore(
   interface IsUnauthenticatedMiddlewareLocals {}
   app.locals.middlewares.isUnauthenticated = [
     (req, res, next) => {
-      if (req.cookies.session === undefined) return next();
-      if (
-        app.locals.database.get<{ exists: number }>(
-          sql`
-            SELECT EXISTS(
-              SELECT 1
-              FROM "sessions"
-              WHERE "token" = ${req.cookies.session} AND
-                    datetime(${new Date().toISOString()}) < datetime("expiresAt")
-            ) AS "exists"
-          `
-        )!.exists === 0
-      ) {
-        app.locals.helpers.session.close(req, res);
-        return next();
-      }
-      next("route");
+      if (app.locals.helpers.session.get(req, res) !== undefined)
+        return next("route");
+      next();
     },
   ];
 
@@ -3167,46 +3127,23 @@ export default async function courselore(
   }
   app.locals.middlewares.isAuthenticated = [
     (req, res, next) => {
-      if (req.cookies.session === undefined) return next("route");
-      const session = app.locals.database.get<{
-        expiresAt: string;
-        userId: number;
-        userEmail: string;
-        userName: string | null;
-        userAvatar: string | null;
-        userBiography: string | null;
+      const userId = app.locals.helpers.session.get(req, res);
+      if (userId === undefined) return next("route");
+
+      res.locals.user = app.locals.database.get<{
+        id: number;
+        email: string;
+        name: string;
+        avatar: string | null;
+        biography: string | null;
       }>(
         sql`
-          SELECT "sessions"."expiresAt",
-                 "users"."id" AS "userId",
-                 "users"."email" AS "userEmail",
-                 "users"."name" AS "userName",
-                 "users"."avatar" AS "userAvatar",
-                 "users"."biography" AS "userBiography"
-          FROM "sessions"
-          JOIN "users" ON "sessions"."user" = "users"."id"
-          WHERE "sessions"."token" = ${req.cookies.session} AND
-                CURRENT_TIMESTAMP < datetime("sessions"."expiresAt")
+          SELECT "id", "email", "name", "avatar", "biography"
+          FROM "users"
+          WHERE "id" = ${userId}
         `
-      );
-      if (session === undefined) {
-        app.locals.helpers.session.close(req, res);
-        return next("route");
-      }
-      if (
-        new Date(session.expiresAt).getTime() - Date.now() <
-        30 * 24 * 60 * 60 * 1000
-      ) {
-        app.locals.helpers.session.close(req, res);
-        app.locals.helpers.session.open(req, res, session.userId);
-      }
-      res.locals.user = {
-        id: session.userId,
-        email: session.userEmail,
-        name: session.userName,
-        avatar: session.userAvatar,
-        biography: session.userBiography,
-      };
+      )!;
+
       res.locals.invitations = app.locals.database
         .all<{
           id: number;
@@ -3243,6 +3180,7 @@ export default async function courselore(
           reference: invitation.reference,
           role: invitation.role,
         }));
+
       res.locals.enrollments = app.locals.database
         .all<{
           id: number;
@@ -3282,19 +3220,18 @@ export default async function courselore(
           role: enrollment.role,
           accentColor: enrollment.accentColor,
         }));
+
       next();
     },
   ];
 
-  app.get<
-    {},
-    HTML,
-    {},
-    { redirect?: string; email?: string; name?: string },
-    IsUnauthenticatedMiddlewareLocals
-  >("/", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
-    res.redirect(`${app.locals.settings.url}/authenticate`);
-  });
+  app.get<{}, HTML, {}, {}, IsUnauthenticatedMiddlewareLocals>(
+    "/",
+    ...app.locals.middlewares.isUnauthenticated,
+    (req, res) => {
+      res.redirect(`${app.locals.settings.url}/sign-in`);
+    }
+  );
 
   app.get<
     {},
@@ -3302,117 +3239,113 @@ export default async function courselore(
     {},
     { redirect?: string; email?: string; name?: string },
     IsUnauthenticatedMiddlewareLocals
-  >(
-    "/authenticate",
-    ...app.locals.middlewares.isUnauthenticated,
-    (req, res) => {
-      res.send(
-        app.locals.layouts.box({
-          req,
-          res,
-          head: html`<title>CourseLore · The Open-Source Student Forum</title>`,
-          body: html`
-            <div
+  >("/sign-in", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
+    res.send(
+      app.locals.layouts.box({
+        req,
+        res,
+        head: html`<title>CourseLore · The Open-Source Student Forum</title>`,
+        body: html`
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            <h2
+              class="heading--2"
               style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
+                color: var(--color--primary--200);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--primary--200);
+                }
               `}"
             >
-              <h2
-                class="heading--2"
+              <i class="bi bi-box-arrow-in-right"></i>
+              Authenticate
+            </h2>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/authenticate?${qs.stringify({
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
+              })}"
+            >
+              <div
                 style="${css`
-                  color: var(--color--primary--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                  }
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
                 `}"
-              >
-                <i class="bi bi-box-arrow-in-right"></i>
-                Authenticate
-              </h2>
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/authenticate?${qs.stringify({
-                  redirect: req.query.redirect,
-                  email: req.query.email,
-                  name: req.query.name,
-                })}"
               >
                 <div
                   style="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
                   `}"
                 >
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value="${req.query.email ?? ""}"
+                    required
+                    autofocus
+                    class="input--text"
+                    style="${css`
+                      padding-right: var(--space--36);
+                    `}"
+                  />
                   <div
                     style="${css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
+                      justify-self: end;
+                      padding: var(--space--1);
+                      display: flex;
+                      gap: var(--space--2);
                     `}"
                   >
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                      value="${req.query.email ?? ""}"
-                      required
-                      autofocus
-                      class="input--text"
-                      style="${css`
-                        padding-right: var(--space--36);
-                      `}"
-                    />
-                    <div
-                      style="${css`
-                        justify-self: end;
-                        padding: var(--space--1);
-                        display: flex;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <button
-                        type="button"
-                        class="button--inline"
-                        data-ondomcontentloaded="${javascript`
+                    <button
+                      type="button"
+                      class="button--inline"
+                      data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
                             theme: "tooltip",
                             trigger: "click",
                           });
                         `}"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                      <button class="button button--primary">
-                        Continue <i class="bi bi-chevron-right"></i>
-                      </button>
-                    </div>
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                    <button class="button button--primary">
+                      Continue <i class="bi bi-chevron-right"></i>
+                    </button>
                   </div>
-                  <p
-                    style="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      color: var(--color--primary--300);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--300);
-                      }
-                    `}"
-                  >
-                    We recommend using the email address you use at your
-                    educational institution.
-                  </p>
                 </div>
-              </form>
-            </div>
-          `,
-        })
-      );
-    }
-  );
+                <p
+                  style="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    color: var(--color--primary--300);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--primary--300);
+                    }
+                  `}"
+                >
+                  We recommend using the email address you use at your
+                  educational institution.
+                </p>
+              </div>
+            </form>
+          </div>
+        `,
+      })
+    );
+  });
 
   app.post<
     {},
