@@ -543,7 +543,6 @@ Insiders Builds are generated on every push. They’re useful for development an
   - Blocked by experimental support in ts-node-dev (https://github.com/TypeStrong/ts-node/issues/1007) & Jest (https://jestjs.io/docs/en/ecmascript-modules).
   - ESM unlocks top-level await, which is cool, but I don’t we’d need.
 - <https://github.com/wclr/ts-node-dev/issues/243>: Stop using `--pool` when calling `ts-node-dev`.
-- Call Prettier to check contents of `public/` folders.
 - Use `Cache-control: no-store`.
 - Use database indices where necessary.
 - Graceful HTTP shutdown

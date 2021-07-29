@@ -19,7 +19,7 @@
   "bugs": "https://github.com/courselore/courselore/issues",
   "homepage": "https://github.com/courselore/courselore#readme",
   "scripts": {
-    "postinstall": "npm --prefix public install",
+    "postinstall": "npm --prefix static install",
     "start": "npx ts-node source/index.ts configuration/development.js",
     "test": "prettier --check \"source/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"

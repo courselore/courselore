@@ -343,11 +343,6 @@ export default async function courselore(
           <link
             rel="stylesheet"
             href="${app.locals.settings
-              .url}/node_modules/@ibm/plex/css/ibm-plex.min.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${app.locals.settings
               .url}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
           />
           <link
@@ -387,12 +382,6 @@ export default async function courselore(
               disableScroll: true,
               disableFocus: true,
             };
-          </script>
-
-          <script type="module">
-            import fitTextarea from "${app.locals.settings
-              .url}/node_modules/fit-textarea/index.js";
-            window.fitTextarea = fitTextarea;
           </script>
 
           <script type="module">
@@ -676,25 +665,6 @@ export default async function courselore(
         <body
           style="${css`
             @at-root {
-              /* DESIGN SYSTEM */
-
-              :root {
-                --font-family--sans-serif: "IBM Plex Sans", sans-serif;
-                --font-family--serif: "IBM Plex Serif", serif;
-                --font-family--monospace: "IBM Plex Mono", monospace;
-
-                --color--primary--50: var(--color--purple--50);
-                --color--primary--100: var(--color--purple--100);
-                --color--primary--200: var(--color--purple--200);
-                --color--primary--300: var(--color--purple--300);
-                --color--primary--400: var(--color--purple--400);
-                --color--primary--500: var(--color--purple--500);
-                --color--primary--600: var(--color--purple--600);
-                --color--primary--700: var(--color--purple--700);
-                --color--primary--800: var(--color--purple--800);
-                --color--primary--900: var(--color--purple--900);
-              }
-
               /* GLOBAL STYLES */
 
               /* TODO: Try to get rid of most of these. Either they go into components, or they go into ‘.text’. */
@@ -2919,7 +2889,7 @@ export default async function courselore(
     small: app.locals.partials.artGenerator({ size: 30, order: 3 }),
   };
 
-  app.use(express.static(path.join(__dirname, "../public")));
+  app.use(express.static(path.join(__dirname, "../static")));
   app.use(methodOverride("_method"));
   interface Settings {
     cookieOptions: () => express.CookieOptions;
@@ -2930,8 +2900,8 @@ export default async function courselore(
       domain: url.hostname,
       httpOnly: true,
       path: url.pathname,
-      secure: url.protocol === "https",
       sameSite: true,
+      secure: true,
     };
   };
   app.use(cookieParser());
@@ -2993,15 +2963,19 @@ export default async function courselore(
   }
   app.locals.helpers.flash = {
     set(req, res, content) {
-      const nonce = cryptoRandomString({ length: 10, type: "alphanumeric" });
-      app.locals.database.run(
+      const flash = app.locals.database.get<{ nonce: string }>(
         sql`
-          INSERT INTO "flashes" ("nonce", "content") VALUES (${nonce}, ${content})
+          INSERT INTO "flashes" ("nonce", "content")
+          VALUES (
+            ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
+            ${content}
+          )
+          RETURNING *
         `
-      );
+      )!;
       const expiresAt = new Date();
       expiresAt.setMinutes(expiresAt.getMinutes() + 5);
-      res.cookie("flash", nonce, {
+      res.cookie("flash", flash.nonce, {
         ...app.locals.settings.cookieOptions(),
         expires: expiresAt,
       });
@@ -3011,9 +2985,7 @@ export default async function courselore(
       const flash = app.locals.database.get<{
         content: HTML;
       }>(
-        sql`
-          SELECT "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}
-        `
+        sql`SELECT "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       app.locals.database.run(
         sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
