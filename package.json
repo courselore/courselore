@@ -18,9 +18,6 @@
   "license": "GPL",
   "bugs": "https://github.com/courselore/courselore/issues",
   "homepage": "https://github.com/courselore/courselore#readme",
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "postinstall": "npm --prefix public install",
     "start": "npx ts-node source/index.ts configuration/development.js",
