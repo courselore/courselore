@@ -2949,6 +2949,50 @@ export default async function courselore(
   ];
 
   interface Helpers {
+    session: {
+      open: (
+        req: express.Request<{}, any, {}, {}, {}>,
+        res: express.Response<any, {}>,
+        user: { id: number }
+      ) => void;
+      close: (
+        req: express.Request<{}, any, {}, {}, {}>,
+        res: express.Response<any, {}>
+      ) => void;
+    };
+  }
+  app.locals.helpers.session = {
+    open(req, res, user) {
+      const maxAge = 180 * 24 * 60 * 60 * 1000;
+      const session = app.locals.database.get<{
+        expiresAt: string;
+        token: string;
+      }>(
+        sql`
+          INSERT INTO "sessions" ("expiresAt", "token", "user")
+          VALUES (
+            ${new Date(Date.now() + maxAge).toISOString()},
+            ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
+            ${user.id}
+          )
+          RETURNING *
+        `
+      )!;
+      res.cookie("session", session.token, {
+        ...app.locals.settings.cookieOptions(),
+        maxAge,
+      });
+    },
+
+    close(req, res) {
+      app.locals.database.run(
+        sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
+      );
+      res.clearCookie("session", app.locals.settings.cookieOptions());
+    },
+  };
+
+  interface Helpers {
     flash: {
       set: (
         req: express.Request<{}, any, {}, {}, {}>,
@@ -2973,11 +3017,9 @@ export default async function courselore(
           RETURNING *
         `
       )!;
-      const expiresAt = new Date();
-      expiresAt.setMinutes(expiresAt.getMinutes() + 5);
       res.cookie("flash", flash.nonce, {
         ...app.locals.settings.cookieOptions(),
-        expires: expiresAt,
+        maxAge: 5 * 60 * 1000,
       });
     },
 
@@ -2992,85 +3034,6 @@ export default async function courselore(
       );
       res.clearCookie("flash", app.locals.settings.cookieOptions());
       return flash?.content;
-    },
-  };
-
-  interface Helpers {
-    authenticationNonce: {
-      create: (email: string) => string;
-      verify: (nonce: string) => string | undefined;
-    };
-  }
-  app.locals.helpers.authenticationNonce = {
-    create(email) {
-      app.locals.database.run(
-        sql`DELETE FROM "authenticationNonces" WHERE "email" = ${email}`
-      );
-      const nonce = cryptoRandomString({ length: 40, type: "numeric" });
-      const expiresAt = new Date();
-      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
-      app.locals.database.run(
-        sql`
-          INSERT INTO "authenticationNonces" ("expiresAt", "nonce", "email")
-          VALUES (${expiresAt.toISOString()}, ${nonce}, ${email})
-        `
-      );
-      return nonce;
-    },
-
-    verify(nonce) {
-      const authenticationNonce = app.locals.database.get<{
-        email: string;
-      }>(
-        sql`
-          SELECT "email"
-          FROM "authenticationNonces"
-          WHERE "nonce" = ${nonce} AND
-                datetime(${new Date().toISOString()}) < datetime("expiresAt")
-        `
-      );
-      app.locals.database.run(
-        sql`DELETE FROM "authenticationNonces" WHERE "nonce" = ${nonce}`
-      );
-      return authenticationNonce?.email;
-    },
-  };
-
-  interface Helpers {
-    session: {
-      open: (
-        req: express.Request<{}, any, {}, {}, {}>,
-        res: express.Response<any, {}>,
-        userId: number
-      ) => void;
-      close: (
-        req: express.Request<{}, any, {}, {}, {}>,
-        res: express.Response<any, {}>
-      ) => void;
-    };
-  }
-  app.locals.helpers.session = {
-    open(req, res, userId) {
-      const expiresAt = new Date();
-      expiresAt.setMonth(expiresAt.getMonth() + 2);
-      const token = cryptoRandomString({ length: 100, type: "alphanumeric" });
-      app.locals.database.run(
-        sql`
-          INSERT INTO "sessions" ("expiresAt", "token", "user")
-          VALUES (${expiresAt.toISOString()}, ${token}, ${userId})
-        `
-      );
-      res.cookie("session", token, {
-        ...app.locals.settings.cookieOptions(),
-        expires: expiresAt,
-      });
-    },
-
-    close(req, res) {
-      app.locals.database.run(
-        sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
-      );
-      res.clearCookie("session", app.locals.settings.cookieOptions());
     },
   };
 
