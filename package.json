@@ -23,8 +23,8 @@
   },
   "scripts": {
     "postinstall": "npm --prefix public install",
-    "start": "npx ts-node src/index.ts configuration/development.js",
-    "test": "prettier --check \"src/**/*\" --end-of-line auto && jest",
+    "start": "npx ts-node source/index.ts configuration/development.js",
+    "test": "prettier --check \"source/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"
   },
   "dependencies": {
@@ -89,7 +89,7 @@
   },
   "caddy": "2.4.3",
   "jest": {
-    "rootDir": "src",
+    "rootDir": "source",
     "preset": "ts-jest",
     "testEnvironment": "node"
   }
