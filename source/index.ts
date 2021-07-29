@@ -367,11 +367,6 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/tippy.js/dist/svg-arrow.css"
           />
-          <link
-            rel="stylesheet"
-            href="${app.locals.settings
-              .url}/node_modules/tippy.js/dist/border.css"
-          />
 
           <script src="${app.locals.settings
               .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
@@ -1141,11 +1136,13 @@ export default async function courselore(
               }
 
               .tippy-box {
-                font-size: var(--font-size--sm);
-                line-height: var(--line-height--sm);
+                color: var(--color--gray--cool--200);
+                --background-color: var(--color--gray--cool--900);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--cool--900);
+                  --background-color: var(--color--gray--cool--200);
+                }
                 background-color: var(--background-color);
-                border: var(--border-width--1) solid var(--border-color);
-                border-radius: var(--border-radius--md);
                 & > .tippy-svg-arrow > svg {
                   &:first-child {
                     fill: var(--border-color);
@@ -1154,9 +1151,10 @@ export default async function courselore(
                     fill: var(--background-color);
                   }
                 }
+                border-radius: var(--border-radius--md);
 
                 .tippy-content {
-                  padding: var(--space--1) var(--space--3);
+                  padding: var(--space--2) var(--space--4);
                 }
 
                 .keyboard-shortcut {
@@ -1168,36 +1166,20 @@ export default async function courselore(
                   }
                 }
 
-                &[data-theme~="tooltip"] {
-                  color: var(--color--primary--50);
-                  --background-color: var(--color--primary--900);
-                  --border-color: var(--color--primary--50);
+                /*
+                &[data-theme~="rose"] {
+                  color: var(--color--rose--50);
+                  --background-color: var(--color--rose--900);
+                  --border-color: var(--color--rose--50);
                   .keyboard-shortcut {
-                    color: var(--color--primary--200);
+                    color: var(--color--rose--200);
                   }
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--900);
-                    --background-color: var(--color--primary--200);
-                    --border-color: var(--color--primary--900);
+                    color: var(--color--rose--900);
+                    --background-color: var(--color--rose--200);
+                    --border-color: var(--color--rose--900);
                     .keyboard-shortcut {
-                      color: var(--color--primary--700);
-                    }
-                  }
-
-                  &[data-theme~="tooltip--rose"] {
-                    color: var(--color--rose--50);
-                    --background-color: var(--color--rose--900);
-                    --border-color: var(--color--rose--50);
-                    .keyboard-shortcut {
-                      color: var(--color--rose--200);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--rose--900);
-                      --background-color: var(--color--rose--200);
-                      --border-color: var(--color--rose--900);
-                      .keyboard-shortcut {
-                        color: var(--color--rose--700);
-                      }
+                      color: var(--color--rose--700);
                     }
                   }
                 }
@@ -1315,6 +1297,7 @@ export default async function courselore(
                     }
                   }
                 }
+                */
               }
 
               .modal {
@@ -1874,30 +1857,33 @@ export default async function courselore(
                       Demonstration Mode
                     </button>
                     <div hidden>
-                      <div>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
                         <p>
                           CourseLore is running in Demonstration Mode. All data
                           may be lost, including courses, conversations, users,
-                          and so forth.
+                          and so forth. Also, no emails are actually sent.
+                        </p>
+                        <p>
+                          To give you a better idea of what CourseLore looks
+                          like in use, you may create demonstration data.
                         </p>
                         <form
                           method="POST"
                           action="${app.locals.settings.url}/demonstration-data"
-                          style="${css`
-                            padding: var(--space--2) var(--space--0);
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
                         >
-                          <p>
-                            This will create demonstration data including users,
-                            courses, conversations, and so forth, and sign you
-                            in as a demonstration user. It gives you a better
-                            idea of what CourseLore looks like in use.
-                          </p>
-                          <button class="button button--primary">
-                            <i class="bi bi-stars"></i>
+                          <button
+                            class="button"
+                            style="${css`
+                              width: 100%;
+                            `}"
+                          >
+                            <i class="bi bi-easel"></i>
                             Create Demonstration Data
                           </button>
                         </form>
