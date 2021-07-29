@@ -663,37 +663,6 @@ export default async function courselore(
         <body
           style="${css`
             @at-root {
-              /* GLOBAL STYLES */
-
-              /* TODO: Try to get rid of most of these. Either they go into components, or they go into ‘.text’. */
-
-              body {
-                font-family: var(--font-family--sans-serif);
-                font-size: var(--font-size--sm);
-                line-height: var(--line-height--sm);
-              }
-
-              code {
-                font-family: var(--font-family--monospace);
-              }
-
-              pre {
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-                overflow-x: auto;
-
-                code {
-                  overflow-wrap: normal;
-                }
-              }
-
-              a,
-              button {
-                cursor: pointer;
-              }
-
-              /* COMPONENTS */
-
               .heading--display--1 {
                 font-family: var(--font-family--serif);
                 font-size: var(--font-size--4xl);
@@ -900,10 +869,25 @@ export default async function courselore(
               }
 
               .button {
-                font-weight: var(--font-weight--semibold);
-                padding: var(--space--2) var(--space--4);
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--gray--cool--300);
+                }
+                &:active {
+                  background-color: var(--color--gray--cool--400);
+                }
+                @media (prefers-color-scheme: dark) {
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--cool--800);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--cool--700);
+                  }
+                }
+                padding: var(--space--1);
                 border-radius: var(--border-radius--md);
-                display: inline-flex;
+                display: flex;
                 gap: var(--space--2);
                 justify-content: center;
                 align-items: center;
@@ -912,45 +896,28 @@ export default async function courselore(
                 transition-timing-function: var(
                   --transition-timing-function--in-out
                 );
+                cursor: pointer;
 
                 &.button--primary {
-                  color: var(--color--primary--50);
-                  background-color: var(--color--primary--700);
+                  font-weight: var(--font-weight--semibold);
+                  color: var(--color--blue--50);
+                  background-color: var(--color--blue--700);
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--primary--600);
+                    background-color: var(--color--blue--600);
                   }
                   &:active {
-                    background-color: var(--color--primary--800);
+                    background-color: var(--color--blue--800);
                   }
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--800);
+                    color: var(--color--blue--200);
+                    background-color: var(--color--blue--800);
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--primary--700);
+                      background-color: var(--color--blue--700);
                     }
                     &:active {
-                      background-color: var(--color--primary--800);
-                    }
-                  }
-                }
-
-                &.button--secondary {
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--gray--cool--200);
-                  }
-                  &:active {
-                    background-color: var(--color--gray--cool--300);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--gray--cool--800);
-                    }
-                    &:active {
-                      background-color: var(--color--gray--cool--700);
+                      background-color: var(--color--blue--800);
                     }
                   }
                 }
@@ -1514,15 +1481,23 @@ export default async function courselore(
                   transition-timing-function: var(
                     --transition-timing-function--in-out
                   );
+                  cursor: pointer;
                 }
 
                 pre {
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  overflow-x: auto;
                   background-color: var(--color--white);
                   @media (prefers-color-scheme: dark) {
                     background-color: var(--color--gray--cool--700);
                   }
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
+
+                  code {
+                    overflow-wrap: normal;
+                  }
                 }
 
                 code,
@@ -1844,6 +1819,19 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
+            @at-root {
+              body {
+                font-family: var(--font-family--sans-serif);
+                font-size: var(--font-size--sm);
+                line-height: var(--line-height--sm);
+                color: var(--color--gray--cool--700);
+                background-color: var(--color--gray--cool--50);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--cool--800);
+                  background-color: var(--color--gray--cool--200);
+                }
+              }
+            }
             position: absolute;
             top: 0;
             right: 0;
@@ -1868,17 +1856,13 @@ export default async function courselore(
                     column-gap: var(--space--2);
                     justify-content: center;
                     flex-wrap: wrap;
-
-                    .button--demonstration-mode {
-                      padding: var(--space--1) var(--space--2);
-                    }
                   `}"
                 >
                   <button
-                    class="button button--secondary"
+                    class="button"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
-                        content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, conversations, users, and so forth. Also, no emails are actually sent; they show up in the Demonstration Inbox instead. Otherwise this is a fully functioning installation of CourseLore, which is and always will be free and open-source.",
+                        content: "CourseLore is running in Demonstration Mode. All data may be lost, including courses, conversations, users, and so forth.",
                         theme: "tooltip",
                         trigger: "click",
                       });
@@ -1886,28 +1870,10 @@ export default async function courselore(
                   >
                     <i class="bi bi-easel"></i>
                     Demonstration Mode
-                    <i class="bi bi-info-circle"></i>
                   </button>
-                  <a
-                    href="${app.locals.settings.url}/demonstration-inbox"
-                    class="button button--secondary ${req.path ===
-                    "/demonstration-inbox"
-                      ? "active"
-                      : ""}"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "CourseLore doesn’t send emails in Demonstration Mode. Emails that would have been sent will show up in the Demonstration Inbox instead.",
-                          theme: "tooltip",
-                          touch: false,
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-inbox"></i>
-                    Demonstration Inbox
-                  </a>
                   <div>
                     <button
-                      class="button button--secondary"
+                      class="button"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
@@ -1952,7 +1918,7 @@ export default async function courselore(
                           action="${app.locals.settings
                             .url}/turn-off?_method=DELETE"
                         >
-                          <button class="button button--secondary">
+                          <button class="button">
                             <i class="bi bi-power"></i>
                             Turn off
                           </button>
@@ -3930,7 +3896,7 @@ export default async function courselore(
 
                     <a
                       href="${app.locals.settings.url}/courses/new"
-                      class="button button--secondary"
+                      class="button"
                     >
                       <i class="bi bi-journal-plus"></i>
                       Create a New Course
@@ -3938,7 +3904,7 @@ export default async function courselore(
                   </div>
                   <a
                     href="${app.locals.settings.url}/settings"
-                    class="button button--secondary"
+                    class="button"
                     style="${css`
                       @media (max-width: 510px) {
                         width: 100%;
@@ -4969,7 +4935,7 @@ export default async function courselore(
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/conversations/new"
                     class="button $${res.locals.enrollment.role === "staff"
-                      ? "button--secondary"
+                      ? ""
                       : "button--primary"}"
                   >
                     <i class="bi bi-chat-left-text"></i>
@@ -7676,7 +7642,7 @@ export default async function courselore(
                   >
                     <button
                       type="button"
-                      class="button button--secondary"
+                      class="button"
                       style="${css`
                         @media (max-width: 400px) {
                           width: 100%;
@@ -12244,7 +12210,7 @@ ${value}</textarea
                             </button>
                             <button
                               type="reset"
-                              class="button button--secondary"
+                              class="button"
                               onclick="${javascript`
                                 this.closest(".message").querySelector(".message--show").hidden = false;
                                 this.closest(".message").querySelector(".message--edit").hidden = true;
