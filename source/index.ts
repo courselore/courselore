@@ -2954,12 +2954,12 @@ export default async function courselore(
       open: (
         req: express.Request<{}, any, {}, {}, {}>,
         res: express.Response<any, {}>,
-        user: { id: number }
+        userId: number
       ) => void;
       get: (
         req: express.Request<{}, any, {}, {}, {}>,
         res: express.Response<any, {}>
-      ) => { user: number } | undefined;
+      ) => number | undefined;
       close: (
         req: express.Request<{}, any, {}, {}, {}>,
         res: express.Response<any, {}>
@@ -2969,7 +2969,7 @@ export default async function courselore(
   app.locals.helpers.session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open(req, res, user) {
+    open(req, res, userId) {
       const session = app.locals.database.get<{
         token: string;
       }>(
@@ -2977,7 +2977,7 @@ export default async function courselore(
           INSERT INTO "sessions" ("token", "user")
           VALUES (
             ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
-            ${user.id}
+            ${userId}
           )
           RETURNING *
         `
@@ -3009,9 +3009,9 @@ export default async function courselore(
         Date.now()
       ) {
         app.locals.helpers.session.close(req, res);
-        app.locals.helpers.session.open(req, res, { id: session.user });
+        app.locals.helpers.session.open(req, res, session.user);
       }
-      return session;
+      return session?.user;
     },
 
     close(req, res) {
