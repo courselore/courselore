@@ -2948,6 +2948,8 @@ export default async function courselore(
     },
   ];
 
+  // TODO: Periodic jobs to clean stale sessions & flashes.
+
   interface Helpers {
     session: {
       open: (
