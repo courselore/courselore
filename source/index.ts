@@ -735,7 +735,7 @@ export default async function courselore(
                 --color--box-shadow: var(--color--blue--400);
                 @media (prefers-color-scheme: dark) {
                   &::placeholder {
-                    color: var(--color--gray--medium--400);
+                    color: var(--color--gray--medium--500);
                   }
                   background-color: var(--color--gray--medium--700);
                   --color--box-shadow: var(--color--blue--600);
@@ -2975,7 +2975,7 @@ export default async function courselore(
     {},
     HTML,
     {},
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; name?: string; email?: string },
     IsUnauthenticatedMiddlewareLocals
   >("/sign-in", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
     res.send(
@@ -3017,42 +3017,18 @@ export default async function courselore(
               <i class="bi bi-box-arrow-in-right"></i>
               Sign in
             </button>
-            <div
-              hidden
-              style="${css`
-                display: grid;
-                & > * {
-                  grid-area: 1 / 1;
-                }
-              `}"
-            >
-              <div
-                style="${css`
-                  justify-self: end;
-                  padding: var(--space--1);
-                  display: flex;
-                  gap: var(--space--2);
-                `}"
-              >
-                <button
-                  type="button"
-                  class="button--inline"
-                  data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
-                            theme: "tooltip",
-                            trigger: "click",
-                          });
-                        `}"
-                >
-                  <i class="bi bi-info-circle"></i>
-                </button>
-                <button class="button button--primary">
-                  Continue <i class="bi bi-chevron-right"></i>
-                </button>
-              </div>
-            </div>
           </form>
+          <p class="text">
+            Don’t have an account?
+            <a
+              href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                redirect: req.query.redirect,
+                name: req.query.name,
+                email: req.query.email,
+              })}"
+              >Sign up</a
+            >.
+          </p>
         `,
       })
     );
@@ -3062,7 +3038,7 @@ export default async function courselore(
   //   {},
   //   HTML,
   //   { email?: string },
-  //   { redirect?: string; email?: string; name?: string },
+  //   { redirect?: string; name?: string; email?: string },
   //   IsUnauthenticatedMiddlewareLocals
   // >(
   //   "/authenticate",
@@ -3263,7 +3239,7 @@ export default async function courselore(
   //   { nonce: string },
   //   HTML,
   //   {},
-  //   { redirect?: string; email?: string; name?: string },
+  //   { redirect?: string; name?: string; email?: string },
   //   IsUnauthenticatedMiddlewareLocals
   // >(
   //   "/authenticate/:nonce",
@@ -3367,7 +3343,7 @@ export default async function courselore(
   //   { nonce: string },
   //   HTML,
   //   {},
-  //   { redirect?: string; email?: string; name?: string },
+  //   { redirect?: string; name?: string; email?: string },
   //   IsAuthenticatedMiddlewareLocals
   // >(
   //   "/authenticate/:nonce",
@@ -3580,7 +3556,7 @@ export default async function courselore(
     { nonce: string },
     HTML,
     {},
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; name?: string; email?: string },
     IsAuthenticatedMiddlewareLocals
   >(
     "/authenticate/:nonce",
