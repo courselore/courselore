@@ -1864,7 +1864,7 @@ export default async function courselore(
                     @media (prefers-color-scheme: dark) {
                       background-color: var(--color--gray--medium--800);
                     }
-                    padding: var(--space--0-5) var(--space--4);
+                    padding: var(--space--0) var(--space--4);
                     display: flex;
                     column-gap: var(--space--2);
                     justify-content: center;
@@ -1875,13 +1875,13 @@ export default async function courselore(
                     <button
                       class="button button--transparent"
                       data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: this.nextElementSibling.firstElementChild,
-                        theme: "dropdown",
-                        trigger: "click",
-                        interactive: true,
-                      });
-                    `}"
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          theme: "dropdown",
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
                     >
                       <i class="bi bi-easel"></i>
                       Demonstration Mode
@@ -1966,18 +1966,6 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            background-image: linear-gradient(
-              135deg,
-              var(--color--fuchsia--400) 0%,
-              var(--color--purple--900) 100%
-            );
-            @media (prefers-color-scheme: dark) {
-              background-image: linear-gradient(
-                135deg,
-                var(--color--fuchsia--600) 0%,
-                var(--color--purple--900) 100%
-              );
-            }
             min-width: 100%;
             min-height: 100%;
             display: flex;
@@ -1987,74 +1975,39 @@ export default async function courselore(
         >
           <div
             style="${css`
+              background-color: var(--color--gray--medium--200);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--800);
+              }
               flex: 1;
               max-width: var(--width--sm);
+              padding: var(--space--4);
+              border-radius: var(--border-radius--lg);
               margin: var(--space--4);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
             `}"
           >
-            <h1 class="heading--display--1">
+            <div
+              style="${css`
+                display: flex;
+                justify-content: center;
+              `}"
+            >
               <a
                 href="${app.locals.settings.url}/"
+                class="button button--transparent"
                 style="${css`
-                  color: var(--color--primary--50);
-                  &:hover,
-                  &:focus-within {
-                    color: var(--color--primary--200);
-                  }
-                  &:active {
-                    color: var(--color--primary--400);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    &:hover,
-                    &:focus-within {
-                      color: var(--color--primary--300);
-                    }
-                    &:active {
-                      color: var(--color--primary--500);
-                    }
-                  }
-                  display: flex;
-                  gap: var(--space--2);
-                  justify-content: center;
-                  align-items: center;
-                  transition-property: var(--transition-property--colors);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-                  * {
-                    stroke: currentColor;
-                  }
-                `}"
-                data-ondomcontentloaded="${javascript`
-                  const artAnimation = new ArtAnimation({
-                    element: this,
-                    speed: 0.001,
-                    amount: 1,
-                    startupDuration: 500,
-                  });
-                  this.addEventListener("mouseover", () => {
-                    artAnimation.start();
-                  });
-                  this.addEventListener("mouseout", () => {
-                    artAnimation.stop();
-                  });
-                  this.addEventListener("focus", () => {
-                    artAnimation.start();
-                  });
-                  this.addEventListener("blur", () => {
-                    artAnimation.stop();
-                  });
+                  font-size: var(--font-size--3xl);
+                  line-height: var(--line-height--3xl);
+                  font-weight: var(--font-weight--bold);
                 `}"
               >
                 $${app.locals.partials.art.small} CourseLore
               </a>
-            </h1>
-            <div>$${body}</div>
+            </div>
+            $${body}
           </div>
         </div>
       `,
@@ -3164,7 +3117,7 @@ export default async function courselore(
     IsUnauthenticatedMiddlewareLocals
   >("/sign-in", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
     res.send(
-      app.locals.layouts.applicationBase({
+      app.locals.layouts.box({
         req,
         res,
         head: html``,
