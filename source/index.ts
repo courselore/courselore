@@ -135,7 +135,7 @@ export default async function courselore(
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "email" TEXT NOT NULL UNIQUE,
+        "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
         "password" TEXT NOT NULL,
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
@@ -2990,6 +2990,8 @@ export default async function courselore(
             method="POST"
             action="${app.locals.settings.url}/sign-in?${qs.stringify({
               redirect: req.query.redirect,
+              name: req.query.name,
+              email: req.query.email,
             })}"
             style="${css`
               display: flex;
@@ -3033,6 +3035,45 @@ export default async function courselore(
       })
     );
   });
+
+  app.post<
+    {},
+    HTML,
+    { email?: string; password?: string },
+    { redirect?: string; name?: string; email?: string },
+    IsUnauthenticatedMiddlewareLocals
+  >(
+    "/sign-in",
+    ...app.locals.middlewares.isUnauthenticated,
+    (req, res, next) => {
+      if (
+        typeof req.body.email !== "string" ||
+        !req.body.email.match(app.locals.constants.emailRegExp) ||
+        typeof req.body.password !== "string" ||
+        req.body.password.trim() === ""
+      )
+        return next("validation");
+      const user = app.locals.database.get<{ id: number; password: string }>(
+        sql`
+            SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}
+          `
+      );
+      if (
+        user === undefined ||
+        !argon2.verify(user.password, req.body.password)
+      )
+        return res.redirect(
+          `${app.locals.settings.url}/sign-in?${qs.stringify({
+            failed: true,
+            redirect: req.query.redirect,
+            name: req.query.name,
+            email: req.query.email,
+          })}`
+        );
+      app.locals.helpers.session.open(req, res, user.id);
+      res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
+    }
+  );
 
   // app.post<
   //   {},
