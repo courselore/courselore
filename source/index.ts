@@ -3130,6 +3130,7 @@ export default async function courselore(
               name="password"
               placeholder="Password"
               required
+              minlength="8"
               class="input--text"
             />
             <input
