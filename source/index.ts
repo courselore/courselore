@@ -3174,27 +3174,31 @@ export default async function courselore(
   >(
     "/sign-up",
     ...app.locals.middlewares.isUnauthenticated,
-    (req, res, next) => {
+    asyncHandler(async (req, res, next) => {
       if (
+        typeof req.body.name !== "string" ||
+        req.body.name.trim() === "" ||
         typeof req.body.email !== "string" ||
         !req.body.email.match(app.locals.constants.emailRegExp) ||
         typeof req.body.password !== "string" ||
         req.body.password.trim() === ""
       )
         return next("validation");
-      const user = app.locals.database.get<{ id: number; password: string }>(
-        sql`
-            SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}
-          `
-      );
       if (
-        user === undefined ||
-        !argon2.verify(user.password, req.body.password)
+        app.locals.database.get<{ exists: number }>(
+          sql`
+            SELECT EXISTS(
+              SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
+            ) AS "exists";
+          `
+        )!.exists === 1
       ) {
         app.locals.helpers.flash.set(
           req,
           res,
-          html`<div class="flash--rose">Incorrect email & password.</div>`
+          html`<div class="flash--rose">
+            This email is already registered. Try signing in instead.
+          </div>`
         );
         return res.redirect(
           `${app.locals.settings.url}/sign-in?${qs.stringify({
@@ -3204,9 +3208,25 @@ export default async function courselore(
           })}`
         );
       }
+      const user = app.locals.database.get<{ id: number }>(
+        sql`
+          INSERT INTO "users" ("name", "email", "password")
+          VALUES (
+            ${req.body.name},
+            ${req.body.email},
+            ${await argon2.hash(req.body.password, {
+              type: argon2.argon2id,
+              memoryCost: 15 * 2 ** 10,
+              timeCost: 2,
+              parallelism: 1,
+            })}
+          )
+          RETURNING *
+        `
+      )!;
       app.locals.helpers.session.open(req, res, user.id);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
-    }
+    })
   );
 
   // app.post<
