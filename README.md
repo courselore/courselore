@@ -249,6 +249,10 @@ Insiders Builds are generated on every push. They’re useful for development an
   - The Search box doesn’t align with the highlighted conversation.
 - Test that pins are working…
 
+### Authentication
+
+- Forgot password.
+
 ### Courses
 
 - Different course states, for example, archived.
