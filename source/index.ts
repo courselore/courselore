@@ -2629,139 +2629,20 @@ export default async function courselore(
       `,
     });
 
-  // https://www.youtube.com/watch?v=dSK-MW-zuAc
   interface Partials {
-    artGenerator: (options: { size: number; order: number }) => HTML;
-    art: {
-      preamble: HTML;
-      large: HTML;
-      small: HTML;
-    };
+    logo: HTML;
   }
-  app.locals.partials.artGenerator = (options) => {
-    // Hilbert
-    // let points = [
-    //   [1 / 4, 1 / 4],
-    //   [1 / 4, 3 / 4],
-    //   [3 / 4, 3 / 4],
-    //   [3 / 4, 1 / 4],
-    // ];
-    let points = [
-      [1 / 4, 1 / 4],
-      [3 / 4, 3 / 4],
-      [3 / 4, 1 / 4],
-      [1 / 4, 3 / 4],
-    ];
-    for (let orderIndex = 2; orderIndex <= options.order; orderIndex++) {
-      const upperLeft = [];
-      const lowerLeft = [];
-      const lowerRight = [];
-      const upperRight = [];
-      for (const [x, y] of points) {
-        upperLeft.push([y / 2, x / 2]);
-        lowerLeft.push([x / 2, y / 2 + 1 / 2]);
-        lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
-        upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
-      }
-      points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
-    }
-
-    return html`
-      <svg
-        width="${options.size}"
-        height="${options.size}"
-        viewBox="0 0 ${options.size} ${options.size}"
-      >
-        <polyline
-          stroke="url(#gradient)"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          fill="none"
-          points="${points
-            .flatMap(([x, y]) => [x * options.size, y * options.size])
-            .join(" ")}"
-        />
-      </svg>
-    `;
-  };
-  app.locals.partials.art = {
-    preamble: html`
-      <svg class="visually-hidden">
-        <defs>
-          <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="var(--color--fuchsia--400)" />
-            <stop offset="100%" stop-color="var(--color--purple--400)" />
-          </linearGradient>
-          <linearGradient
-            id="gradient--primary"
-            x1="0%"
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
-            <stop offset="0%" stop-color="var(--color--primary--400)" />
-            <stop offset="100%" stop-color="var(--color--primary--700)" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <script>
-        class ArtAnimation {
-          constructor({ element, speed, amount, startupDuration }) {
-            this._element = element;
-            this._polyline = this._element.querySelector("polyline");
-            this._points = this._polyline
-              .getAttribute("points")
-              .split(" ")
-              .map(Number);
-            this._speed = speed;
-            this._amount = amount;
-            this._startupDuration = Math.max(1, startupDuration);
-            this._timeOffset = 0;
-            this._animationFrame = null;
-            this._drawAnimationFrame = this._drawAnimationFrame.bind(this);
-          }
-
-          start() {
-            if (this._animationFrame !== null) return;
-            this._timeOffset += performance.now();
-            this._animationFrame = window.requestAnimationFrame(
-              this._drawAnimationFrame
-            );
-          }
-
-          stop() {
-            if (this._animationFrame === null) return;
-            window.cancelAnimationFrame(this._animationFrame);
-            this._animationFrame = null;
-            this._timeOffset -= performance.now();
-          }
-
-          _drawAnimationFrame(time) {
-            time -= this._timeOffset;
-            this._polyline.setAttribute(
-              "points",
-              this._points
-                .map(
-                  (coordinate, index) =>
-                    coordinate +
-                    (Math.min(time, this._startupDuration) /
-                      this._startupDuration) *
-                      Math.sin(time * this._speed + index) *
-                      this._amount
-                )
-                .join(" ")
-            );
-            this._animationFrame = window.requestAnimationFrame(
-              this._drawAnimationFrame
-            );
-          }
-        }
-      </script>
-    `,
-    large: app.locals.partials.artGenerator({ size: 600, order: 6 }),
-    small: app.locals.partials.artGenerator({ size: 30, order: 3 }),
-  };
+  app.locals.partials.logo = html`
+    <svg width="20" height="20">
+      <path
+        d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  `;
 
   app.use(express.static(path.join(__dirname, "../static")));
   app.use(methodOverride("_method"));
