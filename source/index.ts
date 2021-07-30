@@ -864,22 +864,6 @@ export default async function courselore(
               }
 
               .button {
-                &:hover,
-                &:focus-within {
-                  background-color: var(--color--gray--medium--300);
-                }
-                &:active {
-                  background-color: var(--color--gray--medium--400);
-                }
-                @media (prefers-color-scheme: dark) {
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--gray--medium--800);
-                  }
-                  &:active {
-                    background-color: var(--color--gray--medium--700);
-                  }
-                }
                 padding: var(--space--1);
                 border-radius: var(--border-radius--md);
                 display: flex;
@@ -893,6 +877,26 @@ export default async function courselore(
                 );
                 cursor: pointer;
 
+                &.button--transparent {
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--300);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--medium--400);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--gray--medium--800);
+                    }
+                    &:active {
+                      background-color: var(--color--gray--medium--700);
+                    }
+                  }
+                }
+
+                /*
                 &.button--primary {
                   font-weight: var(--font-weight--semibold);
                   color: var(--color--blue--50);
@@ -962,8 +966,10 @@ export default async function courselore(
                     }
                   }
                 }
+                */
               }
 
+              /*
               .button--inline {
                 color: var(--color--gray--medium--800);
                 &:hover,
@@ -1036,7 +1042,9 @@ export default async function courselore(
                   }
                 }
               }
+              */
 
+              /*
               .link {
                 text-decoration: underline;
                 color: var(--color--primary--600);
@@ -1071,6 +1079,7 @@ export default async function courselore(
                   color: var(--color--gray--medium--300);
                 }
               }
+              */
 
               .separator {
                 margin: var(--space--4) var(--space--0);
@@ -1166,10 +1175,24 @@ export default async function courselore(
                   }
                 }
 
-                .button {
-                  background-color: var(--color--gray--medium--200);
+                .button--gray--medium {
+                  background-color: var(--color--gray--medium--700);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--600);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--medium--500);
+                  }
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--400);
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--gray--medium--500);
+                    }
+                    &:active {
+                      background-color: var(--color--gray--medium--600);
+                    }
                   }
                 }
 
@@ -1850,7 +1873,7 @@ export default async function courselore(
                 >
                   <div>
                     <button
-                      class="button"
+                      class="button button--transparent"
                       data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: this.nextElementSibling.firstElementChild,
@@ -1885,7 +1908,7 @@ export default async function courselore(
                           action="${app.locals.settings.url}/demonstration-data"
                         >
                           <button
-                            class="button"
+                            class="button button--gray--medium"
                             style="${css`
                               width: 100%;
                             `}"
@@ -1905,7 +1928,7 @@ export default async function courselore(
                           action="${app.locals.settings
                             .url}/turn-off?_method=DELETE"
                         >
-                          <button class="button">
+                          <button class="button button--transparent">
                             <i class="bi bi-power"></i>
                             Turn off
                           </button>
@@ -7940,7 +7963,9 @@ export default async function courselore(
                               border-radius: var(--border-radius--circle);
                               background-color: var(--color--gray--medium--50);
                               @media (prefers-color-scheme: dark) {
-                                background-color: var(--color--gray--medium--900);
+                                background-color: var(
+                                  --color--gray--medium--900
+                                );
                               }
                             }
                           `}"
@@ -13007,7 +13032,9 @@ ${value}</textarea
                               background-color: var(--color--gray--medium--50);
                               @media (prefers-color-scheme: dark) {
                                 color: var(--color--gray--medium--400);
-                                background-color: var(--color--gray--medium--800);
+                                background-color: var(
+                                  --color--gray--medium--800
+                                );
                               }
                               border: var(--border-width--1) solid
                                 var(--color--primary--100);
