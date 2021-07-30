@@ -3132,6 +3132,18 @@ export default async function courselore(
               required
               class="input--text"
             />
+            <input
+              type="password"
+              placeholder="Password Confirmation"
+              required
+              class="input--text"
+              data-ondomcontentloaded="${javascript`
+                (this.validators ??= []).push(() => {
+                  if (this.value !== this.closest("form").querySelector('[name="password"]').value)
+                    return "Password & Password Confirmation don’t match.";
+                });
+              `}"
+            />
             <button class="button button--blue">
               <i class="bi bi-box-arrow-in-right"></i>
               Sign up
@@ -3152,6 +3164,50 @@ export default async function courselore(
       })
     );
   });
+
+  app.post<
+    {},
+    HTML,
+    { name?: string; email?: string; password?: string },
+    { redirect?: string; name?: string; email?: string },
+    IsUnauthenticatedMiddlewareLocals
+  >(
+    "/sign-up",
+    ...app.locals.middlewares.isUnauthenticated,
+    (req, res, next) => {
+      if (
+        typeof req.body.email !== "string" ||
+        !req.body.email.match(app.locals.constants.emailRegExp) ||
+        typeof req.body.password !== "string" ||
+        req.body.password.trim() === ""
+      )
+        return next("validation");
+      const user = app.locals.database.get<{ id: number; password: string }>(
+        sql`
+            SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}
+          `
+      );
+      if (
+        user === undefined ||
+        !argon2.verify(user.password, req.body.password)
+      ) {
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`<div class="flash--rose">Incorrect email & password.</div>`
+        );
+        return res.redirect(
+          `${app.locals.settings.url}/sign-in?${qs.stringify({
+            redirect: req.query.redirect,
+            name: req.query.name,
+            email: req.query.email,
+          })}`
+        );
+      }
+      app.locals.helpers.session.open(req, res, user.id);
+      res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
+    }
+  );
 
   // app.post<
   //   {},
