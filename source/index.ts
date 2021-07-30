@@ -2972,6 +2972,7 @@ export default async function courselore(
               required
               autofocus
               class="input--text"
+              data-skip-is-modified="true"
             />
             <input
               type="password"
@@ -2979,6 +2980,7 @@ export default async function courselore(
               placeholder="Password"
               required
               class="input--text"
+              data-skip-is-modified="true"
             />
             <button class="button button--blue">
               <i class="bi bi-box-arrow-in-right"></i>
