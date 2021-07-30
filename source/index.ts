@@ -1110,10 +1110,10 @@ export default async function courselore(
 
               .tippy-box {
                 --background-color: var(--color--gray--medium--100);
-                --border-color: var(--color--gray--medium--200);
+                --border-color: var(--color--gray--medium--400);
                 @media (prefers-color-scheme: dark) {
                   --background-color: var(--color--gray--medium--800);
-                  --border-color: var(--color--gray--medium--700);
+                  --border-color: var(--color--gray--medium--400);
                 }
                 color: inherit;
                 background-color: var(--background-color);
