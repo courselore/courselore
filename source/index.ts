@@ -728,39 +728,26 @@ export default async function courselore(
               }
 
               .input--text {
+                &::placeholder {
+                  color: var(--color--gray--medium--400);
+                }
+                background-color: var(--color--white);
+                --color--box-shadow: var(--color--blue--400);
+                @media (prefers-color-scheme: dark) {
+                  &::placeholder {
+                    color: var(--color--gray--medium--400);
+                  }
+                  background-color: var(--color--gray--medium--700);
+                  --color--box-shadow: var(--color--blue--600);
+                }
                 width: 100%;
                 display: block;
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
-                color: var(--color--gray--medium--800);
-                background-color: var(--color--white);
-                &::placeholder {
-                  color: var(--color--gray--medium--600);
-                }
                 &:focus-within {
-                  box-shadow: inset var(--border-width--0)
-                    var(--border-width--0) var(--border-width--0)
-                    var(--border-width--2) var(--color--primary--400);
-                }
-                &:disabled {
-                  color: var(--color--gray--medium--600);
-                  background-color: var(--color--gray--medium--200);
-                }
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--200);
-                  background-color: var(--color--gray--medium--700);
-                  &::placeholder {
-                    color: var(--color--gray--medium--400);
-                  }
-                  &:focus-within {
-                    box-shadow: inset var(--border-width--0)
-                      var(--border-width--0) var(--border-width--0)
-                      var(--border-width--2) var(--color--primary--800);
-                  }
-                  &:disabled {
-                    color: var(--color--gray--medium--400);
-                    background-color: var(--color--gray--medium--800);
-                  }
+                  box-shadow: var(--border-width--0) var(--border-width--0)
+                    var(--border-width--0) var(--border-width--2)
+                    var(--color--box-shadow);
                 }
                 transition-property: var(--transition-property--box-shadow);
                 transition-duration: var(--transition-duration--150);
