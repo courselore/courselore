@@ -683,9 +683,9 @@ export default async function courselore(
                 font-weight: var(--font-weight--bold);
                 text-transform: uppercase;
                 letter-spacing: var(--letter-spacing--widest);
-                color: var(--color--gray--cool--500);
+                color: var(--color--gray--warm--500);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--500);
+                  color: var(--color--gray--warm--500);
                 }
                 display: flex;
                 gap: var(--space--2);
@@ -712,11 +712,11 @@ export default async function courselore(
               .decorative-icon {
                 font-size: var(--font-size--9xl);
                 line-height: var(--line-height--9xl);
-                color: var(--color--gray--cool--200);
-                background-color: var(--color--gray--cool--50);
+                color: var(--color--gray--warm--200);
+                background-color: var(--color--gray--warm--50);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--600);
-                  background-color: var(--color--gray--cool--800);
+                  color: var(--color--gray--warm--600);
+                  background-color: var(--color--gray--warm--800);
                 }
                 width: var(--space--48);
                 height: var(--space--48);
@@ -732,10 +732,10 @@ export default async function courselore(
                 display: block;
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--md);
-                color: var(--color--gray--cool--800);
+                color: var(--color--gray--warm--800);
                 background-color: var(--color--white);
                 &::placeholder {
-                  color: var(--color--gray--cool--600);
+                  color: var(--color--gray--warm--600);
                 }
                 &:focus-within {
                   box-shadow: inset var(--border-width--0)
@@ -743,14 +743,14 @@ export default async function courselore(
                     var(--border-width--2) var(--color--primary--400);
                 }
                 &:disabled {
-                  color: var(--color--gray--cool--600);
-                  background-color: var(--color--gray--cool--200);
+                  color: var(--color--gray--warm--600);
+                  background-color: var(--color--gray--warm--200);
                 }
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--200);
-                  background-color: var(--color--gray--cool--700);
+                  color: var(--color--gray--warm--200);
+                  background-color: var(--color--gray--warm--700);
                   &::placeholder {
-                    color: var(--color--gray--cool--400);
+                    color: var(--color--gray--warm--400);
                   }
                   &:focus-within {
                     box-shadow: inset var(--border-width--0)
@@ -758,8 +758,8 @@ export default async function courselore(
                       var(--border-width--2) var(--color--primary--800);
                   }
                   &:disabled {
-                    color: var(--color--gray--cool--400);
-                    background-color: var(--color--gray--cool--800);
+                    color: var(--color--gray--warm--400);
+                    background-color: var(--color--gray--warm--800);
                   }
                 }
                 transition-property: var(--transition-property--box-shadow);
@@ -781,16 +781,16 @@ export default async function courselore(
                     grid-area: 1 / 1;
                   }
                   & > span {
-                    color: var(--color--gray--cool--700);
+                    color: var(--color--gray--warm--700);
                     background-color: var(--color--white);
                     &:hover {
-                      background-color: var(--color--gray--cool--200);
+                      background-color: var(--color--gray--warm--200);
                     }
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--cool--100);
-                      background-color: var(--color--gray--cool--700);
+                      color: var(--color--gray--warm--100);
+                      background-color: var(--color--gray--warm--700);
                       &:hover {
-                        background-color: var(--color--gray--cool--600);
+                        background-color: var(--color--gray--warm--600);
                       }
                     }
                     padding: var(--space--2) var(--space--4);
@@ -814,23 +814,23 @@ export default async function courselore(
                   }
                   &:not(:last-child) > span {
                     border-right: var(--border-width--1) solid
-                      var(--color--gray--cool--200);
+                      var(--color--gray--warm--200);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--cool--900);
+                      border-color: var(--color--gray--warm--900);
                     }
                   }
                   &:not(:first-child) > span {
                     border-left: var(--border-width--1) solid
-                      var(--color--gray--cool--200);
+                      var(--color--gray--warm--200);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--cool--900);
+                      border-color: var(--color--gray--warm--900);
                     }
                     margin-left: calc(-1 * var(--border-width--1));
                   }
                   & > :focus + span {
-                    background-color: var(--color--gray--cool--200);
+                    background-color: var(--color--gray--warm--200);
                     @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--cool--600);
+                      background-color: var(--color--gray--warm--600);
                     }
                   }
                   & > :active + span,
@@ -866,18 +866,18 @@ export default async function courselore(
               .button {
                 &:hover,
                 &:focus-within {
-                  background-color: var(--color--gray--cool--300);
+                  background-color: var(--color--gray--warm--300);
                 }
                 &:active {
-                  background-color: var(--color--gray--cool--400);
+                  background-color: var(--color--gray--warm--400);
                 }
                 @media (prefers-color-scheme: dark) {
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--gray--cool--800);
+                    background-color: var(--color--gray--warm--800);
                   }
                   &:active {
-                    background-color: var(--color--gray--cool--700);
+                    background-color: var(--color--gray--warm--700);
                   }
                 }
                 padding: var(--space--1);
@@ -965,7 +965,7 @@ export default async function courselore(
               }
 
               .button--inline {
-                color: var(--color--gray--cool--800);
+                color: var(--color--gray--warm--800);
                 &:hover,
                 &:focus-within,
                 :focus ~ &.after-toggle {
@@ -975,7 +975,7 @@ export default async function courselore(
                   color: var(--color--primary--700);
                 }
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--300);
+                  color: var(--color--gray--warm--300);
                   &:hover,
                   &:focus-within,
                   :focus ~ &.after-toggle {
@@ -992,8 +992,8 @@ export default async function courselore(
                 );
                 cursor: pointer;
 
-                &.button--inline--gray--cool {
-                  color: var(--color--gray--cool--500);
+                &.button--inline--gray--warm {
+                  color: var(--color--gray--warm--500);
                   &:hover,
                   &:focus-within,
                   :focus ~ &.after-toggle {
@@ -1003,7 +1003,7 @@ export default async function courselore(
                     color: var(--color--primary--700);
                   }
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--cool--600);
+                    color: var(--color--gray--warm--600);
                     &:hover,
                     &:focus-within,
                     :focus ~ &.after-toggle {
@@ -1066,18 +1066,18 @@ export default async function courselore(
 
               .strong {
                 font-weight: var(--font-weight--semibold);
-                color: var(--color--gray--cool--800);
+                color: var(--color--gray--warm--800);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--300);
+                  color: var(--color--gray--warm--300);
                 }
               }
 
               .separator {
                 margin: var(--space--4) var(--space--0);
                 border-top: var(--border-width--1) solid
-                  var(--color--gray--cool--300);
+                  var(--color--gray--warm--300);
                 @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--cool--600);
+                  border-color: var(--color--gray--warm--600);
                 }
               }
 
@@ -1117,9 +1117,9 @@ export default async function courselore(
               .stripped {
                 & > * {
                   &:nth-child(even) {
-                    background-color: var(--color--gray--cool--200);
+                    background-color: var(--color--gray--warm--200);
                     @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--cool--800);
+                      background-color: var(--color--gray--warm--800);
                     }
                   }
                   @media (max-width: 1099px) {
@@ -1136,12 +1136,12 @@ export default async function courselore(
               }
 
               .tippy-box {
-                color: var(--color--gray--cool--200);
+                color: var(--color--gray--warm--200);
                 background-color: var(--background-color);
-                --background-color: var(--color--gray--cool--900);
+                --background-color: var(--color--gray--warm--900);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--900);
-                  --background-color: var(--color--gray--cool--200);
+                  color: var(--color--gray--warm--900);
+                  --background-color: var(--color--gray--warm--200);
                 }
                 & > .tippy-svg-arrow > svg {
                   &:first-child {
@@ -1167,9 +1167,9 @@ export default async function courselore(
                 }
 
                 .button {
-                  background-color: var(--color--gray--cool--200);
+                  background-color: var(--color--gray--warm--200);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--cool--200);
+                    background-color: var(--color--gray--warm--200);
                   }
                 }
 
@@ -1355,11 +1355,11 @@ export default async function courselore(
                     position: relative;
 
                     &.modal--dialog {
-                      color: var(--color--gray--cool--700);
-                      background-color: var(--color--gray--cool--100);
+                      color: var(--color--gray--warm--700);
+                      background-color: var(--color--gray--warm--100);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--cool--200);
-                        background-color: var(--color--gray--cool--900);
+                        color: var(--color--gray--warm--200);
+                        background-color: var(--color--gray--warm--900);
                       }
                       flex: 1;
                       max-width: min(
@@ -1376,9 +1376,9 @@ export default async function courselore(
               }
 
               .text {
-                color: var(--color--gray--cool--700);
+                color: var(--color--gray--warm--700);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--400);
+                  color: var(--color--gray--warm--400);
                 }
 
                 h1,
@@ -1404,9 +1404,9 @@ export default async function courselore(
                 h4,
                 h5,
                 h6 {
-                  color: var(--color--gray--cool--800);
+                  color: var(--color--gray--warm--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--cool--300);
+                    color: var(--color--gray--warm--300);
                   }
                 }
 
@@ -1431,18 +1431,18 @@ export default async function courselore(
                 b,
                 strong {
                   font-weight: var(--font-weight--semibold);
-                  color: var(--color--gray--cool--800);
+                  color: var(--color--gray--warm--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--cool--300);
+                    color: var(--color--gray--warm--300);
                   }
                 }
 
                 i,
                 em {
                   font-style: italic;
-                  color: var(--color--gray--cool--800);
+                  color: var(--color--gray--warm--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--cool--300);
+                    color: var(--color--gray--warm--300);
                   }
                 }
 
@@ -1480,7 +1480,7 @@ export default async function courselore(
                   overflow-x: auto;
                   background-color: var(--color--white);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--cool--700);
+                    background-color: var(--color--gray--warm--700);
                   }
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
@@ -1535,7 +1535,7 @@ export default async function courselore(
                 img {
                   background-color: var(--color--white);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--cool--100);
+                    background-color: var(--color--gray--warm--100);
                     filter: brightness(var(--brightness--90));
                   }
                   max-width: 100%;
@@ -1546,9 +1546,9 @@ export default async function courselore(
                 hr {
                   margin: var(--space--4) var(--space--0);
                   border-top: var(--border-width--1) solid
-                    var(--color--gray--cool--300);
+                    var(--color--gray--warm--300);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--cool--600);
+                    border-color: var(--color--gray--warm--600);
                   }
                 }
 
@@ -1580,9 +1580,9 @@ export default async function courselore(
                   & > li {
                     list-style: decimal;
                     &::marker {
-                      color: var(--color--gray--cool--500);
+                      color: var(--color--gray--warm--500);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--cool--500);
+                        color: var(--color--gray--warm--500);
                       }
                     }
                   }
@@ -1593,9 +1593,9 @@ export default async function courselore(
                   & > li {
                     list-style: disc;
                     &::marker {
-                      color: var(--color--gray--cool--500);
+                      color: var(--color--gray--warm--500);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--cool--500);
+                        color: var(--color--gray--warm--500);
                       }
                     }
                   }
@@ -1612,16 +1612,16 @@ export default async function courselore(
                   td {
                     padding: var(--space--1) var(--space--3);
                     border-bottom: var(--border-width--1) solid
-                      var(--color--gray--cool--300);
+                      var(--color--gray--warm--300);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--cool--700);
+                      border-color: var(--color--gray--warm--700);
                     }
                   }
                   th {
                     font-weight: var(--font-weight--semibold);
-                    color: var(--color--gray--cool--800);
+                    color: var(--color--gray--warm--800);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--cool--300);
+                      color: var(--color--gray--warm--300);
                     }
                   }
                 }
@@ -1635,9 +1635,9 @@ export default async function courselore(
                     content: "“";
                     font-size: var(--font-size--7xl);
                     line-height: var(--line-height--7xl);
-                    color: var(--color--gray--cool--300);
+                    color: var(--color--gray--warm--300);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--cool--800);
+                      color: var(--color--gray--warm--800);
                     }
                     display: block;
                     position: absolute;
@@ -1650,9 +1650,9 @@ export default async function courselore(
                 dl {
                   dt {
                     font-weight: var(--font-weight--semibold);
-                    color: var(--color--gray--cool--800);
+                    color: var(--color--gray--warm--800);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--cool--300);
+                      color: var(--color--gray--warm--300);
                     }
                   }
                   dd {
@@ -1673,7 +1673,7 @@ export default async function courselore(
                   padding: var(--space--2) var(--space--4);
                   background-color: var(--color--white);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--cool--700);
+                    background-color: var(--color--gray--warm--700);
                   }
                   border-radius: var(--border-radius--md);
                   summary {
@@ -1689,9 +1689,9 @@ export default async function courselore(
                   &[open] > summary {
                     padding-bottom: var(--space--4);
                     border-bottom: var(--border-width--1) solid
-                      var(--color--gray--cool--300);
+                      var(--color--gray--warm--300);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--cool--700);
+                      border-color: var(--color--gray--warm--700);
                     }
                     margin-bottom: var(--space--4);
                     &::before {
@@ -1736,9 +1736,9 @@ export default async function courselore(
                   width: var(--space--4);
                   height: var(--space--4);
                   border: var(--border-width--1) solid
-                    var(--color--gray--cool--300);
+                    var(--color--gray--warm--300);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--cool--600);
+                    border-color: var(--color--gray--warm--600);
                   }
                   border-radius: var(--border-radius--base);
                   margin-right: var(--space--0-5);
@@ -1752,11 +1752,11 @@ export default async function courselore(
                     font-family: bootstrap-icons !important;
                   }
                   &:checked {
-                    color: var(--color--gray--cool--50);
+                    color: var(--color--gray--warm--50);
                     background-color: var(--color--primary--700);
                     border-color: var(--color--primary--700);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--cool--200);
+                      color: var(--color--gray--warm--200);
                       background-color: var(--color--primary--800);
                       border-color: var(--color--primary--800);
                     }
@@ -1814,11 +1814,11 @@ export default async function courselore(
                 font-family: var(--font-family--sans-serif);
                 font-size: var(--font-size--sm);
                 line-height: var(--line-height--sm);
-                color: var(--color--gray--cool--700);
-                background-color: var(--color--gray--cool--50);
+                color: var(--color--gray--warm--700);
+                background-color: var(--color--gray--warm--50);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--cool--800);
-                  background-color: var(--color--gray--cool--200);
+                  color: var(--color--gray--warm--800);
+                  background-color: var(--color--gray--warm--200);
                 }
               }
             }
@@ -1837,9 +1837,9 @@ export default async function courselore(
                   style="${css`
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
-                    background-color: var(--color--gray--cool--200);
+                    background-color: var(--color--gray--warm--200);
                     @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--cool--900);
+                      background-color: var(--color--gray--warm--900);
                     }
                     padding: var(--space--0-5) var(--space--4);
                     display: flex;
@@ -2592,11 +2592,11 @@ export default async function courselore(
               `}
           <div
             style="${css`
-              color: var(--color--gray--cool--500);
-              background-color: var(--color--gray--cool--100);
+              color: var(--color--gray--warm--500);
+              background-color: var(--color--gray--warm--100);
               @media (prefers-color-scheme: dark) {
-                color: var(--color--gray--cool--400);
-                background-color: var(--color--gray--cool--900);
+                color: var(--color--gray--warm--400);
+                background-color: var(--color--gray--warm--900);
               }
               flex: 1;
               overflow: auto;
@@ -4070,7 +4070,7 @@ export default async function courselore(
                           width: 100%;
                           height: 100%;
                           border-radius: var(--border-radius--circle);
-                          color: var(--color--gray--cool--400);
+                          color: var(--color--gray--warm--400);
                           &:hover,
                           &:focus-within {
                             color: var(--color--primary--500);
@@ -4078,10 +4078,10 @@ export default async function courselore(
                           &:active {
                             color: var(--color--primary--700);
                           }
-                          background-color: var(--color--gray--cool--200);
+                          background-color: var(--color--gray--warm--200);
                           @media (prefers-color-scheme: dark) {
-                            color: var(--color--gray--cool--400);
-                            background-color: var(--color--gray--cool--700);
+                            color: var(--color--gray--warm--400);
+                            background-color: var(--color--gray--warm--700);
                             &:hover,
                             &:focus-within {
                               color: var(--color--primary--500);
@@ -5287,9 +5287,9 @@ export default async function courselore(
                     }
 
                     .dropdown--item {
-                      color: var(--color--gray--cool--600);
+                      color: var(--color--gray--warm--600);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--cool--400);
+                        color: var(--color--gray--warm--400);
                       }
                       padding: var(--space--1) var(--space--3);
                       display: flex;
@@ -5303,13 +5303,13 @@ export default async function courselore(
                       &:hover,
                       &:focus-within,
                       &.active:focus {
-                        color: var(--color--gray--cool--900);
+                        color: var(--color--gray--warm--900);
                         box-shadow: inset var(--border-width--4) 0
-                          var(--color--gray--cool--500);
+                          var(--color--gray--warm--500);
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--gray--cool--100);
+                          color: var(--color--gray--warm--100);
                           box-shadow: inset var(--border-width--4) 0
-                            var(--color--gray--cool--500);
+                            var(--color--gray--warm--500);
                         }
                       }
                       &:active,
@@ -7487,7 +7487,7 @@ export default async function courselore(
                               />
                             </div>
                             <label
-                              class="button--inline button--inline--gray--cool"
+                              class="button--inline button--inline--gray--warm"
                               style="${css`
                                 .deleted & {
                                   color: var(--color--rose--800);
@@ -7531,7 +7531,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button--inline button--inline--gray--cool button--inline--rose"
+                                class="button--inline button--inline--gray--warm button--inline--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
@@ -7598,7 +7598,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button--inline button--inline--gray--cool"
+                                class="button--inline button--inline--gray--warm"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Don’t Remove Tag",
@@ -7675,7 +7675,7 @@ export default async function courselore(
                           />
                         </div>
                         <label
-                          class="button--inline button--inline--gray--cool"
+                          class="button--inline button--inline--gray--warm"
                         >
                           <select
                             required
@@ -7698,7 +7698,7 @@ export default async function courselore(
                         <div>
                           <button
                             type="button"
-                            class="button--inline button--inline--gray--cool button--inline--rose"
+                            class="button--inline button--inline--gray--warm button--inline--rose"
                             data-onmount="${javascript`
                               tippy(this, {
                                 content: "Remove Tag",
@@ -7887,7 +7887,7 @@ export default async function courselore(
                     Accent Color
                     <button
                       type="button"
-                      class="button--inline button--inline--gray--cool"
+                      class="button--inline button--inline--gray--warm"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "The accent color helps you tell your courses apart.",
@@ -7938,9 +7938,9 @@ export default async function courselore(
                               width: var(--space--2);
                               height: var(--space--2);
                               border-radius: var(--border-radius--circle);
-                              background-color: var(--color--gray--cool--50);
+                              background-color: var(--color--gray--warm--50);
                               @media (prefers-color-scheme: dark) {
-                                background-color: var(--color--gray--cool--900);
+                                background-color: var(--color--gray--warm--900);
                               }
                             }
                           `}"
@@ -9031,7 +9031,7 @@ export default async function courselore(
             & > :checked + span {
               background-color: var(--color--white);
               @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--cool--700);
+                background-color: var(--color--gray--warm--700);
               }
             }
           }
@@ -9121,7 +9121,7 @@ export default async function courselore(
         style="${css`
           background-color: var(--color--white);
           @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--cool--700);
+            background-color: var(--color--gray--warm--700);
           }
           border-radius: var(--border-radius--lg);
           border-top-left-radius: var(--border-radius--none);
@@ -9131,7 +9131,7 @@ export default async function courselore(
           style="${css`
             background-color: var(--color--white);
             @media (prefers-color-scheme: dark) {
-              background-color: var(--color--gray--cool--700);
+              background-color: var(--color--gray--warm--700);
             }
             padding: var(--space--2) var(--space--0);
             margin: var(--space--0) var(--space--4);
@@ -9850,7 +9850,7 @@ ${value}</textarea
         style="${css`
           background-color: var(--color--white);
           @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--cool--700);
+            background-color: var(--color--gray--warm--700);
           }
           padding: var(--space--4);
           border-radius: var(--border-radius--lg);
@@ -9877,7 +9877,7 @@ ${value}</textarea
         style="${css`
           background-color: var(--color--white);
           @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--cool--700);
+            background-color: var(--color--gray--warm--700);
           }
           padding: var(--space--4);
           border-radius: var(--border-radius--lg);
@@ -11110,7 +11110,7 @@ ${value}</textarea
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/conversations/${res.locals.conversation
                       .reference}"
-                    class="button--inline button--inline--gray--cool"
+                    class="button--inline button--inline--gray--warm"
                     style="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
@@ -11136,7 +11136,7 @@ ${value}</textarea
                     ? html`
                         <div>
                           <button
-                            class="button--inline button--inline--gray--cool button--inline--rose"
+                            class="button--inline button--inline--gray--warm button--inline--rose"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Conversation",
@@ -11191,7 +11191,7 @@ ${value}</textarea
                   $${app.locals.helpers.mayEditConversation(req, res)
                     ? html`
                         <button
-                          class="button--inline button--inline--gray--cool"
+                          class="button--inline button--inline--gray--warm"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Edit Title",
@@ -11255,7 +11255,7 @@ ${value}</textarea
                   </button>
                   <button
                     type="reset"
-                    class="button--inline button--inline--gray--cool button--inline--rose"
+                    class="button--inline button--inline--gray--warm button--inline--rose"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "Cancel",
@@ -11548,9 +11548,9 @@ ${value}</textarea
                   style="${css`
                     padding-bottom: var(--space--4);
                     border-bottom: var(--border-width--4) solid
-                      var(--color--gray--cool--300);
+                      var(--color--gray--warm--300);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--cool--700);
+                      border-color: var(--color--gray--warm--700);
                     }
                     margin: var(--space--4) var(--space--0);
                   `}"
@@ -11622,7 +11622,7 @@ ${value}</textarea
                             .course.reference}/conversations/${res.locals
                             .conversation
                             .reference}#message--${message.reference}"
-                          class="button--inline button--inline--gray--cool"
+                          class="button--inline button--inline--gray--warm"
                           style="${css`
                             font-size: var(--font-size--xs);
                             line-height: var(--line-height--xs);
@@ -11651,7 +11651,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button--inline button--inline--gray--cool button--inline--rose"
+                                class="button--inline button--inline--gray--warm button--inline--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Message",
@@ -11711,7 +11711,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button--inline button--inline--gray--cool"
+                                class="button--inline button--inline--gray--warm"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Edit Message",
@@ -11732,7 +11732,7 @@ ${value}</textarea
 
                       <div>
                         <button
-                          class="button--inline button--inline--gray--cool"
+                          class="button--inline button--inline--gray--warm"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Reply",
@@ -12107,7 +12107,7 @@ ${value}</textarea
                             `}"
                           >
                             <button
-                              class="button--inline button--inline--gray--cool ${isLiked
+                              class="button--inline button--inline--gray--warm ${isLiked
                                 ? "strong"
                                 : ""}"
                               $${likesCount === 0
@@ -13003,11 +13003,11 @@ ${value}</textarea
                           <div
                             class="text"
                             style="${css`
-                              color: var(--color--gray--cool--700);
-                              background-color: var(--color--gray--cool--50);
+                              color: var(--color--gray--warm--700);
+                              background-color: var(--color--gray--warm--50);
                               @media (prefers-color-scheme: dark) {
-                                color: var(--color--gray--cool--400);
-                                background-color: var(--color--gray--cool--800);
+                                color: var(--color--gray--warm--400);
+                                background-color: var(--color--gray--warm--800);
                               }
                               border: var(--border-width--1) solid
                                 var(--color--primary--100);
