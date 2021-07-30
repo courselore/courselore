@@ -658,7 +658,21 @@ export default async function courselore(
         <body
           style="${css`
             @at-root {
-              .heading--display--1 {
+              .heading {
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                font-weight: var(--font-weight--bold);
+                text-transform: uppercase;
+                letter-spacing: var(--letter-spacing--widest);
+                color: var(--color--gray--medium--600);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--medium--400);
+                }
+                display: flex;
+                gap: var(--space--2);
+              }
+
+              .heading--REMOVE--2 {
                 font-family: var(--font-family--serif);
                 font-size: var(--font-size--4xl);
                 line-height: var(--line-height--4xl);
@@ -675,20 +689,6 @@ export default async function courselore(
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--primary--400);
                 }
-              }
-
-              .heading {
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-                font-weight: var(--font-weight--bold);
-                text-transform: uppercase;
-                letter-spacing: var(--letter-spacing--widest);
-                color: var(--color--gray--medium--500);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--500);
-                }
-                display: flex;
-                gap: var(--space--2);
               }
 
               .text-gradient {
@@ -888,10 +888,31 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--700);
+                      background-color: var(--color--gray--medium--600);
                     }
                     &:active {
+                      background-color: var(--color--gray--medium--500);
+                    }
+                  }
+                }
+
+                &.button--gray--medium {
+                  background-color: var(--color--gray--medium--300);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--300);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--medium--400);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--700);
+                    &:hover,
+                    &:focus-within {
                       background-color: var(--color--gray--medium--600);
+                    }
+                    &:active {
+                      background-color: var(--color--gray--medium--500);
                     }
                   }
                 }
@@ -3027,92 +3048,71 @@ export default async function courselore(
           <title>Sign in · CourseLore · The Open-Source Student Forum</title>
         `,
         body: html`
-          <h2
-            class="heading"
-            style="${css`
-              color: var(--color--primary--200);
-              @media (prefers-color-scheme: dark) {
-                color: var(--color--primary--200);
-              }
-            `}"
-          >
-            <i class="bi bi-box-arrow-in-right"></i>
-            Authenticate
-          </h2>
           <form
             method="POST"
-            action="${app.locals.settings.url}/authenticate?${qs.stringify({
+            action="${app.locals.settings.url}/sign-in?${qs.stringify({
               redirect: req.query.redirect,
-              email: req.query.email,
-              name: req.query.name,
             })}"
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `}"
           >
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value="${req.query.email ?? ""}"
+              required
+              autofocus
+              class="input--text"
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              class="input--text"
+            />
+            <button class="button button--gray--medium">
+              <i class="bi bi-box-arrow-in-right"></i>
+              Sign in
+            </button>
             <div
+              hidden
               style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
+                display: grid;
+                & > * {
+                  grid-area: 1 / 1;
+                }
               `}"
             >
               <div
                 style="${css`
-                  display: grid;
-                  & > * {
-                    grid-area: 1 / 1;
-                  }
+                  justify-self: end;
+                  padding: var(--space--1);
+                  display: flex;
+                  gap: var(--space--2);
                 `}"
               >
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  value="${req.query.email ?? ""}"
-                  required
-                  autofocus
-                  class="input--text"
-                  style="${css`
-                    padding-right: var(--space--36);
-                  `}"
-                />
-                <div
-                  style="${css`
-                    justify-self: end;
-                    padding: var(--space--1);
-                    display: flex;
-                    gap: var(--space--2);
-                  `}"
-                >
-                  <button
-                    type="button"
-                    class="button--inline"
-                    data-ondomcontentloaded="${javascript`
+                <button
+                  type="button"
+                  class="button--inline"
+                  data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
                             theme: "tooltip",
                             trigger: "click",
                           });
                         `}"
-                  >
-                    <i class="bi bi-info-circle"></i>
-                  </button>
-                  <button class="button button--primary">
-                    Continue <i class="bi bi-chevron-right"></i>
-                  </button>
-                </div>
+                >
+                  <i class="bi bi-info-circle"></i>
+                </button>
+                <button class="button button--primary">
+                  Continue <i class="bi bi-chevron-right"></i>
+                </button>
               </div>
-              <p
-                style="${css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  color: var(--color--primary--300);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--300);
-                  }
-                `}"
-              >
-                We recommend using the email address you use at your educational
-                institution.
-              </p>
             </div>
           </form>
         `,
@@ -3682,7 +3682,7 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  <h2 class="heading--display--1 text-gradient">
+                  <h2 class="heading--REMOVE--2 text-gradient">
                     Welcome to CourseLore!
                   </h2>
 
@@ -4737,7 +4737,7 @@ export default async function courselore(
                   align-items: center;
                 `}"
               >
-                <h2 class="heading--display--1 text-gradient">
+                <h2 class="heading--REMOVE--2 text-gradient">
                   Welcome to ${res.locals.course.name}!
                 </h2>
 
