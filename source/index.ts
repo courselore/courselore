@@ -3061,19 +3061,97 @@ export default async function courselore(
       if (
         user === undefined ||
         !argon2.verify(user.password, req.body.password)
-      )
+      ) {
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`<div class="flash--rose">Incorrect email & password.</div>`
+        );
         return res.redirect(
           `${app.locals.settings.url}/sign-in?${qs.stringify({
-            failed: true,
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
           })}`
         );
+      }
       app.locals.helpers.session.open(req, res, user.id);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
     }
   );
+
+  app.get<
+    {},
+    HTML,
+    {},
+    { redirect?: string; name?: string; email?: string },
+    IsUnauthenticatedMiddlewareLocals
+  >("/sign-up", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
+    res.send(
+      app.locals.layouts.box({
+        req,
+        res,
+        head: html`
+          <title>Sign up · CourseLore · The Open-Source Student Forum</title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="${app.locals.settings.url}/sign-up?${qs.stringify({
+              redirect: req.query.redirect,
+              name: req.query.name,
+              email: req.query.email,
+            })}"
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `}"
+          >
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value="${req.query.name ?? ""}"
+              required
+              autofocus
+              class="input--text"
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value="${req.query.email ?? ""}"
+              required
+              class="input--text"
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              class="input--text"
+            />
+            <button class="button button--blue">
+              <i class="bi bi-box-arrow-in-right"></i>
+              Sign up
+            </button>
+          </form>
+          <p class="text">
+            Already have an account account?
+            <a
+              href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                redirect: req.query.redirect,
+                name: req.query.name,
+                email: req.query.email,
+              })}"
+              >Sign in</a
+            >.
+          </p>
+        `,
+      })
+    );
+  });
 
   // app.post<
   //   {},
