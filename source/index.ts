@@ -1745,10 +1745,17 @@ export default async function courselore(
       >;
       res: express.Response<any, Partial<EventSourceMiddlewareLocals>>;
       head: HTML;
+      extraHeaders?: HTML;
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.applicationBase = ({ req, res, head, body }) =>
+  app.locals.layouts.applicationBase = ({
+    req,
+    res,
+    head,
+    extraHeaders = html``,
+    body,
+  }) =>
     app.locals.layouts.base({
       req,
       res,
@@ -1861,6 +1868,7 @@ export default async function courselore(
                 </div>
               `
             : html``}
+          $${extraHeaders}
 
           <div
             style="${css`
