@@ -1137,12 +1137,12 @@ export default async function courselore(
 
               .tippy-box {
                 color: var(--color--gray--cool--200);
+                background-color: var(--background-color);
                 --background-color: var(--color--gray--cool--900);
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--gray--cool--900);
                   --background-color: var(--color--gray--cool--200);
                 }
-                background-color: var(--background-color);
                 & > .tippy-svg-arrow > svg {
                   &:first-child {
                     fill: var(--border-color);
@@ -1163,6 +1163,13 @@ export default async function courselore(
 
                   .keyboard-shortcut--cluster {
                     letter-spacing: var(--letter-spacing--widest);
+                  }
+                }
+
+                .button {
+                  background-color: var(--color--gray--cool--200);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--cool--200);
                   }
                 }
 
@@ -1834,7 +1841,7 @@ export default async function courselore(
                     @media (prefers-color-scheme: dark) {
                       background-color: var(--color--gray--cool--900);
                     }
-                    padding: var(--space--0) var(--space--4);
+                    padding: var(--space--0-5) var(--space--4);
                     display: flex;
                     column-gap: var(--space--2);
                     justify-content: center;
