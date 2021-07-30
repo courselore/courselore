@@ -1805,7 +1805,7 @@ export default async function courselore(
             }
           `}"
         >
-          $${app.locals.partials.art.preamble} $${body}
+          $${body}
         </body>
       </html>
     `);
@@ -2004,7 +2004,7 @@ export default async function courselore(
                   font-weight: var(--font-weight--bold);
                 `}"
               >
-                $${app.locals.partials.art.small} CourseLore
+                $${app.locals.partials.logo} CourseLore
               </a>
             </div>
             $${body}
@@ -2138,31 +2138,8 @@ export default async function courselore(
                 min-width: 0;
               `}"
             >
-              <a
-                href="${app.locals.settings.url}/"
-                class="header--item"
-                data-ondomcontentloaded="${javascript`
-                    const artAnimation = new ArtAnimation({
-                      element: this,
-                      speed: 0.001,
-                      amount: 1,
-                      startupDuration: 500,
-                    });
-                    this.addEventListener("mouseover", () => {
-                      artAnimation.start();
-                    });
-                    this.addEventListener("mouseout", () => {
-                      artAnimation.stop();
-                    });
-                    this.addEventListener("focus", () => {
-                      artAnimation.start();
-                    });
-                    this.addEventListener("blur", () => {
-                      artAnimation.stop();
-                    });
-                  `}"
-              >
-                $${app.locals.partials.art.small}
+              <a href="${app.locals.settings.url}/" class="header--item">
+                $${app.locals.partials.logo}
               </a>
 
               $${res.locals.course === undefined
@@ -3701,7 +3678,7 @@ export default async function courselore(
                         }).start();
                       `}"
                     >
-                      $${app.locals.partials.art.small
+                      $${app.locals.partials.logo
                         .replace(/width=".*?"/, "")
                         .replace(/height=".*?"/, "")}
                     </div>
@@ -9727,7 +9704,7 @@ ${value}</textarea
           }).start();
         `}"
       >
-        $${app.locals.partials.art.small} Loading…
+        $${app.locals.partials.logo} Loading…
       </div>
 
       <div
