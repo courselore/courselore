@@ -367,6 +367,11 @@ export default async function courselore(
             href="${app.locals.settings
               .url}/node_modules/tippy.js/dist/svg-arrow.css"
           />
+          <link
+            rel="stylesheet"
+            href="${app.locals.settings
+              .url}/node_modules/tippy.js/dist/border.css"
+          />
 
           <script src="${app.locals.settings
               .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
@@ -1104,13 +1109,16 @@ export default async function courselore(
               }
 
               .tippy-box {
-                color: var(--color--gray--medium--200);
-                background-color: var(--background-color);
-                --background-color: var(--color--gray--medium--900);
+                --background-color: var(--color--gray--medium--100);
+                --border-color: var(--color--gray--medium--200);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--800);
-                  --background-color: var(--color--gray--medium--200);
+                  --background-color: var(--color--gray--medium--800);
+                  --border-color: var(--color--gray--medium--700);
                 }
+                color: inherit;
+                background-color: var(--background-color);
+                border: var(--border-width--1) solid var(--border-color);
+                border-radius: var(--border-radius--md);
                 & > .tippy-svg-arrow > svg {
                   &:first-child {
                     fill: var(--border-color);
@@ -1119,7 +1127,6 @@ export default async function courselore(
                     fill: var(--background-color);
                   }
                 }
-                border-radius: var(--border-radius--md);
 
                 .tippy-content {
                   padding: var(--space--2) var(--space--4);
@@ -1131,27 +1138,6 @@ export default async function courselore(
 
                   .keyboard-shortcut--cluster {
                     letter-spacing: var(--letter-spacing--widest);
-                  }
-                }
-
-                .button--gray--medium {
-                  background-color: var(--color--gray--medium--700);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--gray--medium--600);
-                  }
-                  &:active {
-                    background-color: var(--color--gray--medium--500);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--white);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--gray--medium--50);
-                    }
-                    &:active {
-                      background-color: var(--color--gray--medium--100);
-                    }
                   }
                 }
 
