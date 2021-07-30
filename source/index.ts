@@ -2364,7 +2364,7 @@ export default async function courselore(
                           <form
                             method="POST"
                             action="${app.locals.settings
-                              .url}/authenticate?_method=DELETE"
+                              .url}/sign-out?_method=DELETE"
                           >
                             <button class="dropdown--item">
                               <i class="bi bi-box-arrow-right"></i>
