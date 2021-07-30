@@ -880,31 +880,10 @@ export default async function courselore(
                   @media (prefers-color-scheme: dark) {
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--600);
+                      background-color: var(--color--gray--medium--700);
                     }
                     &:active {
-                      background-color: var(--color--gray--medium--500);
-                    }
-                  }
-                }
-
-                &.button--gray--medium {
-                  background-color: var(--color--gray--medium--300);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--gray--medium--300);
-                  }
-                  &:active {
-                    background-color: var(--color--gray--medium--400);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
-                    &:hover,
-                    &:focus-within {
                       background-color: var(--color--gray--medium--600);
-                    }
-                    &:active {
-                      background-color: var(--color--gray--medium--500);
                     }
                   }
                 }
@@ -1853,7 +1832,7 @@ export default async function courselore(
                           action="${app.locals.settings.url}/demonstration-data"
                         >
                           <button
-                            class="button button--gray--medium"
+                            class="button button--blue"
                             style="${css`
                               width: 100%;
                             `}"
