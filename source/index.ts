@@ -1430,22 +1430,22 @@ export default async function courselore(
 
                 a {
                   text-decoration: underline;
-                  color: var(--color--primary--600);
+                  color: var(--color--blue--600);
                   &:hover,
                   &:focus-within {
-                    color: var(--color--primary--400);
+                    color: var(--color--blue--500);
                   }
                   &:active {
-                    color: var(--color--primary--800);
+                    color: var(--color--blue--700);
                   }
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--500);
+                    color: var(--color--blue--500);
                     &:hover,
                     &:focus-within {
-                      color: var(--color--primary--300);
+                      color: var(--color--blue--400);
                     }
                     &:active {
-                      color: var(--color--primary--700);
+                      color: var(--color--blue--600);
                     }
                   }
                   transition-property: var(--transition-property--colors);
