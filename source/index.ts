@@ -3023,117 +3023,101 @@ export default async function courselore(
       app.locals.layouts.box({
         req,
         res,
-        head: html``,
-        body: html`HELLO`,
+        head: html`
+          <title>Sign in · CourseLore · The Open-Source Student Forum</title>
+        `,
+        body: html`
+          <h2
+            class="heading--2"
+            style="${css`
+              color: var(--color--primary--200);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--primary--200);
+              }
+            `}"
+          >
+            <i class="bi bi-box-arrow-in-right"></i>
+            Authenticate
+          </h2>
+          <form
+            method="POST"
+            action="${app.locals.settings.url}/authenticate?${qs.stringify({
+              redirect: req.query.redirect,
+              email: req.query.email,
+              name: req.query.name,
+            })}"
+          >
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <div
+                style="${css`
+                  display: grid;
+                  & > * {
+                    grid-area: 1 / 1;
+                  }
+                `}"
+              >
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value="${req.query.email ?? ""}"
+                  required
+                  autofocus
+                  class="input--text"
+                  style="${css`
+                    padding-right: var(--space--36);
+                  `}"
+                />
+                <div
+                  style="${css`
+                    justify-self: end;
+                    padding: var(--space--1);
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  <button
+                    type="button"
+                    class="button--inline"
+                    data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
+                            theme: "tooltip",
+                            trigger: "click",
+                          });
+                        `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                  <button class="button button--primary">
+                    Continue <i class="bi bi-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+              <p
+                style="${css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  color: var(--color--primary--300);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--primary--300);
+                  }
+                `}"
+              >
+                We recommend using the email address you use at your educational
+                institution.
+              </p>
+            </div>
+          </form>
+        `,
       })
     );
-    // res.send(
-    //   app.locals.layouts.box({
-    //     req,
-    //     res,
-    //     head: html`<title>
-    //       Sign in · CourseLore · The Open-Source Student Forum
-    //     </title>`,
-    //     body: html`
-    //       <div
-    //         style="${css`
-    //           display: flex;
-    //           flex-direction: column;
-    //           gap: var(--space--2);
-    //         `}"
-    //       >
-    //         <h2
-    //           class="heading--2"
-    //           style="${css`
-    //             color: var(--color--primary--200);
-    //             @media (prefers-color-scheme: dark) {
-    //               color: var(--color--primary--200);
-    //             }
-    //           `}"
-    //         >
-    //           <i class="bi bi-box-arrow-in-right"></i>
-    //           Authenticate
-    //         </h2>
-    //         <form
-    //           method="POST"
-    //           action="${app.locals.settings.url}/authenticate?${qs.stringify({
-    //             redirect: req.query.redirect,
-    //             email: req.query.email,
-    //             name: req.query.name,
-    //           })}"
-    //         >
-    //           <div
-    //             style="${css`
-    //               display: flex;
-    //               flex-direction: column;
-    //               gap: var(--space--2);
-    //             `}"
-    //           >
-    //             <div
-    //               style="${css`
-    //                 display: grid;
-    //                 & > * {
-    //                   grid-area: 1 / 1;
-    //                 }
-    //               `}"
-    //             >
-    //               <input
-    //                 type="email"
-    //                 name="email"
-    //                 placeholder="Email"
-    //                 value="${req.query.email ?? ""}"
-    //                 required
-    //                 autofocus
-    //                 class="input--text"
-    //                 style="${css`
-    //                   padding-right: var(--space--36);
-    //                 `}"
-    //               />
-    //               <div
-    //                 style="${css`
-    //                   justify-self: end;
-    //                   padding: var(--space--1);
-    //                   display: flex;
-    //                   gap: var(--space--2);
-    //                 `}"
-    //               >
-    //                 <button
-    //                   type="button"
-    //                   class="button--inline"
-    //                   data-ondomcontentloaded="${javascript`
-    //                       tippy(this, {
-    //                         content: "If you’re a new user, you’ll sign up for a new account. If you’re a returning user, you’ll sign in to your existing account.",
-    //                         theme: "tooltip",
-    //                         trigger: "click",
-    //                       });
-    //                     `}"
-    //                 >
-    //                   <i class="bi bi-info-circle"></i>
-    //                 </button>
-    //                 <button class="button button--primary">
-    //                   Continue <i class="bi bi-chevron-right"></i>
-    //                 </button>
-    //               </div>
-    //             </div>
-    //             <p
-    //               style="${css`
-    //                 font-size: var(--font-size--xs);
-    //                 line-height: var(--line-height--xs);
-    //                 color: var(--color--primary--300);
-    //                 @media (prefers-color-scheme: dark) {
-    //                   color: var(--color--primary--300);
-    //                 }
-    //               `}"
-    //             >
-    //               We recommend using the email address you use at your
-    //               educational institution.
-    //             </p>
-    //           </div>
-    //         </form>
-    //       </div>
-    //     `,
-    //   })
-    // );
   });
 
   // app.post<
