@@ -667,7 +667,7 @@ export default async function courselore(
                 text-align: center;
               }
 
-              .heading--1 {
+              .heading--REMOVE {
                 font-size: var(--font-size--base);
                 line-height: var(--line-height--base);
                 font-weight: var(--font-weight--semibold);
@@ -677,7 +677,7 @@ export default async function courselore(
                 }
               }
 
-              .heading--2 {
+              .heading {
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
                 font-weight: var(--font-weight--bold);
@@ -3028,7 +3028,7 @@ export default async function courselore(
         `,
         body: html`
           <h2
-            class="heading--2"
+            class="heading"
             style="${css`
               color: var(--color--primary--200);
               @media (prefers-color-scheme: dark) {
@@ -3177,7 +3177,7 @@ export default async function courselore(
   //               `}"
   //             >
   //               <h2
-  //                 class="heading--2"
+  //                 class="heading"
   //                 style="${css`
   //                   color: var(--color--primary--200);
   //                   @media (prefers-color-scheme: dark) {
@@ -3276,7 +3276,7 @@ export default async function courselore(
   //                     `}"
   //                   >
   //                     <h3
-  //                       class="heading--2"
+  //                       class="heading"
   //                       style="${css`
   //                         color: var(--color--rose--50);
   //                         @media (prefers-color-scheme: dark) {
@@ -3353,7 +3353,7 @@ export default async function courselore(
   //               `}"
   //             >
   //               <h2
-  //                 class="heading--2"
+  //                 class="heading"
   //                 style="${css`
   //                   color: var(--color--primary--200);
   //                   @media (prefers-color-scheme: dark) {
@@ -3471,7 +3471,7 @@ export default async function courselore(
   //             `}"
   //           >
   //             <h2
-  //               class="heading--2"
+  //               class="heading"
   //               style="${css`
   //                 color: var(--color--primary--200);
   //                 @media (prefers-color-scheme: dark) {
@@ -3790,7 +3790,7 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  <h2 class="heading--2">
+                  <h2 class="heading">
                     <i class="bi bi-journal"></i>
                     Courses
                   </h2>
@@ -3885,7 +3885,7 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-sliders"></i>
                 User Settings
               </h2>
@@ -4230,7 +4230,7 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-journal-plus"></i>
                 Create a New Course
               </h2>
@@ -5232,7 +5232,7 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-sliders"></i>
                 Course Settings
               </h2>
@@ -5372,7 +5372,7 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-sliders"></i>
                 Course Settings ·
                 <i class="bi bi-person-plus"></i>
@@ -6374,7 +6374,7 @@ export default async function courselore(
                           gap: var(--space--4);
                         `}"
                       >
-                        <h2 class="heading--1">
+                        <h2 class="heading--REMOVE">
                           Enroll in ${res.locals.course.name} as
                           ${lodash.capitalize(invitation.role)}
                         </h2>
@@ -6845,7 +6845,7 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-sliders"></i>
                 Course Settings ·
                 <i class="bi bi-people"></i>
@@ -7239,7 +7239,7 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-sliders"></i>
                 Course Settings ·
                 <i class="bi bi-tags"></i>
@@ -7717,7 +7717,7 @@ export default async function courselore(
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-sliders"></i>
                 Course Settings ·
                 <i class="bi bi-person"></i>
@@ -7896,7 +7896,7 @@ export default async function courselore(
               `}"
             >
               <h2
-                class="heading--2"
+                class="heading"
                 style="${css`
                   color: var(--color--primary--200);
                   @media (prefers-color-scheme: dark) {
@@ -7975,7 +7975,7 @@ export default async function courselore(
               `}"
             >
               <h2
-                class="heading--2"
+                class="heading"
                 style="${css`
                   color: var(--color--primary--200);
                   @media (prefers-color-scheme: dark) {
@@ -8101,7 +8101,7 @@ export default async function courselore(
               `}"
             >
               <h2
-                class="heading--2"
+                class="heading"
                 style="${css`
                   color: var(--color--primary--200);
                   @media (prefers-color-scheme: dark) {
@@ -9951,7 +9951,7 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-chat-left-text"></i>
                 Start a New Conversation
               </h2>
@@ -10967,7 +10967,7 @@ ${value}</textarea
                 `}"
               >
                 <h2>
-                  <span class="heading--1"
+                  <span class="heading--REMOVE"
                     >${res.locals.conversation.title}</span
                   >
 
@@ -12772,7 +12772,7 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading--2">
+              <h2 class="heading">
                 <i class="bi bi-inbox"></i>
                 Demonstration Inbox
               </h2>
@@ -13189,7 +13189,7 @@ ${value}</textarea
               `}"
             >
               <h2
-                class="heading--2"
+                class="heading"
                 style="${css`
                   color: var(--color--primary--200);
                   @media (prefers-color-scheme: dark) {
@@ -13248,7 +13248,7 @@ ${value}</textarea
               `}"
             >
               <h2
-                class="heading--2"
+                class="heading"
                 style="${css`
                   color: var(--color--primary--200);
                   @media (prefers-color-scheme: dark) {
@@ -13319,7 +13319,7 @@ ${value}</textarea
             `}"
           >
             <h2
-              class="heading--2"
+              class="heading"
               style="${css`
                 color: var(--color--primary--200);
                 @media (prefers-color-scheme: dark) {
