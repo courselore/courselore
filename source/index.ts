@@ -1755,8 +1755,9 @@ export default async function courselore(
     head,
     extraHeaders = html``,
     body,
-  }) =>
-    app.locals.layouts.base({
+  }) => {
+    const flash = app.locals.helpers.flash.get(req, res);
+    return app.locals.layouts.base({
       req,
       res,
       head,
@@ -1869,6 +1870,103 @@ export default async function courselore(
               `
             : html``}
           $${extraHeaders}
+          $${flash === undefined
+            ? html``
+            : html`
+                <div
+                  style="${css`
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
+
+                    & > :first-child {
+                      padding: var(--space--2) var(--space--10);
+                      text-align: center;
+
+                      & + button {
+                        transition-property: var(--transition-property--colors);
+                        transition-duration: var(--transition-duration--150);
+                        transition-timing-function: var(
+                          --transition-timing-function--in-out
+                        );
+                      }
+
+                      &.flash--green {
+                        &,
+                        & + button,
+                        & .link {
+                          color: var(--color--green--700);
+                          background-color: var(--color--green--200);
+                        }
+                        & + button:hover,
+                        & .link:hover,
+                        & + button:focus,
+                        & .link:focus {
+                          color: var(--color--green--600);
+                        }
+                        & + button:active,
+                        & .link:active {
+                          color: var(--color--green--900);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          &,
+                          & + button,
+                          & .link {
+                            color: var(--color--green--300);
+                            background-color: var(--color--green--700);
+                          }
+                          & + button:hover,
+                          & .link:hover,
+                          & + button:focus,
+                          & .link:focus {
+                            color: var(--color--green--100);
+                          }
+                          & + button:active,
+                          & .link:active {
+                            color: var(--color--green--500);
+                          }
+                        }
+                      }
+
+                      &.flash--rose {
+                        &,
+                        & + button,
+                        & .link {
+                          color: var(--color--rose--700);
+                          background-color: var(--color--rose--200);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--rose--300);
+                            background-color: var(--color--rose--700);
+                          }
+                        }
+                        & + button:hover,
+                        & .link:hover {
+                          color: var(--color--rose--600);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--rose--100);
+                          }
+                        }
+                      }
+                    }
+                  `}"
+                >
+                  $${flash}
+                  <button
+                    style="${css`
+                      justify-self: end;
+                      align-self: start;
+                      margin-top: var(--space--2);
+                      margin-right: var(--space--4);
+                    `}"
+                    onclick="${javascript`
+                      this.parentElement.remove();
+                    `}"
+                  >
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+              `}
 
           <div
             style="${css`
@@ -1881,6 +1979,7 @@ export default async function courselore(
         </div>
       `,
     });
+  };
 
   interface Layouts {
     box: (_: {
@@ -1973,7 +2072,13 @@ export default async function courselore(
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.application = ({ req, res, head, extraHeaders, body }) => {
+  app.locals.layouts.application = ({
+    req,
+    res,
+    head,
+    extraHeaders = html``,
+    body,
+  }) => {
     const flash = app.locals.helpers.flash.get(req, res);
     return app.locals.layouts.applicationBase({
       req,
@@ -2385,104 +2490,7 @@ export default async function courselore(
                   </div>
                 `}
           </div>
-          $${extraHeaders ?? html``}
-          $${flash === undefined
-            ? html``
-            : html`
-                <div
-                  style="${css`
-                    display: grid;
-                    & > * {
-                      grid-area: 1 / 1;
-                    }
-
-                    & > :first-child {
-                      padding: var(--space--2) var(--space--10);
-                      text-align: center;
-
-                      & + button {
-                        transition-property: var(--transition-property--colors);
-                        transition-duration: var(--transition-duration--150);
-                        transition-timing-function: var(
-                          --transition-timing-function--in-out
-                        );
-                      }
-
-                      &.flash--green {
-                        &,
-                        & + button,
-                        & .link {
-                          color: var(--color--green--700);
-                          background-color: var(--color--green--200);
-                        }
-                        & + button:hover,
-                        & .link:hover,
-                        & + button:focus,
-                        & .link:focus {
-                          color: var(--color--green--600);
-                        }
-                        & + button:active,
-                        & .link:active {
-                          color: var(--color--green--900);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          &,
-                          & + button,
-                          & .link {
-                            color: var(--color--green--300);
-                            background-color: var(--color--green--700);
-                          }
-                          & + button:hover,
-                          & .link:hover,
-                          & + button:focus,
-                          & .link:focus {
-                            color: var(--color--green--100);
-                          }
-                          & + button:active,
-                          & .link:active {
-                            color: var(--color--green--500);
-                          }
-                        }
-                      }
-
-                      &.flash--rose {
-                        &,
-                        & + button,
-                        & .link {
-                          color: var(--color--rose--700);
-                          background-color: var(--color--rose--200);
-                          @media (prefers-color-scheme: dark) {
-                            color: var(--color--rose--300);
-                            background-color: var(--color--rose--700);
-                          }
-                        }
-                        & + button:hover,
-                        & .link:hover {
-                          color: var(--color--rose--600);
-                          @media (prefers-color-scheme: dark) {
-                            color: var(--color--rose--100);
-                          }
-                        }
-                      }
-                    }
-                  `}"
-                >
-                  $${flash}
-                  <button
-                    style="${css`
-                      justify-self: end;
-                      align-self: start;
-                      margin-top: var(--space--2);
-                      margin-right: var(--space--4);
-                    `}"
-                    onclick="${javascript`
-                      this.parentElement.remove();
-                    `}"
-                  >
-                    <i class="bi bi-x-circle"></i>
-                  </button>
-                </div>
-              `}
+          $${extraHeaders}
           <div
             style="${css`
               color: var(--color--gray--medium--500);
