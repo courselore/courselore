@@ -904,77 +904,28 @@ export default async function courselore(
                   }
                 }
 
-                /*
-                &.button--primary {
-                  font-weight: var(--font-weight--semibold);
+                &.button--blue {
                   color: var(--color--blue--50);
-                  background-color: var(--color--blue--700);
+                  background-color: var(--color--blue--600);
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--blue--600);
+                    background-color: var(--color--blue--500);
                   }
                   &:active {
-                    background-color: var(--color--blue--800);
+                    background-color: var(--color--blue--700);
                   }
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--blue--200);
+                    color: var(--color--blue--100);
                     background-color: var(--color--blue--800);
                     &:hover,
                     &:focus-within {
                       background-color: var(--color--blue--700);
                     }
                     &:active {
-                      background-color: var(--color--blue--800);
+                      background-color: var(--color--blue--900);
                     }
                   }
                 }
-
-                &.button--rose {
-                  color: var(--color--rose--50);
-                  background-color: var(--color--rose--700);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--rose--600);
-                  }
-                  &:active {
-                    background-color: var(--color--rose--800);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--rose--200);
-                    background-color: var(--color--rose--800);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--rose--700);
-                    }
-                    &:active {
-                      background-color: var(--color--rose--900);
-                    }
-                  }
-                }
-
-                &.button--green {
-                  color: var(--color--green--50);
-                  background-color: var(--color--green--700);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--green--600);
-                  }
-                  &:active {
-                    background-color: var(--color--green--800);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--green--200);
-                    background-color: var(--color--green--800);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--green--600);
-                    }
-                    &:active {
-                      background-color: var(--color--green--900);
-                    }
-                  }
-                }
-                */
               }
 
               /*
@@ -3062,7 +3013,7 @@ export default async function courselore(
               required
               class="input--text"
             />
-            <button class="button button--gray--medium">
+            <button class="button button--blue">
               <i class="bi bi-box-arrow-in-right"></i>
               Sign in
             </button>
