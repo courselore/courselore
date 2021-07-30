@@ -1981,12 +1981,12 @@ export default async function courselore(
               }
               flex: 1;
               max-width: var(--width--sm);
-              padding: var(--space--4);
+              padding: var(--space--2) var(--space--4);
               border-radius: var(--border-radius--lg);
               margin: var(--space--4);
               display: flex;
               flex-direction: column;
-              gap: var(--space--4);
+              gap: var(--space--8);
             `}"
           >
             <div
@@ -1999,15 +1999,23 @@ export default async function courselore(
                 href="${app.locals.settings.url}/"
                 class="button button--transparent"
                 style="${css`
-                  font-size: var(--font-size--3xl);
-                  line-height: var(--line-height--3xl);
+                  font-size: var(--font-size--xl);
+                  line-height: var(--line-height--xl);
                   font-weight: var(--font-weight--bold);
                 `}"
               >
                 $${app.locals.partials.logo} CourseLore
               </a>
             </div>
-            $${body}
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              $${body}
+            </div>
           </div>
         </div>
       `,
