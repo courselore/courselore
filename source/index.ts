@@ -2609,17 +2609,54 @@ export default async function courselore(
   interface Partials {
     logo: HTML;
   }
-  app.locals.partials.logo = html`
-    <svg width="20" height="20">
-      <path
-        d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z"
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
-  `;
+  app.locals.partials.logo = (() => {
+    // https://www.youtube.com/watch?v=dSK-MW-zuAc
+    const order = 2;
+    const size = 20;
+    // Hilbert
+    // let points = [
+    //   [1 / 4, 1 / 4],
+    //   [1 / 4, 3 / 4],
+    //   [3 / 4, 3 / 4],
+    //   [3 / 4, 1 / 4],
+    // ];
+    let points = [
+      [1 / 4, 1 / 4],
+      [3 / 4, 3 / 4],
+      [3 / 4, 1 / 4],
+      [1 / 4, 3 / 4],
+    ];
+    for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
+      const upperLeft = [];
+      const lowerLeft = [];
+      const lowerRight = [];
+      const upperRight = [];
+      for (const [x, y] of points) {
+        upperLeft.push([y / 2, x / 2]);
+        lowerLeft.push([x / 2, y / 2 + 1 / 2]);
+        lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
+        upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
+      }
+      points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
+    }
+    const pointsSvg = points.map((point) =>
+      point.map((coordinate) => coordinate * size).join(" ")
+    );
+    return html`
+      <svg width="${size}" height="${size}">
+        <path
+          d="M ${pointsSvg[0]} ${pointsSvg
+            .slice(1)
+            .map((pointSvg) => `L ${pointSvg}`)
+            .join(" ")} Z"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    `;
+  })();
 
   app.use(express.static(path.join(__dirname, "../static")));
   app.use(methodOverride("_method"));
