@@ -1023,14 +1023,6 @@ export default async function courselore(
                   --transition-timing-function--in-out
                 );
               }
-
-              .strong {
-                font-weight: var(--font-weight--bold);
-                color: var(--color--gray--medium--800);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--300);
-                }
-              }
               */
 
               .separator {
@@ -1039,6 +1031,21 @@ export default async function courselore(
                   var(--color--gray--medium--300);
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--gray--medium--600);
+                }
+              }
+
+              .strong {
+                font-weight: var(--font-weight--bold);
+                color: var(--color--gray--medium--800);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--medium--100);
+                }
+              }
+
+              .secondary {
+                color: var(--color--gray--medium--500);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--medium--400);
                 }
               }
 
@@ -2235,27 +2242,8 @@ export default async function courselore(
                       padding: var(--space--1);
                     `}"
                   >
-                    <p
-                      style="${css`
-                        font-weight: var(--font-weight--bold);
-                        color: var(--color--gray--medium--900);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--gray--medium--50);
-                        }
-                      `}"
-                    >
-                      ${res.locals.user.name}
-                    </p>
-                    <p
-                      style="${css`
-                        color: var(--color--gray--medium--500);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--gray--medium--300);
-                        }
-                      `}"
-                    >
-                      ${res.locals.user.email}
-                    </p>
+                    <p class="strong">${res.locals.user.name}</p>
+                    <p class="secondary">${res.locals.user.email}</p>
                   </div>
                   <a
                     class="button button--transparent dropdown--menu--item"
