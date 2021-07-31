@@ -900,28 +900,34 @@ export default async function courselore(
                   }
                 }
 
-                &.button--blue {
-                  color: var(--color--blue--50);
-                  background-color: var(--color--blue--600);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--blue--500);
-                  }
-                  &:active {
-                    background-color: var(--color--blue--700);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--blue--100);
-                    background-color: var(--color--blue--800);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--blue--700);
-                    }
-                    &:active {
-                      background-color: var(--color--blue--900);
-                    }
-                  }
-                }
+                ${["blue", "green", "rose"]
+                  .map(
+                    (color) => css`
+                      &.button--${color} {
+                        color: var(--color--${color}--50);
+                        background-color: var(--color--${color}--600);
+                        &:hover,
+                        &:focus-within {
+                          background-color: var(--color--${color}--500);
+                        }
+                        &:active {
+                          background-color: var(--color--${color}--700);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--${color}--100);
+                          background-color: var(--color--${color}--800);
+                          &:hover,
+                          &:focus-within {
+                            background-color: var(--color--${color}--700);
+                          }
+                          &:active {
+                            background-color: var(--color--${color}--900);
+                          }
+                        }
+                      }
+                    `
+                  )
+                  .join("")}
               }
 
               /*
@@ -1791,63 +1797,40 @@ export default async function courselore(
                       padding: var(--space--2) var(--space--10);
                       text-align: center;
 
-                      &.flash--rose {
-                        &,
-                        & + button {
-                          color: var(--color--rose--700);
-                        }
-                        background-color: var(--color--rose--100);
-                        & + button:hover,
-                        & + button:focus-within {
-                          background-color: var(--color--rose--200);
-                        }
-                        & + button:active {
-                          background-color: var(--color--rose--300);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          &,
-                          & + button {
-                            color: var(--color--rose--200);
-                          }
-                          background-color: var(--color--rose--900);
-                          & + button:hover,
-                          & + button:focus-within {
-                            background-color: var(--color--rose--800);
-                          }
-                          & + button:active {
-                            background-color: var(--color--rose--700);
-                          }
-                        }
-                      }
-
-                      &.flash--green {
-                        &,
-                        & + button {
-                          color: var(--color--green--700);
-                        }
-                        background-color: var(--color--green--100);
-                        & + button:hover,
-                        & + button:focus-within {
-                          background-color: var(--color--green--200);
-                        }
-                        & + button:active {
-                          background-color: var(--color--green--300);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          &,
-                          & + button {
-                            color: var(--color--green--200);
-                          }
-                          background-color: var(--color--green--900);
-                          & + button:hover,
-                          & + button:focus-within {
-                            background-color: var(--color--green--800);
-                          }
-                          & + button:active {
-                            background-color: var(--color--green--700);
-                          }
-                        }
-                      }
+                      ${["green", "rose"]
+                        .map(
+                          (color) => css`
+                            &.flash--${color} {
+                              &,
+                              & + button {
+                                color: var(--color--${color}--700);
+                              }
+                              background-color: var(--color--${color}--100);
+                              & + button:hover,
+                              & + button:focus-within {
+                                background-color: var(--color--${color}--200);
+                              }
+                              & + button:active {
+                                background-color: var(--color--${color}--300);
+                              }
+                              @media (prefers-color-scheme: dark) {
+                                &,
+                                & + button {
+                                  color: var(--color--${color}--200);
+                                }
+                                background-color: var(--color--${color}--900);
+                                & + button:hover,
+                                & + button:focus-within {
+                                  background-color: var(--color--${color}--800);
+                                }
+                                & + button:active {
+                                  background-color: var(--color--${color}--700);
+                                }
+                              }
+                            }
+                          `
+                        )
+                        .join("")}
                     }
                   `}"
                 >
