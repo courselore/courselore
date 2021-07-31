@@ -2879,37 +2879,41 @@ export default async function courselore(
     { email?: string; password?: string },
     { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
-  >("/sign-in", ...app.locals.middlewares.isSignedOut, (req, res, next) => {
-    if (
-      typeof req.body.email !== "string" ||
-      !req.body.email.match(app.locals.constants.emailRegExp) ||
-      typeof req.body.password !== "string" ||
-      req.body.password.trim() === ""
-    )
-      return next("validation");
-    const user = app.locals.database.get<{ id: number; password: string }>(
-      sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
-    );
-    if (
-      user === undefined ||
-      !argon2.verify(user.password, req.body.password)
-    ) {
-      app.locals.helpers.flash.set(
-        req,
-        res,
-        html`<div class="flash--rose">Incorrect email & password.</div>`
+  >(
+    "/sign-in",
+    ...app.locals.middlewares.isSignedOut,
+    asyncHandler(async (req, res, next) => {
+      if (
+        typeof req.body.email !== "string" ||
+        !req.body.email.match(app.locals.constants.emailRegExp) ||
+        typeof req.body.password !== "string" ||
+        req.body.password.trim() === ""
+      )
+        return next("validation");
+      const user = app.locals.database.get<{ id: number; password: string }>(
+        sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
       );
-      return res.redirect(
-        `${app.locals.settings.url}/sign-in?${qs.stringify({
-          redirect: req.query.redirect,
-          name: req.query.name,
-          email: req.query.email,
-        })}`
-      );
-    }
-    app.locals.helpers.session.open(req, res, user.id);
-    res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
-  });
+      if (
+        user === undefined ||
+        !(await argon2.verify(user.password, req.body.password))
+      ) {
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`<div class="flash--rose">Incorrect email & password.</div>`
+        );
+        return res.redirect(
+          `${app.locals.settings.url}/sign-in?${qs.stringify({
+            redirect: req.query.redirect,
+            name: req.query.name,
+            email: req.query.email,
+          })}`
+        );
+      }
+      app.locals.helpers.session.open(req, res, user.id);
+      res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
+    })
+  );
 
   app.get<
     {},
