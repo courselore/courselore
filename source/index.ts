@@ -2000,7 +2000,6 @@ export default async function courselore(
             style="${css`
               flex: 1;
               display: flex;
-              gap: var(--space--4);
               align-items: center;
               min-width: var(--width--0);
             `}"
@@ -2022,12 +2021,9 @@ export default async function courselore(
                     `}"
                   >
                     <button
+                      class="button button--transparent strong"
                       style="${css`
-                        font-size: var(--font-size--base);
-                        line-height: var(--line-height--base);
-                        font-weight: var(--font-weight--bold);
                         max-width: 100%;
-                        gap: var(--space--2);
                       `}"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
