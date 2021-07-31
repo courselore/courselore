@@ -2666,16 +2666,16 @@ export default async function courselore(
   };
 
   interface Middlewares {
-    isUnauthenticated: express.RequestHandler<
+    isSignedOut: express.RequestHandler<
       {},
       any,
       {},
       {},
-      IsUnauthenticatedMiddlewareLocals
+      IsSignedOutMiddlewareLocals
     >[];
   }
-  interface IsUnauthenticatedMiddlewareLocals {}
-  app.locals.middlewares.isUnauthenticated = [
+  interface IsSignedOutMiddlewareLocals {}
+  app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
       if (app.locals.helpers.session.get(req, res) !== undefined)
         return next("route");
@@ -2684,15 +2684,15 @@ export default async function courselore(
   ];
 
   interface Middlewares {
-    isAuthenticated: express.RequestHandler<
+    isSignedIn: express.RequestHandler<
       {},
       any,
       {},
       {},
-      IsAuthenticatedMiddlewareLocals
+      IsSignedInMiddlewareLocals
     >[];
   }
-  interface IsAuthenticatedMiddlewareLocals {
+  interface IsSignedInMiddlewareLocals {
     user: {
       id: number;
       email: string;
@@ -2723,7 +2723,7 @@ export default async function courselore(
       accentColor: AccentColor;
     }[];
   }
-  app.locals.middlewares.isAuthenticated = [
+  app.locals.middlewares.isSignedIn = [
     (req, res, next) => {
       const userId = app.locals.helpers.session.get(req, res);
       if (userId === undefined) return next("route");
@@ -2823,9 +2823,9 @@ export default async function courselore(
     },
   ];
 
-  app.get<{}, HTML, {}, {}, IsUnauthenticatedMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
-    ...app.locals.middlewares.isUnauthenticated,
+    ...app.locals.middlewares.isSignedOut,
     (req, res) => {
       res.redirect(`${app.locals.settings.url}/sign-in`);
     }
@@ -2836,8 +2836,8 @@ export default async function courselore(
     HTML,
     {},
     { redirect?: string; name?: string; email?: string },
-    IsUnauthenticatedMiddlewareLocals
-  >("/sign-in", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
+    IsSignedOutMiddlewareLocals
+  >("/sign-in", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
       app.locals.layouts.box({
         req,
@@ -2903,50 +2903,46 @@ export default async function courselore(
     HTML,
     { email?: string; password?: string },
     { redirect?: string; name?: string; email?: string },
-    IsUnauthenticatedMiddlewareLocals
-  >(
-    "/sign-in",
-    ...app.locals.middlewares.isUnauthenticated,
-    (req, res, next) => {
-      if (
-        typeof req.body.email !== "string" ||
-        !req.body.email.match(app.locals.constants.emailRegExp) ||
-        typeof req.body.password !== "string" ||
-        req.body.password.trim() === ""
-      )
-        return next("validation");
-      const user = app.locals.database.get<{ id: number; password: string }>(
-        sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
+    IsSignedOutMiddlewareLocals
+  >("/sign-in", ...app.locals.middlewares.isSignedOut, (req, res, next) => {
+    if (
+      typeof req.body.email !== "string" ||
+      !req.body.email.match(app.locals.constants.emailRegExp) ||
+      typeof req.body.password !== "string" ||
+      req.body.password.trim() === ""
+    )
+      return next("validation");
+    const user = app.locals.database.get<{ id: number; password: string }>(
+      sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
+    );
+    if (
+      user === undefined ||
+      !argon2.verify(user.password, req.body.password)
+    ) {
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`<div class="flash--rose">Incorrect email & password.</div>`
       );
-      if (
-        user === undefined ||
-        !argon2.verify(user.password, req.body.password)
-      ) {
-        app.locals.helpers.flash.set(
-          req,
-          res,
-          html`<div class="flash--rose">Incorrect email & password.</div>`
-        );
-        return res.redirect(
-          `${app.locals.settings.url}/sign-in?${qs.stringify({
-            redirect: req.query.redirect,
-            name: req.query.name,
-            email: req.query.email,
-          })}`
-        );
-      }
-      app.locals.helpers.session.open(req, res, user.id);
-      res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
+      return res.redirect(
+        `${app.locals.settings.url}/sign-in?${qs.stringify({
+          redirect: req.query.redirect,
+          name: req.query.name,
+          email: req.query.email,
+        })}`
+      );
     }
-  );
+    app.locals.helpers.session.open(req, res, user.id);
+    res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
+  });
 
   app.get<
     {},
     HTML,
     {},
     { redirect?: string; name?: string; email?: string },
-    IsUnauthenticatedMiddlewareLocals
-  >("/sign-up", ...app.locals.middlewares.isUnauthenticated, (req, res) => {
+    IsSignedOutMiddlewareLocals
+  >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
       app.locals.layouts.box({
         req,
@@ -3031,10 +3027,10 @@ export default async function courselore(
     HTML,
     { name?: string; email?: string; password?: string },
     { redirect?: string; name?: string; email?: string },
-    IsUnauthenticatedMiddlewareLocals
+    IsSignedOutMiddlewareLocals
   >(
     "/sign-up",
-    ...app.locals.middlewares.isUnauthenticated,
+    ...app.locals.middlewares.isSignedOut,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||
@@ -3093,18 +3089,18 @@ export default async function courselore(
     })
   );
 
-  app.delete<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       app.locals.helpers.session.close(req, res);
       res.redirect(`${app.locals.settings.url}/`);
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       switch (res.locals.enrollments.length) {
         case 0:
@@ -3309,9 +3305,9 @@ export default async function courselore(
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         app.locals.layouts.main({
@@ -3586,20 +3582,17 @@ export default async function courselore(
     any,
     { name?: string; avatar?: string; biography?: string },
     {},
-    IsAuthenticatedMiddlewareLocals
-  >(
-    "/settings",
-    ...app.locals.middlewares.isAuthenticated,
-    (req, res, next) => {
-      if (
-        typeof req.body.name !== "string" ||
-        typeof req.body.avatar !== "string" ||
-        typeof req.body.biography !== "string"
-      )
-        return next("validation");
+    IsSignedInMiddlewareLocals
+  >("/settings", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
+    if (
+      typeof req.body.name !== "string" ||
+      typeof req.body.avatar !== "string" ||
+      typeof req.body.biography !== "string"
+    )
+      return next("validation");
 
-      app.locals.database.run(
-        sql`
+    app.locals.database.run(
+      sql`
           UPDATE "users"
           SET "name" = ${req.body.name.trim() === "" ? null : req.body.name},
               "avatar" = ${
@@ -3610,21 +3603,20 @@ export default async function courselore(
               }
           WHERE "id" = ${res.locals.user.id}
         `
-      );
+    );
 
-      app.locals.helpers.flash.set(
-        req,
-        res,
-        html`
-          <div class="flash--green">User settings updated successfully.</div>
-        `
-      );
+    app.locals.helpers.flash.set(
+      req,
+      res,
+      html`
+        <div class="flash--green">User settings updated successfully.</div>
+      `
+    );
 
-      res.redirect(`${app.locals.settings.url}/settings`);
-    }
-  );
+    res.redirect(`${app.locals.settings.url}/settings`);
+  });
 
-  app.post<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/avatar",
     asyncHandler(async (req, res, next) => {
       if (
@@ -3652,9 +3644,9 @@ export default async function courselore(
     })
   );
 
-  app.get<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/courses/new",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         app.locals.layouts.main({
@@ -3715,9 +3707,9 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, any, { name?: string }, {}, IsAuthenticatedMiddlewareLocals>(
+  app.post<{}, any, { name?: string }, {}, IsSignedInMiddlewareLocals>(
     "/courses",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
@@ -3753,7 +3745,7 @@ export default async function courselore(
 
   interface Helpers {
     defaultAccentColor: (
-      enrollments: IsAuthenticatedMiddlewareLocals["enrollments"]
+      enrollments: IsSignedInMiddlewareLocals["enrollments"]
     ) => AccentColor;
   }
   app.locals.helpers.defaultAccentColor = (enrollments) => {
@@ -3780,10 +3772,10 @@ export default async function courselore(
     >[];
   }
   interface IsEnrolledInCourseMiddlewareLocals
-    extends IsAuthenticatedMiddlewareLocals {
-    course: IsAuthenticatedMiddlewareLocals["enrollments"][number]["course"];
-    enrollment: IsAuthenticatedMiddlewareLocals["enrollments"][number];
-    otherEnrollments: IsAuthenticatedMiddlewareLocals["enrollments"];
+    extends IsSignedInMiddlewareLocals {
+    course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+    enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
+    otherEnrollments: IsSignedInMiddlewareLocals["enrollments"];
     tags: {
       id: number;
       reference: string;
@@ -3845,7 +3837,7 @@ export default async function courselore(
     }[];
   }
   app.locals.middlewares.isEnrolledInCourse = [
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       res.locals.otherEnrollments = [];
       for (const enrollment of res.locals.enrollments)
@@ -4345,7 +4337,7 @@ export default async function courselore(
   }
   interface IsInvitationUsableMiddlewareLocals
     extends InvitationExistsMiddlewareLocals,
-      Partial<IsAuthenticatedMiddlewareLocals> {}
+      Partial<IsSignedInMiddlewareLocals> {}
   app.locals.middlewares.isInvitationUsable = [
     ...app.locals.middlewares.invitationExists,
     (req, res, next) => {
@@ -7382,10 +7374,10 @@ export default async function courselore(
     HTML,
     {},
     {},
-    IsAuthenticatedMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
@@ -7470,10 +7462,10 @@ export default async function courselore(
     HTML,
     {},
     {},
-    IsAuthenticatedMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       app.locals.database.run(
@@ -7508,10 +7500,10 @@ export default async function courselore(
     HTML,
     {},
     {},
-    IsUnauthenticatedMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    IsSignedOutMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isUnauthenticated,
+    ...app.locals.middlewares.isSignedOut,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
@@ -9184,9 +9176,9 @@ ${value}</textarea
     </div>
   `;
 
-  app.post<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/text-editor/attachments",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
       if (req.files?.attachments === undefined) return next("validation");
       const attachmentsMarkdowns: string[] = [];
@@ -9222,9 +9214,9 @@ ${value}</textarea
 
   // TODO: Verify the security of this: https://expressjs.com/en/4x/api.html#express.static
   // TODO: Move this route to a more generic place.
-  app.get<{}, any, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.get<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/files/*",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     express.static(rootDirectory)
   );
 
@@ -9337,9 +9329,9 @@ ${value}</textarea
     };
   })();
 
-  app.post<{}, any, { content?: string }, {}, IsAuthenticatedMiddlewareLocals>(
+  app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
     "/text-editor/preview",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -12430,9 +12422,9 @@ ${value}</textarea
     process.exit(0);
   });
 
-  app.all<{}, HTML, {}, {}, IsAuthenticatedMiddlewareLocals>(
+  app.all<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "*",
-    ...app.locals.middlewares.isAuthenticated,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.status(404).send(
         app.locals.layouts.box({
@@ -12489,9 +12481,9 @@ ${value}</textarea
     }
   );
 
-  app.all<{}, HTML, {}, {}, IsUnauthenticatedMiddlewareLocals>(
+  app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
-    ...app.locals.middlewares.isUnauthenticated,
+    ...app.locals.middlewares.isSignedOut,
     (req, res) => {
       res.status(404).send(
         app.locals.layouts.box({
