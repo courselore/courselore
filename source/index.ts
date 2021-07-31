@@ -12,7 +12,7 @@ import qs from "qs";
 
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { CSS, css, extractInlineStyles } from "@leafac/css";
+import { css, extractInlineStyles } from "@leafac/css";
 import javascript from "tagged-template-noop";
 import markdown from "tagged-template-noop";
 import dedent from "dedent";
@@ -1714,85 +1714,94 @@ export default async function courselore(
             ? html`
                 <div
                   style="${css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
                     background-color: var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--800);
-                    }
-                    padding: var(--space--0) var(--space--4);
                     border-bottom: var(--border-width--1) solid
                       var(--color--gray--medium--300);
                     @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--gray--medium--800);
                       border-color: var(--color--gray--medium--700);
                     }
                     display: flex;
                     justify-content: center;
                   `}"
                 >
-                  <div>
-                    <button
-                      class="button button--transparent"
-                      data-ondomcontentloaded="${javascript`
+                  <div
+                    style="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      flex: 1;
+                      max-width: var(--headers--max-width);
+                      padding: var(--space--0) var(--space--4);
+                      display: flex;
+                      justify-content: center;
+                    `}"
+                  >
+                    <div>
+                      <button
+                        class="button button--transparent"
+                        data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
                           trigger: "click",
                           interactive: true,
                         });
                       `}"
-                    >
-                      <i class="bi bi-easel"></i>
-                      Demonstration Mode
-                    </button>
-                    <div hidden>
-                      <div
-                        style="${css`
-                          padding: var(--space--2);
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--4);
-                        `}"
                       >
-                        <p>
-                          CourseLore is running in Demonstration Mode. All data
-                          may be lost, including courses, conversations, users,
-                          and so forth. Also, no emails are actually sent.
-                        </p>
-                        <p>
-                          To give you a better idea of what CourseLore looks
-                          like in use, you may create demonstration data.
-                        </p>
-                        <form
-                          method="POST"
-                          action="${app.locals.settings.url}/demonstration-data"
+                        <i class="bi bi-easel"></i>
+                        Demonstration Mode
+                      </button>
+                      <div hidden>
+                        <div
+                          style="${css`
+                            padding: var(--space--2);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
                         >
-                          <button
-                            class="button button--blue"
-                            style="${css`
-                              width: 100%;
-                            `}"
+                          <p>
+                            CourseLore is running in Demonstration Mode. All
+                            data may be lost, including courses, conversations,
+                            users, and so forth. Also, no emails are actually
+                            sent.
+                          </p>
+                          <p>
+                            To give you a better idea of what CourseLore looks
+                            like in use, you may create demonstration data.
+                          </p>
+                          <form
+                            method="POST"
+                            action="${app.locals.settings
+                              .url}/demonstration-data"
                           >
-                            <i class="bi bi-easel"></i>
-                            Create Demonstration Data
-                          </button>
-                        </form>
+                            <button
+                              class="button button--blue"
+                              style="${css`
+                                width: 100%;
+                              `}"
+                            >
+                              <i class="bi bi-easel"></i>
+                              Create Demonstration Data
+                            </button>
+                          </form>
+                        </div>
                       </div>
                     </div>
+                    $${app.locals.settings.env === "production"
+                      ? html``
+                      : html`
+                          <form
+                            method="POST"
+                            action="${app.locals.settings
+                              .url}/turn-off?_method=DELETE"
+                          >
+                            <button class="button button--transparent">
+                              <i class="bi bi-power"></i>
+                              Turn off
+                            </button>
+                          </form>
+                        `}
                   </div>
-                  $${app.locals.settings.env === "production"
-                    ? html``
-                    : html`
-                        <form
-                          method="POST"
-                          action="${app.locals.settings
-                            .url}/turn-off?_method=DELETE"
-                        >
-                          <button class="button button--transparent">
-                            <i class="bi bi-power"></i>
-                            Turn off
-                          </button>
-                        </form>
-                      `}
                 </div>
               `
             : html``}
@@ -1973,7 +1982,6 @@ export default async function courselore(
           Partial<EventSourceMiddlewareLocals>
       >;
       head: HTML;
-      headersMaxWidth: CSS;
       extraHeaders?: HTML;
       body: HTML;
     }) => HTML;
@@ -1982,7 +1990,6 @@ export default async function courselore(
     req,
     res,
     head,
-    headersMaxWidth,
     extraHeaders = html``,
     body,
   }) =>
@@ -1997,7 +2004,6 @@ export default async function courselore(
             @media (prefers-color-scheme: dark) {
               background-color: var(--color--gray--medium--800);
             }
-            padding: var(--space--1) var(--space--3);
             display: flex;
             justify-content: center;
           `}"
@@ -2005,9 +2011,9 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
-              max-width: ${headersMaxWidth};
+              max-width: var(--headers--max-width);
+              padding: var(--space--1) var(--space--3);
               display: flex;
-              gap: var(--space--4);
               justify-content: space-between;
             `}"
           >
@@ -2345,7 +2351,6 @@ export default async function courselore(
       req,
       res,
       head,
-      headersMaxWidth: css`var(--width--prose)`,
       body: html`
         <div
           style="${css`
@@ -4361,7 +4366,6 @@ export default async function courselore(
       req,
       res,
       head,
-      headersMaxWidth: css`var(--width--prose)`,
       extraHeaders: html`
         $${res.locals.enrollment.role === "staff"
           ? html`
@@ -7416,7 +7420,6 @@ export default async function courselore(
       req,
       res,
       head,
-      headersMaxWidth: css`var(--width--prose)`,
       extraHeaders: html`
         $${req.query.onlyConversationLayoutSidebarOnSmallScreens === "true"
           ? html``
