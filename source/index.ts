@@ -4487,6 +4487,7 @@ export default async function courselore(
                   <div
                     style="${css`
                       width: var(--space--40);
+                      margin-top: var(--space---2);
                       margin-left: var(--space---2);
                       display: flex;
                       flex-direction: column;
