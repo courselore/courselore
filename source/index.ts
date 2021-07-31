@@ -693,10 +693,10 @@ export default async function courselore(
               .heading--REMOVE {
                 font-size: var(--font-size--base);
                 line-height: var(--line-height--base);
-                font-weight: var(--font-weight--semibold);
-                color: var(--color--primary--900);
+                font-weight: var(--font-weight--bold);
+                color: var(--color--gray--medium--900);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--primary--400);
+                  color: var(--color--gray--medium--400);
                 }
               }
 
@@ -705,14 +705,14 @@ export default async function courselore(
                 background-clip: text;
                 background-image: linear-gradient(
                   135deg,
-                  var(--color--primary--400) 0%,
-                  var(--color--primary--700) 100%
+                  var(--color--gray--medium--400) 0%,
+                  var(--color--gray--medium--700) 100%
                 );
                 @media (prefers-color-scheme: dark) {
                   background-image: linear-gradient(
                     135deg,
-                    var(--color--primary--400) 0%,
-                    var(--color--primary--700) 100%
+                    var(--color--gray--medium--400) 0%,
+                    var(--color--gray--medium--700) 100%
                   );
                 }
                 padding: var(--space--0) var(--space--0-5);
@@ -831,13 +831,13 @@ export default async function courselore(
                   }
                   & > :active + span,
                   & > :checked:focus + span {
-                    color: var(--color--primary--50);
-                    background-color: var(--color--primary--800);
-                    border-color: var(--color--primary--800);
+                    color: var(--color--gray--medium--50);
+                    background-color: var(--color--gray--medium--800);
+                    border-color: var(--color--gray--medium--800);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--200);
-                      background-color: var(--color--primary--900);
-                      border-color: var(--color--primary--900);
+                      color: var(--color--gray--medium--200);
+                      background-color: var(--color--gray--medium--900);
+                      border-color: var(--color--gray--medium--900);
                     }
                   }
                   & > :checked {
@@ -846,13 +846,13 @@ export default async function courselore(
                       position: relative;
                     }
                     & + span {
-                      color: var(--color--primary--100);
-                      background-color: var(--color--primary--700);
-                      border-color: var(--color--primary--700);
+                      color: var(--color--gray--medium--100);
+                      background-color: var(--color--gray--medium--700);
+                      border-color: var(--color--gray--medium--700);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--200);
-                        background-color: var(--color--primary--800);
-                        border-color: var(--color--primary--800);
+                        color: var(--color--gray--medium--200);
+                        background-color: var(--color--gray--medium--800);
+                        border-color: var(--color--gray--medium--800);
                       }
                     }
                   }
@@ -927,20 +927,20 @@ export default async function courselore(
                 &:hover,
                 &:focus-within,
                 :focus ~ &.after-toggle {
-                  color: var(--color--primary--500);
+                  color: var(--color--gray--medium--500);
                 }
                 &:active {
-                  color: var(--color--primary--700);
+                  color: var(--color--gray--medium--700);
                 }
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--gray--medium--300);
                   &:hover,
                   &:focus-within,
                   :focus ~ &.after-toggle {
-                    color: var(--color--primary--500);
+                    color: var(--color--gray--medium--500);
                   }
                   &:active {
-                    color: var(--color--primary--700);
+                    color: var(--color--gray--medium--700);
                   }
                 }
                 transition-property: var(--transition-property--colors);
@@ -955,20 +955,20 @@ export default async function courselore(
                   &:hover,
                   &:focus-within,
                   :focus ~ &.after-toggle {
-                    color: var(--color--primary--500);
+                    color: var(--color--gray--medium--500);
                   }
                   &:active {
-                    color: var(--color--primary--700);
+                    color: var(--color--gray--medium--700);
                   }
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--gray--medium--600);
                     &:hover,
                     &:focus-within,
                     :focus ~ &.after-toggle {
-                      color: var(--color--primary--600);
+                      color: var(--color--gray--medium--600);
                     }
                     &:active {
-                      color: var(--color--primary--700);
+                      color: var(--color--gray--medium--700);
                     }
                   }
                 }
@@ -999,22 +999,22 @@ export default async function courselore(
               /*
               .link {
                 text-decoration: underline;
-                color: var(--color--primary--600);
+                color: var(--color--gray--medium--600);
                 &:hover,
                 &:focus-within {
-                  color: var(--color--primary--400);
+                  color: var(--color--gray--medium--400);
                 }
                 &:active {
-                  color: var(--color--primary--800);
+                  color: var(--color--gray--medium--800);
                 }
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--primary--500);
+                  color: var(--color--gray--medium--500);
                   &:hover,
                   &:focus-within {
-                    color: var(--color--primary--300);
+                    color: var(--color--gray--medium--300);
                   }
                   &:active {
-                    color: var(--color--primary--700);
+                    color: var(--color--gray--medium--700);
                   }
                 }
                 transition-property: var(--transition-property--colors);
@@ -1025,7 +1025,7 @@ export default async function courselore(
               }
 
               .strong {
-                font-weight: var(--font-weight--semibold);
+                font-weight: var(--font-weight--bold);
                 color: var(--color--gray--medium--800);
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--gray--medium--300);
@@ -1065,9 +1065,9 @@ export default async function courselore(
                   width: var(--space--3);
                   height: var(--space--3);
                   border: var(--border-width--2) solid
-                    var(--color--primary--700);
+                    var(--color--gray--medium--700);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--primary--800);
+                    border-color: var(--color--gray--medium--800);
                   }
                   border-radius: var(--border-radius--circle);
                   justify-self: end;
@@ -1154,9 +1154,9 @@ export default async function courselore(
 
                   &::before {
                     content: "";
-                    background-color: var(--color--primary--300);
+                    background-color: var(--color--gray--medium--300);
                     @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--primary--800);
+                      background-color: var(--color--gray--medium--800);
                     }
                     position: absolute;
                     top: 0;
@@ -1172,9 +1172,9 @@ export default async function courselore(
                     font-family: bootstrap-icons !important;
                     font-size: var(--font-size--xl);
                     line-height: var(--line-height--xl);
-                    color: var(--color--primary--800);
+                    color: var(--color--gray--medium--800);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--400);
+                      color: var(--color--gray--medium--400);
                     }
                     position: fixed;
                     top: var(--space--2);
@@ -1225,9 +1225,9 @@ export default async function courselore(
                 }
 
                 h1 {
-                  color: var(--color--primary--800);
+                  color: var(--color--gray--medium--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--300);
+                    color: var(--color--gray--medium--300);
                   }
                 }
 
@@ -1253,7 +1253,7 @@ export default async function courselore(
                 h4,
                 h5,
                 h6 {
-                  font-weight: var(--font-weight--semibold);
+                  font-weight: var(--font-weight--bold);
                 }
 
                 h2 {
@@ -1262,7 +1262,7 @@ export default async function courselore(
 
                 b,
                 strong {
-                  font-weight: var(--font-weight--semibold);
+                  font-weight: var(--font-weight--bold);
                   color: var(--color--gray--medium--800);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--gray--medium--300);
@@ -1450,7 +1450,7 @@ export default async function courselore(
                     }
                   }
                   th {
-                    font-weight: var(--font-weight--semibold);
+                    font-weight: var(--font-weight--bold);
                     color: var(--color--gray--medium--800);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--gray--medium--300);
@@ -1481,7 +1481,7 @@ export default async function courselore(
 
                 dl {
                   dt {
-                    font-weight: var(--font-weight--semibold);
+                    font-weight: var(--font-weight--bold);
                     color: var(--color--gray--medium--800);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--gray--medium--300);
@@ -1544,7 +1544,7 @@ export default async function courselore(
                 }
 
                 dfn {
-                  font-weight: var(--font-weight--semibold);
+                  font-weight: var(--font-weight--bold);
                 }
 
                 mark {
@@ -1585,12 +1585,12 @@ export default async function courselore(
                   }
                   &:checked {
                     color: var(--color--gray--medium--50);
-                    background-color: var(--color--primary--700);
-                    border-color: var(--color--primary--700);
+                    background-color: var(--color--gray--medium--700);
+                    border-color: var(--color--gray--medium--700);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--gray--medium--200);
-                      background-color: var(--color--primary--800);
-                      border-color: var(--color--primary--800);
+                      background-color: var(--color--gray--medium--800);
+                      border-color: var(--color--gray--medium--800);
                     }
                   }
                 }
@@ -1999,7 +1999,7 @@ export default async function courselore(
                       style="${css`
                         font-size: var(--font-size--base);
                         line-height: var(--line-height--base);
-                        font-weight: var(--font-weight--semibold);
+                        font-weight: var(--font-weight--bold);
                         max-width: 100%;
                         gap: var(--space--2);
                       `}"
@@ -2199,9 +2199,7 @@ export default async function courselore(
                 class="button button--icon button--transparent"
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
-                    content: ${JSON.stringify(
-                      res.locals.user.name ?? res.locals.user.email
-                    )},
+                    content: ${JSON.stringify(res.locals.user.name)},
                     theme: "tooltip",
                     touch: false,
                   });
@@ -2218,7 +2216,7 @@ export default async function courselore(
                   : html`
                       <img
                         src="${res.locals.user.avatar}"
-                        alt="${res.locals.user.name ?? res.locals.user.email}"
+                        alt="${res.locals.user.name}"
                         class="avatar"
                         style="${css`
                           width: var(--font-size--xl);
@@ -2229,32 +2227,33 @@ export default async function courselore(
               </button>
               <div hidden>
                 <div>
-                  <p
+                  <div
                     style="${css`
-                      font-weight: var(--font-weight--semibold);
-                      color: var(--color--primary--900);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--primary--50);
-                      }
+                      padding: var(--space--2);
                     `}"
                   >
-                    ${res.locals.user.name ?? res.locals.user.email}
-                  </p>
-                  $${res.locals.user.name === null
-                    ? html``
-                    : html`
-                        <p
-                          style="${css`
-                            color: var(--color--primary--500);
-                            @media (prefers-color-scheme: dark) {
-                              color: var(--color--primary--300);
-                            }
-                          `}"
-                        >
-                          ${res.locals.user.email}
-                        </p>
-                      `}
-                  <hr class="dropdown--separator" />
+                    <p
+                      style="${css`
+                        font-weight: var(--font-weight--bold);
+                        color: var(--color--gray--medium--900);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--gray--medium--50);
+                        }
+                      `}"
+                    >
+                      ${res.locals.user.name}
+                    </p>
+                    <p
+                      style="${css`
+                        color: var(--color--gray--medium--500);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--gray--medium--300);
+                        }
+                      `}"
+                    >
+                      ${res.locals.user.email}
+                    </p>
+                  </div>
                   <a
                     class="dropdown--item"
                     href="${app.locals.settings.url}/settings"
@@ -3141,7 +3140,7 @@ export default async function courselore(
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
                             style="${css`
-                              font-weight: var(--font-weight--semibold);
+                              font-weight: var(--font-weight--bold);
                               color: var(
                                 --color--${enrollment.accentColor}--50
                               );
@@ -3267,10 +3266,10 @@ export default async function courselore(
                           color: var(--color--gray--medium--400);
                           &:hover,
                           &:focus-within {
-                            color: var(--color--primary--500);
+                            color: var(--color--gray--medium--500);
                           }
                           &:active {
-                            color: var(--color--primary--700);
+                            color: var(--color--gray--medium--700);
                           }
                           background-color: var(--color--gray--medium--200);
                           @media (prefers-color-scheme: dark) {
@@ -3278,10 +3277,10 @@ export default async function courselore(
                             background-color: var(--color--gray--medium--700);
                             &:hover,
                             &:focus-within {
-                              color: var(--color--primary--500);
+                              color: var(--color--gray--medium--500);
                             }
                             &:active {
-                              color: var(--color--primary--700);
+                              color: var(--color--gray--medium--700);
                             }
                           }
                         `}"
@@ -3415,7 +3414,7 @@ export default async function courselore(
                       <input
                         type="text"
                         name="name"
-                        value="${res.locals.user.name ?? ""}"
+                        value="${res.locals.user.name}"
                         class="input--text"
                       />
                     </label>
@@ -4415,11 +4414,11 @@ export default async function courselore(
           ? html`
               <div
                 style="${css`
-                  color: var(--color--primary--100);
-                  background-color: var(--color--primary--800);
+                  color: var(--color--gray--medium--100);
+                  background-color: var(--color--gray--medium--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--1) var(--space--4);
                   display: flex;
@@ -4502,13 +4501,13 @@ export default async function courselore(
                       }
                       &:active,
                       &.active {
-                        color: var(--color--primary--900);
+                        color: var(--color--gray--medium--900);
                         box-shadow: inset var(--border-width--4) 0
-                          var(--color--primary--500);
+                          var(--color--gray--medium--500);
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--primary--100);
+                          color: var(--color--gray--medium--100);
                           box-shadow: inset var(--border-width--4) 0
-                            var(--color--primary--500);
+                            var(--color--gray--medium--500);
                         }
                       }
                     }
@@ -5043,9 +5042,7 @@ export default async function courselore(
                                     >
                                       <span
                                         style="${css`
-                                          font-weight: var(
-                                            --font-weight--semibold
-                                          );
+                                          font-weight: var(--font-weight--bold);
                                         `}"
                                         $${isExpired
                                           ? html`
@@ -5086,7 +5083,7 @@ export default async function courselore(
                                         <button
                                           style="${css`
                                             font-weight: var(
-                                              --font-weight--semibold
+                                              --font-weight--bold
                                             );
                                           `}"
                                           $${isUsed || isExpired
@@ -6342,7 +6339,7 @@ export default async function courselore(
                                                             <strong
                                                               style="${css`
                                                                 font-weight: var(
-                                                                  --font-weight--semibold
+                                                                  --font-weight--bold
                                                                 );
                                                               `}"
                                                             >
@@ -6430,9 +6427,7 @@ export default async function courselore(
                                     <p>
                                       <strong
                                         style="${css`
-                                          font-weight: var(
-                                            --font-weight--semibold
-                                          );
+                                          font-weight: var(--font-weight--bold);
                                         `}"
                                       >
                                         You may not undo this action!
@@ -6745,9 +6740,7 @@ export default async function courselore(
                                   <p>
                                     <strong
                                       style="${css`
-                                        font-weight: var(
-                                          --font-weight--semibold
-                                        );
+                                        font-weight: var(--font-weight--bold);
                                       `}"
                                     >
                                       The tag will be removed from all
@@ -7215,9 +7208,9 @@ export default async function courselore(
               <h2
                 class="heading"
                 style="${css`
-                  color: var(--color--primary--200);
+                  color: var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
+                    color: var(--color--gray--medium--200);
                   }
                 `}"
               >
@@ -7226,11 +7219,11 @@ export default async function courselore(
               </h2>
               <div
                 style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
+                  color: var(--color--gray--medium--800);
+                  background-color: var(--color--gray--medium--100);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
@@ -7294,9 +7287,9 @@ export default async function courselore(
               <h2
                 class="heading"
                 style="${css`
-                  color: var(--color--primary--200);
+                  color: var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
+                    color: var(--color--gray--medium--200);
                   }
                 `}"
               >
@@ -7305,11 +7298,11 @@ export default async function courselore(
               </h2>
               <div
                 style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
+                  color: var(--color--gray--medium--800);
+                  background-color: var(--color--gray--medium--100);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
@@ -7320,7 +7313,7 @@ export default async function courselore(
               >
                 <p
                   style="${css`
-                    font-weight: var(--font-weight--semibold);
+                    font-weight: var(--font-weight--bold);
                   `}"
                 >
                   Welcome to ${res.locals.invitation.course.name}!
@@ -7420,9 +7413,9 @@ export default async function courselore(
               <h2
                 class="heading"
                 style="${css`
-                  color: var(--color--primary--200);
+                  color: var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
+                    color: var(--color--gray--medium--200);
                   }
                 `}"
               >
@@ -7431,11 +7424,11 @@ export default async function courselore(
               </h2>
               <div
                 style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
+                  color: var(--color--gray--medium--800);
+                  background-color: var(--color--gray--medium--100);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
@@ -7446,7 +7439,7 @@ export default async function courselore(
               >
                 <p
                   style="${css`
-                    font-weight: var(--font-weight--semibold);
+                    font-weight: var(--font-weight--bold);
                   `}"
                 >
                   Welcome to ${res.locals.invitation.course.name}!
@@ -7520,11 +7513,11 @@ export default async function courselore(
           : html`
               <div
                 style="${css`
-                  color: var(--color--primary--100);
-                  background-color: var(--color--primary--800);
+                  color: var(--color--gray--medium--100);
+                  background-color: var(--color--gray--medium--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--1) var(--space--4);
                   display: flex;
@@ -7590,47 +7583,47 @@ export default async function courselore(
               ? ""
               : "single-column--hidden"}"
             style="${css`
-              color: var(--color--primary--200);
-              background-color: var(--color--primary--900);
+              color: var(--color--gray--medium--200);
+              background-color: var(--color--gray--medium--900);
               @media (prefers-color-scheme: dark) {
-                color: var(--color--primary--200);
-                background-color: var(--color--primary--900);
+                color: var(--color--gray--medium--200);
+                background-color: var(--color--gray--medium--900);
               }
               @media (min-width: 900px) {
                 width: var(--width--sm);
               }
 
               .button--inline--sidebar {
-                color: var(--color--primary--200);
+                color: var(--color--gray--medium--200);
                 &:hover,
                 &:focus-within {
-                  color: var(--color--primary--50);
+                  color: var(--color--gray--medium--50);
                 }
                 &:active {
-                  color: var(--color--primary--100);
+                  color: var(--color--gray--medium--100);
                 }
                 @media (prefers-color-scheme: dark) {
                   &:hover,
                   &:focus-within {
-                    color: var(--color--primary--50);
+                    color: var(--color--gray--medium--50);
                   }
                   &:active {
-                    color: var(--color--primary--100);
+                    color: var(--color--gray--medium--100);
                   }
                 }
               }
 
               .input--text--sidebar {
-                color: var(--color--primary--200);
-                background-color: var(--color--primary--700);
+                color: var(--color--gray--medium--200);
+                background-color: var(--color--gray--medium--700);
                 &::placeholder {
-                  color: var(--color--primary--300);
+                  color: var(--color--gray--medium--300);
                 }
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--primary--200);
-                  background-color: var(--color--primary--700);
+                  color: var(--color--gray--medium--200);
+                  background-color: var(--color--gray--medium--700);
                   &::placeholder {
-                    color: var(--color--primary--300);
+                    color: var(--color--gray--medium--300);
                   }
                 }
               }
@@ -7654,7 +7647,7 @@ export default async function courselore(
                     .reference}/conversations/new"
                   class="button--inline button--inline--sidebar"
                   style="${css`
-                    font-weight: var(--font-weight--semibold);
+                    font-weight: var(--font-weight--bold);
                     display: flex;
                     gap: var(--space--2);
                   `}"
@@ -7779,7 +7772,7 @@ export default async function courselore(
                               ${res.locals.tagFilter === undefined
                                 ? css``
                                 : css`
-                                    font-weight: var(--font-weight--semibold);
+                                    font-weight: var(--font-weight--bold);
                                   `}
                             `}"
                             data-ondomcontentloaded="${javascript`
@@ -7875,7 +7868,7 @@ export default async function courselore(
                 ? html`
                     <div
                       style="${css`
-                        color: var(--color--primary--500);
+                        color: var(--color--gray--medium--500);
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
@@ -7885,8 +7878,8 @@ export default async function courselore(
                       <div
                         class="decorative-icon"
                         style="${css`
-                          color: var(--color--primary--600);
-                          background-color: var(--color--primary--800);
+                          color: var(--color--gray--medium--600);
+                          background-color: var(--color--gray--medium--800);
                         `}"
                       >
                         <i class="bi bi-chat-left-text"></i>
@@ -7940,41 +7933,53 @@ export default async function courselore(
                               &:hover,
                               &:focus-within,
                               &.active:focus {
-                                background-color: var(--color--primary--600);
+                                background-color: var(
+                                  --color--gray--medium--600
+                                );
                               }
                               &:active {
-                                background-color: var(--color--primary--700);
+                                background-color: var(
+                                  --color--gray--medium--700
+                                );
                               }
                               @media (max-width: 899px) {
                                 :not(.active--cancel) > &.active {
-                                  background-color: var(--color--primary--700);
+                                  background-color: var(
+                                    --color--gray--medium--700
+                                  );
                                 }
                               }
                               @media (min-width: 900px) {
                                 &.active {
-                                  background-color: var(--color--primary--700);
+                                  background-color: var(
+                                    --color--gray--medium--700
+                                  );
                                 }
                               }
                               @media (prefers-color-scheme: dark) {
                                 &:hover,
                                 &:focus-within,
                                 &.active:focus {
-                                  background-color: var(--color--primary--600);
+                                  background-color: var(
+                                    --color--gray--medium--600
+                                  );
                                 }
                                 &:active {
-                                  background-color: var(--color--primary--700);
+                                  background-color: var(
+                                    --color--gray--medium--700
+                                  );
                                 }
                                 @media (max-width: 899px) {
                                   :not(.active--cancel) > &.active {
                                     background-color: var(
-                                      --color--primary--700
+                                      --color--gray--medium--700
                                     );
                                   }
                                 }
                                 @media (min-width: 900px) {
                                   &.active {
                                     background-color: var(
-                                      --color--primary--700
+                                      --color--gray--medium--700
                                     );
                                   }
                                 }
@@ -7983,10 +7988,10 @@ export default async function courselore(
                           >
                             <h3
                               style="${css`
-                                font-weight: var(--font-weight--semibold);
-                                color: var(--color--primary--100);
+                                font-weight: var(--font-weight--bold);
+                                color: var(--color--gray--medium--100);
                                 @media (prefers-color-scheme: dark) {
-                                  color: var(--color--primary--100);
+                                  color: var(--color--gray--medium--100);
                                 }
                               `}"
                             >
@@ -8020,9 +8025,7 @@ export default async function courselore(
                                           src="${conversation.authorEnrollment
                                             .user.avatar}"
                                           alt="${conversation.authorEnrollment
-                                            .user.name ??
-                                          conversation.authorEnrollment
-                                            .reference}"
+                                            .user.name}"
                                           class="avatar"
                                           style="${css`
                                             width: var(--font-size--xs);
@@ -8031,8 +8034,7 @@ export default async function courselore(
                                           `}"
                                         />
                                       `}
-                                  ${conversation.authorEnrollment.user.name ??
-                                  conversation.authorEnrollment.reference}
+                                  ${conversation.authorEnrollment.user.name}
                                 </div>
                                 $${conversation.updatedAt !==
                                 conversation.createdAt
@@ -8097,9 +8099,7 @@ export default async function courselore(
                                           ).format(
                                             conversation.endorsements.map(
                                               (endorsement) =>
-                                                endorsement.enrollment.user
-                                                  .name ??
-                                                endorsement.enrollment.reference
+                                                endorsement.enrollment.user.name
                                             )
                                           )
                                         }`
@@ -8995,7 +8995,7 @@ export default async function courselore(
             );
 
             &.drag {
-              background-color: var(--color--primary--200);
+              background-color: var(--color--gray--medium--200);
             }
           `}"
           data-ondomcontentloaded="${javascript`
@@ -10355,7 +10355,7 @@ ${value}</textarea
                               <p>
                                 <strong
                                   style="${css`
-                                    font-weight: var(--font-weight--semibold);
+                                    font-weight: var(--font-weight--bold);
                                   `}"
                                 >
                                   You may not undo this action!
@@ -10765,8 +10765,7 @@ ${value}</textarea
                         : html`
                             <img
                               src="${message.authorEnrollment.user.avatar}"
-                              alt="${message.authorEnrollment.user.name ??
-                              message.authorEnrollment.reference}"
+                              alt="${message.authorEnrollment.user.name}"
                               class="avatar"
                               style="${css`
                                 width: var(--font-size--2xl);
@@ -10776,8 +10775,7 @@ ${value}</textarea
                           `}
                       <div>
                         <span class="strong">
-                          ${message.authorEnrollment.user.name ??
-                          message.authorEnrollment.reference}
+                          ${message.authorEnrollment.user.name}
                         </span>
                         said
                         <time
@@ -10872,9 +10870,7 @@ ${value}</textarea
                                   <p>
                                     <strong
                                       style="${css`
-                                        font-weight: var(
-                                          --font-weight--semibold
-                                        );
+                                        font-weight: var(--font-weight--bold);
                                       `}"
                                     >
                                       You may not undo this action!
@@ -11063,9 +11059,7 @@ ${value}</textarea
                                                       .map(
                                                         (endorsement) =>
                                                           endorsement.enrollment
-                                                            .user.name ??
-                                                          endorsement.enrollment
-                                                            .reference
+                                                            .user.name
                                                       )
                                                   )
                                                 })`
@@ -11106,9 +11100,7 @@ ${value}</textarea
                                                     message.endorsements.map(
                                                       (endorsement) =>
                                                         endorsement.enrollment
-                                                          .user.name ??
-                                                        endorsement.enrollment
-                                                          .reference
+                                                          .user.name
                                                     )
                                                   )
                                                 })`
@@ -11147,8 +11139,7 @@ ${value}</textarea
                                     ).format(
                                       message.endorsements.map(
                                         (endorsement) =>
-                                          endorsement.enrollment.user.name ??
-                                          endorsement.enrollment.reference
+                                          endorsement.enrollment.user.name
                                       )
                                     )
                                   }`
@@ -12336,9 +12327,9 @@ ${value}</textarea
               <h2
                 class="heading"
                 style="${css`
-                  color: var(--color--primary--200);
+                  color: var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
+                    color: var(--color--gray--medium--200);
                   }
                 `}"
               >
@@ -12347,11 +12338,11 @@ ${value}</textarea
               </h2>
               <div
                 style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
+                  color: var(--color--gray--medium--800);
+                  background-color: var(--color--gray--medium--100);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
@@ -12395,9 +12386,9 @@ ${value}</textarea
               <h2
                 class="heading"
                 style="${css`
-                  color: var(--color--primary--200);
+                  color: var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
+                    color: var(--color--gray--medium--200);
                   }
                 `}"
               >
@@ -12406,11 +12397,11 @@ ${value}</textarea
               </h2>
               <div
                 style="${css`
-                  color: var(--color--primary--800);
-                  background-color: var(--color--primary--100);
+                  color: var(--color--gray--medium--800);
+                  background-color: var(--color--gray--medium--100);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    background-color: var(--color--primary--900);
+                    color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--4);
                   border-radius: var(--border-radius--xl);
@@ -12466,9 +12457,9 @@ ${value}</textarea
             <h2
               class="heading"
               style="${css`
-                color: var(--color--primary--200);
+                color: var(--color--gray--medium--200);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--primary--200);
+                  color: var(--color--gray--medium--200);
                 }
               `}"
             >
@@ -12477,11 +12468,11 @@ ${value}</textarea
             </h2>
             <div
               style="${css`
-                color: var(--color--primary--800);
-                background-color: var(--color--primary--100);
+                color: var(--color--gray--medium--800);
+                background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--primary--200);
-                  background-color: var(--color--primary--900);
+                  color: var(--color--gray--medium--200);
+                  background-color: var(--color--gray--medium--900);
                 }
                 padding: var(--space--4);
                 border-radius: var(--border-radius--xl);
