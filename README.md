@@ -252,6 +252,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 ### Authentication
 
 - Forgot password.
+- Email confirmation.
 
 ### Courses
 

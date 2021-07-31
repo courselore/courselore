@@ -3736,7 +3736,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--green">
+          <div class="flash--green">
             User settings updated successfully.
           </div>
         `
@@ -4860,7 +4860,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--green">
+          <div class="flash--green">
             Course settings updated successfully.
           </div>
         `
@@ -6076,7 +6076,7 @@ export default async function courselore(
             req,
             res,
             html`
-              <div class="flash flash--green">
+              <div class="flash--green">
                 <div
                   style="${css`
                     display: flex;
@@ -6205,7 +6205,7 @@ export default async function courselore(
             req,
             res,
             html`
-              <div class="flash flash--green">
+              <div class="flash--green">
                 Invitations sent successfully.
                 $${app.locals.settings.demonstration
                   ? html`
@@ -6257,7 +6257,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--green">
+            <div class="flash--green">
               Invitation email resent successfully.
             </div>
           `
@@ -6276,7 +6276,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--green">
+            <div class="flash--green">
               Invitation role updated successfully.
             </div>
           `
@@ -6299,7 +6299,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--green">
+            <div class="flash--green">
               Invitation expiration updated successfully.
             </div>
           `
@@ -6319,7 +6319,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--green">
+            <div class="flash--green">
               Invitation expiration removed successfully.
             </div>
           `
@@ -6339,7 +6339,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--green">
+            <div class="flash--green">
               Invitation expired successfully.
             </div>
           `
@@ -6719,7 +6719,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash flash--green">
+            <div class="flash--green">
               Enrollment updated successfully.
             </div>
           `
@@ -6758,7 +6758,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--green">
+          <div class="flash--green">
             $${isSelf ? html`You removed yourself` : html`Person removed`} from
             the course successfully.
           </div>
@@ -7241,7 +7241,7 @@ export default async function courselore(
       app.locals.helpers.flash.set(
         req,
         res,
-        html`<div class="flash flash--green">Tags updated successfully.</div>`
+        html`<div class="flash--green">Tags updated successfully.</div>`
       );
 
       res.redirect(
@@ -7420,7 +7420,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash flash--green">Enrollment updated successfully.</div>
+          <div class="flash--green">Enrollment updated successfully.</div>
         `
       );
 
@@ -12709,7 +12709,7 @@ ${value}</textarea
   //     req,
   //     res,
   //     html`
-  //       <div class="flash flash--green">
+  //       <div class="flash--green">
   //         Demonstration data including users, courses, conversations, and so
   //         forth, have been created and you’ve been signed in as a demonstration
   //         user to give you a better idea of what CourseLore looks like in use.
