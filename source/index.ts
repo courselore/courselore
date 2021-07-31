@@ -4025,53 +4025,28 @@ export default async function courselore(
                   <i class="bi bi-journal-text"></i>
                 </div>
 
-                <p>
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        Get started by inviting other people to the course or by
-                        starting the first conversation.
-                      `
-                    : html`
-                        This is a new course. Be the first to start a
-                        conversation.
-                      `}
-                </p>
-                <div
-                  style="${css`
-                    width: 100%;
-                    display: flex;
-                    gap: var(--space--4);
-                    & > * {
-                      flex: 1;
-                    }
-                    @media (max-width: 600px) {
-                      flex-direction: column;
-                    }
-                  `}"
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <a
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/settings/invitations"
+                        class="button button--full-width-on-small-screen button--blue"
+                      >
+                        <i class="bi bi-person-plus"></i>
+                        Invite Other People to the Course
+                      </a>
+                    `
+                  : html``}
+                <a
+                  href="${app.locals.settings.url}/courses/${res.locals.course
+                    .reference}/conversations/new"
+                  class="button button--full-width-on-small-screen $${res.locals.enrollment.role === "staff"
+                    ? "button--transparent"
+                    : "button--blue"}"
                 >
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <a
-                          href="${app.locals.settings.url}/courses/${res.locals
-                            .course.reference}/settings/invitations"
-                          class="button button--blue"
-                        >
-                          <i class="bi bi-person-plus"></i>
-                          Invite Other People to the Course
-                        </a>
-                      `
-                    : html``}
-                  <a
-                    href="${app.locals.settings.url}/courses/${res.locals.course
-                      .reference}/conversations/new"
-                    class="button $${res.locals.enrollment.role === "staff"
-                      ? ""
-                      : "button--blue"}"
-                  >
-                    <i class="bi bi-chat-left-text"></i>
-                    Start the First Conversation
-                  </a>
-                </div>
+                  <i class="bi bi-chat-left-text"></i>
+                  Start the First Conversation
+                </a>
               </div>
             `,
           })
