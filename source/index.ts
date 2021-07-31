@@ -3427,6 +3427,7 @@ export default async function courselore(
   >("/settings", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
     if (
       typeof req.body.name !== "string" ||
+      req.body.name.trim() === "" ||
       typeof req.body.avatar !== "string" ||
       typeof req.body.biography !== "string"
     )
@@ -3435,7 +3436,7 @@ export default async function courselore(
     app.locals.database.run(
       sql`
           UPDATE "users"
-          SET "name" = ${req.body.name.trim() === "" ? null : req.body.name},
+          SET "name" = ${req.body.name},
               "avatar" = ${
                 req.body.avatar.trim() === "" ? null : req.body.avatar
               },
@@ -3516,7 +3517,7 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <label>
+                <label class="label">
                   Name
                   <input
                     type="text"
@@ -3588,7 +3589,7 @@ export default async function courselore(
     const accentColorsInUse = new Set<AccentColor>(
       enrollments.map((enrollment) => enrollment.accentColor)
     );
-    let accentColorsAvailable = new Set<AccentColor>(
+    const accentColorsAvailable = new Set<AccentColor>(
       app.locals.constants.accentColors
     );
     for (const accentColorInUse of accentColorsInUse) {
