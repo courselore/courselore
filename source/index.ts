@@ -3134,7 +3134,8 @@ export default async function courselore(
         typeof req.body.email !== "string" ||
         !req.body.email.match(app.locals.constants.emailRegExp) ||
         typeof req.body.password !== "string" ||
-        req.body.password.trim() === ""
+        req.body.password.trim() === "" ||
+        req.body.password.length < 8
       )
         return next("validation");
       if (
