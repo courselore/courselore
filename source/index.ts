@@ -2618,7 +2618,7 @@ export default async function courselore(
     user: {
       id: number;
       email: string;
-      name: string | null;
+      name: string;
       avatar: string | null;
       biography: string | null;
     };
@@ -3645,7 +3645,7 @@ export default async function courselore(
             user: {
               id: number;
               email: string;
-              name: string | null;
+              name: string;
               avatar: string | null;
               biography: string | null;
             };
@@ -3662,7 +3662,7 @@ export default async function courselore(
               user: {
                 id: number;
                 email: string;
-                name: string | null;
+                name: string;
                 avatar: string | null;
                 biography: string | null;
               };
@@ -3880,6 +3880,7 @@ export default async function courselore(
                       endorsement.enrollmentId !== null &&
                       endorsement.userId !== null &&
                       endorsement.userEmail !== null &&
+                      endorsement.userName !== null &&
                       endorsement.enrollmentReference !== null &&
                       endorsement.enrollmentRole !== null
                         ? {
@@ -3944,6 +3945,7 @@ export default async function courselore(
               originalMessage.authorEnrollmentId !== null &&
               originalMessage.authorUserId !== null &&
               originalMessage.authorUserEmail !== null &&
+              originalMessage.authorUserName !== null &&
               originalMessage.authorEnrollmentReference !== null &&
               originalMessage.authorEnrollmentRole !== null
                 ? {
@@ -6064,7 +6066,7 @@ export default async function courselore(
         id: number;
         userId: number;
         userEmail: string;
-        userName: string | null;
+        userName: string;
         userAvatar: string | null;
         userBiography: string | null;
         reference: string;
@@ -9742,6 +9744,7 @@ ${value}</textarea
                   endorsement.enrollmentId !== null &&
                   endorsement.userId !== null &&
                   endorsement.userEmail !== null &&
+                  endorsement.userName !== null &&
                   endorsement.enrollmentReference !== null &&
                   endorsement.enrollmentRole !== null
                     ? {
@@ -9805,6 +9808,7 @@ ${value}</textarea
           originalMessage.authorEnrollmentId !== null &&
           originalMessage.authorUserId !== null &&
           originalMessage.authorUserEmail !== null &&
+          originalMessage.authorUserName !== null &&
           originalMessage.authorEnrollmentReference !== null &&
           originalMessage.authorEnrollmentRole !== null
             ? {
@@ -9902,6 +9906,7 @@ ${value}</textarea
                 endorsement.enrollmentId !== null &&
                 endorsement.userId !== null &&
                 endorsement.userEmail !== null &&
+                endorsement.userName !== null &&
                 endorsement.enrollmentReference !== null &&
                 endorsement.enrollmentRole !== null
                   ? {
@@ -9953,6 +9958,7 @@ ${value}</textarea
                 like.enrollmentId !== null &&
                 like.userId !== null &&
                 like.userEmail !== null &&
+                like.userName !== null &&
                 like.enrollmentReference !== null &&
                 like.enrollmentRole !== null
                   ? {
@@ -9979,6 +9985,7 @@ ${value}</textarea
               message.authorEnrollmentId !== null &&
               message.authorUserId !== null &&
               message.authorUserEmail !== null &&
+              message.authorUserName !== null &&
               message.authorEnrollmentReference !== null &&
               message.authorEnrollmentRole !== null
                 ? {
