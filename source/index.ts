@@ -4415,38 +4415,44 @@ export default async function courselore(
           ? html`
               <div
                 style="${css`
-                  color: var(--color--gray--medium--100);
-                  background-color: var(--color--gray--medium--800);
+                  background-color: var(--color--gray--medium--200);
+                  border-top: var(--border-width--1) solid
+                    var(--color--gray--medium--300);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
-                    background-color: var(--color--gray--medium--900);
+                    background-color: var(--color--gray--medium--800);
+                    border-color: var(--color--gray--medium--700);
                   }
-                  padding: var(--space--1) var(--space--4);
                   display: flex;
                   justify-content: center;
-                  @media (min-width: 700px) {
-                    display: none;
-                  }
                 `}"
               >
-                <button
+                <div
                   style="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    flex: 1;
+                    max-width: var(--headers--max-width);
+                    padding: var(--space--0) var(--space--4);
                     display: flex;
-                    gap: var(--space--2);
-                  `}"
-                  data-ondomcontentloaded="${javascript`
-                    tippy(this, {
-                      content: this.nextElementSibling.firstElementChild,
-                      trigger: "click",
-                      interactive: true,
-                    });
+                    justify-content: center;
                   `}"
                 >
-                  <i class="bi bi-sliders"></i>
-                  Course Settings
-                  <i class="bi bi-chevron-down"></i>
-                </button>
-                <div hidden><div>$${menu}</div></div>
+                  <button
+                    class="button button--transparent"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: this.nextElementSibling.firstElementChild,
+                        trigger: "click",
+                        interactive: true,
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-sliders"></i>
+                    Course Settings
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                  <div hidden><div>$${menu}</div></div>
+                </div>
               </div>
             `
           : html``}
