@@ -925,7 +925,7 @@ export default async function courselore(
               }
 
               /*
-              .button--inline {
+              .button {
                 color: var(--color--gray--medium--800);
                 &:hover,
                 &:focus-within,
@@ -953,7 +953,7 @@ export default async function courselore(
                 );
                 cursor: pointer;
 
-                &.button--inline--gray--medium {
+                &.button--gray--medium {
                   color: var(--color--gray--medium--500);
                   &:hover,
                   &:focus-within,
@@ -976,7 +976,7 @@ export default async function courselore(
                   }
                 }
 
-                &.button--inline--rose {
+                &.button--rose {
                   &:hover,
                   &:focus-within,
                   :focus ~ &.after-toggle {
@@ -1816,6 +1816,35 @@ export default async function courselore(
                           }
                           & + button:active {
                             background-color: var(--color--rose--700);
+                          }
+                        }
+                      }
+
+                      &.flash--green {
+                        &,
+                        & + button {
+                          color: var(--color--green--700);
+                        }
+                        background-color: var(--color--green--100);
+                        & + button:hover,
+                        & + button:focus-within {
+                          background-color: var(--color--green--200);
+                        }
+                        & + button:active {
+                          background-color: var(--color--green--300);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          &,
+                          & + button {
+                            color: var(--color--green--200);
+                          }
+                          background-color: var(--color--green--900);
+                          & + button:hover,
+                          & + button:focus-within {
+                            background-color: var(--color--green--800);
+                          }
+                          & + button:active {
+                            background-color: var(--color--green--700);
                           }
                         }
                       }
@@ -3197,30 +3226,30 @@ export default async function courselore(
                     >
                       <button
                         type="button"
-                        class="button--inline"
+                        class="button"
                         style="${css`
                           font-size: var(--space--20);
                           width: 100%;
                           height: 100%;
                           border-radius: var(--border-radius--circle);
-                          color: var(--color--gray--medium--400);
+                          color: var(--color--gray--medium--300);
+                          background-color: var(--color--gray--medium--100);
                           &:hover,
                           &:focus-within {
-                            color: var(--color--gray--medium--500);
+                            color: var(--color--gray--medium--400);
                           }
                           &:active {
-                            color: var(--color--gray--medium--700);
+                            color: var(--color--gray--medium--500);
                           }
-                          background-color: var(--color--gray--medium--200);
                           @media (prefers-color-scheme: dark) {
-                            color: var(--color--gray--medium--400);
-                            background-color: var(--color--gray--medium--700);
+                            color: var(--color--gray--medium--600);
+                            background-color: var(--color--gray--medium--800);
                             &:hover,
                             &:focus-within {
                               color: var(--color--gray--medium--500);
                             }
                             &:active {
-                              color: var(--color--gray--medium--700);
+                              color: var(--color--gray--medium--400);
                             }
                           }
                         `}"
@@ -3251,7 +3280,9 @@ export default async function courselore(
                     >
                       <button
                         type="button"
+                        class="button"
                         style="${css`
+                          padding: var(--space--0);
                           place-self: center;
                         `}"
                         data-ondomcontentloaded="${javascript`
@@ -4742,7 +4773,7 @@ export default async function courselore(
                       ></textarea>
                       <button
                         type="button"
-                        class="button--inline"
+                        class="button"
                         style="${css`
                           justify-self: end;
                           align-self: start;
@@ -4882,7 +4913,7 @@ export default async function courselore(
                       />
                       <button
                         type="button"
-                        class="button--inline"
+                        class="button"
                         style="${css`
                           justify-self: end;
                           align-self: start;
@@ -4951,7 +4982,7 @@ export default async function courselore(
                                       $${isExpired
                                         ? html`disabled`
                                         : html`
-                                            class="button--inline"
+                                            class="button"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: "See Invitation Link",
@@ -5011,7 +5042,7 @@ export default async function courselore(
                                           $${isUsed || isExpired
                                             ? html`disabled`
                                             : html`
-                                                class="button--inline"
+                                                class="button"
                                                 data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
                                                     content: this.nextElementSibling.firstElementChild,
@@ -5095,7 +5126,7 @@ export default async function courselore(
                                 $${isUsed || isExpired
                                   ? html`disabled`
                                   : html`
-                                      class="button--inline"
+                                      class="button"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "Change Role",
@@ -5636,7 +5667,7 @@ export default async function courselore(
                             `}"
                           />
                           <button
-                            class="button--inline"
+                            class="button"
                             style="${css`
                               justify-self: end;
                               align-self: start;
@@ -5676,7 +5707,7 @@ export default async function courselore(
                         >
                           QR Code
                           <button
-                            class="button--inline"
+                            class="button"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "People may point their phone camera at the image below to follow the invitation link.",
@@ -6158,7 +6189,7 @@ export default async function courselore(
                             $${isOnlyStaff
                               ? html`disabled`
                               : html`
-                                  class="button--inline"
+                                  class="button"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Change Role",
@@ -6286,7 +6317,7 @@ export default async function courselore(
                             $${isOnlyStaff
                               ? html`disabled`
                               : html`
-                                  class="button--inline button--inline--rose"
+                                  class="button button--rose"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Remove from the Course",
@@ -6577,7 +6608,7 @@ export default async function courselore(
                               />
                             </div>
                             <label
-                              class="button--inline button--inline--gray--medium"
+                              class="button button--gray--medium"
                               style="${css`
                                 .deleted & {
                                   color: var(--color--rose--800);
@@ -6621,7 +6652,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button--inline button--inline--gray--medium button--inline--rose"
+                                class="button button--gray--medium button--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
@@ -6685,7 +6716,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button--inline button--inline--gray--medium"
+                                class="button button--gray--medium"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Don’t Remove Tag",
@@ -6755,9 +6786,7 @@ export default async function courselore(
                             `}"
                           />
                         </div>
-                        <label
-                          class="button--inline button--inline--gray--medium"
-                        >
+                        <label class="button button--gray--medium">
                           <select
                             required
                             autocomplete="off"
@@ -6779,7 +6808,7 @@ export default async function courselore(
                         <div>
                           <button
                             type="button"
-                            class="button--inline button--inline--gray--medium button--inline--rose"
+                            class="button button--gray--medium button--rose"
                             data-onmount="${javascript`
                               tippy(this, {
                                 content: "Remove Tag",
@@ -6963,7 +6992,7 @@ export default async function courselore(
                     Accent Color
                     <button
                       type="button"
-                      class="button--inline button--inline--gray--medium"
+                      class="button button--gray--medium"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "The accent color helps you tell your courses apart.",
@@ -7488,7 +7517,7 @@ export default async function courselore(
                 width: var(--width--sm);
               }
 
-              .button--inline--sidebar {
+              .button--sidebar {
                 color: var(--color--gray--medium--200);
                 &:hover,
                 &:focus-within {
@@ -7540,7 +7569,7 @@ export default async function courselore(
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/conversations/new"
-                  class="button--inline button--inline--sidebar"
+                  class="button button--sidebar"
                   style="${css`
                     font-weight: var(--font-weight--bold);
                     display: flex;
@@ -7625,7 +7654,7 @@ export default async function courselore(
                                 "true",
                               tag: req.query.tag,
                             })}"
-                            class="button--inline button--inline--sidebar"
+                            class="button button--sidebar"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Search",
@@ -7638,7 +7667,7 @@ export default async function courselore(
                         `
                       : html``}
                     <button
-                      class="button--inline button--inline--sidebar"
+                      class="button button--sidebar"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Search",
@@ -7660,7 +7689,7 @@ export default async function courselore(
                       >
                         <div>
                           <button
-                            class="button--inline button--inline--sidebar"
+                            class="button button--sidebar"
                             style="${css`
                               ${res.locals.tagFilter === undefined
                                 ? css``
@@ -7739,7 +7768,7 @@ export default async function courselore(
                                     "true",
                                   search: req.query.search,
                                 })}"
-                                class="button--inline button--inline--sidebar"
+                                class="button button--sidebar"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Filter",
@@ -8122,7 +8151,7 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".text-editor--preview").hidden = true;
             `}"
           />
-          <span class="button--inline after-toggle">
+          <span class="button after-toggle">
             <i class="bi bi-pencil"></i>
             Write
           </span>
@@ -8164,7 +8193,7 @@ export default async function courselore(
             `}"
           />
           <span
-            class="button--inline after-toggle"
+            class="button after-toggle"
             data-ondomcontentloaded="${javascript`
               Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+p", () => { this.click(); return false; });
               tippy(this, {
@@ -8220,7 +8249,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
                 tippy(this, {
@@ -8248,7 +8277,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
                 tippy(this, {
@@ -8276,7 +8305,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
                 tippy(this, {
@@ -8306,7 +8335,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
                 tippy(this, {
@@ -8333,7 +8362,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
                 tippy(this, {
@@ -8360,7 +8389,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
                 tippy(this, {
@@ -8389,7 +8418,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
                 tippy(this, {
@@ -8417,7 +8446,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
                 tippy(this, {
@@ -8445,7 +8474,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
                 tippy(this, {
@@ -8475,7 +8504,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
                 tippy(this, {
@@ -8502,7 +8531,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
                 tippy(this, {
@@ -8531,7 +8560,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
                 tippy(this, {
@@ -8561,7 +8590,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8588,7 +8617,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8618,7 +8647,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8646,7 +8675,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8676,7 +8705,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
                 tippy(this, {
@@ -8702,7 +8731,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
                 tippy(this, {
@@ -8730,7 +8759,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
                 tippy(this, {
@@ -8757,7 +8786,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
                 tippy(this, {
@@ -8815,7 +8844,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button--inline"
+              class="button"
               data-ondomcontentloaded="${javascript`
                 tippy(this, {
                   content: "Help",
@@ -9189,7 +9218,7 @@ ${value}</textarea
                               autocomplete="off"
                             />
                             <span
-                              class="button--inline after-toggle"
+                              class="button after-toggle"
                               style="${css`
                                 :checked + & {
                                   display: none;
@@ -9206,7 +9235,7 @@ ${value}</textarea
                               Unpinned
                             </span>
                             <span
-                              class="button--inline after-toggle strong"
+                              class="button after-toggle strong"
                               style="${css`
                                 :not(:checked) + * + & {
                                   display: none;
@@ -9225,7 +9254,7 @@ ${value}</textarea
                           </label>
                           <button
                             type="button"
-                            class="button--inline"
+                            class="button"
                             data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Pinned conversations are listed first.",
@@ -9258,7 +9287,7 @@ ${value}</textarea
                         : `checked`}
                     />
                     <span
-                      class="button--inline after-toggle"
+                      class="button after-toggle"
                       style="${css`
                         :checked + & {
                           display: none;
@@ -9275,7 +9304,7 @@ ${value}</textarea
                       Not a Question
                     </span>
                     <span
-                      class="button--inline after-toggle strong"
+                      class="button after-toggle strong"
                       style="${css`
                         :not(:checked) + * + & {
                           display: none;
@@ -9314,7 +9343,7 @@ ${value}</textarea
                           >
                             <button
                               type="button"
-                              class="tags--button button--inline"
+                              class="tags--button button"
                               data-ondomcontentloaded="${javascript`
                                 this.addTag = tippy(this, {
                                   content: "Add Tag",
@@ -9407,7 +9436,7 @@ ${value}</textarea
                                   />
                                   <button
                                     type="button"
-                                    class="button--inline"
+                                    class="button"
                                     style="${css`
                                       font-size: var(--font-size--xs);
                                       line-height: var(--line-height--xs);
@@ -10136,7 +10165,7 @@ ${value}</textarea
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/conversations/${res.locals.conversation
                       .reference}"
-                    class="button--inline button--inline--gray--medium"
+                    class="button button--gray--medium"
                     style="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
@@ -10161,7 +10190,7 @@ ${value}</textarea
                     ? html`
                         <div>
                           <button
-                            class="button--inline button--inline--gray--medium button--inline--rose"
+                            class="button button--gray--medium button--rose"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Conversation",
@@ -10216,7 +10245,7 @@ ${value}</textarea
                   $${app.locals.helpers.mayEditConversation(req, res)
                     ? html`
                         <button
-                          class="button--inline button--inline--gray--medium"
+                          class="button button--gray--medium"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Edit Title",
@@ -10279,7 +10308,7 @@ ${value}</textarea
                   </button>
                   <button
                     type="reset"
-                    class="button--inline button--inline--gray--medium button--inline--rose"
+                    class="button button--gray--medium button--rose"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "Cancel",
@@ -10313,7 +10342,7 @@ ${value}</textarea
                       ? html`
                           <input type="hidden" name="isPinned" value="true" />
                           <button
-                            class="button--inline"
+                            class="button"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Pin",
@@ -10328,7 +10357,7 @@ ${value}</textarea
                       : html`
                           <input type="hidden" name="isPinned" value="false" />
                           <button
-                            class="button--inline strong"
+                            class="button strong"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Unpin",
@@ -10362,7 +10391,7 @@ ${value}</textarea
                       ? html`
                           <input type="hidden" name="isQuestion" value="true" />
                           <button
-                            class="button--inline"
+                            class="button"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Mark as a Question",
@@ -10381,7 +10410,7 @@ ${value}</textarea
                             value="false"
                           />
                           <button
-                            class="button--inline strong"
+                            class="button strong"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Mark as Not a Question",
@@ -10415,7 +10444,7 @@ ${value}</textarea
                   tagsContent.push(html`
                     <div>
                       <button
-                        class="button--inline"
+                        class="button"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Add Tag",
@@ -10503,9 +10532,7 @@ ${value}</textarea
                           : html``}
                       >
                         <button
-                          class="button--inline ${isOnlyTag
-                            ? "button--inline--rose"
-                            : ""}"
+                          class="button ${isOnlyTag ? "button--rose" : ""}"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Remove Tag",
@@ -10639,7 +10666,7 @@ ${value}</textarea
                             .course.reference}/conversations/${res.locals
                             .conversation
                             .reference}#message--${message.reference}"
-                          class="button--inline button--inline--gray--medium"
+                          class="button button--gray--medium"
                           style="${css`
                             font-size: var(--font-size--xs);
                             line-height: var(--line-height--xs);
@@ -10667,7 +10694,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button--inline button--inline--gray--medium button--inline--rose"
+                                class="button button--gray--medium button--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Message",
@@ -10725,7 +10752,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button--inline button--inline--gray--medium"
+                                class="button button--gray--medium"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Edit Message",
@@ -10745,7 +10772,7 @@ ${value}</textarea
 
                       <div>
                         <button
-                          class="button--inline button--inline--gray--medium"
+                          class="button button--gray--medium"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Reply",
@@ -10799,7 +10826,7 @@ ${value}</textarea
                                     value="true"
                                   />
                                   <button
-                                    class="button--inline"
+                                    class="button"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "Mark as Answer",
@@ -10818,7 +10845,7 @@ ${value}</textarea
                                     value="false"
                                   />
                                   <button
-                                    class="button--inline strong"
+                                    class="button strong"
                                     data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "Mark as Not an Answer",
@@ -10870,7 +10897,7 @@ ${value}</textarea
                                     value="false"
                                   />
                                   <button
-                                    class="button--inline strong"
+                                    class="button strong"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: ${JSON.stringify(
@@ -10917,7 +10944,7 @@ ${value}</textarea
                                     value="true"
                                   />
                                   <button
-                                    class="button--inline"
+                                    class="button"
                                     $${message.endorsements.length === 0
                                       ? html``
                                       : html`
@@ -11108,7 +11135,7 @@ ${value}</textarea
                             `}"
                           >
                             <button
-                              class="button--inline button--inline--gray--medium ${isLiked
+                              class="button button--gray--medium ${isLiked
                                 ? "strong"
                                 : ""}"
                               $${likesCount === 0
@@ -11286,7 +11313,7 @@ ${value}</textarea
                             : ``}
                         />
                         <span
-                          class="button--inline after-toggle"
+                          class="button after-toggle"
                           style="${css`
                             :checked + & {
                               display: none;
@@ -11303,7 +11330,7 @@ ${value}</textarea
                           Not an Answer
                         </span>
                         <span
-                          class="button--inline after-toggle strong"
+                          class="button after-toggle strong"
                           style="${css`
                             :not(:checked) + * + & {
                               display: none;
