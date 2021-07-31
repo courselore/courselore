@@ -2844,21 +2844,21 @@ export default async function courselore(
           role: Role;
         }>(
           sql`
-          SELECT "invitations"."id",
-                 "courses"."id" AS "courseId",
-                 "courses"."reference" AS "courseReference",
-                 "courses"."name" AS "courseName",
-                 "invitations"."reference",
-                 "invitations"."role"
-          FROM "invitations"
-          JOIN "courses" ON "invitations"."course" = "courses"."id"
-          WHERE "invitations"."usedAt" IS NULL AND (
-                  "invitations"."expiresAt" IS NULL OR
-                  CURRENT_TIMESTAMP < datetime("invitations"."expiresAt") 
-                ) AND
-                "invitations"."email" = ${res.locals.user.email}
-          ORDER BY "invitations"."id" DESC
-        `
+            SELECT "invitations"."id",
+                  "courses"."id" AS "courseId",
+                  "courses"."reference" AS "courseReference",
+                  "courses"."name" AS "courseName",
+                  "invitations"."reference",
+                  "invitations"."role"
+            FROM "invitations"
+            JOIN "courses" ON "invitations"."course" = "courses"."id"
+            WHERE "invitations"."usedAt" IS NULL AND (
+                    "invitations"."expiresAt" IS NULL OR
+                    CURRENT_TIMESTAMP < datetime("invitations"."expiresAt") 
+                  ) AND
+                  "invitations"."email" = ${res.locals.user.email}
+            ORDER BY "invitations"."id" DESC
+          `
         )
         .map((invitation) => ({
           id: invitation.id,
