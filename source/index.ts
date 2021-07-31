@@ -301,9 +301,14 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<EventSourceMiddlewareLocals>
+        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<EventSourceMiddlewareLocals>
       >;
-      res?: express.Response<any, Partial<EventSourceMiddlewareLocals>>;
+      res?: express.Response<
+        any,
+        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<EventSourceMiddlewareLocals>
+      >;
       head: HTML;
       body: HTML;
     }) => HTML;
@@ -1745,9 +1750,14 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<EventSourceMiddlewareLocals>
+        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<EventSourceMiddlewareLocals>
       >;
-      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>;
+      res: express.Response<
+        any,
+        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<EventSourceMiddlewareLocals>
+      >;
       head: HTML;
       extraHeaders?: HTML;
       body: HTML;
@@ -1962,9 +1972,14 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<EventSourceMiddlewareLocals>
+        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<EventSourceMiddlewareLocals>
       >;
-      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>;
+      res: express.Response<
+        any,
+        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<EventSourceMiddlewareLocals>
+      >;
       head: HTML;
       body: HTML;
     }) => HTML;
