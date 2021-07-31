@@ -973,7 +973,7 @@ export default async function courselore(
                 );
                 cursor: pointer;
 
-                &.button--gray--medium {
+                &.button--transparent {
                   color: var(--color--gray--medium--500);
                   &:hover,
                   &:focus-within,
@@ -6627,7 +6627,7 @@ export default async function courselore(
                               />
                             </div>
                             <label
-                              class="button button--gray--medium"
+                              class="button button--transparent"
                               style="${css`
                                 .deleted & {
                                   color: var(--color--rose--800);
@@ -6671,7 +6671,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button button--gray--medium button--rose"
+                                class="button button--transparent button--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
@@ -6735,7 +6735,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button button--gray--medium"
+                                class="button button--transparent"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Don’t Remove Tag",
@@ -6805,7 +6805,7 @@ export default async function courselore(
                             `}"
                           />
                         </div>
-                        <label class="button button--gray--medium">
+                        <label class="button button--transparent">
                           <select
                             required
                             autocomplete="off"
@@ -6827,7 +6827,7 @@ export default async function courselore(
                         <div>
                           <button
                             type="button"
-                            class="button button--gray--medium button--rose"
+                            class="button button--transparent button--rose"
                             data-onmount="${javascript`
                               tippy(this, {
                                 content: "Remove Tag",
@@ -6995,14 +6995,8 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <div
-                  style="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--1);
-                  `}"
-                >
-                  <p
+                <div class="label">
+                  <div
                     style="${css`
                       display: flex;
                       gap: var(--space--2);
@@ -7011,7 +7005,10 @@ export default async function courselore(
                     Accent Color
                     <button
                       type="button"
-                      class="button button--gray--medium"
+                      class="button button--icon button--transparent"
+                      style="${css`
+                        margin-top: var(--space---0-5);
+                      `}"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "The accent color helps you tell your courses apart.",
@@ -7021,7 +7018,7 @@ export default async function courselore(
                     >
                       <i class="bi bi-info-circle"></i>
                     </button>
-                  </p>
+                  </div>
                   <div
                     style="${css`
                       display: flex;
@@ -7040,22 +7037,20 @@ export default async function courselore(
                           $${accentColor === res.locals.enrollment.accentColor
                             ? html`checked`
                             : html``}
+                          class="button"
                           style="${css`
                             background-color: var(--color--${accentColor}--500);
                             @media (prefers-color-scheme: dark) {
                               background-color: var(
-                                --color--${accentColor}--700
+                                --color--${accentColor}--600
                               );
                             }
                             width: var(--space--5);
                             height: var(--space--5);
                             border-radius: var(--border-radius--circle);
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            cursor: pointer;
+                            padding: var(--space--0);
 
-                            &:checked::before {
+                            &::before {
                               content: "";
                               display: block;
                               width: var(--space--2);
@@ -7067,6 +7062,18 @@ export default async function courselore(
                                   --color--gray--medium--900
                                 );
                               }
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--in-out
+                              );
+                            }
+                            &:not(:checked)::before {
+                              transform: scale(var(--scale--0));
                             }
                           `}"
                         />
@@ -10189,7 +10196,7 @@ ${value}</textarea
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/conversations/${res.locals.conversation
                       .reference}"
-                    class="button button--gray--medium"
+                    class="button button--transparent"
                     style="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
@@ -10214,7 +10221,7 @@ ${value}</textarea
                     ? html`
                         <div>
                           <button
-                            class="button button--gray--medium button--rose"
+                            class="button button--transparent button--rose"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Conversation",
@@ -10269,7 +10276,7 @@ ${value}</textarea
                   $${app.locals.helpers.mayEditConversation(req, res)
                     ? html`
                         <button
-                          class="button button--gray--medium"
+                          class="button button--transparent"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Edit Title",
@@ -10332,7 +10339,7 @@ ${value}</textarea
                   </button>
                   <button
                     type="reset"
-                    class="button button--gray--medium button--rose"
+                    class="button button--transparent button--rose"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "Cancel",
@@ -10690,7 +10697,7 @@ ${value}</textarea
                             .course.reference}/conversations/${res.locals
                             .conversation
                             .reference}#message--${message.reference}"
-                          class="button button--gray--medium"
+                          class="button button--transparent"
                           style="${css`
                             font-size: var(--font-size--xs);
                             line-height: var(--line-height--xs);
@@ -10718,7 +10725,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button button--gray--medium button--rose"
+                                class="button button--transparent button--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Message",
@@ -10776,7 +10783,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button button--gray--medium"
+                                class="button button--transparent"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Edit Message",
@@ -10796,7 +10803,7 @@ ${value}</textarea
 
                       <div>
                         <button
-                          class="button button--gray--medium"
+                          class="button button--transparent"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Reply",
@@ -11159,7 +11166,7 @@ ${value}</textarea
                             `}"
                           >
                             <button
-                              class="button button--gray--medium ${isLiked
+                              class="button button--transparent ${isLiked
                                 ? "strong"
                                 : ""}"
                               $${likesCount === 0
