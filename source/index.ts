@@ -2344,6 +2344,7 @@ export default async function courselore(
       req,
       res,
       head,
+      headersMaxWidth: css`var(--width--prose)`,
       body: html`
         <div
           style="${css`
@@ -4359,6 +4360,7 @@ export default async function courselore(
       req,
       res,
       head,
+      headersMaxWidth: css`var(--width--prose)`,
       extraHeaders: html`
         $${res.locals.enrollment.role === "staff"
           ? html`
@@ -7413,6 +7415,7 @@ export default async function courselore(
       req,
       res,
       head,
+      headersMaxWidth: css`var(--width--prose)`,
       extraHeaders: html`
         $${req.query.onlyConversationLayoutSidebarOnSmallScreens === "true"
           ? html``
