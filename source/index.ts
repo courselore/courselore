@@ -844,7 +844,7 @@ export default async function courselore(
               }
 
               .button {
-                padding: var(--space--1);
+                padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
                 display: flex;
                 gap: var(--space--2);
@@ -858,8 +858,7 @@ export default async function courselore(
                 cursor: pointer;
 
                 &.button--icon {
-                  padding-top: var(--space--0-5);
-                  padding-bottom: var(--space--0-5);
+                  padding: var(--space--0-5) var(--space--1);
                 }
 
                 &.button--transparent {
@@ -1128,6 +1127,8 @@ export default async function courselore(
 
               .dropdown--menu--item {
                 width: 100%;
+                padding-left: var(--space--2);
+                padding-right: var(--space--2);
                 justify-content: start;
               }
 
@@ -1685,9 +1686,7 @@ export default async function courselore(
                       border-color: var(--color--gray--medium--700);
                     }
                     display: flex;
-                    column-gap: var(--space--2);
                     justify-content: center;
-                    flex-wrap: wrap;
                   `}"
                 >
                   <div>
@@ -1973,7 +1972,7 @@ export default async function courselore(
           >
             <a
               href="${app.locals.settings.url}/"
-              class="button button--transparent"
+              class="button button--icon button--transparent"
             >
               $${app.locals.partials.logo}
             </a>
@@ -2218,7 +2217,7 @@ export default async function courselore(
                 <div>
                   <div
                     style="${css`
-                      padding: var(--space--1);
+                      padding: var(--space--2);
                     `}"
                   >
                     <p class="strong">${res.locals.user.name}</p>
