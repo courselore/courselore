@@ -1957,8 +1957,14 @@ export default async function courselore(
 
   interface Layouts {
     box: (_: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<EventSourceMiddlewareLocals>
+      >;
+      res: express.Response<any, Partial<EventSourceMiddlewareLocals>>;
       head: HTML;
       body: HTML;
     }) => HTML;
@@ -2033,12 +2039,14 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        IsSignedInMiddlewareLocals &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       res: express.Response<
         any,
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        IsSignedInMiddlewareLocals &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       head: HTML;
@@ -2204,185 +2212,177 @@ export default async function courselore(
                   </div>
                 `}
           </div>
-          $${res.locals.user === undefined
-            ? html``
-            : html`
+          <div
+            style="${css`
+              font-size: var(--font-size--xl);
+              line-height: var(--line-height--xl);
+              display: flex;
+              gap: var(--space--4);
+              align-items: center;
+            `}"
+          >
+            <div>
+              <button
+                class="button button--transparent"
+                data-ondomcontentloaded="${javascript`
+                  tippy(this, {
+                    content: ${JSON.stringify(
+                      res.locals.invitations!.length === 0
+                        ? "Add"
+                        : `${
+                            res.locals.invitations!.length
+                          } pending invitation${
+                            res.locals.invitations!.length === 1 ? "" : "s"
+                          }`
+                    )},
+                    theme: "tooltip",
+                    touch: false,
+                  });
+                  tippy(this, {
+                    content: this.nextElementSibling.firstElementChild,
+                    theme: "dropdown",
+                    trigger: "click",
+                    interactive: true,
+                  });
+                `}"
+              >
                 <div
-                  style="${css`
-                    font-size: var(--font-size--xl);
-                    line-height: var(--line-height--xl);
-                    display: flex;
-                    gap: var(--space--4);
-                    align-items: center;
-                  `}"
+                  $${res.locals.invitations!.length === 0
+                    ? html``
+                    : html`class="notification-indicator"`}
                 >
-                  <div>
-                    <button
-                      class="button button--transparent"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: ${JSON.stringify(
-                            res.locals.invitations!.length === 0
-                              ? "Add"
-                              : `${
-                                  res.locals.invitations!.length
-                                } pending invitation${
-                                  res.locals.invitations!.length === 1
-                                    ? ""
-                                    : "s"
-                                }`
-                          )},
-                          theme: "tooltip",
-                          touch: false,
-                        });
-                        tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
-                          theme: "dropdown",
-                          trigger: "click",
-                          interactive: true,
-                        });
-                      `}"
-                    >
-                      <div
-                        $${res.locals.invitations!.length === 0
-                          ? html``
-                          : html`class="notification-indicator"`}
-                      >
-                        <i class="bi bi-plus-circle"></i>
-                      </div>
-                    </button>
-                    <div hidden>
-                      <div>
-                        $${res.locals.invitations!.length === 0
-                          ? html``
-                          : html`
-                              <h3 class="dropdown--heading">
-                                <i class="bi bi-journal-arrow-down"></i>
-                                Invitations
-                              </h3>
-                              $${res.locals.invitations!.map(
-                                (invitation) => html`
-                                  <a
-                                    href="${app.locals.settings
-                                      .url}/courses/${invitation.course
-                                      .reference}/invitations/${invitation.reference}"
-                                    class="dropdown--item"
-                                  >
-                                    <i class="bi bi-journal-arrow-down"></i>
-                                    Enroll in ${invitation.course.name} as
-                                    ${lodash.capitalize(invitation.role)}
-                                  </a>
-                                `
-                              )}
-                              <hr class="dropdown--separator" />
-                            `}
-                        <button
-                          class="dropdown--item"
-                          data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                          theme: "tooltip",
-                          trigger: "click",
-                        });
-                      `}"
-                        >
+                  <i class="bi bi-plus-circle"></i>
+                </div>
+              </button>
+              <div hidden>
+                <div>
+                  $${res.locals.invitations!.length === 0
+                    ? html``
+                    : html`
+                        <h3 class="dropdown--heading">
                           <i class="bi bi-journal-arrow-down"></i>
-                          Enroll in an Existing Course
-                        </button>
-                        <a
-                          href="${app.locals.settings.url}/courses/new"
-                          class="dropdown--item"
-                        >
-                          <i class="bi bi-journal-plus"></i>
-                          Create a New Course
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <button
-                      data-ondomcontentloaded="${javascript`
-                    tippy(this, {
-                      content: ${JSON.stringify(
-                        res.locals.user.name ?? res.locals.user.email
-                      )},
-                      theme: "tooltip",
-                      touch: false,
-                    });
-                    tippy(this, {
-                      content: this.nextElementSibling.firstElementChild,
-                      theme: "dropdown",
-                      trigger: "click",
-                      interactive: true,
-                    });
-                  `}"
-                    >
-                      $${res.locals.user.avatar === null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`
-                            <!-- TODO: :focus-within & :active -->
-                            <img
-                              src="${res.locals.user.avatar}"
-                              alt="${res.locals.user.name ??
-                              res.locals.user.email}"
-                              class="avatar"
-                              style="${css`
-                                width: var(--font-size--xl);
-                                height: var(--font-size--xl);
-                              `}"
-                            />
-                          `}
-                    </button>
-                    <div hidden>
-                      <div>
+                          Invitations
+                        </h3>
+                        $${res.locals.invitations!.map(
+                          (invitation) => html`
+                            <a
+                              href="${app.locals.settings
+                                .url}/courses/${invitation.course
+                                .reference}/invitations/${invitation.reference}"
+                              class="dropdown--item"
+                            >
+                              <i class="bi bi-journal-arrow-down"></i>
+                              Enroll in ${invitation.course.name} as
+                              ${lodash.capitalize(invitation.role)}
+                            </a>
+                          `
+                        )}
+                        <hr class="dropdown--separator" />
+                      `}
+                  <button
+                    class="dropdown--item"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                        theme: "tooltip",
+                        trigger: "click",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-journal-arrow-down"></i>
+                    Enroll in an Existing Course
+                  </button>
+                  <a
+                    href="${app.locals.settings.url}/courses/new"
+                    class="dropdown--item"
+                  >
+                    <i class="bi bi-journal-plus"></i>
+                    Create a New Course
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button
+                data-ondomcontentloaded="${javascript`
+                  tippy(this, {
+                    content: ${JSON.stringify(
+                      res.locals.user.name ?? res.locals.user.email
+                    )},
+                    theme: "tooltip",
+                    touch: false,
+                  });
+                  tippy(this, {
+                    content: this.nextElementSibling.firstElementChild,
+                    theme: "dropdown",
+                    trigger: "click",
+                    interactive: true,
+                  });
+                `}"
+              >
+                $${res.locals.user.avatar === null
+                  ? html`<i class="bi bi-person-circle"></i>`
+                  : html`
+                      <!-- TODO: :focus-within & :active -->
+                      <img
+                        src="${res.locals.user.avatar}"
+                        alt="${res.locals.user.name ?? res.locals.user.email}"
+                        class="avatar"
+                        style="${css`
+                          width: var(--font-size--xl);
+                          height: var(--font-size--xl);
+                        `}"
+                      />
+                    `}
+              </button>
+              <div hidden>
+                <div>
+                  <p
+                    style="${css`
+                      font-weight: var(--font-weight--semibold);
+                      color: var(--color--primary--900);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--primary--50);
+                      }
+                    `}"
+                  >
+                    ${res.locals.user.name ?? res.locals.user.email}
+                  </p>
+                  $${res.locals.user.name === null
+                    ? html``
+                    : html`
                         <p
                           style="${css`
-                            font-weight: var(--font-weight--semibold);
-                            color: var(--color--primary--900);
+                            color: var(--color--primary--500);
                             @media (prefers-color-scheme: dark) {
-                              color: var(--color--primary--50);
+                              color: var(--color--primary--300);
                             }
                           `}"
                         >
-                          ${res.locals.user.name ?? res.locals.user.email}
+                          ${res.locals.user.email}
                         </p>
-                        $${res.locals.user.name === null
-                          ? html``
-                          : html`
-                              <p
-                                style="${css`
-                                  color: var(--color--primary--500);
-                                  @media (prefers-color-scheme: dark) {
-                                    color: var(--color--primary--300);
-                                  }
-                                `}"
-                              >
-                                ${res.locals.user.email}
-                              </p>
-                            `}
-                        <hr class="dropdown--separator" />
-                        <a
-                          class="dropdown--item"
-                          href="${app.locals.settings.url}/settings"
-                        >
-                          <i class="bi bi-sliders"></i>
-                          User Settings
-                        </a>
-                        <form
-                          method="POST"
-                          action="${app.locals.settings
-                            .url}/sign-out?_method=DELETE"
-                        >
-                          <button class="dropdown--item">
-                            <i class="bi bi-box-arrow-right"></i>
-                            Sign Out
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
+                      `}
+                  <hr class="dropdown--separator" />
+                  <a
+                    class="dropdown--item"
+                    href="${app.locals.settings.url}/settings"
+                  >
+                    <i class="bi bi-sliders"></i>
+                    User Settings
+                  </a>
+                  <form
+                    method="POST"
+                    action="${app.locals.settings.url}/sign-out?_method=DELETE"
+                  >
+                    <button class="dropdown--item">
+                      <i class="bi bi-box-arrow-right"></i>
+                      Sign Out
+                    </button>
+                  </form>
                 </div>
-              `}
+              </div>
+            </div>
+          </div>
         </div>
         $${extraHeaders}
       `,
@@ -2396,12 +2396,14 @@ export default async function courselore(
         any,
         {},
         {},
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        IsSignedInMiddlewareLocals &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       res: express.Response<
         any,
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        IsSignedInMiddlewareLocals &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       head: HTML;
