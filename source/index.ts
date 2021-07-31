@@ -681,13 +681,15 @@ export default async function courselore(
                 gap: var(--space--2);
               }
 
-              .heading--REMOVE--2 {
-                font-family: var(--font-family--serif);
-                font-size: var(--font-size--4xl);
-                line-height: var(--line-height--4xl);
+              .heading--display {
+                font-size: var(--font-size--xl);
+                line-height: var(--line-height--xl);
                 font-weight: var(--font-weight--bold);
-                font-style: italic;
                 text-align: center;
+                color: var(--color--gray--medium--800);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--medium--100);
+                }
               }
 
               .heading--REMOVE {
@@ -700,29 +702,11 @@ export default async function courselore(
                 }
               }
 
-              .text-gradient {
-                color: var(--color--transparent);
-                background-clip: text;
-                background-image: linear-gradient(
-                  135deg,
-                  var(--color--gray--medium--400) 0%,
-                  var(--color--gray--medium--700) 100%
-                );
-                @media (prefers-color-scheme: dark) {
-                  background-image: linear-gradient(
-                    135deg,
-                    var(--color--gray--medium--400) 0%,
-                    var(--color--gray--medium--700) 100%
-                  );
-                }
-                padding: var(--space--0) var(--space--0-5);
-              }
-
               .decorative-icon {
                 font-size: var(--font-size--9xl);
                 line-height: var(--line-height--9xl);
-                color: var(--color--gray--medium--200);
-                background-color: var(--color--gray--medium--50);
+                color: var(--color--gray--medium--300);
+                background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--gray--medium--600);
                   background-color: var(--color--gray--medium--800);
@@ -3000,35 +2984,17 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  <h2 class="heading--REMOVE--2 text-gradient">
-                    Welcome to CourseLore!
-                  </h2>
+                  <h2 class="heading--display">Welcome to CourseLore!</h2>
 
-                  <div class="decorative-icon">
-                    <div
-                      style="${css`
-                        width: var(--font-size--9xl);
-                        opacity: var(--opacity--30);
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        svg {
-                          width: 100%;
-                        }
-                      `}"
-                      data-ondomcontentloaded="${javascript`
-                        new ArtAnimation({
-                          element: this,
-                          speed: 0.001,
-                          amount: 1,
-                          startupDuration: 500,
-                        }).start();
-                      `}"
-                    >
-                      $${app.locals.partials.logo
-                        .replace(/width=".*?"/, "")
-                        .replace(/height=".*?"/, "")}
-                    </div>
+                  <div
+                    class="decorative-icon"
+                    style="${css`
+                      svg {
+                        transform: scale(7);
+                      }
+                    `}"
+                  >
+                    $${app.locals.partials.logo}
                   </div>
 
                   <p>
@@ -4045,7 +4011,7 @@ export default async function courselore(
                   align-items: center;
                 `}"
               >
-                <h2 class="heading--REMOVE--2 text-gradient">
+                <h2 class="heading--display">
                   Welcome to ${res.locals.course.name}!
                 </h2>
 
@@ -8987,14 +8953,6 @@ ${value}</textarea
           justify-content: center;
           align-items: center;
           gap: var(--space--2);
-        `}"
-        data-ondomcontentloaded="${javascript`
-          new ArtAnimation({
-            element: this,
-            speed: 0.005,
-            amount: 1,
-            startupDuration: 0,
-          }).start();
         `}"
       >
         $${app.locals.partials.logo} Loading…
