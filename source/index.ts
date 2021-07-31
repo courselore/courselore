@@ -668,8 +668,8 @@ export default async function courselore(
           style="${css`
             @at-root {
               .heading {
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
+                font-size: var(--font-size--2xs);
+                line-height: var(--line-height--2xs);
                 font-weight: var(--font-weight--bold);
                 text-transform: uppercase;
                 letter-spacing: var(--letter-spacing--widest);
@@ -720,11 +720,17 @@ export default async function courselore(
                 align-items: center;
               }
 
+              .label {
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--1);
+              }
+
               .input--text {
                 &::placeholder {
                   color: var(--color--gray--medium--400);
                 }
-                background-color: var(--color--white);
+                background-color: var(--color--gray--medium--200);
                 --color--box-shadow: var(--color--blue--400);
                 @media (prefers-color-scheme: dark) {
                   &::placeholder {
@@ -1869,10 +1875,6 @@ export default async function courselore(
         >
           <div
             style="${css`
-              background-color: var(--color--gray--medium--200);
-              @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
-              }
               flex: 1;
               max-width: var(--width--sm);
               padding: var(--space--2) var(--space--4);
@@ -3330,17 +3332,18 @@ export default async function courselore(
                       gap: var(--space--4);
                     `}"
                   >
-                    <label>
+                    <label class="label">
                       Name
                       <input
                         type="text"
                         name="name"
                         value="${res.locals.user.name}"
+                        required
                         class="input--text"
                       />
                     </label>
 
-                    <label>
+                    <label class="label">
                       Email
                       <span
                         tabindex="0"
