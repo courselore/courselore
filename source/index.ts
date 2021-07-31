@@ -427,7 +427,6 @@ export default async function courselore(
               element.setAttribute("datetime", datetime);
               tippy(element, {
                 content: datetime,
-                theme: "tooltip",
                 touch: false,
               });
 
@@ -1802,6 +1801,11 @@ export default async function courselore(
                       background-color: var(--color--gray--medium--800);
                     }
                     padding: var(--space--0) var(--space--4);
+                    border-bottom: var(--border-width--1) solid
+                      var(--color--gray--medium--300);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--gray--medium--700);
+                    }
                     display: flex;
                     column-gap: var(--space--2);
                     justify-content: center;
@@ -1814,7 +1818,6 @@ export default async function courselore(
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
-                          theme: "dropdown",
                           trigger: "click",
                           interactive: true,
                         });
@@ -2057,44 +2060,14 @@ export default async function courselore(
       extraHeaders: html`
         <div
           style="${css`
-            color: var(--color--primary--50);
-            background-color: var(--color--primary--700);
+            background-color: var(--color--gray--medium--200);
             @media (prefers-color-scheme: dark) {
-              color: var(--color--primary--200);
-              background-color: var(--color--primary--800);
+              background-color: var(--color--gray--medium--800);
             }
-            padding: var(--space--2) var(--space--4);
+            padding: var(--space--1) var(--space--3);
             display: flex;
             gap: var(--space--4);
             justify-content: space-between;
-
-            .header--item {
-              display: flex;
-              &:hover,
-              &:focus-within {
-                color: var(--color--primary--200);
-              }
-              &:active {
-                color: var(--color--primary--400);
-              }
-              @media (prefers-color-scheme: dark) {
-                &:hover,
-                &:focus-within {
-                  color: var(--color--white);
-                }
-                &:active {
-                  color: var(--color--primary--400);
-                }
-              }
-              transition-property: var(--transition-property--colors);
-              transition-duration: var(--transition-duration--150);
-              transition-timing-function: var(
-                --transition-timing-function--in-out
-              );
-              * {
-                stroke: currentColor;
-              }
-            }
           `}"
         >
           <div
@@ -2106,7 +2079,10 @@ export default async function courselore(
               min-width: 0;
             `}"
           >
-            <a href="${app.locals.settings.url}/" class="header--item">
+            <a
+              href="${app.locals.settings.url}/"
+              class="button button--transparent"
+            >
               $${app.locals.partials.logo}
             </a>
 
@@ -2120,7 +2096,6 @@ export default async function courselore(
                     `}"
                   >
                     <button
-                      class="header--item"
                       style="${css`
                         font-size: var(--font-size--base);
                         line-height: var(--line-height--base);
@@ -2131,7 +2106,6 @@ export default async function courselore(
                       data-ondomcontentloaded="${javascript`
                     tippy(this, {
                       content: this.nextElementSibling.firstElementChild,
-                      theme: "dropdown",
                       trigger: "click",
                       interactive: true,
                     });
@@ -2244,28 +2218,30 @@ export default async function courselore(
                 >
                   <div>
                     <button
-                      class="header--item"
+                      class="button button--transparent"
                       data-ondomcontentloaded="${javascript`
-                    tippy(this, {
-                      content: ${JSON.stringify(
-                        res.locals.invitations!.length === 0
-                          ? "Add"
-                          : `${
-                              res.locals.invitations!.length
-                            } pending invitation${
-                              res.locals.invitations!.length === 1 ? "" : "s"
-                            }`
-                      )},
-                        theme: "tooltip",
-                        touch: false,
-                    });
-                    tippy(this, {
-                      content: this.nextElementSibling.firstElementChild,
-                      theme: "dropdown",
-                      trigger: "click",
-                      interactive: true,
-                    });
-                  `}"
+                        tippy(this, {
+                          content: ${JSON.stringify(
+                            res.locals.invitations!.length === 0
+                              ? "Add"
+                              : `${
+                                  res.locals.invitations!.length
+                                } pending invitation${
+                                  res.locals.invitations!.length === 1
+                                    ? ""
+                                    : "s"
+                                }`
+                          )},
+                          theme: "tooltip",
+                          touch: false,
+                        });
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          theme: "dropdown",
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
                     >
                       <div
                         $${res.locals.invitations!.length === 0
@@ -2325,7 +2301,6 @@ export default async function courselore(
                   </div>
                   <div>
                     <button
-                      class="header--item"
                       data-ondomcontentloaded="${javascript`
                     tippy(this, {
                       content: ${JSON.stringify(
