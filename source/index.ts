@@ -869,6 +869,11 @@ export default async function courselore(
                 );
                 cursor: pointer;
 
+                &.button--icon {
+                  padding-top: var(--space--0-5);
+                  padding-bottom: var(--space--0-5);
+                }
+
                 &.button--transparent {
                   &:hover,
                   &:focus-within {
@@ -1885,67 +1890,31 @@ export default async function courselore(
                       padding: var(--space--2) var(--space--10);
                       text-align: center;
 
-                      & + button {
-                        transition-property: var(--transition-property--colors);
-                        transition-duration: var(--transition-duration--150);
-                        transition-timing-function: var(
-                          --transition-timing-function--in-out
-                        );
-                      }
-
-                      &.flash--green {
+                      &.flash--rose {
                         &,
-                        & + button,
-                        & .link {
-                          color: var(--color--green--700);
-                          background-color: var(--color--green--200);
+                        & + button {
+                          color: var(--color--rose--700);
                         }
+                        background-color: var(--color--rose--100);
                         & + button:hover,
-                        & .link:hover,
-                        & + button:focus,
-                        & .link:focus {
-                          color: var(--color--green--600);
+                        & + button:focus-within {
+                          background-color: var(--color--rose--200);
                         }
-                        & + button:active,
-                        & .link:active {
-                          color: var(--color--green--900);
+                        & + button:active {
+                          background-color: var(--color--rose--300);
                         }
                         @media (prefers-color-scheme: dark) {
                           &,
-                          & + button,
-                          & .link {
-                            color: var(--color--green--300);
-                            background-color: var(--color--green--700);
+                          & + button {
+                            color: var(--color--rose--200);
                           }
+                          background-color: var(--color--rose--900);
                           & + button:hover,
-                          & .link:hover,
-                          & + button:focus,
-                          & .link:focus {
-                            color: var(--color--green--100);
+                          & + button:focus-within {
+                            background-color: var(--color--rose--800);
                           }
-                          & + button:active,
-                          & .link:active {
-                            color: var(--color--green--500);
-                          }
-                        }
-                      }
-
-                      &.flash--rose {
-                        &,
-                        & + button,
-                        & .link {
-                          color: var(--color--rose--700);
-                          background-color: var(--color--rose--200);
-                          @media (prefers-color-scheme: dark) {
-                            color: var(--color--rose--300);
+                          & + button:active {
                             background-color: var(--color--rose--700);
-                          }
-                        }
-                        & + button:hover,
-                        & .link:hover {
-                          color: var(--color--rose--600);
-                          @media (prefers-color-scheme: dark) {
-                            color: var(--color--rose--100);
                           }
                         }
                       }
@@ -1954,11 +1923,12 @@ export default async function courselore(
                 >
                   $${flash}
                   <button
+                    class="button button--icon"
                     style="${css`
                       justify-self: end;
                       align-self: start;
-                      margin-top: var(--space--2);
-                      margin-right: var(--space--4);
+                      margin-top: var(--space--1-5);
+                      margin-right: var(--space--3);
                     `}"
                     onclick="${javascript`
                       this.closest(".flash").remove();
