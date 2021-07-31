@@ -944,119 +944,6 @@ export default async function courselore(
                   .join("")}
               }
 
-              /*
-              .button {
-                color: var(--color--gray--medium--800);
-                &:hover,
-                &:focus-within,
-                :focus ~ &.after-toggle {
-                  color: var(--color--gray--medium--500);
-                }
-                &:active {
-                  color: var(--color--gray--medium--700);
-                }
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--300);
-                  &:hover,
-                  &:focus-within,
-                  :focus ~ &.after-toggle {
-                    color: var(--color--gray--medium--500);
-                  }
-                  &:active {
-                    color: var(--color--gray--medium--700);
-                  }
-                }
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-                cursor: pointer;
-
-                &.button--transparent {
-                  color: var(--color--gray--medium--500);
-                  &:hover,
-                  &:focus-within,
-                  :focus ~ &.after-toggle {
-                    color: var(--color--gray--medium--500);
-                  }
-                  &:active {
-                    color: var(--color--gray--medium--700);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--600);
-                    &:hover,
-                    &:focus-within,
-                    :focus ~ &.after-toggle {
-                      color: var(--color--gray--medium--600);
-                    }
-                    &:active {
-                      color: var(--color--gray--medium--700);
-                    }
-                  }
-                }
-
-                &.button--rose {
-                  &:hover,
-                  &:focus-within,
-                  :focus ~ &.after-toggle {
-                    color: var(--color--rose--500);
-                  }
-                  &:active {
-                    color: var(--color--rose--700);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    &:hover,
-                    &:focus-within,
-                    :focus ~ &.after-toggle {
-                      color: var(--color--rose--500);
-                    }
-                    &:active {
-                      color: var(--color--rose--700);
-                    }
-                  }
-                }
-              }
-              */
-
-              /*
-              .link {
-                text-decoration: underline;
-                color: var(--color--gray--medium--600);
-                &:hover,
-                &:focus-within {
-                  color: var(--color--gray--medium--400);
-                }
-                &:active {
-                  color: var(--color--gray--medium--800);
-                }
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--500);
-                  &:hover,
-                  &:focus-within {
-                    color: var(--color--gray--medium--300);
-                  }
-                  &:active {
-                    color: var(--color--gray--medium--700);
-                  }
-                }
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-              }
-              */
-
-              .separator {
-                margin: var(--space--4) var(--space--0);
-                border-top: var(--border-width--1) solid
-                  var(--color--gray--medium--300);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--600);
-                }
-              }
-
               .strong {
                 font-weight: var(--font-weight--bold);
                 color: var(--color--gray--medium--800);
@@ -1158,6 +1045,10 @@ export default async function courselore(
                 .keyboard-shortcut {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
+                  color: var(--color--gray--medium--500);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--gray--medium--400);
+                  }
 
                   .keyboard-shortcut--cluster {
                     letter-spacing: var(--letter-spacing--widest);
@@ -4761,7 +4652,6 @@ export default async function courselore(
                           padding-right: var(--space--10);
                         `}"
                         data-ondomcontentloaded="${javascript`
-                          fitTextarea.watch(this);
                           (this.validators ??= []).push(() => {
                             const emails = [];
                             for (let email of this.value.split(${/[,\n]/})) {
@@ -8149,14 +8039,14 @@ export default async function courselore(
 
             & > span {
               padding: var(--space--1) var(--space--3);
-              border-top-left-radius: var(--border-radius--md);
-              border-top-right-radius: var(--border-radius--md);
+              border-bottom-left-radius: var(--border-radius--0);
+              border-bottom-right-radius: var(--border-radius--0);
               display: flex;
               gap: var(--space--2);
             }
 
             & > :checked + span {
-              background-color: var(--color--white);
+              background-color: var(--color--gray--medium--200);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--700);
               }
@@ -8177,7 +8067,7 @@ export default async function courselore(
               this.closest(".text-editor").querySelector(".text-editor--preview").hidden = true;
             `}"
           />
-          <span class="button after-toggle">
+          <span class="button button--transparent">
             <i class="bi bi-pencil"></i>
             Write
           </span>
@@ -8219,7 +8109,7 @@ export default async function courselore(
             `}"
           />
           <span
-            class="button after-toggle"
+            class="button button--transparent"
             data-ondomcontentloaded="${javascript`
               Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+p", () => { this.click(); return false; });
               tippy(this, {
@@ -8245,7 +8135,7 @@ export default async function courselore(
       <div
         class="text-editor--write"
         style="${css`
-          background-color: var(--color--white);
+          background-color: var(--color--gray--medium--200);
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--700);
           }
@@ -8255,27 +8145,20 @@ export default async function courselore(
       >
         <div
           style="${css`
-            background-color: var(--color--white);
-            @media (prefers-color-scheme: dark) {
-              background-color: var(--color--gray--medium--700);
-            }
-            padding: var(--space--2) var(--space--0);
-            margin: var(--space--0) var(--space--4);
+            padding: var(--space--1) var(--space--0);
+            margin: var(--space--0) var(--space--2);
             overflow-x: auto;
-            position: sticky;
-            top: 0;
             display: flex;
-            gap: var(--space--5);
+            gap: var(--space--2);
             & > * {
               display: flex;
-              gap: var(--space--2);
             }
           `}"
         >
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
                 tippy(this, {
@@ -8303,7 +8186,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
                 tippy(this, {
@@ -8331,7 +8214,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
                 tippy(this, {
@@ -8361,7 +8244,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
                 tippy(this, {
@@ -8388,7 +8271,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
                 tippy(this, {
@@ -8415,7 +8298,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
                 tippy(this, {
@@ -8444,7 +8327,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
                 tippy(this, {
@@ -8472,7 +8355,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
                 tippy(this, {
@@ -8500,7 +8383,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
                 tippy(this, {
@@ -8530,7 +8413,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
                 tippy(this, {
@@ -8557,7 +8440,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
                 tippy(this, {
@@ -8586,7 +8469,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
                 tippy(this, {
@@ -8616,7 +8499,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8643,7 +8526,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8673,7 +8556,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8701,7 +8584,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8731,7 +8614,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
                 tippy(this, {
@@ -8757,7 +8640,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
                 tippy(this, {
@@ -8785,7 +8668,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
                 tippy(this, {
@@ -8812,7 +8695,7 @@ export default async function courselore(
             </button>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
                 tippy(this, {
@@ -8870,7 +8753,7 @@ export default async function courselore(
           <div>
             <button
               type="button"
-              class="button"
+              class="button button--icon button--transparent"
               data-ondomcontentloaded="${javascript`
                 tippy(this, {
                   content: "Help",
@@ -8910,18 +8793,18 @@ export default async function courselore(
           $${required ? html`required` : html``}
           class="input--text"
           style="${css`
-            transition-property: var(--transition-property--colors);
+            height: var(--space--20);
+            transition-property: var(--transition-property--all);
             transition-duration: var(--transition-duration--150);
             transition-timing-function: var(
               --transition-timing-function--in-out
             );
-
             &.drag {
-              background-color: var(--color--gray--medium--200);
+              background-color: var(--color--blue--200);
             }
           `}"
-          data-ondomcontentloaded="${javascript`
-            fitTextarea.watch(this);
+          onfocus="${javascript`
+            this.style.height = "var(--space--52)";
           `}"
           ondragenter="${javascript`
             this.classList.add("drag");
@@ -8952,7 +8835,7 @@ ${value}</textarea
         hidden
         class="text-editor--loading strong"
         style="${css`
-          background-color: var(--color--white);
+          background-color: var(--color--gray--medium--200);
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--700);
           }
@@ -8971,7 +8854,7 @@ ${value}</textarea
         hidden
         class="text-editor--preview text"
         style="${css`
-          background-color: var(--color--white);
+          background-color: var(--color--gray--medium--200);
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--700);
           }
@@ -9213,11 +9096,6 @@ ${value}</textarea
                   style="${css`
                     display: flex;
                     gap: var(--space--8);
-
-                    span {
-                      display: flex;
-                      gap: var(--space--2);
-                    }
                   `}"
                 >
                   $${res.locals.enrollment.role === "staff"
@@ -9225,14 +9103,11 @@ ${value}</textarea
                         <div
                           style="${css`
                             display: flex;
-                            gap: var(--space--2);
                           `}"
                         >
                           <label
                             style="${css`
                               display: grid;
-                              cursor: pointer;
-
                               & > * {
                                 grid-area: 1 / 1;
                               }
@@ -9244,7 +9119,7 @@ ${value}</textarea
                               autocomplete="off"
                             />
                             <span
-                              class="button after-toggle"
+                              class="button button--icon button--transparent"
                               style="${css`
                                 :checked + & {
                                   display: none;
@@ -9261,7 +9136,7 @@ ${value}</textarea
                               Unpinned
                             </span>
                             <span
-                              class="button after-toggle strong"
+                              class="button button--icon button--transparent strong"
                               style="${css`
                                 :not(:checked) + * + & {
                                   display: none;
@@ -9280,13 +9155,13 @@ ${value}</textarea
                           </label>
                           <button
                             type="button"
-                            class="button"
+                            class="button button--icon button--transparent"
                             data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Pinned conversations are listed first.",
-                              trigger: "click",
-                            });
-                          `}"
+                              tippy(this, {
+                                content: "Pinned conversations are listed first.",
+                                trigger: "click",
+                              });
+                            `}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
@@ -9297,8 +9172,6 @@ ${value}</textarea
                   <label
                     style="${css`
                       display: grid;
-                      cursor: pointer;
-
                       & > * {
                         grid-area: 1 / 1;
                       }
@@ -9313,7 +9186,7 @@ ${value}</textarea
                         : `checked`}
                     />
                     <span
-                      class="button after-toggle"
+                      class="button button--icon button--transparent"
                       style="${css`
                         :checked + & {
                           display: none;
@@ -9330,7 +9203,7 @@ ${value}</textarea
                       Not a Question
                     </span>
                     <span
-                      class="button after-toggle strong"
+                      class="button button--icon button--transparent strong"
                       style="${css`
                         :not(:checked) + * + & {
                           display: none;
@@ -11344,7 +11217,7 @@ ${value}</textarea
                             : ``}
                         />
                         <span
-                          class="button after-toggle"
+                          class="button button--transparent"
                           style="${css`
                             :checked + & {
                               display: none;
@@ -11361,7 +11234,7 @@ ${value}</textarea
                           Not an Answer
                         </span>
                         <span
-                          class="button after-toggle strong"
+                          class="button button--transparent strong"
                           style="${css`
                             :not(:checked) + * + & {
                               display: none;
