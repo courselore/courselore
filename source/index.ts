@@ -2127,12 +2127,12 @@ export default async function courselore(
                         gap: var(--space--2);
                       `}"
                       data-ondomcontentloaded="${javascript`
-                    tippy(this, {
-                      content: this.nextElementSibling.firstElementChild,
-                      trigger: "click",
-                      interactive: true,
-                    });
-                  `}"
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
                     >
                       <i class="bi bi-journal-text"></i>
                       <span
@@ -2339,7 +2339,6 @@ export default async function courselore(
                 $${res.locals.user.avatar === null
                   ? html`<i class="bi bi-person-circle"></i>`
                   : html`
-                      <!-- TODO: :focus-within & :active -->
                       <img
                         src="${res.locals.user.avatar}"
                         alt="${res.locals.user.name ?? res.locals.user.email}"
