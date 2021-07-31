@@ -2288,7 +2288,7 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
-              max-width: var(--width--2xl);
+              max-width: var(--width--prose);
               margin: var(--space--4);
             `}"
           >
@@ -2997,10 +2997,11 @@ export default async function courselore(
                     $${app.locals.partials.logo}
                   </div>
 
-                  <p>
+                  <p class="secondary">
                     Get started by either enrolling in an existing course,
                     creating a new course, or filling in your user profile.
                   </p>
+
                   <div
                     style="${css`
                       width: 100%;
