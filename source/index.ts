@@ -1874,6 +1874,7 @@ export default async function courselore(
             ? html``
             : html`
                 <div
+                  class="flash"
                   style="${css`
                     display: grid;
                     & > * {
@@ -1960,7 +1961,7 @@ export default async function courselore(
                       margin-right: var(--space--4);
                     `}"
                     onclick="${javascript`
-                      this.parentElement.remove();
+                      this.closest(".flash").remove();
                     `}"
                   >
                     <i class="bi bi-x-circle"></i>
@@ -3736,9 +3737,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash--green">
-            User settings updated successfully.
-          </div>
+          <div class="flash--green">User settings updated successfully.</div>
         `
       );
 
@@ -4860,9 +4859,7 @@ export default async function courselore(
         req,
         res,
         html`
-          <div class="flash--green">
-            Course settings updated successfully.
-          </div>
+          <div class="flash--green">Course settings updated successfully.</div>
         `
       );
 
@@ -6339,9 +6336,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash--green">
-              Invitation expired successfully.
-            </div>
+            <div class="flash--green">Invitation expired successfully.</div>
           `
         );
       }
@@ -6719,9 +6714,7 @@ export default async function courselore(
           req,
           res,
           html`
-            <div class="flash--green">
-              Enrollment updated successfully.
-            </div>
+            <div class="flash--green">Enrollment updated successfully.</div>
           `
         );
 
@@ -7419,9 +7412,7 @@ export default async function courselore(
       app.locals.helpers.flash.set(
         req,
         res,
-        html`
-          <div class="flash--green">Enrollment updated successfully.</div>
-        `
+        html` <div class="flash--green">Enrollment updated successfully.</div> `
       );
 
       res.redirect(
