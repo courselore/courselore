@@ -2232,13 +2232,13 @@ export default async function courselore(
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
               display: flex;
-              gap: var(--space--4);
+              gap: var(--space--1);
               align-items: center;
             `}"
           >
             <div>
               <button
-                class="button button--transparent"
+                class="button button--icon button--transparent"
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(
@@ -2319,6 +2319,7 @@ export default async function courselore(
             </div>
             <div>
               <button
+                class="button button--icon button--transparent"
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(
