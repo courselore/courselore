@@ -2137,12 +2137,10 @@ export default async function courselore(
                             res.locals.invitations!.length === 1 ? "" : "s"
                           }`
                     )},
-                    theme: "tooltip",
                     touch: false,
                   });
                   tippy(this, {
                     content: this.nextElementSibling.firstElementChild,
-                    theme: "dropdown",
                     trigger: "click",
                     interactive: true,
                   });
@@ -2186,7 +2184,6 @@ export default async function courselore(
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                        theme: "tooltip",
                         trigger: "click",
                       });
                     `}"
@@ -2210,12 +2207,10 @@ export default async function courselore(
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(res.locals.user.name)},
-                    theme: "tooltip",
                     touch: false,
                   });
                   tippy(this, {
                     content: this.nextElementSibling.firstElementChild,
-                    theme: "dropdown",
                     trigger: "click",
                     interactive: true,
                   });
@@ -3058,7 +3053,6 @@ export default async function courselore(
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                          theme: "tooltip",
                           trigger: "click",
                         });
                       `}"
@@ -3280,7 +3274,6 @@ export default async function courselore(
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Add Avatar",
-                            theme: "tooltip",
                             touch: false,
                           });
                         `}"
@@ -3311,7 +3304,6 @@ export default async function courselore(
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Change Avatar",
-                            theme: "tooltip",
                             touch: false,
                           });
                         `}"
@@ -3343,7 +3335,7 @@ export default async function courselore(
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Remove Avatar",
-                            theme: "tooltip tooltip--rose",
+                            theme: "rose",
                             touch: false,
                           });
                         `}"
@@ -3419,7 +3411,6 @@ export default async function courselore(
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Your email is your identity in CourseLore and may not be changed.",
-                            theme: "tooltip",
                           });
                         `}"
                       >
@@ -4437,7 +4428,6 @@ export default async function courselore(
                   data-ondomcontentloaded="${javascript`
                     tippy(this, {
                       content: this.nextElementSibling.firstElementChild,
-                      theme: "dropdown",
                       trigger: "click",
                       interactive: true,
                     });
@@ -4823,7 +4813,6 @@ export default async function courselore(
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: this.nextElementSibling.firstElementChild,
-                            theme: "tooltip",
                             trigger: "click",
                           });
                         `}"
@@ -4964,7 +4953,6 @@ export default async function courselore(
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
-                            theme: "tooltip",
                             trigger: "click",
                           });
                         `}"
@@ -5032,7 +5020,6 @@ export default async function courselore(
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: "See Invitation Link",
-                                                theme: "tooltip",
                                                 touch: false,
                                               });
                                             `}"
@@ -5051,7 +5038,6 @@ export default async function courselore(
                                               data-ondomcontentloaded="${javascript`
                                                 tippy(this, {
                                                   content: "Can’t show Invitation Link because it’s expired.",
-                                                  theme: "tooltip",
                                                 });
                                               `}"
                                             `
@@ -5094,7 +5080,6 @@ export default async function courselore(
                                                 data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
                                                     content: this.nextElementSibling.firstElementChild,
-                                                    theme: "dropdown",
                                                     trigger: "click",
                                                     interactive: true,
                                                   });
@@ -5108,7 +5093,6 @@ export default async function courselore(
                                                   data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s used.",
-                                                      theme: "tooltip",
                                                     });
                                                   `}"
                                                 `
@@ -5118,7 +5102,6 @@ export default async function courselore(
                                                   data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s expired.",
-                                                      theme: "tooltip",
                                                     });
                                                   `}"
                                                 `
@@ -5181,12 +5164,10 @@ export default async function courselore(
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "Change Role",
-                                          theme: "tooltip",
                                           touch: false,
                                         });
                                         tippy(this, {
                                           content: this.nextElementSibling.firstElementChild,
-                                          theme: "dropdown",
                                           trigger: "click",
                                           interactive: true,
                                         });
@@ -5200,7 +5181,6 @@ export default async function courselore(
                                         data-ondomcontentloaded="${javascript`
                                           tippy(this, {
                                             content: "You may not change the role of this invitation because it has already been used.",
-                                            theme: "tooltip",
                                           });
                                         `}"
                                       `
@@ -5210,7 +5190,6 @@ export default async function courselore(
                                         data-ondomcontentloaded="${javascript`
                                           tippy(this, {
                                             content: "You may not change the role of this invitation because it’s expired.",
-                                            theme: "tooltip",
                                           });
                                         `}"
                                       `
@@ -5362,7 +5341,6 @@ export default async function courselore(
                                                 ).toISOString()}
                                               </time>
                                             `)},
-                                            theme: "tooltip",
                                             allowHTML: true,
                                             interactive: true,
                                           });
@@ -5427,12 +5405,10 @@ export default async function courselore(
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
                                               content: "Change Expiration",
-                                              theme: "tooltip",
                                               touch: false,
                                             });
                                             tippy(this, {
                                               content: this.nextElementSibling.firstElementChild,
-                                              theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
                                             });
@@ -5529,12 +5505,10 @@ export default async function courselore(
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
                                               content: "Change Expiration",
-                                              theme: "tooltip",
                                               touch: false,
                                             });
                                             tippy(this, {
                                               content: this.nextElementSibling.firstElementChild,
-                                              theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
                                             });
@@ -5618,12 +5592,10 @@ export default async function courselore(
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
                                               content: "Change Expiration",
-                                              theme: "tooltip",
                                               touch: false,
                                             });
                                             tippy(this, {
                                               content: this.nextElementSibling.firstElementChild,
-                                              theme: "dropdown",
                                               trigger: "click",
                                               interactive: true,
                                             });
@@ -5740,7 +5712,6 @@ export default async function courselore(
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Copy",
-                                theme: "tooltip",
                                 touch: false,
                               });
                             `}"
@@ -5774,7 +5745,6 @@ export default async function courselore(
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "People may point their phone camera at the image below to follow the invitation link.",
-                                theme: "tooltip",
                                 trigger: "click",
                               });
                           `}"
@@ -6257,12 +6227,10 @@ export default async function courselore(
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Change Role",
-                                      theme: "tooltip",
                                       touch: false,
                                     });
                                     tippy(this, {
                                       content: this.nextElementSibling.firstElementChild,
-                                      theme: "dropdown",
                                       trigger: "click",
                                       interactive: true,
                                     });
@@ -6276,7 +6244,6 @@ export default async function courselore(
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "You may not change your own role because you’re the only staff member.",
-                                        theme: "tooltip",
                                       });
                                     `}"
                                   `
@@ -6313,7 +6280,7 @@ export default async function courselore(
                                                         data-ondomcontentloaded="${javascript`
                                                           tippy(this, {
                                                             content: this.nextElementSibling.firstElementChild,
-                                                            theme: "dropdown dropdown--rose",
+                                                            theme: "rose",
                                                             trigger: "click",
                                                             interactive: true,
                                                           });
@@ -6388,12 +6355,12 @@ export default async function courselore(
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Remove from the Course",
-                                      theme: "tooltip tooltip--rose",
+                                      theme: "rose",
                                       touch: false,
                                     });
                                     tippy(this, {
                                       content: this.nextElementSibling.firstElementChild,
-                                      theme: "dropdown dropdown--rose",
+                                      theme: "rose",
                                       trigger: "click",
                                       interactive: true,
                                     });
@@ -6407,7 +6374,7 @@ export default async function courselore(
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "You may not remove yourself from the course because you’re the only staff member.",
-                                        theme: "tooltip tooltip--rose",
+                                        theme: "rose",
                                       });
                                     `}"
                                   `
@@ -6723,13 +6690,12 @@ export default async function courselore(
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
-                                    theme: "tooltip tooltip--rose",
+                                    theme: "rose",
                                     touch: false,
                                   });
                                   tippy(this, {
                                     content: this.nextElementSibling.firstElementChild,
-                                    theme: "dropdown dropdown--rose",
-                                    trigger: "click",
+                                    theme: "rose",
                                     interactive: true,
                                   });
                                 `}"
@@ -6788,7 +6754,6 @@ export default async function courselore(
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Don’t Remove Tag",
-                                    theme: "tooltip",
                                     touch: false,
                                   });
                                 `}"
@@ -6888,7 +6853,7 @@ export default async function courselore(
                             data-onmount="${javascript`
                               tippy(this, {
                                 content: "Remove Tag",
-                                theme: "tooltip tooltip--rose",
+                                theme: "rose",
                                 touch: false,
                               });
                             `}"
@@ -7077,7 +7042,6 @@ export default async function courselore(
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "The accent color helps you tell your courses apart.",
-                          theme: "tooltip",
                           trigger: "click",
                         });
                       `}"
@@ -7745,7 +7709,6 @@ export default async function courselore(
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Search",
-                                theme: "tooltip",
                                 touch: false,
                               });
                             `}"
@@ -7759,7 +7722,6 @@ export default async function courselore(
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Search",
-                          theme: "tooltip",
                           touch: false,
                         });
                       `}"
@@ -7789,7 +7751,6 @@ export default async function courselore(
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: this.nextElementSibling.firstElementChild,
-                                theme: "dropdown",
                                 trigger: "click",
                                 interactive: true,
                               });
@@ -7862,7 +7823,6 @@ export default async function courselore(
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Filter",
-                                    theme: "tooltip",
                                     touch: false,
                                   });
                                 `}"
@@ -8115,7 +8075,6 @@ export default async function courselore(
                                           )
                                         }`
                                       )},
-                                      theme: "tooltip",
                                       touch: false,
                                     });
                                   `}"
@@ -8298,7 +8257,6 @@ export default async function courselore(
                     >
                   </span>
                 `)},
-                theme: "tooltip",
                 allowHTML: true,
                 touch: false,
               });
@@ -8356,7 +8314,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8385,7 +8342,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8414,7 +8370,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8444,7 +8399,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8472,7 +8426,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8500,7 +8453,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8531,7 +8483,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8560,7 +8511,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8589,7 +8539,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8619,7 +8568,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8648,7 +8596,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8678,7 +8625,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8708,7 +8654,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8737,7 +8682,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8768,7 +8712,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8797,7 +8740,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8828,7 +8770,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8855,7 +8796,6 @@ export default async function courselore(
                       >)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8885,7 +8825,6 @@ export default async function courselore(
                       or drag-and-drop or copy-and-paste)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8913,7 +8852,6 @@ export default async function courselore(
                       or drag-and-drop or copy-and-paste)
                     </span>
                   `)},
-                  theme: "tooltip",
                   touch: false,
                   allowHTML: true,
                 });
@@ -8961,12 +8899,10 @@ export default async function courselore(
               data-ondomcontentloaded="${javascript`
                 tippy(this, {
                   content: "Help",
-                  theme: "tooltip",
                   touch: false,
                 });
                 tippy(this, {
                   content: this.nextElementSibling.firstElementChild,
-                  theme: "dropdown",
                   trigger: "click",
                   interactive: true,
                 });
@@ -9350,7 +9286,6 @@ ${value}</textarea
                               data-ondomcontentloaded="${javascript`
                                 tippy(this, {
                                   content: "Pin",
-                                  theme: "tooltip",
                                   touch: false,
                                 });
                               `}"
@@ -9368,7 +9303,6 @@ ${value}</textarea
                               data-ondomcontentloaded="${javascript`
                                 tippy(this, {
                                   content: "Unpin",
-                                  theme: "tooltip",
                                   touch: false,
                                 });
                               `}"
@@ -9383,7 +9317,6 @@ ${value}</textarea
                             data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Pinned conversations are listed first.",
-                              theme: "tooltip",
                               trigger: "click",
                             });
                           `}"
@@ -9422,7 +9355,6 @@ ${value}</textarea
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Mark as a Question",
-                          theme: "tooltip",
                           touch: false,
                         });
                       `}"
@@ -9440,7 +9372,6 @@ ${value}</textarea
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Mark as Not a Question",
-                          theme: "tooltip",
                           touch: false,
                         });
                       `}"
@@ -9475,19 +9406,16 @@ ${value}</textarea
                               data-ondomcontentloaded="${javascript`
                                 this.addTag = tippy(this, {
                                   content: "Add Tag",
-                                  theme: "tooltip",
                                   touch: false,
                                 });
                                 this.noMoreTagsToAdd = tippy(this, {
                                   content: "No more tags to add",
-                                  theme: "tooltip",
                                   touch: false,
                                 });
                                 this.noMoreTagsToAdd.disable();
                                 this.dropdownContent = this.nextElementSibling.firstElementChild;
                                 this.dropdown = tippy(this, {
                                   content: this.dropdownContent,
-                                  theme: "dropdown",
                                   trigger: "click",
                                   interactive: true,
                                 });
@@ -9575,7 +9503,6 @@ ${value}</textarea
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "Remove Tag",
-                                        theme: "tooltip",
                                         touch: false,
                                       });
                                     `}"
@@ -9624,7 +9551,6 @@ ${value}</textarea
                             ></span>
                           </span>
                         `)},
-                        theme: "tooltip",
                         touch: false,
                         allowHTML: true,
                       });
@@ -10311,7 +10237,6 @@ ${value}</textarea
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "Permanent Link to Conversation",
-                        theme: "tooltip",
                         touch: false,
                       });
                     `}"
@@ -10333,12 +10258,12 @@ ${value}</textarea
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Conversation",
-                                theme: "tooltip tooltip--rose",
+                                theme: "rose",
                                 touch: false,
                               });
                               tippy(this, {
                                 content: this.nextElementSibling.firstElementChild,
-                                theme: "dropdown dropdown--rose",
+                                theme: "rose",
                                 trigger: "click",
                                 interactive: true,
                               });
@@ -10388,7 +10313,6 @@ ${value}</textarea
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Edit Title",
-                              theme: "tooltip",
                               touch: false,
                             });
                           `}"
@@ -10452,7 +10376,7 @@ ${value}</textarea
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "Cancel",
-                        theme: "tooltip tooltip--rose",
+                        theme: "rose",
                         touch: false,
                       });
                     `}"
@@ -10486,7 +10410,6 @@ ${value}</textarea
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Pin",
-                                theme: "tooltip",
                                 touch: false,
                               });
                             `}"
@@ -10502,7 +10425,6 @@ ${value}</textarea
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Unpin",
-                                theme: "tooltip",
                                 touch: false,
                               });
                             `}"
@@ -10537,7 +10459,6 @@ ${value}</textarea
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Mark as a Question",
-                                theme: "tooltip",
                                 touch: false,
                               });
                             `}"
@@ -10557,7 +10478,6 @@ ${value}</textarea
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Mark as Not a Question",
-                                theme: "tooltip",
                                 touch: false,
                               });
                             `}"
@@ -10592,12 +10512,10 @@ ${value}</textarea
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Add Tag",
-                            theme: "tooltip",
                             touch: false,
                           });
                           tippy(this, {
                             content: this.nextElementSibling.firstElementChild,
-                            theme: "dropdown",
                             trigger: "click",
                             interactive: true,
                            });
@@ -10670,7 +10588,7 @@ ${value}</textarea
                               data-ondomcontentloaded="${javascript`
                                 tippy(this, {
                                   content: "Can’t remove tag because a conversation must have at least one tag",
-                                  theme: "tooltip tooltip--rose",
+                                  theme: "rose",
                                   touch: false,
                                 });
                               `}"
@@ -10684,7 +10602,6 @@ ${value}</textarea
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Remove Tag",
-                              theme: "tooltip",
                               touch: false,
                             });
                           `}"
@@ -10823,7 +10740,6 @@ ${value}</textarea
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Permanent Link to Message",
-                              theme: "tooltip",
                               touch: false,
                             });
                           `}"
@@ -10848,12 +10764,12 @@ ${value}</textarea
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Message",
-                                    theme: "tooltip tooltip--rose",
+                                    theme: "rose",
                                     touch: false,
                                   });
                                   tippy(this, {
                                     content: this.nextElementSibling.firstElementChild,
-                                    theme: "dropdown dropdown--rose",
+                                    theme: "rose",
                                     trigger: "click",
                                     interactive: true,
                                   });
@@ -10906,7 +10822,6 @@ ${value}</textarea
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Edit Message",
-                                    theme: "tooltip",
                                     touch: false,
                                   });
                                 `}"
@@ -10927,7 +10842,6 @@ ${value}</textarea
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Reply",
-                              theme: "tooltip",
                               touch: false,
                             });
                           `}"
@@ -10982,7 +10896,6 @@ ${value}</textarea
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "Mark as Answer",
-                                        theme: "tooltip",
                                         touch: false,
                                       });
                                     `}"
@@ -11002,7 +10915,6 @@ ${value}</textarea
                                     data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "Mark as Not an Answer",
-                                          theme: "tooltip",
                                           touch: false,
                                         });
                                       `}"
@@ -11079,7 +10991,6 @@ ${value}</textarea
                                               : ``
                                           }`
                                         )},
-                                        theme: "tooltip",
                                         touch: false,
                                       });
                                     `}"
@@ -11118,7 +11029,6 @@ ${value}</textarea
                                                   )
                                                 })`
                                               )},
-                                              theme: "tooltip",
                                               touch: false,
                                             });
                                           `}"
@@ -11157,7 +11067,6 @@ ${value}</textarea
                                     )
                                   }`
                                 )},
-                                theme: "tooltip",
                                 touch: false,
                               });
                             `}"
@@ -11192,7 +11101,6 @@ ${value}</textarea
                         data-ondomcontentloaded="${javascript`
                           this.tippy = tippy(this, {
                             content: this.nextElementSibling.firstElementChild,
-                            theme: "dropdown",
                             trigger: "manual",
                             interactive: true,
                             offset: [0, 20],
@@ -11304,7 +11212,6 @@ ${value}</textarea
                                         content: ${JSON.stringify(
                                           isLiked ? "Remove Like" : "Like"
                                         )},
-                                        theme: "tooltip",
                                         touch: false,
                                       });
                                     `}"
@@ -11372,7 +11279,6 @@ ${value}</textarea
                                       ></span>
                                     </span>
                                   `)},
-                                  theme: "tooltip",
                                   touch: false,
                                   allowHTML: true,
                                 });
@@ -11482,7 +11388,6 @@ ${value}</textarea
                           data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Mark as Answer",
-                            theme: "tooltip",
                             touch: false,
                           });
                         `}"
@@ -11500,7 +11405,6 @@ ${value}</textarea
                           data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Mark as Not an Answer",
-                            theme: "tooltip",
                             touch: false,
                           });
                         `}"
@@ -11532,7 +11436,6 @@ ${value}</textarea
                             ></span>
                           </span>
                         `)},
-                        theme: "tooltip",
                         touch: false,
                         allowHTML: true,
                       });
