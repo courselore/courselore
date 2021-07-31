@@ -2997,11 +2997,6 @@ export default async function courselore(
                     $${app.locals.partials.logo}
                   </div>
 
-                  <p class="secondary">
-                    Get started by either enrolling in an existing course,
-                    creating a new course, or filling in your user profile.
-                  </p>
-
                   <div
                     style="${css`
                       width: 100%;
@@ -3016,7 +3011,7 @@ export default async function courselore(
                     `}"
                   >
                     <button
-                      class="button button--primary"
+                      class="button button--blue"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -3030,7 +3025,7 @@ export default async function courselore(
 
                     <a
                       href="${app.locals.settings.url}/courses/new"
-                      class="button"
+                      class="button button--transparent"
                     >
                       <i class="bi bi-journal-plus"></i>
                       Create a New Course
@@ -3038,7 +3033,7 @@ export default async function courselore(
                   </div>
                   <a
                     href="${app.locals.settings.url}/settings"
-                    class="button"
+                    class="button button--transparent"
                     style="${css`
                       @media (max-width: 510px) {
                         width: 100%;
@@ -3402,7 +3397,7 @@ export default async function courselore(
                 </label>
                 <div>
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -3532,7 +3527,7 @@ export default async function courselore(
                 </label>
                 <div>
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -4049,7 +4044,7 @@ export default async function courselore(
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}/settings/invitations"
-                          class="button button--primary"
+                          class="button button--blue"
                         >
                           <i class="bi bi-person-plus"></i>
                           Invite Other People to the Course
@@ -4061,7 +4056,7 @@ export default async function courselore(
                       .reference}/conversations/new"
                     class="button $${res.locals.enrollment.role === "staff"
                       ? ""
-                      : "button--primary"}"
+                      : "button--blue"}"
                   >
                     <i class="bi bi-chat-left-text"></i>
                     Start the First Conversation
@@ -4541,7 +4536,7 @@ export default async function courselore(
                 </label>
                 <div>
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -4932,7 +4927,7 @@ export default async function courselore(
 
                 <div>
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -6837,7 +6832,7 @@ export default async function courselore(
                 </div>
                 <div>
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -7070,7 +7065,7 @@ export default async function courselore(
                 </div>
                 <div>
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -7182,7 +7177,7 @@ export default async function courselore(
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}"
-                  class="button button--primary"
+                  class="button button--blue"
                   style="${css`
                     width: 100%;
                   `}"
@@ -7269,7 +7264,7 @@ export default async function courselore(
                 >
                   <button
                     type="submit"
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       width: 100%;
                     `}"
@@ -7402,7 +7397,7 @@ export default async function courselore(
                           name: res.locals.invitation.name,
                         }),
                   })}"
-                  class="button button--primary"
+                  class="button button--blue"
                   style="${css`
                     width: 100%;
                   `}"
@@ -9492,7 +9487,7 @@ ${value}</textarea
 
                 <div>
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       @media (max-width: 400px) {
                         width: 100%;
@@ -10321,7 +10316,7 @@ ${value}</textarea
                   `}"
                 >
                   <button
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       flex: 1;
                     `}"
@@ -11225,7 +11220,7 @@ ${value}</textarea
                             `}"
                           >
                             <button
-                              class="button button--primary"
+                              class="button button--blue"
                               data-ondomcontentloaded="${javascript`
                                 Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
                                 tippy(this, {
@@ -11377,7 +11372,7 @@ ${value}</textarea
 
               <div>
                 <button
-                  class="button button--primary"
+                  class="button button--blue"
                   style="${css`
                     @media (max-width: 400px) {
                       width: 100%;
@@ -12295,7 +12290,7 @@ ${value}</textarea
                       .url}/authenticate?${qs.stringify({
                       redirect: req.originalUrl,
                     })}"
-                    class="button button--primary"
+                    class="button button--blue"
                     style="${css`
                       width: 100%;
                     `}"
@@ -12360,7 +12355,7 @@ ${value}</textarea
 
               <a
                 href="mailto:issues@courselore.org"
-                class="button button--primary"
+                class="button button--blue"
               >
                 <i class="bi bi-envelope"></i>
                 Report to issues@courselore.org
