@@ -474,7 +474,7 @@ export default async function courselore(
                   element.value.match(${/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/}) ===
                   null
                 )
-                  return "Match the pattern YYYY-MM-DD HH:MM";
+                  return "Match the pattern YYYY-MM-DD HH:MM.";
                 const date = new Date(element.value.replace(" ", "T"));
                 if (isNaN(date.getTime())) return "Invalid datetime";
                 element.value = date.toISOString();
@@ -5011,7 +5011,7 @@ export default async function courselore(
                                 })
                               )
                             )
-                              return "Match the requested format";
+                              return "Match the requested format.";
                           });
                         `}"
                       ></textarea>
@@ -5152,7 +5152,7 @@ export default async function courselore(
                           localizeTime(this);
                           (this.validators ??= []).push(() => {
                             if (new Date(this.value).getTime() <= Date.now())
-                              return "Must be in the future";
+                              return "Must be in the future.";
                           });
                         `}"
                       />
@@ -5482,7 +5482,7 @@ export default async function courselore(
                                         localizeTime(this);
                                         (this.validators ??= []).push(() => {
                                           if (new Date(this.value).getTime() <= Date.now())
-                                            return "Must be in the future";
+                                            return "Must be in the future.";
                                         });
                                       `}"
                                     />
@@ -7115,7 +7115,7 @@ export default async function courselore(
                     data-ondomcontentloaded="${javascript`
                       (this.validators ??= []).push(() => {
                         if (this.closest("form").querySelector(".tags").children.length === 0)
-                          return "Add at least one tag";
+                          return "Add at least one tag.";
                       });
                     `}"
                   >
@@ -9743,7 +9743,7 @@ ${value}</textarea
                               data-ondomcontentloaded="${javascript`
                                 (this.validators ??= []).push(() => {
                                   if (this.closest(".tags").querySelector('[name="tagsReferences[]"]:not([disabled])') === null)
-                                    return "Select at least one tag";
+                                    return "Select at least one tag.";
                                 });
                                 this.closest(".tags").querySelector(".tags--button").addEventListener("click", () => { this.click(); });
                               `}"
