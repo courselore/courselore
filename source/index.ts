@@ -2997,48 +2997,28 @@ export default async function courselore(
                     $${app.locals.partials.logo}
                   </div>
 
-                  <div
-                    style="${css`
-                      width: 100%;
-                      display: flex;
-                      gap: var(--space--4);
-                      & > * {
-                        flex: 1;
-                      }
-                      @media (max-width: 510px) {
-                        flex-direction: column;
-                      }
+                  <button
+                    class="button button--blue"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                        trigger: "click",
+                      });
                     `}"
                   >
-                    <button
-                      class="button button--blue"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                          trigger: "click",
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-journal-arrow-down"></i>
-                      Enroll in an Existing Course
-                    </button>
-
-                    <a
-                      href="${app.locals.settings.url}/courses/new"
-                      class="button button--transparent"
-                    >
-                      <i class="bi bi-journal-plus"></i>
-                      Create a New Course
-                    </a>
-                  </div>
+                    <i class="bi bi-journal-arrow-down"></i>
+                    Enroll in an Existing Course
+                  </button>
+                  <a
+                    href="${app.locals.settings.url}/courses/new"
+                    class="button button--transparent"
+                  >
+                    <i class="bi bi-journal-plus"></i>
+                    Create a New Course
+                  </a>
                   <a
                     href="${app.locals.settings.url}/settings"
                     class="button button--transparent"
-                    style="${css`
-                      @media (max-width: 510px) {
-                        width: 100%;
-                      }
-                    `}"
                   >
                     <i class="bi bi-person-circle"></i>
                     Fill in Your User Profile
