@@ -666,6 +666,16 @@ export default async function courselore(
         </head>
         <body
           style="${css`
+            font-family: var(--font-family--sans-serif);
+            font-size: var(--font-size--sm);
+            line-height: var(--line-height--sm);
+            color: var(--color--gray--medium--700);
+            background-color: var(--color--gray--medium--50);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--gray--medium--200);
+              background-color: var(--color--gray--medium--900);
+            }
+
             @at-root {
               .heading {
                 font-size: var(--font-size--2xs);
@@ -1646,11 +1656,13 @@ export default async function courselore(
         {},
         {},
         (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       res: express.Response<
         any,
         (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       head: HTML;
@@ -1673,19 +1685,17 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            @at-root {
-              body {
-                font-family: var(--font-family--sans-serif);
-                font-size: var(--font-size--sm);
-                line-height: var(--line-height--sm);
-                color: var(--color--gray--medium--700);
-                background-color: var(--color--gray--medium--50);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--200);
-                  background-color: var(--color--gray--medium--900);
-                }
-              }
-            }
+            ${res.locals.enrollment === undefined
+              ? css``
+              : css`
+                  border-top: var(--border-width--8) solid
+                    var(--color--${res.locals.enrollment.accentColor}--500);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(
+                      --color--${res.locals.enrollment.accentColor}--600
+                    );
+                  }
+                `}
             position: absolute;
             top: 0;
             right: 0;
@@ -1873,11 +1883,13 @@ export default async function courselore(
         {},
         {},
         (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       res: express.Response<
         any,
         (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+          Partial<IsEnrolledInCourseMiddlewareLocals> &
           Partial<EventSourceMiddlewareLocals>
       >;
       head: HTML;
