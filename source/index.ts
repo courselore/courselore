@@ -867,6 +867,12 @@ export default async function courselore(
                   padding: var(--space--0-5) var(--space--1);
                 }
 
+                &.button--full-width-on-small-screen {
+                  @media (max-width: 400px) {
+                    width: 100%;
+                  }
+                }
+
                 &.button--transparent {
                   &:hover,
                   &:focus-within {
@@ -2994,7 +3000,7 @@ export default async function courselore(
                   </div>
 
                   <button
-                    class="button button--blue"
+                    class="button button--full-width-on-small-screen button--blue"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -3007,14 +3013,14 @@ export default async function courselore(
                   </button>
                   <a
                     href="${app.locals.settings.url}/courses/new"
-                    class="button button--transparent"
+                    class="button button--full-width-on-small-screen button--transparent"
                   >
                     <i class="bi bi-journal-plus"></i>
                     Create a New Course
                   </a>
                   <a
                     href="${app.locals.settings.url}/settings"
-                    class="button button--transparent"
+                    class="button button--full-width-on-small-screen button--transparent"
                   >
                     <i class="bi bi-person-circle"></i>
                     Fill in Your User Profile
@@ -3375,12 +3381,7 @@ export default async function courselore(
 
                 <div>
                   <button
-                    class="button button--blue"
-                    style="${css`
-                      @media (max-width: 400px) {
-                        width: 100%;
-                      }
-                    `}"
+                    class="button button--full-width-on-small-screen button--blue"
                   >
                     <i class="bi bi-pencil"></i>
                     Update User Settings
@@ -3505,12 +3506,7 @@ export default async function courselore(
                 </label>
                 <div>
                   <button
-                    class="button button--blue"
-                    style="${css`
-                      @media (max-width: 400px) {
-                        width: 100%;
-                      }
-                    `}"
+                    class="button button--full-width-on-small-screen button--blue"
                   >
                     <i class="bi bi-journal-plus"></i>
                     Create Course
@@ -4514,12 +4510,7 @@ export default async function courselore(
                 </label>
                 <div>
                   <button
-                    class="button button--blue"
-                    style="${css`
-                      @media (max-width: 400px) {
-                        width: 100%;
-                      }
-                    `}"
+                    class="button button--full-width-on-small-screen button--blue"
                   >
                     <i class="bi bi-pencil"></i>
                     Update Course Settings
@@ -4905,12 +4896,7 @@ export default async function courselore(
 
                 <div>
                   <button
-                    class="button button--blue"
-                    style="${css`
-                      @media (max-width: 400px) {
-                        width: 100%;
-                      }
-                    `}"
+                    class="button button--full-width-on-small-screen button--blue"
                   >
                     <i class="bi bi-person-plus"></i>
                     Create Invitation
@@ -6720,12 +6706,7 @@ export default async function courselore(
                   >
                     <button
                       type="button"
-                      class="button"
-                      style="${css`
-                        @media (max-width: 400px) {
-                          width: 100%;
-                        }
-                      `}"
+                      class="button button--full-width-on-small-screen"
                       onclick="${javascript`
                         const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
                         this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
@@ -6810,12 +6791,7 @@ export default async function courselore(
                 </div>
                 <div>
                   <button
-                    class="button button--blue"
-                    style="${css`
-                      @media (max-width: 400px) {
-                        width: 100%;
-                      }
-                    `}"
+                    class="button button--full-width-on-small-screen button--blue"
                     data-ondomcontentloaded="${javascript`
                       (this.validators ??= []).push(() => {
                         if (this.closest("form").querySelector(".tags").children.length === 0)
@@ -7043,12 +7019,7 @@ export default async function courselore(
                 </div>
                 <div>
                   <button
-                    class="button button--blue"
-                    style="${css`
-                      @media (max-width: 400px) {
-                        width: 100%;
-                      }
-                    `}"
+                    class="button button--full-width-on-small-screen button--blue"
                   >
                     <i class="bi bi-pencil"></i>
                     Update Your Enrollment
@@ -9465,12 +9436,7 @@ ${value}</textarea
 
                 <div>
                   <button
-                    class="button button--blue"
-                    style="${css`
-                      @media (max-width: 400px) {
-                        width: 100%;
-                      }
-                    `}"
+                    class="button button--full-width-on-small-screen button--blue"
                     data-ondomcontentloaded="${javascript`
                       Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
@@ -11350,12 +11316,7 @@ ${value}</textarea
 
               <div>
                 <button
-                  class="button button--blue"
-                  style="${css`
-                    @media (max-width: 400px) {
-                      width: 100%;
-                    }
-                  `}"
+                  class="button button--full-width-on-small-screen button--blue"
                   data-ondomcontentloaded="${javascript`
                       Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
