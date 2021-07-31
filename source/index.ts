@@ -2004,6 +2004,7 @@ export default async function courselore(
         >
           <div
             style="${css`
+              flex: 1;
               max-width: ${headersMaxWidth};
               display: flex;
               gap: var(--space--4);
