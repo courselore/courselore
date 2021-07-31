@@ -2863,7 +2863,7 @@ export default async function courselore(
               `}"
             />
             <button class="button button--blue">
-              <i class="bi bi-box-arrow-in-right"></i>
+              <i class="bi bi-person-plus"></i>
               Sign up
             </button>
           </form>
@@ -3364,14 +3364,15 @@ export default async function courselore(
                   </div>
                 </div>
 
-                <label>
+                <div class="label">
                   Biography
                   $${app.locals.partials.textEditor({
                     name: "biography",
                     value: res.locals.user.biography ?? "",
                     required: false,
                   })}
-                </label>
+                </div>
+
                 <div>
                   <button
                     class="button button--blue"
