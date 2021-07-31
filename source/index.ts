@@ -8038,7 +8038,7 @@ export default async function courselore(
             }
 
             & > span {
-              padding: var(--space--1) var(--space--3);
+              padding: var(--space--1) var(--space--3) var(--space--3);
               border-bottom-left-radius: var(--border-radius--0);
               border-bottom-right-radius: var(--border-radius--0);
               display: flex;
@@ -8133,33 +8133,39 @@ export default async function courselore(
         </label>
       </div>
       <div
-        class="text-editor--write"
         style="${css`
-          background-color: var(--color--gray--medium--200);
-          @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--medium--700);
-          }
-          border-radius: var(--border-radius--lg);
-          border-top-left-radius: var(--border-radius--none);
+          position: relative;
+          margin-top: var(--space---2);
         `}"
       >
         <div
+          class="text-editor--write"
           style="${css`
-            padding: var(--space--1) var(--space--0);
-            margin: var(--space--0) var(--space--2);
-            overflow-x: auto;
-            display: flex;
-            gap: var(--space--2);
-            & > * {
-              display: flex;
+            background-color: var(--color--gray--medium--200);
+            @media (prefers-color-scheme: dark) {
+              background-color: var(--color--gray--medium--700);
             }
+            border-radius: var(--border-radius--lg);
+            border-top-left-radius: var(--border-radius--none);
           `}"
         >
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+          <div
+            style="${css`
+              padding: var(--space--1) var(--space--0);
+              margin: var(--space--0) var(--space--2);
+              overflow-x: auto;
+              display: flex;
+              gap: var(--space--2);
+              & > * {
+                display: flex;
+              }
+            `}"
+          >
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8176,18 +8182,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-type-h1"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-type-h1"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8204,18 +8210,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-type-h2"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-type-h2"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8232,20 +8238,20 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-type-h3"></i>
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-type-h3"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8261,18 +8267,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "**");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-type-bold"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-type-bold"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8288,18 +8294,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "_");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-type-italic"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-type-italic"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8315,20 +8321,20 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-link"></i>
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-link"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8345,18 +8351,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-list-ul"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-list-ul"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8373,18 +8379,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-list-ol"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-list-ol"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8401,20 +8407,20 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-ui-checks"></i>
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-ui-checks"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8430,18 +8436,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-chat-left-quote"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-chat-left-quote"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8458,19 +8464,19 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 const gapLength = element.selectionEnd - element.selectionStart + 2;
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-table"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-table"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8487,20 +8493,20 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-chevron-bar-expand"></i>
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-chevron-bar-expand"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8516,18 +8522,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "\`");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-code"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-code"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8544,20 +8550,20 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-code-square"></i>
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-code-square"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8574,18 +8580,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, "$");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-calculator"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-calculator"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8602,20 +8608,20 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 const element = this.closest(".text-editor").querySelector('[name="content"]');
                 textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
                 element.focus();
               `}"
-            >
-              <i class="bi bi-calculator-fill"></i>
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-calculator-fill"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8632,16 +8638,16 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 alert("TODO: Mention User");
               `}"
-            >
-              <i class="bi bi-at"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-at"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8658,18 +8664,18 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 alert("TODO: Refer to Conversation or Message");
               `}"
-            >
-              <i class="bi bi-hash"></i>
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-hash"></i>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8687,16 +8693,16 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 this.closest(".text-editor").querySelector(".attachments").click();
               `}"
-            >
-              <i class="bi bi-image"></i>
-            </button>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-image"></i>
+              </button>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
                 tippy(this, {
                   content: ${JSON.stringify(html`
@@ -8714,19 +8720,19 @@ export default async function courselore(
                   allowHTML: true,
                 });
               `}"
-              onclick="${javascript`
+                onclick="${javascript`
                 this.closest(".text-editor").querySelector(".attachments").click();
               `}"
-            >
-              <i class="bi bi-paperclip"></i>
-            </button>
-            <input
-              type="file"
-              class="attachments"
-              multiple
-              hidden
-              data-skip-is-modified="true"
-              data-ondomcontentloaded="${javascript`
+              >
+                <i class="bi bi-paperclip"></i>
+              </button>
+              <input
+                type="file"
+                class="attachments"
+                multiple
+                hidden
+                data-skip-is-modified="true"
+                data-ondomcontentloaded="${javascript`
                 this.upload = async (fileList) => {
                   const element = this.closest(".text-editor").querySelector('[name="content"]');
                   // TODO: Give some visual indication of progress.
@@ -8742,19 +8748,19 @@ export default async function courselore(
                   element.focus();
                 };
               `}"
-              onchange="${javascript`
+                onchange="${javascript`
                 (async () => {
                   await this.upload(this.files);
                   this.value = "";
                 })();
               `}"
-            />
-          </div>
-          <div>
-            <button
-              type="button"
-              class="button button--icon button--transparent"
-              data-ondomcontentloaded="${javascript`
+              />
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                 tippy(this, {
                   content: "Help",
                   touch: false,
@@ -8765,104 +8771,105 @@ export default async function courselore(
                   interactive: true,
                 });
               `}"
-            >
-              <i class="bi bi-info-circle"></i>
-            </button>
-            <div hidden>
-              <div>
-                <p class="text">
-                  You may style text with
-                  <a
-                    href="https://guides.github.com/features/mastering-markdown/"
-                    target="_blank"
-                    >GitHub Flavored Markdown</a
-                  >
-                  and include mathematical formulas with
-                  <a
-                    href="https://katex.org/docs/supported.html"
-                    target="_blank"
-                    >LaTeX</a
-                  >.
-                </p>
+              >
+                <i class="bi bi-info-circle"></i>
+              </button>
+              <div hidden>
+                <div>
+                  <p class="text">
+                    You may style text with
+                    <a
+                      href="https://guides.github.com/features/mastering-markdown/"
+                      target="_blank"
+                      >GitHub Flavored Markdown</a
+                    >
+                    and include mathematical formulas with
+                    <a
+                      href="https://katex.org/docs/supported.html"
+                      target="_blank"
+                      >LaTeX</a
+                    >.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <textarea
-          name="${name}"
-          $${required ? html`required` : html``}
-          class="input--text"
-          style="${css`
-            height: var(--space--20);
-            transition-property: var(--transition-property--all);
-            transition-duration: var(--transition-duration--150);
-            transition-timing-function: var(
-              --transition-timing-function--in-out
-            );
-            &.drag {
-              background-color: var(--color--blue--200);
-            }
-          `}"
-          onfocus="${javascript`
+          <textarea
+            name="${name}"
+            $${required ? html`required` : html``}
+            class="input--text"
+            style="${css`
+              height: var(--space--20);
+              transition-property: var(--transition-property--all);
+              transition-duration: var(--transition-duration--150);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+              &.drag {
+                background-color: var(--color--blue--200);
+              }
+            `}"
+            onfocus="${javascript`
             this.style.height = "var(--space--52)";
           `}"
-          ondragenter="${javascript`
+            ondragenter="${javascript`
             this.classList.add("drag");
           `}"
-          ondragover="${javascript`
+            ondragover="${javascript`
             event.preventDefault(); // TODO: Firefox seems to require this. Investigate more.
           `}"
-          ondrop="${javascript`
+            ondrop="${javascript`
             event.preventDefault();
             // TODO: I read somewhere that some browsers also need ‘event.stopPropagation()’. Investigate.
             this.classList.remove("drag");
             this.closest(".text-editor").querySelector(".attachments").upload(event.dataTransfer.files);
           `}"
-          ondragleave="${javascript`
+            ondragleave="${javascript`
             this.classList.remove("drag");
           `}"
-          onpaste="${javascript`
+            onpaste="${javascript`
             if (event.clipboardData.files.length === 0) return;
             event.preventDefault();
             this.closest(".text-editor").querySelector(".attachments").upload(event.clipboardData.files);
           `}"
-        >
+          >
 ${value}</textarea
+          >
+        </div>
+
+        <div
+          hidden
+          class="text-editor--loading strong"
+          style="${css`
+            background-color: var(--color--gray--medium--200);
+            @media (prefers-color-scheme: dark) {
+              background-color: var(--color--gray--medium--700);
+            }
+            padding: var(--space--4);
+            border-radius: var(--border-radius--lg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space--2);
+          `}"
         >
-      </div>
+          $${app.locals.partials.logo} Loading…
+        </div>
 
-      <div
-        hidden
-        class="text-editor--loading strong"
-        style="${css`
-          background-color: var(--color--gray--medium--200);
-          @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--medium--700);
-          }
-          padding: var(--space--4);
-          border-radius: var(--border-radius--lg);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: var(--space--2);
-        `}"
-      >
-        $${app.locals.partials.logo} Loading…
-      </div>
-
-      <div
-        hidden
-        class="text-editor--preview text"
-        style="${css`
-          background-color: var(--color--gray--medium--200);
-          @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--medium--700);
-          }
-          padding: var(--space--4);
-          border-radius: var(--border-radius--lg);
-        `}"
-      >
-        Preview
+        <div
+          hidden
+          class="text-editor--preview text"
+          style="${css`
+            background-color: var(--color--gray--medium--200);
+            @media (prefers-color-scheme: dark) {
+              background-color: var(--color--gray--medium--700);
+            }
+            padding: var(--space--4);
+            border-radius: var(--border-radius--lg);
+          `}"
+        >
+          Preview
+        </div>
       </div>
     </div>
   `;
