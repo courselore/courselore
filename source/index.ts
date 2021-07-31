@@ -3072,16 +3072,14 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  <h2 class="heading">
-                    <i class="bi bi-journal"></i>
-                    Courses
-                  </h2>
+                  <div class="decorative-icon">
+                    <i class="bi bi-journal-text"></i>
+                  </div>
 
                   <div
                     style="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--2);
                       align-items: start;
                     `}"
                   >
@@ -3091,55 +3089,33 @@ export default async function courselore(
                           <a
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
-                            style="${css`
-                              font-weight: var(--font-weight--bold);
-                              color: var(
-                                --color--${enrollment.accentColor}--50
-                              );
-                              background-color: var(
-                                --color--${enrollment.accentColor}--500
-                              );
-                              &:hover {
-                                background-color: var(
-                                  --color--${enrollment.accentColor}--400
-                                );
-                              }
-                              @media (prefers-color-scheme: dark) {
+                            class="button button--transparent"
+                          >
+                            <div
+                              class="button button--icon"
+                              style="${css`
                                 color: var(
-                                  --color--${enrollment.accentColor}--200
+                                  --color--${enrollment.accentColor}--600
                                 );
                                 background-color: var(
-                                  --color--${enrollment.accentColor}--700
+                                  --color--${enrollment.accentColor}--100
                                 );
-                                &:hover {
+                                @media (prefers-color-scheme: dark) {
+                                  color: var(
+                                    --color--${enrollment.accentColor}--500
+                                  );
                                   background-color: var(
-                                    --color--${enrollment.accentColor}--600
+                                    --color--${enrollment.accentColor}--800
                                   );
                                 }
-                              }
-                              padding: var(--space--1) var(--space--3);
-                              border-radius: var(--border-radius--md);
-                              display: inline-block;
-                              transition-property: var(
-                                --transition-property--colors
-                              );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--in-out
-                              );
-                            `}"
-                          >
-                            <i class="bi bi-journal"></i>
+                              `}"
+                            >
+                              <i class="bi bi-journal"></i>
+                            </div>
                             ${enrollment.course.name}
                           </a>
                         `
                     )}
-                  </div>
-
-                  <div class="decorative-icon">
-                    <i class="bi bi-journal-text"></i>
                   </div>
                 </div>
               `,
