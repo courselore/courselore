@@ -1117,7 +1117,7 @@ export default async function courselore(
                 }
 
                 .tippy-content {
-                  padding: var(--space--2) var(--space--4);
+                  padding: var(--space--1) var(--space--2);
                 }
 
                 .keyboard-shortcut {
@@ -1839,6 +1839,7 @@ export default async function courselore(
                     <div hidden>
                       <div
                         style="${css`
+                          padding: var(--space--2);
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--4);
