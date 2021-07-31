@@ -8134,21 +8134,16 @@ export default async function courselore(
       </div>
       <div
         style="${css`
+          background-color: var(--color--gray--medium--200);
+          @media (prefers-color-scheme: dark) {
+            background-color: var(--color--gray--medium--700);
+          }
+          border-radius: var(--border-radius--lg);
           position: relative;
           margin-top: var(--space---2);
         `}"
       >
-        <div
-          class="text-editor--write"
-          style="${css`
-            background-color: var(--color--gray--medium--200);
-            @media (prefers-color-scheme: dark) {
-              background-color: var(--color--gray--medium--700);
-            }
-            border-radius: var(--border-radius--lg);
-            border-top-left-radius: var(--border-radius--none);
-          `}"
-        >
+        <div class="text-editor--write">
           <div
             style="${css`
               padding: var(--space--1) var(--space--0);
@@ -8841,12 +8836,7 @@ ${value}</textarea
           hidden
           class="text-editor--loading strong"
           style="${css`
-            background-color: var(--color--gray--medium--200);
-            @media (prefers-color-scheme: dark) {
-              background-color: var(--color--gray--medium--700);
-            }
             padding: var(--space--4);
-            border-radius: var(--border-radius--lg);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -8860,12 +8850,7 @@ ${value}</textarea
           hidden
           class="text-editor--preview text"
           style="${css`
-            background-color: var(--color--gray--medium--200);
-            @media (prefers-color-scheme: dark) {
-              background-color: var(--color--gray--medium--700);
-            }
             padding: var(--space--4);
-            border-radius: var(--border-radius--lg);
           `}"
         >
           Preview
