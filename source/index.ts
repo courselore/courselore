@@ -1128,139 +1128,15 @@ export default async function courselore(
                     letter-spacing: var(--letter-spacing--widest);
                   }
                 }
+              }
 
-                /*
-                &[data-theme~="rose"] {
-                  color: var(--color--rose--50);
-                  --background-color: var(--color--rose--900);
-                  --border-color: var(--color--rose--50);
-                  .keyboard-shortcut {
-                    color: var(--color--rose--200);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--rose--900);
-                    --background-color: var(--color--rose--200);
-                    --border-color: var(--color--rose--900);
-                    .keyboard-shortcut {
-                      color: var(--color--rose--700);
-                    }
-                  }
-                }
+              .dropdown--menu {
+                display: flex;
+                flex-direction: column;
+              }
 
-                &[data-theme~="dropdown"] {
-                  color: var(--color--primary--900);
-                  --background-color: var(--color--primary--50);
-                  --border-color: var(--color--primary--900);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--primary--200);
-                    --background-color: var(--color--primary--900);
-                    --border-color: var(--color--primary--400);
-                  }
-
-                  .dropdown--heading {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    font-weight: var(--font-weight--bold);
-                    text-transform: uppercase;
-                    letter-spacing: var(--letter-spacing--widest);
-                    color: var(--color--primary--400);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--primary--300);
-                    }
-                    padding: var(--space--0-5);
-                    display: flex;
-                    gap: var(--space--2);
-                  }
-
-                  .dropdown--item {
-                    width: calc(100% + 2 * var(--space--2));
-                    padding: var(--space--0-5) var(--space--2);
-                    border-radius: var(--border-radius--md);
-                    margin-left: var(--space---2);
-                    display: flex;
-                    gap: var(--space--2);
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-
-                    &:hover,
-                    &:focus-within,
-                    &.active:focus {
-                      background-color: var(--color--primary--100);
-                    }
-                    &:active,
-                    &.active {
-                      background-color: var(--color--primary--300);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within,
-                      &.active:focus {
-                        background-color: var(--color--primary--600);
-                      }
-                      &:active,
-                      &.active {
-                        background-color: var(--color--primary--700);
-                      }
-                    }
-                  }
-
-                  .dropdown--separator {
-                    margin: var(--space--2) var(--space--0);
-                    border-top: var(--border-width--1) solid
-                      var(--color--primary--300);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--primary--600);
-                    }
-                  }
-                }
-
-                &[data-theme~="dropdown--rose"] {
-                  color: var(--color--rose--900);
-                  --background-color: var(--color--rose--50);
-                  --border-color: var(--color--rose--900);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--rose--200);
-                    --background-color: var(--color--rose--900);
-                    --border-color: var(--color--rose--400);
-                  }
-
-                  .dropdown--heading {
-                    color: var(--color--rose--400);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--rose--300);
-                    }
-                  }
-
-                  .dropdown--item {
-                    &:hover {
-                      background-color: var(--color--rose--100);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--rose--600);
-                      }
-                    }
-
-                    &.active {
-                      color: var(--color--rose--50);
-                      background-color: var(--color--rose--600);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--rose--800);
-                        background-color: var(--color--rose--100);
-                      }
-                    }
-                  }
-
-                  .dropdown--separator {
-                    border-top: var(--border-width--1) solid
-                      var(--color--rose--300);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--rose--600);
-                    }
-                  }
-                }
-                */
+              .dropdown--menu--item {
+                justify-content: start;
               }
 
               .modal {
@@ -2271,7 +2147,7 @@ export default async function courselore(
                 </div>
               </button>
               <div hidden>
-                <div>
+                <div class="dropdown--menu">
                   $${res.locals.invitations!.length === 0
                     ? html``
                     : html`
@@ -2296,7 +2172,7 @@ export default async function courselore(
                         <hr class="dropdown--separator" />
                       `}
                   <button
-                    class="dropdown--item"
+                    class="button button--transparent dropdown--menu--item"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -2310,7 +2186,7 @@ export default async function courselore(
                   </button>
                   <a
                     href="${app.locals.settings.url}/courses/new"
-                    class="dropdown--item"
+                    class="button button--transparent dropdown--menu--item"
                   >
                     <i class="bi bi-journal-plus"></i>
                     Create a New Course
@@ -3255,7 +3131,7 @@ export default async function courselore(
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
-                      align-items: flex-start;
+                      align-items: start;
                     `}"
                   >
                     $${res.locals.enrollments.map(
@@ -5285,7 +5161,7 @@ export default async function courselore(
                               display: flex;
                               @media (max-width: 500px) {
                                 flex-direction: column;
-                                align-items: flex-end;
+                                align-items: end;
                                 gap: var(--space--2);
                               }
                             `}"
@@ -5294,7 +5170,7 @@ export default async function courselore(
                               style="${css`
                                 width: var(--space--20);
                                 display: flex;
-                                justify-content: flex-end;
+                                justify-content: end;
                               `}"
                             >
                               <button
@@ -5374,7 +5250,7 @@ export default async function courselore(
                               style="${css`
                                 width: var(--space--40);
                                 display: flex;
-                                justify-content: flex-end;
+                                justify-content: end;
                               `}"
                             >
                               $${(() => {
@@ -6359,7 +6235,7 @@ export default async function courselore(
                         style="${css`
                           width: var(--space--32);
                           display: flex;
-                          justify-content: flex-end;
+                          justify-content: end;
                           align-items: baseline;
                           gap: var(--space--6);
                         `}"
