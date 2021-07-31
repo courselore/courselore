@@ -4450,76 +4450,90 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            margin: var(--space--4);
             display: flex;
             justify-content: center;
-            gap: var(--space--8);
           `}"
         >
-          $${res.locals.enrollment.role === "staff"
-            ? html`
-                <div
-                  style="${css`
-                    margin-top: var(--space---2);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
-
-                    @media (max-width: 699px) {
-                      display: none;
-                    }
-
-                    .button button--transparent dropdown--menu--item {
-                      color: var(--color--gray--medium--600);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--400);
-                      }
-                      padding: var(--space--1) var(--space--3);
-                      display: flex;
-                      gap: var(--space--2);
-                      transition-property: var(--transition-property--base);
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--in-out
-                      );
-
-                      &:hover,
-                      &:focus-within,
-                      &.active:focus {
-                        color: var(--color--gray--medium--900);
-                        box-shadow: inset var(--border-width--4) 0
-                          var(--color--gray--medium--500);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--gray--medium--100);
-                          box-shadow: inset var(--border-width--4) 0
-                            var(--color--gray--medium--500);
-                        }
-                      }
-                      &:active,
-                      &.active {
-                        color: var(--color--gray--medium--900);
-                        box-shadow: inset var(--border-width--4) 0
-                          var(--color--gray--medium--500);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--gray--medium--100);
-                          box-shadow: inset var(--border-width--4) 0
-                            var(--color--gray--medium--500);
-                        }
-                      }
-                    }
-                  `}"
-                >
-                  $${menu}
-                </div>
-              `
-            : html``}
           <div
             style="${css`
               flex: 1;
-              max-width: var(--width--2xl);
+              max-width: calc(var(--space--48) + var(--width--prose));
+              @at-root {
+                :root {
+                  --headers--max-width: calc(
+                    var(--space--48) + var(--width--prose)
+                  );
+                }
+              }
+              padding: var(--space--4);
+              display: flex;
             `}"
           >
-            $${body}
+            $${res.locals.enrollment.role === "staff"
+              ? html`
+                  <div
+                    style="${css`
+                      width: var(--space--48);
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+
+                      @media (max-width: 699px) {
+                        display: none;
+                      }
+
+                      .button button--transparent dropdown--menu--item {
+                        color: var(--color--gray--medium--600);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--gray--medium--400);
+                        }
+                        padding: var(--space--1) var(--space--3);
+                        display: flex;
+                        gap: var(--space--2);
+                        transition-property: var(--transition-property--base);
+                        transition-duration: var(--transition-duration--150);
+                        transition-timing-function: var(
+                          --transition-timing-function--in-out
+                        );
+
+                        &:hover,
+                        &:focus-within,
+                        &.active:focus {
+                          color: var(--color--gray--medium--900);
+                          box-shadow: inset var(--border-width--4) 0
+                            var(--color--gray--medium--500);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--gray--medium--100);
+                            box-shadow: inset var(--border-width--4) 0
+                              var(--color--gray--medium--500);
+                          }
+                        }
+                        &:active,
+                        &.active {
+                          color: var(--color--gray--medium--900);
+                          box-shadow: inset var(--border-width--4) 0
+                            var(--color--gray--medium--500);
+                          @media (prefers-color-scheme: dark) {
+                            color: var(--color--gray--medium--100);
+                            box-shadow: inset var(--border-width--4) 0
+                              var(--color--gray--medium--500);
+                          }
+                        }
+                      }
+                    `}"
+                  >
+                    $${menu}
+                  </div>
+                `
+              : html``}
+            <div
+              style="${css`
+                flex: 1;
+                max-width: var(--width--prose);
+              `}"
+            >
+              $${body}
+            </div>
           </div>
         </div>
       `,
