@@ -4424,6 +4424,9 @@ export default async function courselore(
                   }
                   display: flex;
                   justify-content: center;
+                  @media (min-width: 700px) {
+                    display: none;
+                  }
                 `}"
               >
                 <div
@@ -4460,56 +4463,53 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            display: flex;
-            justify-content: center;
-          `}"
-        >
-          <div
-            style="${css`
-              flex: 1;
-              max-width: calc(
-                var(--space--40) + var(--space--8) + var(--width--prose)
-              );
-              @at-root {
-                :root {
+            @at-root {
+              :root {
+                @media (max-width: 699px) {
                   --headers--max-width: calc(
-                    var(--space--48) + var(--width--prose)
+                    var(--space--4) + var(--width--prose) + var(--space--4)
+                  );
+                }
+                @media (min-width: 700px) {
+                  --headers--max-width: calc(
+                    var(--space--4) + var(--space--40) + var(--space--8) +
+                      var(--width--prose) + var(--space--4)
                   );
                 }
               }
-              padding: var(--space--4);
-              display: flex;
-              gap: var(--space--8);
+            }
+            padding: var(--space--4);
+            display: flex;
+            justify-content: center;
+            gap: var(--space--8);
+          `}"
+        >
+          $${res.locals.enrollment.role === "staff"
+            ? html`
+                <div
+                  style="${css`
+                    width: var(--space--40);
+                    margin-top: var(--space---2);
+                    margin-left: var(--space---2);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                    @media (max-width: 699px) {
+                      display: none;
+                    }
+                  `}"
+                >
+                  $${menu}
+                </div>
+              `
+            : html``}
+          <div
+            style="${css`
+              flex: 1;
+              max-width: var(--width--prose);
             `}"
           >
-            $${res.locals.enrollment.role === "staff"
-              ? html`
-                  <div
-                    style="${css`
-                      width: var(--space--40);
-                      margin-top: var(--space---2);
-                      margin-left: var(--space---2);
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-
-                      @media (max-width: 699px) {
-                        display: none;
-                      }
-                    `}"
-                  >
-                    $${menu}
-                  </div>
-                `
-              : html``}
-            <div
-              style="${css`
-                flex: 1;
-                max-width: var(--width--prose);
-              `}"
-            >
-              $${body}
-            </div>
+            $${body}
           </div>
         </div>
       `,
@@ -4556,7 +4556,7 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <label>
+                <label class="label">
                   Name
                   <input
                     type="text"
