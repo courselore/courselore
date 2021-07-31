@@ -1891,12 +1891,7 @@ export default async function courselore(
             >
               <a
                 href="${app.locals.settings.url}/"
-                class="button button--transparent"
-                style="${css`
-                  font-size: var(--font-size--xl);
-                  line-height: var(--line-height--xl);
-                  font-weight: var(--font-weight--bold);
-                `}"
+                class="heading--display button button--transparent"
               >
                 $${app.locals.partials.logo} CourseLore
               </a>
