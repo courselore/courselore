@@ -732,12 +732,20 @@ export default async function courselore(
                 }
                 background-color: var(--color--gray--medium--200);
                 --color--box-shadow: var(--color--blue--400);
+                &:disabled {
+                  color: var(--color--gray--medium--500);
+                  background-color: var(--color--gray--medium--300);
+                }
                 @media (prefers-color-scheme: dark) {
                   &::placeholder {
                     color: var(--color--gray--medium--500);
                   }
                   background-color: var(--color--gray--medium--700);
                   --color--box-shadow: var(--color--blue--600);
+                  &:disabled {
+                    color: var(--color--gray--medium--500);
+                    background-color: var(--color--gray--medium--800);
+                  }
                 }
                 width: 100%;
                 display: block;
@@ -1970,7 +1978,7 @@ export default async function courselore(
               display: flex;
               gap: var(--space--4);
               align-items: center;
-              min-width: 0;
+              min-width: var(--width--0);
             `}"
           >
             <a
@@ -1986,7 +1994,7 @@ export default async function courselore(
                   <div
                     style="${css`
                       flex: 1;
-                      min-width: 0;
+                      min-width: var(--width--0);
                     `}"
                   >
                     <button
@@ -2290,6 +2298,7 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
+              min-width: var(--width--0);
               max-width: var(--width--prose);
               margin: var(--space--4);
             `}"
@@ -7452,7 +7461,7 @@ export default async function courselore(
                 justify-content: center;
                 & > * {
                   flex: 1;
-                  min-width: 0;
+                  min-width: var(--width--0);
                   max-width: var(--width--2xl);
                 }
               }
