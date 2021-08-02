@@ -3017,32 +3017,40 @@ export default async function courselore(
                     $${app.locals.partials.logo}
                   </div>
 
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                    data-ondomcontentloaded="${javascript`
+                  <div
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--4);
+                    `}"
+                  >
+                    <button
+                      class="button button--full-width-on-small-screen button--blue"
+                      data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                         trigger: "click",
                       });
                     `}"
-                  >
-                    <i class="bi bi-journal-arrow-down"></i>
-                    Enroll in an Existing Course
-                  </button>
-                  <a
-                    href="${app.locals.settings.url}/courses/new"
-                    class="button button--full-width-on-small-screen button--transparent"
-                  >
-                    <i class="bi bi-journal-plus"></i>
-                    Create a New Course
-                  </a>
-                  <a
-                    href="${app.locals.settings.url}/settings"
-                    class="button button--full-width-on-small-screen button--transparent"
-                  >
-                    <i class="bi bi-person-circle"></i>
-                    Fill in Your User Profile
-                  </a>
+                    >
+                      <i class="bi bi-journal-arrow-down"></i>
+                      Enroll in an Existing Course
+                    </button>
+                    <a
+                      href="${app.locals.settings.url}/courses/new"
+                      class="button button--full-width-on-small-screen button--transparent"
+                    >
+                      <i class="bi bi-journal-plus"></i>
+                      Create a New Course
+                    </a>
+                    <a
+                      href="${app.locals.settings.url}/settings"
+                      class="button button--full-width-on-small-screen button--transparent"
+                    >
+                      <i class="bi bi-person-circle"></i>
+                      Fill in Your User Profile
+                    </a>
+                  </div>
                 </div>
               `,
             })
@@ -3069,12 +3077,14 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  <div class="decorative-icon">
+                  <h2 class="heading">
                     <i class="bi bi-journal-text"></i>
-                  </div>
+                    Your Courses
+                  </h2>
 
                   <div
                     style="${css`
+                      margin-left: var(--space---4);
                       display: flex;
                       flex-direction: column;
                       align-items: start;
@@ -3335,7 +3345,7 @@ export default async function courselore(
                     `}"
                   >
                     <label class="label">
-                      Name
+                      <p class="label--text">Name</p>
                       <input
                         type="text"
                         name="name"
@@ -3346,7 +3356,7 @@ export default async function courselore(
                     </label>
 
                     <label class="label">
-                      Email
+                      <p class="label--text">Email</p>
                       <span
                         tabindex="0"
                         data-ondomcontentloaded="${javascript`
@@ -3367,7 +3377,7 @@ export default async function courselore(
                 </div>
 
                 <div class="label">
-                  Biography
+                  <p class="label--text">Biography</p>
                   $${app.locals.partials.textEditor({
                     name: "biography",
                     value: res.locals.user.biography ?? "",
@@ -3491,7 +3501,7 @@ export default async function courselore(
                 `}"
               >
                 <label class="label">
-                  Name
+                  <p class="label--text">Name</p>
                   <input
                     type="text"
                     name="name"
@@ -4459,7 +4469,7 @@ export default async function courselore(
                 `}"
               >
                 <label class="label">
-                  Name
+                  <p class="label--text">Name</p>
                   <input
                     type="text"
                     name="name"
@@ -6898,6 +6908,7 @@ export default async function courselore(
               >
                 <div class="label">
                   <div
+                    class="label--text"
                     style="${css`
                       display: flex;
                       gap: var(--space--2);
