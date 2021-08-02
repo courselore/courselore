@@ -940,8 +940,7 @@ export default async function courselore(
                         }
                       }
                     `
-                  )
-                  .join("")}
+                  )}
               }
 
               .strong {
@@ -1753,8 +1752,7 @@ export default async function courselore(
                               }
                             }
                           `
-                        )
-                        .join("")}
+                        )}
                     }
                   `}"
                 >
