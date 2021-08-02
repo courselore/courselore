@@ -1702,74 +1702,78 @@ export default async function courselore(
           $${flash === undefined
             ? html``
             : html`
-                <div
-                  style="${css`
-                    display: grid;
-                    & > * {
-                      grid-area: 1 / 1;
-                    }
-
-                    & > :first-child {
-                      padding: var(--space--2) var(--space--10);
-
-                      ${["green", "rose"].map(
-                        (color) => css`
-                          &.flash--${color} {
-                            &,
-                            & + button {
+                $${(() => {
+                  const flashDOM = JSDOM.fragment(html`
+                    <div
+                      class="flash"
+                      style="${css`
+                        ${["green", "rose"].map(
+                          (color) => css`
+                            .flash--${color} {
                               color: var(--color--${color}--700);
-                            }
-                            background-color: var(--color--${color}--100);
-                            & + button:hover,
-                            & + button:focus-within {
-                              background-color: var(--color--${color}--200);
-                            }
-                            & + button:active {
-                              background-color: var(--color--${color}--300);
-                            }
-                            @media (prefers-color-scheme: dark) {
-                              &,
-                              & + button {
+                              background-color: var(--color--${color}--100);
+                              & > :last-child {
+                                &:hover,
+                                &:focus-within {
+                                  background-color: var(--color--${color}--200);
+                                }
+                                &:active {
+                                  background-color: var(--color--${color}--300);
+                                }
+                              }
+                              @media (prefers-color-scheme: dark) {
                                 color: var(--color--${color}--200);
+                                background-color: var(--color--${color}--900);
                               }
-                              background-color: var(--color--${color}--900);
-                              & + button:hover,
-                              & + button:focus-within {
-                                background-color: var(--color--${color}--800);
+                              & > :last-child {
+                                &:hover,
+                                &:focus-within {
+                                  background-color: var(--color--${color}--800);
+                                }
+                                &:active {
+                                  background-color: var(--color--${color}--700);
+                                }
                               }
-                              & + button:active {
-                                background-color: var(--color--${color}--700);
+                              display: grid;
+                              & > * {
+                                grid-area: 1 / 1;
                               }
                             }
-                            display: flex;
-                            justify-content: center;
-                            & > * {
-                              flex: 1;
-                              max-width: var(--headers--max-width);
-                              text-align: center;
-                            }
-                          }
-                        `
-                      )}
-                    }
-                  `}"
-                >
-                  $${flash}
-                  <button
-                    class="button button--icon"
-                    style="${css`
-                      justify-self: end;
-                      align-self: start;
-                      margin-top: var(--space--2);
-                      margin-right: var(--space--3);
-                    `}"
-                    onclick="${javascript`
-                      this.closest(".flash").remove();
-                    `}"
-                  >
-                    <i class="bi bi-x-circle"></i>
-                  </button>
-                </div>
+                          `
+                        )}
+                      `}"
+                    >
+                      $${flash}
+                    </div>
+                  `).firstElementChild!;
+                  const flashContents = flashDOM.firstElementChild!;
+                  flashContents.innerHTML = html`
+                    <div
+                      style="${css`
+                        text-align: center;
+                        max-width: var(--headers--max-width);
+                        padding: var(--space--2) var(--space--10);
+                      `}"
+                    >
+                      $${flashContents.innerHTML}
+                    </div>
+                    <button
+                      class="button button--icon"
+                      style="${css`
+                        justify-self: end;
+                        align-self: baseline;
+                        margin-top: var(--space--2);
+                        margin-right: var(--space--3);
+                      `}"
+                      onclick="${javascript`
+                        this.closest(".flash").remove();
+                      `}"
+                    >
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  `;
+                  return flashDOM.outerHTML;
+                })()}
               `}
 
           <div
