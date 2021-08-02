@@ -1887,167 +1887,159 @@ export default async function courselore(
             @media (prefers-color-scheme: dark) {
               background-color: var(--color--gray--medium--800);
             }
+            padding: var(--space--1) var(--space--3);
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
           `}"
         >
           <div
             style="${css`
               flex: 1;
-              max-width: var(--headers--max-width);
-              padding: var(--space--1) var(--space--3);
               display: flex;
-              justify-content: space-between;
+              align-items: center;
+              min-width: var(--width--0);
             `}"
           >
-            <div
-              style="${css`
-                flex: 1;
-                display: flex;
-                align-items: center;
-                min-width: var(--width--0);
-              `}"
+            <a
+              href="${app.locals.settings.url}/"
+              class="button button--icon button--transparent"
             >
-              <a
-                href="${app.locals.settings.url}/"
-                class="button button--icon button--transparent"
-              >
-                $${app.locals.partials.logo}
-              </a>
+              $${app.locals.partials.logo}
+            </a>
 
-              $${res.locals.course === undefined
-                ? html``
-                : html`
-                    <div
+            $${res.locals.course === undefined
+              ? html``
+              : html`
+                  <div
+                    style="${css`
+                      flex: 1;
+                      min-width: var(--width--0);
+                    `}"
+                  >
+                    <button
+                      class="button button--transparent strong"
                       style="${css`
-                        flex: 1;
-                        min-width: var(--width--0);
+                        max-width: 100%;
                       `}"
-                    >
-                      <button
-                        class="button button--transparent strong"
-                        style="${css`
-                          max-width: 100%;
-                        `}"
-                        data-ondomcontentloaded="${javascript`
+                      data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
                           trigger: "click",
                           interactive: true,
                         });
                       `}"
+                    >
+                      <i class="bi bi-journal-text"></i>
+                      <span
+                        style="${css`
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        `}"
                       >
-                        <i class="bi bi-journal-text"></i>
-                        <span
-                          style="${css`
-                            white-space: nowrap;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                          `}"
-                        >
-                          ${res.locals.course.name}
-                        </span>
-                        <i class="bi bi-chevron-down"></i>
-                      </button>
-                      <div hidden>
-                        <div
-                          style="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
-                        >
-                          <div class="dropdown--menu">
-                            <p class="dropdown--menu--item heading">
-                              <i class="bi bi-journal-text"></i>
-                              ${res.locals.course.name}
-                            </p>
-                            <a
-                              href="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}"
-                              class="dropdown--menu--item button button--transparent ${req.path.includes(
-                                "settings"
-                              )
-                                ? ""
-                                : "active"}"
-                            >
-                              <i class="bi bi-chat-left-text"></i>
-                              Conversations
-                            </a>
-                            <a
-                              href="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/settings"
-                              class="dropdown--menu--item button button--transparent ${req.path.includes(
-                                "settings"
-                              )
-                                ? "active"
-                                : ""}"
-                            >
-                              <i class="bi bi-sliders"></i>
-                              Course Settings
-                            </a>
-                          </div>
-                          $${res.locals.otherEnrollments!.length === 0
-                            ? html``
-                            : html`
-                                <div class="dropdown--menu">
-                                  <p class="dropdown--menu--item heading">
-                                    <i class="bi bi-arrow-left-right"></i>
-                                    Switch to Another Course
-                                  </p>
-                                  $${res.locals.otherEnrollments!.map(
-                                    (otherEnrollment) => html`
-                                      <a
-                                        href="${app.locals.settings
-                                          .url}/courses/${otherEnrollment.course
-                                          .reference}"
-                                        class="dropdown--menu--item button button--transparent"
-                                      >
-                                        <div
-                                          class="button button--icon"
-                                          style="${css`
+                        ${res.locals.course.name}
+                      </span>
+                      <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div hidden>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
+                        <div class="dropdown--menu">
+                          <p class="dropdown--menu--item heading">
+                            <i class="bi bi-journal-text"></i>
+                            ${res.locals.course.name}
+                          </p>
+                          <a
+                            href="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}"
+                            class="dropdown--menu--item button button--transparent ${req.path.includes(
+                              "settings"
+                            )
+                              ? ""
+                              : "active"}"
+                          >
+                            <i class="bi bi-chat-left-text"></i>
+                            Conversations
+                          </a>
+                          <a
+                            href="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/settings"
+                            class="dropdown--menu--item button button--transparent ${req.path.includes(
+                              "settings"
+                            )
+                              ? "active"
+                              : ""}"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            Course Settings
+                          </a>
+                        </div>
+                        $${res.locals.otherEnrollments!.length === 0
+                          ? html``
+                          : html`
+                              <div class="dropdown--menu">
+                                <p class="dropdown--menu--item heading">
+                                  <i class="bi bi-arrow-left-right"></i>
+                                  Switch to Another Course
+                                </p>
+                                $${res.locals.otherEnrollments!.map(
+                                  (otherEnrollment) => html`
+                                    <a
+                                      href="${app.locals.settings
+                                        .url}/courses/${otherEnrollment.course
+                                        .reference}"
+                                      class="dropdown--menu--item button button--transparent"
+                                    >
+                                      <div
+                                        class="button button--icon"
+                                        style="${css`
+                                          color: var(
+                                            --color--${otherEnrollment.accentColor}--600
+                                          );
+                                          background-color: var(
+                                            --color--${otherEnrollment.accentColor}--100
+                                          );
+                                          @media (prefers-color-scheme: dark) {
                                             color: var(
-                                              --color--${otherEnrollment.accentColor}--600
+                                              --color--${otherEnrollment.accentColor}--500
                                             );
                                             background-color: var(
-                                              --color--${otherEnrollment.accentColor}--100
+                                              --color--${otherEnrollment.accentColor}--800
                                             );
-                                            @media (prefers-color-scheme: dark) {
-                                              color: var(
-                                                --color--${otherEnrollment.accentColor}--500
-                                              );
-                                              background-color: var(
-                                                --color--${otherEnrollment.accentColor}--800
-                                              );
-                                            }
-                                          `}"
-                                        >
-                                          <i class="bi bi-journal-text"></i>
-                                        </div>
-                                        ${otherEnrollment.course.name}
-                                      </a>
-                                    `
-                                  )}
-                                </div>
-                              `}
-                        </div>
+                                          }
+                                        `}"
+                                      >
+                                        <i class="bi bi-journal-text"></i>
+                                      </div>
+                                      ${otherEnrollment.course.name}
+                                    </a>
+                                  `
+                                )}
+                              </div>
+                            `}
                       </div>
                     </div>
-                  `}
-            </div>
-            <div
-              style="${css`
-                font-size: var(--font-size--xl);
-                line-height: var(--line-height--xl);
-                display: flex;
-                gap: var(--space--1);
-                align-items: center;
-              `}"
-            >
-              <div>
-                <button
-                  class="button button--icon button--transparent"
-                  data-ondomcontentloaded="${javascript`
+                  </div>
+                `}
+          </div>
+          <div
+            style="${css`
+              font-size: var(--font-size--xl);
+              line-height: var(--line-height--xl);
+              display: flex;
+              gap: var(--space--1);
+              align-items: center;
+            `}"
+          >
+            <div>
+              <button
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(
                       res.locals.invitations!.length === 0
@@ -2066,75 +2058,75 @@ export default async function courselore(
                     interactive: true,
                   });
                 `}"
+              >
+                <div
+                  $${res.locals.invitations!.length === 0
+                    ? html``
+                    : html`class="notification-indicator"`}
                 >
-                  <div
-                    $${res.locals.invitations!.length === 0
-                      ? html``
-                      : html`class="notification-indicator"`}
-                  >
-                    <i class="bi bi-plus-circle"></i>
-                  </div>
-                </button>
-                <div hidden>
-                  <div
-                    style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    $${res.locals.invitations!.length === 0
-                      ? html``
-                      : html`
-                          <div class="dropdown--menu">
-                            <h3 class="dropdown--menu--item heading">
-                              <i class="bi bi-journal-arrow-down"></i>
-                              Invitations
-                            </h3>
-                            $${res.locals.invitations!.map(
-                              (invitation) => html`
-                                <a
-                                  href="${app.locals.settings
-                                    .url}/courses/${invitation.course
-                                    .reference}/invitations/${invitation.reference}"
-                                  class="dropdown--menu--item button button--transparent"
-                                >
-                                  <i class="bi bi-journal-arrow-down"></i>
-                                  Enroll in ${invitation.course.name} as
-                                  ${lodash.capitalize(invitation.role)}
-                                </a>
-                              `
-                            )}
-                          </div>
-                        `}
-                    <div class="dropdown--menu">
-                      <button
-                        class="dropdown--menu--item button button--transparent"
-                        data-ondomcontentloaded="${javascript`
+                  <i class="bi bi-plus-circle"></i>
+                </div>
+              </button>
+              <div hidden>
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  $${res.locals.invitations!.length === 0
+                    ? html``
+                    : html`
+                        <div class="dropdown--menu">
+                          <h3 class="dropdown--menu--item heading">
+                            <i class="bi bi-journal-arrow-down"></i>
+                            Invitations
+                          </h3>
+                          $${res.locals.invitations!.map(
+                            (invitation) => html`
+                              <a
+                                href="${app.locals.settings
+                                  .url}/courses/${invitation.course
+                                  .reference}/invitations/${invitation.reference}"
+                                class="dropdown--menu--item button button--transparent"
+                              >
+                                <i class="bi bi-journal-arrow-down"></i>
+                                Enroll in ${invitation.course.name} as
+                                ${lodash.capitalize(invitation.role)}
+                              </a>
+                            `
+                          )}
+                        </div>
+                      `}
+                  <div class="dropdown--menu">
+                    <button
+                      class="dropdown--menu--item button button--transparent"
+                      data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                         trigger: "click",
                       });
                     `}"
-                      >
-                        <i class="bi bi-journal-arrow-down"></i>
-                        Enroll in an Existing Course
-                      </button>
-                      <a
-                        href="${app.locals.settings.url}/courses/new"
-                        class="dropdown--menu--item button button--transparent"
-                      >
-                        <i class="bi bi-journal-plus"></i>
-                        Create a New Course
-                      </a>
-                    </div>
+                    >
+                      <i class="bi bi-journal-arrow-down"></i>
+                      Enroll in an Existing Course
+                    </button>
+                    <a
+                      href="${app.locals.settings.url}/courses/new"
+                      class="dropdown--menu--item button button--transparent"
+                    >
+                      <i class="bi bi-journal-plus"></i>
+                      Create a New Course
+                    </a>
                   </div>
                 </div>
               </div>
-              <div>
-                <button
-                  class="button button--icon button--transparent"
-                  data-ondomcontentloaded="${javascript`
+            </div>
+            <div>
+              <button
+                class="button button--icon button--transparent"
+                data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(res.locals.user.name)},
                     touch: false,
@@ -2145,58 +2137,57 @@ export default async function courselore(
                     interactive: true,
                   });
                 `}"
+              >
+                $${res.locals.user.avatar === null
+                  ? html`<i class="bi bi-person-circle"></i>`
+                  : html`
+                      <img
+                        src="${res.locals.user.avatar}"
+                        alt="${res.locals.user.name}"
+                        class="avatar"
+                        style="${css`
+                          width: var(--font-size--xl);
+                          height: var(--font-size--xl);
+                        `}"
+                      />
+                    `}
+              </button>
+              <div hidden>
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
                 >
-                  $${res.locals.user.avatar === null
-                    ? html`<i class="bi bi-person-circle"></i>`
-                    : html`
-                        <img
-                          src="${res.locals.user.avatar}"
-                          alt="${res.locals.user.name}"
-                          class="avatar"
-                          style="${css`
-                            width: var(--font-size--xl);
-                            height: var(--font-size--xl);
-                          `}"
-                        />
-                      `}
-                </button>
-                <div hidden>
                   <div
                     style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
+                      padding: var(--space--0) var(--space--2);
                     `}"
                   >
-                    <div
-                      style="${css`
-                        padding: var(--space--0) var(--space--2);
-                      `}"
+                    <p class="strong">${res.locals.user.name}</p>
+                    <p class="secondary">${res.locals.user.email}</p>
+                  </div>
+                  <div class="dropdown--menu">
+                    <a
+                      class="dropdown--menu--item button button--transparent"
+                      href="${app.locals.settings.url}/settings"
                     >
-                      <p class="strong">${res.locals.user.name}</p>
-                      <p class="secondary">${res.locals.user.email}</p>
-                    </div>
-                    <div class="dropdown--menu">
-                      <a
+                      <i class="bi bi-sliders"></i>
+                      User Settings
+                    </a>
+                    <form
+                      method="POST"
+                      action="${app.locals.settings
+                        .url}/sign-out?_method=DELETE"
+                    >
+                      <button
                         class="dropdown--menu--item button button--transparent"
-                        href="${app.locals.settings.url}/settings"
                       >
-                        <i class="bi bi-sliders"></i>
-                        User Settings
-                      </a>
-                      <form
-                        method="POST"
-                        action="${app.locals.settings
-                          .url}/sign-out?_method=DELETE"
-                      >
-                        <button
-                          class="dropdown--menu--item button button--transparent"
-                        >
-                          <i class="bi bi-box-arrow-right"></i>
-                          Sign Out
-                        </button>
-                      </form>
-                    </div>
+                        <i class="bi bi-box-arrow-right"></i>
+                        Sign Out
+                      </button>
+                    </form>
                   </div>
                 </div>
               </div>
