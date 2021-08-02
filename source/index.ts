@@ -1814,13 +1814,6 @@ export default async function courselore(
             style="${css`
               flex: 1;
               max-width: var(--width--sm);
-              @at-root {
-                :root {
-                  --headers--max-width: var(--width--sm);
-                }
-              }
-              padding: var(--space--2) var(--space--4);
-              border-radius: var(--border-radius--lg);
               margin: var(--space--4);
               display: flex;
               flex-direction: column;
