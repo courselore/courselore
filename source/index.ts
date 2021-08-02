@@ -1712,7 +1712,7 @@ export default async function courselore(
                             .flash--${color} {
                               color: var(--color--${color}--700);
                               background-color: var(--color--${color}--100);
-                              & > :last-child {
+                              .flash--close {
                                 &:hover,
                                 &:focus-within {
                                   background-color: var(--color--${color}--200);
@@ -1725,7 +1725,7 @@ export default async function courselore(
                                 color: var(--color--${color}--200);
                                 background-color: var(--color--${color}--900);
                               }
-                              & > :last-child {
+                              .flash--close {
                                 &:hover,
                                 &:focus-within {
                                   background-color: var(--color--${color}--800);
@@ -1734,10 +1734,8 @@ export default async function courselore(
                                   background-color: var(--color--${color}--700);
                                 }
                               }
-                              display: grid;
-                              & > * {
-                                grid-area: 1 / 1;
-                              }
+                              display: flex;
+                              justify-content: center;
                             }
                           `
                         )}
@@ -1750,27 +1748,37 @@ export default async function courselore(
                   flashContents.innerHTML = html`
                     <div
                       style="${css`
-                        text-align: center;
+                        flex: 1;
                         max-width: var(--headers--max-width);
                         padding: var(--space--2) var(--space--10);
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
                       `}"
                     >
-                      $${flashContents.innerHTML}
-                    </div>
-                    <button
-                      class="button button--icon"
-                      style="${css`
-                        justify-self: end;
-                        align-self: baseline;
-                        margin-top: var(--space--2);
-                        margin-right: var(--space--3);
-                      `}"
-                      onclick="${javascript`
+                      <div
+                        style="${css`
+                          text-align: center;
+                        `}"
+                      >
+                        $${flashContents.innerHTML}
+                      </div>
+                      <button
+                        class="flash--close button button--icon"
+                        style="${css`
+                          justify-self: end;
+                          align-self: baseline;
+                          margin-top: var(--space--2);
+                          margin-right: var(--space--3);
+                        `}"
+                        onclick="${javascript`
                         this.closest(".flash").remove();
                       `}"
-                    >
-                      <i class="bi bi-x-circle"></i>
-                    </button>
+                      >
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </div>
                   `;
                   return flashDOM.outerHTML;
                 })()}
