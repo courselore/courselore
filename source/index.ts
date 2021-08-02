@@ -1607,6 +1607,8 @@ export default async function courselore(
             ? html`
                 <div
                   style="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
                     background-color: var(--color--gray--medium--200);
                     border-bottom: var(--border-width--1) solid
                       var(--color--gray--medium--300);
@@ -1614,87 +1616,74 @@ export default async function courselore(
                       background-color: var(--color--gray--medium--800);
                       border-color: var(--color--gray--medium--700);
                     }
+                    padding: var(--space--0) var(--space--4);
                     display: flex;
                     justify-content: center;
                   `}"
                 >
-                  <div
-                    style="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      flex: 1;
-                      max-width: var(--headers--max-width);
-                      padding: var(--space--0) var(--space--4);
-                      display: flex;
-                      justify-content: center;
-                    `}"
-                  >
-                    <div>
-                      <button
-                        class="button button--transparent"
-                        data-ondomcontentloaded="${javascript`
+                  <div>
+                    <button
+                      class="button button--transparent"
+                      data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
                           trigger: "click",
                           interactive: true,
                         });
                       `}"
+                    >
+                      <i class="bi bi-easel"></i>
+                      Demonstration Mode
+                    </button>
+                    <div hidden>
+                      <div
+                        style="${css`
+                          padding: var(--space--2);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
                       >
-                        <i class="bi bi-easel"></i>
-                        Demonstration Mode
-                      </button>
-                      <div hidden>
-                        <div
-                          style="${css`
-                            padding: var(--space--2);
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
+                        <p>
+                          CourseLore is running in Demonstration Mode. All data
+                          may be lost, including courses, conversations, users,
+                          and so forth. Also, no emails are actually sent.
+                        </p>
+                        <p>
+                          To give you a better idea of what CourseLore looks
+                          like in use, you may create demonstration data.
+                        </p>
+                        <form
+                          method="POST"
+                          action="${app.locals.settings.url}/demonstration-data"
                         >
-                          <p>
-                            CourseLore is running in Demonstration Mode. All
-                            data may be lost, including courses, conversations,
-                            users, and so forth. Also, no emails are actually
-                            sent.
-                          </p>
-                          <p>
-                            To give you a better idea of what CourseLore looks
-                            like in use, you may create demonstration data.
-                          </p>
-                          <form
-                            method="POST"
-                            action="${app.locals.settings
-                              .url}/demonstration-data"
+                          <button
+                            class="button button--blue"
+                            style="${css`
+                              width: 100%;
+                            `}"
                           >
-                            <button
-                              class="button button--blue"
-                              style="${css`
-                                width: 100%;
-                              `}"
-                            >
-                              <i class="bi bi-easel"></i>
-                              Create Demonstration Data
-                            </button>
-                          </form>
-                        </div>
+                            <i class="bi bi-easel"></i>
+                            Create Demonstration Data
+                          </button>
+                        </form>
                       </div>
                     </div>
-                    $${app.locals.settings.env === "production"
-                      ? html``
-                      : html`
-                          <form
-                            method="POST"
-                            action="${app.locals.settings
-                              .url}/turn-off?_method=DELETE"
-                          >
-                            <button class="button button--transparent">
-                              <i class="bi bi-power"></i>
-                              Turn off
-                            </button>
-                          </form>
-                        `}
                   </div>
+                  $${app.locals.settings.env === "production"
+                    ? html``
+                    : html`
+                        <form
+                          method="POST"
+                          action="${app.locals.settings
+                            .url}/turn-off?_method=DELETE"
+                        >
+                          <button class="button button--transparent">
+                            <i class="bi bi-power"></i>
+                            Turn off
+                          </button>
+                        </form>
+                      `}
                 </div>
               `
             : html``}
@@ -1702,90 +1691,73 @@ export default async function courselore(
           $${flash === undefined
             ? html``
             : html`
-                $${(() => {
-                  const flashDOM = JSDOM.fragment(html`
-                    <div
-                      class="flash"
-                      style="${css`
-                        ${["green", "rose"].map(
-                          (color) => css`
-                            .flash--${color} {
-                              color: var(--color--${color}--700);
-                              background-color: var(--color--${color}--100);
-                              .flash--close {
-                                &:hover,
-                                &:focus-within {
-                                  background-color: var(--color--${color}--200);
-                                }
-                                &:active {
-                                  background-color: var(--color--${color}--300);
-                                }
-                              }
-                              @media (prefers-color-scheme: dark) {
-                                color: var(--color--${color}--200);
-                                background-color: var(--color--${color}--900);
-                                .flash--close {
-                                  &:hover,
-                                  &:focus-within {
-                                    background-color: var(
-                                      --color--${color}--800
-                                    );
-                                  }
-                                  &:active {
-                                    background-color: var(
-                                      --color--${color}--700
-                                    );
-                                  }
-                                }
-                              }
-                              display: flex;
-                              justify-content: center;
+                <div
+                  class="flash"
+                  style="${css`
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
+                    ${["green", "rose"].map(
+                      (color) => css`
+                        .flash--${color} {
+                          &,
+                          & + .button--transparent {
+                            color: var(--color--${color}--700);
+                          }
+                          background-color: var(--color--${color}--100);
+                          & + .button--transparent {
+                            &:hover,
+                            &:focus-within {
+                              background-color: var(--color--${color}--200);
                             }
-                          `
-                        )}
-                      `}"
-                    >
-                      $${flash}
-                    </div>
-                  `).firstElementChild!;
-                  const flashContents = flashDOM.firstElementChild!;
-                  flashContents.innerHTML = html`
-                    <div
-                      style="${css`
-                        flex: 1;
-                        max-width: var(--headers--max-width);
-                        padding: var(--space--1) var(--space--4);
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
+                            &:active {
+                              background-color: var(--color--${color}--300);
+                            }
+                          }
+                          @media (prefers-color-scheme: dark) {
+                            &,
+                            & + .button--transparent {
+                              color: var(--color--${color}--200);
+                            }
+                            background-color: var(--color--${color}--900);
+                            & + .button--transparent {
+                              &:hover,
+                              &:focus-within {
+                                background-color: var(--color--${color}--800);
+                              }
+                              &:active {
+                                background-color: var(--color--${color}--700);
+                              }
+                            }
+                          }
+                          display: flex;
+                          justify-content: center;
+                          & > * {
+                            flex: 1;
+                            max-width: var(--width--prose);
+                            padding: var(--space--1) var(--space--10);
+                          }
                         }
-                      `}"
-                    >
-                      <div
-                        style="${css`
-                          padding: var(--space--0) var(--space--8);
-                          text-align: center;
-                        `}"
-                      >
-                        $${flashContents.innerHTML}
-                      </div>
-                      <button
-                        class="flash--close button button--icon"
-                        style="${css`
-                          justify-self: end;
-                          align-self: baseline;
-                          margin-right: var(--space---1);
-                        `}"
-                        onclick="${javascript`
-                        this.closest(".flash").remove();
-                      `}"
-                      >
-                        <i class="bi bi-x-circle"></i>
-                      </button>
-                    </div>
-                  `;
-                  return flashDOM.outerHTML;
-                })()}
+                      `
+                    )}
+                  `}"
+                >
+                  $${flash}
+                  <button
+                    class="button button--icon button--transparent"
+                    style="${css`
+                      justify-self: end;
+                      align-self: baseline;
+                      margin-right: var(--space---1);
+                    `}"
+                    onclick="${javascript`
+                      this.closest(".flash").remove();
+                    `}"
+                  >
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
               `}
 
           <div
