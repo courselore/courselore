@@ -1748,7 +1748,7 @@ export default async function courselore(
                               justify-content: center;
                               & > * {
                                 flex: 1;
-                                max-width: var(--width--prose);
+                                max-width: var(--headers--max-width);
                                 text-align: center;
                               }
                             }
