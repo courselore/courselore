@@ -912,35 +912,34 @@ export default async function courselore(
                   }
                 }
 
-                ${["blue", "green", "rose"]
-                  .map(
-                    (color) => css`
-                      &.button--${color} {
-                        color: var(--color--${color}--50);
-                        background-color: var(--color--${color}--600);
+                ${["blue", "green", "rose"].map(
+                  (color) => css`
+                    &.button--${color} {
+                      color: var(--color--${color}--50);
+                      background-color: var(--color--${color}--600);
+                      &:hover,
+                      &:focus-within,
+                      &.active {
+                        background-color: var(--color--${color}--500);
+                      }
+                      &:active {
+                        background-color: var(--color--${color}--700);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--${color}--100);
+                        background-color: var(--color--${color}--800);
                         &:hover,
                         &:focus-within,
                         &.active {
-                          background-color: var(--color--${color}--500);
-                        }
-                        &:active {
                           background-color: var(--color--${color}--700);
                         }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--${color}--100);
-                          background-color: var(--color--${color}--800);
-                          &:hover,
-                          &:focus-within,
-                          &.active {
-                            background-color: var(--color--${color}--700);
-                          }
-                          &:active {
-                            background-color: var(--color--${color}--900);
-                          }
+                        &:active {
+                          background-color: var(--color--${color}--900);
                         }
                       }
-                    `
-                  )}
+                    }
+                  `
+                )}
               }
 
               .strong {
@@ -1713,46 +1712,45 @@ export default async function courselore(
                     & > :first-child {
                       padding: var(--space--2) var(--space--10);
 
-                      ${["green", "rose"]
-                        .map(
-                          (color) => css`
-                            &.flash--${color} {
+                      ${["green", "rose"].map(
+                        (color) => css`
+                          &.flash--${color} {
+                            &,
+                            & + button {
+                              color: var(--color--${color}--700);
+                            }
+                            background-color: var(--color--${color}--100);
+                            & + button:hover,
+                            & + button:focus-within {
+                              background-color: var(--color--${color}--200);
+                            }
+                            & + button:active {
+                              background-color: var(--color--${color}--300);
+                            }
+                            @media (prefers-color-scheme: dark) {
                               &,
                               & + button {
-                                color: var(--color--${color}--700);
+                                color: var(--color--${color}--200);
                               }
-                              background-color: var(--color--${color}--100);
+                              background-color: var(--color--${color}--900);
                               & + button:hover,
                               & + button:focus-within {
-                                background-color: var(--color--${color}--200);
+                                background-color: var(--color--${color}--800);
                               }
                               & + button:active {
-                                background-color: var(--color--${color}--300);
-                              }
-                              @media (prefers-color-scheme: dark) {
-                                &,
-                                & + button {
-                                  color: var(--color--${color}--200);
-                                }
-                                background-color: var(--color--${color}--900);
-                                & + button:hover,
-                                & + button:focus-within {
-                                  background-color: var(--color--${color}--800);
-                                }
-                                & + button:active {
-                                  background-color: var(--color--${color}--700);
-                                }
-                              }
-                              display: flex;
-                              justify-content: center;
-                              & > * {
-                                flex: 1;
-                                max-width: var(--headers--max-width);
-                                text-align: center;
+                                background-color: var(--color--${color}--700);
                               }
                             }
-                          `
-                        )}
+                            display: flex;
+                            justify-content: center;
+                            & > * {
+                              flex: 1;
+                              max-width: var(--headers--max-width);
+                              text-align: center;
+                            }
+                          }
+                        `
+                      )}
                     }
                   `}"
                 >
