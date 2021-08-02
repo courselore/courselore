@@ -742,6 +742,7 @@ export default async function courselore(
                 --color--box-shadow: var(--color--blue--400);
                 &:disabled {
                   color: var(--color--gray--medium--500);
+                  -webkit-text-fill-color: var(--color--gray--medium--500);
                   background-color: var(--color--gray--medium--300);
                 }
                 @media (prefers-color-scheme: dark) {
@@ -752,6 +753,7 @@ export default async function courselore(
                   --color--box-shadow: var(--color--blue--600);
                   &:disabled {
                     color: var(--color--gray--medium--500);
+                    -webkit-text-fill-color: var(--color--gray--medium--500);
                     background-color: var(--color--gray--medium--800);
                   }
                 }
