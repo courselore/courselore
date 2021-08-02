@@ -1754,6 +1754,7 @@ export default async function courselore(
                       style="${css`
                         flex: 1;
                         max-width: var(--headers--max-width);
+                        padding: var(--space--1) var(--space--4);
                         display: grid;
                         & > * {
                           grid-area: 1 / 1;
@@ -1762,7 +1763,7 @@ export default async function courselore(
                     >
                       <div
                         style="${css`
-                          padding: var(--space--2) var(--space--10);
+                          padding: var(--space--0) var(--space--8);
                           text-align: center;
                         `}"
                       >
@@ -1773,8 +1774,7 @@ export default async function courselore(
                         style="${css`
                           justify-self: end;
                           align-self: baseline;
-                          margin-top: var(--space--2);
-                          margin-right: var(--space--3);
+                          margin-right: var(--space---1);
                         `}"
                         onclick="${javascript`
                         this.closest(".flash").remove();
