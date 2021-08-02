@@ -1731,12 +1731,12 @@ export default async function courselore(
                               }
                             }
                           }
+                          padding: var(--space--1) var(--space--10);
                           display: flex;
                           justify-content: center;
                           & > * {
                             flex: 1;
                             max-width: var(--width--prose);
-                            padding: var(--space--1) var(--space--10);
                           }
                         }
                       `
@@ -1748,8 +1748,9 @@ export default async function courselore(
                     class="button button--icon button--transparent"
                     style="${css`
                       justify-self: end;
-                      align-self: baseline;
-                      margin-right: var(--space---1);
+                      align-self: start;
+                      margin-top: var(--space--0-5);
+                      margin-right: var(--space--3);
                     `}"
                     onclick="${javascript`
                       this.closest(".flash").remove();
