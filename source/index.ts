@@ -3412,9 +3412,7 @@ export default async function courselore(
       req,
       res,
       html`
-        <div class="flash--green">
-          <div>User settings updated successfully.</div>
-        </div>
+        <div class="flash--green">User settings updated successfully.</div>
       `
     );
 
