@@ -398,7 +398,7 @@ export default async function courselore(
 
           <script>
             /* TODO: Extract the following global auxiliary functions into @leafac/javascript */
-            document.addEventListener("DOMContentLoaded", () => {
+            window.addEventListener("DOMContentLoaded", () => {
               for (const element of document.querySelectorAll(
                 "[data-ondomcontentloaded]"
               ))
@@ -457,7 +457,7 @@ export default async function courselore(
                   Math.round(value),
                   unit
                 );
-                window.setTimeout(update, 1000);
+                window.setTimeout(update, 10000);
               })();
             }
 
@@ -505,7 +505,7 @@ export default async function courselore(
               for (const element of elementsToValidate) {
                 if (
                   typeof element.setCustomValidity !== "function" ||
-                  element.matches("[disabled]")
+                  element.closest("[disabled]") !== null
                 )
                   continue;
 
@@ -552,14 +552,17 @@ export default async function courselore(
             }
 
             (() => {
-              const beforeUnloadHandler = (event) => {
+              const warnAboutLosingInputs = (event) => {
                 if (!isModified(document.body)) return;
                 event.preventDefault();
                 event.returnValue = "";
               };
-              window.addEventListener("beforeunload", beforeUnloadHandler);
+              window.addEventListener("beforeunload", warnAboutLosingInputs);
               document.addEventListener("submit", (event) => {
-                window.removeEventListener("beforeunload", beforeUnloadHandler);
+                window.removeEventListener(
+                  "beforeunload",
+                  warnAboutLosingInputs
+                );
               });
             })();
 
