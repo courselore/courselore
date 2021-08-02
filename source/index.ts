@@ -2206,7 +2206,7 @@ export default async function courselore(
                     style="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--4);
+                      gap: var(--space--2);
                     `}"
                   >
                     <div
@@ -3084,10 +3084,11 @@ export default async function courselore(
 
                   <div
                     style="${css`
-                      margin-left: var(--space---4);
+                      margin-left: var(--space---2);
                       display: flex;
                       flex-direction: column;
                       align-items: start;
+                      gap: var(--space--1);
                     `}"
                   >
                     $${res.locals.enrollments.map(
@@ -3096,7 +3097,7 @@ export default async function courselore(
                           <a
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
-                            class="button button--transparent"
+                            class="button button--icon button--transparent"
                           >
                             <div
                               class="button button--icon"
