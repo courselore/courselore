@@ -705,16 +705,6 @@ export default async function courselore(
                 }
               }
 
-              .heading--REMOVE {
-                font-size: var(--font-size--base);
-                line-height: var(--line-height--base);
-                font-weight: var(--font-weight--bold);
-                color: var(--color--gray--medium--900);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--400);
-                }
-              }
-
               .decorative-icon {
                 font-size: var(--font-size--9xl);
                 line-height: var(--line-height--9xl);
@@ -727,7 +717,6 @@ export default async function courselore(
                 width: var(--space--48);
                 height: var(--space--48);
                 border-radius: var(--border-radius--circle);
-                margin: var(--space--0) auto;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -737,6 +726,12 @@ export default async function courselore(
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--1);
+              }
+
+              .label--text {
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                font-weight: var(--font-weight--bold);
               }
 
               .input--text {
@@ -2732,24 +2727,28 @@ export default async function courselore(
               gap: var(--space--4);
             `}"
           >
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value="${req.query.email ?? ""}"
-              required
-              autofocus
-              class="input--text"
-              data-skip-is-modified="true"
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-              class="input--text"
-              data-skip-is-modified="true"
-            />
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${req.query.email ?? ""}"
+                required
+                autofocus
+                class="input--text"
+                data-skip-is-modified="true"
+            /></label>
+            <label class="label">
+              <p class="label--text">Password</p>
+              <input
+                type="password"
+                name="password"
+                required
+                class="input--text"
+                data-skip-is-modified="true"
+              />
+            </label>
             <button class="button button--blue">
               <i class="bi bi-box-arrow-in-right"></i>
               Sign in
@@ -2841,43 +2840,52 @@ export default async function courselore(
               gap: var(--space--4);
             `}"
           >
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value="${req.query.name ?? ""}"
-              required
-              autofocus
-              class="input--text"
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value="${req.query.email ?? ""}"
-              required
-              class="input--text"
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-              minlength="8"
-              class="input--text"
-            />
-            <input
-              type="password"
-              placeholder="Password Confirmation"
-              required
-              class="input--text"
-              data-ondomcontentloaded="${javascript`
-                (this.validators ??= []).push(() => {
-                  if (this.value !== this.closest("form").querySelector('[name="password"]').value)
-                    return "Password & Password Confirmation don’t match.";
-                });
-              `}"
-            />
+            <label class="label">
+              <p class="label--text">Name</p>
+              <input
+                type="text"
+                name="name"
+                value="${req.query.name ?? ""}"
+                required
+                autofocus
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${req.query.email ?? ""}"
+                required
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password</p>
+              <input
+                type="password"
+                name="password"
+                required
+                minlength="8"
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password Confirmation</p>
+              <input
+                type="password"
+                required
+                class="input--text"
+                data-ondomcontentloaded="${javascript`
+                  (this.validators ??= []).push(() => {
+                    if (this.value !== this.closest("form").querySelector('[name="password"]').value)
+                      return "Password & Password Confirmation don’t match.";
+                  });
+                `}"
+              />
+            </label>
             <button class="button button--blue">
               <i class="bi bi-person-plus"></i>
               Sign up
@@ -5555,7 +5563,7 @@ export default async function courselore(
                           gap: var(--space--4);
                         `}"
                       >
-                        <h2 class="heading--REMOVE">
+                        <h2 class="heading">
                           Enroll in ${res.locals.course.name} as
                           ${lodash.capitalize(invitation.role)}
                         </h2>
@@ -10056,9 +10064,7 @@ ${value}</textarea
                 `}"
               >
                 <h2>
-                  <span class="heading--REMOVE"
-                    >${res.locals.conversation.title}</span
-                  >
+                  <span class="heading">${res.locals.conversation.title}</span>
 
                   <a
                     href="${app.locals.settings.url}/courses/${res.locals.course
