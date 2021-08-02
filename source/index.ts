@@ -1724,14 +1724,18 @@ export default async function courselore(
                               @media (prefers-color-scheme: dark) {
                                 color: var(--color--${color}--200);
                                 background-color: var(--color--${color}--900);
-                              }
-                              .flash--close {
-                                &:hover,
-                                &:focus-within {
-                                  background-color: var(--color--${color}--800);
-                                }
-                                &:active {
-                                  background-color: var(--color--${color}--700);
+                                .flash--close {
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: var(
+                                      --color--${color}--800
+                                    );
+                                  }
+                                  &:active {
+                                    background-color: var(
+                                      --color--${color}--700
+                                    );
+                                  }
                                 }
                               }
                               display: flex;
@@ -1750,7 +1754,6 @@ export default async function courselore(
                       style="${css`
                         flex: 1;
                         max-width: var(--headers--max-width);
-                        padding: var(--space--2) var(--space--10);
                         display: grid;
                         & > * {
                           grid-area: 1 / 1;
@@ -1759,6 +1762,7 @@ export default async function courselore(
                     >
                       <div
                         style="${css`
+                          padding: var(--space--2) var(--space--10);
                           text-align: center;
                         `}"
                       >
