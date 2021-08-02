@@ -1705,95 +1705,74 @@ export default async function courselore(
             ? html``
             : html`
                 <div
-                  class="flash"
                   style="${css`
-                    padding: var(--space--20) var(--space--4) var(--space--4);
-                    position: fixed;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                    display: flex;
-                    justify-content: center;
-                    align-items: start;
-                  `}"
-                >
-                  <div
-                    style="${css`
-                      flex: 1;
-                      max-width: var(--width--prose);
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
 
-                      & > :first-child {
-                        padding: var(--space--2) var(--space--10);
-                        text-align: center;
+                    & > :first-child {
+                      padding: var(--space--2) var(--space--10);
 
-                        ${["green", "rose"]
-                          .map(
-                            (color) => css`
-                              &.flash--${color} {
+                      ${["green", "rose"]
+                        .map(
+                          (color) => css`
+                            &.flash--${color} {
+                              &,
+                              & + button {
+                                color: var(--color--${color}--700);
+                              }
+                              background-color: var(--color--${color}--100);
+                              & + button:hover,
+                              & + button:focus-within {
+                                background-color: var(--color--${color}--200);
+                              }
+                              & + button:active {
+                                background-color: var(--color--${color}--300);
+                              }
+                              @media (prefers-color-scheme: dark) {
                                 &,
                                 & + button {
-                                  color: var(--color--${color}--700);
+                                  color: var(--color--${color}--200);
                                 }
-                                background-color: var(--color--${color}--100);
+                                background-color: var(--color--${color}--900);
                                 & + button:hover,
                                 & + button:focus-within {
-                                  background-color: var(--color--${color}--200);
+                                  background-color: var(--color--${color}--800);
                                 }
                                 & + button:active {
-                                  background-color: var(--color--${color}--300);
+                                  background-color: var(--color--${color}--700);
                                 }
-                                @media (prefers-color-scheme: dark) {
-                                  &,
-                                  & + button {
-                                    color: var(--color--${color}--200);
-                                  }
-                                  background-color: var(--color--${color}--900);
-                                  & + button:hover,
-                                  & + button:focus-within {
-                                    background-color: var(
-                                      --color--${color}--800
-                                    );
-                                  }
-                                  & + button:active {
-                                    background-color: var(
-                                      --color--${color}--700
-                                    );
-                                  }
-                                }
-                                border: var(--border-width--1) solid
-                                  var(--color--${color}--300);
-                                @media (prefers-color-scheme: dark) {
-                                  border-color: var(--color--${color}--700);
-                                }
-                                border-radius: var(--border-radius--lg);
                               }
-                            `
-                          )
-                          .join("")}
-                      }
+                              display: flex;
+                              justify-content: center;
+                              & > * {
+                                flex: 1;
+                                max-width: var(--width--prose);
+                                text-align: center;
+                              }
+                            }
+                          `
+                        )
+                        .join("")}
+                    }
+                  `}"
+                >
+                  $${flash}
+                  <button
+                    class="button button--icon"
+                    style="${css`
+                      justify-self: end;
+                      align-self: start;
+                      margin-top: var(--space--2);
+                      margin-right: var(--space--3);
                     `}"
-                  >
-                    $${flash}
-                    <button
-                      class="button button--icon"
-                      style="${css`
-                        justify-self: end;
-                        align-self: start;
-                        margin-top: var(--space--1-5);
-                        margin-right: var(--space--3);
-                      `}"
-                      onclick="${javascript`
+                    onclick="${javascript`
                       this.closest(".flash").remove();
                     `}"
-                    >
-                      <i class="bi bi-x-circle"></i>
-                    </button>
-                  </div>
+                  >
+                    <i class="bi bi-x-circle"></i>
+                  </button>
                 </div>
               `}
 
@@ -3437,7 +3416,9 @@ export default async function courselore(
       req,
       res,
       html`
-        <div class="flash--green">User settings updated successfully.</div>
+        <div class="flash--green">
+          <div>User settings updated successfully.</div>
+        </div>
       `
     );
 
