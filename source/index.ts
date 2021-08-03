@@ -4535,53 +4535,45 @@ export default async function courselore(
                   <div
                     style="${css`
                       display: flex;
-                      gap: var(--space--2);
-                      flex-direction: column;
+                      gap: var(--space--4);
                     `}"
                   >
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--4);
-                      `}"
-                    >
-                      <label class="label--radio-or-checkbox">
-                        <input
-                          type="radio"
-                          name="type"
-                          value="link"
-                          required
-                          autocomplete="off"
-                          class="input--radio"
-                          onchange="${javascript`
+                    <label class="label--radio-or-checkbox">
+                      <input
+                        type="radio"
+                        name="type"
+                        value="link"
+                        required
+                        autocomplete="off"
+                        class="input--radio"
+                        onchange="${javascript`
                             const emails = this.closest("form").querySelector(".emails");
                             emails.hidden = true;
                             for (const element of emails.querySelectorAll("*"))
                               if (element.disabled !== null) element.disabled = true;
                           `}"
-                        />
-                        <i class="bi bi-link"></i>
-                        Invitation Link
-                      </label>
-                      <label class="label--radio-or-checkbox">
-                        <input
-                          type="radio"
-                          name="type"
-                          value="email"
-                          required
-                          autocomplete="off"
-                          class="input--radio"
-                          onchange="${javascript`
+                      />
+                      <i class="bi bi-link"></i>
+                      Invitation Link
+                    </label>
+                    <label class="label--radio-or-checkbox">
+                      <input
+                        type="radio"
+                        name="type"
+                        value="email"
+                        required
+                        autocomplete="off"
+                        class="input--radio"
+                        onchange="${javascript`
                             const emails = this.closest("form").querySelector(".emails");
                             emails.hidden = false;
                             for (const element of emails.querySelectorAll("*"))
                               if (element.disabled !== null) element.disabled = false;
                           `}"
-                        />
-                        <i class="bi bi-envelope"></i>
-                        Email
-                      </label>
-                    </div>
+                      />
+                      <i class="bi bi-envelope"></i>
+                      Email
+                    </label>
                   </div>
                 </div>
 
@@ -4629,33 +4621,33 @@ export default async function courselore(
                       padding-right: var(--space--7);
                     `}"
                     data-ondomcontentloaded="${javascript`
-                        (this.validators ??= []).push(() => {
-                          const emails = [];
-                          for (let email of this.value.split(${/[,\n]/})) {
-                            email = email.trim();
-                            let name = null;
-                            const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
-                            if (match !== null) {
-                              email = match.groups.email.trim();
-                              name = match.groups.name.trim();
-                              if (name.startsWith('"') && name.endsWith('"'))
-                                name = name.slice(1, -1);
-                              if (name === "") name = null;
-                            }
-                            if (email === "") continue;
-                            emails.push({ email, name });
+                      (this.validators ??= []).push(() => {
+                        const emails = [];
+                        for (let email of this.value.split(${/[,\n]/})) {
+                          email = email.trim();
+                          let name = null;
+                          const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                          if (match !== null) {
+                            email = match.groups.email.trim();
+                            name = match.groups.name.trim();
+                            if (name.startsWith('"') && name.endsWith('"'))
+                              name = name.slice(1, -1);
+                            if (name === "") name = null;
                           }
-                          if (
-                            emails.length === 0 ||
-                            emails.some(
-                              ({ email }) => !email.match(${
-                                app.locals.constants.emailRegExp
-                              })
-                            )
+                          if (email === "") continue;
+                          emails.push({ email, name });
+                        }
+                        if (
+                          emails.length === 0 ||
+                          emails.some(
+                            ({ email }) => !email.match(${
+                              app.locals.constants.emailRegExp
+                            })
                           )
-                            return "Match the requested format.";
-                        });
-                      `}"
+                        )
+                          return "Match the requested format.";
+                      });
+                    `}"
                   ></textarea>
                 </div>
 
@@ -4691,51 +4683,43 @@ export default async function courselore(
                   <div
                     style="${css`
                       display: flex;
-                      gap: var(--space--2);
-                      flex-direction: column;
+                      gap: var(--space--4);
                     `}"
                   >
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--4);
-                      `}"
-                    >
-                      <label class="label--radio-or-checkbox">
-                        <input
-                          type="radio"
-                          name="isExpiresAt"
-                          required
-                          autocomplete="off"
-                          class="input--radio"
-                          onchange="${javascript`
+                    <label class="label--radio-or-checkbox">
+                      <input
+                        type="radio"
+                        name="isExpiresAt"
+                        required
+                        autocomplete="off"
+                        class="input--radio"
+                        onchange="${javascript`
                             const expiresAt = this.closest("form").querySelector(".expires-at");
                             expiresAt.hidden = true;
                             for (const element of expiresAt.querySelectorAll("*"))
                               if (element.disabled !== undefined) element.disabled = true;
                           `}"
-                        />
-                        <i class="bi bi-calendar-minus"></i>
-                        Doesn’t Expire
-                      </label>
-                      <label class="label--radio-or-checkbox">
-                        <input
-                          type="radio"
-                          name="isExpiresAt"
-                          required
-                          autocomplete="off"
-                          class="input--radio"
-                          onchange="${javascript`
+                      />
+                      <i class="bi bi-calendar-minus"></i>
+                      Doesn’t Expire
+                    </label>
+                    <label class="label--radio-or-checkbox">
+                      <input
+                        type="radio"
+                        name="isExpiresAt"
+                        required
+                        autocomplete="off"
+                        class="input--radio"
+                        onchange="${javascript`
                             const expiresAt = this.closest("form").querySelector(".expires-at");
                             expiresAt.hidden = false;
                             for (const element of expiresAt.querySelectorAll("*"))
                               if (element.disabled !== undefined) element.disabled = false;
                           `}"
-                        />
-                        <i class="bi bi-calendar-plus"></i>
-                        Expires
-                      </label>
-                    </div>
+                      />
+                      <i class="bi bi-calendar-plus"></i>
+                      Expires
+                    </label>
                   </div>
                 </div>
 
