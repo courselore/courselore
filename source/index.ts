@@ -4326,7 +4326,7 @@ export default async function courselore(
                     Course Settings
                     <i class="bi bi-chevron-down"></i>
                   </button>
-                  <div hidden><div>$${menu}</div></div>
+                  <div hidden><div class="dropdown--menu">$${menu}</div></div>
                 </div>
               </div>
             `
@@ -4352,6 +4352,9 @@ export default async function courselore(
                     gap: var(--space--2);
                     @media (max-width: 699px) {
                       display: none;
+                    }
+                    .dropdown--menu--item {
+                      justify-content: start;
                     }
                   `}"
                 >
