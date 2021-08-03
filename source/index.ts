@@ -725,31 +725,31 @@ export default async function courselore(
               display: flex;
               flex-direction: column;
               gap: var(--space--1);
-            }
 
-            .label--text {
-              font-size: var(--font-size--xs);
-              line-height: var(--line-height--xs);
-              font-weight: var(--font-weight--bold);
+              .label--text {
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                font-weight: var(--font-weight--bold);
+              }
             }
 
             .input--text {
+              background-color: var(--color--gray--medium--200);
+              --color--box-shadow: var(--color--blue--400);
               &::placeholder {
                 color: var(--color--gray--medium--400);
               }
-              background-color: var(--color--gray--medium--200);
-              --color--box-shadow: var(--color--blue--400);
               &:disabled {
                 color: var(--color--gray--medium--500);
                 -webkit-text-fill-color: var(--color--gray--medium--500);
                 background-color: var(--color--gray--medium--300);
               }
               @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--700);
+                --color--box-shadow: var(--color--blue--600);
                 &::placeholder {
                   color: var(--color--gray--medium--500);
                 }
-                background-color: var(--color--gray--medium--700);
-                --color--box-shadow: var(--color--blue--600);
                 &:disabled {
                   color: var(--color--gray--medium--500);
                   -webkit-text-fill-color: var(--color--gray--medium--500);
