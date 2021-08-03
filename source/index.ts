@@ -378,15 +378,6 @@ export default async function courselore(
               .url}/node_modules/tippy.js/dist/border.css"
           />
 
-          <script src="${app.locals.settings
-              .url}/node_modules/micromodal/dist/micromodal.min.js"></script>
-          <script>
-            const microModalDefaults = {
-              disableScroll: true,
-              disableFocus: true,
-            };
-          </script>
-
           <script type="module">
             import * as textFieldEdit from "${app.locals.settings
               .url}/node_modules/text-field-edit/index.js";
@@ -1039,74 +1030,6 @@ export default async function courselore(
                     padding-left: var(--space--2);
                     padding-right: var(--space--2);
                     justify-content: start;
-                  }
-                }
-              }
-
-              .modal {
-                &:not(.is-open) {
-                  display: none;
-                }
-
-                & > div {
-                  position: fixed;
-                  top: 0;
-                  right: 0;
-                  bottom: 0;
-                  left: 0;
-                  display: flex;
-
-                  &::before {
-                    content: "";
-                    background-color: var(--color--gray--medium--300);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--800);
-                    }
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    bottom: 0;
-                    left: 0;
-                    opacity: var(--opacity--70);
-                    z-index: var(--z-index---1);
-                  }
-
-                  &.modal--close-button::after {
-                    content: "\\f622";
-                    font-family: bootstrap-icons !important;
-                    font-size: var(--font-size--xl);
-                    line-height: var(--line-height--xl);
-                    color: var(--color--gray--medium--800);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--400);
-                    }
-                    position: fixed;
-                    top: var(--space--2);
-                    right: var(--space--4);
-                    cursor: pointer;
-                  }
-
-                  & > div {
-                    overflow: auto;
-                    position: relative;
-
-                    &.modal--dialog {
-                      color: var(--color--gray--medium--700);
-                      background-color: var(--color--gray--medium--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--200);
-                        background-color: var(--color--gray--medium--900);
-                      }
-                      flex: 1;
-                      max-width: min(
-                        calc(100% - 2 * var(--space--4)),
-                        calc(calc(var(--space--80) * 2))
-                      );
-                      max-height: calc(100% - 2 * var(--space--12));
-                      padding: var(--space--4);
-                      border-radius: var(--border-radius--xl);
-                      margin: auto;
-                    }
                   }
                 }
               }
