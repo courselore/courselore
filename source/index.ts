@@ -4661,19 +4661,25 @@ export default async function courselore(
 
                 <div class="label">
                   <p class="label--text">Role</p>
-                  <div>
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--4);
+                    `}"
+                  >
                     $${app.locals.constants.roles.map(
                       (role) =>
                         html`
-                          <label>
+                          <label class="label--radio-or-checkbox">
                             <input
                               type="radio"
                               name="role"
                               value="${role}"
                               required
                               autocomplete="off"
+                              class="input--radio"
                             />
-                            <span>${lodash.capitalize(role)}</span>
+                            ${lodash.capitalize(role)}
                           </label>
                         `
                     )}
