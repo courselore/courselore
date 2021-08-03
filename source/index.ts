@@ -4695,93 +4695,82 @@ export default async function courselore(
                       flex-direction: column;
                     `}"
                   >
-                    <div>
-                      <label>
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <label class="label--radio-or-checkbox">
                         <input
                           type="radio"
                           name="isExpiresAt"
                           required
                           autocomplete="off"
+                          class="input--radio"
                           onchange="${javascript`
-                            const extraFields = this.closest(".field").querySelector(".extra-fields");
-                            extraFields.hidden = true;
-                            for (const element of extraFields.querySelectorAll("*"))
+                            const expiresAt = this.closest("form").querySelector(".expires-at");
+                            expiresAt.hidden = true;
+                            for (const element of expiresAt.querySelectorAll("*"))
                               if (element.disabled !== undefined) element.disabled = true;
                           `}"
                         />
-                        <span>
-                          <i class="bi bi-calendar-minus"></i>
-                          Doesn’t Expire
-                        </span>
+                        <i class="bi bi-calendar-minus"></i>
+                        Doesn’t Expire
                       </label>
-                      <label>
+                      <label class="label--radio-or-checkbox">
                         <input
                           type="radio"
                           name="isExpiresAt"
                           required
                           autocomplete="off"
+                          class="input--radio"
                           onchange="${javascript`
-                            const extraFields = this.closest(".field").querySelector(".extra-fields");
-                            extraFields.hidden = false;
-                            for (const element of extraFields.querySelectorAll("*"))
+                            const expiresAt = this.closest("form").querySelector(".expires-at");
+                            expiresAt.hidden = false;
+                            for (const element of expiresAt.querySelectorAll("*"))
                               if (element.disabled !== undefined) element.disabled = false;
                           `}"
                         />
-                        <span>
-                          <i class="bi bi-calendar-plus"></i>
-                          Expires
-                        </span>
+                        <i class="bi bi-calendar-plus"></i>
+                        Expires
                       </label>
                     </div>
-                    <div
-                      hidden
-                      style="${css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                        }
+                  </div>
+                </div>
+
+                <div hidden class="expires-at label">
+                  <div class="label--text">
+                    Expires at
+                    <button
+                      type="button"
+                      class="button button--icon button--icon--inline button--transparent"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
+                          trigger: "click",
+                        });
                       `}"
                     >
-                      <input
-                        type="text"
-                        name="expiresAt"
-                        value="${new Date().toISOString()}"
-                        required
-                        autocomplete="off"
-                        disabled
-                        class="input--text"
-                        style="${css`
-                          padding-right: var(--space--10);
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          localizeTime(this);
-                          (this.validators ??= []).push(() => {
-                            if (new Date(this.value).getTime() <= Date.now())
-                              return "Must be in the future.";
-                          });
-                        `}"
-                      />
-                      <button
-                        type="button"
-                        class="button"
-                        style="${css`
-                          justify-self: end;
-                          align-self: start;
-                          margin-top: var(--space--2);
-                          margin-right: var(--space--4);
-                          position: relative;
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
-                            trigger: "click",
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                    </div>
+                      <i class="bi bi-info-circle"></i>
+                    </button>
                   </div>
+                  <input
+                    type="text"
+                    name="expiresAt"
+                    value="${new Date().toISOString()}"
+                    required
+                    autocomplete="off"
+                    disabled
+                    class="input--text"
+                    data-ondomcontentloaded="${javascript`
+                      localizeTime(this);
+                      (this.validators ??= []).push(() => {
+                        if (new Date(this.value).getTime() <= Date.now())
+                          return "Must be in the future.";
+                      });
+                    `}"
+                  />
                 </div>
 
                 <div>
