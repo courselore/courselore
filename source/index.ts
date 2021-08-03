@@ -37,7 +37,6 @@ import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import sharp from "sharp";
-import QRCode from "qrcode";
 import lodash from "lodash";
 import faker from "faker";
 
