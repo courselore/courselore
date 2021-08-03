@@ -815,8 +815,7 @@ export default async function courselore(
               }
 
               .heading {
-                padding-left: var(--space--2);
-                padding-right: var(--space--2);
+                padding: var(--space--1) var(--space--2);
               }
 
               .keyboard-shortcut {
@@ -1944,14 +1943,14 @@ export default async function courselore(
                         style="${css`
                           display: flex;
                           flex-direction: column;
-                          gap: var(--space--4);
+                          gap: var(--space--2);
                         `}"
                       >
                         <div class="dropdown--menu">
-                          <p class="dropdown--menu--item heading">
+                          <h3 class="dropdown--menu--item heading">
                             <i class="bi bi-journal-text"></i>
                             ${res.locals.course.name}
-                          </p>
+                          </h3>
                           <a
                             href="${app.locals.settings.url}/courses/${res
                               .locals.course.reference}"
@@ -2970,11 +2969,11 @@ export default async function courselore(
                     <button
                       class="button button--full-width-on-small-screen button--blue"
                       data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                        trigger: "click",
-                      });
-                    `}"
+                        tippy(this, {
+                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                          trigger: "click",
+                        });
+                      `}"
                     >
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
