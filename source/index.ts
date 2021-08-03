@@ -4524,7 +4524,7 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <div class="field label">
+                <div class="label">
                   <p class="label--text">Type</p>
                   <div
                     style="${css`
@@ -4688,7 +4688,7 @@ export default async function courselore(
                   </div>
                 </div>
 
-                <div class="field label">
+                <div class="label">
                   <p class="label--text">Expiration</p>
                   <div
                     style="${css`
