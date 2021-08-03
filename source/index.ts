@@ -3988,7 +3988,7 @@ export default async function courselore(
         );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?onlyConversationLayoutSidebarOnSmallScreens=true`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?onlyConversationLayoutSidebarOnSmallScreen=true`
       );
     }
   );
@@ -7290,8 +7290,8 @@ export default async function courselore(
         HTML,
         {},
         {
-          onlyConversationLayoutSidebarOnSmallScreens?: "true";
-          conversationLayoutSidebarOpenOnSmallScreens?: "true";
+          onlyConversationLayoutSidebarOnSmallScreen?: "true";
+          conversationLayoutSidebarOpenOnSmallScreen?: "true";
           search?: string;
           tag?: string;
         },
@@ -7315,7 +7315,7 @@ export default async function courselore(
       res,
       head,
       extraHeaders: html`
-        $${req.query.onlyConversationLayoutSidebarOnSmallScreens === "true"
+        $${req.query.onlyConversationLayoutSidebarOnSmallScreen === "true"
           ? html``
           : html`
               <div
@@ -7385,8 +7385,8 @@ export default async function courselore(
         >
           <div
             class="conversation--layout--sidebar ${req.query
-              .onlyConversationLayoutSidebarOnSmallScreens === "true" ||
-            req.query.conversationLayoutSidebarOpenOnSmallScreens === "true"
+              .onlyConversationLayoutSidebarOnSmallScreen === "true" ||
+            req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? ""
               : "single-column--hidden"}"
             style="${css`
@@ -7481,19 +7481,19 @@ export default async function courselore(
                     }
                   `}"
                 >
-                  $${req.query.onlyConversationLayoutSidebarOnSmallScreens ===
+                  $${req.query.onlyConversationLayoutSidebarOnSmallScreen ===
                   "true"
                     ? html`
                         <input
                           type="hidden"
-                          name="onlyConversationLayoutSidebarOnSmallScreens"
+                          name="onlyConversationLayoutSidebarOnSmallScreen"
                           value="true"
                         />
                       `
                     : html``}
                   <input
                     type="hidden"
-                    name="conversationLayoutSidebarOpenOnSmallScreens"
+                    name="conversationLayoutSidebarOpenOnSmallScreen"
                     value="true"
                   />
                   $${req.query.tag !== undefined
@@ -7530,10 +7530,10 @@ export default async function courselore(
                       ? html`
                           <a
                             href="?${qs.stringify({
-                              onlyConversationLayoutSidebarOnSmallScreens:
+                              onlyConversationLayoutSidebarOnSmallScreen:
                                 req.query
-                                  .onlyConversationLayoutSidebarOnSmallScreens,
-                              conversationLayoutSidebarOpenOnSmallScreens:
+                                  .onlyConversationLayoutSidebarOnSmallScreen,
+                              conversationLayoutSidebarOpenOnSmallScreen:
                                 "true",
                               tag: req.query.tag,
                             })}"
@@ -7618,10 +7618,10 @@ export default async function courselore(
                                   return html`
                                     <a
                                       href="?${qs.stringify({
-                                        onlyConversationLayoutSidebarOnSmallScreens:
+                                        onlyConversationLayoutSidebarOnSmallScreen:
                                           req.query
-                                            .onlyConversationLayoutSidebarOnSmallScreens,
-                                        conversationLayoutSidebarOpenOnSmallScreens:
+                                            .onlyConversationLayoutSidebarOnSmallScreen,
+                                        conversationLayoutSidebarOpenOnSmallScreen:
                                           "true",
                                         search: req.query.search,
                                         tag: isTagFilter
@@ -7644,10 +7644,10 @@ export default async function courselore(
                           : html`
                               <a
                                 href="?${qs.stringify({
-                                  onlyConversationLayoutSidebarOnSmallScreens:
+                                  onlyConversationLayoutSidebarOnSmallScreen:
                                     req.query
-                                      .onlyConversationLayoutSidebarOnSmallScreens,
-                                  conversationLayoutSidebarOpenOnSmallScreens:
+                                      .onlyConversationLayoutSidebarOnSmallScreen,
+                                  conversationLayoutSidebarOpenOnSmallScreen:
                                     "true",
                                   search: req.query.search,
                                 })}"
@@ -7693,7 +7693,7 @@ export default async function courselore(
                 : html`
                     <div
                       class="${req.query
-                        .onlyConversationLayoutSidebarOnSmallScreens === "true"
+                        .onlyConversationLayoutSidebarOnSmallScreen === "true"
                         ? "active--cancel"
                         : ""}"
                       style="${css`
@@ -7954,8 +7954,8 @@ export default async function courselore(
           </div>
           <div
             class="conversation--layout--main ${req.query
-              .onlyConversationLayoutSidebarOnSmallScreens === "true" ||
-            req.query.conversationLayoutSidebarOpenOnSmallScreens === "true"
+              .onlyConversationLayoutSidebarOnSmallScreen === "true" ||
+            req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? "single-column--hidden"
               : ""}"
             style="${css`
@@ -9987,8 +9987,8 @@ ${value}</textarea
     HTML,
     {},
     {
-      onlyConversationLayoutSidebarOnSmallScreens?: "true";
-      conversationLayoutSidebarOpenOnSmallScreens?: "true";
+      onlyConversationLayoutSidebarOnSmallScreen?: "true";
+      conversationLayoutSidebarOpenOnSmallScreen?: "true";
       search?: string;
       tag?: string;
     },
