@@ -4557,13 +4557,14 @@ export default async function courselore(
                         <i class="bi bi-link"></i>
                         Invitation Link
                       </label>
-                      <label>
+                      <label class="label--radio-or-checkbox">
                         <input
                           type="radio"
                           name="type"
                           value="email"
                           required
                           autocomplete="off"
+                          class="input--radio"
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = false;
@@ -4571,10 +4572,8 @@ export default async function courselore(
                               if (element.disabled !== null) element.disabled = false;
                           `}"
                         />
-                        <span>
-                          <i class="bi bi-envelope"></i>
-                          Email
-                        </span>
+                        <i class="bi bi-envelope"></i>
+                        Email
                       </label>
                     </div>
                     <div
