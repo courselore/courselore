@@ -3124,8 +3124,8 @@ export default async function courselore(
                       justify-content: center;
                       align-items: center;
                       & > * {
-                        width: var(--space--28);
-                        height: var(--space--28);
+                        width: var(--space--32);
+                        height: var(--space--32);
                       }
                     `}"
                   >
@@ -3139,7 +3139,7 @@ export default async function courselore(
                         type="button"
                         class="button"
                         style="${css`
-                          font-size: var(--space--20);
+                          font-size: var(--space--24);
                           width: 100%;
                           height: 100%;
                           border-radius: var(--border-radius--circle);
@@ -3406,7 +3406,7 @@ export default async function courselore(
         -ext.length
       )}--avatar${ext}`;
       await sharp(req.files.avatar.data)
-        .resize(/* var(--space--56) */ 224, 224, {
+        .resize(/* var(--space--64) */ 256, 256, {
           position: sharp.strategy.attention,
         })
         .toFile(path.join(rootDirectory, relativePathAvatar));
