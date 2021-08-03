@@ -4688,191 +4688,194 @@ export default async function courselore(
                   </button>
                 </div>
               </form>
-            </div>
-            $${invitations.length === 0
-              ? html``
-              : html`
-                  <hr class="separator" />
+              $${invitations.length === 0
+                ? html``
+                : html`
+                    <h2 class="heading">
+                      <i class="bi bi-person-plus"></i> Existing Invitations
+                    </h2>
 
-                  <div class="stripped">
-                    $${invitations.map((invitation) => {
-                      const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                      const isExpired = app.locals.helpers.isExpired(
-                        invitation.expiresAt
-                      );
-                      const isUsed = invitation.usedAt !== null;
+                    <div class="stripped">
+                      $${invitations.map((invitation) => {
+                        const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                        const isExpired = app.locals.helpers.isExpired(
+                          invitation.expiresAt
+                        );
+                        const isUsed = invitation.usedAt !== null;
 
-                      return html`
-                        <div
-                          style="${css`
-                            display: flex;
-                            align-items: baseline;
-                          `}"
-                        >
+                        return html`
                           <div
                             style="${css`
-                              flex: 1;
+                              display: flex;
+                              align-items: baseline;
                             `}"
                           >
-                            $${invitation.email === null
-                              ? html`
-                                  <div
-                                    style="${css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <i class="bi bi-link"></i>
-                                    <button
-                                      $${isExpired
-                                        ? html`disabled`
-                                        : html`
-                                            class="button"
-                                            data-ondomcontentloaded="${javascript`
+                            <div
+                              style="${css`
+                                flex: 1;
+                              `}"
+                            >
+                              $${invitation.email === null
+                                ? html`
+                                    <div
+                                      style="${css`
+                                        display: flex;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <i class="bi bi-link"></i>
+                                      <button
+                                        $${isExpired
+                                          ? html`disabled`
+                                          : html`
+                                              class="button"
+                                              data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: "See Invitation Link",
                                                 touch: false,
                                               });
                                             `}"
-                                            onclick="${javascript`
+                                              onclick="${javascript`
                                               MicroModal.show("modal--invitation--${invitation.reference}", microModalDefaults);
                                             `}"
-                                          `}
-                                    >
-                                      <span
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                        `}"
-                                        $${isExpired
-                                          ? html`
-                                              tabindex="0"
-                                              data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: "Can’t show Invitation Link because it’s expired.",
-                                                });
-                                              `}"
-                                            `
-                                          : html``}
+                                            `}
                                       >
-                                        ${"*".repeat(
-                                          6
-                                        )}${invitation.reference.slice(6)}
-                                        <i class="bi bi-chevron-down"></i>
-                                      </span>
-                                    </button>
-                                  </div>
-                                `
-                              : html`
-                                  <div
-                                    style="${css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <i class="bi bi-envelope"></i>
-                                    <div
-                                      style="${css`
-                                        flex: 1;
-                                        display: flex;
-                                        flex-direction: column;
-                                      `}"
-                                    >
-                                      <div>
-                                        <button
+                                        <span
                                           style="${css`
                                             font-weight: var(
                                               --font-weight--bold
                                             );
                                           `}"
-                                          $${isUsed || isExpired
-                                            ? html`disabled`
-                                            : html`
-                                                class="button"
+                                          $${isExpired
+                                            ? html`
+                                                tabindex="0"
                                                 data-ondomcontentloaded="${javascript`
+                                                tippy(this, {
+                                                  content: "Can’t show Invitation Link because it’s expired.",
+                                                });
+                                              `}"
+                                              `
+                                            : html``}
+                                        >
+                                          ${"*".repeat(
+                                            6
+                                          )}${invitation.reference.slice(6)}
+                                          <i class="bi bi-chevron-down"></i>
+                                        </span>
+                                      </button>
+                                    </div>
+                                  `
+                                : html`
+                                    <div
+                                      style="${css`
+                                        display: flex;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <i class="bi bi-envelope"></i>
+                                      <div
+                                        style="${css`
+                                          flex: 1;
+                                          display: flex;
+                                          flex-direction: column;
+                                        `}"
+                                      >
+                                        <div>
+                                          <button
+                                            style="${css`
+                                              font-weight: var(
+                                                --font-weight--bold
+                                              );
+                                            `}"
+                                            $${isUsed || isExpired
+                                              ? html`disabled`
+                                              : html`
+                                                  class="button"
+                                                  data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
                                                     content: this.nextElementSibling.firstElementChild,
                                                     trigger: "click",
                                                     interactive: true,
                                                   });
                                                 `}"
-                                              `}
-                                        >
-                                          <span
-                                            $${isUsed
-                                              ? html`
-                                                  tabindex="0"
-                                                  data-ondomcontentloaded="${javascript`
+                                                `}
+                                          >
+                                            <span
+                                              $${isUsed
+                                                ? html`
+                                                    tabindex="0"
+                                                    data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s used.",
                                                     });
                                                   `}"
-                                                `
-                                              : isExpired
-                                              ? html`
-                                                  tabindex="0"
-                                                  data-ondomcontentloaded="${javascript`
+                                                  `
+                                                : isExpired
+                                                ? html`
+                                                    tabindex="0"
+                                                    data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s expired.",
                                                     });
                                                   `}"
-                                                `
-                                              : html``}
-                                          >
-                                            ${invitation.name ??
-                                            invitation.email}
-                                            <i class="bi bi-chevron-down"></i>
-                                          </span>
-                                        </button>
-                                        <div hidden>
-                                          <form
-                                            method="POST"
-                                            action="${action}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="resend"
-                                              value="true"
-                                            />
-                                            <button
-                                              class="dropdown-menu--item button button--transparent"
+                                                  `
+                                                : html``}
                                             >
-                                              Resend Invitation Email
-                                            </button>
-                                          </form>
+                                              ${invitation.name ??
+                                              invitation.email}
+                                              <i class="bi bi-chevron-down"></i>
+                                            </span>
+                                          </button>
+                                          <div hidden>
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="resend"
+                                                value="true"
+                                              />
+                                              <button
+                                                class="dropdown-menu--item button button--transparent"
+                                              >
+                                                Resend Invitation Email
+                                              </button>
+                                            </form>
+                                          </div>
                                         </div>
+                                        $${invitation.name === null
+                                          ? html``
+                                          : html`
+                                              <div>${invitation.email}</div>
+                                            `}
                                       </div>
-                                      $${invitation.name === null
-                                        ? html``
-                                        : html`
-                                            <div>${invitation.email}</div>
-                                          `}
                                     </div>
-                                  </div>
-                                `}
-                          </div>
-                          <div
-                            style="${css`
-                              display: flex;
-                              @media (max-width: 500px) {
-                                flex-direction: column;
-                                align-items: end;
-                                gap: var(--space--2);
-                              }
-                            `}"
-                          >
+                                  `}
+                            </div>
                             <div
                               style="${css`
-                                width: var(--space--20);
                                 display: flex;
-                                justify-content: end;
+                                @media (max-width: 500px) {
+                                  flex-direction: column;
+                                  align-items: end;
+                                  gap: var(--space--2);
+                                }
                               `}"
                             >
-                              <button
-                                $${isUsed || isExpired
-                                  ? html`disabled`
-                                  : html`
-                                      class="button"
-                                      data-ondomcontentloaded="${javascript`
+                              <div
+                                style="${css`
+                                  width: var(--space--20);
+                                  display: flex;
+                                  justify-content: end;
+                                `}"
+                              >
+                                <button
+                                  $${isUsed || isExpired
+                                    ? html`disabled`
+                                    : html`
+                                        class="button"
+                                        data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "Change Role",
                                           touch: false,
@@ -4883,162 +4886,162 @@ export default async function courselore(
                                           interactive: true,
                                         });
                                       `}"
-                                    `}
-                              >
-                                <span
-                                  $${isUsed
-                                    ? html`
-                                        tabindex="0"
-                                        data-ondomcontentloaded="${javascript`
+                                      `}
+                                >
+                                  <span
+                                    $${isUsed
+                                      ? html`
+                                          tabindex="0"
+                                          data-ondomcontentloaded="${javascript`
                                           tippy(this, {
                                             content: "You may not change the role of this invitation because it has already been used.",
                                           });
                                         `}"
-                                      `
-                                    : isExpired
-                                    ? html`
-                                        tabindex="0"
-                                        data-ondomcontentloaded="${javascript`
+                                        `
+                                      : isExpired
+                                      ? html`
+                                          tabindex="0"
+                                          data-ondomcontentloaded="${javascript`
                                           tippy(this, {
                                             content: "You may not change the role of this invitation because it’s expired.",
                                           });
                                         `}"
-                                      `
-                                    : html``}
-                                >
-                                  ${lodash.capitalize(invitation.role)}
-                                  <i class="bi bi-chevron-down"></i>
-                                </span>
-                              </button>
-                              <div hidden>
-                                <div>
-                                  $${app.locals.constants.roles.map((role) =>
-                                    role === invitation.role
-                                      ? html``
-                                      : html`
-                                          <form
-                                            method="POST"
-                                            action="${action}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="role"
-                                              value="${role}"
-                                            />
-                                            <button
-                                              class="dropdown-menu--item button button--transparent"
-                                            >
-                                              Change Invitation Role to
-                                              ${lodash.capitalize(role)}
-                                            </button>
-                                          </form>
                                         `
-                                  )}
+                                      : html``}
+                                  >
+                                    ${lodash.capitalize(invitation.role)}
+                                    <i class="bi bi-chevron-down"></i>
+                                  </span>
+                                </button>
+                                <div hidden>
+                                  <div>
+                                    $${app.locals.constants.roles.map((role) =>
+                                      role === invitation.role
+                                        ? html``
+                                        : html`
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="role"
+                                                value="${role}"
+                                              />
+                                              <button
+                                                class="dropdown-menu--item button button--transparent"
+                                              >
+                                                Change Invitation Role to
+                                                ${lodash.capitalize(role)}
+                                              </button>
+                                            </form>
+                                          `
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <div
-                              style="${css`
-                                width: var(--space--40);
-                                display: flex;
-                                justify-content: end;
-                              `}"
-                            >
-                              $${(() => {
-                                const changeExpirationForm = html`
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
-                                    style="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <input
-                                      type="text"
-                                      name="expiresAt"
-                                      value="${new Date(
-                                        invitation.expiresAt ?? new Date()
-                                      ).toISOString()}"
-                                      required
-                                      autocomplete="off"
-                                      class="input--text"
-                                      data-ondomcontentloaded="${javascript`
+                              <div
+                                style="${css`
+                                  width: var(--space--40);
+                                  display: flex;
+                                  justify-content: end;
+                                `}"
+                              >
+                                $${(() => {
+                                  const changeExpirationForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
+                                      style="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <input
+                                        type="text"
+                                        name="expiresAt"
+                                        value="${new Date(
+                                          invitation.expiresAt ?? new Date()
+                                        ).toISOString()}"
+                                        required
+                                        autocomplete="off"
+                                        class="input--text"
+                                        data-ondomcontentloaded="${javascript`
                                         localizeTime(this);
                                         (this.validators ??= []).push(() => {
                                           if (new Date(this.value).getTime() <= Date.now())
                                             return "Must be in the future.";
                                         });
                                       `}"
-                                    />
-                                    <button
-                                      class="dropdown-menu--item button button--transparent"
+                                      />
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-pencil"></i>
+                                        Update Expiration Date
+                                      </button>
+                                    </form>
+                                  `;
+                                  const removeExpirationForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
                                     >
-                                      <i class="bi bi-pencil"></i>
-                                      Update Expiration Date
-                                    </button>
-                                  </form>
-                                `;
-                                const removeExpirationForm = html`
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="removeExpiration"
-                                      value="true"
-                                    />
-                                    <button
-                                      class="dropdown-menu--item button button--transparent"
+                                      <input
+                                        type="hidden"
+                                        name="removeExpiration"
+                                        value="true"
+                                      />
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-calendar-minus"></i>
+                                        Remove Expiration
+                                      </button>
+                                    </form>
+                                  `;
+                                  const expireForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
                                     >
-                                      <i class="bi bi-calendar-minus"></i>
-                                      Remove Expiration
-                                    </button>
-                                  </form>
-                                `;
-                                const expireForm = html`
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="expire"
-                                      value="true"
-                                    />
-                                    <button
-                                      class="dropdown-menu--item button button--transparent"
-                                    >
-                                      <i class="bi bi-calendar-x"></i>
-                                      Expire Invitation
-                                    </button>
-                                  </form>
-                                `;
+                                      <input
+                                        type="hidden"
+                                        name="expire"
+                                        value="true"
+                                      />
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-calendar-x"></i>
+                                        Expire Invitation
+                                      </button>
+                                    </form>
+                                  `;
 
-                                return isUsed
-                                  ? html`
-                                      <div
-                                        style="${css`
-                                          color: var(--color--green--700);
-                                          background-color: var(
-                                            --color--green--100
-                                          );
-                                          @media (prefers-color-scheme: dark) {
-                                            color: var(--color--green--100);
+                                  return isUsed
+                                    ? html`
+                                        <div
+                                          style="${css`
+                                            color: var(--color--green--700);
                                             background-color: var(
-                                              --color--green--900
+                                              --color--green--100
                                             );
-                                          }
-                                          padding: var(--space--1)
-                                            var(--space--2);
-                                          border-radius: var(
-                                            --border-radius--md
-                                          );
-                                        `}"
-                                        data-ondomcontentloaded="${javascript`
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(--color--green--100);
+                                              background-color: var(
+                                                --color--green--900
+                                              );
+                                            }
+                                            padding: var(--space--1)
+                                              var(--space--2);
+                                            border-radius: var(
+                                              --border-radius--md
+                                            );
+                                          `}"
+                                          data-ondomcontentloaded="${javascript`
                                           tippy(this, {
                                             content: ${JSON.stringify(html`
                                               Used
@@ -5056,64 +5059,64 @@ export default async function courselore(
                                             interactive: true,
                                           });
                                         `}"
-                                      >
-                                        Used
-                                        <i class="bi bi-check-lg"></i>
-                                      </div>
-                                    `
-                                  : isExpired
-                                  ? html`
-                                      <div>
-                                        <button
-                                          style="${css`
-                                            color: var(--color--rose--700);
-                                            background-color: var(
-                                              --color--rose--100
-                                            );
-                                            &:hover,
-                                            &:focus-within {
+                                        >
+                                          Used
+                                          <i class="bi bi-check-lg"></i>
+                                        </div>
+                                      `
+                                    : isExpired
+                                    ? html`
+                                        <div>
+                                          <button
+                                            style="${css`
+                                              color: var(--color--rose--700);
                                               background-color: var(
-                                                --color--rose--200
-                                              );
-                                            }
-                                            &:active {
-                                              background-color: var(
-                                                --color--rose--300
-                                              );
-                                            }
-                                            @media (prefers-color-scheme: dark) {
-                                              color: var(--color--rose--100);
-                                              background-color: var(
-                                                --color--rose--900
+                                                --color--rose--100
                                               );
                                               &:hover,
                                               &:focus-within {
                                                 background-color: var(
-                                                  --color--rose--700
+                                                  --color--rose--200
                                                 );
                                               }
                                               &:active {
                                                 background-color: var(
-                                                  --color--rose--600
+                                                  --color--rose--300
                                                 );
                                               }
-                                            }
-                                            padding: var(--space--1)
-                                              var(--space--2);
-                                            border-radius: var(
-                                              --border-radius--md
-                                            );
-                                            transition-property: var(
-                                              --transition-property--colors
-                                            );
-                                            transition-duration: var(
-                                              --transition-duration--150
-                                            );
-                                            transition-timing-function: var(
-                                              --transition-timing-function--in-out
-                                            );
-                                          `}"
-                                          data-ondomcontentloaded="${javascript`
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(--color--rose--100);
+                                                background-color: var(
+                                                  --color--rose--900
+                                                );
+                                                &:hover,
+                                                &:focus-within {
+                                                  background-color: var(
+                                                    --color--rose--700
+                                                  );
+                                                }
+                                                &:active {
+                                                  background-color: var(
+                                                    --color--rose--600
+                                                  );
+                                                }
+                                              }
+                                              padding: var(--space--1)
+                                                var(--space--2);
+                                              border-radius: var(
+                                                --border-radius--md
+                                              );
+                                              transition-property: var(
+                                                --transition-property--colors
+                                              );
+                                              transition-duration: var(
+                                                --transition-duration--150
+                                              );
+                                              transition-timing-function: var(
+                                                --transition-timing-function--in-out
+                                              );
+                                            `}"
+                                            data-ondomcontentloaded="${javascript`
                                             tippy(this, {
                                               content: "Change Expiration",
                                               touch: false,
@@ -5124,96 +5127,96 @@ export default async function courselore(
                                               interactive: true,
                                             });
                                           `}"
-                                        >
-                                          <span
-                                            style="${css`
-                                              display: inline-flex;
-                                              gap: var(--space--2);
-                                            `}"
                                           >
-                                            <i class="bi bi-calendar-x"></i>
-                                            Expired
-                                          </span>
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                        <div hidden>
-                                          <div>
-                                            <h3 class="heading">
+                                            <span
+                                              style="${css`
+                                                display: inline-flex;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
                                               <i class="bi bi-calendar-x"></i>
-                                              <span>
-                                                Expired
-                                                <time
-                                                  data-ondomcontentloaded="${javascript`
+                                              Expired
+                                            </span>
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
+                                            <div>
+                                              <h3 class="heading">
+                                                <i class="bi bi-calendar-x"></i>
+                                                <span>
+                                                  Expired
+                                                  <time
+                                                    data-ondomcontentloaded="${javascript`
                                                     relativizeTime(this);
                                                   `}"
-                                                >
-                                                  ${new Date(
-                                                    invitation.expiresAt!
-                                                  ).toISOString()}
-                                                </time>
-                                              </span>
-                                            </h3>
-                                            <hr class="dropdown--separator" />
-                                            $${changeExpirationForm}
-                                            <hr class="dropdown--separator" />
-                                            $${removeExpirationForm}
+                                                  >
+                                                    ${new Date(
+                                                      invitation.expiresAt!
+                                                    ).toISOString()}
+                                                  </time>
+                                                </span>
+                                              </h3>
+                                              <hr class="dropdown--separator" />
+                                              $${changeExpirationForm}
+                                              <hr class="dropdown--separator" />
+                                              $${removeExpirationForm}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    `
-                                  : invitation.expiresAt === null
-                                  ? html`
-                                      <div>
-                                        <button
-                                          style="${css`
-                                            color: var(--color--blue--700);
-                                            background-color: var(
-                                              --color--blue--100
-                                            );
-                                            &:hover,
-                                            &:focus-within {
+                                      `
+                                    : invitation.expiresAt === null
+                                    ? html`
+                                        <div>
+                                          <button
+                                            style="${css`
+                                              color: var(--color--blue--700);
                                               background-color: var(
-                                                --color--blue--200
-                                              );
-                                            }
-                                            &:active {
-                                              background-color: var(
-                                                --color--blue--300
-                                              );
-                                            }
-                                            @media (prefers-color-scheme: dark) {
-                                              color: var(--color--blue--100);
-                                              background-color: var(
-                                                --color--blue--900
+                                                --color--blue--100
                                               );
                                               &:hover,
                                               &:focus-within {
                                                 background-color: var(
-                                                  --color--blue--700
+                                                  --color--blue--200
                                                 );
                                               }
                                               &:active {
                                                 background-color: var(
-                                                  --color--blue--600
+                                                  --color--blue--300
                                                 );
                                               }
-                                            }
-                                            padding: var(--space--1)
-                                              var(--space--2);
-                                            border-radius: var(
-                                              --border-radius--md
-                                            );
-                                            transition-property: var(
-                                              --transition-property--colors
-                                            );
-                                            transition-duration: var(
-                                              --transition-duration--150
-                                            );
-                                            transition-timing-function: var(
-                                              --transition-timing-function--in-out
-                                            );
-                                          `}"
-                                          data-ondomcontentloaded="${javascript`
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(--color--blue--100);
+                                                background-color: var(
+                                                  --color--blue--900
+                                                );
+                                                &:hover,
+                                                &:focus-within {
+                                                  background-color: var(
+                                                    --color--blue--700
+                                                  );
+                                                }
+                                                &:active {
+                                                  background-color: var(
+                                                    --color--blue--600
+                                                  );
+                                                }
+                                              }
+                                              padding: var(--space--1)
+                                                var(--space--2);
+                                              border-radius: var(
+                                                --border-radius--md
+                                              );
+                                              transition-property: var(
+                                                --transition-property--colors
+                                              );
+                                              transition-duration: var(
+                                                --transition-duration--150
+                                              );
+                                              transition-timing-function: var(
+                                                --transition-timing-function--in-out
+                                              );
+                                            `}"
+                                            data-ondomcontentloaded="${javascript`
                                             tippy(this, {
                                               content: "Change Expiration",
                                               touch: false,
@@ -5224,83 +5227,87 @@ export default async function courselore(
                                               interactive: true,
                                             });
                                           `}"
-                                        >
-                                          <span
-                                            style="${css`
-                                              display: inline-flex;
-                                              gap: var(--space--2);
-                                            `}"
                                           >
-                                            <i class="bi bi-calendar-minus"></i>
-                                            Doesn’t Expire
-                                          </span>
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                        <div hidden>
-                                          <div
-                                            style="${css`
-                                              padding-top: var(--space--1);
-                                            `}"
-                                          >
-                                            $${changeExpirationForm}
-                                            <hr class="dropdown--separator" />
-                                            $${expireForm}
+                                            <span
+                                              style="${css`
+                                                display: inline-flex;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-calendar-minus"
+                                              ></i>
+                                              Doesn’t Expire
+                                            </span>
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
+                                            <div
+                                              style="${css`
+                                                padding-top: var(--space--1);
+                                              `}"
+                                            >
+                                              $${changeExpirationForm}
+                                              <hr class="dropdown--separator" />
+                                              $${expireForm}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    `
-                                  : html`
-                                      <div>
-                                        <button
-                                          style="${css`
-                                            color: var(--color--yellow--700);
-                                            background-color: var(
-                                              --color--yellow--100
-                                            );
-                                            &:hover,
-                                            &:focus-within {
+                                      `
+                                    : html`
+                                        <div>
+                                          <button
+                                            style="${css`
+                                              color: var(--color--yellow--700);
                                               background-color: var(
-                                                --color--yellow--200
-                                              );
-                                            }
-                                            &:active {
-                                              background-color: var(
-                                                --color--yellow--300
-                                              );
-                                            }
-                                            @media (prefers-color-scheme: dark) {
-                                              color: var(--color--yellow--100);
-                                              background-color: var(
-                                                --color--yellow--900
+                                                --color--yellow--100
                                               );
                                               &:hover,
                                               &:focus-within {
                                                 background-color: var(
-                                                  --color--yellow--700
+                                                  --color--yellow--200
                                                 );
                                               }
                                               &:active {
                                                 background-color: var(
-                                                  --color--yellow--600
+                                                  --color--yellow--300
                                                 );
                                               }
-                                            }
-                                            padding: var(--space--1)
-                                              var(--space--2);
-                                            border-radius: var(
-                                              --border-radius--md
-                                            );
-                                            transition-property: var(
-                                              --transition-property--colors
-                                            );
-                                            transition-duration: var(
-                                              --transition-duration--150
-                                            );
-                                            transition-timing-function: var(
-                                              --transition-timing-function--in-out
-                                            );
-                                          `}"
-                                          data-ondomcontentloaded="${javascript`
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(
+                                                  --color--yellow--100
+                                                );
+                                                background-color: var(
+                                                  --color--yellow--900
+                                                );
+                                                &:hover,
+                                                &:focus-within {
+                                                  background-color: var(
+                                                    --color--yellow--700
+                                                  );
+                                                }
+                                                &:active {
+                                                  background-color: var(
+                                                    --color--yellow--600
+                                                  );
+                                                }
+                                              }
+                                              padding: var(--space--1)
+                                                var(--space--2);
+                                              border-radius: var(
+                                                --border-radius--md
+                                              );
+                                              transition-property: var(
+                                                --transition-property--colors
+                                              );
+                                              transition-duration: var(
+                                                --transition-duration--150
+                                              );
+                                              transition-timing-function: var(
+                                                --transition-timing-function--in-out
+                                              );
+                                            `}"
+                                            data-ondomcontentloaded="${javascript`
                                             tippy(this, {
                                               content: "Change Expiration",
                                               touch: false,
@@ -5311,54 +5318,57 @@ export default async function courselore(
                                               interactive: true,
                                             });
                                           `}"
-                                        >
-                                          <span
-                                            style="${css`
-                                              display: inline-flex;
-                                              gap: var(--space--2);
-                                            `}"
                                           >
-                                            <i class="bi bi-calendar-plus"></i>
-                                            Expires
-                                          </span>
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                        <div hidden>
-                                          <div>
-                                            <h3 class="heading">
+                                            <span
+                                              style="${css`
+                                                display: inline-flex;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
                                               <i
                                                 class="bi bi-calendar-plus"
                                               ></i>
-                                              <span>
-                                                Expires
-                                                <time
-                                                  data-ondomcontentloaded="${javascript`
+                                              Expires
+                                            </span>
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
+                                            <div>
+                                              <h3 class="heading">
+                                                <i
+                                                  class="bi bi-calendar-plus"
+                                                ></i>
+                                                <span>
+                                                  Expires
+                                                  <time
+                                                    data-ondomcontentloaded="${javascript`
                                                   relativizeTime(this);
                                                 `}"
-                                                >
-                                                  ${new Date(
-                                                    invitation.expiresAt
-                                                  ).toISOString()}
-                                                </time>
-                                              </span>
-                                            </h3>
-                                            <hr class="dropdown--separator" />
-                                            $${changeExpirationForm}
-                                            <hr class="dropdown--separator" />
-                                            $${removeExpirationForm}
-                                            $${expireForm}
+                                                  >
+                                                    ${new Date(
+                                                      invitation.expiresAt
+                                                    ).toISOString()}
+                                                  </time>
+                                                </span>
+                                              </h3>
+                                              <hr class="dropdown--separator" />
+                                              $${changeExpirationForm}
+                                              <hr class="dropdown--separator" />
+                                              $${removeExpirationForm}
+                                              $${expireForm}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    `;
-                              })()}
+                                      `;
+                                })()}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      `;
-                    })}
-                  </div>
-                `}
+                        `;
+                      })}
+                    </div>
+                  `}
+            </div>
           `,
         })
       );
