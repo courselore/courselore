@@ -4552,8 +4552,8 @@ export default async function courselore(
                   gap: var(--space--4);
                 `}"
               >
-                <div class="field">
-                  <p>Type</p>
+                <div class="field label">
+                  <p class="label--text">Type</p>
                   <div
                     style="${css`
                       display: flex;
@@ -4692,8 +4692,8 @@ export default async function courselore(
                   </div>
                 </div>
 
-                <div>
-                  <p>Role</p>
+                <div class="label">
+                  <p class="label--text">Role</p>
                   <div class="input--radio--group">
                     $${app.locals.constants.roles.map(
                       (role) =>
@@ -4713,8 +4713,8 @@ export default async function courselore(
                   </div>
                 </div>
 
-                <div class="field">
-                  <p>Expiration</p>
+                <div class="field label">
+                  <p class="label--text">Expiration</p>
                   <div
                     style="${css`
                       display: flex;
