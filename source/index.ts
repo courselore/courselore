@@ -731,100 +731,6 @@ export default async function courselore(
                 );
               }
 
-              .input--radio--group {
-                width: 100%;
-                display: flex;
-                & > * {
-                  flex: 1;
-                }
-                & > label {
-                  display: grid;
-                  & > * {
-                    grid-area: 1 / 1;
-                  }
-                  & > span {
-                    color: var(--color--gray--medium--700);
-                    background-color: var(--color--white);
-                    &:hover {
-                      background-color: var(--color--gray--medium--200);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--100);
-                      background-color: var(--color--gray--medium--700);
-                      &:hover {
-                        background-color: var(--color--gray--medium--600);
-                      }
-                    }
-                    padding: var(--space--2) var(--space--4);
-                    display: flex;
-                    gap: var(--space--2);
-                    justify-content: center;
-                    cursor: pointer;
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                  }
-                  &:first-child > span {
-                    border-top-left-radius: var(--border-radius--md);
-                    border-bottom-left-radius: var(--border-radius--md);
-                  }
-                  &:last-child > span {
-                    border-top-right-radius: var(--border-radius--md);
-                    border-bottom-right-radius: var(--border-radius--md);
-                  }
-                  &:not(:last-child) > span {
-                    border-right: var(--border-width--1) solid
-                      var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--900);
-                    }
-                  }
-                  &:not(:first-child) > span {
-                    border-left: var(--border-width--1) solid
-                      var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--900);
-                    }
-                    margin-left: calc(-1 * var(--border-width--1));
-                  }
-                  & > :focus + span {
-                    background-color: var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--600);
-                    }
-                  }
-                  & > :active + span,
-                  & > :checked:focus + span {
-                    color: var(--color--gray--medium--50);
-                    background-color: var(--color--gray--medium--800);
-                    border-color: var(--color--gray--medium--800);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--200);
-                      background-color: var(--color--gray--medium--900);
-                      border-color: var(--color--gray--medium--900);
-                    }
-                  }
-                  & > :checked {
-                    &,
-                    & ~ * {
-                      position: relative;
-                    }
-                    & + span {
-                      color: var(--color--gray--medium--100);
-                      background-color: var(--color--gray--medium--700);
-                      border-color: var(--color--gray--medium--700);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--200);
-                        background-color: var(--color--gray--medium--800);
-                        border-color: var(--color--gray--medium--800);
-                      }
-                    }
-                  }
-                }
-              }
-
               .button {
                 padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
@@ -4561,7 +4467,7 @@ export default async function courselore(
                       flex-direction: column;
                     `}"
                   >
-                    <div class="input--radio--group">
+                    <div>
                       <label>
                         <input
                           type="radio"
@@ -4694,7 +4600,7 @@ export default async function courselore(
 
                 <div class="label">
                   <p class="label--text">Role</p>
-                  <div class="input--radio--group">
+                  <div>
                     $${app.locals.constants.roles.map(
                       (role) =>
                         html`
@@ -4722,7 +4628,7 @@ export default async function courselore(
                       flex-direction: column;
                     `}"
                   >
-                    <div class="input--radio--group">
+                    <div>
                       <label>
                         <input
                           type="radio"
