@@ -4467,11 +4467,18 @@ export default async function courselore(
                       flex-direction: column;
                     `}"
                   >
-                    <div>
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--4);
+                      `}"
+                    >
                       <label
                         style="${css`
+                          cursor: pointer;
                           display: flex;
                           gap: var(--space--1);
+                          align-items: center;
                         `}"
                       >
                         <input
@@ -4559,10 +4566,8 @@ export default async function courselore(
                               if (element.disabled !== null) element.disabled = true;
                           `}"
                         />
-                        <span>
-                          <i class="bi bi-link"></i>
-                          Invitation Link
-                        </span>
+                        <i class="bi bi-link"></i>
+                        Invitation Link
                       </label>
                       <label>
                         <input
