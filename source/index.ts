@@ -958,6 +958,14 @@ export default async function courselore(
                 }
               }
 
+              .separator {
+                border-top: var(--border-width--1) solid
+                  var(--color--gray--medium--200);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--gray--medium--700);
+                }
+              }
+
               .stripped {
                 & > * {
                   &:nth-child(even) {
@@ -4691,9 +4699,7 @@ export default async function courselore(
               $${invitations.length === 0
                 ? html``
                 : html`
-                    <h2 class="heading">
-                      <i class="bi bi-person-plus"></i> Existing Invitations
-                    </h2>
+                    <hr class="separator" />
 
                     <div class="stripped">
                       $${invitations.map((invitation) => {
