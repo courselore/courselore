@@ -4399,7 +4399,7 @@ export default async function courselore(
   >(
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
-    asyncHandler(async (req, res) => {
+    (req, res) => {
       const invitations = app.locals.database.all<{
         id: number;
         expiresAt: string | null;
@@ -5475,7 +5475,7 @@ export default async function courselore(
           `,
         })
       );
-    })
+    }
   );
 
   app.post<
