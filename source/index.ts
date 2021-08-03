@@ -6899,15 +6899,46 @@ export default async function courselore(
                           class="button"
                           style="${css`
                             background-color: var(--color--${accentColor}--500);
+                            &:hover,
+                            &:focus-within {
+                              background-color: var(
+                                --color--${accentColor}--400
+                              );
+                            }
+                            &:active {
+                              background-color: var(
+                                --color--${accentColor}--600
+                              );
+                            }
                             @media (prefers-color-scheme: dark) {
                               background-color: var(
                                 --color--${accentColor}--600
                               );
+                              &:hover,
+                              &:focus-within {
+                                background-color: var(
+                                  --color--${accentColor}--500
+                                );
+                              }
+                              &:active {
+                                background-color: var(
+                                  --color--${accentColor}--700
+                                );
+                              }
                             }
                             width: var(--space--5);
                             height: var(--space--5);
                             border-radius: var(--border-radius--circle);
                             padding: var(--space--0);
+                            transition-property: var(
+                              --transition-property--colors
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--in-out
+                            );
 
                             &::before {
                               content: "";
