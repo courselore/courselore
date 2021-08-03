@@ -3182,6 +3182,7 @@ export default async function courselore(
                         display: grid;
                         & > * {
                           grid-area: 1 / 1;
+                          position: relative;
                         }
                       `}"
                     >
@@ -3191,6 +3192,18 @@ export default async function courselore(
                         style="${css`
                           padding: var(--space--0);
                           place-self: center;
+                          transition-property: var(--transition-property--base);
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--in-out
+                          );
+                          &:hover,
+                          &:focus-within {
+                            filter: brightness(var(--brightness--105));
+                          }
+                          &:active {
+                            filter: brightness(var(--brightness--95));
+                          }
                         `}"
                         data-ondomcontentloaded="${javascript`
                           tippy(this, {
