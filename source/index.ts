@@ -2969,7 +2969,7 @@ export default async function courselore(
                     `}"
                   >
                     <button
-                      class="button button--full-width-on-small-screen button--blue"
+                      class="button button--blue"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -2982,14 +2982,14 @@ export default async function courselore(
                     </button>
                     <a
                       href="${app.locals.settings.url}/courses/new"
-                      class="button button--full-width-on-small-screen button--transparent"
+                      class="button button--transparent"
                     >
                       <i class="bi bi-journal-plus"></i>
                       Create a New Course
                     </a>
                     <a
                       href="${app.locals.settings.url}/settings"
-                      class="button button--full-width-on-small-screen button--transparent"
+                      class="button button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
                       Fill in Your User Profile
@@ -3964,7 +3964,7 @@ export default async function courselore(
                         <a
                           href="${app.locals.settings.url}/courses/${res.locals
                             .course.reference}/settings/invitations"
-                          class="button button--full-width-on-small-screen button--blue"
+                          class="button button--blue"
                         >
                           <i class="bi bi-person-plus"></i>
                           Invite Other People to the Course
@@ -3974,8 +3974,7 @@ export default async function courselore(
                   <a
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/conversations/new"
-                    class="button button--full-width-on-small-screen ${res
-                      .locals.enrollment.role === "staff"
+                    class="button ${res.locals.enrollment.role === "staff"
                       ? "button--transparent"
                       : "button--blue"}"
                   >
