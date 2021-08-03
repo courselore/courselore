@@ -4374,6 +4374,7 @@ export default async function courselore(
       `,
     });
   };
+
   app.get<
     { courseReference: string },
     HTML,
