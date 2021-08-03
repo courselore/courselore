@@ -763,8 +763,8 @@ export default async function courselore(
                     background-color: var(--color--blue--700);
                   }
                 }
-                width: var(--font-size--base);
-                height: var(--font-size--base);
+                width: var(--space--3-5);
+                height: var(--space--3-5);
                 border-radius: var(--border-radius--circle);
                 display: flex;
                 justify-content: center;
