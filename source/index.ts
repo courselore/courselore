@@ -4602,10 +4602,9 @@ export default async function courselore(
                     </button>
                     <div hidden>
                       <div
+                        class="text"
                         style="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--4);
+                          padding: var(--space--2);
                         `}"
                       >
                         <p>
@@ -4614,10 +4613,10 @@ export default async function courselore(
                           example:
                         </p>
                         <pre><code>${dedent`
-                      "Scott" <scott@courselore.org>,
-                      Ali <ali@courselore.org>
-                      leandro@courselore.org
-                    `}</code></pre>
+                          "Scott" <scott@courselore.org>,
+                          Ali <ali@courselore.org>
+                          leandro@courselore.org
+                        `}</code></pre>
                       </div>
                     </div>
                   </div>
