@@ -690,6 +690,13 @@ export default async function courselore(
                   line-height: var(--line-height--xs);
                   font-weight: var(--font-weight--bold);
                 }
+
+                .label--radio-or-checkbox {
+                  cursor: pointer;
+                  display: flex;
+                  gap: var(--space--1);
+                  align-items: center;
+                }
               }
 
               .input--text {
@@ -729,6 +736,65 @@ export default async function courselore(
                 transition-timing-function: var(
                   --transition-timing-function--in-out
                 );
+              }
+
+              .input--radio {
+                background-color: var(--color--gray--medium--200);
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--gray--medium--300);
+                }
+                &:active {
+                  background-color: var(--color--gray--medium--400);
+                }
+                &:checked {
+                  background-color: var(--color--blue--600);
+                }
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--700);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--600);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--medium--500);
+                  }
+                  &:checked {
+                    background-color: var(--color--blue--700);
+                  }
+                }
+                width: var(--font-size--base);
+                height: var(--font-size--base);
+                border-radius: var(--border-radius--circle);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
+
+                &::before {
+                  content: "";
+                  background-color: var(--color--gray--medium--50);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--200);
+                  }
+                  display: block;
+                  width: var(--space--1-5);
+                  height: var(--space--1-5);
+                  border-radius: var(--border-radius--circle);
+                  transition-property: var(--transition-property--transform);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--in-out
+                  );
+                }
+                &:not(:checked)::before {
+                  transform: scale(var(--scale--0));
+                }
               }
 
               .button {
@@ -4473,92 +4539,14 @@ export default async function courselore(
                         gap: var(--space--4);
                       `}"
                     >
-                      <label
-                        style="${css`
-                          cursor: pointer;
-                          display: flex;
-                          gap: var(--space--1);
-                          align-items: center;
-                        `}"
-                      >
+                      <label class="label--radio-or-checkbox">
                         <input
                           type="radio"
                           name="type"
                           value="link"
                           required
                           autocomplete="off"
-                          style="${css`
-                            background-color: var(--color--gray--medium--200);
-                            &:hover,
-                            &:focus-within {
-                              background-color: var(--color--gray--medium--300);
-                            }
-                            &:active {
-                              background-color: var(--color--gray--medium--400);
-                            }
-                            &:checked {
-                              background-color: var(--color--blue--600);
-                            }
-                            @media (prefers-color-scheme: dark) {
-                              background-color: var(--color--gray--medium--700);
-                              &:hover,
-                              &:focus-within {
-                                background-color: var(
-                                  --color--gray--medium--600
-                                );
-                              }
-                              &:active {
-                                background-color: var(
-                                  --color--gray--medium--500
-                                );
-                              }
-                              &:checked {
-                                background-color: var(--color--blue--800);
-                              }
-                            }
-                            width: var(--font-size--base);
-                            height: var(--font-size--base);
-                            border-radius: var(--border-radius--circle);
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            cursor: pointer;
-                            transition-property: var(
-                              --transition-property--colors
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--in-out
-                            );
-
-                            &::before {
-                              content: "";
-                              background-color: var(--color--gray--medium--50);
-                              @media (prefers-color-scheme: dark) {
-                                background-color: var(
-                                  --color--gray--medium--900
-                                );
-                              }
-                              display: block;
-                              width: var(--space--1-5);
-                              height: var(--space--1-5);
-                              border-radius: var(--border-radius--circle);
-                              transition-property: var(
-                                --transition-property--transform
-                              );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--in-out
-                              );
-                            }
-                            &:not(:checked)::before {
-                              transform: scale(var(--scale--0));
-                            }
-                          `}"
+                          class="input--radio"
                           onchange="${javascript`
                             const extraFields = this.closest(".field").querySelector(".extra-fields");
                             extraFields.hidden = true;
