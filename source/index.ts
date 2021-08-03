@@ -968,22 +968,14 @@ export default async function courselore(
 
               .stripped {
                 & > * {
-                  &:nth-child(even) {
+                  &:nth-child(odd) {
                     background-color: var(--color--gray--medium--200);
                     @media (prefers-color-scheme: dark) {
                       background-color: var(--color--gray--medium--800);
                     }
                   }
-                  @media (max-width: 1099px) {
-                    --space--bleed: var(--space--2);
-                  }
-                  @media (min-width: 1100px) {
-                    --space--bleed: var(--space--4);
-                  }
-                  width: calc(100% + 2 * var(--space--bleed));
-                  padding: var(--space--2) var(--space--bleed);
+                  padding: var(--space--2);
                   border-radius: var(--border-radius--md);
-                  margin-left: calc(-1 * var(--space--bleed));
                 }
               }
 
