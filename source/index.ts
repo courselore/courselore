@@ -6872,7 +6872,7 @@ export default async function courselore(
                           $${accentColor === res.locals.enrollment.accentColor
                             ? html`checked`
                             : html``}
-                          class="button"
+                          class="input--radio"
                           style="${css`
                             background-color: var(--color--${accentColor}--500);
                             &:hover,
@@ -6901,45 +6901,6 @@ export default async function courselore(
                                   --color--${accentColor}--700
                                 );
                               }
-                            }
-                            width: var(--space--5);
-                            height: var(--space--5);
-                            border-radius: var(--border-radius--circle);
-                            padding: var(--space--0);
-                            transition-property: var(
-                              --transition-property--colors
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--in-out
-                            );
-
-                            &::before {
-                              content: "";
-                              background-color: var(--color--gray--medium--50);
-                              @media (prefers-color-scheme: dark) {
-                                background-color: var(
-                                  --color--gray--medium--900
-                                );
-                              }
-                              display: block;
-                              width: var(--space--2);
-                              height: var(--space--2);
-                              border-radius: var(--border-radius--circle);
-                              transition-property: var(
-                                --transition-property--transform
-                              );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--in-out
-                              );
-                            }
-                            &:not(:checked)::before {
-                              transform: scale(var(--scale--0));
                             }
                           `}"
                         />
