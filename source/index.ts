@@ -6859,7 +6859,7 @@ export default async function courselore(
                     class="label--text"
                     style="${css`
                       display: flex;
-                      gap: var(--space--2);
+                      gap: var(--space--1);
                     `}"
                   >
                     Accent Color
@@ -6871,7 +6871,7 @@ export default async function courselore(
                       `}"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
-                          content: "The accent color helps you tell your courses apart.",
+                          content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
                           trigger: "click",
                         });
                       `}"
@@ -6883,7 +6883,6 @@ export default async function courselore(
                     style="${css`
                       display: flex;
                       gap: var(--space--2);
-                      flex-wrap: wrap;
                     `}"
                   >
                     $${app.locals.constants.accentColors.map(
@@ -6912,16 +6911,16 @@ export default async function courselore(
 
                             &::before {
                               content: "";
-                              display: block;
-                              width: var(--space--2);
-                              height: var(--space--2);
-                              border-radius: var(--border-radius--circle);
                               background-color: var(--color--gray--medium--50);
                               @media (prefers-color-scheme: dark) {
                                 background-color: var(
                                   --color--gray--medium--900
                                 );
                               }
+                              display: block;
+                              width: var(--space--2);
+                              height: var(--space--2);
+                              border-radius: var(--border-radius--circle);
                               transition-property: var(
                                 --transition-property--transform
                               );
