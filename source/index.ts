@@ -815,6 +815,10 @@ export default async function courselore(
 
                 &.button--icon {
                   padding: var(--space--0-5) var(--space--1);
+
+                  &.button--icon--inline {
+                    margin-top: var(--space---0-5);
+                  }
                 }
 
                 &.button--full-width-on-small-screen {
@@ -4586,10 +4590,7 @@ export default async function courselore(
                     Emails
                     <button
                       type="button"
-                      class="button button--icon button--transparent"
-                      style="${css`
-                        margin-top: var(--space---0-5);
-                      `}"
+                      class="button button--icon button--icon--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
@@ -6825,10 +6826,7 @@ export default async function courselore(
                     Accent Color
                     <button
                       type="button"
-                      class="button button--icon button--transparent"
-                      style="${css`
-                        margin-top: var(--space---0-5);
-                      `}"
+                      class="button button--icon button--icon--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
