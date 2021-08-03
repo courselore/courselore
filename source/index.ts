@@ -689,6 +689,8 @@ export default async function courselore(
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   font-weight: var(--font-weight--bold);
+                  display: flex;
+                  gap: var(--space--1);
                 }
 
                 .label--radio-or-checkbox {
@@ -4548,9 +4550,9 @@ export default async function courselore(
                           autocomplete="off"
                           class="input--radio"
                           onchange="${javascript`
-                            const extraFields = this.closest(".field").querySelector(".extra-fields");
-                            extraFields.hidden = true;
-                            for (const element of extraFields.querySelectorAll("*"))
+                            const emails = this.closest("form").querySelector(".emails");
+                            emails.hidden = true;
+                            for (const element of emails.querySelectorAll("*"))
                               if (element.disabled !== null) element.disabled = true;
                           `}"
                         />
@@ -4566,9 +4568,9 @@ export default async function courselore(
                           autocomplete="off"
                           class="input--radio"
                           onchange="${javascript`
-                            const extraFields = this.closest(".field").querySelector(".extra-fields");
-                            extraFields.hidden = false;
-                            for (const element of extraFields.querySelectorAll("*"))
+                            const emails = this.closest("form").querySelector(".emails");
+                            emails.hidden = false;
+                            for (const element of emails.querySelectorAll("*"))
                               if (element.disabled !== null) element.disabled = false;
                           `}"
                         />
@@ -4576,95 +4578,85 @@ export default async function courselore(
                         Email
                       </label>
                     </div>
-                    <div
-                      hidden
-                      class="extra-fields"
+                  </div>
+                </div>
+
+                <div hidden class="emails label">
+                  <div class="label--text">
+                    Emails
+                    <button
+                      type="button"
+                      class="button button--icon button--transparent"
                       style="${css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                        }
+                        margin-top: var(--space---0-5);
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          trigger: "click",
+                        });
                       `}"
                     >
-                      <textarea
-                        name="emails"
-                        placeholder="Emails"
-                        required
-                        disabled
-                        class="input--text"
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                    <div hidden>
+                      <div
                         style="${css`
-                          padding-right: var(--space--10);
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          (this.validators ??= []).push(() => {
-                            const emails = [];
-                            for (let email of this.value.split(${/[,\n]/})) {
-                              email = email.trim();
-                              let name = null;
-                              const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
-                              if (match !== null) {
-                                email = match.groups.email.trim();
-                                name = match.groups.name.trim();
-                                if (name.startsWith('"') && name.endsWith('"'))
-                                  name = name.slice(1, -1);
-                                if (name === "") name = null;
-                              }
-                              if (email === "") continue;
-                              emails.push({ email, name });
-                            }
-                            if (
-                              emails.length === 0 ||
-                              emails.some(
-                                ({ email }) => !email.match(${
-                                  app.locals.constants.emailRegExp
-                                })
-                              )
-                            )
-                              return "Match the requested format.";
-                          });
-                        `}"
-                      ></textarea>
-                      <button
-                        type="button"
-                        class="button"
-                        style="${css`
-                          justify-self: end;
-                          align-self: start;
-                          margin-top: var(--space--2);
-                          margin-right: var(--space--4);
-                          position: relative;
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
-                            trigger: "click",
-                          });
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
                         `}"
                       >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                      <div hidden>
-                        <div
-                          style="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
-                        >
-                          <p>
-                            Emails must be separated by commas and/or newlines,
-                            and may include names which may be quoted or not,
-                            for example:
-                          </p>
-                          <pre><code>${dedent`
-                            "Scott" <scott@courselore.org>,
-                            Ali <ali@courselore.org>
-                            leandro@courselore.org
-                          `}</code></pre>
-                        </div>
+                        <p>
+                          Emails must be separated by commas and/or newlines,
+                          and may include names which may be quoted or not, for
+                          example:
+                        </p>
+                        <pre><code>${dedent`
+                      "Scott" <scott@courselore.org>,
+                      Ali <ali@courselore.org>
+                      leandro@courselore.org
+                    `}</code></pre>
                       </div>
                     </div>
                   </div>
+                  <textarea
+                    name="emails"
+                    required
+                    disabled
+                    class="input--text"
+                    style="${css`
+                      padding-right: var(--space--7);
+                    `}"
+                    data-ondomcontentloaded="${javascript`
+                        (this.validators ??= []).push(() => {
+                          const emails = [];
+                          for (let email of this.value.split(${/[,\n]/})) {
+                            email = email.trim();
+                            let name = null;
+                            const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                            if (match !== null) {
+                              email = match.groups.email.trim();
+                              name = match.groups.name.trim();
+                              if (name.startsWith('"') && name.endsWith('"'))
+                                name = name.slice(1, -1);
+                              if (name === "") name = null;
+                            }
+                            if (email === "") continue;
+                            emails.push({ email, name });
+                          }
+                          if (
+                            emails.length === 0 ||
+                            emails.some(
+                              ({ email }) => !email.match(${
+                                app.locals.constants.emailRegExp
+                              })
+                            )
+                          )
+                            return "Match the requested format.";
+                        });
+                      `}"
+                  ></textarea>
                 </div>
 
                 <div class="label">
@@ -4737,7 +4729,6 @@ export default async function courselore(
                     </div>
                     <div
                       hidden
-                      class="extra-fields"
                       style="${css`
                         display: grid;
                         & > * {
@@ -6830,13 +6821,7 @@ export default async function courselore(
                 `}"
               >
                 <div class="label">
-                  <div
-                    class="label--text"
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--1);
-                    `}"
-                  >
+                  <div class="label--text">
                     Accent Color
                     <button
                       type="button"
