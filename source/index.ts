@@ -4817,7 +4817,6 @@ export default async function courselore(
                                 : html`
                                     <div
                                       style="${css`
-                                        flex: 1;
                                         display: flex;
                                         flex-direction: column;
                                       `}"
