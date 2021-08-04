@@ -4920,13 +4920,16 @@ export default async function courselore(
                               <div
                                 style="${css`
                                   display: flex;
+                                  justify-content: space-between;
                                 `}"
                               >
                                 <div
                                   style="${css`
                                     width: var(--space--24);
                                     display: flex;
-                                    justify-content: flex-end;
+                                    @media (min-width: 500px) {
+                                      justify-content: flex-end;
+                                    }
                                   `}"
                                 >
                                   <button
