@@ -4751,9 +4751,10 @@ export default async function courselore(
                                 $${invitation.email === null
                                   ? html`
                                       <button
-                                        class="invitation--${invitation.reference} button button--tight button--transparent strong"
+                                        id="invitation--${invitation.reference}"
+                                        class="button button--tight button--transparent strong"
                                         data-ondomcontentloaded="${javascript`
-                                          tippy(this, {
+                                          this.tooltip = tippy(this, {
                                             content: "See Invitation Link",
                                             touch: false,
                                           });
@@ -5334,6 +5335,7 @@ export default async function courselore(
                   style="${css`
                     display: flex;
                     justify-content: center;
+                    align-items: baseline;
                     gap: var(--space--4);
                   `}"
                 >
@@ -5341,7 +5343,12 @@ export default async function courselore(
                   <button
                     class="button button--green"
                     onclick="${javascript`
-                      document.querySelector(".invitation--${invitation.reference}").click();
+                      const id = "#invitation--${invitation.reference}";
+                      window.location.hash = id;
+                      const button = document.querySelector(id);
+                      button.click();
+                      button.tooltip.hide();
+                      this.closest(".flash").remove();
                     `}"
                   >
                     See Invitation
