@@ -4844,7 +4844,25 @@ export default async function courselore(
                                       </div>
                                       <i class="bi bi-chevron-down"></i>
                                     </button>
-                                    <div hidden></div>
+                                    <div hidden>
+                                      <div class="dropdown-menu">
+                                        <form
+                                          method="POST"
+                                          action="${action}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="resend"
+                                            value="true"
+                                          />
+                                          <button
+                                            class="dropdown-menu--item button button--transparent"
+                                          >
+                                            Resend Invitation Email
+                                          </button>
+                                        </form>
+                                      </div>
+                                    </div>
                                     <div
                                       hidden
                                       style="${css`
