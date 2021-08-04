@@ -5737,6 +5737,7 @@ export default async function courselore(
                           style="${css`
                             display: flex;
                             justify-content: space-between;
+                            gap: var(--space--2);
                           `}"
                         >
                           <div>
