@@ -4714,14 +4714,14 @@ export default async function courselore(
                                 flex: 1;
                               `}"
                             >
-                              $${invitation.email === null
-                                ? html`
-                                    <div
-                                      style="${css`
-                                        display: flex;
-                                        gap: var(--space--2);
-                                      `}"
-                                    >
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                $${invitation.email === null
+                                  ? html`
                                       <i class="bi bi-link"></i>
                                       <button
                                         $${isExpired
@@ -4811,15 +4811,8 @@ export default async function courselore(
                                               </div>
                                             `;
                                           })()}
-                                    </div>
-                                  `
-                                : html`
-                                    <div
-                                      style="${css`
-                                        display: flex;
-                                        gap: var(--space--2);
-                                      `}"
-                                    >
+                                    `
+                                  : html`
                                       <i class="bi bi-envelope"></i>
                                       <div
                                         style="${css`
@@ -4898,8 +4891,8 @@ export default async function courselore(
                                               <div>${invitation.email}</div>
                                             `}
                                       </div>
-                                    </div>
-                                  `}
+                                    `}
+                              </div>
                             </div>
                             <div
                               style="${css`
