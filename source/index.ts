@@ -4469,11 +4469,11 @@ export default async function courselore(
                         autocomplete="off"
                         class="input--radio"
                         onchange="${javascript`
-                            const emails = this.closest("form").querySelector(".emails");
-                            emails.hidden = true;
-                            for (const element of emails.querySelectorAll("*"))
-                              if (element.disabled !== null) element.disabled = true;
-                          `}"
+                          const emails = this.closest("form").querySelector(".emails");
+                          emails.hidden = true;
+                          for (const element of emails.querySelectorAll("*"))
+                            if (element.disabled !== null) element.disabled = true;
+                        `}"
                       />
                       <i class="bi bi-link"></i>
                       Invitation Link
@@ -4487,11 +4487,11 @@ export default async function courselore(
                         autocomplete="off"
                         class="input--radio"
                         onchange="${javascript`
-                            const emails = this.closest("form").querySelector(".emails");
-                            emails.hidden = false;
-                            for (const element of emails.querySelectorAll("*"))
-                              if (element.disabled !== null) element.disabled = false;
-                          `}"
+                          const emails = this.closest("form").querySelector(".emails");
+                          emails.hidden = false;
+                          for (const element of emails.querySelectorAll("*"))
+                            if (element.disabled !== null) element.disabled = false;
+                        `}"
                       />
                       <i class="bi bi-envelope"></i>
                       Email
@@ -4616,11 +4616,11 @@ export default async function courselore(
                         autocomplete="off"
                         class="input--radio"
                         onchange="${javascript`
-                            const expiresAt = this.closest("form").querySelector(".expires-at");
-                            expiresAt.hidden = true;
-                            for (const element of expiresAt.querySelectorAll("*"))
-                              if (element.disabled !== undefined) element.disabled = true;
-                          `}"
+                          const expiresAt = this.closest("form").querySelector(".expires-at");
+                          expiresAt.hidden = true;
+                          for (const element of expiresAt.querySelectorAll("*"))
+                            if (element.disabled !== undefined) element.disabled = true;
+                        `}"
                       />
                       <i class="bi bi-calendar-minus"></i>
                       Doesn’t Expire
@@ -4633,11 +4633,11 @@ export default async function courselore(
                         autocomplete="off"
                         class="input--radio"
                         onchange="${javascript`
-                            const expiresAt = this.closest("form").querySelector(".expires-at");
-                            expiresAt.hidden = false;
-                            for (const element of expiresAt.querySelectorAll("*"))
-                              if (element.disabled !== undefined) element.disabled = false;
-                          `}"
+                          const expiresAt = this.closest("form").querySelector(".expires-at");
+                          expiresAt.hidden = false;
+                          for (const element of expiresAt.querySelectorAll("*"))
+                            if (element.disabled !== undefined) element.disabled = false;
+                        `}"
                       />
                       <i class="bi bi-calendar-plus"></i>
                       Expires
@@ -4688,6 +4688,7 @@ export default async function courselore(
                   </button>
                 </div>
               </form>
+
               $${invitations.length === 0
                 ? html``
                 : html`
