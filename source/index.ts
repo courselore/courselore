@@ -5633,7 +5633,11 @@ export default async function courselore(
       if (res.locals.invitation.usedAt !== null) return next("validation");
 
       if (req.body.resend === "true") {
-        if (res.locals.invitation.email === null) return next("validation");
+        if (
+          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          res.locals.invitation.email === null
+        )
+          return next("validation");
 
         app.locals.helpers.sendInvitationEmail(res.locals.invitation);
 
@@ -5649,7 +5653,10 @@ export default async function courselore(
       }
 
       if (req.body.role !== undefined) {
-        if (!app.locals.constants.roles.includes(req.body.role))
+        if (
+          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          !app.locals.constants.roles.includes(req.body.role)
+        )
           return next("validation");
 
         app.locals.database.run(
