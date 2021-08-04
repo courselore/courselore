@@ -4900,9 +4900,51 @@ export default async function courselore(
                                 }
                               `}"
                             >
+                              <div>
+                                <button
+                                  class="button button--transparent"
+                                  style="${css`
+                                    justify-content: end;
+                                  `}"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Change Role",
+                                      touch: false,
+                                    });
+                                    ${
+                                      isUsed
+                                        ? javascript`
+                                            tippy(this, {
+                                              content: "Can’t change role because invitation is used.",
+                                              trigger: "click",
+                                            });
+                                        `
+                                        : isExpired
+                                        ? javascript`
+                                            tippy(this, {
+                                              content: "Can’t change role because invitation is expired.",
+                                              trigger: "click",
+                                            });
+                                        `
+                                        : javascript`
+                                          tippy(this, {
+                                            content: this.nextElementSibling.firstElementChild,
+                                            trigger: "click",
+                                            interactive: true,
+                                          });
+                                      `
+                                    }
+                                  `}"
+                                >
+                                  ${lodash.capitalize(invitation.role)}
+                                  <i class="bi bi-chevron-down"></i>
+                                </button>
+                                <div hidden></div>
+                              </div>
                               <div
+                                hidden
                                 style="${css`
-                                  width: var(--space--20);
+                                  width: var(--space--28);
                                   display: flex;
                                   justify-content: end;
                                 `}"
