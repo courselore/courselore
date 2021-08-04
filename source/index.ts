@@ -5013,6 +5013,9 @@ export default async function courselore(
                                         method="POST"
                                         action="${action}?_method=PATCH"
                                         class="dropdown-menu"
+                                        style="${css`
+                                          gap: var(--space--2);
+                                        `}"
                                       >
                                         <div class="dropdown-menu--item">
                                           <input
@@ -5025,12 +5028,12 @@ export default async function courselore(
                                             autocomplete="off"
                                             class="input--text"
                                             data-ondomcontentloaded="${javascript`
-                                            localizeTime(this);
-                                            (this.validators ??= []).push(() => {
-                                              if (new Date(this.value).getTime() <= Date.now())
-                                                return "Must be in the future.";
-                                            });
-                                          `}"
+                                              localizeTime(this);
+                                              (this.validators ??= []).push(() => {
+                                                if (new Date(this.value).getTime() <= Date.now())
+                                                  return "Must be in the future.";
+                                              });
+                                            `}"
                                           />
                                         </div>
                                         <button
@@ -5045,6 +5048,7 @@ export default async function courselore(
                                       <form
                                         method="POST"
                                         action="${action}?_method=PATCH"
+                                        class="dropdown-menu"
                                       >
                                         <input
                                           type="hidden"
@@ -5063,6 +5067,7 @@ export default async function courselore(
                                       <form
                                         method="POST"
                                         action="${action}?_method=PATCH"
+                                        class="dropdown-menu"
                                       >
                                         <input
                                           type="hidden"
@@ -5190,13 +5195,14 @@ export default async function courselore(
                                             <div hidden>
                                               <div
                                                 style="${css`
-                                                  padding-top: var(--space--1);
+                                                  padding-top: var(--space--2);
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--2);
                                                 `}"
                                               >
                                                 $${changeExpirationForm}
-                                                <hr
-                                                  class="dropdown--separator"
-                                                />
+                                                <hr class="separator" />
                                                 $${expireForm}
                                               </div>
                                             </div>
@@ -5225,7 +5231,13 @@ export default async function courselore(
                                               <i class="bi bi-chevron-down"></i>
                                             </button>
                                             <div hidden>
-                                              <div>
+                                              <div
+                                                style="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--2);
+                                                `}"
+                                              >
                                                 <h3 class="heading">
                                                   <i
                                                     class="bi bi-calendar-plus"
@@ -5243,13 +5255,9 @@ export default async function courselore(
                                                     </time>
                                                   </span>
                                                 </h3>
-                                                <hr
-                                                  class="dropdown--separator"
-                                                />
+                                                <hr class="separator" />
                                                 $${changeExpirationForm}
-                                                <hr
-                                                  class="dropdown--separator"
-                                                />
+                                                <hr class="separator" />
                                                 $${removeExpirationForm}
                                                 $${expireForm}
                                               </div>
