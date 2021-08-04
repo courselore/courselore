@@ -2093,7 +2093,9 @@ export default async function courselore(
                     <p class="strong">${res.locals.user.name}</p>
                     <p class="secondary">${res.locals.user.email}</p>
                   </div>
+
                   <hr class="separator" />
+
                   <div class="dropdown-menu">
                     <a
                       class="dropdown-menu--item button button--transparent"
