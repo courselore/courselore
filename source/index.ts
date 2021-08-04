@@ -4275,6 +4275,7 @@ export default async function courselore(
           <div
             style="${css`
               flex: 1;
+              min-width: var(--width--0);
               max-width: var(--width--prose);
             `}"
           >
