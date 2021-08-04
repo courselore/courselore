@@ -4706,30 +4706,27 @@ export default async function courselore(
                           <div
                             style="${css`
                               display: flex;
+                              gap: var(--space--2);
                               align-items: baseline;
                             `}"
                           >
+                            $${invitation.email === null
+                              ? html`<i class="bi bi-link"></i>`
+                              : html`<i class="bi bi-envelope"></i>`}
                             <div
                               style="${css`
                                 flex: 1;
                               `}"
                             >
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  gap: var(--space--2);
-                                  align-items: baseline;
-                                `}"
-                              >
-                                $${invitation.email === null
-                                  ? html`
-                                      <i class="bi bi-link"></i>
-                                      <button
-                                        $${isExpired
-                                          ? html`disabled`
-                                          : html`
-                                              class="button"
-                                              data-ondomcontentloaded="${javascript`
+                              $${invitation.email === null
+                                ? html`
+                                    <button
+                                      class="button button--transparent"
+                                      $${isExpired
+                                        ? html`disabled`
+                                        : html`
+                                            class="button"
+                                            data-ondomcontentloaded="${javascript`
                                                 tippy(this, {
                                                   content: "See Invitation Link",
                                                   touch: false,
@@ -4741,56 +4738,56 @@ export default async function courselore(
                                                   maxWidth: "none",
                                                 });
                                               `}"
-                                            `}
-                                      >
-                                        <span
-                                          class="strong"
-                                          $${isExpired
-                                            ? html`
-                                                tabindex="0"
-                                                data-ondomcontentloaded="${javascript`
+                                          `}
+                                    >
+                                      <span
+                                        class="strong"
+                                        $${isExpired
+                                          ? html`
+                                              tabindex="0"
+                                              data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
                                                     content: "Can’t show Invitation Link because it’s expired.",
                                                   });
                                                 `}"
-                                              `
-                                            : html``}
-                                        >
-                                          ${"*".repeat(
-                                            6
-                                          )}${invitation.reference.slice(6)}
-                                          <i class="bi bi-chevron-down"></i>
-                                        </span>
-                                      </button>
-                                      $${isExpired
-                                        ? html``
-                                        : (() => {
-                                            const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                            return html`
-                                              <div hidden>
+                                            `
+                                          : html``}
+                                      >
+                                        ${"*".repeat(
+                                          6
+                                        )}${invitation.reference.slice(6)}
+                                        <i class="bi bi-chevron-down"></i>
+                                      </span>
+                                    </button>
+                                    $${isExpired
+                                      ? html``
+                                      : (() => {
+                                          const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                          return html`
+                                            <div hidden>
+                                              <div
+                                                style="${css`
+                                                  display: flex;
+                                                  gap: var(--space--2);
+                                                  align-items: center;
+                                                `}"
+                                              >
                                                 <div
                                                   style="${css`
-                                                    display: flex;
-                                                    gap: var(--space--2);
-                                                    align-items: center;
+                                                    user-select: all;
                                                   `}"
                                                 >
-                                                  <div
-                                                    style="${css`
-                                                      user-select: all;
-                                                    `}"
-                                                  >
-                                                    ${link}
-                                                  </div>
-                                                  <button
-                                                    class="button button--icon button--transparent"
-                                                    data-ondomcontentloaded="${javascript`
+                                                  ${link}
+                                                </div>
+                                                <button
+                                                  class="button button--icon button--transparent"
+                                                  data-ondomcontentloaded="${javascript`
                                                       tippy(this, {
                                                         content: "Copy",
                                                         touch: false,
                                                       });
                                                     `}"
-                                                    onclick="${javascript`
+                                                  onclick="${javascript`
                                                       (async () => {
                                                         await navigator.clipboard.writeText(${JSON.stringify(
                                                           link
@@ -4803,98 +4800,97 @@ export default async function courselore(
                                                         classList.add("bi-clipboard");
                                                       })();
                                                     `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-clipboard"
-                                                    ></i>
-                                                  </button>
-                                                </div>
+                                                >
+                                                  <i
+                                                    class="bi bi-clipboard"
+                                                  ></i>
+                                                </button>
                                               </div>
-                                            `;
-                                          })()}
-                                    `
-                                  : html`
-                                      <i class="bi bi-envelope"></i>
-                                      <div
-                                        style="${css`
-                                          flex: 1;
-                                          display: flex;
-                                          flex-direction: column;
-                                        `}"
-                                      >
-                                        <div>
-                                          <button
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                            `}"
-                                            $${isUsed || isExpired
-                                              ? html`disabled`
-                                              : html`
-                                                  class="button"
-                                                  data-ondomcontentloaded="${javascript`
+                                            </div>
+                                          `;
+                                        })()}
+                                  `
+                                : html`
+                                    <div
+                                      style="${css`
+                                        flex: 1;
+                                        display: flex;
+                                        flex-direction: column;
+                                      `}"
+                                    >
+                                      <div>
+                                        <button
+                                          style="${css`
+                                            font-weight: var(
+                                              --font-weight--bold
+                                            );
+                                          `}"
+                                          $${isUsed || isExpired
+                                            ? html`disabled`
+                                            : html`
+                                                class="button"
+                                                data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
                                                     content: this.nextElementSibling.firstElementChild,
                                                     trigger: "click",
                                                     interactive: true,
                                                   });
                                                 `}"
-                                                `}
-                                          >
-                                            <span
-                                              $${isUsed
-                                                ? html`
-                                                    tabindex="0"
-                                                    data-ondomcontentloaded="${javascript`
+                                              `}
+                                        >
+                                          <span
+                                            $${isUsed
+                                              ? html`
+                                                  tabindex="0"
+                                                  data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s used.",
                                                     });
                                                   `}"
-                                                  `
-                                                : isExpired
-                                                ? html`
-                                                    tabindex="0"
-                                                    data-ondomcontentloaded="${javascript`
+                                                `
+                                              : isExpired
+                                              ? html`
+                                                  tabindex="0"
+                                                  data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s expired.",
                                                     });
                                                   `}"
-                                                  `
-                                                : html``}
+                                                `
+                                              : html``}
+                                          >
+                                            ${invitation.name ??
+                                            invitation.email}
+                                            <i class="bi bi-chevron-down"></i>
+                                          </span>
+                                        </button>
+                                        <div hidden>
+                                          <form
+                                            method="POST"
+                                            action="${action}?_method=PATCH"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="resend"
+                                              value="true"
+                                            />
+                                            <button
+                                              class="dropdown-menu--item button button--transparent"
                                             >
-                                              ${invitation.name ??
-                                              invitation.email}
-                                              <i class="bi bi-chevron-down"></i>
-                                            </span>
-                                          </button>
-                                          <div hidden>
-                                            <form
-                                              method="POST"
-                                              action="${action}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="resend"
-                                                value="true"
-                                              />
-                                              <button
-                                                class="dropdown-menu--item button button--transparent"
-                                              >
-                                                Resend Invitation Email
-                                              </button>
-                                            </form>
-                                          </div>
+                                              Resend Invitation Email
+                                            </button>
+                                          </form>
                                         </div>
-                                        $${invitation.name === null
-                                          ? html``
-                                          : html`
-                                              <div>${invitation.email}</div>
-                                            `}
                                       </div>
-                                    `}
-                              </div>
+                                      $${invitation.name === null
+                                        ? html``
+                                        : html`
+                                            <div>${invitation.email}</div>
+                                          `}
+                                    </div>
+                                  `}
                             </div>
+
                             <div
                               style="${css`
                                 display: flex;
