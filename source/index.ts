@@ -4935,7 +4935,7 @@ export default async function courselore(
                                               />
                                               <button
                                                 class="dropdown-menu--item button button--transparent"
-                                                ${isUsed
+                                                $${isUsed
                                                   ? html`
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
@@ -4949,10 +4949,10 @@ export default async function courselore(
                                                   ? html`
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
-                                                          tippy(this, {
-                                                            content: "Can’t change role because invitation is expired.",
-                                                            trigger: "click",
-                                                          });
+                                                        tippy(this, {
+                                                          content: "Can’t change role because invitation is expired.",
+                                                          trigger: "click",
+                                                        });
                                                       `}"
                                                     `
                                                   : html``}
