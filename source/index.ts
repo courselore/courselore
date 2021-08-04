@@ -5058,35 +5058,39 @@ export default async function courselore(
 
                                   return isUsed
                                     ? html`
-                                        <div
-                                          class="button button--transparent"
-                                          style="${css`
-                                            color: var(--color--green--700);
-                                            @media (prefers-color-scheme: dark) {
-                                              color: var(--color--green--100);
-                                            }
-                                          `}"
-                                          data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: ${JSON.stringify(html`
-                                                Used
-                                                <time
-                                                  data-ondomcontentloaded="${javascript`
+                                        <div>
+                                          <div
+                                            style="${css`
+                                              color: var(--color--green--700);
+                                              @media (prefers-color-scheme: dark) {
+                                                color: var(--color--green--100);
+                                              }
+                                              padding: var(--space--1)
+                                                var(--space--4);
+                                            `}"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                              });
+                                            `}"
+                                          >
+                                            Used
+                                            <i class="bi bi-check-lg"></i>
+                                          </div>
+                                          <div hidden>
+                                            <div>
+                                              Used
+                                              <time
+                                                data-ondomcontentloaded="${javascript`
                                                     relativizeTime(this);
                                                   `}"
-                                                >
-                                                  ${new Date(
-                                                    invitation.usedAt!
-                                                  ).toISOString()}
-                                                </time>
-                                              `)},
-                                              allowHTML: true,
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          Used
-                                          <i class="bi bi-check-lg"></i>
+                                              >
+                                                ${new Date(
+                                                  invitation.usedAt!
+                                                ).toISOString()}
+                                              </time>
+                                            </div>
+                                          </div>
                                         </div>
                                       `
                                     : isExpired
