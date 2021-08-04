@@ -4977,11 +4977,10 @@ export default async function courselore(
                               </div>
 
                               <div
-                                hidden
                                 style="${css`
                                   width: var(--space--40);
                                   display: flex;
-                                  justify-content: end;
+                                  justify-content: flex-end;
                                 `}"
                               >
                                 $${(() => {
