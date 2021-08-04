@@ -5070,23 +5070,23 @@ export default async function courselore(
                                             );
                                           `}"
                                           data-ondomcontentloaded="${javascript`
-                                          tippy(this, {
-                                            content: ${JSON.stringify(html`
-                                              Used
-                                              <time
-                                                data-ondomcontentloaded="${javascript`
-                                                  relativizeTime(this);
-                                                `}"
-                                              >
-                                                ${new Date(
-                                                  invitation.usedAt!
-                                                ).toISOString()}
-                                              </time>
-                                            `)},
-                                            allowHTML: true,
-                                            interactive: true,
-                                          });
-                                        `}"
+                                            tippy(this, {
+                                              content: ${JSON.stringify(html`
+                                                Used
+                                                <time
+                                                  data-ondomcontentloaded="${javascript`
+                                                    relativizeTime(this);
+                                                  `}"
+                                                >
+                                                  ${new Date(
+                                                    invitation.usedAt!
+                                                  ).toISOString()}
+                                                </time>
+                                              `)},
+                                              allowHTML: true,
+                                              interactive: true,
+                                            });
+                                          `}"
                                         >
                                           Used
                                           <i class="bi bi-check-lg"></i>
