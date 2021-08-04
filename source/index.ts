@@ -5458,20 +5458,7 @@ export default async function courselore(
             req,
             res,
             html`
-              <div class="flash--green">
-                Invitations sent successfully.
-                $${app.locals.settings.demonstration
-                  ? html`
-                      <br />
-                      CourseLore doesn’t send emails in Demonstration Mode.
-                      <a
-                        href="${app.locals.settings.url}/demonstration-inbox"
-                        class="link"
-                        >Go to the Demonstration Inbox</a
-                      >.
-                    `
-                  : html``}
-              </div>
+              <div class="flash--green">Invitations sent successfully.</div>
             `
           );
           break;
