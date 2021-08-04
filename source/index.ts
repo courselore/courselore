@@ -803,10 +803,10 @@ export default async function courselore(
                 );
                 cursor: pointer;
 
-                &.button--icon {
+                &.button--tight {
                   padding: var(--space--0-5) var(--space--1);
 
-                  &.button--icon--inline {
+                  &.button--tight--inline {
                     margin-top: var(--space---0-5);
                   }
                 }
@@ -1663,7 +1663,7 @@ export default async function courselore(
                 >
                   $${flash}
                   <button
-                    class="button button--icon button--transparent"
+                    class="button button--tight button--transparent"
                     style="${css`
                       justify-self: end;
                       align-self: start;
@@ -1816,7 +1816,7 @@ export default async function courselore(
           >
             <a
               href="${app.locals.settings.url}/"
-              class="button button--icon button--transparent"
+              class="button button--tight button--transparent"
             >
               $${app.locals.partials.logo}
             </a>
@@ -1910,7 +1910,7 @@ export default async function courselore(
                                       class="dropdown-menu--item button button--transparent"
                                     >
                                       <div
-                                        class="button button--icon"
+                                        class="button button--tight"
                                         style="${css`
                                           color: var(
                                             --color--${otherEnrollment.accentColor}--600
@@ -1952,7 +1952,7 @@ export default async function courselore(
           >
             <div>
               <button
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(
@@ -2039,7 +2039,7 @@ export default async function courselore(
             </div>
             <div>
               <button
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(res.locals.user.name)},
@@ -2957,10 +2957,10 @@ export default async function courselore(
                           <a
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
-                            class="button button--icon button--transparent"
+                            class="button button--tight button--transparent"
                           >
                             <div
-                              class="button button--icon"
+                              class="button button--tight"
                               style="${css`
                                 color: var(
                                   --color--${enrollment.accentColor}--600
@@ -4510,7 +4510,7 @@ export default async function courselore(
                     Emails
                     <button
                       type="button"
-                      class="button button--icon button--icon--inline button--transparent"
+                      class="button button--tight button--tight--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: this.nextElementSibling.firstElementChild,
@@ -4656,7 +4656,7 @@ export default async function courselore(
                     Expires at
                     <button
                       type="button"
-                      class="button button--icon button--icon--inline button--transparent"
+                      class="button button--tight button--tight--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
@@ -4789,7 +4789,7 @@ export default async function courselore(
                                                 ${link}
                                               </div>
                                               <button
-                                                class="button button--icon button--transparent"
+                                                class="button button--tight button--transparent"
                                                 data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
                                                     content: "Copy",
@@ -6659,7 +6659,7 @@ export default async function courselore(
                     Accent Color
                     <button
                       type="button"
-                      class="button button--icon button--icon--inline button--transparent"
+                      class="button button--tight button--tight--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
@@ -7912,7 +7912,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
                 tippy(this, {
@@ -7940,7 +7940,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
                 tippy(this, {
@@ -7968,7 +7968,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
                 tippy(this, {
@@ -7998,7 +7998,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
                 tippy(this, {
@@ -8025,7 +8025,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
                 tippy(this, {
@@ -8052,7 +8052,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
                 tippy(this, {
@@ -8081,7 +8081,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
                 tippy(this, {
@@ -8109,7 +8109,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
                 tippy(this, {
@@ -8137,7 +8137,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
                 tippy(this, {
@@ -8167,7 +8167,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
                 tippy(this, {
@@ -8194,7 +8194,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
                 tippy(this, {
@@ -8223,7 +8223,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
                 tippy(this, {
@@ -8253,7 +8253,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8280,7 +8280,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8310,7 +8310,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8338,7 +8338,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
                 tippy(this, {
@@ -8368,7 +8368,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
                 tippy(this, {
@@ -8394,7 +8394,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
                 tippy(this, {
@@ -8422,7 +8422,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
                 tippy(this, {
@@ -8449,7 +8449,7 @@ export default async function courselore(
               </button>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
                 tippy(this, {
@@ -8507,7 +8507,7 @@ export default async function courselore(
             <div>
               <button
                 type="button"
-                class="button button--icon button--transparent"
+                class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
                 tippy(this, {
                   content: "Help",
@@ -8864,7 +8864,7 @@ ${value}</textarea
                               autocomplete="off"
                             />
                             <span
-                              class="button button--icon button--transparent"
+                              class="button button--tight button--transparent"
                               style="${css`
                                 :checked + & {
                                   display: none;
@@ -8881,7 +8881,7 @@ ${value}</textarea
                               Unpinned
                             </span>
                             <span
-                              class="button button--icon button--transparent strong"
+                              class="button button--tight button--transparent strong"
                               style="${css`
                                 :not(:checked) + * + & {
                                   display: none;
@@ -8900,7 +8900,7 @@ ${value}</textarea
                           </label>
                           <button
                             type="button"
-                            class="button button--icon button--transparent"
+                            class="button button--tight button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Pinned conversations are listed first.",
@@ -8931,7 +8931,7 @@ ${value}</textarea
                         : `checked`}
                     />
                     <span
-                      class="button button--icon button--transparent"
+                      class="button button--tight button--transparent"
                       style="${css`
                         :checked + & {
                           display: none;
@@ -8948,7 +8948,7 @@ ${value}</textarea
                       Not a Question
                     </span>
                     <span
-                      class="button button--icon button--transparent strong"
+                      class="button button--tight button--transparent strong"
                       style="${css`
                         :not(:checked) + * + & {
                           display: none;
