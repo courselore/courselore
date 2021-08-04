@@ -5789,7 +5789,6 @@ export default async function courselore(
                                                   `
                                                 : html``}
                                             >
-                                              Convert to
                                               ${lodash.capitalize(role)}
                                             </button>
                                             $${isSelf
