@@ -4743,17 +4743,17 @@ export default async function courselore(
                                       <button
                                         class="button button--tight button--transparent strong"
                                         data-ondomcontentloaded="${javascript`
-                                        tippy(this, {
-                                          content: "See Invitation Link",
-                                          touch: false,
-                                        });
-                                        tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
-                                          trigger: "click",
-                                          interactive: true,
-                                          maxWidth: "none",
-                                        });
-                                      `}"
+                                          tippy(this, {
+                                            content: "See Invitation Link",
+                                            touch: false,
+                                          });
+                                          tippy(this, {
+                                            content: this.nextElementSibling.firstElementChild,
+                                            trigger: "click",
+                                            interactive: true,
+                                            maxWidth: "none",
+                                          });
+                                        `}"
                                       >
                                         ${"*".repeat(
                                           6
@@ -4805,24 +4805,24 @@ export default async function courselore(
                                                 <button
                                                   class="button button--tight button--transparent"
                                                   data-ondomcontentloaded="${javascript`
-                                                  tippy(this, {
-                                                    content: "Copy",
-                                                    touch: false,
-                                                  });
-                                                `}"
+                                                    tippy(this, {
+                                                      content: "Copy",
+                                                      touch: false,
+                                                    });
+                                                  `}"
                                                   onclick="${javascript`
-                                                  (async () => {
-                                                    await navigator.clipboard.writeText(${JSON.stringify(
-                                                      link
-                                                    )});
-                                                    const classList = this.firstElementChild.classList;
-                                                    classList.remove("bi-clipboard");
-                                                    classList.add("bi-check-lg");
-                                                    await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                    classList.remove("bi-check-lg");
-                                                    classList.add("bi-clipboard");
-                                                  })();
-                                                `}"
+                                                    (async () => {
+                                                      await navigator.clipboard.writeText(${JSON.stringify(
+                                                        link
+                                                      )});
+                                                      const classList = this.firstElementChild.classList;
+                                                      classList.remove("bi-clipboard");
+                                                      classList.add("bi-check-lg");
+                                                      await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                      classList.remove("bi-check-lg");
+                                                      classList.add("bi-clipboard");
+                                                    })();
+                                                  `}"
                                                 >
                                                   <i
                                                     class="bi bi-clipboard"
@@ -4838,12 +4838,12 @@ export default async function courselore(
                                       <button
                                         class="button button--tight button--transparent"
                                         data-ondomcontentloaded="${javascript`
-                                        tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
-                                          trigger: "click",
-                                          interactive: true,
-                                        });
-                                      `}"
+                                          tippy(this, {
+                                            content: this.nextElementSibling.firstElementChild,
+                                            trigger: "click",
+                                            interactive: true,
+                                          });
+                                        `}"
                                       >
                                         <div
                                           style="${css`
@@ -4890,21 +4890,21 @@ export default async function courselore(
                                                 ? html`
                                                     type="button"
                                                     data-ondomcontentloaded="${javascript`
-                                                    tippy(this, {
-                                                      content: "Can’t resend invitation because it’s used.",
-                                                      trigger: "click",
-                                                    });
-                                                  `}"
+                                                      tippy(this, {
+                                                        content: "Can’t resend invitation because it’s used.",
+                                                        trigger: "click",
+                                                      });
+                                                    `}"
                                                   `
                                                 : isExpired
                                                 ? html`
                                                     type="button"
                                                     data-ondomcontentloaded="${javascript`
-                                                    tippy(this, {
-                                                      content: "Can’t resend invitation because it’s expired.",
-                                                      trigger: "click",
-                                                    });
-                                                  `}"
+                                                      tippy(this, {
+                                                        content: "Can’t resend invitation because it’s expired.",
+                                                        trigger: "click",
+                                                      });
+                                                    `}"
                                                   `
                                                 : html``}
                                             >
@@ -4923,15 +4923,7 @@ export default async function courselore(
                                   justify-content: space-between;
                                 `}"
                               >
-                                <div
-                                  style="${css`
-                                    width: var(--space--24);
-                                    display: flex;
-                                    @media (min-width: 500px) {
-                                      justify-content: flex-end;
-                                    }
-                                  `}"
-                                >
+                                <div>
                                   <button
                                     class="button button--tight button--transparent"
                                     data-ondomcontentloaded="${javascript`
