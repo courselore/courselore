@@ -1867,77 +1867,81 @@ export default async function courselore(
                           gap: var(--space--2);
                         `}"
                       >
-                        <div class="dropdown-menu">
-                          <h3 class="dropdown-menu--item heading">
+                        <div>
+                          <h3 class="heading">
                             <i class="bi bi-journal-text"></i>
                             ${res.locals.course.name}
                           </h3>
-                          <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}"
-                            class="dropdown-menu--item button button--transparent ${req.path.includes(
-                              "settings"
-                            )
-                              ? ""
-                              : "active"}"
-                          >
-                            <i class="bi bi-chat-left-text"></i>
-                            Conversations
-                          </a>
-                          <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/settings"
-                            class="dropdown-menu--item button button--transparent ${req.path.includes(
-                              "settings"
-                            )
-                              ? "active"
-                              : ""}"
-                          >
-                            <i class="bi bi-sliders"></i>
-                            Course Settings
-                          </a>
+                          <div class="dropdown-menu">
+                            <a
+                              href="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}"
+                              class="dropdown-menu--item button button--transparent ${req.path.includes(
+                                "settings"
+                              )
+                                ? ""
+                                : "active"}"
+                            >
+                              <i class="bi bi-chat-left-text"></i>
+                              Conversations
+                            </a>
+                            <a
+                              href="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/settings"
+                              class="dropdown-menu--item button button--transparent ${req.path.includes(
+                                "settings"
+                              )
+                                ? "active"
+                                : ""}"
+                            >
+                              <i class="bi bi-sliders"></i>
+                              Course Settings
+                            </a>
+                          </div>
                         </div>
                         $${res.locals.otherEnrollments!.length === 0
                           ? html``
                           : html`
-                              <div class="dropdown-menu">
-                                <p class="dropdown-menu--item heading">
+                              <div>
+                                <h3 class="heading">
                                   <i class="bi bi-arrow-left-right"></i>
                                   Switch to Another Course
-                                </p>
-                                $${res.locals.otherEnrollments!.map(
-                                  (otherEnrollment) => html`
-                                    <a
-                                      href="${app.locals.settings
-                                        .url}/courses/${otherEnrollment.course
-                                        .reference}"
-                                      class="dropdown-menu--item button button--transparent"
-                                    >
-                                      <div
-                                        class="button button--tight"
-                                        style="${css`
-                                          color: var(
-                                            --color--${otherEnrollment.accentColor}--600
-                                          );
-                                          background-color: var(
-                                            --color--${otherEnrollment.accentColor}--100
-                                          );
-                                          @media (prefers-color-scheme: dark) {
+                                </h3>
+                                <div class="dropdown-menu">
+                                  $${res.locals.otherEnrollments!.map(
+                                    (otherEnrollment) => html`
+                                      <a
+                                        href="${app.locals.settings
+                                          .url}/courses/${otherEnrollment.course
+                                          .reference}"
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <div
+                                          class="button button--tight"
+                                          style="${css`
                                             color: var(
-                                              --color--${otherEnrollment.accentColor}--500
+                                              --color--${otherEnrollment.accentColor}--600
                                             );
                                             background-color: var(
-                                              --color--${otherEnrollment.accentColor}--800
+                                              --color--${otherEnrollment.accentColor}--100
                                             );
-                                          }
-                                        `}"
-                                      >
-                                        <i class="bi bi-journal-text"></i>
-                                      </div>
-                                      ${otherEnrollment.course.name}
-                                    </a>
-                                  `
-                                )}
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(
+                                                --color--${otherEnrollment.accentColor}--500
+                                              );
+                                              background-color: var(
+                                                --color--${otherEnrollment.accentColor}--800
+                                              );
+                                            }
+                                          `}"
+                                        >
+                                          <i class="bi bi-journal-text"></i>
+                                        </div>
+                                        ${otherEnrollment.course.name}
+                                      </a>
+                                    `
+                                  )}
+                                </div>
                               </div>
                             `}
                       </div>
@@ -1990,31 +1994,33 @@ export default async function courselore(
                   style="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--4);
+                    gap: var(--space--2);
                   `}"
                 >
                   $${res.locals.invitations!.length === 0
                     ? html``
                     : html`
-                        <div class="dropdown-menu">
-                          <h3 class="dropdown-menu--item heading">
+                        <div>
+                          <h3 class="heading">
                             <i class="bi bi-journal-arrow-down"></i>
                             Invitations
                           </h3>
-                          $${res.locals.invitations!.map(
-                            (invitation) => html`
-                              <a
-                                href="${app.locals.settings
-                                  .url}/courses/${invitation.course
-                                  .reference}/invitations/${invitation.reference}"
-                                class="dropdown-menu--item button button--transparent"
-                              >
-                                <i class="bi bi-journal-arrow-down"></i>
-                                Enroll in ${invitation.course.name} as
-                                ${lodash.capitalize(invitation.role)}
-                              </a>
-                            `
-                          )}
+                          <div class="dropdown-menu">
+                            $${res.locals.invitations!.map(
+                              (invitation) => html`
+                                <a
+                                  href="${app.locals.settings
+                                    .url}/courses/${invitation.course
+                                    .reference}/invitations/${invitation.reference}"
+                                  class="dropdown-menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-journal-arrow-down"></i>
+                                  Enroll in ${invitation.course.name} as
+                                  ${lodash.capitalize(invitation.role)}
+                                </a>
+                              `
+                            )}
+                          </div>
                         </div>
                       `}
                   <div class="dropdown-menu">
