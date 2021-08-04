@@ -4961,7 +4961,6 @@ export default async function courselore(
                                                     `
                                                   : html``}
                                               >
-                                                Change Invitation Role to
                                                 ${lodash.capitalize(role)}
                                               </button>
                                             </form>
