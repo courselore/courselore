@@ -908,7 +908,7 @@ export default async function courselore(
                 }
               }
 
-              ${["green", "rose"].map(
+              ${["blue", "green", "rose", "amber"].map(
                 (color) => css`
                   .text--${color} {
                     color: var(--color--${color}--600);
@@ -5065,6 +5065,10 @@ export default async function courselore(
                                         <div>
                                           <div
                                             class="text--green"
+                                            style="${css`
+                                              padding: var(--space--1)
+                                                var(--space--2);
+                                            `}"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: this.nextElementSibling.firstElementChild,
@@ -5140,77 +5144,21 @@ export default async function courselore(
                                     ? html`
                                         <div>
                                           <button
-                                            style="${css`
-                                              color: var(--color--blue--700);
-                                              background-color: var(
-                                                --color--blue--100
-                                              );
-                                              &:hover,
-                                              &:focus-within {
-                                                background-color: var(
-                                                  --color--blue--200
-                                                );
-                                              }
-                                              &:active {
-                                                background-color: var(
-                                                  --color--blue--300
-                                                );
-                                              }
-                                              @media (prefers-color-scheme: dark) {
-                                                color: var(--color--blue--100);
-                                                background-color: var(
-                                                  --color--blue--900
-                                                );
-                                                &:hover,
-                                                &:focus-within {
-                                                  background-color: var(
-                                                    --color--blue--700
-                                                  );
-                                                }
-                                                &:active {
-                                                  background-color: var(
-                                                    --color--blue--600
-                                                  );
-                                                }
-                                              }
-                                              padding: var(--space--1)
-                                                var(--space--2);
-                                              border-radius: var(
-                                                --border-radius--md
-                                              );
-                                              transition-property: var(
-                                                --transition-property--colors
-                                              );
-                                              transition-duration: var(
-                                                --transition-duration--150
-                                              );
-                                              transition-timing-function: var(
-                                                --transition-timing-function--in-out
-                                              );
-                                            `}"
+                                            class="button button--tight button--transparent text--blue"
                                             data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: "Change Expiration",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
+                                            `}"
                                           >
-                                            <span
-                                              style="${css`
-                                                display: inline-flex;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-minus"
-                                              ></i>
-                                              Doesn’t Expire
-                                            </span>
+                                            <i class="bi bi-calendar-minus"></i>
+                                            Doesn’t Expire
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
                                           <div hidden>
@@ -5229,79 +5177,21 @@ export default async function courselore(
                                     : html`
                                         <div>
                                           <button
-                                            style="${css`
-                                              color: var(--color--yellow--700);
-                                              background-color: var(
-                                                --color--yellow--100
-                                              );
-                                              &:hover,
-                                              &:focus-within {
-                                                background-color: var(
-                                                  --color--yellow--200
-                                                );
-                                              }
-                                              &:active {
-                                                background-color: var(
-                                                  --color--yellow--300
-                                                );
-                                              }
-                                              @media (prefers-color-scheme: dark) {
-                                                color: var(
-                                                  --color--yellow--100
-                                                );
-                                                background-color: var(
-                                                  --color--yellow--900
-                                                );
-                                                &:hover,
-                                                &:focus-within {
-                                                  background-color: var(
-                                                    --color--yellow--700
-                                                  );
-                                                }
-                                                &:active {
-                                                  background-color: var(
-                                                    --color--yellow--600
-                                                  );
-                                                }
-                                              }
-                                              padding: var(--space--1)
-                                                var(--space--2);
-                                              border-radius: var(
-                                                --border-radius--md
-                                              );
-                                              transition-property: var(
-                                                --transition-property--colors
-                                              );
-                                              transition-duration: var(
-                                                --transition-duration--150
-                                              );
-                                              transition-timing-function: var(
-                                                --transition-timing-function--in-out
-                                              );
-                                            `}"
+                                            class="button button--tight button--transparent text--amber"
                                             data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: "Change Expiration",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
+                                            `}"
                                           >
-                                            <span
-                                              style="${css`
-                                                display: inline-flex;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-plus"
-                                              ></i>
-                                              Expires
-                                            </span>
+                                            <i class="bi bi-calendar-plus"></i>
+                                            Expires
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
                                           <div hidden>
