@@ -4827,7 +4827,6 @@ export default async function courselore(
                                           content: this.nextElementSibling.firstElementChild,
                                           trigger: "click",
                                           interactive: true,
-                                          maxWidth: "none",
                                         });
                                       `}"
                                     >
