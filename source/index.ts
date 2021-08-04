@@ -4903,9 +4903,6 @@ export default async function courselore(
                               <div>
                                 <button
                                   class="button button--transparent"
-                                  style="${css`
-                                    justify-content: end;
-                                  `}"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Change Role",
