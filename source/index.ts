@@ -4729,30 +4729,28 @@ export default async function courselore(
                                           : html`
                                               class="button"
                                               data-ondomcontentloaded="${javascript`
-                                              tippy(this, {
-                                                content: "See Invitation Link",
-                                                touch: false,
-                                              });
-                                            `}"
-                                              onclick="${javascript`
-                                              MicroModal.show("modal--invitation--${invitation.reference}", microModalDefaults);
-                                            `}"
+                                                tippy(this, {
+                                                  content: "See Invitation Link",
+                                                  touch: false,
+                                                });
+                                                tippy(this, {
+                                                  content: this.nextElementSibling.firstElementChild,
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                });
+                                              `}"
                                             `}
                                       >
                                         <span
-                                          style="${css`
-                                            font-weight: var(
-                                              --font-weight--bold
-                                            );
-                                          `}"
+                                          class="strong"
                                           $${isExpired
                                             ? html`
                                                 tabindex="0"
                                                 data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: "Can’t show Invitation Link because it’s expired.",
-                                                });
-                                              `}"
+                                                  tippy(this, {
+                                                    content: "Can’t show Invitation Link because it’s expired.",
+                                                  });
+                                                `}"
                                               `
                                             : html``}
                                         >
@@ -4762,6 +4760,56 @@ export default async function courselore(
                                           <i class="bi bi-chevron-down"></i>
                                         </span>
                                       </button>
+                                      $${isExpired
+                                        ? html``
+                                        : html`
+                                            <div hidden>
+                                              <div
+                                                style="${css`
+                                                  display: flex;
+                                                  gap: var(--space--2);
+                                                  align-items: center;
+                                                `}"
+                                              >
+                                                <input
+                                                  type="text"
+                                                  value="${app.locals.settings
+                                                    .url}/courses/${res.locals
+                                                    .course
+                                                    .reference}/invitations/${invitation.reference}"
+                                                  readonly
+                                                  class="input--text"
+                                                  onclick="${javascript`
+                                                    this.select();
+                                                  `}"
+                                                />
+                                                <button
+                                                  class="button button--icon button--transparent"
+                                                  data-ondomcontentloaded="${javascript`
+                                                    tippy(this, {
+                                                      content: "Copy",
+                                                      touch: false,
+                                                    });
+                                                  `}"
+                                                  onclick="${javascript`
+                                                    this.previousElementSibling.select();
+                                                    document.execCommand("copy");
+                                                    const classList = this.firstElementChild.classList;
+                                                    classList.remove("bi-clipboard");
+                                                    classList.add("bi-check-lg");
+                                                    window.setTimeout(() => {
+                                                      classList.remove("bi-check-lg");
+                                                      classList.add("bi-clipboard");
+                                                    }, 500);
+                                                  `}"
+                                                >
+                                                  <i
+                                                    class="bi bi-clipboard"
+                                                  ></i>
+                                                </button>
+                                              </div>
+                                            </div>
+                                          `}
                                     </div>
                                   `
                                 : html`
