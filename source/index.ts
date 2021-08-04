@@ -4911,89 +4911,18 @@ export default async function courselore(
                                       content: "Change Role",
                                       touch: false,
                                     });
-                                    ${
-                                      isUsed
-                                        ? javascript`
-                                            tippy(this, {
-                                              content: "Can’t change role because invitation is used.",
-                                              trigger: "click",
-                                            });
-                                        `
-                                        : isExpired
-                                        ? javascript`
-                                            tippy(this, {
-                                              content: "Can’t change role because invitation is expired.",
-                                              trigger: "click",
-                                            });
-                                        `
-                                        : javascript`
-                                          tippy(this, {
-                                            content: this.nextElementSibling.firstElementChild,
-                                            trigger: "click",
-                                            interactive: true,
-                                          });
-                                      `
-                                    }
+                                    tippy(this, {
+                                      content: this.nextElementSibling.firstElementChild,
+                                      trigger: "click",
+                                      interactive: true,
+                                    });
                                   `}"
                                 >
                                   ${lodash.capitalize(invitation.role)}
                                   <i class="bi bi-chevron-down"></i>
                                 </button>
-                                <div hidden></div>
-                              </div>
-                              <div
-                                hidden
-                                style="${css`
-                                  width: var(--space--28);
-                                  display: flex;
-                                  justify-content: end;
-                                `}"
-                              >
-                                <button
-                                  $${isUsed || isExpired
-                                    ? html`disabled`
-                                    : html`
-                                        class="button"
-                                        data-ondomcontentloaded="${javascript`
-                                        tippy(this, {
-                                          content: "Change Role",
-                                          touch: false,
-                                        });
-                                        tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
-                                          trigger: "click",
-                                          interactive: true,
-                                        });
-                                      `}"
-                                      `}
-                                >
-                                  <span
-                                    $${isUsed
-                                      ? html`
-                                          tabindex="0"
-                                          data-ondomcontentloaded="${javascript`
-                                          tippy(this, {
-                                            content: "You may not change the role of this invitation because it has already been used.",
-                                          });
-                                        `}"
-                                        `
-                                      : isExpired
-                                      ? html`
-                                          tabindex="0"
-                                          data-ondomcontentloaded="${javascript`
-                                          tippy(this, {
-                                            content: "You may not change the role of this invitation because it’s expired.",
-                                          });
-                                        `}"
-                                        `
-                                      : html``}
-                                  >
-                                    ${lodash.capitalize(invitation.role)}
-                                    <i class="bi bi-chevron-down"></i>
-                                  </span>
-                                </button>
                                 <div hidden>
-                                  <div>
+                                  <div class="dropdown--menu">
                                     $${app.locals.constants.roles.map((role) =>
                                       role === invitation.role
                                         ? html``
@@ -5009,6 +4938,27 @@ export default async function courselore(
                                               />
                                               <button
                                                 class="dropdown-menu--item button button--transparent"
+                                                ${isUsed
+                                                  ? html`
+                                                      type="button"
+                                                      data-ondomcontentloaded="${javascript`
+                                                        tippy(this, {
+                                                          content: "Can’t change role because invitation is used.",
+                                                          trigger: "click",
+                                                        });
+                                                      `}"
+                                                    `
+                                                  : isExpired
+                                                  ? html`
+                                                      type="button"
+                                                      data-ondomcontentloaded="${javascript`
+                                                          tippy(this, {
+                                                            content: "Can’t change role because invitation is expired.",
+                                                            trigger: "click",
+                                                          });
+                                                      `}"
+                                                    `
+                                                  : html``}
                                               >
                                                 Change Invitation Role to
                                                 ${lodash.capitalize(role)}
