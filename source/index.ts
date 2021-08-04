@@ -4728,7 +4728,7 @@ export default async function courselore(
                               style="${css`
                                 flex: 1;
                                 display: flex;
-                                @media (max-width: 500px) {
+                                @media (max-width: 499px) {
                                   flex-direction: column;
                                 }
                               `}"
@@ -4922,7 +4922,13 @@ export default async function courselore(
                                   display: flex;
                                 `}"
                               >
-                                <div>
+                                <div
+                                  style="${css`
+                                    width: var(--space--24);
+                                    display: flex;
+                                    justify-content: flex-end;
+                                  `}"
+                                >
                                   <button
                                     class="button button--tight button--transparent"
                                     data-ondomcontentloaded="${javascript`
@@ -4991,11 +4997,9 @@ export default async function courselore(
 
                                 <div
                                   style="${css`
-                                    @media (max-width: 500px) {
-                                      width: var(--space--40);
-                                      display: flex;
-                                      justify-content: flex-end;
-                                    }
+                                    width: var(--space--40);
+                                    display: flex;
+                                    justify-content: flex-end;
                                   `}"
                                 >
                                   $${(() => {
