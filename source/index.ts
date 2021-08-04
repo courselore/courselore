@@ -4793,18 +4793,18 @@ export default async function courselore(
                                                   });
                                                 `}"
                                                 onclick="${javascript`
-                                                (async () => {
-                                                  await navigator.clipboard.writeText(${JSON.stringify(
-                                                    link
-                                                  )});
-                                                  const classList = this.firstElementChild.classList;
-                                                  classList.remove("bi-clipboard");
-                                                  classList.add("bi-check-lg");
-                                                  await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                  classList.remove("bi-check-lg");
-                                                  classList.add("bi-clipboard");
-                                                })();
-                                              `}"
+                                                  (async () => {
+                                                    await navigator.clipboard.writeText(${JSON.stringify(
+                                                      link
+                                                    )});
+                                                    const classList = this.firstElementChild.classList;
+                                                    classList.remove("bi-clipboard");
+                                                    classList.add("bi-check-lg");
+                                                    await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                    classList.remove("bi-check-lg");
+                                                    classList.add("bi-clipboard");
+                                                  })();
+                                                `}"
                                               >
                                                 <i class="bi bi-clipboard"></i>
                                               </button>
