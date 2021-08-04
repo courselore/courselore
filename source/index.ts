@@ -4763,10 +4763,15 @@ export default async function courselore(
                                                   <p
                                                     class="rose"
                                                     style="${css`
-                                                      text-align: center;
+                                                      display: flex;
+                                                      gap: var(--space--2);
+                                                      justify-content: center;
                                                     `}"
                                                   >
-                                                    This link is expired!
+                                                    <i
+                                                      class="bi bi-calendar-x"
+                                                    ></i>
+                                                    Expired
                                                   </p>
                                                 `
                                               : html``}
