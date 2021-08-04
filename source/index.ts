@@ -911,7 +911,7 @@ export default async function courselore(
               ${["green", "rose"].map(
                 (color) => css`
                   .text--${color} {
-                    color: var(--color--${color}--500);
+                    color: var(--color--${color}--600);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--${color}--500);
                     }
