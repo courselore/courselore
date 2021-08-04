@@ -4727,7 +4727,7 @@ export default async function courselore(
                               $${invitation.email === null
                                 ? html`
                                     <button
-                                      class="button button--transparent strong"
+                                      class="button button--tight button--transparent strong"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "See Invitation Link",
@@ -4820,7 +4820,7 @@ export default async function courselore(
                                   `
                                 : html`
                                     <button
-                                      class="button button--transparent"
+                                      class="button button--tight button--transparent"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: this.nextElementSibling.firstElementChild,
@@ -4912,7 +4912,7 @@ export default async function courselore(
                             >
                               <div>
                                 <button
-                                  class="button button--transparent"
+                                  class="button button--tight button--transparent"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Change Role",
@@ -5066,7 +5066,7 @@ export default async function courselore(
                                                 color: var(--color--green--100);
                                               }
                                               padding: var(--space--1)
-                                                var(--space--4);
+                                                var(--space--2);
                                             `}"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
