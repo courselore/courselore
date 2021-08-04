@@ -879,7 +879,7 @@ export default async function courselore(
                   color: var(--color--gray--medium--400);
                 }
                 display: flex;
-                gap: var(--space--2);
+                gap: var(--space--1);
               }
 
               .heading--display {
