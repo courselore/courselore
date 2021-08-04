@@ -4856,6 +4856,7 @@ export default async function courselore(
                                           <button
                                             class="dropdown-menu--item button button--transparent"
                                           >
+                                            <i class="bi bi-envelope"></i>
                                             Resend Invitation Email
                                           </button>
                                         </form>
