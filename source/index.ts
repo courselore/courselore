@@ -908,12 +908,16 @@ export default async function courselore(
                 }
               }
 
-              .rose {
-                color: var(--color--rose--600);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--rose--600);
-                }
-              }
+              ${["green", "rose"].map(
+                (color) => css`
+                  .text--${color} {
+                    color: var(--color--${color}--500);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--${color}--500);
+                    }
+                  }
+                `
+              )}
 
               .avatar {
                 border-radius: var(--border-radius--circle);
@@ -4760,7 +4764,7 @@ export default async function courselore(
                                             $${isExpired
                                               ? html`
                                                   <p
-                                                    class="rose"
+                                                    class="text--rose"
                                                     style="${css`
                                                       display: flex;
                                                       gap: var(--space--2);
@@ -5060,14 +5064,7 @@ export default async function courselore(
                                     ? html`
                                         <div>
                                           <div
-                                            style="${css`
-                                              color: var(--color--green--700);
-                                              @media (prefers-color-scheme: dark) {
-                                                color: var(--color--green--100);
-                                              }
-                                              padding: var(--space--1)
-                                                var(--space--2);
-                                            `}"
+                                            class="text--green"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: this.nextElementSibling.firstElementChild,
@@ -5097,13 +5094,7 @@ export default async function courselore(
                                     ? html`
                                         <div>
                                           <button
-                                            class="button button--tight button--transparent"
-                                            style="${css`
-                                              color: var(--color--rose--700);
-                                              @media (prefers-color-scheme: dark) {
-                                                color: var(--color--rose--100);
-                                              }
-                                            `}"
+                                            class="button button--tight button--transparent text--rose"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: "Change Expiration",
