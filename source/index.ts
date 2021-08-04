@@ -4944,7 +4944,7 @@ export default async function courselore(
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
-                                                          content: "Can’t change role because invitation is used.",
+                                                          content: "Can’t change role because the invitation is used.",
                                                           trigger: "click",
                                                         });
                                                       `}"
@@ -4954,7 +4954,7 @@ export default async function courselore(
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
-                                                          content: "Can’t change role because invitation is expired.",
+                                                          content: "Can’t change role because the invitation is expired.",
                                                           trigger: "click",
                                                         });
                                                       `}"
