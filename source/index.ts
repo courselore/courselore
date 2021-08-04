@@ -4815,7 +4815,38 @@ export default async function courselore(
                                     })()}
                                   `
                                 : html`
+                                    <button
+                                      class="button button--transparent"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: this.nextElementSibling.firstElementChild,
+                                          trigger: "click",
+                                          interactive: true,
+                                          maxWidth: "none",
+                                        });
+                                      `}"
+                                    >
+                                      <div
+                                        style="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                          align-items: start;
+                                        `}"
+                                      >
+                                        <span class="strong"
+                                          >${invitation.name ??
+                                          invitation.email}
+                                        </span>
+                                        $${invitation.name !== null
+                                          ? html`${invitation.email}`
+                                          : html``}
+                                      </div>
+                                      <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                    <div hidden></div>
                                     <div
+                                      hidden
                                       style="${css`
                                         display: flex;
                                         flex-direction: column;
