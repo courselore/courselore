@@ -4863,82 +4863,47 @@ export default async function courselore(
                                         </form>
                                       </div>
                                     </div>
-                                    <div
-                                      hidden
-                                      style="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                      `}"
-                                    >
-                                      <div>
-                                        <button
-                                          style="${css`
-                                            font-weight: var(
-                                              --font-weight--bold
-                                            );
-                                          `}"
-                                          $${isUsed || isExpired
-                                            ? html`disabled`
-                                            : html`
-                                                class="button"
-                                                data-ondomcontentloaded="${javascript`
+                                    <div hidden>
+                                      <button
+                                        style="${css`
+                                          font-weight: var(--font-weight--bold);
+                                        `}"
+                                        $${isUsed || isExpired
+                                          ? html`disabled`
+                                          : html`
+                                              class="button"
+                                              data-ondomcontentloaded="${javascript`
                                                   tippy(this, {
                                                     content: this.nextElementSibling.firstElementChild,
                                                     trigger: "click",
                                                     interactive: true,
                                                   });
                                                 `}"
-                                              `}
-                                        >
-                                          <span
-                                            $${isUsed
-                                              ? html`
-                                                  tabindex="0"
-                                                  data-ondomcontentloaded="${javascript`
+                                            `}
+                                      >
+                                        <span
+                                          $${isUsed
+                                            ? html`
+                                                tabindex="0"
+                                                data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s used.",
                                                     });
                                                   `}"
-                                                `
-                                              : isExpired
-                                              ? html`
-                                                  tabindex="0"
-                                                  data-ondomcontentloaded="${javascript`
+                                              `
+                                            : isExpired
+                                            ? html`
+                                                tabindex="0"
+                                                data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s expired.",
                                                     });
                                                   `}"
-                                                `
-                                              : html``}
-                                          >
-                                            ${invitation.name ??
-                                            invitation.email}
-                                            <i class="bi bi-chevron-down"></i>
-                                          </span>
-                                        </button>
-                                        <div hidden>
-                                          <form
-                                            method="POST"
-                                            action="${action}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="resend"
-                                              value="true"
-                                            />
-                                            <button
-                                              class="dropdown-menu--item button button--transparent"
-                                            >
-                                              Resend Invitation Email
-                                            </button>
-                                          </form>
-                                        </div>
-                                      </div>
-                                      $${invitation.name === null
-                                        ? html``
-                                        : html`
-                                            <div>${invitation.email}</div>
-                                          `}
+                                              `
+                                            : html``}
+                                        >
+                                        </span>
+                                      </button>
                                     </div>
                                   `}
                             </div>
