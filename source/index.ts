@@ -908,6 +908,13 @@ export default async function courselore(
                 }
               }
 
+              .rose {
+                color: var(--color--rose--600);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--rose--600);
+                }
+              }
+
               .avatar {
                 border-radius: var(--border-radius--circle);
                 @media (prefers-color-scheme: dark) {
@@ -4721,94 +4728,91 @@ export default async function courselore(
                               $${invitation.email === null
                                 ? html`
                                     <button
-                                      class="button button--transparent"
-                                      $${isExpired
-                                        ? html`disabled`
-                                        : html`
-                                            class="button"
-                                            data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: "See Invitation Link",
-                                                  touch: false,
-                                                });
-                                                tippy(this, {
-                                                  content: this.nextElementSibling.firstElementChild,
-                                                  trigger: "click",
-                                                  interactive: true,
-                                                  maxWidth: "none",
-                                                });
-                                              `}"
-                                          `}
+                                      class="button button--transparent strong"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: "See Invitation Link",
+                                          touch: false,
+                                        });
+                                        tippy(this, {
+                                          content: this.nextElementSibling.firstElementChild,
+                                          trigger: "click",
+                                          interactive: true,
+                                          maxWidth: "none",
+                                        });
+                                      `}"
                                     >
-                                      <span
-                                        class="strong"
-                                        $${isExpired
-                                          ? html`
-                                              tabindex="0"
-                                              data-ondomcontentloaded="${javascript`
-                                                  tippy(this, {
-                                                    content: "Can’t show Invitation Link because it’s expired.",
-                                                  });
-                                                `}"
-                                            `
-                                          : html``}
-                                      >
-                                        ${"*".repeat(
-                                          6
-                                        )}${invitation.reference.slice(6)}
-                                        <i class="bi bi-chevron-down"></i>
-                                      </span>
+                                      ${"*".repeat(
+                                        6
+                                      )}${invitation.reference.slice(6)}
+                                      <i class="bi bi-chevron-down"></i>
                                     </button>
-                                    $${isExpired
-                                      ? html``
-                                      : (() => {
-                                          const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                          return html`
-                                            <div hidden>
+                                    $${(() => {
+                                      const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                      return html`
+                                        <div hidden>
+                                          <div
+                                            style="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            $${isExpired
+                                              ? html`
+                                                  <p
+                                                    class="rose"
+                                                    style="${css`
+                                                      text-align: center;
+                                                    `}"
+                                                  >
+                                                    This link is expired!
+                                                  </p>
+                                                `
+                                              : html``}
+                                            <div
+                                              style="${css`
+                                                display: flex;
+                                                gap: var(--space--2);
+                                                align-items: center;
+                                              `}"
+                                            >
                                               <div
                                                 style="${css`
-                                                  display: flex;
-                                                  gap: var(--space--2);
-                                                  align-items: center;
+                                                  user-select: all;
                                                 `}"
                                               >
-                                                <div
-                                                  style="${css`
-                                                    user-select: all;
-                                                  `}"
-                                                >
-                                                  ${link}
-                                                </div>
-                                                <button
-                                                  class="button button--icon button--transparent"
-                                                  data-ondomcontentloaded="${javascript`
-                                                      tippy(this, {
-                                                        content: "Copy",
-                                                        touch: false,
-                                                      });
-                                                    `}"
-                                                  onclick="${javascript`
-                                                      (async () => {
-                                                        await navigator.clipboard.writeText(${JSON.stringify(
-                                                          link
-                                                        )});
-                                                        const classList = this.firstElementChild.classList;
-                                                        classList.remove("bi-clipboard");
-                                                        classList.add("bi-check-lg");
-                                                        await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                        classList.remove("bi-check-lg");
-                                                        classList.add("bi-clipboard");
-                                                      })();
-                                                    `}"
-                                                >
-                                                  <i
-                                                    class="bi bi-clipboard"
-                                                  ></i>
-                                                </button>
+                                                ${link}
                                               </div>
+                                              <button
+                                                class="button button--icon button--transparent"
+                                                data-ondomcontentloaded="${javascript`
+                                                  tippy(this, {
+                                                    content: "Copy",
+                                                    touch: false,
+                                                  });
+                                                `}"
+                                                onclick="${javascript`
+                                                (async () => {
+                                                  await navigator.clipboard.writeText(${JSON.stringify(
+                                                    link
+                                                  )});
+                                                  const classList = this.firstElementChild.classList;
+                                                  classList.remove("bi-clipboard");
+                                                  classList.add("bi-check-lg");
+                                                  await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                  classList.remove("bi-check-lg");
+                                                  classList.add("bi-clipboard");
+                                                })();
+                                              `}"
+                                              >
+                                                <i class="bi bi-clipboard"></i>
+                                              </button>
                                             </div>
-                                          `;
-                                        })()}
+                                          </div>
+                                        </div>
+                                      `;
+                                    })()}
                                   `
                                 : html`
                                     <div
