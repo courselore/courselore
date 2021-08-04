@@ -4836,18 +4836,25 @@ export default async function courselore(
                                           align-items: start;
                                         `}"
                                       >
-                                        <span class="strong">
+                                        <div
+                                          class="strong"
+                                          style="${css`
+                                            display: flex;
+                                            align-items: baseline;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
                                           ${invitation.name ?? invitation.email}
-                                        </span>
+                                          <i class="bi bi-chevron-down"></i>
+                                        </div>
                                         $${invitation.name !== null
                                           ? html`
-                                              <span class="secondary">
+                                              <div class="secondary">
                                                 ${invitation.email}
-                                              </span>
+                                              </div>
                                             `
                                           : html``}
                                       </div>
-                                      <i class="bi bi-chevron-down"></i>
                                     </button>
                                     <div hidden>
                                       <div class="dropdown-menu">
@@ -4970,7 +4977,7 @@ export default async function courselore(
                               </div>
 
                               <div
-                              hidden
+                                hidden
                                 style="${css`
                                   width: var(--space--40);
                                   display: flex;
