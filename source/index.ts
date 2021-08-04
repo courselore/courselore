@@ -4929,7 +4929,7 @@ export default async function courselore(
                                   <i class="bi bi-chevron-down"></i>
                                 </button>
                                 <div hidden>
-                                  <div class="dropdown--menu">
+                                  <div class="dropdown-menu">
                                     $${app.locals.constants.roles.map((role) =>
                                       role === invitation.role
                                         ? html``
