@@ -4903,10 +4903,10 @@ export default async function courselore(
                             <div
                               style="${css`
                                 display: flex;
-                                gap: var(--space--2);
                                 @media (max-width: 500px) {
                                   flex-direction: column;
                                   align-items: flex-end;
+                                  gap: var(--space--2);
                                 }
                               `}"
                             >
@@ -5059,22 +5059,12 @@ export default async function courselore(
                                   return isUsed
                                     ? html`
                                         <div
+                                          class="button button--transparent"
                                           style="${css`
                                             color: var(--color--green--700);
-                                            background-color: var(
-                                              --color--green--100
-                                            );
                                             @media (prefers-color-scheme: dark) {
                                               color: var(--color--green--100);
-                                              background-color: var(
-                                                --color--green--900
-                                              );
                                             }
-                                            padding: var(--space--1)
-                                              var(--space--2);
-                                            border-radius: var(
-                                              --border-radius--md
-                                            );
                                           `}"
                                           data-ondomcontentloaded="${javascript`
                                             tippy(this, {
