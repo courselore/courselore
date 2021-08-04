@@ -4896,10 +4896,10 @@ export default async function courselore(
                             <div
                               style="${css`
                                 display: flex;
+                                gap: var(--space--2);
                                 @media (max-width: 500px) {
                                   flex-direction: column;
                                   align-items: end;
-                                  gap: var(--space--2);
                                 }
                               `}"
                             >
