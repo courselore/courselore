@@ -686,7 +686,7 @@ export default async function courselore(
                 .label--radio-or-checkbox {
                   cursor: pointer;
                   display: flex;
-                  gap: var(--space--1);
+                  gap: var(--space--2);
                   align-items: center;
                 }
               }
