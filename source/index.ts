@@ -4834,9 +4834,8 @@ export default async function courselore(
                                           align-items: start;
                                         `}"
                                       >
-                                        <span class="strong"
-                                          >${invitation.name ??
-                                          invitation.email}
+                                        <span class="strong">
+                                          ${invitation.name ?? invitation.email}
                                         </span>
                                         $${invitation.name !== null
                                           ? html`${invitation.email}`
