@@ -5689,7 +5689,6 @@ export default async function courselore(
                       style="${css`
                         display: flex;
                         gap: var(--space--2);
-                        align-items: baseline;
                       `}"
                     >
                       $${enrollment.userAvatar === null
@@ -5744,16 +5743,16 @@ export default async function courselore(
                             <button
                               class="button button--tight button--transparent"
                               data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Change Role",
-                                touch: false,
-                              });
-                              tippy(this, {
-                                content: this.nextElementSibling.firstElementChild,
-                                trigger: "click",
-                                interactive: true,
-                              });
-                            `}"
+                                tippy(this, {
+                                  content: "Change Role",
+                                  touch: false,
+                                });
+                                tippy(this, {
+                                  content: this.nextElementSibling.firstElementChild,
+                                  trigger: "click",
+                                  interactive: true,
+                                });
+                              `}"
                             >
                               ${lodash.capitalize(enrollment.role)}
                               <i class="bi bi-chevron-down"></i>
