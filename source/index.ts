@@ -4836,9 +4836,9 @@ export default async function courselore(
                                         <span class="strong">
                                           ${invitation.name ?? invitation.email}
                                         </span>
-                                        $${invitation.name !== null
-                                          ? html`${invitation.email}`
-                                          : html``}
+                                        ${invitation.name !== null
+                                          ? invitation.email
+                                          : ""}
                                       </div>
                                       <i class="bi bi-chevron-down"></i>
                                     </button>
