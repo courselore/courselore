@@ -4718,6 +4718,7 @@ export default async function courselore(
                                 style="${css`
                                   display: flex;
                                   gap: var(--space--2);
+                                  align-items: baseline;
                                 `}"
                               >
                                 $${invitation.email === null
