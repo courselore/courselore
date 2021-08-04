@@ -795,7 +795,7 @@ export default async function courselore(
                 display: flex;
                 gap: var(--space--2);
                 justify-content: center;
-                align-items: center;
+                align-items: baseline;
                 transition-property: var(--transition-property--colors);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
