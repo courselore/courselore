@@ -5064,10 +5064,9 @@ export default async function courselore(
                                     ? html`
                                         <div>
                                           <div
-                                            class="text--green"
+                                            class="button button--tight text--green"
                                             style="${css`
-                                              padding: var(--space--1)
-                                                var(--space--2);
+                                              cursor: default;
                                             `}"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
