@@ -1035,7 +1035,7 @@ export default async function courselore(
                     width: 100%;
                     padding-left: var(--space--2);
                     padding-right: var(--space--2);
-                    justify-content: start;
+                    justify-content: flex-start;
                   }
                 }
               }
@@ -2947,7 +2947,7 @@ export default async function courselore(
                       margin-left: var(--space---2);
                       display: flex;
                       flex-direction: column;
-                      align-items: start;
+                      align-items: flex-start;
                       gap: var(--space--1);
                     `}"
                   >
@@ -4260,7 +4260,7 @@ export default async function courselore(
                       display: none;
                     }
                     .dropdown-menu--item {
-                      justify-content: start;
+                      justify-content: flex-start;
                     }
                   `}"
                 >
@@ -4833,7 +4833,7 @@ export default async function courselore(
                                         style="${css`
                                           display: flex;
                                           flex-direction: column;
-                                          align-items: start;
+                                          align-items: flex-start;
                                         `}"
                                       >
                                         <div
@@ -4906,7 +4906,7 @@ export default async function courselore(
                                 gap: var(--space--2);
                                 @media (max-width: 500px) {
                                   flex-direction: column;
-                                  align-items: end;
+                                  align-items: flex-end;
                                 }
                               `}"
                             >
@@ -5863,7 +5863,7 @@ export default async function courselore(
                         style="${css`
                           width: var(--space--32);
                           display: flex;
-                          justify-content: end;
+                          justify-content: flex-end;
                           align-items: baseline;
                           gap: var(--space--6);
                         `}"
