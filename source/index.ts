@@ -2022,6 +2022,7 @@ export default async function courselore(
                             )}
                           </div>
                         </div>
+                        <hr class="separator" />
                       `}
                   <div class="dropdown-menu">
                     <button
@@ -5008,29 +5009,27 @@ export default async function courselore(
                                       <form
                                         method="POST"
                                         action="${action}?_method=PATCH"
-                                        style="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
+                                        class="dropdown-menu"
                                       >
-                                        <input
-                                          type="text"
-                                          name="expiresAt"
-                                          value="${new Date(
-                                            invitation.expiresAt ?? new Date()
-                                          ).toISOString()}"
-                                          required
-                                          autocomplete="off"
-                                          class="input--text"
-                                          data-ondomcontentloaded="${javascript`
+                                        <div class="dropdown-menu--item">
+                                          <input
+                                            type="text"
+                                            name="expiresAt"
+                                            value="${new Date(
+                                              invitation.expiresAt ?? new Date()
+                                            ).toISOString()}"
+                                            required
+                                            autocomplete="off"
+                                            class="input--text"
+                                            data-ondomcontentloaded="${javascript`
                                             localizeTime(this);
                                             (this.validators ??= []).push(() => {
                                               if (new Date(this.value).getTime() <= Date.now())
                                                 return "Must be in the future.";
                                             });
                                           `}"
-                                        />
+                                          />
+                                        </div>
                                         <button
                                           class="dropdown-menu--item button button--transparent"
                                         >
@@ -5131,7 +5130,13 @@ export default async function courselore(
                                               <i class="bi bi-chevron-down"></i>
                                             </button>
                                             <div hidden>
-                                              <div>
+                                              <div
+                                                style="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--2);
+                                                `}"
+                                              >
                                                 <h3 class="heading">
                                                   <i
                                                     class="bi bi-calendar-x"
@@ -5149,13 +5154,8 @@ export default async function courselore(
                                                     </time>
                                                   </span>
                                                 </h3>
-                                                <hr
-                                                  class="dropdown--separator"
-                                                />
                                                 $${changeExpirationForm}
-                                                <hr
-                                                  class="dropdown--separator"
-                                                />
+                                                <hr class="separator" />
                                                 $${removeExpirationForm}
                                               </div>
                                             </div>
