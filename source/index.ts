@@ -4751,7 +4751,7 @@ export default async function courselore(
                                 $${invitation.email === null
                                   ? html`
                                       <button
-                                        class="button button--tight button--transparent strong"
+                                        class="invitation--${invitation.reference} button button--tight button--transparent strong"
                                         data-ondomcontentloaded="${javascript`
                                           tippy(this, {
                                             content: "See Invitation Link",
@@ -5309,21 +5309,21 @@ export default async function courselore(
 
       switch (req.body.type) {
         case "link":
-          const invitationReference = cryptoRandomString({
-            length: 10,
-            type: "numeric",
-          });
-          app.locals.database.run(
+          const invitation = app.locals.database.get<{ reference: string }>(
             sql`
               INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
               VALUES (
                 ${req.body.expiresAt},
                 ${res.locals.course.id},
-                ${invitationReference},
+                ${cryptoRandomString({
+                  length: 10,
+                  type: "numeric",
+                })},
                 ${req.body.role}
               )
-            `
-          );
+              RETURNING *
+          `
+          )!;
 
           app.locals.helpers.flash.set(
             req,
@@ -5334,21 +5334,14 @@ export default async function courselore(
                   style="${css`
                     display: flex;
                     justify-content: center;
-                    @media (max-width: 419px) {
-                      gap: var(--space--2);
-                      flex-direction: column;
-                    }
-                    @media (min-width: 420px) {
-                      gap: var(--space--4);
-                      align-items: baseline;
-                    }
+                    gap: var(--space--4);
                   `}"
                 >
                   Invitation created successfully.
                   <button
                     class="button button--green"
                     onclick="${javascript`
-                      MicroModal.show("modal--invitation--${invitationReference}", microModalDefaults);
+                      document.querySelector(".invitation--${invitation.reference}").click();
                     `}"
                   >
                     See Invitation
