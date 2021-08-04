@@ -5672,119 +5672,97 @@ export default async function courselore(
                     <div
                       style="${css`
                         display: flex;
+                        gap: var(--space--2);
+                        align-items: baseline;
                       `}"
                     >
-                      <div
-                        style="${css`
-                          width: var(--space--8);
-                        `}"
-                      >
-                        $${enrollment.userAvatar === null
-                          ? html`
-                              <div
-                                style="${css`
-                                  font-size: var(--font-size--xl);
-                                `}"
-                              >
-                                <i class="bi bi-person-circle"></i>
-                              </div>
-                            `
-                          : html`
-                              <img
-                                src="${enrollment.userAvatar}"
-                                alt="${enrollment.userName ??
-                                enrollment.userEmail}"
-                                class="avatar"
-                                style="${css`
-                                  width: var(--font-size--xl);
-                                  height: var(--font-size--xl);
-                                `}"
-                              />
-                            `}
-                      </div>
+                      $${enrollment.userAvatar === null
+                        ? html`
+                            <div
+                              style="${css`
+                                font-size: var(--font-size--xl);
+                              `}"
+                            >
+                              <i class="bi bi-person-circle"></i>
+                            </div>
+                          `
+                        : html`
+                            <img
+                              src="${enrollment.userAvatar}"
+                              alt="${enrollment.userName}"
+                              class="avatar"
+                              style="${css`
+                                width: var(--font-size--xl);
+                                height: var(--font-size--xl);
+                              `}"
+                            />
+                          `}
                       <div
                         style="${css`
                           flex: 1;
                           display: flex;
-                          flex-direction: column;
+                          @media (max-width: 499px) {
+                            flex-direction: column;
+                          }
                         `}"
                       >
-                        <div class="strong">
-                          ${enrollment.userName ?? enrollment.userEmail}
+                        <div
+                          style="${css`
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                          `}"
+                        >
+                          <div class="strong">${enrollment.userName}</div>
+                          <div class="secondary">${enrollment.userEmail}</div>
                         </div>
-                        $${enrollment.userName === null
-                          ? html``
-                          : html`<div>${enrollment.userEmail}</div>`}
-                      </div>
-                      <div
-                        style="${css`
-                          width: var(--space--32);
-                          display: flex;
-                          justify-content: flex-end;
-                          align-items: baseline;
-                          gap: var(--space--6);
-                        `}"
-                      >
-                        <div>
-                          <button
-                            $${isOnlyStaff
-                              ? html`disabled`
-                              : html`
-                                  class="button"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Change Role",
-                                      touch: false,
-                                    });
-                                    tippy(this, {
-                                      content: this.nextElementSibling.firstElementChild,
-                                      trigger: "click",
-                                      interactive: true,
-                                    });
-                                  `}"
-                                `}
-                          >
-                            <span
-                              $${isOnlyStaff
-                                ? html`
-                                    tabindex="0"
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "You may not change your own role because you’re the only staff member.",
-                                      });
-                                    `}"
-                                  `
-                                : html``}
+
+                        <div
+                          style="${css`
+                            display: flex;
+                            justify-content: space-between;
+                          `}"
+                        >
+                          <div>
+                            <button
+                              class="button button--tight button--transparent"
+                              data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Change Role",
+                                touch: false,
+                              });
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                trigger: "click",
+                                interactive: true,
+                              });
+                            `}"
                             >
                               ${lodash.capitalize(enrollment.role)}
                               <i class="bi bi-chevron-down"></i>
-                            </span>
-                          </button>
-                          $${isOnlyStaff
-                            ? html``
-                            : html`
-                                <div hidden>
-                                  <div>
-                                    $${app.locals.constants.roles.map((role) =>
-                                      role === enrollment.role
-                                        ? html``
-                                        : html`
-                                            <form
-                                              method="POST"
-                                              action="${action}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="role"
-                                                value="${role}"
-                                              />
-                                              <div>
-                                                <button
-                                                  class="dropdown-menu--item button button--transparent"
-                                                  $${isSelf
-                                                    ? html`
-                                                        type="button"
-                                                        data-ondomcontentloaded="${javascript`
+                            </button>
+                            <div hidden>
+                              <div>
+                                $${app.locals.constants.roles.map((role) =>
+                                  role === enrollment.role
+                                    ? html``
+                                    : html`
+                                        <form
+                                          method="POST"
+                                          action="${action}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="role"
+                                            value="${role}"
+                                          />
+                                          <div>
+                                            <button
+                                              class="dropdown-menu--item button button--transparent"
+                                              $${isSelf
+                                                ? html`
+                                                    type="button"
+                                                    data-ondomcontentloaded="${javascript`
                                                           tippy(this, {
                                                             content: this.nextElementSibling.firstElementChild,
                                                             theme: "rose",
@@ -5792,139 +5770,112 @@ export default async function courselore(
                                                             interactive: true,
                                                           });
                                                         `}"
-                                                      `
-                                                    : html``}
-                                                >
-                                                  Convert to
-                                                  ${lodash.capitalize(role)}
-                                                </button>
-                                                $${isSelf
-                                                  ? html`
-                                                      <div hidden>
-                                                        <div
+                                                  `
+                                                : html``}
+                                            >
+                                              Convert to
+                                              ${lodash.capitalize(role)}
+                                            </button>
+                                            $${isSelf
+                                              ? html`
+                                                  <div hidden>
+                                                    <div
+                                                      style="${css`
+                                                        padding: var(--space--2)
+                                                          var(--space--0);
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--4);
+                                                      `}"
+                                                    >
+                                                      <p>
+                                                        Are you sure you want to
+                                                        convert yourself into
+                                                        ${role}?
+                                                      </p>
+                                                      <p>
+                                                        <strong
                                                           style="${css`
-                                                            padding: var(
-                                                                --space--2
-                                                              )
-                                                              var(--space--0);
-                                                            display: flex;
-                                                            flex-direction: column;
-                                                            gap: var(
-                                                              --space--4
+                                                            font-weight: var(
+                                                              --font-weight--bold
                                                             );
                                                           `}"
                                                         >
-                                                          <p>
-                                                            Are you sure you
-                                                            want to convert
-                                                            yourself into
-                                                            ${role}?
-                                                          </p>
-                                                          <p>
-                                                            <strong
-                                                              style="${css`
-                                                                font-weight: var(
-                                                                  --font-weight--bold
-                                                                );
-                                                              `}"
-                                                            >
-                                                              You may not undo
-                                                              this action!
-                                                            </strong>
-                                                          </p>
-                                                          <button
-                                                            class="button button--rose"
-                                                          >
-                                                            Convert to
-                                                            ${lodash.capitalize(
-                                                              role
-                                                            )}
-                                                          </button>
-                                                        </div>
-                                                      </div>
-                                                    `
-                                                  : html``}
-                                              </div>
-                                            </form>
-                                          `
-                                    )}
-                                  </div>
-                                </div>
-                              `}
-                        </div>
+                                                          You may not undo this
+                                                          action!
+                                                        </strong>
+                                                      </p>
+                                                      <button
+                                                        class="button button--rose"
+                                                      >
+                                                        Convert to
+                                                        ${lodash.capitalize(
+                                                          role
+                                                        )}
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                `
+                                              : html``}
+                                          </div>
+                                        </form>
+                                      `
+                                )}
+                              </div>
+                            </div>
+                          </div>
 
-                        <div>
-                          <button
-                            $${isOnlyStaff
-                              ? html`disabled`
-                              : html`
-                                  class="button button--rose"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Remove from the Course",
-                                      theme: "rose",
-                                      touch: false,
-                                    });
-                                    tippy(this, {
-                                      content: this.nextElementSibling.firstElementChild,
-                                      theme: "rose",
-                                      trigger: "click",
-                                      interactive: true,
-                                    });
-                                  `}"
-                                `}
-                          >
-                            <span
-                              $${isOnlyStaff
-                                ? html`
-                                    tabindex="0"
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "You may not remove yourself from the course because you’re the only staff member.",
-                                        theme: "rose",
-                                      });
-                                    `}"
-                                  `
-                                : html``}
+                          <div>
+                            <button
+                              class="button button--tight button--transparent text--rose"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Remove from the Course",
+                                  theme: "rose",
+                                  touch: false,
+                                });
+                                tippy(this, {
+                                  content: this.nextElementSibling.firstElementChild,
+                                  theme: "rose",
+                                  trigger: "click",
+                                  interactive: true,
+                                });
+                              `}"
                             >
                               <i class="bi bi-person-dash"></i>
-                            </span>
-                          </button>
-                          $${isOnlyStaff
-                            ? html``
-                            : html`
-                                <div hidden>
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=DELETE"
+                            </button>
+                            <div hidden>
+                              <form
+                                method="POST"
+                                action="${action}?_method=DELETE"
+                                style="${css`
+                                  padding: var(--space--2) var(--space--0);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `}"
+                              >
+                                <p>
+                                  Are you sure you want to remove
+                                  ${isSelf ? "yourself" : "this person"} from
+                                  the course?
+                                </p>
+                                <p>
+                                  <strong
                                     style="${css`
-                                      padding: var(--space--2) var(--space--0);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
+                                      font-weight: var(--font-weight--bold);
                                     `}"
                                   >
-                                    <p>
-                                      Are you sure you want to remove
-                                      ${isSelf ? "yourself" : "this person"}
-                                      from the course?
-                                    </p>
-                                    <p>
-                                      <strong
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                        `}"
-                                      >
-                                        You may not undo this action!
-                                      </strong>
-                                    </p>
-                                    <button class="button button--rose">
-                                      <i class="bi bi-person-dash"></i>
-                                      Remove from the Course
-                                    </button>
-                                  </form>
-                                </div>
-                              `}
+                                    You may not undo this action!
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-person-dash"></i>
+                                  Remove from the Course
+                                </button>
+                              </form>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
