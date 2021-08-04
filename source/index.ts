@@ -955,7 +955,7 @@ export default async function courselore(
                   width: var(--space--3);
                   height: var(--space--3);
                   border: var(--border-width--2) solid
-                    var(--color--gray--medium--700);
+                    var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--800);
                   }
