@@ -4763,52 +4763,54 @@ export default async function courselore(
                                       </button>
                                       $${isExpired
                                         ? html``
-                                        : html`
-                                            <div hidden>
-                                              <div
-                                                style="${css`
-                                                  display: flex;
-                                                  gap: var(--space--2);
-                                                  align-items: center;
-                                                `}"
-                                              >
+                                        : (() => {
+                                            const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                            return html`
+                                              <div hidden>
                                                 <div
                                                   style="${css`
-                                                    user-select: all;
+                                                    display: flex;
+                                                    gap: var(--space--2);
+                                                    align-items: center;
                                                   `}"
                                                 >
-                                                  ${app.locals.settings
-                                                    .url}/courses/${res.locals
-                                                    .course
-                                                    .reference}/invitations/${invitation.reference}
+                                                  <div
+                                                    style="${css`
+                                                      user-select: all;
+                                                    `}"
+                                                  >
+                                                    ${link}
+                                                  </div>
+                                                  <button
+                                                    class="button button--icon button--transparent"
+                                                    data-ondomcontentloaded="${javascript`
+                                                      tippy(this, {
+                                                        content: "Copy",
+                                                        touch: false,
+                                                      });
+                                                    `}"
+                                                    onclick="${javascript`
+                                                      (async () => {
+                                                        await navigator.clipboard.writeText(${JSON.stringify(
+                                                          link
+                                                        )});
+                                                        const classList = this.firstElementChild.classList;
+                                                        classList.remove("bi-clipboard");
+                                                        classList.add("bi-check-lg");
+                                                        await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                        classList.remove("bi-check-lg");
+                                                        classList.add("bi-clipboard");
+                                                      })();
+                                                    `}"
+                                                  >
+                                                    <i
+                                                      class="bi bi-clipboard"
+                                                    ></i>
+                                                  </button>
                                                 </div>
-                                                <button
-                                                  class="button button--icon button--transparent"
-                                                  data-ondomcontentloaded="${javascript`
-                                                    tippy(this, {
-                                                      content: "Copy",
-                                                      touch: false,
-                                                    });
-                                                  `}"
-                                                  onclick="${javascript`
-                                                    this.previousElementSibling.select();
-                                                    document.execCommand("copy");
-                                                    const classList = this.firstElementChild.classList;
-                                                    classList.remove("bi-clipboard");
-                                                    classList.add("bi-check-lg");
-                                                    window.setTimeout(() => {
-                                                      classList.remove("bi-check-lg");
-                                                      classList.add("bi-clipboard");
-                                                    }, 500);
-                                                  `}"
-                                                >
-                                                  <i
-                                                    class="bi bi-clipboard"
-                                                  ></i>
-                                                </button>
                                               </div>
-                                            </div>
-                                          `}
+                                            `;
+                                          })()}
                                     </div>
                                   `
                                 : html`
