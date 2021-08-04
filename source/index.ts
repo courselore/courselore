@@ -4862,46 +4862,28 @@ export default async function courselore(
                                       </div>
                                     </div>
                                     <div hidden>
-                                      <button
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                        `}"
-                                        $${isUsed || isExpired
-                                          ? html`disabled`
-                                          : html`
-                                              class="button"
+                                      <span
+                                        $${isUsed
+                                          ? html`
+                                              tabindex="0"
                                               data-ondomcontentloaded="${javascript`
-                                                  tippy(this, {
-                                                    content: this.nextElementSibling.firstElementChild,
-                                                    trigger: "click",
-                                                    interactive: true,
-                                                  });
-                                                `}"
-                                            `}
-                                      >
-                                        <span
-                                          $${isUsed
-                                            ? html`
-                                                tabindex="0"
-                                                data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s used.",
                                                     });
                                                   `}"
-                                              `
-                                            : isExpired
-                                            ? html`
-                                                tabindex="0"
-                                                data-ondomcontentloaded="${javascript`
+                                            `
+                                          : isExpired
+                                          ? html`
+                                              tabindex="0"
+                                              data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "Can’t resend invitation because it’s expired.",
                                                     });
                                                   `}"
-                                              `
-                                            : html``}
-                                        >
-                                        </span>
-                                      </button>
+                                            `
+                                          : html``}
+                                      >
+                                      </span>
                                     </div>
                                   `}
                             </div>
