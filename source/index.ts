@@ -6805,7 +6805,9 @@ export default async function courselore(
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            <p>Welcome to ${res.locals.invitation.course.name}!</p>
+            <p class="strong">
+              Welcome to ${res.locals.invitation.course.name}!
+            </p>
             <form
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.invitation
@@ -6887,73 +6889,51 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `}"
+            <h2 class="heading">
+              <i class="bi bi-journal-arrow-down"></i>
+              Invitation
+            </h2>
+            <p class="strong">
+              Welcome to ${res.locals.invitation.course.name}!
+            </p>
+            <a
+              href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                redirect: req.originalUrl,
+                ...(res.locals.invitation.email === null
+                  ? {}
+                  : {
+                      email: res.locals.invitation.email,
+                    }),
+                ...(res.locals.invitation.name === null
+                  ? {}
+                  : {
+                      name: res.locals.invitation.name,
+                    }),
+              })}"
+              class="button button--blue"
             >
-              <h2
-                class="heading"
-                style="${css`
-                  color: var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
-                  }
-                `}"
-              >
-                <i class="bi bi-journal-arrow-down"></i>
-                Invitation
-              </h2>
-              <div
-                style="${css`
-                  color: var(--color--gray--medium--800);
-                  background-color: var(--color--gray--medium--100);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
-                    background-color: var(--color--gray--medium--900);
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <p
-                  style="${css`
-                    font-weight: var(--font-weight--bold);
-                  `}"
-                >
-                  Welcome to ${res.locals.invitation.course.name}!
-                </p>
-                <p>To enroll, first you must authenticate.</p>
-
-                <a
-                  href="${app.locals.settings.url}/authenticate?${qs.stringify({
-                    redirect: req.originalUrl,
-                    ...(res.locals.invitation.email === null
-                      ? {}
-                      : {
-                          email: res.locals.invitation.email,
-                        }),
-                    ...(res.locals.invitation.name === null
-                      ? {}
-                      : {
-                          name: res.locals.invitation.name,
-                        }),
-                  })}"
-                  class="button button--blue"
-                  style="${css`
-                    width: 100%;
-                  `}"
-                >
-                  <i class="bi bi-box-arrow-in-right"></i>
-                  Authenticate
-                </a>
-              </div>
-            </div>
+              <i class="bi bi-person-plus"></i>
+              Sign up
+            </a>
+            <a
+              href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                redirect: req.originalUrl,
+                ...(res.locals.invitation.email === null
+                  ? {}
+                  : {
+                      email: res.locals.invitation.email,
+                    }),
+                ...(res.locals.invitation.name === null
+                  ? {}
+                  : {
+                      name: res.locals.invitation.name,
+                    }),
+              })}"
+              class="button button--transparent"
+            >
+              <i class="bi bi-box-arrow-in-right"></i>
+              Sign in
+            </a>
           `,
         })
       );
