@@ -38,6 +38,7 @@ import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import sharp from "sharp";
 import lodash from "lodash";
+import QRCode from "qrcode";
 import faker from "faker";
 
 export default async function courselore(
@@ -6736,7 +6737,7 @@ export default async function courselore(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.isInvitationUsable,
-    (req, res) => {
+    asyncHandler(async (req, res) => {
       res.send(
         app.locals.layouts.box({
           req,
@@ -6753,6 +6754,18 @@ export default async function courselore(
               You tried to use an invitation for ${res.locals.course.name} but
               you’re already enrolled.
             </p>
+            <p>
+              If you wish to share this invitation with other people, you may
+              ask them to point their phone camera at the following QR Code:
+            </p>
+            $${(
+              await QRCode.toString(
+                `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
+                { type: "svg" }
+              )
+            )
+              .replace("#000000", "currentColor")
+              .replace("#ffffff", "transparent")}
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}"
@@ -6764,7 +6777,7 @@ export default async function courselore(
           `,
         })
       );
-    }
+    })
   );
 
   app.get<
