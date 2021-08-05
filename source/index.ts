@@ -5990,6 +5990,9 @@ export default async function courselore(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res, next) => {
+      const isSelf =
+        res.locals.managedEnrollment.id === res.locals.enrollment.id;
+
       if (typeof req.body.role === "string") {
         if (!app.locals.constants.roles.includes(req.body.role))
           return next("validation");
@@ -6004,15 +6007,12 @@ export default async function courselore(
             <div class="flash--green">Enrollment updated successfully.</div>
           `
         );
-
-        if (res.locals.managedEnrollment.id === res.locals.enrollment.id)
-          return res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
-          );
       }
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
+        isSelf
+          ? `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
+          : `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -6027,12 +6027,12 @@ export default async function courselore(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res) => {
+      const isSelf =
+        res.locals.managedEnrollment.id === res.locals.enrollment.id;
+
       app.locals.database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
-
-      const isSelf =
-        res.locals.managedEnrollment.id === res.locals.enrollment.id;
 
       app.locals.helpers.flash.set(
         req,
