@@ -4355,26 +4355,28 @@ export default async function courselore(
         >
           $${res.locals.enrollment.role === "staff"
             ? html`
-                <div
-                  style="${css`
-                    background-color: var(--color--gray--medium--100);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--800);
-                    }
-                    padding: var(--space--2);
-                    border-radius: var(--border-radius--lg);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
-                    @media (max-width: 699px) {
-                      display: none;
-                    }
-                    .dropdown-menu--item {
-                      justify-content: flex-start;
-                    }
-                  `}"
-                >
-                  $${menu}
+                <div>
+                  <div
+                    style="${css`
+                      background-color: var(--color--gray--medium--100);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--gray--medium--800);
+                      }
+                      padding: var(--space--2);
+                      border-radius: var(--border-radius--lg);
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      @media (max-width: 699px) {
+                        display: none;
+                      }
+                      .dropdown-menu--item {
+                        justify-content: flex-start;
+                      }
+                    `}"
+                  >
+                    $${menu}
+                  </div>
                 </div>
               `
             : html``}
