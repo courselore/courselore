@@ -6368,7 +6368,7 @@ export default async function courselore(
                             `}"
                           />
                         </div>
-                        <label class="button button--transparent">
+                        <div class="button button--tight button--transparent">
                           <select
                             required
                             autocomplete="off"
@@ -6386,7 +6386,7 @@ export default async function courselore(
                             <option value="staff">Visible by Staff Only</option>
                           </select>
                           <i class="bi bi-chevron-down"></i>
-                        </label>
+                        </div>
                         <div>
                           <button
                             type="button"
