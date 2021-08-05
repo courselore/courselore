@@ -6283,6 +6283,7 @@ export default async function courselore(
                                       onclick="${javascript`
                                         const tag = this.closest(".tag");
                                         tag.classList.add("deleted");
+                                        tag.classList.add("text--rose");
                                         tag.querySelector('[name$="[delete]"]').disabled = false;
                                         for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
                                       `}"
@@ -6312,6 +6313,7 @@ export default async function courselore(
                                   onclick="${javascript`
                                     const tag = this.closest(".tag");
                                     tag.classList.remove("deleted");
+                                    tag.classList.remove("text--rose");
                                     tag.querySelector('[name$="[delete]"]').disabled = true;
                                     for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
                                   `}"
