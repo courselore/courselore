@@ -1032,7 +1032,7 @@ export default async function courselore(
               .stripped {
                 & > * {
                   &:nth-child(odd) {
-                    background-color: var(--color--gray--medium--200);
+                    background-color: var(--color--gray--medium--100);
                     @media (prefers-color-scheme: dark) {
                       background-color: var(--color--gray--medium--800);
                     }
@@ -6139,7 +6139,7 @@ export default async function courselore(
                   `}"
                 >
                   <div
-                    class="tags"
+                    class="tags stripped"
                     style="${css`
                       display: flex;
                       flex-direction: column;
