@@ -1980,51 +1980,54 @@ export default async function courselore(
                             </a>
                           </div>
                         </div>
-                        $${res.locals.otherEnrollments!.length === 0
-                          ? html``
-                          : html`
+                        $${res.locals.enrollments.length > 1
+                          ? html`
                               <div>
                                 <h3 class="heading">
                                   <i class="bi bi-arrow-left-right"></i>
                                   Switch to Another Course
                                 </h3>
                                 <div class="dropdown-menu">
-                                  $${res.locals.otherEnrollments!.map(
-                                    (otherEnrollment) => html`
+                                  $${res.locals.enrollments.map(
+                                    (enrollment) => html`
                                       <a
                                         href="${app.locals.settings
-                                          .url}/courses/${otherEnrollment.course
+                                          .url}/courses/${enrollment.course
                                           .reference}"
-                                        class="dropdown-menu--item button button--transparent"
+                                        class="dropdown-menu--item button ${enrollment.id ===
+                                        res.locals.enrollment?.id
+                                          ? "button--blue"
+                                          : "button--transparent"}"
                                       >
                                         <div
                                           class="button button--tight"
                                           style="${css`
                                             color: var(
-                                              --color--${otherEnrollment.accentColor}--600
+                                              --color--${enrollment.accentColor}--600
                                             );
                                             background-color: var(
-                                              --color--${otherEnrollment.accentColor}--100
+                                              --color--${enrollment.accentColor}--100
                                             );
                                             @media (prefers-color-scheme: dark) {
                                               color: var(
-                                                --color--${otherEnrollment.accentColor}--500
+                                                --color--${enrollment.accentColor}--500
                                               );
                                               background-color: var(
-                                                --color--${otherEnrollment.accentColor}--800
+                                                --color--${enrollment.accentColor}--800
                                               );
                                             }
                                           `}"
                                         >
                                           <i class="bi bi-journal-text"></i>
                                         </div>
-                                        ${otherEnrollment.course.name}
+                                        ${enrollment.course.name}
                                       </a>
                                     `
                                   )}
                                 </div>
                               </div>
-                            `}
+                            `
+                          : html``}
                       </div>
                     </div>
                   </div>
@@ -3563,7 +3566,6 @@ export default async function courselore(
     extends IsSignedInMiddlewareLocals {
     course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
     enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
-    otherEnrollments: IsSignedInMiddlewareLocals["enrollments"];
     tags: {
       id: number;
       reference: string;
@@ -3627,12 +3629,11 @@ export default async function courselore(
   app.locals.middlewares.isEnrolledInCourse = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
-      res.locals.otherEnrollments = [];
       for (const enrollment of res.locals.enrollments)
         if (enrollment.course.reference === req.params.courseReference) {
           res.locals.enrollment = enrollment;
           res.locals.course = enrollment.course;
-        } else res.locals.otherEnrollments.push(enrollment);
+        }
       if (res.locals.enrollment === undefined) return next("route");
 
       res.locals.tags = app.locals.database.all<{
