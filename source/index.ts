@@ -6745,50 +6745,27 @@ export default async function courselore(
             <title>Invitation · ${res.locals.course.name} · CourseLore</title>
           `,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-journal-arrow-down"></i>
+              Invitation
+            </h2>
+            
+            <p>
+              You tried to use an invitation for ${res.locals.course.name} but
+              you’re already enrolled.
+            </p>
+
+            <a
+              href="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}"
+              class="button button--blue"
               style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
+                width: 100%;
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-journal-arrow-down"></i>
-                Invitation
-              </h2>
-              <div
-                style="${css`
-                  color: var(--color--gray--medium--800);
-                  background-color: var(--color--gray--medium--100);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
-                    background-color: var(--color--gray--medium--900);
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <p>
-                  You tried to use an invitation for ${res.locals.course.name}
-                  but you’re already enrolled.
-                </p>
-
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}"
-                  class="button button--blue"
-                  style="${css`
-                    width: 100%;
-                  `}"
-                >
-                  Go to ${res.locals.course.name}
-                  <i class="bi bi-chevron-right"></i>
-                </a>
-              </div>
-            </div>
+              Go to ${res.locals.course.name}
+              <i class="bi bi-chevron-right"></i>
+            </a>
           `,
         })
       );
