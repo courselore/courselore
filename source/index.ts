@@ -1060,11 +1060,6 @@ export default async function courselore(
               }
 
               .text {
-                color: var(--color--gray--medium--700);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--400);
-                }
-
                 h1,
                 h2,
                 h3,
