@@ -4137,6 +4137,7 @@ export default async function courselore(
       id: number;
       reference: string;
       role: Role;
+      isSelf: boolean;
     };
   }
   app.locals.middlewares.mayManageEnrollment = [
@@ -4155,7 +4156,10 @@ export default async function courselore(
         `
       );
       if (managedEnrollment === undefined) return next("route");
-      res.locals.managedEnrollment = managedEnrollment;
+      res.locals.managedEnrollment = {
+        ...managedEnrollment,
+        isSelf: managedEnrollment.id === res.locals.enrollment.id,
+      };
       if (
         managedEnrollment.id === res.locals.enrollment.id &&
         app.locals.database.get<{ count: number }>(
@@ -5990,9 +5994,6 @@ export default async function courselore(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res, next) => {
-      const isSelf =
-        res.locals.managedEnrollment.id === res.locals.enrollment.id;
-
       if (typeof req.body.role === "string") {
         if (!app.locals.constants.roles.includes(req.body.role))
           return next("validation");
@@ -6010,7 +6011,7 @@ export default async function courselore(
       }
 
       res.redirect(
-        isSelf
+        res.locals.managedEnrollment.isSelf
           ? `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
           : `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
@@ -6027,9 +6028,6 @@ export default async function courselore(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res) => {
-      const isSelf =
-        res.locals.managedEnrollment.id === res.locals.enrollment.id;
-
       app.locals.database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
@@ -6039,14 +6037,16 @@ export default async function courselore(
         res,
         html`
           <div class="flash--green">
-            $${isSelf ? html`You removed yourself` : html`Person removed`} from
-            the course successfully.
+            $${res.locals.managedEnrollment.isSelf
+              ? html`You removed yourself`
+              : html`Person removed`}
+            from the course successfully.
           </div>
         `
       );
 
       res.redirect(
-        isSelf
+        res.locals.managedEnrollment.isSelf
           ? `${app.locals.settings.url}/`
           : `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
