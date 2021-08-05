@@ -6896,44 +6896,54 @@ export default async function courselore(
             <p class="strong">
               Welcome to ${res.locals.invitation.course.name}!
             </p>
-            <a
-              href="${app.locals.settings.url}/sign-up?${qs.stringify({
-                redirect: req.originalUrl,
-                ...(res.locals.invitation.email === null
-                  ? {}
-                  : {
-                      email: res.locals.invitation.email,
-                    }),
-                ...(res.locals.invitation.name === null
-                  ? {}
-                  : {
-                      name: res.locals.invitation.name,
-                    }),
-              })}"
-              class="button button--blue"
+            <div
+              style="${css`
+                display: flex;
+                gap: var(--space--4);
+                & > * {
+                  flex: 1;
+                }
+              `}"
             >
-              <i class="bi bi-person-plus"></i>
-              Sign up
-            </a>
-            <a
-              href="${app.locals.settings.url}/sign-in?${qs.stringify({
-                redirect: req.originalUrl,
-                ...(res.locals.invitation.email === null
-                  ? {}
-                  : {
-                      email: res.locals.invitation.email,
-                    }),
-                ...(res.locals.invitation.name === null
-                  ? {}
-                  : {
-                      name: res.locals.invitation.name,
-                    }),
-              })}"
-              class="button button--transparent"
-            >
-              <i class="bi bi-box-arrow-in-right"></i>
-              Sign in
-            </a>
+              <a
+                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                  redirect: req.originalUrl,
+                  ...(res.locals.invitation.email === null
+                    ? {}
+                    : {
+                        email: res.locals.invitation.email,
+                      }),
+                  ...(res.locals.invitation.name === null
+                    ? {}
+                    : {
+                        name: res.locals.invitation.name,
+                      }),
+                })}"
+                class="button button--blue"
+              >
+                <i class="bi bi-person-plus"></i>
+                Sign up
+              </a>
+              <a
+                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                  redirect: req.originalUrl,
+                  ...(res.locals.invitation.email === null
+                    ? {}
+                    : {
+                        email: res.locals.invitation.email,
+                      }),
+                  ...(res.locals.invitation.name === null
+                    ? {}
+                    : {
+                        name: res.locals.invitation.name,
+                      }),
+                })}"
+                class="button button--transparent"
+              >
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in
+              </a>
+            </div>
           `,
         })
       );
