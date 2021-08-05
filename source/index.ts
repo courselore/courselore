@@ -5829,8 +5829,10 @@ export default async function courselore(
                                                 ? html`
                                                     type="button"
                                                     data-ondomcontentloaded="${javascript`
+                                                      const element = this.nextElementSibling.firstElementChild;
+                                                      element.form = this.closest("form");
                                                       tippy(this, {
-                                                        content: this.nextElementSibling.firstElementChild,
+                                                        content: element,
                                                         theme: "rose",
                                                         trigger: "click",
                                                         interactive: true,
@@ -5846,6 +5848,7 @@ export default async function courselore(
                                               ? html`
                                                   <div hidden>
                                                     <div
+                                                      class="confirmation"
                                                       style="${css`
                                                         padding: var(
                                                           --space--2
@@ -5874,6 +5877,9 @@ export default async function courselore(
                                                       </p>
                                                       <button
                                                         class="button button--rose"
+                                                        onclick="${javascript`
+                                                          this.closest(".confirmation").form.submit();
+                                                        `}"
                                                       >
                                                         Change My Own Role to
                                                         ${lodash.capitalize(
