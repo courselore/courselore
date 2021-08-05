@@ -6752,15 +6752,7 @@ export default async function courselore(
                 gap: var(--space--2);
               `}"
             >
-              <h2
-                class="heading"
-                style="${css`
-                  color: var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
-                  }
-                `}"
-              >
+              <h2 class="heading">
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
