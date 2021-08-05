@@ -6189,7 +6189,7 @@ export default async function courselore(
                                 `}"
                               />
                             </div>
-                            <label
+                            <div
                               class="button button--transparent"
                               style="${css`
                                 .deleted & {
@@ -6224,7 +6224,7 @@ export default async function courselore(
                                 </option>
                               </select>
                               <i class="bi bi-chevron-down"></i>
-                            </label>
+                            </div>
                             <div
                               style="${css`
                                 .tag.deleted & {
