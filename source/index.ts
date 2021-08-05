@@ -6090,7 +6090,6 @@ export default async function courselore(
               $${res.locals.tags.length === 0
                 ? html`
                     <div
-                      class="tags--empty"
                       style="${css`
                         display: flex;
                         flex-direction: column;
@@ -6101,7 +6100,7 @@ export default async function courselore(
                       <div class="decorative-icon">
                         <i class="bi bi-tags"></i>
                       </div>
-                      <p>Organize conversations with tags.</p>
+                      <p class="secondary">Organize conversations with tags.</p>
                     </div>
                   `
                 : html``}
@@ -6329,7 +6328,7 @@ export default async function courselore(
                   >
                     <button
                       type="button"
-                      class="button button--full-width-on-small-screen"
+                      class="button button--transparent button--full-width-on-small-screen"
                       onclick="${javascript`
                         const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
                         this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
