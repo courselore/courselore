@@ -844,8 +844,7 @@ export default async function courselore(
                 &.button--transparent {
                   &:not(:disabled) {
                     &:hover,
-                    &:focus-within,
-                    &.active {
+                    &:focus-within {
                       background-color: var(--color--gray--medium--300);
                     }
                     &:active {
@@ -853,8 +852,7 @@ export default async function courselore(
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
-                      &:focus-within,
-                      &.active {
+                      &:focus-within {
                         background-color: var(--color--gray--medium--700);
                       }
                       &:active {
@@ -871,8 +869,7 @@ export default async function courselore(
                         color: var(--color--${color}--50);
                         background-color: var(--color--${color}--600);
                         &:hover,
-                        &:focus-within,
-                        &.active {
+                        &:focus-within {
                           background-color: var(--color--${color}--500);
                         }
                         &:active {
@@ -882,8 +879,7 @@ export default async function courselore(
                           color: var(--color--${color}--100);
                           background-color: var(--color--${color}--800);
                           &:hover,
-                          &:focus-within,
-                          &.active {
+                          &:focus-within {
                             background-color: var(--color--${color}--700);
                           }
                           &:active {
@@ -1961,11 +1957,11 @@ export default async function courselore(
                             <a
                               href="${app.locals.settings.url}/courses/${res
                                 .locals.course.reference}"
-                              class="dropdown-menu--item button button--transparent ${req.path.includes(
+                              class="dropdown-menu--item button ${req.path.includes(
                                 "settings"
                               )
-                                ? ""
-                                : "active"}"
+                                ? "button--transparent"
+                                : "button--blue"}"
                             >
                               <i class="bi bi-chat-left-text"></i>
                               Conversations
@@ -1973,11 +1969,11 @@ export default async function courselore(
                             <a
                               href="${app.locals.settings.url}/courses/${res
                                 .locals.course.reference}/settings"
-                              class="dropdown-menu--item button button--transparent ${req.path.includes(
+                              class="dropdown-menu--item button ${req.path.includes(
                                 "settings"
                               )
-                                ? "active"
-                                : ""}"
+                                ? "button--blue"
+                                : "button--transparent"}"
                             >
                               <i class="bi bi-sliders"></i>
                               Course Settings
@@ -4241,11 +4237,9 @@ export default async function courselore(
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings"
-              class="dropdown-menu--item button button--transparent ${req.path.endsWith(
-                "/settings"
-              )
-                ? "active"
-                : ""}"
+              class="dropdown-menu--item button ${req.path.endsWith("/settings")
+                ? "button--blue"
+                : "button--transparent"}"
             >
               <i class="bi bi-sliders"></i>
               Course Settings
@@ -4253,11 +4247,11 @@ export default async function courselore(
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/invitations"
-              class="dropdown-menu--item button button--transparent ${req.path.endsWith(
+              class="dropdown-menu--item button ${req.path.endsWith(
                 "/settings/invitations"
               )
-                ? "active"
-                : ""}"
+                ? "button--blue"
+                : "button--transparent"}"
             >
               <i class="bi bi-person-plus"></i>
               Invitations
@@ -4265,11 +4259,11 @@ export default async function courselore(
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/enrollments"
-              class="dropdown-menu--item button button--transparent ${req.path.endsWith(
+              class="dropdown-menu--item button ${req.path.endsWith(
                 "/settings/enrollments"
               )
-                ? "active"
-                : ""}"
+                ? "button--blue"
+                : "button--transparent"}"
             >
               <i class="bi bi-people"></i>
               Enrollments
@@ -4277,11 +4271,11 @@ export default async function courselore(
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/tags"
-              class="dropdown-menu--item button button--transparent ${req.path.endsWith(
+              class="dropdown-menu--item button ${req.path.endsWith(
                 "/settings/tags"
               )
-                ? "active"
-                : ""}"
+                ? "button--blue"
+                : "button--transparent"}"
             >
               <i class="bi bi-tags"></i>
               Tags
@@ -4289,11 +4283,11 @@ export default async function courselore(
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/your-enrollment"
-              class="dropdown-menu--item button button--transparent ${req.path.endsWith(
+              class="dropdown-menu--item button ${req.path.endsWith(
                 "/settings/your-enrollment"
               )
-                ? "active"
-                : ""}"
+                ? "button--blue"
+                : "button--transparent"}"
             >
               <i class="bi bi-person"></i>
               Your Enrollment
@@ -7308,9 +7302,9 @@ export default async function courselore(
                                           ? undefined
                                           : tag.reference,
                                       })}"
-                                      class="dropdown-menu--item button button--transparent ${isTagFilter
-                                        ? "active"
-                                        : ""}"
+                                      class="dropdown-menu--item button ${isTagFilter
+                                        ? "button--blue"
+                                        : "button--transparent"}"
                                       ><i class="bi bi-tag"></i> ${tag.name}</a
                                     >
                                   `;
