@@ -923,6 +923,11 @@ export default async function courselore(
                 cursor: pointer;
               }
 
+              .disabled,
+              :disabled {
+                cursor: not-allowed;
+              }
+
               .heading {
                 font-size: var(--font-size--2xs);
                 line-height: var(--line-height--2xs);
