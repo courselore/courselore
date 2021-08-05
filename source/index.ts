@@ -6247,6 +6247,7 @@ export default async function courselore(
                                     tippy(this, {
                                       content: this.nextElementSibling.firstElementChild,
                                       theme: "rose",
+                                      trigger: "click",
                                       interactive: true,
                                     });
                                   `}"
@@ -6280,11 +6281,11 @@ export default async function courselore(
                                       type="button"
                                       class="button button--rose"
                                       onclick="${javascript`
-                                      const tag = this.closest(".tag");
-                                      tag.classList.add("deleted");
-                                      tag.querySelector('[name$="[delete]"]').disabled = false;
-                                      for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
-                                    `}"
+                                        const tag = this.closest(".tag");
+                                        tag.classList.add("deleted");
+                                        tag.querySelector('[name$="[delete]"]').disabled = false;
+                                        for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
+                                      `}"
                                     >
                                       <i class="bi bi-trash"></i>
                                       Remove Tag
