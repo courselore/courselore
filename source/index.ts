@@ -4357,8 +4357,12 @@ export default async function courselore(
             ? html`
                 <div
                   style="${css`
-                    width: var(--space--40);
-                    margin-top: var(--space---2);
+                    background-color: var(--color--gray--medium--100);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--gray--medium--800);
+                    }
+                    padding: var(--space--2);
+                    border-radius: var(--border-radius--lg);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
