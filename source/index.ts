@@ -5816,7 +5816,7 @@ export default async function courselore(
                                                         gap: var(--space--4);
                                                       `}"
                                                     >
-                                                      <div class="text">
+                                                      <div class="text text--rose">
                                                         <p>
                                                           Are you sure you want
                                                           to change your own
