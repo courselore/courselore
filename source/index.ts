@@ -6409,7 +6409,7 @@ export default async function courselore(
                         <div>
                           <button
                             type="button"
-                            class="button button--transparent button--rose"
+                            class="button button--tight button--transparent text--rose"
                             data-onmount="${javascript`
                               tippy(this, {
                                 content: "Remove Tag",
