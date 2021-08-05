@@ -818,6 +818,9 @@ export default async function courselore(
                   --transition-timing-function--in-out
                 );
                 cursor: pointer;
+                &:disabled {
+                  cursor: not-allowed;
+                }
 
                 &.button--tight {
                   padding: var(--space--0-5) var(--space--1);
@@ -834,22 +837,24 @@ export default async function courselore(
                 }
 
                 &.button--transparent {
-                  &:hover,
-                  &:focus-within,
-                  &.active {
-                    background-color: var(--color--gray--medium--300);
-                  }
-                  &:active {
-                    background-color: var(--color--gray--medium--400);
-                  }
-                  @media (prefers-color-scheme: dark) {
+                  &:not(:disabled) {
                     &:hover,
                     &:focus-within,
                     &.active {
-                      background-color: var(--color--gray--medium--700);
+                      background-color: var(--color--gray--medium--300);
                     }
                     &:active {
-                      background-color: var(--color--gray--medium--600);
+                      background-color: var(--color--gray--medium--400);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      &:hover,
+                      &:focus-within,
+                      &.active {
+                        background-color: var(--color--gray--medium--700);
+                      }
+                      &:active {
+                        background-color: var(--color--gray--medium--600);
+                      }
                     }
                   }
                 }
@@ -857,26 +862,28 @@ export default async function courselore(
                 ${["blue", "green", "rose"].map(
                   (color) => css`
                     &.button--${color} {
-                      color: var(--color--${color}--50);
-                      background-color: var(--color--${color}--600);
-                      &:hover,
-                      &:focus-within,
-                      &.active {
-                        background-color: var(--color--${color}--500);
-                      }
-                      &:active {
-                        background-color: var(--color--${color}--700);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--${color}--100);
-                        background-color: var(--color--${color}--800);
+                      &:not(:disabled) {
+                        color: var(--color--${color}--50);
+                        background-color: var(--color--${color}--600);
                         &:hover,
                         &:focus-within,
                         &.active {
-                          background-color: var(--color--${color}--700);
+                          background-color: var(--color--${color}--500);
                         }
                         &:active {
-                          background-color: var(--color--${color}--900);
+                          background-color: var(--color--${color}--700);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--${color}--100);
+                          background-color: var(--color--${color}--800);
+                          &:hover,
+                          &:focus-within,
+                          &.active {
+                            background-color: var(--color--${color}--700);
+                          }
+                          &:active {
+                            background-color: var(--color--${color}--900);
+                          }
                         }
                       }
                     }
