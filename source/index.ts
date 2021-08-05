@@ -5834,6 +5834,7 @@ export default async function courselore(
                                                         theme: "rose",
                                                         trigger: "click",
                                                         interactive: true,
+                                                        appendTo: document.body,
                                                       });
                                                     `}"
                                                   `
@@ -5874,7 +5875,7 @@ export default async function courselore(
                                                       <button
                                                         class="button button--rose"
                                                       >
-                                                        Convert to
+                                                        Change My Own Role to
                                                         ${lodash.capitalize(
                                                           role
                                                         )}
