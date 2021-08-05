@@ -5816,6 +5816,9 @@ export default async function courselore(
                             gap: var(--space--2);
                             @media (max-width: 499px) {
                               margin-left: var(--space---1);
+                              width: calc(
+                                var(--space--1) + 100% + var(--space--1)
+                              );
                             }
                           `}"
                         >
