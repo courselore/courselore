@@ -868,6 +868,34 @@ export default async function courselore(
                 )}
               }
 
+              .link {
+                text-decoration: underline;
+                color: var(--color--blue--600);
+                &:hover,
+                &:focus-within {
+                  color: var(--color--blue--500);
+                }
+                &:active {
+                  color: var(--color--blue--700);
+                }
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--blue--500);
+                  &:hover,
+                  &:focus-within {
+                    color: var(--color--blue--400);
+                  }
+                  &:active {
+                    color: var(--color--blue--600);
+                  }
+                }
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
+                cursor: pointer;
+              }
+
               .heading {
                 font-size: var(--font-size--2xs);
                 line-height: var(--line-height--2xs);
@@ -918,6 +946,14 @@ export default async function courselore(
                   }
                 `
               )}
+
+              .pre {
+                code {
+                  font-family: var(--font-family--monospace);
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                }
+              }
 
               .avatar {
                 border-radius: var(--border-radius--circle);
@@ -1572,18 +1608,16 @@ export default async function courselore(
                             gap: var(--space--4);
                           `}"
                         >
-                          <div class="text">
-                            <p>
-                              CourseLore is running in Demonstration Mode. All
-                              data may be lost, including courses,
-                              conversations, users, and so forth. Also, no
-                              emails are actually sent.
-                            </p>
-                            <p>
-                              To give you a better idea of what CourseLore looks
-                              like in use, you may create demonstration data.
-                            </p>
-                          </div>
+                          <p>
+                            CourseLore is running in Demonstration Mode. All
+                            data may be lost, including courses, conversations,
+                            users, and so forth. Also, no emails are actually
+                            sent.
+                          </p>
+                          <p>
+                            To give you a better idea of what CourseLore looks
+                            like in use, you may create demonstration data.
+                          </p>
                           <form
                             method="POST"
                             action="${app.locals.settings
@@ -2640,7 +2674,7 @@ export default async function courselore(
               Sign in
             </button>
           </form>
-          <p class="text">
+          <p>
             Don’t have an account?
             <a
               href="${app.locals.settings.url}/sign-up?${qs.stringify({
@@ -2648,6 +2682,7 @@ export default async function courselore(
                 name: req.query.name,
                 email: req.query.email,
               })}"
+              class="link"
               >Sign up</a
             >.
           </p>
@@ -2777,7 +2812,7 @@ export default async function courselore(
               Sign up
             </button>
           </form>
-          <p class="text">
+          <p>
             Already have an account account?
             <a
               href="${app.locals.settings.url}/sign-in?${qs.stringify({
@@ -2785,6 +2820,7 @@ export default async function courselore(
                 name: req.query.name,
                 email: req.query.email,
               })}"
+              class="link"
               >Sign in</a
             >.
           </p>
@@ -4550,9 +4586,11 @@ export default async function courselore(
                     </button>
                     <div hidden>
                       <div
-                        class="text"
                         style="${css`
                           padding: var(--space--2);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
                         `}"
                       >
                         <p>
@@ -4560,7 +4598,7 @@ export default async function courselore(
                           and may include names which may be quoted or not, for
                           example:
                         </p>
-                        <pre><code>${dedent`
+                        <pre class="pre"><code>${dedent`
                           "Scott" <scott@courselore.org>,
                           Ali <ali@courselore.org>
                           leandro@courselore.org
@@ -5816,19 +5854,23 @@ export default async function courselore(
                                                         gap: var(--space--4);
                                                       `}"
                                                     >
-                                                      <div class="text text--rose">
-                                                        <p>
-                                                          Are you sure you want
-                                                          to change your own
-                                                          role to ${role}?
-                                                        </p>
-                                                        <p>
-                                                          <strong>
-                                                            You may not undo
-                                                            this action!
-                                                          </strong>
-                                                        </p>
-                                                      </div>
+                                                      <p>
+                                                        Are you sure you want to
+                                                        change your own role to
+                                                        ${role}?
+                                                      </p>
+                                                      <p>
+                                                        <strong
+                                                          style="${css`
+                                                            font-weight: var(
+                                                              --font-weight--bold
+                                                            );
+                                                          `}"
+                                                        >
+                                                          You may not undo this
+                                                          action!
+                                                        </strong>
+                                                      </p>
                                                       <button
                                                         class="button button--rose"
                                                       >
@@ -8362,17 +8404,19 @@ export default async function courselore(
               </button>
               <div hidden>
                 <div>
-                  <p class="text">
+                  <p>
                     You may style text with
                     <a
                       href="https://guides.github.com/features/mastering-markdown/"
                       target="_blank"
+                      class="link"
                       >GitHub Flavored Markdown</a
                     >
                     and include mathematical formulas with
                     <a
                       href="https://katex.org/docs/supported.html"
                       target="_blank"
+                      class="link"
                       >LaTeX</a
                     >.
                   </p>
