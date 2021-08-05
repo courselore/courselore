@@ -6356,6 +6356,7 @@ export default async function courselore(
                         style="${css`
                           display: flex;
                           gap: var(--space--2);
+                          align-items: baseline;
                         `}"
                       >
                         <i class="bi bi-tag"></i>
@@ -6364,6 +6365,7 @@ export default async function courselore(
                             flex: 1;
                             display: flex;
                             gap: var(--space--2);
+                            align-items: baseline;
                             @media (max-width: 499px) {
                               flex-direction: column;
                             }
