@@ -795,7 +795,7 @@ export default async function courselore(
                   grid-area: 1 / 1;
                 }
                 .select--tag.select--tag {
-                  padding-right: var(--space--4);
+                  padding-right: var(--space--6);
                 }
                 .select--chevron {
                   justify-self: end;
