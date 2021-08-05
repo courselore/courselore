@@ -6371,25 +6371,19 @@ export default async function courselore(
                             }
                           `}"
                         >
-                          <div
-                            style="${css`
-                              flex: 1;
+                          <input
+                            type="text"
+                            class="input--text"
+                            required
+                            autocomplete="off"
+                            disabled
+                            data-onmount="${javascript`
+                              this.dataset.forceIsModified = true;
+                              this.disabled = false;
+                              const tag = this.closest(".tag");
+                              this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
                             `}"
-                          >
-                            <input
-                              type="text"
-                              class="input--text"
-                              required
-                              autocomplete="off"
-                              disabled
-                              data-onmount="${javascript`
-                                this.dataset.forceIsModified = true;
-                                this.disabled = false;
-                                const tag = this.closest(".tag");
-                                this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
-                              `}"
-                            />
-                          </div>
+                          />
                           <div
                             style="${css`
                               display: flex;
