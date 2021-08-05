@@ -6167,7 +6167,7 @@ export default async function courselore(
                             disabled
                             data-force-is-modified="true"
                           />
-                          <i class="bi bi-tag"></i>
+                          <div class="tag--icon"><i class="bi bi-tag"></i></div>
                           <div
                             style="${css`
                               flex: 1;
@@ -6283,7 +6283,7 @@ export default async function courselore(
                                       onclick="${javascript`
                                         const tag = this.closest(".tag");
                                         tag.classList.add("deleted");
-                                        tag.classList.add("text--rose");
+                                        tag.querySelector(".tag--icon").classList.add("text--rose");
                                         tag.querySelector('[name$="[delete]"]').disabled = false;
                                         for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
                                       `}"
@@ -6313,7 +6313,7 @@ export default async function courselore(
                                   onclick="${javascript`
                                     const tag = this.closest(".tag");
                                     tag.classList.remove("deleted");
-                                    tag.classList.remove("text--rose");
+                                    tag.querySelector(".tag--icon").classList.remove("text--rose");
                                     tag.querySelector('[name$="[delete]"]').disabled = true;
                                     for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
                                   `}"
