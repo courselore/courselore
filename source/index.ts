@@ -1818,7 +1818,7 @@ export default async function courselore(
               margin: var(--space--4);
               display: flex;
               flex-direction: column;
-              gap: var(--space--8);
+              gap: var(--space--4);
             `}"
           >
             <div
@@ -1836,6 +1836,12 @@ export default async function courselore(
             </div>
             <div
               style="${css`
+                background-color: var(--color--gray--medium--100);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--800);
+                }
+                padding: var(--space--4);
+                border-radius: var(--border-radius--lg);
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
