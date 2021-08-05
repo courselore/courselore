@@ -1577,16 +1577,18 @@ export default async function courselore(
                             gap: var(--space--4);
                           `}"
                         >
-                          <p>
-                            CourseLore is running in Demonstration Mode. All
-                            data may be lost, including courses, conversations,
-                            users, and so forth. Also, no emails are actually
-                            sent.
-                          </p>
-                          <p>
-                            To give you a better idea of what CourseLore looks
-                            like in use, you may create demonstration data.
-                          </p>
+                          <div class="text">
+                            <p>
+                              CourseLore is running in Demonstration Mode. All
+                              data may be lost, including courses,
+                              conversations, users, and so forth. Also, no
+                              emails are actually sent.
+                            </p>
+                            <p>
+                              To give you a better idea of what CourseLore looks
+                              like in use, you may create demonstration data.
+                            </p>
+                          </div>
                           <form
                             method="POST"
                             action="${app.locals.settings
@@ -4918,7 +4920,8 @@ export default async function courselore(
                                                     type="button"
                                                     data-ondomcontentloaded="${javascript`
                                                       tippy(this, {
-                                                        content: "Can’t resend invitation because it’s used.",
+                                                        content: "You may not resend this invitation because it’s used.",
+                                                        theme: "rose",
                                                         trigger: "click",
                                                       });
                                                     `}"
@@ -4928,7 +4931,8 @@ export default async function courselore(
                                                     type="button"
                                                     data-ondomcontentloaded="${javascript`
                                                       tippy(this, {
-                                                        content: "Can’t resend invitation because it’s expired.",
+                                                        content: "You may not resend this invitation because it’s expired.",
+                                                        theme: "rose",
                                                         trigger: "click",
                                                       });
                                                     `}"
@@ -4991,7 +4995,8 @@ export default async function courselore(
                                                           type="button"
                                                           data-ondomcontentloaded="${javascript`
                                                             tippy(this, {
-                                                              content: "Can’t change role because the invitation is used.",
+                                                              content: "You may not change the role of this invitation because it’s used.",
+                                                              theme: "rose",
                                                               trigger: "click",
                                                             });
                                                           `}"
@@ -5001,7 +5006,8 @@ export default async function courselore(
                                                           type="button"
                                                           data-ondomcontentloaded="${javascript`
                                                             tippy(this, {
-                                                              content: "Can’t change role because the invitation is expired.",
+                                                              content: "You may not change the role of this invitation because it’s expired.",
+                                                              theme: "rose",
                                                               trigger: "click",
                                                             });
                                                           `}"
@@ -5758,7 +5764,7 @@ export default async function courselore(
                               <i class="bi bi-chevron-down"></i>
                             </button>
                             <div hidden>
-                              <div>
+                              <div class="dropdown-menu">
                                 $${app.locals.constants.roles.map((role) =>
                                   role === enrollment.role
                                     ? html``
@@ -5775,17 +5781,28 @@ export default async function courselore(
                                           <div>
                                             <button
                                               class="dropdown-menu--item button button--transparent"
-                                              $${isSelf
+                                              $${isOnlyStaff
                                                 ? html`
                                                     type="button"
                                                     data-ondomcontentloaded="${javascript`
-                                                          tippy(this, {
-                                                            content: this.nextElementSibling.firstElementChild,
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            interactive: true,
-                                                          });
-                                                        `}"
+                                                      tippy(this, {
+                                                        content: "You may not change your own role because you’re the only staff member.",
+                                                        theme: "rose",
+                                                        trigger: "click",
+                                                      });
+                                                    `}"
+                                                  `
+                                                : isSelf
+                                                ? html`
+                                                    type="button"
+                                                    data-ondomcontentloaded="${javascript`
+                                                      tippy(this, {
+                                                        content: this.nextElementSibling.firstElementChild,
+                                                        theme: "rose",
+                                                        trigger: "click",
+                                                        interactive: true,
+                                                      });
+                                                    `}"
                                                   `
                                                 : html``}
                                             >
@@ -5796,30 +5813,27 @@ export default async function courselore(
                                                   <div hidden>
                                                     <div
                                                       style="${css`
-                                                        padding: var(--space--2)
-                                                          var(--space--0);
+                                                        padding: var(
+                                                          --space--2
+                                                        );
                                                         display: flex;
                                                         flex-direction: column;
                                                         gap: var(--space--4);
                                                       `}"
                                                     >
-                                                      <p>
-                                                        Are you sure you want to
-                                                        convert yourself into
-                                                        ${role}?
-                                                      </p>
-                                                      <p>
-                                                        <strong
-                                                          style="${css`
-                                                            font-weight: var(
-                                                              --font-weight--bold
-                                                            );
-                                                          `}"
-                                                        >
-                                                          You may not undo this
-                                                          action!
-                                                        </strong>
-                                                      </p>
+                                                      <div class="text">
+                                                        <p>
+                                                          Are you sure you want
+                                                          to change your own
+                                                          role to ${role}?
+                                                        </p>
+                                                        <p>
+                                                          <strong>
+                                                            You may not undo
+                                                            this action!
+                                                          </strong>
+                                                        </p>
+                                                      </div>
                                                       <button
                                                         class="button button--rose"
                                                       >
@@ -9999,7 +10013,7 @@ ${value}</textarea
                               tabindex="0"
                               data-ondomcontentloaded="${javascript`
                                 tippy(this, {
-                                  content: "Can’t remove tag because a conversation must have at least one tag",
+                                  content: "You may not remove this tag because a conversation must have at least one tag",
                                   theme: "rose",
                                   touch: false,
                                 });
