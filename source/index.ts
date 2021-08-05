@@ -5907,47 +5907,65 @@ export default async function courselore(
                                   theme: "rose",
                                   touch: false,
                                 });
-                                tippy(this, {
-                                  content: this.nextElementSibling.firstElementChild,
-                                  theme: "rose",
-                                  trigger: "click",
-                                  interactive: true,
-                                });
+                                ${
+                                  isOnlyStaff
+                                    ? javascript`
+                                        tippy(this, {
+                                          content: "You may not remove yourself from the course because you’re the only staff member.",
+                                          theme: "rose",
+                                          trigger: "click",
+                                        });
+                                      `
+                                    : javascript`
+                                        tippy(this, {
+                                          content: this.nextElementSibling.firstElementChild,
+                                          theme: "rose",
+                                          trigger: "click",
+                                          interactive: true,
+                                        });
+                                      `
+                                }
                               `}"
                             >
                               <i class="bi bi-person-dash"></i>
                             </button>
-                            <div hidden>
-                              <form
-                                method="POST"
-                                action="${action}?_method=DELETE"
-                                style="${css`
-                                  padding: var(--space--2) var(--space--0);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `}"
-                              >
-                                <p>
-                                  Are you sure you want to remove
-                                  ${isSelf ? "yourself" : "this person"} from
-                                  the course?
-                                </p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--bold);
-                                    `}"
-                                  >
-                                    You may not undo this action!
-                                  </strong>
-                                </p>
-                                <button class="button button--rose">
-                                  <i class="bi bi-person-dash"></i>
-                                  Remove from the Course
-                                </button>
-                              </form>
-                            </div>
+                            $${isOnlyStaff
+                              ? html``
+                              : html`
+                                  <div hidden>
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=DELETE"
+                                      style="${css`
+                                        padding: var(--space--2);
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--4);
+                                      `}"
+                                    >
+                                      <p>
+                                        Are you sure you want to remove
+                                        ${isSelf ? "yourself" : "this person"}
+                                        from the course?
+                                      </p>
+                                      <p>
+                                        <strong
+                                          style="${css`
+                                            font-weight: var(
+                                              --font-weight--bold
+                                            );
+                                          `}"
+                                        >
+                                          You may not undo this action!
+                                        </strong>
+                                      </p>
+                                      <button class="button button--rose">
+                                        <i class="bi bi-person-dash"></i>
+                                        Remove from the Course
+                                      </button>
+                                    </form>
+                                  </div>
+                                `}
                           </div>
                         </div>
                       </div>
@@ -10059,7 +10077,7 @@ ${value}</textarea
                               tabindex="0"
                               data-ondomcontentloaded="${javascript`
                                 tippy(this, {
-                                  content: "You may not remove this tag because a conversation must have at least one tag",
+                                  content: "You may not remove this tag because a conversation must have at least one tag.",
                                   theme: "rose",
                                   touch: false,
                                 });
