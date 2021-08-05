@@ -6749,19 +6749,14 @@ export default async function courselore(
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            
             <p>
               You tried to use an invitation for ${res.locals.course.name} but
               you’re already enrolled.
             </p>
-
             <a
               href="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}"
               class="button button--blue"
-              style="${css`
-                width: 100%;
-              `}"
             >
               Go to ${res.locals.course.name}
               <i class="bi bi-chevron-right"></i>
