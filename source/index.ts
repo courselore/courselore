@@ -4809,6 +4809,7 @@ export default async function courselore(
                               style="${css`
                                 flex: 1;
                                 display: flex;
+                                gap: var(--space--2);
                                 @media (max-width: 499px) {
                                   flex-direction: column;
                                 }
@@ -5775,6 +5776,7 @@ export default async function courselore(
                         style="${css`
                           flex: 1;
                           display: flex;
+                          gap: var(--space--2);
                           @media (max-width: 499px) {
                             flex-direction: column;
                           }
@@ -5796,6 +5798,9 @@ export default async function courselore(
                             display: flex;
                             justify-content: space-between;
                             gap: var(--space--2);
+                            @media (max-width: 499px) {
+                              margin-left: var(--space---1);
+                            }
                           `}"
                         >
                           <div>
@@ -6138,14 +6143,7 @@ export default async function courselore(
                     gap: var(--space--2);
                   `}"
                 >
-                  <div
-                    class="tags stripped"
-                    style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                    `}"
-                  >
+                  <div class="tags stripped">
                     $${res.locals.tags.map(
                       (tag, index) => html`
                         <!-- TODO: Add link to see all conversations tagged with this tag -->
@@ -6365,61 +6363,85 @@ export default async function courselore(
                         <div
                           style="${css`
                             flex: 1;
+                            display: flex;
+                            gap: var(--space--2);
+                            @media (max-width: 499px) {
+                              flex-direction: column;
+                            }
                           `}"
                         >
-                          <input
-                            type="text"
-                            class="input--text"
-                            required
-                            autocomplete="off"
-                            disabled
-                            data-onmount="${javascript`
-                              this.dataset.forceIsModified = true;
-                              this.disabled = false;
-                              const tag = this.closest(".tag");
-                              this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
-                            `}"
-                          />
-                        </div>
-                        <div class="select">
-                          <select
-                            required
-                            autocomplete="off"
-                            disabled
-                            class="select--tag button button--tight button--transparent"
-                            data-onmount="${javascript`
-                              this.dataset.forceIsModified = true;
-                              this.disabled = false;
-                              const tag = this.closest(".tag");
-                              this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
+                          <div
+                            style="${css`
+                              flex: 1;
                             `}"
                           >
-                            <option value="everyone">
-                              Visible by Everyone
-                            </option>
-                            <option value="staff">Visible by Staff Only</option>
-                          </select>
-                          <div class="select--chevron">
-                            <i class="bi bi-chevron-down"></i>
+                            <input
+                              type="text"
+                              class="input--text"
+                              required
+                              autocomplete="off"
+                              disabled
+                              data-onmount="${javascript`
+                                this.dataset.forceIsModified = true;
+                                this.disabled = false;
+                                const tag = this.closest(".tag");
+                                this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
+                              `}"
+                            />
                           </div>
-                        </div>
-                        <div>
-                          <button
-                            type="button"
-                            class="button button--tight button--transparent text--rose"
-                            data-onmount="${javascript`
-                              tippy(this, {
-                                content: "Remove Tag",
-                                theme: "rose",
-                                touch: false,
-                              });
-                            `}"
-                            onclick="${javascript`
-                              this.closest(".tag").remove();
+                          <div
+                            style="${css`
+                              display: flex;
+                              justify-content: space-between;
+                              gap: var(--space--2);
+                              @media (max-width: 499px) {
+                                margin-left: var(--space---1);
+                              }
                             `}"
                           >
-                            <i class="bi bi-trash"></i>
-                          </button>
+                            <div class="select">
+                              <select
+                                required
+                                autocomplete="off"
+                                disabled
+                                class="select--tag button button--tight button--transparent"
+                                data-onmount="${javascript`
+                                  this.dataset.forceIsModified = true;
+                                  this.disabled = false;
+                                  const tag = this.closest(".tag");
+                                  this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
+                                `}"
+                              >
+                                <option value="everyone">
+                                  Visible by Everyone
+                                </option>
+                                <option value="staff">
+                                  Visible by Staff Only
+                                </option>
+                              </select>
+                              <div class="select--chevron">
+                                <i class="bi bi-chevron-down"></i>
+                              </div>
+                            </div>
+                            <div>
+                              <button
+                                type="button"
+                                class="button button--tight button--transparent text--rose"
+                                data-onmount="${javascript`
+                                  tippy(this, {
+                                    content: "Remove Tag",
+                                    theme: "rose",
+                                    touch: false,
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  this.closest(".tag").remove();
+                                `}"
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
