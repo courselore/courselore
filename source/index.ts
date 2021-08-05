@@ -6368,11 +6368,22 @@ export default async function courselore(
                             `}"
                           />
                         </div>
-                        <div class="button button--tight button--transparent">
+                        <div
+                          style="${css`
+                            display: grid;
+                            & > * {
+                              grid-area: 1 / 1;
+                            }
+                          `}"
+                        >
                           <select
                             required
                             autocomplete="off"
                             disabled
+                            class="button button--tight button--transparent"
+                            style="${css`
+                              padding-right: var(--space--4);
+                            `}"
                             data-onmount="${javascript`
                               this.dataset.forceIsModified = true;
                               this.disabled = false;
@@ -6385,7 +6396,15 @@ export default async function courselore(
                             </option>
                             <option value="staff">Visible by Staff Only</option>
                           </select>
-                          <i class="bi bi-chevron-down"></i>
+                          <div
+                            style="${css`
+                              justify-self: end;
+                              align-self: end;
+                              pointer-events: none;
+                            `}"
+                          >
+                            <i class="bi bi-chevron-down"></i>
+                          </div>
                         </div>
                         <div>
                           <button
