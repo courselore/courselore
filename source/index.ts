@@ -6399,7 +6399,8 @@ export default async function courselore(
                           <div
                             style="${css`
                               justify-self: end;
-                              align-self: end;
+                              align-self: center;
+                              margin-right: var(--space--0-5);
                               pointer-events: none;
                             `}"
                           >
