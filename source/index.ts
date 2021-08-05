@@ -6152,7 +6152,7 @@ export default async function courselore(
                           style="${css`
                             display: flex;
                             gap: var(--space--2);
-                            align-items: center;
+                            align-items: baseline;
                           `}"
                         >
                           <input
@@ -6167,165 +6167,158 @@ export default async function courselore(
                             disabled
                             data-force-is-modified="true"
                           />
-                          <div
-                            style="${css`
-                              .deleted & {
-                                color: var(--color--rose--800);
-                                @media (prefers-color-scheme: dark) {
-                                  color: var(--color--rose--200);
-                                }
-                              }
-                            `}"
-                          >
-                            <i class="bi bi-tag"></i>
-                          </div>
+                          <i class="bi bi-tag"></i>
                           <div
                             style="${css`
                               flex: 1;
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: baseline;
+                              @media (max-width: 499px) {
+                                flex-direction: column;
+                              }
                             `}"
                           >
                             <input
                               type="text"
                               name="tags[${index}][name]"
                               value="${tag.name}"
-                              class="input--text disable-on-delete"
+                              class="disable-on-delete input--text"
                               required
                               autocomplete="off"
+                            />
+                            <div
                               style="${css`
-                                .deleted & {
-                                  color: var(--color--rose--800);
-                                  background-color: var(--color--rose--200);
-                                  @media (prefers-color-scheme: dark) {
-                                    color: var(--color--rose--200);
-                                    background-color: var(--color--rose--900);
-                                  }
+                                display: flex;
+                                justify-content: space-between;
+                                gap: var(--space--2);
+                                @media (max-width: 499px) {
+                                  margin-left: var(--space---1);
+                                  width: calc(
+                                    var(--space--1) + 100% + var(--space--1)
+                                  );
                                 }
                               `}"
-                            />
-                          </div>
-                          <div
-                            class="button button--transparent"
-                            style="${css`
-                              .deleted & {
-                                color: var(--color--rose--800);
-                                @media (prefers-color-scheme: dark) {
-                                  color: var(--color--rose--200);
-                                }
-                              }
-                            `}"
-                          >
-                            <select
-                              name="tags[${index}][visibleBy]"
-                              required
-                              autocomplete="off"
-                              class="disable-on-delete"
                             >
-                              <option
-                                value="everyone"
-                                $${tag.visibleBy === "everyone"
-                                  ? html`selected`
-                                  : html``}
-                              >
-                                Visible by Everyone
-                              </option>
-                              <option
-                                value="staff"
-                                $${tag.visibleBy === "staff"
-                                  ? html`selected`
-                                  : html``}
-                              >
-                                Visible by Staff Only
-                              </option>
-                            </select>
-                            <i class="bi bi-chevron-down"></i>
-                          </div>
-                          <div
-                            style="${css`
-                              .tag.deleted & {
-                                display: none;
-                              }
-                            `}"
-                          >
-                            <button
-                              type="button"
-                              class="button button--transparent button--rose"
-                              data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Remove Tag",
-                                    theme: "rose",
-                                    touch: false,
-                                  });
-                                  tippy(this, {
-                                    content: this.nextElementSibling.firstElementChild,
-                                    theme: "rose",
-                                    interactive: true,
-                                  });
-                                `}"
-                            >
-                              <i class="bi bi-trash"></i>
-                            </button>
-                            <div hidden>
+                              <div class="select">
+                                <select
+                                  name="tags[${index}][visibleBy]"
+                                  required
+                                  autocomplete="off"
+                                  class="disable-on-delete select--tag button button--tight button--transparent"
+                                >
+                                  <option
+                                    value="everyone"
+                                    $${tag.visibleBy === "everyone"
+                                      ? html`selected`
+                                      : html``}
+                                  >
+                                    Visible by Everyone
+                                  </option>
+                                  <option
+                                    value="staff"
+                                    $${tag.visibleBy === "staff"
+                                      ? html`selected`
+                                      : html``}
+                                  >
+                                    Visible by Staff Only
+                                  </option>
+                                </select>
+                                <div class="select--chevron">
+                                  <i class="bi bi-chevron-down"></i>
+                                </div>
+                              </div>
                               <div
                                 style="${css`
-                                  padding: var(--space--2) var(--space--0);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
+                                  .tag.deleted & {
+                                    display: none;
+                                  }
                                 `}"
                               >
-                                <p>Are you sure you want to remove this tag?</p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--bold);
-                                    `}"
-                                  >
-                                    The tag will be removed from all
-                                    conversations and you may not undo this
-                                    action!
-                                  </strong>
-                                </p>
                                 <button
                                   type="button"
-                                  class="button button--rose"
-                                  onclick="${javascript`
+                                  class="button button--tight button--transparent text--rose"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Remove Tag",
+                                      theme: "rose",
+                                      touch: false,
+                                    });
+                                    tippy(this, {
+                                      content: this.nextElementSibling.firstElementChild,
+                                      theme: "rose",
+                                      interactive: true,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                                <div hidden>
+                                  <div
+                                    style="${css`
+                                      padding: var(--space--2) var(--space--0);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <p>
+                                      Are you sure you want to remove this tag?
+                                    </p>
+                                    <p>
+                                      <strong
+                                        style="${css`
+                                          font-weight: var(--font-weight--bold);
+                                        `}"
+                                      >
+                                        The tag will be removed from all
+                                        conversations and you may not undo this
+                                        action!
+                                      </strong>
+                                    </p>
+                                    <button
+                                      type="button"
+                                      class="button button--rose"
+                                      onclick="${javascript`
                                       const tag = this.closest(".tag");
                                       tag.classList.add("deleted");
                                       tag.querySelector('[name$="[delete]"]').disabled = false;
                                       for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
                                     `}"
+                                    >
+                                      <i class="bi bi-trash"></i>
+                                      Remove Tag
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                style="${css`
+                                  .tag:not(.deleted) & {
+                                    display: none;
+                                  }
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--tight button--transparent"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Don’t Remove Tag",
+                                      touch: false,
+                                    });
+                                  `}"
+                                  onclick="${javascript`
+                                    const tag = this.closest(".tag");
+                                    tag.classList.remove("deleted");
+                                    tag.querySelector('[name$="[delete]"]').disabled = true;
+                                    for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
+                                  `}"
                                 >
-                                  <i class="bi bi-trash"></i>
-                                  Remove Tag
+                                  <i class="bi bi-recycle"></i>
                                 </button>
                               </div>
                             </div>
-                          </div>
-                          <div
-                            style="${css`
-                              .tag:not(.deleted) & {
-                                display: none;
-                              }
-                            `}"
-                          >
-                            <button
-                              type="button"
-                              class="button button--transparent"
-                              data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Don’t Remove Tag",
-                                    touch: false,
-                                  });
-                                `}"
-                              onclick="${javascript`
-                                  const tag = this.closest(".tag");
-                                  tag.classList.remove("deleted");
-                                  tag.querySelector('[name$="[delete]"]').disabled = true;
-                                  for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
-                                `}"
-                            >
-                              <i class="bi bi-recycle"></i>
-                            </button>
                           </div>
                         </div>
                       `
@@ -6391,7 +6384,9 @@ export default async function courselore(
                               gap: var(--space--2);
                               @media (max-width: 499px) {
                                 margin-left: var(--space---1);
-                                width: calc(var(--space--1) + 100% + var(--space--1));
+                                width: calc(
+                                  var(--space--1) + 100% + var(--space--1)
+                                );
                               }
                             `}"
                           >
