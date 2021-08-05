@@ -789,6 +789,22 @@ export default async function courselore(
                 }
               }
 
+              .select {
+                display: grid;
+                & > * {
+                  grid-area: 1 / 1;
+                }
+                .select--tag.select--tag {
+                  padding-right: var(--space--4);
+                }
+                .select--chevron {
+                  justify-self: end;
+                  align-self: center;
+                  margin-right: var(--space--0-5);
+                  pointer-events: none;
+                }
+              }
+
               .button {
                 padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
@@ -6368,22 +6384,12 @@ export default async function courselore(
                             `}"
                           />
                         </div>
-                        <div
-                          style="${css`
-                            display: grid;
-                            & > * {
-                              grid-area: 1 / 1;
-                            }
-                          `}"
-                        >
+                        <div class="select">
                           <select
                             required
                             autocomplete="off"
                             disabled
-                            class="button button--tight button--transparent"
-                            style="${css`
-                              padding-right: var(--space--4);
-                            `}"
+                            class="select--tag button button--tight button--transparent"
                             data-onmount="${javascript`
                               this.dataset.forceIsModified = true;
                               this.disabled = false;
@@ -6396,14 +6402,7 @@ export default async function courselore(
                             </option>
                             <option value="staff">Visible by Staff Only</option>
                           </select>
-                          <div
-                            style="${css`
-                              justify-self: end;
-                              align-self: center;
-                              margin-right: var(--space--0-5);
-                              pointer-events: none;
-                            `}"
-                          >
+                          <div class="select--chevron">
                             <i class="bi bi-chevron-down"></i>
                           </div>
                         </div>
