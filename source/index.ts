@@ -8776,9 +8776,11 @@ ${value}</textarea
                     >
                       $${res.locals.conversationTypes.map(
                         (conversationType) =>
-                          html`<option value="${conversationType}">
-                            ${lodash.capitalize(conversationType)}
-                          </option>`
+                          html`
+                            <option value="${conversationType}">
+                              ${lodash.capitalize(conversationType)}
+                            </option>
+                          `
                       )}
                     </select>
                     <div class="select--chevron">
