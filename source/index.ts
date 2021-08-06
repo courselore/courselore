@@ -8704,11 +8704,11 @@ ${value}</textarea
                               }
                             `}"
                             data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Pin",
-                                  touch: false,
-                                });
-                              `}"
+                              tippy(this, {
+                                content: "Pin",
+                                touch: false,
+                              });
+                            `}"
                           >
                             <i class="bi bi-pin-angle"></i>
                             Unpinned
@@ -8721,11 +8721,11 @@ ${value}</textarea
                               }
                             `}"
                             data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Unpin",
-                                  touch: false,
-                                });
-                              `}"
+                              tippy(this, {
+                                content: "Unpin",
+                                touch: false,
+                              });
+                            `}"
                           >
                             <i class="bi bi-pin-fill"></i>
                             Pinned
@@ -8735,11 +8735,11 @@ ${value}</textarea
                           type="button"
                           class="button button--tight button--transparent"
                           data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Pinned conversations are listed first.",
-                                trigger: "click",
-                              });
-                            `}"
+                            tippy(this, {
+                              content: "Pinned conversations are listed first.",
+                              trigger: "click",
+                            });
+                          `}"
                         >
                           <i class="bi bi-info-circle"></i>
                         </button>
