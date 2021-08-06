@@ -8768,7 +8768,78 @@ ${value}</textarea
 
                 <div class="label">
                   <p class="label--text">Type</p>
-                  <div class="select">
+                  <div class="button button--tight button--transparent">
+                    <div>
+                      <input
+                        type="radio"
+                        name="type"
+                        value="announcement"
+                        required
+                        checked
+                        autocomplete="off"
+                        hidden
+                      />
+                      <span
+                        style="${css`
+                          :not(:checked) + & {
+                            display: none;
+                          }
+                        `}"
+                      >
+                        <i class="bi bi-megaphone"></i>
+                        Announcement
+                      </span>
+                      <input
+                        type="radio"
+                        name="type"
+                        value="question"
+                        required
+                        autocomplete="off"
+                        hidden
+                      />
+                      <span
+                        style="${css`
+                          :not(:checked) + & {
+                            display: none;
+                          }
+                        `}"
+                      >
+                        <i class="bi bi-patch-question"></i>
+                        Question
+                      </span>
+                      <input
+                        type="radio"
+                        name="type"
+                        value="other"
+                        required
+                        autocomplete="off"
+                        hidden
+                      />
+                      <span
+                        style="${css`
+                          :not(:checked) + & {
+                            display: none;
+                          }
+                        `}"
+                      >
+                        <i class="bi bi-chat-left-text"></i>
+                        Other
+                      </span>
+                      <i class="bi bi-chevron-down"></i>
+                    </div>
+                    <button
+                      data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: this.nextElementSibling.firstElementChild,
+                        theme: "rose",
+                        trigger: "click",
+                        interactive: true,
+                      });
+                    `}"
+                    ></button>
+                    <div hidden><div class="dropdown-menu">HELLO</div></div>
+                  </div>
+                  <div hidden class="select">
                     <select
                       name="type"
                       required
