@@ -3014,18 +3014,18 @@ export default async function courselore(
                       Enroll in an Existing Course
                     </button>
                     <a
-                      href="${app.locals.settings.url}/courses/new"
-                      class="button button--transparent"
-                    >
-                      <i class="bi bi-journal-plus"></i>
-                      Create a New Course
-                    </a>
-                    <a
                       href="${app.locals.settings.url}/settings"
                       class="button button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
                       Fill in Your User Profile
+                    </a>
+                    <a
+                      href="${app.locals.settings.url}/courses/new"
+                      class="button button--transparent"
+                    >
+                      <i class="bi bi-journal-plus"></i>
+                      Create a New Course
                     </a>
                   </div>
                 </div>
