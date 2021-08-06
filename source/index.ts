@@ -4841,6 +4841,7 @@ export default async function courselore(
                             style="${css`
                               flex: 1;
                               display: flex;
+                              justify-content: space-between;
                               flex-wrap: wrap;
                               column-gap: var(--space--4);
                               row-gap: var(--space--2);
@@ -5107,8 +5108,8 @@ export default async function courselore(
 
                               <div
                                 style="${css`
-                                  @media (min-width: 340px) {
-                                    width: var(--space--40);
+                                  @media (min-width: 500px) {
+                                    width: var(--space--36);
                                     display: flex;
                                     justify-content: flex-end;
                                   }
