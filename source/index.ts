@@ -8727,18 +8727,18 @@ ${value}</textarea
                             type="checkbox"
                             name="isPinned"
                             autocomplete="off"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Pin",
+                                touch: false,
+                              });
+                            `}"
                           />
                           <span
                             style="${css`
                               :checked + & {
                                 display: none;
                               }
-                            `}"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Pin",
-                                touch: false,
-                              });
                             `}"
                           >
                             <i class="bi bi-pin-angle"></i>
