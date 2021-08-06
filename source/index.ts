@@ -3041,9 +3041,17 @@ export default async function courselore(
                 <div
                   style="${css`
                     display: flex;
-                    justify-content: center;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                    align-items: center;
                   `}"
                 >
+                  <div class="decorative-icon">
+                    <i class="bi bi-journal-text"></i>
+                  </div>
+
+                  <p class="secondary">Go to one of your courses.</p>
+
                   <div
                     style="${css`
                       background-color: var(--color--gray--medium--100);
