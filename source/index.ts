@@ -7654,9 +7654,9 @@ export default async function courselore(
             }
 
             & > :checked + span {
-              background-color: var(--color--gray--medium--200);
+              background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--700);
+                background-color: var(--color--gray--medium--800);
               }
             }
           }
@@ -7742,9 +7742,9 @@ export default async function courselore(
       </div>
       <div
         style="${css`
-          background-color: var(--color--gray--medium--200);
+          background-color: var(--color--gray--medium--100);
           @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--medium--700);
+            background-color: var(--color--gray--medium--800);
           }
           border-radius: var(--border-radius--lg);
           position: relative;
