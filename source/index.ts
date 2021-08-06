@@ -3631,6 +3631,7 @@ export default async function courselore(
         };
       }[];
     }[];
+    conversationTypes: ConversationType[];
   }
   app.locals.middlewares.isEnrolledInCourse = [
     ...app.locals.middlewares.isSignedIn,
@@ -3915,6 +3916,14 @@ export default async function courselore(
             taggings,
           };
         });
+
+      res.locals.conversationTypes = app.locals.constants.conversationTypes.filter(
+        (conversationType) =>
+          !(
+            conversationType === "announcement" &&
+            res.locals.enrollment.role !== "staff"
+          )
+      );
 
       next();
     },
@@ -8757,6 +8766,27 @@ ${value}</textarea
                     `
                   : html``}
 
+                <div class="label">
+                  <p class="label--text">Type</p>
+                  <div class="select">
+                    <select
+                      name="type"
+                      required
+                      autocomplete="off"
+                      class="select--tag button button--tight button--transparent"
+                    >
+                      $${res.locals.conversationTypes.map(
+                        (conversationType) =>
+                          html`<option value="${conversationType}">
+                            ${lodash.capitalize(conversationType)}
+                          </option>`
+                      )}
+                    </select>
+                    <div class="select--chevron">
+                      <i class="bi bi-chevron-down"></i>
+                    </div>
+                  </div>
+                </div>
                 <label
                   style="${css`
                     display: grid;
