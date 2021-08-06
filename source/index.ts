@@ -8657,15 +8657,17 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
-              <input
-                type="text"
-                name="title"
-                placeholder="Title"
-                required
-                autocomplete="off"
-                autofocus
-                class="input--text"
-              />
+              <div class="label">
+                <p class="label--text">Title</p>
+                <input
+                  type="text"
+                  name="title"
+                  required
+                  autocomplete="off"
+                  autofocus
+                  class="input--text"
+                />
+              </div>
 
               $${app.locals.partials.textEditor()}
 
