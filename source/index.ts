@@ -11728,60 +11728,41 @@ ${value}</textarea
           res,
           head: html`<title>404 Not Found · CourseLore</title>`,
           body: html`
+            <h2 class="heading">
+              <i class="bi bi-question-diamond"></i>
+              404 Not Found
+            </h2>
+            <p>
+              Either this page doesn’t exist, or you must sign in or sign up to
+              see it.
+            </p>
             <div
               style="${css`
                 display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
+                gap: var(--space--4);
+                & > * {
+                  flex: 1;
+                }
               `}"
             >
-              <h2
-                class="heading"
-                style="${css`
-                  color: var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
-                  }
-                `}"
+              <a
+                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                  redirect: req.originalUrl,
+                })}"
+                class="button button--blue"
               >
-                <i class="bi bi-question-diamond"></i>
-                404 Not Found
-              </h2>
-              <div
-                style="${css`
-                  color: var(--color--gray--medium--800);
-                  background-color: var(--color--gray--medium--100);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
-                    background-color: var(--color--gray--medium--900);
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
+                <i class="bi bi-person-plus"></i>
+                Sign up
+              </a>
+              <a
+                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                  redirect: req.originalUrl,
+                })}"
+                class="button button--transparent"
               >
-                <p>
-                  Either this page doesn’t exist or you have to authenticate to
-                  see it.
-                </p>
-                <p>
-                  <a
-                    href="${app.locals.settings
-                      .url}/authenticate?${qs.stringify({
-                      redirect: req.originalUrl,
-                    })}"
-                    class="button button--blue"
-                    style="${css`
-                      width: 100%;
-                    `}"
-                  >
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Authenticate
-                  </a>
-                </p>
-              </div>
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in
+              </a>
             </div>
           `,
         })
