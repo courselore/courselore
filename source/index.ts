@@ -1590,7 +1590,7 @@ export default async function courselore(
         >
           <div
             style="${css`
-              background-color: var(--color--gray--medium--200);
+              background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
               }
@@ -1605,7 +1605,7 @@ export default async function courselore(
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
                       border-bottom: var(--border-width--1) solid
-                        var(--color--gray--medium--300);
+                        var(--color--gray--medium--200);
                       @media (prefers-color-scheme: dark) {
                         border-color: var(--color--gray--medium--700);
                       }
@@ -4311,7 +4311,7 @@ export default async function courselore(
                   line-height: var(--line-height--xs);
                   padding: var(--space--0) var(--space--4);
                   border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--300);
+                    var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
@@ -6941,7 +6941,7 @@ export default async function courselore(
                   line-height: var(--line-height--xs);
                   padding: var(--space--1) var(--space--4);
                   border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--300);
+                    var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
@@ -10066,7 +10066,7 @@ ${value}</textarea
                   style="${css`
                     padding-bottom: var(--space--4);
                     border-bottom: var(--border-width--4) solid
-                      var(--color--gray--medium--300);
+                      var(--color--gray--medium--200);
                     @media (prefers-color-scheme: dark) {
                       border-color: var(--color--gray--medium--700);
                     }
