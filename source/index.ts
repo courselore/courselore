@@ -834,13 +834,6 @@ export default async function courselore(
                   }
                 }
 
-                &:disabled {
-                  color: var(--color--gray--medium--500);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--400);
-                  }
-                }
-
                 &.button--transparent {
                   &:not(:disabled) {
                     &:hover,
@@ -858,6 +851,12 @@ export default async function courselore(
                       &:active {
                         background-color: var(--color--gray--medium--600);
                       }
+                    }
+                  }
+                  &:disabled {
+                    color: var(--color--gray--medium--500);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--gray--medium--400);
                     }
                   }
                 }
