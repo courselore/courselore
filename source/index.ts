@@ -2251,6 +2251,9 @@ export default async function courselore(
               min-width: var(--width--0);
               max-width: var(--width--prose);
               padding: var(--space--4);
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
             `}"
           >
             $${body}
@@ -2957,7 +2960,6 @@ export default async function courselore(
               body: html`
                 <div
                   style="${css`
-                    text-align: center;
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
