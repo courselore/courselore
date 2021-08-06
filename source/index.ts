@@ -8731,6 +8731,10 @@ ${value}</textarea
                               width: 100%;
                               height: 100%;
                               position: relative;
+                              &:not(:checked) + * + *,
+                              &:checked + * {
+                                display: none;
+                              }
                             `}"
                             data-ondomcontentloaded="${javascript`
                               this.tooltip = tippy(this, {
@@ -8742,23 +8746,12 @@ ${value}</textarea
                               this.tooltip.setContent(this.checked ? "Unpin" : "Pin");
                             `}"
                           />
-                          <span
-                            style="${css`
-                              :checked + & {
-                                display: none;
-                              }
-                            `}"
-                          >
+                          <span>
                             <i class="bi bi-pin-angle"></i>
                             Unpinned
                           </span>
                           <span
                             class="strong"
-                            style="${css`
-                              :not(:checked) + * + & {
-                                display: none;
-                              }
-                            `}"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Unpin",
