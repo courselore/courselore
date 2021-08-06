@@ -8705,11 +8705,11 @@ ${value}</textarea
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Pinned conversations are listed first.",
-                              trigger: "click",
-                            });
-                          `}"
+                              tippy(this, {
+                                content: "Pinned conversations are listed first.",
+                                trigger: "click",
+                              });
+                            `}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
