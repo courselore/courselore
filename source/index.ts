@@ -838,10 +838,10 @@ export default async function courselore(
                   &:not(:disabled) {
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--300);
+                      background-color: var(--color--gray--medium--200);
                     }
                     &:active {
-                      background-color: var(--color--gray--medium--400);
+                      background-color: var(--color--gray--medium--300);
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
