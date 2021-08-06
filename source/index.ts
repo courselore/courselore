@@ -4841,8 +4841,10 @@ export default async function courselore(
                             style="${css`
                               flex: 1;
                               display: flex;
-                              flex-direction: column;
-                              gap: var(--space--2);
+                              justify-content: space-between;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--4);
+                              row-gap: var(--space--2);
                             `}"
                           >
                             $${invitation.email === null
