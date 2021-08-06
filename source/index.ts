@@ -4841,10 +4841,8 @@ export default async function courselore(
                             style="${css`
                               flex: 1;
                               display: flex;
-                              justify-content: space-between;
-                              flex-wrap: wrap;
-                              column-gap: var(--space--4);
-                              row-gap: var(--space--2);
+                              flex-direction: column;
+                              gap: var(--space--2);
                             `}"
                           >
                             $${invitation.email === null
@@ -5033,7 +5031,7 @@ export default async function courselore(
                               style="${css`
                                 display: flex;
                                 flex-wrap: wrap;
-                                row-gap: var(--space--2);
+                                gap: var(--space--2);
                               `}"
                             >
                               <div
@@ -5110,7 +5108,7 @@ export default async function courselore(
 
                               <div
                                 style="${css`
-                                  width: var(--space--36);
+                                  width: var(--space--40);
                                 `}"
                               >
                                 $${(() => {
