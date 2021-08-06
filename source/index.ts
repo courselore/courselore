@@ -8715,6 +8715,7 @@ ${value}</textarea
                           </button>
                         </div>
                         <label
+                          class="button button--tight button--transparent"
                           style="${css`
                             display: grid;
                             & > * {
@@ -8728,7 +8729,6 @@ ${value}</textarea
                             autocomplete="off"
                           />
                           <span
-                            class="button button--tight button--transparent"
                             style="${css`
                               :checked + & {
                                 display: none;
@@ -8745,7 +8745,7 @@ ${value}</textarea
                             Unpinned
                           </span>
                           <span
-                            class="button button--tight button--transparent strong"
+                            class="strong"
                             style="${css`
                               :not(:checked) + * + & {
                                 display: none;
