@@ -3041,22 +3041,20 @@ export default async function courselore(
                 <div
                   style="${css`
                     display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
+                    justify-content: center;
                   `}"
                 >
-                  <h2 class="heading">
-                    <i class="bi bi-journal-text"></i>
-                    Your Courses
-                  </h2>
-
                   <div
                     style="${css`
-                      margin-left: var(--space---2);
+                      background-color: var(--color--gray--medium--100);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--gray--medium--800);
+                      }
+                      padding: var(--space--2);
+                      border-radius: var(--border-radius--lg);
                       display: flex;
                       flex-direction: column;
-                      align-items: flex-start;
-                      gap: var(--space--1);
+                      gap: var(--space--2);
                     `}"
                   >
                     $${res.locals.enrollments.map(
@@ -3066,6 +3064,9 @@ export default async function courselore(
                             href="${app.locals.settings
                               .url}/courses/${enrollment.course.reference}"
                             class="button button--tight button--transparent"
+                            style="${css`
+                              justify-content: flex-start;
+                            `}"
                           >
                             <div
                               class="button button--tight"
