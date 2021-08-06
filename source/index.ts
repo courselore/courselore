@@ -4646,6 +4646,7 @@ export default async function courselore(
                   disabled
                   class="input--text"
                   style="${css`
+                    height: var(--space--32);
                     padding-right: var(--space--7);
                   `}"
                   data-ondomcontentloaded="${javascript`
