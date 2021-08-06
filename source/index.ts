@@ -4382,6 +4382,9 @@ export default async function courselore(
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
             `}"
           >
             $${body}
@@ -4411,48 +4414,40 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings
+            </h2>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings?_method=PATCH"
               style="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-sliders"></i>
-                Course Settings
-              </h2>
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings?_method=PATCH"
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <label class="label">
-                  <p class="label--text">Name</p>
-                  <input
-                    type="text"
-                    name="name"
-                    value="${res.locals.course.name}"
-                    required
-                    autocomplete="off"
-                    class="input--text"
-                  />
-                </label>
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                  >
-                    <i class="bi bi-pencil"></i>
-                    Update Course Settings
-                  </button>
-                </div>
-              </form>
-            </div>
+              <label class="label">
+                <p class="label--text">Name</p>
+                <input
+                  type="text"
+                  name="name"
+                  value="${res.locals.course.name}"
+                  required
+                  autocomplete="off"
+                  class="input--text"
+                />
+              </label>
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update Course Settings
+                </button>
+              </div>
+            </form>
           `,
         })
       );
@@ -4544,334 +4539,691 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-person-plus"></i>
+              Invitations
+            </h2>
+
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings/invitations"
               style="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-sliders"></i>
-                Course Settings ·
-                <i class="bi bi-person-plus"></i>
-                Invitations
-              </h2>
+              <div class="label">
+                <p class="label--text">Type</p>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label class="label--radio-or-checkbox">
+                    <input
+                      type="radio"
+                      name="type"
+                      value="link"
+                      required
+                      autocomplete="off"
+                      class="input--radio"
+                      onchange="${javascript`
+                        const emails = this.closest("form").querySelector(".emails");
+                        emails.hidden = true;
+                        for (const element of emails.querySelectorAll("*"))
+                          if (element.disabled !== null) element.disabled = true;
+                      `}"
+                    />
+                    <i class="bi bi-link"></i>
+                    Invitation Link
+                  </label>
+                  <label class="label--radio-or-checkbox">
+                    <input
+                      type="radio"
+                      name="type"
+                      value="email"
+                      required
+                      autocomplete="off"
+                      class="input--radio"
+                      onchange="${javascript`
+                        const emails = this.closest("form").querySelector(".emails");
+                        emails.hidden = false;
+                        for (const element of emails.querySelectorAll("*"))
+                          if (element.disabled !== null) element.disabled = false;
+                      `}"
+                    />
+                    <i class="bi bi-envelope"></i>
+                    Email
+                  </label>
+                </div>
+              </div>
 
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/invitations"
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <div class="label">
-                  <p class="label--text">Type</p>
-                  <div
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--4);
+              <div hidden class="emails label">
+                <div class="label--text">
+                  Emails
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: this.nextElementSibling.firstElementChild,
+                        trigger: "click",
+                      });
                     `}"
                   >
-                    <label class="label--radio-or-checkbox">
-                      <input
-                        type="radio"
-                        name="type"
-                        value="link"
-                        required
-                        autocomplete="off"
-                        class="input--radio"
-                        onchange="${javascript`
-                          const emails = this.closest("form").querySelector(".emails");
-                          emails.hidden = true;
-                          for (const element of emails.querySelectorAll("*"))
-                            if (element.disabled !== null) element.disabled = true;
-                        `}"
-                      />
-                      <i class="bi bi-link"></i>
-                      Invitation Link
-                    </label>
-                    <label class="label--radio-or-checkbox">
-                      <input
-                        type="radio"
-                        name="type"
-                        value="email"
-                        required
-                        autocomplete="off"
-                        class="input--radio"
-                        onchange="${javascript`
-                          const emails = this.closest("form").querySelector(".emails");
-                          emails.hidden = false;
-                          for (const element of emails.querySelectorAll("*"))
-                            if (element.disabled !== null) element.disabled = false;
-                        `}"
-                      />
-                      <i class="bi bi-envelope"></i>
-                      Email
-                    </label>
-                  </div>
-                </div>
-
-                <div hidden class="emails label">
-                  <div class="label--text">
-                    Emails
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
-                          trigger: "click",
-                        });
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                  <div hidden>
+                    <div
+                      style="${css`
+                        padding: var(--space--2);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
                       `}"
                     >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                    <div hidden>
-                      <div
-                        style="${css`
-                          padding: var(--space--2);
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        <p>
-                          Emails must be separated by commas and/or newlines,
-                          and may include names which may be quoted or not, for
-                          example:
-                        </p>
-                        <pre class="pre"><code>${dedent`
-                          "Scott" <scott@courselore.org>,
-                          Ali <ali@courselore.org>
-                          leandro@courselore.org
-                        `}</code></pre>
-                      </div>
+                      <p>
+                        Emails must be separated by commas and/or newlines, and
+                        may include names which may be quoted or not, for
+                        example:
+                      </p>
+                      <pre class="pre"><code>${dedent`
+                        "Scott" <scott@courselore.org>,
+                        Ali <ali@courselore.org>
+                        leandro@courselore.org
+                      `}</code></pre>
                     </div>
                   </div>
-                  <textarea
-                    name="emails"
-                    required
-                    disabled
-                    class="input--text"
-                    style="${css`
-                      padding-right: var(--space--7);
-                    `}"
-                    data-ondomcontentloaded="${javascript`
-                      (this.validators ??= []).push(() => {
-                        const emails = [];
-                        for (let email of this.value.split(${/[,\n]/})) {
-                          email = email.trim();
-                          let name = null;
-                          const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
-                          if (match !== null) {
-                            email = match.groups.email.trim();
-                            name = match.groups.name.trim();
-                            if (name.startsWith('"') && name.endsWith('"'))
-                              name = name.slice(1, -1);
-                            if (name === "") name = null;
-                          }
-                          if (email === "") continue;
-                          emails.push({ email, name });
+                </div>
+                <textarea
+                  name="emails"
+                  required
+                  disabled
+                  class="input--text"
+                  style="${css`
+                    padding-right: var(--space--7);
+                  `}"
+                  data-ondomcontentloaded="${javascript`
+                    (this.validators ??= []).push(() => {
+                      const emails = [];
+                      for (let email of this.value.split(${/[,\n]/})) {
+                        email = email.trim();
+                        let name = null;
+                        const match = email.match(${/^(?<name>.*)<(?<email>.*)>$/});
+                        if (match !== null) {
+                          email = match.groups.email.trim();
+                          name = match.groups.name.trim();
+                          if (name.startsWith('"') && name.endsWith('"'))
+                            name = name.slice(1, -1);
+                          if (name === "") name = null;
                         }
-                        if (
-                          emails.length === 0 ||
-                          emails.some(
-                            ({ email }) => !email.match(${
-                              app.locals.constants.emailRegExp
-                            })
-                          )
+                        if (email === "") continue;
+                        emails.push({ email, name });
+                      }
+                      if (
+                        emails.length === 0 ||
+                        emails.some(
+                          ({ email }) => !email.match(${
+                            app.locals.constants.emailRegExp
+                          })
                         )
-                          return "Match the requested format.";
-                      });
-                    `}"
-                  ></textarea>
-                </div>
+                      )
+                        return "Match the requested format.";
+                    });
+                  `}"
+                ></textarea>
+              </div>
 
-                <div class="label">
-                  <p class="label--text">Role</p>
-                  <div
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    $${app.locals.constants.roles.map(
-                      (role) =>
-                        html`
-                          <label class="label--radio-or-checkbox">
-                            <input
-                              type="radio"
-                              name="role"
-                              value="${role}"
-                              required
-                              autocomplete="off"
-                              class="input--radio"
-                            />
-                            ${lodash.capitalize(role)}
-                          </label>
-                        `
-                    )}
-                  </div>
+              <div class="label">
+                <p class="label--text">Role</p>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  $${app.locals.constants.roles.map(
+                    (role) =>
+                      html`
+                        <label class="label--radio-or-checkbox">
+                          <input
+                            type="radio"
+                            name="role"
+                            value="${role}"
+                            required
+                            autocomplete="off"
+                            class="input--radio"
+                          />
+                          ${lodash.capitalize(role)}
+                        </label>
+                      `
+                  )}
                 </div>
+              </div>
 
-                <div class="label">
-                  <p class="label--text">Expiration</p>
-                  <div
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    <label class="label--radio-or-checkbox">
-                      <input
-                        type="radio"
-                        name="isExpiresAt"
-                        required
-                        autocomplete="off"
-                        class="input--radio"
-                        onchange="${javascript`
-                          const expiresAt = this.closest("form").querySelector(".expires-at");
-                          expiresAt.hidden = true;
-                          for (const element of expiresAt.querySelectorAll("*"))
-                            if (element.disabled !== undefined) element.disabled = true;
-                        `}"
-                      />
-                      <i class="bi bi-calendar-minus"></i>
-                      Doesn’t Expire
-                    </label>
-                    <label class="label--radio-or-checkbox">
-                      <input
-                        type="radio"
-                        name="isExpiresAt"
-                        required
-                        autocomplete="off"
-                        class="input--radio"
-                        onchange="${javascript`
-                          const expiresAt = this.closest("form").querySelector(".expires-at");
-                          expiresAt.hidden = false;
-                          for (const element of expiresAt.querySelectorAll("*"))
-                            if (element.disabled !== undefined) element.disabled = false;
-                        `}"
-                      />
-                      <i class="bi bi-calendar-plus"></i>
-                      Expires
-                    </label>
-                  </div>
-                </div>
-
-                <div hidden class="expires-at label">
-                  <div class="label--text">
-                    Expires at
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
-                          trigger: "click",
-                        });
+              <div class="label">
+                <p class="label--text">Expiration</p>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label class="label--radio-or-checkbox">
+                    <input
+                      type="radio"
+                      name="isExpiresAt"
+                      required
+                      autocomplete="off"
+                      class="input--radio"
+                      onchange="${javascript`
+                        const expiresAt = this.closest("form").querySelector(".expires-at");
+                        expiresAt.hidden = true;
+                        for (const element of expiresAt.querySelectorAll("*"))
+                          if (element.disabled !== undefined) element.disabled = true;
                       `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                  </div>
-                  <input
-                    type="text"
-                    name="expiresAt"
-                    value="${new Date().toISOString()}"
-                    required
-                    autocomplete="off"
-                    disabled
-                    class="input--text"
+                    />
+                    <i class="bi bi-calendar-minus"></i>
+                    Doesn’t Expire
+                  </label>
+                  <label class="label--radio-or-checkbox">
+                    <input
+                      type="radio"
+                      name="isExpiresAt"
+                      required
+                      autocomplete="off"
+                      class="input--radio"
+                      onchange="${javascript`
+                        const expiresAt = this.closest("form").querySelector(".expires-at");
+                        expiresAt.hidden = false;
+                        for (const element of expiresAt.querySelectorAll("*"))
+                          if (element.disabled !== undefined) element.disabled = false;
+                      `}"
+                    />
+                    <i class="bi bi-calendar-plus"></i>
+                    Expires
+                  </label>
+                </div>
+              </div>
+
+              <div hidden class="expires-at label">
+                <div class="label--text">
+                  Expires at
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
                     data-ondomcontentloaded="${javascript`
-                      localizeTime(this);
-                      (this.validators ??= []).push(() => {
-                        if (new Date(this.value).getTime() <= Date.now())
-                          return "Must be in the future.";
+                      tippy(this, {
+                        content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
+                        trigger: "click",
                       });
                     `}"
-                  />
-                </div>
-
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
                   >
-                    <i class="bi bi-person-plus"></i>
-                    Create Invitation
+                    <i class="bi bi-info-circle"></i>
                   </button>
                 </div>
-              </form>
+                <input
+                  type="text"
+                  name="expiresAt"
+                  value="${new Date().toISOString()}"
+                  required
+                  autocomplete="off"
+                  disabled
+                  class="input--text"
+                  data-ondomcontentloaded="${javascript`
+                    localizeTime(this);
+                    (this.validators ??= []).push(() => {
+                      if (new Date(this.value).getTime() <= Date.now())
+                        return "Must be in the future.";
+                    });
+                  `}"
+                />
+              </div>
 
-              $${invitations.length === 0
-                ? html``
-                : html`
-                    <hr class="separator" />
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-person-plus"></i>
+                  Create Invitation
+                </button>
+              </div>
+            </form>
 
-                    <div class="stripped">
-                      $${invitations.map((invitation) => {
-                        const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                        const isExpired = app.locals.helpers.isExpired(
-                          invitation.expiresAt
-                        );
-                        const isUsed = invitation.usedAt !== null;
+            $${invitations.length === 0
+              ? html``
+              : html`
+                  <hr class="separator" />
 
-                        return html`
+                  <div class="stripped">
+                    $${invitations.map((invitation) => {
+                      const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                      const isExpired = app.locals.helpers.isExpired(
+                        invitation.expiresAt
+                      );
+                      const isUsed = invitation.usedAt !== null;
+
+                      return html`
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: baseline;
+                          `}"
+                        >
+                          $${invitation.email === null
+                            ? html`<i class="bi bi-link"></i>`
+                            : html`<i class="bi bi-envelope"></i>`}
                           <div
                             style="${css`
+                              flex: 1;
                               display: flex;
                               gap: var(--space--2);
-                              align-items: baseline;
+                              @media (max-width: 499px) {
+                                flex-direction: column;
+                              }
                             `}"
                           >
-                            $${invitation.email === null
-                              ? html`<i class="bi bi-link"></i>`
-                              : html`<i class="bi bi-envelope"></i>`}
                             <div
                               style="${css`
                                 flex: 1;
-                                display: flex;
-                                gap: var(--space--2);
-                                @media (max-width: 499px) {
-                                  flex-direction: column;
-                                }
                               `}"
                             >
-                              <div
-                                style="${css`
-                                  flex: 1;
-                                `}"
-                              >
-                                $${invitation.email === null
-                                  ? html`
-                                      <button
-                                        id="invitation--${invitation.reference}"
-                                        class="button button--tight button--transparent strong"
-                                        data-ondomcontentloaded="${javascript`
-                                          this.tooltip = tippy(this, {
-                                            content: "See Invitation Link",
-                                            touch: false,
-                                          });
-                                          tippy(this, {
-                                            content: this.nextElementSibling.firstElementChild,
-                                            trigger: "click",
-                                            interactive: true,
-                                            maxWidth: "none",
-                                          });
+                              $${invitation.email === null
+                                ? html`
+                                    <button
+                                      id="invitation--${invitation.reference}"
+                                      class="button button--tight button--transparent strong"
+                                      data-ondomcontentloaded="${javascript`
+                                        this.tooltip = tippy(this, {
+                                          content: "See Invitation Link",
+                                          touch: false,
+                                        });
+                                        tippy(this, {
+                                          content: this.nextElementSibling.firstElementChild,
+                                          trigger: "click",
+                                          interactive: true,
+                                          maxWidth: "none",
+                                        });
+                                      `}"
+                                    >
+                                      ${"*".repeat(
+                                        6
+                                      )}${invitation.reference.slice(6)}
+                                      <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                    $${(() => {
+                                      const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                      return html`
+                                        <div hidden>
+                                          <div
+                                            style="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            $${isExpired
+                                              ? html`
+                                                  <p
+                                                    class="text--rose"
+                                                    style="${css`
+                                                      display: flex;
+                                                      gap: var(--space--2);
+                                                      justify-content: center;
+                                                    `}"
+                                                  >
+                                                    <i
+                                                      class="bi bi-calendar-x"
+                                                    ></i>
+                                                    Expired
+                                                  </p>
+                                                `
+                                              : html``}
+                                            <div
+                                              style="${css`
+                                                display: flex;
+                                                gap: var(--space--2);
+                                                align-items: center;
+                                              `}"
+                                            >
+                                              <div
+                                                style="${css`
+                                                  user-select: all;
+                                                `}"
+                                              >
+                                                ${link}
+                                              </div>
+                                              <button
+                                                class="button button--tight button--transparent"
+                                                data-ondomcontentloaded="${javascript`
+                                                    tippy(this, {
+                                                      content: "Copy",
+                                                      touch: false,
+                                                    });
+                                                  `}"
+                                                onclick="${javascript`
+                                                  (async () => {
+                                                    await navigator.clipboard.writeText(${JSON.stringify(
+                                                      link
+                                                    )});
+                                                    const classList = this.firstElementChild.classList;
+                                                    classList.remove("bi-clipboard");
+                                                    classList.add("bi-check-lg");
+                                                    await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                    classList.remove("bi-check-lg");
+                                                    classList.add("bi-clipboard");
+                                                  })();
+                                                `}"
+                                              >
+                                                <i class="bi bi-clipboard"></i>
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      `;
+                                    })()}
+                                  `
+                                : html`
+                                    <button
+                                      class="button button--tight button--transparent"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: this.nextElementSibling.firstElementChild,
+                                          trigger: "click",
+                                          interactive: true,
+                                        });
+                                      `}"
+                                    >
+                                      <div
+                                        style="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          align-items: flex-start;
                                         `}"
                                       >
-                                        ${"*".repeat(
-                                          6
-                                        )}${invitation.reference.slice(6)}
-                                        <i class="bi bi-chevron-down"></i>
+                                        <div
+                                          class="strong"
+                                          style="${css`
+                                            display: flex;
+                                            align-items: baseline;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          ${invitation.name ?? invitation.email}
+                                          <i class="bi bi-chevron-down"></i>
+                                        </div>
+                                        $${invitation.name !== null
+                                          ? html`
+                                              <div class="secondary">
+                                                ${invitation.email}
+                                              </div>
+                                            `
+                                          : html``}
+                                      </div>
+                                    </button>
+                                    <div hidden>
+                                      <div class="dropdown-menu">
+                                        <form
+                                          method="POST"
+                                          action="${action}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="resend"
+                                            value="true"
+                                          />
+                                          <button
+                                            class="dropdown-menu--item button button--transparent"
+                                            $${isUsed
+                                              ? html`
+                                                  type="button"
+                                                  data-ondomcontentloaded="${javascript`
+                                                    tippy(this, {
+                                                      content: "You may not resend this invitation because it’s used.",
+                                                      theme: "rose",
+                                                      trigger: "click",
+                                                    });
+                                                  `}"
+                                                `
+                                              : isExpired
+                                              ? html`
+                                                  type="button"
+                                                  data-ondomcontentloaded="${javascript`
+                                                    tippy(this, {
+                                                      content: "You may not resend this invitation because it’s expired.",
+                                                      theme: "rose",
+                                                      trigger: "click",
+                                                    });
+                                                  `}"
+                                                `
+                                              : html``}
+                                          >
+                                            <i class="bi bi-envelope"></i>
+                                            Resend Invitation Email
+                                          </button>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  `}
+                            </div>
+
+                            <div
+                              style="${css`
+                                display: flex;
+                                justify-content: space-between;
+                              `}"
+                            >
+                              <div>
+                                <button
+                                  class="button button--tight button--transparent"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Change Role",
+                                      touch: false,
+                                    });
+                                    tippy(this, {
+                                      content: this.nextElementSibling.firstElementChild,
+                                      trigger: "click",
+                                      interactive: true,
+                                    });
+                                  `}"
+                                >
+                                  ${lodash.capitalize(invitation.role)}
+                                  <i class="bi bi-chevron-down"></i>
+                                </button>
+                                <div hidden>
+                                  <div class="dropdown-menu">
+                                    $${app.locals.constants.roles.map((role) =>
+                                      role === invitation.role
+                                        ? html``
+                                        : html`
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="role"
+                                                value="${role}"
+                                              />
+                                              <button
+                                                class="dropdown-menu--item button button--transparent"
+                                                $${isUsed
+                                                  ? html`
+                                                      type="button"
+                                                      data-ondomcontentloaded="${javascript`
+                                                          tippy(this, {
+                                                            content: "You may not change the role of this invitation because it’s used.",
+                                                            theme: "rose",
+                                                            trigger: "click",
+                                                          });
+                                                        `}"
+                                                    `
+                                                  : isExpired
+                                                  ? html`
+                                                      type="button"
+                                                      data-ondomcontentloaded="${javascript`
+                                                        tippy(this, {
+                                                          content: "You may not change the role of this invitation because it’s expired.",
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                        });
+                                                      `}"
+                                                    `
+                                                  : html``}
+                                              >
+                                                ${lodash.capitalize(role)}
+                                              </button>
+                                            </form>
+                                          `
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                style="${css`
+                                  width: var(--space--40);
+                                  display: flex;
+                                  justify-content: flex-end;
+                                `}"
+                              >
+                                $${(() => {
+                                  const changeExpirationForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
+                                      class="dropdown-menu"
+                                      style="${css`
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <div class="dropdown-menu--item">
+                                        <input
+                                          type="text"
+                                          name="expiresAt"
+                                          value="${new Date(
+                                            invitation.expiresAt ?? new Date()
+                                          ).toISOString()}"
+                                          required
+                                          autocomplete="off"
+                                          class="input--text"
+                                          data-ondomcontentloaded="${javascript`
+                                            localizeTime(this);
+                                            (this.validators ??= []).push(() => {
+                                              if (new Date(this.value).getTime() <= Date.now())
+                                                return "Must be in the future.";
+                                            });
+                                          `}"
+                                        />
+                                      </div>
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-pencil"></i>
+                                        Update Expiration Date
                                       </button>
-                                      $${(() => {
-                                        const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                        return html`
+                                    </form>
+                                  `;
+                                  const removeExpirationForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
+                                      class="dropdown-menu"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="removeExpiration"
+                                        value="true"
+                                      />
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-calendar-minus"></i>
+                                        Remove Expiration
+                                      </button>
+                                    </form>
+                                  `;
+                                  const expireForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
+                                      class="dropdown-menu"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="expire"
+                                        value="true"
+                                      />
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-calendar-x"></i>
+                                        Expire Invitation
+                                      </button>
+                                    </form>
+                                  `;
+
+                                  return isUsed
+                                    ? html`
+                                        <div>
+                                          <div
+                                            class="button button--tight text--green"
+                                            style="${css`
+                                              cursor: default;
+                                            `}"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                              });
+                                            `}"
+                                          >
+                                            Used
+                                            <i class="bi bi-check-lg"></i>
+                                          </div>
+                                          <div hidden>
+                                            <div>
+                                              Used
+                                              <time
+                                                data-ondomcontentloaded="${javascript`
+                                                  relativizeTime(this);
+                                                `}"
+                                              >
+                                                ${new Date(
+                                                  invitation.usedAt!
+                                                ).toISOString()}
+                                              </time>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      `
+                                    : isExpired
+                                    ? html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--transparent text--rose"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-x"></i>
+                                            Expired
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
                                           <div hidden>
                                             <div
                                               style="${css`
@@ -4880,503 +5232,128 @@ export default async function courselore(
                                                 gap: var(--space--2);
                                               `}"
                                             >
-                                              $${isExpired
-                                                ? html`
-                                                    <p
-                                                      class="text--rose"
-                                                      style="${css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                        justify-content: center;
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-calendar-x"
-                                                      ></i>
-                                                      Expired
-                                                    </p>
-                                                  `
-                                                : html``}
-                                              <div
-                                                style="${css`
-                                                  display: flex;
-                                                  gap: var(--space--2);
-                                                  align-items: center;
-                                                `}"
-                                              >
-                                                <div
-                                                  style="${css`
-                                                    user-select: all;
-                                                  `}"
-                                                >
-                                                  ${link}
-                                                </div>
-                                                <button
-                                                  class="button button--tight button--transparent"
-                                                  data-ondomcontentloaded="${javascript`
-                                                    tippy(this, {
-                                                      content: "Copy",
-                                                      touch: false,
-                                                    });
-                                                  `}"
-                                                  onclick="${javascript`
-                                                    (async () => {
-                                                      await navigator.clipboard.writeText(${JSON.stringify(
-                                                        link
-                                                      )});
-                                                      const classList = this.firstElementChild.classList;
-                                                      classList.remove("bi-clipboard");
-                                                      classList.add("bi-check-lg");
-                                                      await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                      classList.remove("bi-check-lg");
-                                                      classList.add("bi-clipboard");
-                                                    })();
-                                                  `}"
-                                                >
-                                                  <i
-                                                    class="bi bi-clipboard"
-                                                  ></i>
-                                                </button>
-                                              </div>
+                                              <h3 class="heading">
+                                                <i class="bi bi-calendar-x"></i>
+                                                <span>
+                                                  Expired
+                                                  <time
+                                                    data-ondomcontentloaded="${javascript`
+                                                      relativizeTime(this);
+                                                    `}"
+                                                  >
+                                                    ${new Date(
+                                                      invitation.expiresAt!
+                                                    ).toISOString()}
+                                                  </time>
+                                                </span>
+                                              </h3>
+                                              $${changeExpirationForm}
+                                              <hr class="separator" />
+                                              $${removeExpirationForm}
                                             </div>
                                           </div>
-                                        `;
-                                      })()}
-                                    `
-                                  : html`
-                                      <button
-                                        class="button button--tight button--transparent"
-                                        data-ondomcontentloaded="${javascript`
-                                          tippy(this, {
-                                            content: this.nextElementSibling.firstElementChild,
-                                            trigger: "click",
-                                            interactive: true,
-                                          });
-                                        `}"
-                                      >
-                                        <div
-                                          style="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            align-items: flex-start;
-                                          `}"
-                                        >
-                                          <div
-                                            class="strong"
-                                            style="${css`
-                                              display: flex;
-                                              align-items: baseline;
-                                              gap: var(--space--2);
-                                            `}"
-                                          >
-                                            ${invitation.name ??
-                                            invitation.email}
-                                            <i class="bi bi-chevron-down"></i>
-                                          </div>
-                                          $${invitation.name !== null
-                                            ? html`
-                                                <div class="secondary">
-                                                  ${invitation.email}
-                                                </div>
-                                              `
-                                            : html``}
                                         </div>
-                                      </button>
-                                      <div hidden>
-                                        <div class="dropdown-menu">
-                                          <form
-                                            method="POST"
-                                            action="${action}?_method=PATCH"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="resend"
-                                              value="true"
-                                            />
-                                            <button
-                                              class="dropdown-menu--item button button--transparent"
-                                              $${isUsed
-                                                ? html`
-                                                    type="button"
-                                                    data-ondomcontentloaded="${javascript`
-                                                      tippy(this, {
-                                                        content: "You may not resend this invitation because it’s used.",
-                                                        theme: "rose",
-                                                        trigger: "click",
-                                                      });
-                                                    `}"
-                                                  `
-                                                : isExpired
-                                                ? html`
-                                                    type="button"
-                                                    data-ondomcontentloaded="${javascript`
-                                                      tippy(this, {
-                                                        content: "You may not resend this invitation because it’s expired.",
-                                                        theme: "rose",
-                                                        trigger: "click",
-                                                      });
-                                                    `}"
-                                                  `
-                                                : html``}
-                                            >
-                                              <i class="bi bi-envelope"></i>
-                                              Resend Invitation Email
-                                            </button>
-                                          </form>
-                                        </div>
-                                      </div>
-                                    `}
-                              </div>
-
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  justify-content: space-between;
-                                `}"
-                              >
-                                <div>
-                                  <button
-                                    class="button button--tight button--transparent"
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "Change Role",
-                                        touch: false,
-                                      });
-                                      tippy(this, {
-                                        content: this.nextElementSibling.firstElementChild,
-                                        trigger: "click",
-                                        interactive: true,
-                                      });
-                                    `}"
-                                  >
-                                    ${lodash.capitalize(invitation.role)}
-                                    <i class="bi bi-chevron-down"></i>
-                                  </button>
-                                  <div hidden>
-                                    <div class="dropdown-menu">
-                                      $${app.locals.constants.roles.map(
-                                        (role) =>
-                                          role === invitation.role
-                                            ? html``
-                                            : html`
-                                                <form
-                                                  method="POST"
-                                                  action="${action}?_method=PATCH"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="role"
-                                                    value="${role}"
-                                                  />
-                                                  <button
-                                                    class="dropdown-menu--item button button--transparent"
-                                                    $${isUsed
-                                                      ? html`
-                                                          type="button"
-                                                          data-ondomcontentloaded="${javascript`
-                                                            tippy(this, {
-                                                              content: "You may not change the role of this invitation because it’s used.",
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                            });
-                                                          `}"
-                                                        `
-                                                      : isExpired
-                                                      ? html`
-                                                          type="button"
-                                                          data-ondomcontentloaded="${javascript`
-                                                            tippy(this, {
-                                                              content: "You may not change the role of this invitation because it’s expired.",
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                            });
-                                                          `}"
-                                                        `
-                                                      : html``}
-                                                  >
-                                                    ${lodash.capitalize(role)}
-                                                  </button>
-                                                </form>
-                                              `
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div
-                                  style="${css`
-                                    width: var(--space--40);
-                                    display: flex;
-                                    justify-content: flex-end;
-                                  `}"
-                                >
-                                  $${(() => {
-                                    const changeExpirationForm = html`
-                                      <form
-                                        method="POST"
-                                        action="${action}?_method=PATCH"
-                                        class="dropdown-menu"
-                                        style="${css`
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <div class="dropdown-menu--item">
-                                          <input
-                                            type="text"
-                                            name="expiresAt"
-                                            value="${new Date(
-                                              invitation.expiresAt ?? new Date()
-                                            ).toISOString()}"
-                                            required
-                                            autocomplete="off"
-                                            class="input--text"
+                                      `
+                                    : invitation.expiresAt === null
+                                    ? html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--transparent text--blue"
                                             data-ondomcontentloaded="${javascript`
-                                              localizeTime(this);
-                                              (this.validators ??= []).push(() => {
-                                                if (new Date(this.value).getTime() <= Date.now())
-                                                  return "Must be in the future.";
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
                                               });
                                             `}"
-                                          />
-                                        </div>
-                                        <button
-                                          class="dropdown-menu--item button button--transparent"
-                                        >
-                                          <i class="bi bi-pencil"></i>
-                                          Update Expiration Date
-                                        </button>
-                                      </form>
-                                    `;
-                                    const removeExpirationForm = html`
-                                      <form
-                                        method="POST"
-                                        action="${action}?_method=PATCH"
-                                        class="dropdown-menu"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="removeExpiration"
-                                          value="true"
-                                        />
-                                        <button
-                                          class="dropdown-menu--item button button--transparent"
-                                        >
-                                          <i class="bi bi-calendar-minus"></i>
-                                          Remove Expiration
-                                        </button>
-                                      </form>
-                                    `;
-                                    const expireForm = html`
-                                      <form
-                                        method="POST"
-                                        action="${action}?_method=PATCH"
-                                        class="dropdown-menu"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="expire"
-                                          value="true"
-                                        />
-                                        <button
-                                          class="dropdown-menu--item button button--transparent"
-                                        >
-                                          <i class="bi bi-calendar-x"></i>
-                                          Expire Invitation
-                                        </button>
-                                      </form>
-                                    `;
-
-                                    return isUsed
-                                      ? html`
-                                          <div>
+                                          >
+                                            <i class="bi bi-calendar-minus"></i>
+                                            Doesn’t Expire
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
                                             <div
-                                              class="button button--tight text--green"
                                               style="${css`
-                                                cursor: default;
-                                              `}"
-                                              data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: this.nextElementSibling.firstElementChild,
-                                                });
+                                                padding-top: var(--space--2);
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
                                               `}"
                                             >
-                                              Used
-                                              <i class="bi bi-check-lg"></i>
-                                            </div>
-                                            <div hidden>
-                                              <div>
-                                                Used
-                                                <time
-                                                  data-ondomcontentloaded="${javascript`
-                                                    relativizeTime(this);
-                                                  `}"
-                                                >
-                                                  ${new Date(
-                                                    invitation.usedAt!
-                                                  ).toISOString()}
-                                                </time>
-                                              </div>
+                                              $${changeExpirationForm}
+                                              <hr class="separator" />
+                                              $${expireForm}
                                             </div>
                                           </div>
-                                        `
-                                      : isExpired
-                                      ? html`
-                                          <div>
-                                            <button
-                                              class="button button--tight button--transparent text--rose"
-                                              data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: "Change Expiration",
-                                                  touch: false,
-                                                });
-                                                tippy(this, {
-                                                  content: this.nextElementSibling.firstElementChild,
-                                                  trigger: "click",
-                                                  interactive: true,
-                                                });
+                                        </div>
+                                      `
+                                    : html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--transparent text--amber"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-plus"></i>
+                                            Expires
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
+                                            <div
+                                              style="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
                                               `}"
                                             >
-                                              <i class="bi bi-calendar-x"></i>
-                                              Expired
-                                              <i class="bi bi-chevron-down"></i>
-                                            </button>
-                                            <div hidden>
-                                              <div
-                                                style="${css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `}"
-                                              >
-                                                <h3 class="heading">
-                                                  <i
-                                                    class="bi bi-calendar-x"
-                                                  ></i>
-                                                  <span>
-                                                    Expired
-                                                    <time
-                                                      data-ondomcontentloaded="${javascript`
+                                              <h3 class="heading">
+                                                <i
+                                                  class="bi bi-calendar-plus"
+                                                ></i>
+                                                <span>
+                                                  Expires
+                                                  <time
+                                                    data-ondomcontentloaded="${javascript`
                                                         relativizeTime(this);
                                                       `}"
-                                                    >
-                                                      ${new Date(
-                                                        invitation.expiresAt!
-                                                      ).toISOString()}
-                                                    </time>
-                                                  </span>
-                                                </h3>
-                                                $${changeExpirationForm}
-                                                <hr class="separator" />
-                                                $${removeExpirationForm}
-                                              </div>
+                                                  >
+                                                    ${new Date(
+                                                      invitation.expiresAt
+                                                    ).toISOString()}
+                                                  </time>
+                                                </span>
+                                              </h3>
+                                              <hr class="separator" />
+                                              $${changeExpirationForm}
+                                              <hr class="separator" />
+                                              $${removeExpirationForm}
+                                              $${expireForm}
                                             </div>
                                           </div>
-                                        `
-                                      : invitation.expiresAt === null
-                                      ? html`
-                                          <div>
-                                            <button
-                                              class="button button--tight button--transparent text--blue"
-                                              data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: "Change Expiration",
-                                                  touch: false,
-                                                });
-                                                tippy(this, {
-                                                  content: this.nextElementSibling.firstElementChild,
-                                                  trigger: "click",
-                                                  interactive: true,
-                                                });
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-minus"
-                                              ></i>
-                                              Doesn’t Expire
-                                              <i class="bi bi-chevron-down"></i>
-                                            </button>
-                                            <div hidden>
-                                              <div
-                                                style="${css`
-                                                  padding-top: var(--space--2);
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `}"
-                                              >
-                                                $${changeExpirationForm}
-                                                <hr class="separator" />
-                                                $${expireForm}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        `
-                                      : html`
-                                          <div>
-                                            <button
-                                              class="button button--tight button--transparent text--amber"
-                                              data-ondomcontentloaded="${javascript`
-                                                tippy(this, {
-                                                  content: "Change Expiration",
-                                                  touch: false,
-                                                });
-                                                tippy(this, {
-                                                  content: this.nextElementSibling.firstElementChild,
-                                                  trigger: "click",
-                                                  interactive: true,
-                                                });
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-calendar-plus"
-                                              ></i>
-                                              Expires
-                                              <i class="bi bi-chevron-down"></i>
-                                            </button>
-                                            <div hidden>
-                                              <div
-                                                style="${css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `}"
-                                              >
-                                                <h3 class="heading">
-                                                  <i
-                                                    class="bi bi-calendar-plus"
-                                                  ></i>
-                                                  <span>
-                                                    Expires
-                                                    <time
-                                                      data-ondomcontentloaded="${javascript`
-                                                        relativizeTime(this);
-                                                      `}"
-                                                    >
-                                                      ${new Date(
-                                                        invitation.expiresAt
-                                                      ).toISOString()}
-                                                    </time>
-                                                  </span>
-                                                </h3>
-                                                <hr class="separator" />
-                                                $${changeExpirationForm}
-                                                <hr class="separator" />
-                                                $${removeExpirationForm}
-                                                $${expireForm}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        `;
-                                  })()}
-                                </div>
+                                        </div>
+                                      `;
+                                })()}
                               </div>
                             </div>
                           </div>
-                        `;
-                      })}
-                    </div>
-                  `}
-            </div>
+                        </div>
+                      `;
+                    })}
+                  </div>
+                `}
           `,
         })
       );
@@ -5746,287 +5723,273 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <h2 class="heading">
-                <i class="bi bi-sliders"></i>
-                Course Settings ·
-                <i class="bi bi-people"></i>
-                Enrollments
-              </h2>
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-people"></i>
+              Enrollments
+            </h2>
 
-              <div class="stripped">
-                $${enrollments.map((enrollment) => {
-                  const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
-                  const isSelf = enrollment.id === res.locals.enrollment.id;
-                  const isOnlyStaff =
-                    isSelf &&
-                    enrollments.filter(
-                      (enrollment) => enrollment.role === "staff"
-                    ).length === 1;
+            <div class="stripped">
+              $${enrollments.map((enrollment) => {
+                const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+                const isSelf = enrollment.id === res.locals.enrollment.id;
+                const isOnlyStaff =
+                  isSelf &&
+                  enrollments.filter(
+                    (enrollment) => enrollment.role === "staff"
+                  ).length === 1;
 
-                  return html`
+                return html`
+                  <div
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    $${enrollment.userAvatar === null
+                      ? html`
+                          <div
+                            style="${css`
+                              font-size: var(--font-size--xl);
+                            `}"
+                          >
+                            <i class="bi bi-person-circle"></i>
+                          </div>
+                        `
+                      : html`
+                          <img
+                            src="${enrollment.userAvatar}"
+                            alt="${enrollment.userName}"
+                            class="avatar"
+                            style="${css`
+                              width: var(--font-size--xl);
+                              height: var(--font-size--xl);
+                            `}"
+                          />
+                        `}
                     <div
                       style="${css`
+                        flex: 1;
                         display: flex;
                         gap: var(--space--2);
+                        @media (max-width: 499px) {
+                          flex-direction: column;
+                        }
                       `}"
                     >
-                      $${enrollment.userAvatar === null
-                        ? html`
-                            <div
-                              style="${css`
-                                font-size: var(--font-size--xl);
-                              `}"
-                            >
-                              <i class="bi bi-person-circle"></i>
-                            </div>
-                          `
-                        : html`
-                            <img
-                              src="${enrollment.userAvatar}"
-                              alt="${enrollment.userName}"
-                              class="avatar"
-                              style="${css`
-                                width: var(--font-size--xl);
-                                height: var(--font-size--xl);
-                              `}"
-                            />
-                          `}
                       <div
                         style="${css`
                           flex: 1;
                           display: flex;
+                          flex-direction: column;
+                        `}"
+                      >
+                        <div class="strong">${enrollment.userName}</div>
+                        <div class="secondary">${enrollment.userEmail}</div>
+                      </div>
+
+                      <div
+                        style="${css`
+                          display: flex;
+                          justify-content: space-between;
                           gap: var(--space--2);
                           @media (max-width: 499px) {
-                            flex-direction: column;
+                            margin-left: var(--space---1);
+                            width: calc(
+                              var(--space--1) + 100% + var(--space--1)
+                            );
                           }
                         `}"
                       >
-                        <div
-                          style="${css`
-                            flex: 1;
-                            display: flex;
-                            flex-direction: column;
-                          `}"
-                        >
-                          <div class="strong">${enrollment.userName}</div>
-                          <div class="secondary">${enrollment.userEmail}</div>
-                        </div>
-
-                        <div
-                          style="${css`
-                            display: flex;
-                            justify-content: space-between;
-                            gap: var(--space--2);
-                            @media (max-width: 499px) {
-                              margin-left: var(--space---1);
-                              width: calc(
-                                var(--space--1) + 100% + var(--space--1)
-                              );
-                            }
-                          `}"
-                        >
-                          <div>
-                            <button
-                              class="button button--tight button--transparent"
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Change Role",
-                                  touch: false,
-                                });
-                                tippy(this, {
-                                  content: this.nextElementSibling.firstElementChild,
-                                  trigger: "click",
-                                  interactive: true,
-                                });
-                              `}"
-                            >
-                              ${lodash.capitalize(enrollment.role)}
-                              <i class="bi bi-chevron-down"></i>
-                            </button>
-                            <div hidden>
-                              <div class="dropdown-menu">
-                                $${app.locals.constants.roles.map((role) =>
-                                  role === enrollment.role
-                                    ? html``
-                                    : html`
-                                        <form
-                                          method="POST"
-                                          action="${action}?_method=PATCH"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="role"
-                                            value="${role}"
-                                          />
-                                          <div>
-                                            <button
-                                              class="dropdown-menu--item button button--transparent"
-                                              $${isOnlyStaff
-                                                ? html`
-                                                    type="button"
-                                                    data-ondomcontentloaded="${javascript`
-                                                      tippy(this, {
-                                                        content: "You may not change your own role because you’re the only staff member.",
-                                                        theme: "rose",
-                                                        trigger: "click",
-                                                      });
-                                                    `}"
-                                                  `
-                                                : isSelf
-                                                ? html`
-                                                    type="button"
-                                                    data-ondomcontentloaded="${javascript`
-                                                      const element = this.nextElementSibling.firstElementChild;
-                                                      element.form = this.closest("form");
-                                                      tippy(this, {
-                                                        content: element,
-                                                        theme: "rose",
-                                                        trigger: "click",
-                                                        interactive: true,
-                                                        appendTo: document.body,
-                                                      });
-                                                    `}"
-                                                  `
-                                                : html``}
-                                            >
-                                              ${lodash.capitalize(role)}
-                                            </button>
-                                            $${isSelf
+                        <div>
+                          <button
+                            class="button button--tight button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Change Role",
+                                touch: false,
+                              });
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                trigger: "click",
+                                interactive: true,
+                              });
+                            `}"
+                          >
+                            ${lodash.capitalize(enrollment.role)}
+                            <i class="bi bi-chevron-down"></i>
+                          </button>
+                          <div hidden>
+                            <div class="dropdown-menu">
+                              $${app.locals.constants.roles.map((role) =>
+                                role === enrollment.role
+                                  ? html``
+                                  : html`
+                                      <form
+                                        method="POST"
+                                        action="${action}?_method=PATCH"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="role"
+                                          value="${role}"
+                                        />
+                                        <div>
+                                          <button
+                                            class="dropdown-menu--item button button--transparent"
+                                            $${isOnlyStaff
                                               ? html`
-                                                  <div hidden>
-                                                    <div
-                                                      class="confirmation"
-                                                      style="${css`
-                                                        padding: var(
-                                                          --space--2
-                                                        );
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--4);
-                                                      `}"
-                                                    >
-                                                      <p>
-                                                        Are you sure you want to
-                                                        change your own role to
-                                                        ${role}?
-                                                      </p>
-                                                      <p>
-                                                        <strong
-                                                          style="${css`
-                                                            font-weight: var(
-                                                              --font-weight--bold
-                                                            );
-                                                          `}"
-                                                        >
-                                                          You may not undo this
-                                                          action!
-                                                        </strong>
-                                                      </p>
-                                                      <button
-                                                        class="button button--rose"
-                                                        onclick="${javascript`
-                                                          this.closest(".confirmation").form.submit();
-                                                        `}"
-                                                      >
-                                                        Change My Own Role to
-                                                        ${lodash.capitalize(
-                                                          role
-                                                        )}
-                                                      </button>
-                                                    </div>
-                                                  </div>
+                                                  type="button"
+                                                  data-ondomcontentloaded="${javascript`
+                                                    tippy(this, {
+                                                      content: "You may not change your own role because you’re the only staff member.",
+                                                      theme: "rose",
+                                                      trigger: "click",
+                                                    });
+                                                  `}"
+                                                `
+                                              : isSelf
+                                              ? html`
+                                                  type="button"
+                                                  data-ondomcontentloaded="${javascript`
+                                                    const element = this.nextElementSibling.firstElementChild;
+                                                    element.form = this.closest("form");
+                                                    tippy(this, {
+                                                      content: element,
+                                                      theme: "rose",
+                                                      trigger: "click",
+                                                      interactive: true,
+                                                      appendTo: document.body,
+                                                    });
+                                                  `}"
                                                 `
                                               : html``}
-                                          </div>
-                                        </form>
-                                      `
-                                )}
-                              </div>
+                                          >
+                                            ${lodash.capitalize(role)}
+                                          </button>
+                                          $${isSelf
+                                            ? html`
+                                                <div hidden>
+                                                  <div
+                                                    class="confirmation"
+                                                    style="${css`
+                                                      padding: var(--space--2);
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--4);
+                                                    `}"
+                                                  >
+                                                    <p>
+                                                      Are you sure you want to
+                                                      change your own role to
+                                                      ${role}?
+                                                    </p>
+                                                    <p>
+                                                      <strong
+                                                        style="${css`
+                                                          font-weight: var(
+                                                            --font-weight--bold
+                                                          );
+                                                        `}"
+                                                      >
+                                                        You may not undo this
+                                                        action!
+                                                      </strong>
+                                                    </p>
+                                                    <button
+                                                      class="button button--rose"
+                                                      onclick="${javascript`
+                                                        this.closest(".confirmation").form.submit();
+                                                      `}"
+                                                    >
+                                                      Change My Own Role to
+                                                      ${lodash.capitalize(role)}
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              `
+                                            : html``}
+                                        </div>
+                                      </form>
+                                    `
+                              )}
                             </div>
                           </div>
+                        </div>
 
-                          <div>
-                            <button
-                              class="button button--tight button--transparent text--rose"
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Remove from the Course",
-                                  theme: "rose",
-                                  touch: false,
-                                });
-                                ${
-                                  isOnlyStaff
-                                    ? javascript`
-                                        tippy(this, {
-                                          content: "You may not remove yourself from the course because you’re the only staff member.",
-                                          theme: "rose",
-                                          trigger: "click",
-                                        });
-                                      `
-                                    : javascript`
-                                        tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
-                                          theme: "rose",
-                                          trigger: "click",
-                                          interactive: true,
-                                        });
-                                      `
-                                }
-                              `}"
-                            >
-                              <i class="bi bi-person-dash"></i>
-                            </button>
-                            $${isOnlyStaff
-                              ? html``
-                              : html`
-                                  <div hidden>
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=DELETE"
-                                      style="${css`
-                                        padding: var(--space--2);
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--4);
-                                      `}"
-                                    >
-                                      <p>
-                                        Are you sure you want to remove
-                                        ${isSelf ? "yourself" : "this person"}
-                                        from the course?
-                                      </p>
-                                      <p>
-                                        <strong
-                                          style="${css`
-                                            font-weight: var(
-                                              --font-weight--bold
-                                            );
-                                          `}"
-                                        >
-                                          You may not undo this action!
-                                        </strong>
-                                      </p>
-                                      <button class="button button--rose">
-                                        <i class="bi bi-person-dash"></i>
-                                        Remove from the Course
-                                      </button>
-                                    </form>
-                                  </div>
-                                `}
-                          </div>
+                        <div>
+                          <button
+                            class="button button--tight button--transparent text--rose"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Remove from the Course",
+                                theme: "rose",
+                                touch: false,
+                              });
+                              ${
+                                isOnlyStaff
+                                  ? javascript`
+                                      tippy(this, {
+                                        content: "You may not remove yourself from the course because you’re the only staff member.",
+                                        theme: "rose",
+                                        trigger: "click",
+                                      });
+                                    `
+                                  : javascript`
+                                      tippy(this, {
+                                        content: this.nextElementSibling.firstElementChild,
+                                        theme: "rose",
+                                        trigger: "click",
+                                        interactive: true,
+                                      });
+                                    `
+                              }
+                            `}"
+                          >
+                            <i class="bi bi-person-dash"></i>
+                          </button>
+                          $${isOnlyStaff
+                            ? html``
+                            : html`
+                                <div hidden>
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=DELETE"
+                                    style="${css`
+                                      padding: var(--space--2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <p>
+                                      Are you sure you want to remove
+                                      ${isSelf ? "yourself" : "this person"}
+                                      from the course?
+                                    </p>
+                                    <p>
+                                      <strong
+                                        style="${css`
+                                          font-weight: var(--font-weight--bold);
+                                        `}"
+                                      >
+                                        You may not undo this action!
+                                      </strong>
+                                    </p>
+                                    <button class="button button--rose">
+                                      <i class="bi bi-person-dash"></i>
+                                      Remove from the Course
+                                    </button>
+                                  </form>
+                                </div>
+                              `}
                         </div>
                       </div>
                     </div>
-                  `;
-                })}
-              </div>
+                  </div>
+                `;
+              })}
             </div>
           `,
         })
@@ -6123,259 +6086,52 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-tags"></i>
+              Tags
+            </h2>
+
+            $${res.locals.tags.length === 0
+              ? html`
+                  <div
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      align-items: center;
+                    `}"
+                  >
+                    <div class="decorative-icon">
+                      <i class="bi bi-tags"></i>
+                    </div>
+                    <p class="secondary">Organize conversations with tags.</p>
+                  </div>
+                `
+              : html``}
+
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings/tags?_method=PUT"
               style="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-sliders"></i>
-                Course Settings ·
-                <i class="bi bi-tags"></i>
-                Tags
-              </h2>
-
-              $${res.locals.tags.length === 0
-                ? html`
-                    <div
-                      style="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                        align-items: center;
-                      `}"
-                    >
-                      <div class="decorative-icon">
-                        <i class="bi bi-tags"></i>
-                      </div>
-                      <p class="secondary">Organize conversations with tags.</p>
-                    </div>
-                  `
-                : html``}
-
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/tags?_method=PUT"
+              <div
                 style="${css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--space--4);
+                  gap: var(--space--2);
                 `}"
               >
-                <div
-                  style="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
-                  `}"
-                >
-                  <div class="tags stripped">
-                    $${res.locals.tags.map(
-                      (tag, index) => html`
-                        <!-- TODO: Add link to see all conversations tagged with this tag -->
-                        <div
-                          class="tag"
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                            align-items: baseline;
-                          `}"
-                        >
-                          <input
-                            type="hidden"
-                            name="tags[${index}][reference]"
-                            value="${tag.reference}"
-                          />
-                          <input
-                            type="hidden"
-                            name="tags[${index}][delete]"
-                            value="true"
-                            disabled
-                            data-force-is-modified="true"
-                          />
-                          <div class="tag--icon"><i class="bi bi-tag"></i></div>
-                          <div
-                            style="${css`
-                              flex: 1;
-                              display: flex;
-                              gap: var(--space--2);
-                              align-items: baseline;
-                              @media (max-width: 499px) {
-                                flex-direction: column;
-                              }
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              name="tags[${index}][name]"
-                              value="${tag.name}"
-                              class="disable-on-delete input--text"
-                              required
-                              autocomplete="off"
-                            />
-                            <div
-                              style="${css`
-                                display: flex;
-                                justify-content: space-between;
-                                gap: var(--space--2);
-                                @media (max-width: 499px) {
-                                  margin-left: var(--space---1);
-                                  width: calc(
-                                    var(--space--1) + 100% + var(--space--1)
-                                  );
-                                }
-                              `}"
-                            >
-                              <div class="select">
-                                <select
-                                  name="tags[${index}][visibleBy]"
-                                  required
-                                  autocomplete="off"
-                                  class="disable-on-delete select--tag button button--tight button--transparent"
-                                >
-                                  <option
-                                    value="everyone"
-                                    $${tag.visibleBy === "everyone"
-                                      ? html`selected`
-                                      : html``}
-                                  >
-                                    Visible by Everyone
-                                  </option>
-                                  <option
-                                    value="staff"
-                                    $${tag.visibleBy === "staff"
-                                      ? html`selected`
-                                      : html``}
-                                  >
-                                    Visible by Staff Only
-                                  </option>
-                                </select>
-                                <div class="select--chevron">
-                                  <i class="bi bi-chevron-down"></i>
-                                </div>
-                              </div>
-                              <div
-                                style="${css`
-                                  .tag.deleted & {
-                                    display: none;
-                                  }
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--tight button--transparent text--rose"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Remove Tag",
-                                      theme: "rose",
-                                      touch: false,
-                                    });
-                                    tippy(this, {
-                                      content: this.nextElementSibling.firstElementChild,
-                                      theme: "rose",
-                                      trigger: "click",
-                                      interactive: true,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                </button>
-                                <div hidden>
-                                  <div
-                                    style="${css`
-                                      padding: var(--space--2) var(--space--0);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
-                                    `}"
-                                  >
-                                    <p>
-                                      Are you sure you want to remove this tag?
-                                    </p>
-                                    <p>
-                                      <strong
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                        `}"
-                                      >
-                                        The tag will be removed from all
-                                        conversations and you may not undo this
-                                        action!
-                                      </strong>
-                                    </p>
-                                    <button
-                                      type="button"
-                                      class="button button--rose"
-                                      onclick="${javascript`
-                                        const tag = this.closest(".tag");
-                                        tag.classList.add("deleted");
-                                        tag.querySelector(".tag--icon").classList.add("text--rose");
-                                        tag.querySelector('[name$="[delete]"]').disabled = false;
-                                        for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
-                                      `}"
-                                    >
-                                      <i class="bi bi-trash"></i>
-                                      Remove Tag
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                style="${css`
-                                  .tag:not(.deleted) & {
-                                    display: none;
-                                  }
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--tight button--transparent"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Don’t Remove Tag",
-                                      touch: false,
-                                    });
-                                  `}"
-                                  onclick="${javascript`
-                                    const tag = this.closest(".tag");
-                                    tag.classList.remove("deleted");
-                                    tag.querySelector(".tag--icon").classList.remove("text--rose");
-                                    tag.querySelector('[name$="[delete]"]').disabled = true;
-                                    for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
-                                  `}"
-                                >
-                                  <i class="bi bi-recycle"></i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      `
-                    )}
-                  </div>
-                  <div
-                    style="${css`
-                      display: flex;
-                      justify-content: center;
-                    `}"
-                  >
-                    <button
-                      type="button"
-                      class="button button--transparent button--full-width-on-small-screen"
-                      onclick="${javascript`
-                        const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
-                        this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                        for (const element of newTag.querySelectorAll("[data-onmount]"))
-                          new Function(element.dataset.onmount).call(element);
-                      `}"
-                    >
-                      <i class="bi bi-plus-circle"></i>
-                      Add Tag
-                    </button>
-                    <div hidden>
+                <div class="tags stripped">
+                  $${res.locals.tags.map(
+                    (tag, index) => html`
+                      <!-- TODO: Add link to see all conversations tagged with this tag -->
                       <div
                         class="tag"
                         style="${css`
@@ -6384,7 +6140,19 @@ export default async function courselore(
                           align-items: baseline;
                         `}"
                       >
-                        <i class="bi bi-tag"></i>
+                        <input
+                          type="hidden"
+                          name="tags[${index}][reference]"
+                          value="${tag.reference}"
+                        />
+                        <input
+                          type="hidden"
+                          name="tags[${index}][delete]"
+                          value="true"
+                          disabled
+                          data-force-is-modified="true"
+                        />
+                        <div class="tag--icon"><i class="bi bi-tag"></i></div>
                         <div
                           style="${css`
                             flex: 1;
@@ -6398,16 +6166,11 @@ export default async function courselore(
                         >
                           <input
                             type="text"
-                            class="input--text"
+                            name="tags[${index}][name]"
+                            value="${tag.name}"
+                            class="disable-on-delete input--text"
                             required
                             autocomplete="off"
-                            disabled
-                            data-onmount="${javascript`
-                              this.dataset.forceIsModified = true;
-                              this.disabled = false;
-                              const tag = this.closest(".tag");
-                              this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
-                            `}"
                           />
                           <div
                             style="${css`
@@ -6424,21 +6187,25 @@ export default async function courselore(
                           >
                             <div class="select">
                               <select
+                                name="tags[${index}][visibleBy]"
                                 required
                                 autocomplete="off"
-                                disabled
-                                class="select--tag button button--tight button--transparent"
-                                data-onmount="${javascript`
-                                  this.dataset.forceIsModified = true;
-                                  this.disabled = false;
-                                  const tag = this.closest(".tag");
-                                  this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
-                                `}"
+                                class="disable-on-delete select--tag button button--tight button--transparent"
                               >
-                                <option value="everyone">
+                                <option
+                                  value="everyone"
+                                  $${tag.visibleBy === "everyone"
+                                    ? html`selected`
+                                    : html``}
+                                >
                                   Visible by Everyone
                                 </option>
-                                <option value="staff">
+                                <option
+                                  value="staff"
+                                  $${tag.visibleBy === "staff"
+                                    ? html`selected`
+                                    : html``}
+                                >
                                   Visible by Staff Only
                                 </option>
                               </select>
@@ -6446,46 +6213,234 @@ export default async function courselore(
                                 <i class="bi bi-chevron-down"></i>
                               </div>
                             </div>
-                            <div>
+                            <div
+                              style="${css`
+                                .tag.deleted & {
+                                  display: none;
+                                }
+                              `}"
+                            >
                               <button
                                 type="button"
                                 class="button button--tight button--transparent text--rose"
-                                data-onmount="${javascript`
+                                data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
                                     theme: "rose",
                                     touch: false,
                                   });
-                                `}"
-                                onclick="${javascript`
-                                  this.closest(".tag").remove();
+                                  tippy(this, {
+                                    content: this.nextElementSibling.firstElementChild,
+                                    theme: "rose",
+                                    trigger: "click",
+                                    interactive: true,
+                                  });
                                 `}"
                               >
                                 <i class="bi bi-trash"></i>
                               </button>
+                              <div hidden>
+                                <div
+                                  style="${css`
+                                    padding: var(--space--2) var(--space--0);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `}"
+                                >
+                                  <p>
+                                    Are you sure you want to remove this tag?
+                                  </p>
+                                  <p>
+                                    <strong
+                                      style="${css`
+                                        font-weight: var(--font-weight--bold);
+                                      `}"
+                                    >
+                                      The tag will be removed from all
+                                      conversations and you may not undo this
+                                      action!
+                                    </strong>
+                                  </p>
+                                  <button
+                                    type="button"
+                                    class="button button--rose"
+                                    onclick="${javascript`
+                                      const tag = this.closest(".tag");
+                                      tag.classList.add("deleted");
+                                      tag.querySelector(".tag--icon").classList.add("text--rose");
+                                      tag.querySelector('[name$="[delete]"]').disabled = false;
+                                      for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
+                                    `}"
+                                  >
+                                    <i class="bi bi-trash"></i>
+                                    Remove Tag
+                                  </button>
+                                </div>
+                              </div>
                             </div>
+                            <div
+                              style="${css`
+                                .tag:not(.deleted) & {
+                                  display: none;
+                                }
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--tight button--transparent"
+                                data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Don’t Remove Tag",
+                                      touch: false,
+                                    });
+                                  `}"
+                                onclick="${javascript`
+                                  const tag = this.closest(".tag");
+                                  tag.classList.remove("deleted");
+                                  tag.querySelector(".tag--icon").classList.remove("text--rose");
+                                  tag.querySelector('[name$="[delete]"]').disabled = true;
+                                  for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
+                                `}"
+                              >
+                                <i class="bi bi-recycle"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    `
+                  )}
+                </div>
+                <div
+                  style="${css`
+                    display: flex;
+                    justify-content: center;
+                  `}"
+                >
+                  <button
+                    type="button"
+                    class="button button--transparent button--full-width-on-small-screen"
+                    onclick="${javascript`
+                      const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
+                      this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
+                      for (const element of newTag.querySelectorAll("[data-onmount]"))
+                        new Function(element.dataset.onmount).call(element);
+                    `}"
+                  >
+                    <i class="bi bi-plus-circle"></i>
+                    Add Tag
+                  </button>
+                  <div hidden>
+                    <div
+                      class="tag"
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--2);
+                        align-items: baseline;
+                      `}"
+                    >
+                      <i class="bi bi-tag"></i>
+                      <div
+                        style="${css`
+                          flex: 1;
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: baseline;
+                          @media (max-width: 499px) {
+                            flex-direction: column;
+                          }
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          class="input--text"
+                          required
+                          autocomplete="off"
+                          disabled
+                          data-onmount="${javascript`
+                            this.dataset.forceIsModified = true;
+                            this.disabled = false;
+                            const tag = this.closest(".tag");
+                            this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
+                          `}"
+                        />
+                        <div
+                          style="${css`
+                            display: flex;
+                            justify-content: space-between;
+                            gap: var(--space--2);
+                            @media (max-width: 499px) {
+                              margin-left: var(--space---1);
+                              width: calc(
+                                var(--space--1) + 100% + var(--space--1)
+                              );
+                            }
+                          `}"
+                        >
+                          <div class="select">
+                            <select
+                              required
+                              autocomplete="off"
+                              disabled
+                              class="select--tag button button--tight button--transparent"
+                              data-onmount="${javascript`
+                                this.dataset.forceIsModified = true;
+                                this.disabled = false;
+                                const tag = this.closest(".tag");
+                                this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
+                              `}"
+                            >
+                              <option value="everyone">
+                                Visible by Everyone
+                              </option>
+                              <option value="staff">
+                                Visible by Staff Only
+                              </option>
+                            </select>
+                            <div class="select--chevron">
+                              <i class="bi bi-chevron-down"></i>
+                            </div>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              class="button button--tight button--transparent text--rose"
+                              data-onmount="${javascript`
+                                tippy(this, {
+                                  content: "Remove Tag",
+                                  theme: "rose",
+                                  touch: false,
+                                });
+                              `}"
+                              onclick="${javascript`
+                                this.closest(".tag").remove();
+                              `}"
+                            >
+                              <i class="bi bi-trash"></i>
+                            </button>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                    data-ondomcontentloaded="${javascript`
-                      (this.validators ??= []).push(() => {
-                        if (this.closest("form").querySelector(".tags").children.length === 0)
-                          return "Add at least one tag.";
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-pencil"></i>
-                    Update Tags
-                  </button>
-                </div>
-              </form>
-            </div>
+              </div>
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                  data-ondomcontentloaded="${javascript`
+                    (this.validators ??= []).push(() => {
+                      if (this.closest("form").querySelector(".tags").children.length === 0)
+                        return "Add at least one tag.";
+                    });
+                  `}"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update Tags
+                </button>
+              </div>
+            </form>
           `,
         })
       );
@@ -6595,109 +6550,95 @@ export default async function courselore(
             </title>
           `,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-person"></i>
+              Your Enrollment
+            </h2>
+
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/settings/your-enrollment?_method=PATCH"
               style="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-sliders"></i>
-                Course Settings ·
-                <i class="bi bi-person"></i>
-                Your Enrollment
-              </h2>
-
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings/your-enrollment?_method=PATCH"
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <div class="label">
-                  <div class="label--text">
-                    Accent Color
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      data-ondomcontentloaded="${javascript`
+              <div class="label">
+                <div class="label--text">
+                  Accent Color
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
                           trigger: "click",
                         });
                       `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                  </div>
-                  <div
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                    `}"
                   >
-                    $${app.locals.constants.accentColors.map(
-                      (accentColor) => html`
-                        <input
-                          type="radio"
-                          name="accentColor"
-                          value="${accentColor}"
-                          required
-                          autocomplete="off"
-                          $${accentColor === res.locals.enrollment.accentColor
-                            ? html`checked`
-                            : html``}
-                          class="input--radio"
-                          style="${css`
-                            background-color: var(--color--${accentColor}--500);
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </div>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  $${app.locals.constants.accentColors.map(
+                    (accentColor) => html`
+                      <input
+                        type="radio"
+                        name="accentColor"
+                        value="${accentColor}"
+                        required
+                        autocomplete="off"
+                        $${accentColor === res.locals.enrollment.accentColor
+                          ? html`checked`
+                          : html``}
+                        class="input--radio"
+                        style="${css`
+                          background-color: var(--color--${accentColor}--500);
+                          &:hover,
+                          &:focus-within {
+                            background-color: var(--color--${accentColor}--400);
+                          }
+                          &:active {
+                            background-color: var(--color--${accentColor}--600);
+                          }
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--${accentColor}--600);
                             &:hover,
                             &:focus-within {
                               background-color: var(
-                                --color--${accentColor}--400
+                                --color--${accentColor}--500
                               );
                             }
                             &:active {
                               background-color: var(
-                                --color--${accentColor}--600
+                                --color--${accentColor}--700
                               );
                             }
-                            @media (prefers-color-scheme: dark) {
-                              background-color: var(
-                                --color--${accentColor}--600
-                              );
-                              &:hover,
-                              &:focus-within {
-                                background-color: var(
-                                  --color--${accentColor}--500
-                                );
-                              }
-                              &:active {
-                                background-color: var(
-                                  --color--${accentColor}--700
-                                );
-                              }
-                            }
-                          `}"
-                        />
-                      `
-                    )}
-                  </div>
+                          }
+                        `}"
+                      />
+                    `
+                  )}
                 </div>
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                  >
-                    <i class="bi bi-pencil"></i>
-                    Update Your Enrollment
-                  </button>
-                </div>
-              </form>
-            </div>
+              </div>
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update Your Enrollment
+                </button>
+              </div>
+            </form>
           `,
         })
       );
