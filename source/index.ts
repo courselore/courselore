@@ -3949,7 +3949,6 @@ export default async function courselore(
             body: html`
               <div
                 style="${css`
-                  text-align: center;
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
@@ -3966,9 +3965,15 @@ export default async function courselore(
 
                 <div
                   style="${css`
+                    background-color: var(--color--gray--medium--100);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--gray--medium--800);
+                    }
+                    padding: var(--space--2);
+                    border-radius: var(--border-radius--lg);
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--4);
+                    gap: var(--space--2);
                   `}"
                 >
                   $${res.locals.enrollment.role === "staff"
@@ -8692,192 +8697,183 @@ ${value}</textarea
             </title>
           `,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-chat-left-text"></i>
+              Start ${isFirst ? "the First" : "a New"} Conversation
+            </h2>
+
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses/${res.locals.course
+                .reference}/conversations"
               style="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-chat-left-text"></i>
-                Start ${isFirst ? "the First" : "a New"} Conversation
-              </h2>
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                required
+                autocomplete="off"
+                autofocus
+                class="input--text"
+              />
 
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/conversations"
+              $${app.locals.partials.textEditor()}
+
+              <div
                 style="${css`
                   display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
+                  gap: var(--space--8);
                 `}"
               >
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="Title"
-                  required
-                  autocomplete="off"
-                  autofocus
-                  class="input--text"
-                />
-
-                $${app.locals.partials.textEditor()}
-
-                <div
-                  style="${css`
-                    display: flex;
-                    gap: var(--space--8);
-                  `}"
-                >
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <div
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <div
+                        style="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <label
                           style="${css`
-                            display: flex;
+                            display: grid;
+                            & > * {
+                              grid-area: 1 / 1;
+                            }
                           `}"
                         >
-                          <label
+                          <input
+                            type="checkbox"
+                            name="isPinned"
+                            autocomplete="off"
+                          />
+                          <span
+                            class="button button--tight button--transparent"
                             style="${css`
-                              display: grid;
-                              & > * {
-                                grid-area: 1 / 1;
+                              :checked + & {
+                                display: none;
                               }
                             `}"
-                          >
-                            <input
-                              type="checkbox"
-                              name="isPinned"
-                              autocomplete="off"
-                            />
-                            <span
-                              class="button button--tight button--transparent"
-                              style="${css`
-                                :checked + & {
-                                  display: none;
-                                }
-                              `}"
-                              data-ondomcontentloaded="${javascript`
+                            data-ondomcontentloaded="${javascript`
                                 tippy(this, {
                                   content: "Pin",
                                   touch: false,
                                 });
                               `}"
-                            >
-                              <i class="bi bi-pin-angle"></i>
-                              Unpinned
-                            </span>
-                            <span
-                              class="button button--tight button--transparent strong"
-                              style="${css`
-                                :not(:checked) + * + & {
-                                  display: none;
-                                }
-                              `}"
-                              data-ondomcontentloaded="${javascript`
+                          >
+                            <i class="bi bi-pin-angle"></i>
+                            Unpinned
+                          </span>
+                          <span
+                            class="button button--tight button--transparent strong"
+                            style="${css`
+                              :not(:checked) + * + & {
+                                display: none;
+                              }
+                            `}"
+                            data-ondomcontentloaded="${javascript`
                                 tippy(this, {
                                   content: "Unpin",
                                   touch: false,
                                 });
                               `}"
-                            >
-                              <i class="bi bi-pin-fill"></i>
-                              Pinned
-                            </span>
-                          </label>
-                          <button
-                            type="button"
-                            class="button button--tight button--transparent"
-                            data-ondomcontentloaded="${javascript`
+                          >
+                            <i class="bi bi-pin-fill"></i>
+                            Pinned
+                          </span>
+                        </label>
+                        <button
+                          type="button"
+                          class="button button--tight button--transparent"
+                          data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Pinned conversations are listed first.",
                                 trigger: "click",
                               });
                             `}"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                        </div>
-                      `
-                    : html``}
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                      </div>
+                    `
+                  : html``}
 
-                  <label
+                <label
+                  style="${css`
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
+                  `}"
+                >
+                  <input
+                    type="checkbox"
+                    name="isQuestion"
+                    autocomplete="off"
+                    $${res.locals.enrollment.role === "staff" ? `` : `checked`}
+                  />
+                  <span
+                    class="button button--tight button--transparent"
                     style="${css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
+                      :checked + & {
+                        display: none;
                       }
                     `}"
-                  >
-                    <input
-                      type="checkbox"
-                      name="isQuestion"
-                      autocomplete="off"
-                      $${res.locals.enrollment.role === "staff"
-                        ? ``
-                        : `checked`}
-                    />
-                    <span
-                      class="button button--tight button--transparent"
-                      style="${css`
-                        :checked + & {
-                          display: none;
-                        }
-                      `}"
-                      data-ondomcontentloaded="${javascript`
+                    data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Mark as a Question",
                           touch: false,
                         });
                       `}"
-                    >
-                      <i class="bi bi-patch-question"></i>
-                      Not a Question
-                    </span>
-                    <span
-                      class="button button--tight button--transparent strong"
-                      style="${css`
-                        :not(:checked) + * + & {
-                          display: none;
-                        }
-                      `}"
-                      data-ondomcontentloaded="${javascript`
+                  >
+                    <i class="bi bi-patch-question"></i>
+                    Not a Question
+                  </span>
+                  <span
+                    class="button button--tight button--transparent strong"
+                    style="${css`
+                      :not(:checked) + * + & {
+                        display: none;
+                      }
+                    `}"
+                    data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Mark as Not a Question",
                           touch: false,
                         });
                       `}"
-                    >
-                      <i class="bi bi-patch-question-fill"></i>
-                      Question
-                    </span>
-                  </label>
+                  >
+                    <i class="bi bi-patch-question-fill"></i>
+                    Question
+                  </span>
+                </label>
 
-                  $${res.locals.tags.length === 0
-                    ? html``
-                    : html`
+                $${res.locals.tags.length === 0
+                  ? html``
+                  : html`
+                      <div
+                        class="tags"
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--4);
+                          align-items: baseline;
+                        `}"
+                      >
                         <div
-                          class="tags"
                           style="${css`
-                            display: flex;
-                            gap: var(--space--4);
-                            align-items: baseline;
+                            display: grid;
+                            & > * {
+                              grid-area: 1 / 1;
+                            }
                           `}"
                         >
-                          <div
-                            style="${css`
-                              display: grid;
-                              & > * {
-                                grid-area: 1 / 1;
-                              }
-                            `}"
-                          >
-                            <button
-                              type="button"
-                              class="tags--button button"
-                              data-ondomcontentloaded="${javascript`
+                          <button
+                            type="button"
+                            class="tags--button button"
+                            data-ondomcontentloaded="${javascript`
                                 this.addTag = tippy(this, {
                                   content: "Add Tag",
                                   touch: false,
@@ -8894,32 +8890,32 @@ ${value}</textarea
                                   interactive: true,
                                 });
                               `}"
+                          >
+                            <span>
+                              <i class="bi bi-tags"></i>
+                              Tags
+                            </span>
+                          </button>
+                          <div hidden>
+                            <div
+                              style="${css`
+                                max-height: var(--space--40);
+                                overflow: auto;
+                                margin: var(--space--0) var(--space---2);
+                              `}"
                             >
-                              <span>
-                                <i class="bi bi-tags"></i>
-                                Tags
-                              </span>
-                            </button>
-                            <div hidden>
                               <div
                                 style="${css`
-                                  max-height: var(--space--40);
-                                  overflow: auto;
-                                  margin: var(--space--0) var(--space---2);
+                                  margin: var(--space--0) var(--space--2);
                                 `}"
                               >
-                                <div
-                                  style="${css`
-                                    margin: var(--space--0) var(--space--2);
-                                  `}"
-                                >
-                                  $${res.locals.tags.map(
-                                    (tag) =>
-                                      html`
-                                        <button
-                                          type="button"
-                                          class="tag--${tag.reference}--enable dropdown-menu--item button button--transparent"
-                                          onclick="${javascript`
+                                $${res.locals.tags.map(
+                                  (tag) =>
+                                    html`
+                                      <button
+                                        type="button"
+                                        class="tag--${tag.reference}--enable dropdown-menu--item button button--transparent"
+                                        onclick="${javascript`
                                             (async () => {
                                               const tags = this.closest(".tags");
                                               const tag = tags.querySelector(".tag--${tag.reference}");
@@ -8937,50 +8933,50 @@ ${value}</textarea
                                               this.hidden = true;
                                             })();
                                           `}"
-                                        >
-                                          <i class="bi bi-tag"></i>
-                                          ${tag.name}
-                                        </button>
-                                      `
-                                  )}
-                                </div>
+                                      >
+                                        <i class="bi bi-tag"></i>
+                                        ${tag.name}
+                                      </button>
+                                    `
+                                )}
                               </div>
                             </div>
-                            <input
-                              type="radio"
-                              data-ondomcontentloaded="${javascript`
+                          </div>
+                          <input
+                            type="radio"
+                            data-ondomcontentloaded="${javascript`
                                 (this.validators ??= []).push(() => {
                                   if (this.closest(".tags").querySelector('[name="tagsReferences[]"]:not([disabled])') === null)
                                     return "Select at least one tag.";
                                 });
                                 this.closest(".tags").querySelector(".tags--button").addEventListener("click", () => { this.click(); });
                               `}"
-                            />
-                          </div>
-                          $${res.locals.tags.map(
-                            (tag) =>
-                              html`
-                                <div class="tag--${tag.reference}" hidden>
-                                  <input
-                                    type="hidden"
-                                    name="tagsReferences[]"
-                                    value="${tag.reference}"
-                                    disabled
-                                  />
-                                  <button
-                                    type="button"
-                                    class="button"
-                                    style="${css`
-                                      font-size: var(--font-size--xs);
-                                      line-height: var(--line-height--xs);
-                                    `}"
-                                    data-ondomcontentloaded="${javascript`
+                          />
+                        </div>
+                        $${res.locals.tags.map(
+                          (tag) =>
+                            html`
+                              <div class="tag--${tag.reference}" hidden>
+                                <input
+                                  type="hidden"
+                                  name="tagsReferences[]"
+                                  value="${tag.reference}"
+                                  disabled
+                                />
+                                <button
+                                  type="button"
+                                  class="button"
+                                  style="${css`
+                                    font-size: var(--font-size--xs);
+                                    line-height: var(--line-height--xs);
+                                  `}"
+                                  data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "Remove Tag",
                                         touch: false,
                                       });
                                     `}"
-                                    onclick="${javascript`
+                                  onclick="${javascript`
                                       const tag = this.closest(".tag--${tag.reference}");
                                       tag.hidden = true;
                                       const input = tag.querySelector("input");
@@ -8992,23 +8988,23 @@ ${value}</textarea
                                       tagsButton.dropdown.enable();
                                       tagsButton.dropdownContent.querySelector(".tag--${tag.reference}--enable").hidden = false;
                                     `}"
-                                  >
-                                    <span>
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </span>
-                                  </button>
-                                </div>
-                              `
-                          )}
-                        </div>
-                      `}
-                </div>
+                                >
+                                  <span>
+                                    <i class="bi bi-tag"></i>
+                                    ${tag.name}
+                                  </span>
+                                </button>
+                              </div>
+                            `
+                        )}
+                      </div>
+                    `}
+              </div>
 
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                    data-ondomcontentloaded="${javascript`
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                  data-ondomcontentloaded="${javascript`
                       Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         content: ${JSON.stringify(html`
@@ -9024,13 +9020,12 @@ ${value}</textarea
                         allowHTML: true,
                       });
                     `}"
-                  >
-                    <i class="bi bi-chat-left-text"></i>
-                    Start Conversation
-                  </button>
-                </div>
-              </form>
-            </div>
+                >
+                  <i class="bi bi-chat-left-text"></i>
+                  Start Conversation
+                </button>
+              </div>
+            </form>
           `,
         })
       );
