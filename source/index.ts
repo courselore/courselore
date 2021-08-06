@@ -4841,13 +4841,9 @@ export default async function courselore(
                             style="${css`
                               flex: 1;
                               display: flex;
-                              @media (max-width: 499px) {
-                                gap: var(--space--2);
-                                flex-direction: column;
-                              }
-                              @media (min-width: 500px) {
-                                gap: var(--space--4);
-                              }
+                              flex-wrap: wrap;
+                              column-gap: var(--space--4);
+                              row-gap: var(--space--2);
                             `}"
                           >
                             <div
@@ -5037,10 +5033,8 @@ export default async function courselore(
                             <div
                               style="${css`
                                 display: flex;
-                                @media (max-width: 499px) {
-                                  justify-content: space-between;
-                                  flex-wrap: wrap;
-                                }
+                                flex-wrap: wrap;
+                                gap: var(--space--4);
                               `}"
                             >
                               <div>
@@ -5113,9 +5107,11 @@ export default async function courselore(
 
                               <div
                                 style="${css`
-                                  width: var(--space--40);
-                                  display: flex;
-                                  justify-content: flex-end;
+                                  @media (min-width: 340px) {
+                                    width: var(--space--40);
+                                    display: flex;
+                                    justify-content: flex-end;
+                                  }
                                 `}"
                               >
                                 $${(() => {
