@@ -5031,11 +5031,14 @@ export default async function courselore(
                               style="${css`
                                 display: flex;
                                 flex-wrap: wrap;
-                                column-gap: var(--space--4);
                                 row-gap: var(--space--2);
                               `}"
                             >
-                              <div>
+                              <div
+                                style="${css`
+                                  width: var(--space--24);
+                                `}"
+                              >
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
                                   data-ondomcontentloaded="${javascript`
@@ -5103,256 +5106,264 @@ export default async function courselore(
                                 </div>
                               </div>
 
-                              $${(() => {
-                                const changeExpirationForm = html`
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
-                                    class="dropdown-menu"
-                                    style="${css`
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <div class="dropdown-menu--item">
-                                      <input
-                                        type="text"
-                                        name="expiresAt"
-                                        value="${new Date(
-                                          invitation.expiresAt ?? new Date()
-                                        ).toISOString()}"
-                                        required
-                                        autocomplete="off"
-                                        class="input--text"
-                                        data-ondomcontentloaded="${javascript`
-                                          localizeTime(this);
-                                          (this.validators ??= []).push(() => {
-                                            if (new Date(this.value).getTime() <= Date.now())
-                                              return "Must be in the future.";
-                                          });
-                                        `}"
-                                      />
-                                    </div>
-                                    <button
-                                      class="dropdown-menu--item button button--transparent"
+                              <div
+                                style="${css`
+                                  width: var(--space--36);
+                                `}"
+                              >
+                                $${(() => {
+                                  const changeExpirationForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
+                                      class="dropdown-menu"
+                                      style="${css`
+                                        gap: var(--space--2);
+                                      `}"
                                     >
-                                      <i class="bi bi-pencil"></i>
-                                      Update Expiration Date
-                                    </button>
-                                  </form>
-                                `;
-                                const removeExpirationForm = html`
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
-                                    class="dropdown-menu"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="removeExpiration"
-                                      value="true"
-                                    />
-                                    <button
-                                      class="dropdown-menu--item button button--transparent"
-                                    >
-                                      <i class="bi bi-calendar-minus"></i>
-                                      Remove Expiration
-                                    </button>
-                                  </form>
-                                `;
-                                const expireForm = html`
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
-                                    class="dropdown-menu"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="expire"
-                                      value="true"
-                                    />
-                                    <button
-                                      class="dropdown-menu--item button button--transparent"
-                                    >
-                                      <i class="bi bi-calendar-x"></i>
-                                      Expire Invitation
-                                    </button>
-                                  </form>
-                                `;
-
-                                return isUsed
-                                  ? html`
-                                      <div
-                                        class="button button--tight button--tight--inline text--green"
-                                        style="${css`
-                                          cursor: default;
-                                        `}"
-                                        data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
+                                      <div class="dropdown-menu--item">
+                                        <input
+                                          type="text"
+                                          name="expiresAt"
+                                          value="${new Date(
+                                            invitation.expiresAt ?? new Date()
+                                          ).toISOString()}"
+                                          required
+                                          autocomplete="off"
+                                          class="input--text"
+                                          data-ondomcontentloaded="${javascript`
+                                            localizeTime(this);
+                                            (this.validators ??= []).push(() => {
+                                              if (new Date(this.value).getTime() <= Date.now())
+                                                return "Must be in the future.";
                                             });
                                           `}"
+                                        />
+                                      </div>
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
                                       >
-                                        Used
-                                        <i class="bi bi-check-lg"></i>
-                                      </div>
-                                      <div hidden>
+                                        <i class="bi bi-pencil"></i>
+                                        Update Expiration Date
+                                      </button>
+                                    </form>
+                                  `;
+                                  const removeExpirationForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
+                                      class="dropdown-menu"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="removeExpiration"
+                                        value="true"
+                                      />
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-calendar-minus"></i>
+                                        Remove Expiration
+                                      </button>
+                                    </form>
+                                  `;
+                                  const expireForm = html`
+                                    <form
+                                      method="POST"
+                                      action="${action}?_method=PATCH"
+                                      class="dropdown-menu"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="expire"
+                                        value="true"
+                                      />
+                                      <button
+                                        class="dropdown-menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-calendar-x"></i>
+                                        Expire Invitation
+                                      </button>
+                                    </form>
+                                  `;
+
+                                  return isUsed
+                                    ? html`
                                         <div>
-                                          Used
-                                          <time
+                                          <div
+                                            class="button button--tight button--tight--inline text--green"
+                                            style="${css`
+                                              cursor: default;
+                                            `}"
                                             data-ondomcontentloaded="${javascript`
-                                                relativizeTime(this);
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                              });
+                                            `}"
+                                          >
+                                            Used
+                                            <i class="bi bi-check-lg"></i>
+                                          </div>
+                                          <div hidden>
+                                            <div>
+                                              Used
+                                              <time
+                                                data-ondomcontentloaded="${javascript`
+                                                  relativizeTime(this);
+                                                `}"
+                                              >
+                                                ${new Date(
+                                                  invitation.usedAt!
+                                                ).toISOString()}
+                                              </time>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      `
+                                    : isExpired
+                                    ? html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--tight--inline button--transparent text--rose"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-calendar-x"></i>
+                                            Expired
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
+                                            <div
+                                              style="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
                                               `}"
-                                          >
-                                            ${new Date(
-                                              invitation.usedAt!
-                                            ).toISOString()}
-                                          </time>
-                                        </div>
-                                      </div>
-                                    `
-                                  : isExpired
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent text--rose"
-                                          data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: "Change Expiration",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-calendar-x"></i>
-                                          Expired
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                        <div hidden>
-                                          <div
-                                            style="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
-                                            `}"
-                                          >
-                                            <h3 class="heading">
-                                              <i class="bi bi-calendar-x"></i>
-                                              <span>
-                                                Expired
-                                                <time
-                                                  data-ondomcontentloaded="${javascript`
-                                                    relativizeTime(this);
-                                                  `}"
-                                                >
-                                                  ${new Date(
-                                                    invitation.expiresAt!
-                                                  ).toISOString()}
-                                                </time>
-                                              </span>
-                                            </h3>
-                                            $${changeExpirationForm}
-                                            <hr class="separator" />
-                                            $${removeExpirationForm}
+                                            >
+                                              <h3 class="heading">
+                                                <i class="bi bi-calendar-x"></i>
+                                                <span>
+                                                  Expired
+                                                  <time
+                                                    data-ondomcontentloaded="${javascript`
+                                                      relativizeTime(this);
+                                                    `}"
+                                                  >
+                                                    ${new Date(
+                                                      invitation.expiresAt!
+                                                    ).toISOString()}
+                                                  </time>
+                                                </span>
+                                              </h3>
+                                              $${changeExpirationForm}
+                                              <hr class="separator" />
+                                              $${removeExpirationForm}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    `
-                                  : invitation.expiresAt === null
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent text--blue"
-                                          data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: "Change Expiration",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-calendar-minus"></i>
-                                          Doesn’t Expire
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                        <div hidden>
-                                          <div
-                                            style="${css`
-                                              padding-top: var(--space--2);
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
+                                      `
+                                    : invitation.expiresAt === null
+                                    ? html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--tight--inline button--transparent text--blue"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
                                             `}"
                                           >
-                                            $${changeExpirationForm}
-                                            <hr class="separator" />
-                                            $${expireForm}
+                                            <i class="bi bi-calendar-minus"></i>
+                                            Doesn’t Expire
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
+                                            <div
+                                              style="${css`
+                                                padding-top: var(--space--2);
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              $${changeExpirationForm}
+                                              <hr class="separator" />
+                                              $${expireForm}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    `
-                                  : html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent text--amber"
-                                          data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: "Change Expiration",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-calendar-plus"></i>
-                                          Expires
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                        <div hidden>
-                                          <div
-                                            style="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
+                                      `
+                                    : html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--tight--inline button--transparent text--amber"
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Change Expiration",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
                                             `}"
                                           >
-                                            <h3 class="heading">
-                                              <i
-                                                class="bi bi-calendar-plus"
-                                              ></i>
-                                              <span>
-                                                Expires
-                                                <time
-                                                  data-ondomcontentloaded="${javascript`
-                                                    relativizeTime(this);
-                                                  `}"
-                                                >
-                                                  ${new Date(
-                                                    invitation.expiresAt
-                                                  ).toISOString()}
-                                                </time>
-                                              </span>
-                                            </h3>
-                                            <hr class="separator" />
-                                            $${changeExpirationForm}
-                                            <hr class="separator" />
-                                            $${removeExpirationForm}
-                                            $${expireForm}
+                                            <i class="bi bi-calendar-plus"></i>
+                                            Expires
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                          <div hidden>
+                                            <div
+                                              style="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              <h3 class="heading">
+                                                <i
+                                                  class="bi bi-calendar-plus"
+                                                ></i>
+                                                <span>
+                                                  Expires
+                                                  <time
+                                                    data-ondomcontentloaded="${javascript`
+                                                      relativizeTime(this);
+                                                    `}"
+                                                  >
+                                                    ${new Date(
+                                                      invitation.expiresAt
+                                                    ).toISOString()}
+                                                  </time>
+                                                </span>
+                                              </h3>
+                                              <hr class="separator" />
+                                              $${changeExpirationForm}
+                                              <hr class="separator" />
+                                              $${removeExpirationForm}
+                                              $${expireForm}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    `;
-                              })()}
+                                      `;
+                                })()}
+                              </div>
                             </div>
                           </div>
                         </div>
