@@ -834,8 +834,7 @@ export default async function courselore(
                   padding: var(--space--0-5) var(--space--1);
 
                   &.button--tight--inline {
-                    margin-top: var(--space---0-5);
-                    margin-bottom: var(--space---0-5);
+                    margin: var(--space---0-5) var(--space---1);
                   }
                 }
 
@@ -1034,13 +1033,13 @@ export default async function courselore(
                   width: var(--space--3);
                   height: var(--space--3);
                   border: var(--border-width--2) solid
-                    var(--color--gray--medium--200);
+                    var(--color--gray--medium--100);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--800);
                   }
                   border-radius: var(--border-radius--circle);
                   justify-self: end;
-                  margin-right: var(--space---1);
+                  transform: translateX(40%);
                 }
               }
 
@@ -4833,7 +4832,6 @@ export default async function courselore(
                           style="${css`
                             display: flex;
                             gap: var(--space--2);
-                            align-items: baseline;
                           `}"
                         >
                           $${invitation.email === null
@@ -4843,9 +4841,12 @@ export default async function courselore(
                             style="${css`
                               flex: 1;
                               display: flex;
-                              gap: var(--space--2);
                               @media (max-width: 499px) {
+                                gap: var(--space--2);
                                 flex-direction: column;
+                              }
+                              @media (min-width: 500px) {
+                                gap: var(--space--4);
                               }
                             `}"
                           >
@@ -4858,7 +4859,7 @@ export default async function courselore(
                                 ? html`
                                     <button
                                       id="invitation--${invitation.reference}"
-                                      class="button button--tight button--transparent strong"
+                                      class="button button--tight button--tight--inline button--transparent strong"
                                       data-ondomcontentloaded="${javascript`
                                         this.tooltip = tippy(this, {
                                           content: "See Invitation Link",
@@ -4951,7 +4952,7 @@ export default async function courselore(
                                   `
                                 : html`
                                     <button
-                                      class="button button--tight button--transparent"
+                                      class="button button--tight button--tight--inline button--transparent"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: this.nextElementSibling.firstElementChild,
@@ -5036,12 +5037,15 @@ export default async function courselore(
                             <div
                               style="${css`
                                 display: flex;
-                                justify-content: space-between;
+                                @media (max-width: 499px) {
+                                  justify-content: space-between;
+                                  flex-wrap: wrap;
+                                }
                               `}"
                             >
                               <div>
                                 <button
-                                  class="button button--tight button--transparent"
+                                  class="button button--tight button--tight--inline button--transparent"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Change Role",
@@ -5194,7 +5198,7 @@ export default async function courselore(
                                     ? html`
                                         <div>
                                           <div
-                                            class="button button--tight text--green"
+                                            class="button button--tight button--tight--inline text--green"
                                             style="${css`
                                               cursor: default;
                                             `}"
@@ -5227,7 +5231,7 @@ export default async function courselore(
                                     ? html`
                                         <div>
                                           <button
-                                            class="button button--tight button--transparent text--rose"
+                                            class="button button--tight button--tight--inline button--transparent text--rose"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: "Change Expiration",
@@ -5278,7 +5282,7 @@ export default async function courselore(
                                     ? html`
                                         <div>
                                           <button
-                                            class="button button--tight button--transparent text--blue"
+                                            class="button button--tight button--tight--inline button--transparent text--blue"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: "Change Expiration",
@@ -5314,7 +5318,7 @@ export default async function courselore(
                                     : html`
                                         <div>
                                           <button
-                                            class="button button--tight button--transparent text--amber"
+                                            class="button button--tight button--tight--inline button--transparent text--amber"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: "Change Expiration",
@@ -5792,7 +5796,7 @@ export default async function courselore(
                       style="${css`
                         flex: 1;
                         display: flex;
-                        gap: var(--space--2);
+                        gap: var(--space--4);
                         @media (max-width: 499px) {
                           flex-direction: column;
                         }
@@ -5813,18 +5817,12 @@ export default async function courselore(
                         style="${css`
                           display: flex;
                           justify-content: space-between;
-                          gap: var(--space--2);
-                          @media (max-width: 499px) {
-                            margin-left: var(--space---1);
-                            width: calc(
-                              var(--space--1) + 100% + var(--space--1)
-                            );
-                          }
+                          gap: var(--space--4);
                         `}"
                       >
                         <div>
                           <button
-                            class="button button--tight button--transparent"
+                            class="button button--tight button--tight--inline button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Change Role",
@@ -5940,7 +5938,7 @@ export default async function courselore(
 
                         <div>
                           <button
-                            class="button button--tight button--transparent text--rose"
+                            class="button button--tight button--tight--inline button--transparent text--rose"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove from the Course",
@@ -6177,10 +6175,13 @@ export default async function courselore(
                           style="${css`
                             flex: 1;
                             display: flex;
-                            gap: var(--space--2);
-                            align-items: baseline;
                             @media (max-width: 499px) {
+                              gap: var(--space--2);
                               flex-direction: column;
+                            }
+                            @media (min-width: 500px) {
+                              gap: var(--space--4);
+                              align-items: baseline;
                             }
                           `}"
                         >
@@ -6196,13 +6197,7 @@ export default async function courselore(
                             style="${css`
                               display: flex;
                               justify-content: space-between;
-                              gap: var(--space--2);
-                              @media (max-width: 499px) {
-                                margin-left: var(--space---1);
-                                width: calc(
-                                  var(--space--1) + 100% + var(--space--1)
-                                );
-                              }
+                              gap: var(--space--4);
                             `}"
                           >
                             <div class="select">
@@ -6210,7 +6205,7 @@ export default async function courselore(
                                 name="tags[${index}][visibleBy]"
                                 required
                                 autocomplete="off"
-                                class="disable-on-delete select--tag button button--tight button--transparent"
+                                class="disable-on-delete select--tag button button--tight button--tight--inline button--transparent"
                               >
                                 <option
                                   value="everyone"
@@ -6242,7 +6237,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button button--tight button--transparent text--rose"
+                                class="button button--tight button--tight--inline button--transparent text--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
@@ -6308,7 +6303,7 @@ export default async function courselore(
                             >
                               <button
                                 type="button"
-                                class="button button--tight button--transparent"
+                                class="button button--tight button--tight--inline button--transparent"
                                 data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Don’t Remove Tag",
@@ -6365,10 +6360,13 @@ export default async function courselore(
                         style="${css`
                           flex: 1;
                           display: flex;
-                          gap: var(--space--2);
-                          align-items: baseline;
                           @media (max-width: 499px) {
+                            gap: var(--space--2);
                             flex-direction: column;
+                          }
+                          @media (min-width: 500px) {
+                            gap: var(--space--4);
+                            align-items: baseline;
                           }
                         `}"
                       >
@@ -6389,13 +6387,7 @@ export default async function courselore(
                           style="${css`
                             display: flex;
                             justify-content: space-between;
-                            gap: var(--space--2);
-                            @media (max-width: 499px) {
-                              margin-left: var(--space---1);
-                              width: calc(
-                                var(--space--1) + 100% + var(--space--1)
-                              );
-                            }
+                            gap: var(--space--4);
                           `}"
                         >
                           <div class="select">
@@ -6403,7 +6395,7 @@ export default async function courselore(
                               required
                               autocomplete="off"
                               disabled
-                              class="select--tag button button--tight button--transparent"
+                              class="select--tag button button--tight button--tight--inline button--transparent"
                               data-onmount="${javascript`
                                 this.dataset.forceIsModified = true;
                                 this.disabled = false;
@@ -6425,7 +6417,7 @@ export default async function courselore(
                           <div>
                             <button
                               type="button"
-                              class="button button--tight button--transparent text--rose"
+                              class="button button--tight button--tight--inline button--transparent text--rose"
                               data-onmount="${javascript`
                                 tippy(this, {
                                   content: "Remove Tag",
@@ -8715,7 +8707,7 @@ ${value}</textarea
                           </button>
                         </div>
                         <label
-                          class="button button--tight button--transparent"
+                          class="button button--tight button--tight--inline button--transparent"
                           style="${css`
                             display: grid;
                             & > * {
@@ -8769,7 +8761,9 @@ ${value}</textarea
 
                 <div class="label">
                   <p class="label--text">Type</p>
-                  <div class="button button--tight button--transparent">
+                  <div
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <div>
                       <input
                         type="radio"
