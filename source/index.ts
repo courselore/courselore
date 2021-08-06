@@ -11780,51 +11780,15 @@ ${value}</textarea
         res,
         head: html`<title>${message} Error · CourseLore</title>`,
         body: html`
-          <div
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-          >
-            <h2
-              class="heading"
-              style="${css`
-                color: var(--color--gray--medium--200);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--200);
-                }
-              `}"
-            >
-              <i class="bi bi-bug"></i>
-              ${message} Error
-            </h2>
-            <div
-              style="${css`
-                color: var(--color--gray--medium--800);
-                background-color: var(--color--gray--medium--100);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--200);
-                  background-color: var(--color--gray--medium--900);
-                }
-                padding: var(--space--4);
-                border-radius: var(--border-radius--xl);
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <p>This is an issue in CourseLore.</p>
-
-              <a
-                href="mailto:issues@courselore.org"
-                class="button button--blue"
-              >
-                <i class="bi bi-envelope"></i>
-                Report to issues@courselore.org
-              </a>
-            </div>
-          </div>
+          <h2 class="heading">
+            <i class="bi bi-bug"></i>
+            ${message} Error
+          </h2>
+          <p>This is an issue in CourseLore.</p>
+          <a href="mailto:issues@courselore.org" class="button button--blue">
+            <i class="bi bi-envelope"></i>
+            Report to issues@courselore.org
+          </a>
         `,
       })
     );
