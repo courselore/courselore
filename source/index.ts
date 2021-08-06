@@ -8734,9 +8734,12 @@ ${value}</textarea
                             `}"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
-                                content: () => this.checked ? "Unpin" : "Pin",
+                                content: "Pin",
                                 touch: false,
                               });
+                            `}"
+                            onchange="${javascript`
+                              console.log("HELLO")
                             `}"
                           />
                           <span
@@ -8843,26 +8846,6 @@ ${value}</textarea
                     `}"
                     ></button>
                     <div hidden><div class="dropdown-menu">HELLO</div></div>
-                  </div>
-                  <div hidden class="select">
-                    <select
-                      name="type"
-                      required
-                      autocomplete="off"
-                      class="select--tag button button--tight button--transparent"
-                    >
-                      $${res.locals.conversationTypes.map(
-                        (conversationType) =>
-                          html`
-                            <option value="${conversationType}">
-                              ${lodash.capitalize(conversationType)}
-                            </option>
-                          `
-                      )}
-                    </select>
-                    <div class="select--chevron">
-                      <i class="bi bi-chevron-down"></i>
-                    </div>
                   </div>
                 </div>
 
