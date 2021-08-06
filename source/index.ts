@@ -8727,9 +8727,13 @@ ${value}</textarea
                             type="checkbox"
                             name="isPinned"
                             autocomplete="off"
+                            style="${css`
+                              width: 100%;
+                              height: 100%;
+                            `}"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
-                                content: "Pin",
+                                content: () => this.checked ? "Unpin" : "Pin",
                                 touch: false,
                               });
                             `}"
