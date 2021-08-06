@@ -8697,11 +8697,22 @@ ${value}</textarea
               >
                 $${res.locals.enrollment.role === "staff"
                   ? html`
-                      <div
-                        style="${css`
-                          display: flex;
-                        `}"
-                      >
+                      <div class="label">
+                        <div class="label--text">
+                          Pin
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Pinned conversations are listed first.",
+                              trigger: "click",
+                            });
+                          `}"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
                         <label
                           style="${css`
                             display: grid;
@@ -8750,18 +8761,6 @@ ${value}</textarea
                             Pinned
                           </span>
                         </label>
-                        <button
-                          type="button"
-                          class="button button--tight button--transparent"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Pinned conversations are listed first.",
-                              trigger: "click",
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-info-circle"></i>
-                        </button>
                       </div>
                     `
                   : html``}
@@ -8787,55 +8786,6 @@ ${value}</textarea
                     </div>
                   </div>
                 </div>
-                <label
-                  style="${css`
-                    display: grid;
-                    & > * {
-                      grid-area: 1 / 1;
-                    }
-                  `}"
-                >
-                  <input
-                    type="checkbox"
-                    name="isQuestion"
-                    autocomplete="off"
-                    $${res.locals.enrollment.role === "staff" ? `` : `checked`}
-                  />
-                  <span
-                    class="button button--tight button--transparent"
-                    style="${css`
-                      :checked + & {
-                        display: none;
-                      }
-                    `}"
-                    data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Mark as a Question",
-                          touch: false,
-                        });
-                      `}"
-                  >
-                    <i class="bi bi-patch-question"></i>
-                    Not a Question
-                  </span>
-                  <span
-                    class="button button--tight button--transparent strong"
-                    style="${css`
-                      :not(:checked) + * + & {
-                        display: none;
-                      }
-                    `}"
-                    data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Mark as Not a Question",
-                          touch: false,
-                        });
-                      `}"
-                  >
-                    <i class="bi bi-patch-question-fill"></i>
-                    Question
-                  </span>
-                </label>
 
                 $${res.locals.tags.length === 0
                   ? html``
