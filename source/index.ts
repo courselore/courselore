@@ -120,6 +120,16 @@ export default async function courselore(
   };
 
   interface Constants {
+    conversationTypes: ConversationType[];
+  }
+  type ConversationType = "announcement" | "question" | "other";
+  app.locals.constants.conversationTypes = [
+    "announcement",
+    "question",
+    "other",
+  ];
+
+  interface Constants {
     tagVisibleBy: TagVisibleBy[];
   }
   type TagVisibleBy = "everyone" | "staff";
@@ -181,8 +191,8 @@ export default async function courselore(
         "reference" TEXT NOT NULL,
         "title" TEXT NOT NULL,
         "nextMessageReference" INTEGER NOT NULL DEFAULT 1,
+        "type" TEXT NOT NULL CHECK ("type" IN ('announcement', 'question', 'other')),
         "pinnedAt" TEXT NULL,
-        "questionAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
       CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
@@ -3574,8 +3584,8 @@ export default async function courselore(
       reference: string;
       title: string;
       nextMessageReference: number;
+      type: ConversationType;
       pinnedAt: string | null;
-      questionAt: string | null;
       createdAt: string;
       updatedAt: string;
       authorEnrollment:
@@ -3670,16 +3680,16 @@ export default async function courselore(
           reference: string;
           title: string;
           nextMessageReference: number;
+          type: ConversationType;
           pinnedAt: string | null;
-          questionAt: string | null;
         }>(
           sql`
             SELECT "conversations"."id",
                    "conversations"."reference",
                    "conversations"."title",
                    "conversations"."nextMessageReference",
-                   "conversations"."pinnedAt",
-                   "conversations"."questionAt"
+                   "conversations"."type",
+                   "conversations"."pinnedAt"
             FROM "conversations"
             $${
               search === undefined
@@ -3780,7 +3790,7 @@ export default async function courselore(
             sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
           )!.messagesCount;
           const endorsements =
-            conversation.questionAt === null
+            conversation.type !== "question"
               ? []
               : app.locals.database
                   .all<{
@@ -3796,14 +3806,14 @@ export default async function courselore(
                   }>(
                     sql`
                       SELECT "endorsements"."id",
-                            "enrollments"."id" AS "enrollmentId",
-                            "users"."id" AS "userId",
-                            "users"."email" AS "userEmail",
-                            "users"."name" AS "userName",
-                            "users"."avatar" AS "userAvatar",
-                            "users"."biography" AS "userBiography",      
-                            "enrollments"."reference" AS "enrollmentReference",
-                            "enrollments"."role" AS "enrollmentRole"
+                             "enrollments"."id" AS "enrollmentId",
+                             "users"."id" AS "userId",
+                             "users"."email" AS "userEmail",
+                             "users"."name" AS "userName",
+                             "users"."avatar" AS "userAvatar",
+                             "users"."biography" AS "userBiography",      
+                             "enrollments"."reference" AS "enrollmentReference",
+                             "enrollments"."role" AS "enrollmentRole"
                       FROM "endorsements"
                       JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
                       JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -3875,8 +3885,8 @@ export default async function courselore(
             reference: conversation.reference,
             title: conversation.title,
             nextMessageReference: conversation.nextMessageReference,
+            type: conversation.type,
             pinnedAt: conversation.pinnedAt,
-            questionAt: conversation.questionAt,
             createdAt: originalMessage.createdAt,
             updatedAt: mostRecentlyUpdatedMessage.updatedAt,
             authorEnrollment:
@@ -7492,7 +7502,7 @@ export default async function courselore(
                                       </div>
                                     `
                                   : html``}
-                                $${conversation.questionAt !== null
+                                $${conversation.type === "question"
                                   ? html`
                                       <div>
                                         <i class="bi bi-patch-question"></i>
@@ -9039,14 +9049,14 @@ ${value}</textarea
       const conversationId = Number(
         app.locals.database.run(
           sql`
-            INSERT INTO "conversations" ("course", "reference", "title", "nextMessageReference", "pinnedAt", "questionAt")
+            INSERT INTO "conversations" ("course", "reference", "title", "nextMessageReference", "type", "pinnedAt")
             VALUES (
               ${res.locals.course.id},
               ${String(res.locals.course.nextConversationReference)},
               ${req.body.title},
               ${"2"},
-              ${req.body.isPinned ? new Date().toISOString() : null},
-              ${req.body.isQuestion ? new Date().toISOString() : null}
+              ${req.body.isQuestion ? "question" : "other"},
+              ${req.body.isPinned ? new Date().toISOString() : null}
             )
           `
         ).lastInsertRowid
@@ -9120,16 +9130,16 @@ ${value}</textarea
         reference: string;
         title: string;
         nextMessageReference: number;
+        type: ConversationType;
         pinnedAt: string | null;
-        questionAt: string | null;
       }>(
         sql`
           SELECT "conversations"."id",
                  "conversations"."reference",
                  "conversations"."title",
                  "conversations"."nextMessageReference",
-                 "conversations"."pinnedAt",
-                 "conversations"."questionAt"
+                 "conversations"."type",
+                 "conversations"."pinnedAt"
           FROM "conversations"
           WHERE "conversations"."reference" = ${req.params.conversationReference}
         `
@@ -9184,7 +9194,7 @@ ${value}</textarea
         sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
       )!.messagesCount;
       const endorsements =
-        conversation.questionAt === null
+        conversation.type !== "question"
           ? []
           : app.locals.database
               .all<{
@@ -9278,8 +9288,8 @@ ${value}</textarea
         reference: conversation.reference,
         title: conversation.title,
         nextMessageReference: conversation.nextMessageReference,
+        type: conversation.type,
         pinnedAt: conversation.pinnedAt,
-        questionAt: conversation.questionAt,
         createdAt: originalMessage.createdAt,
         updatedAt: mostRecentlyUpdatedMessage.updatedAt,
         authorEnrollment:
@@ -9864,7 +9874,7 @@ ${value}</textarea
                       .course.reference}/conversations/${res.locals.conversation
                       .reference}?_method=PATCH"
                   >
-                    $${res.locals.conversation.questionAt === null
+                    $${res.locals.conversation.type !== "question"
                       ? html`
                           <input type="hidden" name="isQuestion" value="true" />
                           <button
@@ -9901,7 +9911,7 @@ ${value}</textarea
                         `}
                   </form>
                 `);
-              else if (res.locals.conversation.questionAt !== null)
+              else if (res.locals.conversation.type === "question")
                 content.push(html`
                   <div>
                     <i class="bi bi-patch-question-fill"></i>
@@ -10285,7 +10295,7 @@ ${value}</textarea
                       if (
                         app.locals.helpers.mayEditMessage(req, res, message) &&
                         message.reference !== "1" &&
-                        res.locals.conversation.questionAt !== null
+                        res.locals.conversation.type === "question"
                       )
                         content.push(html`
                           <form
@@ -10337,7 +10347,7 @@ ${value}</textarea
                           </form>
                         `);
                       else if (
-                        res.locals.conversation.questionAt !== null &&
+                        res.locals.conversation.type === "question" &&
                         message.answerAt !== null
                       )
                         content.push(html`
@@ -10459,7 +10469,7 @@ ${value}</textarea
                           </form>
                         `);
                       } else if (
-                        res.locals.conversation.questionAt !== null &&
+                        res.locals.conversation.type === "question" &&
                         message.endorsements.length > 0
                       )
                         content.push(html`
@@ -10762,7 +10772,7 @@ ${value}</textarea
                 $${app.locals.partials.textEditor()}
               </div>
 
-              $${res.locals.conversation.questionAt === null
+              $${res.locals.conversation.type !== "question"
                 ? html``
                 : html`
                     <div
@@ -10903,17 +10913,17 @@ ${value}</textarea
         if (
           !["true", "false"].includes(req.body.isQuestion) ||
           (req.body.isQuestion === "true" &&
-            res.locals.conversation.questionAt !== null) ||
+            res.locals.conversation.type === "question") ||
           (req.body.isQuestion === "false" &&
-            res.locals.conversation.questionAt === null)
+            res.locals.conversation.type !== "question")
         )
           return next("validation");
         else
           app.locals.database.run(
             sql`
               UPDATE "conversations"
-              SET "questionAt" = ${
-                req.body.isQuestion === "true" ? new Date().toISOString() : null
+              SET "type" = ${
+                req.body.isQuestion === "true" ? "question" : "other"
               }
               WHERE "id" = ${res.locals.conversation.id}
             `
@@ -10963,7 +10973,7 @@ ${value}</textarea
       if (
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
-        (req.body.isAnswer && res.locals.conversation.questionAt === null)
+        (req.body.isAnswer && res.locals.conversation.type !== "question")
       )
         return next("validation");
 
@@ -11027,7 +11037,7 @@ ${value}</textarea
         if (
           res.locals.message.reference === "1" ||
           !["true", "false"].includes(req.body.isAnswer) ||
-          res.locals.conversation.questionAt === null ||
+          res.locals.conversation.type !== "question" ||
           (req.body.isAnswer === "true" &&
             res.locals.message.answerAt !== null) ||
           (req.body.isAnswer === "false" &&
@@ -11162,7 +11172,7 @@ ${value}</textarea
   }
   app.locals.helpers.mayEndorseMessage = (req, res, message) =>
     res.locals.enrollment.role === "staff" &&
-    res.locals.conversation.questionAt !== null &&
+    res.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.answerAt !== null &&
     message.authorEnrollment.role !== "staff";
