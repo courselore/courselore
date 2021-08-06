@@ -7758,7 +7758,7 @@ export default async function courselore(
               margin: var(--space--0) var(--space--2);
               overflow-x: auto;
               display: flex;
-              gap: var(--space--2);
+              gap: var(--space--1-5);
               & > * {
                 display: flex;
               }
