@@ -3455,48 +3455,40 @@ export default async function courselore(
           res,
           head: html`<title>Create a New Course · CourseLore</title>`,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-journal-plus"></i>
+              Create a New Course
+            </h2>
+
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/courses"
               style="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-journal-plus"></i>
-                Create a New Course
-              </h2>
-
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/courses"
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <label class="label">
-                  <p class="label--text">Name</p>
-                  <input
-                    type="text"
-                    name="name"
-                    class="input--text"
-                    required
-                    autocomplete="off"
-                    autofocus
-                  />
-                </label>
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                  >
-                    <i class="bi bi-journal-plus"></i>
-                    Create Course
-                  </button>
-                </div>
-              </form>
-            </div>
+              <label class="label">
+                <p class="label--text">Name</p>
+                <input
+                  type="text"
+                  name="name"
+                  class="input--text"
+                  required
+                  autocomplete="off"
+                  autofocus
+                />
+              </label>
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-journal-plus"></i>
+                  Create Course
+                </button>
+              </div>
+            </form>
           `,
         })
       );
