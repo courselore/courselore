@@ -8682,15 +8682,16 @@ ${value}</textarea
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
+      const isFirst = res.locals.course.nextConversationReference === 1;
+
       res.send(
-        (res.locals.course.nextConversationReference === 1
-          ? app.locals.layouts.main
-          : app.locals.layouts.conversation)({
+        (isFirst ? app.locals.layouts.main : app.locals.layouts.conversation)({
           req,
           res,
           head: html`
             <title>
-              Start a New Conversation · ${res.locals.course.name} · CourseLore
+              Start ${isFirst ? "the First" : "a New"} Conversation ·
+              ${res.locals.course.name} · CourseLore
             </title>
           `,
           body: html`
@@ -8703,7 +8704,7 @@ ${value}</textarea
             >
               <h2 class="heading">
                 <i class="bi bi-chat-left-text"></i>
-                Start a New Conversation
+                Start ${isFirst ? "the First" : "a New"} Conversation
               </h2>
 
               <form
