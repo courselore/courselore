@@ -7588,6 +7588,9 @@ export default async function courselore(
                   max-width: var(--width--2xl);
                   margin-left: var(--space--8);
                 }
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
               `}"
             >
               $${body}
