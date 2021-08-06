@@ -8438,13 +8438,11 @@ ${value}</textarea
 
         <div
           hidden
-          class="text-editor--preview text"
+          class="text-editor--preview"
           style="${css`
             padding: var(--space--4);
           `}"
-        >
-          Preview
-        </div>
+        ></div>
       </div>
     </div>
   `;
@@ -8564,7 +8562,9 @@ ${value}</textarea
     ) => {
       const processedMarkdown = markdownProcessor.processSync(text).toString();
       if (res === undefined) return processedMarkdown;
-      const document = JSDOM.fragment(html`<div>$${processedMarkdown}</div>`);
+      const document = JSDOM.fragment(
+        html`<div class="text">$${processedMarkdown}</div>`
+      );
       (function traverse(node: Node): void {
         switch (node.nodeType) {
           case node.TEXT_NODE:
@@ -8598,7 +8598,7 @@ ${value}</textarea
         if (node.hasChildNodes())
           for (const childNode of node.childNodes) traverse(childNode);
       })(document);
-      return document.firstElementChild!.innerHTML;
+      return document.firstElementChild!.outerHTML;
     };
   })();
 
@@ -10508,7 +10508,6 @@ ${value}</textarea
 
                     <div>
                       <div
-                        class="text"
                         data-ondomcontentloaded="${javascript`
                           this.tippy = tippy(this, {
                             content: this.nextElementSibling.firstElementChild,
