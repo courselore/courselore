@@ -835,6 +835,7 @@ export default async function courselore(
 
                   &.button--tight--inline {
                     margin-top: var(--space---0-5);
+                    margin-bottom: var(--space---0-5);
                   }
                 }
 
