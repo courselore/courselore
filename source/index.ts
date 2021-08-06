@@ -8734,9 +8734,9 @@ ${value}</textarea
                             `}"
                             data-ondomcontentloaded="${javascript`
                               this.tooltip = tippy(this, {
-                                content: "Pin",
                                 touch: false,
                               });
+                              this.onchange();
                             `}"
                             onchange="${javascript`
                               this.tooltip.setContent(this.checked ? "Unpin" : "Pin");
