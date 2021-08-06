@@ -3121,268 +3121,256 @@ export default async function courselore(
           res,
           head: html`<title>User Settings · CourseLore</title>`,
           body: html`
-            <div
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              User Settings
+            </h2>
+
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/settings?_method=PATCH"
               style="${css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
               `}"
             >
-              <h2 class="heading">
-                <i class="bi bi-sliders"></i>
-                User Settings
-              </h2>
-
-              <form
-                method="POST"
-                action="${app.locals.settings.url}/settings?_method=PATCH"
+              <div
                 style="${css`
                   display: flex;
-                  flex-direction: column;
                   gap: var(--space--4);
+                  @media (max-width: 400px) {
+                    flex-direction: column;
+                  }
                 `}"
               >
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--4);
-                    @media (max-width: 400px) {
-                      flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    & > * {
+                      width: var(--space--32);
+                      height: var(--space--32);
                     }
                   `}"
                 >
                   <div
+                    class="avatar--empty"
+                    $${res.locals.user.avatar === null ? html`` : html`hidden`}
+                  >
+                    <button
+                      type="button"
+                      class="button decorative-icon"
+                      style="${css`
+                        font-size: var(--font-size--8xl);
+                        line-height: var(--line-height--8xl);
+                        width: 100%;
+                        height: 100%;
+                        &:hover,
+                        &:focus-within {
+                          color: var(--color--gray--medium--400);
+                        }
+                        &:active {
+                          color: var(--color--gray--medium--500);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          &:hover,
+                          &:focus-within {
+                            color: var(--color--gray--medium--500);
+                          }
+                          &:active {
+                            color: var(--color--gray--medium--400);
+                          }
+                        }
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Add Avatar",
+                          touch: false,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        this.closest("form").querySelector(".avatar--upload").click();
+                      `}"
+                    >
+                      <i class="bi bi-person-circle"></i>
+                    </button>
+                  </div>
+                  <div
+                    class="avatar--filled"
+                    $${res.locals.user.avatar === null ? html`hidden` : html``}
                     style="${css`
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
+                      display: grid;
                       & > * {
-                        width: var(--space--32);
-                        height: var(--space--32);
+                        grid-area: 1 / 1;
+                        position: relative;
                       }
                     `}"
                   >
-                    <div
-                      class="avatar--empty"
-                      $${res.locals.user.avatar === null
-                        ? html``
-                        : html`hidden`}
-                    >
-                      <button
-                        type="button"
-                        class="button decorative-icon"
-                        style="${css`
-                          font-size: var(--font-size--8xl);
-                          line-height: var(--line-height--8xl);
-                          width: 100%;
-                          height: 100%;
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--gray--medium--400);
-                          }
-                          &:active {
-                            color: var(--color--gray--medium--500);
-                          }
-                          @media (prefers-color-scheme: dark) {
-                            &:hover,
-                            &:focus-within {
-                              color: var(--color--gray--medium--500);
-                            }
-                            &:active {
-                              color: var(--color--gray--medium--400);
-                            }
-                          }
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Add Avatar",
-                            touch: false,
-                          });
-                        `}"
-                        onclick="${javascript`
-                          this.closest("form").querySelector(".avatar--upload").click();
-                        `}"
-                      >
-                        <i class="bi bi-person-circle"></i>
-                      </button>
-                    </div>
-                    <div
-                      class="avatar--filled"
-                      $${res.locals.user.avatar === null
-                        ? html`hidden`
-                        : html``}
+                    <button
+                      type="button"
+                      class="button"
                       style="${css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                          position: relative;
+                        padding: var(--space--0);
+                        place-self: center;
+                        transition-property: var(--transition-property--base);
+                        transition-duration: var(--transition-duration--150);
+                        transition-timing-function: var(
+                          --transition-timing-function--in-out
+                        );
+                        &:hover,
+                        &:focus-within {
+                          filter: brightness(var(--brightness--105));
+                        }
+                        &:active {
+                          filter: brightness(var(--brightness--95));
                         }
                       `}"
-                    >
-                      <button
-                        type="button"
-                        class="button"
-                        style="${css`
-                          padding: var(--space--0);
-                          place-self: center;
-                          transition-property: var(--transition-property--base);
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--in-out
-                          );
-                          &:hover,
-                          &:focus-within {
-                            filter: brightness(var(--brightness--105));
-                          }
-                          &:active {
-                            filter: brightness(var(--brightness--95));
-                          }
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Change Avatar",
-                            touch: false,
-                          });
-                        `}"
-                        onclick="${javascript`
-                          this.closest("form").querySelector(".avatar--upload").click();
-                        `}"
-                      >
-                        <img
-                          src="${res.locals.user.avatar ?? ""}"
-                          alt="Avatar"
-                          class="avatar"
-                          style="${css`
-                            width: 100%;
-                            height: 100%;
-                          `}"
-                        />
-                      </button>
-                      <button
-                        type="button"
-                        class="button button--rose"
-                        style="${css`
-                          place-self: end;
-                          width: var(--font-size--2xl);
-                          height: var(--font-size--2xl);
-                          padding: var(--space--0);
-                          border-radius: var(--border-radius--circle);
-                          margin-right: var(--space--2);
-                          align-items: center;
-                        `}"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Remove Avatar",
-                            theme: "rose",
-                            touch: false,
-                          });
-                        `}"
-                        onclick="${javascript`
-                          const form = this.closest("form");
-                          const avatar = form.querySelector('[name="avatar"]')
-                          avatar.value = "";
-                          avatar.dataset.forceIsModified = true;
-                          form.querySelector(".avatar--empty").hidden = false;
-                          form.querySelector(".avatar--filled").hidden = true;
-                        `}"
-                      >
-                        <i class="bi bi-trash"></i>
-                      </button>
-                    </div>
-                    <input
-                      type="file"
-                      class="avatar--upload"
-                      accept="image/*"
-                      autocomplete="off"
-                      hidden
-                      onchange="${javascript`
-                        (async () => {
-                          // TODO: Give some visual indication of progress.
-                          // TODO: Work with drag-and-drop.
-                          const body = new FormData();
-                          body.append("avatar", this.files[0]);
-                          this.value = "";
-                          const avatarURL = await (await fetch("${app.locals.settings.url}/settings/avatar", {
-                            method: "POST",
-                            body,
-                          })).text();
-                          const form = this.closest("form");
-                          const avatar = form.querySelector('[name="avatar"]')
-                          avatar.value = avatarURL;
-                          avatar.dataset.forceIsModified = true;
-                          form.querySelector(".avatar--empty").hidden = true;
-                          const avatarFilled = form.querySelector(".avatar--filled");
-                          avatarFilled.hidden = false;
-                          avatarFilled.querySelector("img").setAttribute("src", avatarURL);
-                        })();
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Change Avatar",
+                          touch: false,
+                        });
                       `}"
-                    />
-                    <input
-                      type="hidden"
-                      name="avatar"
-                      value="${res.locals.user.avatar ?? ""}"
-                    />
-                  </div>
-
-                  <div
-                    style="${css`
-                      flex: 1;
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    <label class="label">
-                      <p class="label--text">Name</p>
-                      <input
-                        type="text"
-                        name="name"
-                        value="${res.locals.user.name}"
-                        required
-                        class="input--text"
-                      />
-                    </label>
-
-                    <label class="label">
-                      <p class="label--text">Email</p>
-                      <span
-                        tabindex="0"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Your email is your identity in CourseLore and may not be changed.",
-                          });
+                      onclick="${javascript`
+                        this.closest("form").querySelector(".avatar--upload").click();
+                      `}"
+                    >
+                      <img
+                        src="${res.locals.user.avatar ?? ""}"
+                        alt="Avatar"
+                        class="avatar"
+                        style="${css`
+                          width: 100%;
+                          height: 100%;
                         `}"
-                      >
-                        <input
-                          type="email"
-                          value="${res.locals.user.email}"
-                          class="input--text"
-                          disabled
-                        />
-                      </span>
-                    </label>
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      class="button button--rose"
+                      style="${css`
+                        place-self: end;
+                        width: var(--font-size--2xl);
+                        height: var(--font-size--2xl);
+                        padding: var(--space--0);
+                        border-radius: var(--border-radius--circle);
+                        margin-right: var(--space--2);
+                        align-items: center;
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Remove Avatar",
+                          theme: "rose",
+                          touch: false,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        const form = this.closest("form");
+                        const avatar = form.querySelector('[name="avatar"]')
+                        avatar.value = "";
+                        avatar.dataset.forceIsModified = true;
+                        form.querySelector(".avatar--empty").hidden = false;
+                        form.querySelector(".avatar--filled").hidden = true;
+                      `}"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </div>
+                  <input
+                    type="file"
+                    class="avatar--upload"
+                    accept="image/*"
+                    autocomplete="off"
+                    hidden
+                    onchange="${javascript`
+                      (async () => {
+                        // TODO: Give some visual indication of progress.
+                        // TODO: Work with drag-and-drop.
+                        const body = new FormData();
+                        body.append("avatar", this.files[0]);
+                        this.value = "";
+                        const avatarURL = await (await fetch("${app.locals.settings.url}/settings/avatar", {
+                          method: "POST",
+                          body,
+                        })).text();
+                        const form = this.closest("form");
+                        const avatar = form.querySelector('[name="avatar"]')
+                        avatar.value = avatarURL;
+                        avatar.dataset.forceIsModified = true;
+                        form.querySelector(".avatar--empty").hidden = true;
+                        const avatarFilled = form.querySelector(".avatar--filled");
+                        avatarFilled.hidden = false;
+                        avatarFilled.querySelector("img").setAttribute("src", avatarURL);
+                      })();
+                    `}"
+                  />
+                  <input
+                    type="hidden"
+                    name="avatar"
+                    value="${res.locals.user.avatar ?? ""}"
+                  />
                 </div>
 
-                <div class="label">
-                  <p class="label--text">Biography</p>
-                  $${app.locals.partials.textEditor({
-                    name: "biography",
-                    value: res.locals.user.biography ?? "",
-                    required: false,
-                  })}
-                </div>
+                <div
+                  style="${css`
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label class="label">
+                    <p class="label--text">Name</p>
+                    <input
+                      type="text"
+                      name="name"
+                      value="${res.locals.user.name}"
+                      required
+                      class="input--text"
+                    />
+                  </label>
 
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                  >
-                    <i class="bi bi-pencil"></i>
-                    Update User Settings
-                  </button>
+                  <label class="label">
+                    <p class="label--text">Email</p>
+                    <span
+                      tabindex="0"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Your email is your identity in CourseLore and may not be changed.",
+                        });
+                      `}"
+                    >
+                      <input
+                        type="email"
+                        value="${res.locals.user.email}"
+                        class="input--text"
+                        disabled
+                      />
+                    </span>
+                  </label>
                 </div>
-              </form>
-            </div>
+              </div>
+
+              <div class="label">
+                <p class="label--text">Biography</p>
+                $${app.locals.partials.textEditor({
+                  name: "biography",
+                  value: res.locals.user.biography ?? "",
+                  required: false,
+                })}
+              </div>
+
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update User Settings
+                </button>
+              </div>
+            </form>
           `,
         })
       );
