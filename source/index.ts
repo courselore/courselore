@@ -8733,13 +8733,13 @@ ${value}</textarea
                               position: relative;
                             `}"
                             data-ondomcontentloaded="${javascript`
-                              tippy(this, {
+                              this.tooltip = tippy(this, {
                                 content: "Pin",
                                 touch: false,
                               });
                             `}"
                             onchange="${javascript`
-                              console.log("HELLO")
+                              this.tooltip.setContent(this.checked ? "Unpin" : "Pin");
                             `}"
                           />
                           <span
