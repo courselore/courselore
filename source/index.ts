@@ -8785,7 +8785,7 @@ ${value}</textarea
                         const getCheckedOption = () => this.querySelector(".custom-select--options :checked");
                         const updateLabel = () => {
                           const checkedOption = getCheckedOption();
-                          input.innerHTML = checkedOption.value;
+                          input.value = checkedOption.value;
                           content.innerHTML = checkedOption.nextElementSibling.innerHTML;
                         };
                         updateLabel();
