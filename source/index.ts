@@ -8782,17 +8782,16 @@ ${value}</textarea
                         const button = this.querySelector(".custom-select--button");
                         const content = this.querySelector(".custom-select--content");
                         const options = this.querySelector(".custom-select--options");
-                        const getCheckedOption = () => this.querySelector(".custom-select--options :checked");
                         const updateLabel = () => {
-                          const checkedOption = getCheckedOption();
+                          const checkedOption = options.querySelector(":checked");
                           input.value = checkedOption.value;
                           content.innerHTML = checkedOption.nextElementSibling.innerHTML;
                         };
                         updateLabel();
                         input.defaultValue = input.value;
                         options.addEventListener("change", updateLabel);
-                        tippy(this.querySelector(".custom-select--button"), {
-                          content: this.querySelector(".custom-select--options"),
+                        tippy(button, {
+                          content: options,
                           trigger: "click",
                           interactive: true,
                         });
