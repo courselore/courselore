@@ -514,6 +514,7 @@ export default async function courselore(
                 const tooltip = tippy(element, {
                   content: error,
                   theme: "rose",
+                  trigger: "click",
                   onHidden: () => {
                     tooltip.destroy();
                   },
