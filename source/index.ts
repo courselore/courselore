@@ -8836,24 +8836,21 @@ ${value}</textarea
                     justify-content: flex-start;
                   `}"
                 >
-                  <div class="label">
+                  <div class="type label">
                     <p class="label--text">Type</p>
+                    <input type="text" name="type" hidden />
                     <button
                       type="button"
                       class="button button--tight button--tight--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
-                        const element = this.nextElementSibling.firstElementChild;
-                        element.button = this;
                         tippy(this, {
-                          content: element,
+                          content: this.nextElementSibling.firstElementChild,
                           trigger: "click",
                           interactive: true,
                         });
                       `}"
                     >
-                      <input type="text" name="type" hidden />
                       <span
-                        class="label--content"
                         style="${css`
                           display: flex;
                           gap: var(--space--2);
@@ -8863,21 +8860,16 @@ ${value}</textarea
                       <i class="bi bi-chevron-down"></i>
                     </button>
                     <div hidden>
-                      <div class="type dropdown-menu">
+                      <div class="dropdown-menu">
                         <!-- TODO: Only present types that are permissible for the role. -->
                         <button
                           type="button"
                           class="dropdown-menu--item button button--transparent"
-                          data-ondomcontentloaded="${javascript`
-                            const button = this.closest(".type").button;
-                            button.querySelector('[name="type"]').defaultValue = "announcement";
-                            button.querySelector(".label--content").innerHTML = this.innerHTML;
-                          `}"
                           onclick="${javascript`
-                            const button = this.closest(".type").button;
-                            button.querySelector('[name="type"]').value = "announcement";
-                            button.querySelector(".label--content").innerHTML = this.innerHTML;
-                            button.focus();
+                            const type = this.closest(".type");
+                            type.querySelector("input").value = "announcement";
+                            type.querySelector("span").innerHTML = this.innerHTML;
+                            type.querySelector("button").focus();
                           `}"
                         >
                           <i class="bi bi-megaphone"></i>
@@ -8887,10 +8879,10 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
-                            const button = this.closest(".type").button;
-                            button.querySelector('[name="type"]').value = "question";
-                            button.querySelector(".label--content").innerHTML = this.innerHTML;
-                            button.focus();
+                            const type = this.closest(".type");
+                            type.querySelector("input").value = "question";
+                            type.querySelector("span").innerHTML = this.innerHTML;
+                            type.querySelector("button").focus();
                           `}"
                         >
                           <i class="bi bi-patch-question"></i>
@@ -8900,10 +8892,10 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
-                            const button = this.closest(".type").button;
-                            button.querySelector('[name="type"]').value = "other";
-                            button.querySelector(".label--content").innerHTML = this.innerHTML;
-                            button.focus();
+                            const type = this.closest(".type");
+                            type.querySelector("input").value = "other";
+                            type.querySelector("span").innerHTML = this.innerHTML;
+                            type.querySelector("button").focus();
                           `}"
                         >
                           <i class="bi bi-chat-left-text"></i>
