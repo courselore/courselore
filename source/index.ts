@@ -5035,6 +5035,8 @@ export default async function courselore(
                               <div
                                 style="${css`
                                   width: var(--space--24);
+                                  display: flex;
+                                  justify-content: flex-start;
                                 `}"
                               >
                                 <button
@@ -5107,6 +5109,8 @@ export default async function courselore(
                               <div
                                 style="${css`
                                   width: var(--space--40);
+                                  display: flex;
+                                  justify-content: flex-start;
                                 `}"
                               >
                                 $${(() => {
@@ -5787,10 +5791,8 @@ export default async function courselore(
                       style="${css`
                         flex: 1;
                         display: flex;
-                        gap: var(--space--4);
-                        @media (max-width: 499px) {
-                          flex-direction: column;
-                        }
+                        flex-direction: column;
+                        gap: var(--space--2);
                       `}"
                     >
                       <div
@@ -5807,11 +5809,17 @@ export default async function courselore(
                       <div
                         style="${css`
                           display: flex;
-                          justify-content: space-between;
-                          gap: var(--space--4);
+                          flex-wrap: wrap;
+                          gap: var(--space--2);
                         `}"
                       >
-                        <div>
+                        <div
+                          style="${css`
+                            width: var(--space--24);
+                            display: flex;
+                            justify-content: flex-start;
+                          `}"
+                        >
                           <button
                             class="button button--tight button--tight--inline button--transparent"
                             data-ondomcontentloaded="${javascript`
@@ -5927,7 +5935,13 @@ export default async function courselore(
                           </div>
                         </div>
 
-                        <div>
+                        <div
+                          style="${css`
+                            width: var(--space--8);
+                            display: flex;
+                            justify-content: flex-start;
+                          `}"
+                        >
                           <button
                             class="button button--tight button--tight--inline button--transparent text--rose"
                             data-ondomcontentloaded="${javascript`
