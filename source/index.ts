@@ -9079,8 +9079,8 @@ ${value}</textarea
     {
       title?: string;
       content?: string;
+      type?: ConversationType;
       isPinned?: boolean;
-      isQuestion?: boolean;
       tagsReferences?: string[];
     },
     {},
@@ -9095,6 +9095,8 @@ ${value}</textarea
         req.body.title.trim() === "" ||
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
+        typeof req.body.type !== "string" ||
+        !res.locals.conversationTypes.includes(req.body.type) ||
         (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         !Array.isArray(req.body.tagsReferences) ||
         (res.locals.tags.length > 0 &&
@@ -9130,7 +9132,7 @@ ${value}</textarea
               ${String(res.locals.course.nextConversationReference)},
               ${req.body.title},
               ${"2"},
-              ${req.body.isQuestion ? "question" : "other"},
+              ${req.body.type},
               ${req.body.isPinned ? new Date().toISOString() : null}
             )
           `
