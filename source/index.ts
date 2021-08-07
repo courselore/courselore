@@ -8880,11 +8880,12 @@ ${value}</textarea
                       <div
                         class="dropdown-menu"
                         onclick="${javascript`
-                          const value = event.target.dataset.value;
+                          const target = event.target;
+                          const value = target.dataset.value;
                           if (value === undefined) return;
                           const type = this.closest(".type");
                           type.querySelector("input").value = value;
-                          type.querySelector("span").innerHTML = event.target.innerHTML;
+                          type.querySelector("span").innerHTML = target.innerHTML;
                           const button = type.querySelector("button");
                           button.focus();
                           button.tooltip.hide();
