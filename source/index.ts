@@ -7080,49 +7080,15 @@ export default async function courselore(
               ? ""
               : "single-column--hidden"}"
             style="${css`
-              color: var(--color--gray--medium--200);
-              background-color: var(--color--gray--medium--900);
+              background-color: var(--color--gray--medium--100);
+              border-top: var(--border-width--1) solid
+                var(--color--gray--medium--200);
               @media (prefers-color-scheme: dark) {
-                color: var(--color--gray--medium--200);
-                background-color: var(--color--gray--medium--900);
+                background-color: var(--color--gray--medium--800);
+                border-color: var(--color--gray--medium--700);
               }
               @media (min-width: 900px) {
                 width: var(--width--sm);
-              }
-
-              .button--sidebar {
-                color: var(--color--gray--medium--200);
-                &:hover,
-                &:focus-within {
-                  color: var(--color--gray--medium--50);
-                }
-                &:active {
-                  color: var(--color--gray--medium--100);
-                }
-                @media (prefers-color-scheme: dark) {
-                  &:hover,
-                  &:focus-within {
-                    color: var(--color--gray--medium--50);
-                  }
-                  &:active {
-                    color: var(--color--gray--medium--100);
-                  }
-                }
-              }
-
-              .input--text--sidebar {
-                color: var(--color--gray--medium--200);
-                background-color: var(--color--gray--medium--700);
-                &::placeholder {
-                  color: var(--color--gray--medium--300);
-                }
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--200);
-                  background-color: var(--color--gray--medium--700);
-                  &::placeholder {
-                    color: var(--color--gray--medium--300);
-                  }
-                }
               }
             `}"
           >
@@ -7142,7 +7108,7 @@ export default async function courselore(
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/conversations/new"
-                  class="button button--sidebar"
+                  class="button button--transparent"
                   style="${css`
                     font-weight: var(--font-weight--bold);
                     display: flex;
@@ -7202,7 +7168,7 @@ export default async function courselore(
                     value="${req.query.search ?? ""}"
                     placeholder="Search…"
                     required
-                    class="input--text input--text--sidebar"
+                    class="input--text"
                     style="${css`
                       padding-right: var(--space--12);
                     `}"
@@ -7228,7 +7194,7 @@ export default async function courselore(
                                 "true",
                               tag: req.query.tag,
                             })}"
-                            class="button button--sidebar"
+                            class="button button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Search",
@@ -7241,7 +7207,7 @@ export default async function courselore(
                         `
                       : html``}
                     <button
-                      class="button button--sidebar"
+                      class="button button--transparent"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: "Search",
@@ -7263,7 +7229,7 @@ export default async function courselore(
                       >
                         <div>
                           <button
-                            class="button button--sidebar"
+                            class="button button--transparent"
                             style="${css`
                               ${res.locals.tagFilter === undefined
                                 ? css``
@@ -7342,7 +7308,7 @@ export default async function courselore(
                                     "true",
                                   search: req.query.search,
                                 })}"
-                                class="button button--sidebar"
+                                class="button button--transparent"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Filter",
