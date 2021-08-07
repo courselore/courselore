@@ -8880,31 +8880,28 @@ ${value}</textarea
                           button.tooltip.hide();
                         `}"
                       >
-                        <!-- TODO: Only present types that are permissible for the role. -->
-                        <button
-                          type="button"
-                          class="dropdown-menu--item button button--transparent"
-                          data-value="announcement"
-                        >
-                          <i class="bi bi-megaphone"></i>
-                          Announcement
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown-menu--item button button--transparent"
-                          data-value="question"
-                        >
-                          <i class="bi bi-patch-question"></i>
-                          Question
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown-menu--item button button--transparent"
-                          data-value="other"
-                        >
-                          <i class="bi bi-chat-left-text"></i>
-                          Other
-                        </button>
+                        $${res.locals.conversationTypes.map(
+                          (conversationType) => html`
+                            <button
+                              type="button"
+                              class="dropdown-menu--item button button--transparent"
+                              data-value="${conversationType}"
+                            >
+                              $${{
+                                announcement: html`
+                                  <i class="bi bi-megaphone"></i>
+                                `,
+                                question: html`
+                                  <i class="bi bi-patch-question"></i>
+                                `,
+                                other: html`
+                                  <i class="bi bi-chat-left-text"></i>
+                                `,
+                              }[conversationType]}
+                              $${lodash.capitalize(conversationType)}
+                            </button>
+                          `
+                        )}
                       </div>
                     </div>
                   </div>
