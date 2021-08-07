@@ -210,17 +210,17 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Roadmap
 
-|     |            |                                                                                                                                 |
-| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| ✅  | 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                   |
-| ✅  | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; Generalized live updates. Tags: Mark posts as answers; Endorsements. |
-| ✅  | 2021-07-17 | Continue the work on tags. User profiles with avatars, and biographies, and so forth. Prepare deployment of HTTP/2.             |
-| ✅  | 2021-07-24 | Finish tags: Create tags; Manage tags in conversations; Filter conversations by tag. Search.                                    |
-| ✅  | 2021-07-31 | Demo class for showing people staring August. User interface improvements from early feedback.                                  |
-| ✅  | 2021-08-07 | Conversations categories. User interface improvements from early feedback.                                                      |
-|     | 2021-08-14 | User interface improvements from early feedback. Notifications: In-app; via email.                                              |
-|     | 2021-08-21 | Access management: Anonymity & private threads.                                                                                 |
-|     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                           |
+|     |            |                                                                                                                                                                                 |
+| --- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅  | 2021-07-03 | Finish text editor: Image & attachments (button, drag-and-drop, and copy-and-paste); @mentions & #references.                                                                   |
+| ✅  | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; Generalized live updates. Tags: Mark posts as answers; Endorsements.                                                 |
+| ✅  | 2021-07-17 | Continue the work on tags. User profiles with avatars, and biographies, and so forth. Prepare deployment of HTTP/2.                                                             |
+| ✅  | 2021-07-24 | Finish tags: Create tags; Manage tags in conversations; Filter conversations by tag. Search.                                                                                    |
+| ✅  | 2021-07-31 | Demo class for showing people staring August. Authentication with email & passwords instead of Magic Authentication Links. User interface improvements based on early feedback. |
+| ✅  | 2021-08-07 | Conversations categories. User interface improvements based on early feedback.                                                                                                  |
+|     | 2021-08-14 | User interface improvements based on early feedback. Notifications: In-app; via email.                                                                                          |
+|     | 2021-08-21 | Access management: Anonymity & private threads.                                                                                                                                 |
+|     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                           |
 
 <details>
 <summary><strong>Backlog</strong></summary>
