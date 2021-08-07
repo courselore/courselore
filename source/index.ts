@@ -3298,7 +3298,6 @@ export default async function courselore(
                         const form = this.closest("form");
                         const avatar = form.querySelector('[name="avatar"]')
                         avatar.value = "";
-                        avatar.dataset.forceIsModified = true;
                         form.querySelector(".avatar--empty").hidden = false;
                         form.querySelector(".avatar--filled").hidden = true;
                       `}"
@@ -3326,7 +3325,6 @@ export default async function courselore(
                         const form = this.closest("form");
                         const avatar = form.querySelector('[name="avatar"]')
                         avatar.value = avatarURL;
-                        avatar.dataset.forceIsModified = true;
                         form.querySelector(".avatar--empty").hidden = true;
                         const avatarFilled = form.querySelector(".avatar--filled");
                         avatarFilled.hidden = false;
@@ -3335,9 +3333,10 @@ export default async function courselore(
                     `}"
                   />
                   <input
-                    type="hidden"
+                    type="text"
                     name="avatar"
                     value="${res.locals.user.avatar ?? ""}"
+                    hidden
                   />
                 </div>
 
