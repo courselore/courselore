@@ -8837,108 +8837,92 @@ ${value}</textarea
                     justify-content: flex-start;
                   `}"
                 >
-                  <div class="label">
+                  <div class="type label">
                     <p class="label--text">Type</p>
-                    <div
+                    <button
+                      type="button"
                       class="button button--tight button--tight--inline button--transparent"
                       style="${css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                          width: 100%;
-                          height: 100%;
-                          position: relative;
-                        }
-                      `}"
-                    >
-                      <div
-                        style="${css`
+                        & > span {
                           display: flex;
                           gap: var(--space--2);
-                          & > span {
-                            display: flex;
-                            gap: var(--space--2);
+                        }
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
+                    >
+                      <!-- TODO: Only present types that are permissible for the role. -->
+                      <input
+                        type="radio"
+                        name="type"
+                        value="announcement"
+                        required
+                        checked
+                        autocomplete="off"
+                        hidden
+                        style="${css`
+                          &:not(:checked) + * {
+                            display: none;
                           }
                         `}"
-                      >
-                        <!-- TODO: Only present types that are permissible for the role. -->
-                        <input
-                          type="radio"
-                          name="type"
-                          value="announcement"
-                          required
-                          checked
-                          autocomplete="off"
-                          hidden
-                          style="${css`
-                            &:not(:checked) + * {
-                              display: none;
-                            }
+                      />
+                      <span>
+                        <i class="bi bi-megaphone"></i>
+                        Announcement
+                      </span>
+                      <input
+                        type="radio"
+                        name="type"
+                        value="question"
+                        required
+                        autocomplete="off"
+                        hidden
+                        style="${css`
+                          &:not(:checked) + * {
+                            display: none;
+                          }
+                        `}"
+                      />
+                      <span>
+                        <i class="bi bi-patch-question"></i>
+                        Question
+                      </span>
+                      <input
+                        type="radio"
+                        name="type"
+                        value="other"
+                        required
+                        autocomplete="off"
+                        hidden
+                        style="${css`
+                          &:not(:checked) + * {
+                            display: none;
+                          }
+                        `}"
+                      />
+                      <span>
+                        <i class="bi bi-chat-left-text"></i>
+                        Other
+                      </span>
+                      <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div hidden>
+                      <div class="dropdown-menu">
+                        <button
+                          type="button"
+                          class="dropdown-menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".type").querySelector('[value="question"]').click();
                           `}"
-                        />
-                        <span>
-                          <i class="bi bi-megaphone"></i>
-                          Announcement
-                        </span>
-                        <input
-                          type="radio"
-                          name="type"
-                          value="question"
-                          required
-                          autocomplete="off"
-                          hidden
-                          style="${css`
-                            &:not(:checked) + * {
-                              display: none;
-                            }
-                          `}"
-                        />
-                        <span>
+                        >
                           <i class="bi bi-patch-question"></i>
                           Question
-                        </span>
-                        <input
-                          type="radio"
-                          name="type"
-                          value="other"
-                          required
-                          autocomplete="off"
-                          hidden
-                          style="${css`
-                            &:not(:checked) + * {
-                              display: none;
-                            }
-                          `}"
-                        />
-                        <span>
-                          <i class="bi bi-chat-left-text"></i>
-                          Other
-                        </span>
-                        <i class="bi bi-chevron-down"></i>
-                      </div>
-                      <button
-                        type="button"
-                        data-ondomcontentloaded="${javascript`
-                          const element = this.nextElementSibling.firstElementChild;
-                          element.options = this.previousElementSibling;
-                          tippy(this, {
-                            content: element,
-                            trigger: "click",
-                            interactive: true,
-                            appendTo: document.body,
-                          });
-                        `}"
-                      ></button>
-                      <div hidden>
-                        <div class="type dropdown-menu">
-                          <button
-                            onclick="${javascript`
-                              this.closest(".type").options.querySelector('[value="question"]').click();
-                          `}"
-                          >
-                            Hello
-                          </button>
-                        </div>
+                        </button>
                       </div>
                     </div>
                   </div>
