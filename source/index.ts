@@ -8945,7 +8945,7 @@ ${value}</textarea
                           class="button button--tight button--tight--inline button--transparent"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
-                              content: "Tags help to organize conversations. At least one tag is required.",
+                              content: "Tags help to organize conversations. You must select at least one tag.",
                               trigger: "click",
                             });
                           `}"
@@ -8970,7 +8970,7 @@ ${value}</textarea
                             });
                             (this.validators ??= []).push(() => {
                               if (this.closest(".tags").querySelector(".tags--list :checked") === null)
-                                return "Select at least one tag.";
+                                return "Please select at least one tag.";
                             });
                           `}"
                         >
