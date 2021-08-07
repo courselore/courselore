@@ -6485,7 +6485,9 @@ export default async function courselore(
                                 });
                               `}"
                               onclick="${javascript`
-                                this.closest(".tag").remove();
+                                const tag = this.closest(".tag");
+                                tag.replaceChildren();
+                                tag.hidden = true;
                               `}"
                             >
                               <i class="bi bi-trash"></i>
