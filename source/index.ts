@@ -8851,8 +8851,12 @@ ${value}</textarea
                         });
                       `}"
                     >
-                      <!-- TODO: Only present types that are permissible for the role. -->
-                      <input type="text" name="type" value="announcement" hidden />
+                      <input
+                        type="text"
+                        name="type"
+                        value="announcement"
+                        hidden
+                      />
                       <span
                         class="label--content"
                         style="${css`
@@ -8865,6 +8869,7 @@ ${value}</textarea
                     </button>
                     <div hidden>
                       <div class="type dropdown-menu">
+                        <!-- TODO: Only present types that are permissible for the role. -->
                         <button
                           type="button"
                           class="dropdown-menu--item button button--transparent"
