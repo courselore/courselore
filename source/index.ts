@@ -1651,12 +1651,12 @@ export default async function courselore(
                       <button
                         class="button button--transparent"
                         data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
-                          trigger: "click",
-                          interactive: true,
-                        });
-                      `}"
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            trigger: "click",
+                            interactive: true,
+                          });
+                        `}"
                       >
                         <i class="bi bi-easel"></i>
                         Demonstration Mode
@@ -8937,7 +8937,97 @@ ${value}</textarea
               $${res.locals.tags.length === 0
                 ? html``
                 : html`
+                    <div class="tags label">
+                      <div class="label--text">
+                        Tags
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Tags help to organize conversations. At least one tag is required.",
+                              trigger: "click",
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                      </div>
+                      <div
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--6);
+                        `}"
+                      >
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: this.nextElementSibling.firstElementChild,
+                              trigger: "click",
+                              interactive: true,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-tags"></i>
+                        </button>
+                        <div hidden>
+                          <div
+                            class="dropdown-menu"
+                            onchange="${javascript`
+                              for (const tag of this.querySelectorAll(".tag"))
+                                if (tag.querySelector(":checked") === null) {
+                                  tag.classList.add("button--transparent");
+                                  tag.classList.remove("button--blue");
+                                }
+                                else {
+                                  tag.classList.remove("button--transparent");
+                                  tag.classList.add("button--blue");
+                                }
+                              const tags = [];
+                              for (const element of this.querySelectorAll(":checked"))
+                                tags.push(element.cloneNode(true), element.nextElementSibling.cloneNode(true));
+                              this.closest(".tags").querySelector(".tags--list").replaceChildren(...tags);
+                            `}"
+                          >
+                            $${res.locals.tags.map(
+                              (tag) => html`
+                                <label
+                                  class="tag dropdown-menu--item button button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="tags[]"
+                                    value="${tag.reference}"
+                                    class="visually-hidden"
+                                  />
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <i class="bi bi-tag"></i> ${tag.name}
+                                  </div>
+                                </label>
+                              `
+                            )}
+                          </div>
+                        </div>
+                        <div
+                          class="tags--list"
+                          style="${css`
+                            display: flex;
+                            flex-wrap: wrap;
+                            column-gap: var(--space--6);
+                            row-gap: var(--space--2);
+                          `}"
+                        ></div>
+                      </div>
+                    </div>
                     <div
+                      hidden
                       class="tags"
                       style="${css`
                         display: flex;
