@@ -8773,65 +8773,80 @@ ${value}</textarea
                     justify-content: flex-start;
                   `}"
                 >
-                  <div class="type label">
+                  <div class="label">
                     <p class="label--text">Type</p>
-                    <input
-                      type="text"
-                      name="type"
-                      value="announcement"
-                      hidden
-                    />
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
+                    <div
+                      class="custom-select"
                       data-ondomcontentloaded="${javascript`
-                        const element = this.nextElementSibling.firstElementChild;
-                        this.querySelector("span").innerHTML = element.querySelector("button").innerHTML;
-                        this.tooltip = tippy(this, {
-                          content: element,
+                        const input = this.querySelector(".custom-select--input");
+                        const button = this.querySelector(".custom-select--button");
+                        const content = this.querySelector(".custom-select--content");
+                        const options = this.querySelector(".custom-select--options");
+                        const getCheckedOption = () => this.querySelector(".custom-select--options :checked");
+                        const updateLabel = () => {
+                          const checkedOption = getCheckedOption();
+                          input.innerHTML = checkedOption.value;
+                          content.innerHTML = checkedOption.nextElementSibling.innerHTML;
+                        };
+                        updateLabel();
+                        input.defaultValue = input.value;
+                        options.addEventListener("change", updateLabel);
+                        tippy(this.querySelector(".custom-select--button"), {
+                          content: this.querySelector(".custom-select--options"),
                           trigger: "click",
                           interactive: true,
                         });
                       `}"
                     >
-                      <span
-                        style="${css`
-                          display: flex;
-                          gap: var(--space--2);
-                        `}"
+                      <input
+                        type="text"
+                        name="type"
+                        hidden
+                        class="custom-select--input"
+                      />
+                      <button
+                        type="button"
+                        class="custom-select--button button button--tight button--tight--inline button--transparent"
                       >
-                      </span>
-                      <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div hidden>
-                      <div
-                        class="dropdown-menu"
-                        onclick="${javascript`
-                          const target = event.target;
-                          const value = target.dataset.value;
-                          if (value === undefined) return;
-                          const type = this.closest(".type");
-                          type.querySelector("input").value = value;
-                          type.querySelector("span").innerHTML = target.innerHTML;
-                          const button = type.querySelector("button");
-                          button.focus();
-                          button.tooltip.hide();
-                        `}"
-                      >
-                        $${res.locals.conversationTypes.map(
-                          (conversationType) => html`
-                            <button
-                              type="button"
-                              class="dropdown-menu--item button button--transparent"
-                              data-value="${conversationType}"
-                            >
-                              $${app.locals.partials.conversationTypeIcon(
-                                conversationType
-                              )}
-                              $${lodash.capitalize(conversationType)}
-                            </button>
-                          `
-                        )}
+                        <span
+                          class="custom-select--content"
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                        </span>
+                        <i class="bi bi-chevron-down"></i>
+                      </button>
+                      <div hidden>
+                        <div class="custom-select--options dropdown-menu">
+                          $${res.locals.conversationTypes.map(
+                            (conversationType, index) => html`
+                              <label
+                                class="dropdown-menu--item button button--transparent"
+                              >
+                                <input
+                                  type="radio"
+                                  name="custom-select--radio--type"
+                                  value="${conversationType}"
+                                  class="visually-hidden"
+                                  $${index === 0 ? html`checked` : html``}
+                                />
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  $${app.locals.partials.conversationTypeIcon(
+                                    conversationType
+                                  )}
+                                  $${lodash.capitalize(conversationType)}
+                                </div>
+                              </label>
+                            `
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
