@@ -8839,10 +8839,16 @@ ${value}</textarea
                 >
                   <div class="label">
                     <p class="label--text">Type</p>
-                    <div
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <div>
+                    <div>
+                      <div
+                        class="button button--tight button--tight--inline button--transparent"
+                        style="${css`
+                          & > span {
+                            display: flex;
+                            gap: var(--space--2);
+                          }
+                        `}"
+                      >
                         <input
                           type="radio"
                           name="type"
@@ -8851,14 +8857,13 @@ ${value}</textarea
                           checked
                           autocomplete="off"
                           hidden
-                        />
-                        <span
                           style="${css`
-                            :not(:checked) + & {
+                            &:not(:checked) + * {
                               display: none;
                             }
                           `}"
-                        >
+                        />
+                        <span>
                           <i class="bi bi-megaphone"></i>
                           Announcement
                         </span>
@@ -8869,14 +8874,13 @@ ${value}</textarea
                           required
                           autocomplete="off"
                           hidden
-                        />
-                        <span
                           style="${css`
-                            :not(:checked) + & {
+                            &:not(:checked) + * {
                               display: none;
                             }
                           `}"
-                        >
+                        />
+                        <span>
                           <i class="bi bi-patch-question"></i>
                           Question
                         </span>
@@ -8887,30 +8891,18 @@ ${value}</textarea
                           required
                           autocomplete="off"
                           hidden
-                        />
-                        <span
                           style="${css`
-                            :not(:checked) + & {
+                            &:not(:checked) + * {
                               display: none;
                             }
                           `}"
-                        >
+                        />
+                        <span>
                           <i class="bi bi-chat-left-text"></i>
                           Other
                         </span>
                         <i class="bi bi-chevron-down"></i>
                       </div>
-                      <button
-                        data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: this.nextElementSibling.firstElementChild,
-                        theme: "rose",
-                        trigger: "click",
-                        interactive: true,
-                      });
-                    `}"
-                      ></button>
-                      <div hidden><div class="dropdown-menu">HELLO</div></div>
                     </div>
                   </div>
                 </div>
