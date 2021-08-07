@@ -8917,7 +8917,9 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".type").querySelector('[value="announcement"]').click();
+                            const type = this.closest(".type");
+                            type.querySelector('[value="announcement"]').click();
+                            type.querySelector("button").focus();
                           `}"
                         >
                           <i class="bi bi-megaphone"></i>
@@ -8927,7 +8929,9 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".type").querySelector('[value="question"]').click();
+                            const type = this.closest(".type");
+                            type.querySelector('[value="question"]').click();
+                            type.querySelector("button").focus();
                           `}"
                         >
                           <i class="bi bi-patch-question"></i>
@@ -8937,7 +8941,9 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".type").querySelector('[value="other"]').click();
+                            const type = this.closest(".type");
+                            type.querySelector('[value="other"]').click();
+                            type.querySelector("button").focus();
                           `}"
                         >
                           <i class="bi bi-chat-left-text"></i>
