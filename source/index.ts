@@ -7014,7 +7014,7 @@ export default async function courselore(
                 style="${css`
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
-                  padding: var(--space--1) var(--space--4);
+                  padding: var(--space--0) var(--space--4);
                   border-top: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
@@ -7028,10 +7028,7 @@ export default async function courselore(
                 `}"
               >
                 <button
-                  style="${css`
-                    display: flex;
-                    gap: var(--space--2);
-                  `}"
+                  class="button button--transparent"
                   onclick="${javascript`
                     document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
                     document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
