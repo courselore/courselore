@@ -9101,8 +9101,6 @@ ${value}</textarea
         !Array.isArray(req.body.tagsReferences) ||
         (res.locals.tags.length > 0 &&
           (req.body.tagsReferences.length === 0 ||
-            new Set(req.body.tagsReferences).size <
-              req.body.tagsReferences.length ||
             req.body.tagsReferences.some(
               (tagReference) =>
                 typeof tagReference !== "string" ||
@@ -9149,7 +9147,7 @@ ${value}</textarea
           )
         `
       );
-      for (const tagReference of req.body.tagsReferences)
+      for (const tagReference of new Set(req.body.tagsReferences))
         app.locals.database.run(
           sql`
             INSERT INTO "taggings" ("conversation", "tag")
