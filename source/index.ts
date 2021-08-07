@@ -7691,6 +7691,12 @@ export default async function courselore(
       <div
         style="${css`
           display: flex;
+          gap: var(--space--1);
+
+          .button {
+            padding-bottom: var(--space--4);
+            margin-bottom: var(--space---3);
+          }
 
           :checked + .button--transparent {
             background-color: var(--color--gray--medium--100);
@@ -7805,6 +7811,7 @@ export default async function courselore(
             background-color: var(--color--gray--medium--800);
           }
           border-radius: var(--border-radius--lg);
+          position: relative;
         `}"
       >
         <div class="text-editor--write">
