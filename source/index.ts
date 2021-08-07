@@ -7712,9 +7712,21 @@ export default async function courselore(
                 const loading = this.closest(".text-editor").querySelector(".text-editor--loading");
                 const preview = this.closest(".text-editor").querySelector(".text-editor--preview");
                 const textarea = write.querySelector("textarea");
-                textarea.required = true;
+                ${
+                  required
+                    ? javascript``
+                    : javascript`
+                        textarea.setAttribute("required", "");
+                      `
+                }
                 const isWriteValid = isValid(write);
-                textarea.required = ${JSON.stringify(required)};
+                ${
+                  required
+                    ? javascript``
+                    : javascript`
+                        textarea.removeAttribute("required");
+                      `
+                }
                 if (!isWriteValid) {
                   event.preventDefault();
                   return;
