@@ -1932,15 +1932,15 @@ export default async function courselore(
             $${app.locals.partials.logo}
           </a>
 
-          $${res.locals.course === undefined
-            ? html``
-            : html`
-                <div
-                  style="${css`
-                    flex: 1;
-                    min-width: var(--width--0);
-                  `}"
-                >
+          <div
+            style="${css`
+              flex: 1;
+              min-width: var(--width--0);
+            `}"
+          >
+            $${res.locals.course === undefined
+              ? html``
+              : html`
                   <button
                     class="button button--tight button--tight--inline button--transparent strong"
                     style="${css`
@@ -2056,8 +2056,8 @@ export default async function courselore(
                         : html``}
                     </div>
                   </div>
-                </div>
-              `}
+                `}
+          </div>
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
@@ -2066,9 +2066,7 @@ export default async function courselore(
                   content: ${JSON.stringify(
                     res.locals.invitations!.length === 0
                       ? "Add"
-                      : `${
-                          res.locals.invitations!.length
-                        } pending invitation${
+                      : `${res.locals.invitations!.length} pending invitation${
                           res.locals.invitations!.length === 1 ? "" : "s"
                         }`
                   )},
