@@ -8850,7 +8850,7 @@ ${value}</textarea
                       data-ondomcontentloaded="${javascript`
                         const element = this.nextElementSibling.firstElementChild;
                         this.querySelector("span").innerHTML = element.querySelector("button").innerHTML;
-                        tippy(this, {
+                        this.tooltip = tippy(this, {
                           content: element,
                           trigger: "click",
                           interactive: true,
@@ -8876,7 +8876,9 @@ ${value}</textarea
                             const type = this.closest(".type");
                             type.querySelector("input").value = "announcement";
                             type.querySelector("span").innerHTML = this.innerHTML;
-                            type.querySelector("button").focus();
+                            const button = type.querySelector("button");
+                            button.focus();
+                            button.tooltip.hide();
                           `}"
                         >
                           <i class="bi bi-megaphone"></i>
@@ -8889,7 +8891,9 @@ ${value}</textarea
                             const type = this.closest(".type");
                             type.querySelector("input").value = "question";
                             type.querySelector("span").innerHTML = this.innerHTML;
-                            type.querySelector("button").focus();
+                            const button = type.querySelector("button");
+                            button.focus();
+                            button.tooltip.hide();
                           `}"
                         >
                           <i class="bi bi-patch-question"></i>
@@ -8902,7 +8906,9 @@ ${value}</textarea
                             const type = this.closest(".type");
                             type.querySelector("input").value = "other";
                             type.querySelector("span").innerHTML = this.innerHTML;
-                            type.querySelector("button").focus();
+                            const button = type.querySelector("button");
+                            button.focus();
+                            button.tooltip.hide();
                           `}"
                         >
                           <i class="bi bi-chat-left-text"></i>
