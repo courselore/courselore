@@ -6380,14 +6380,8 @@ export default async function courselore(
                         style="${css`
                           flex: 1;
                           display: flex;
-                          @media (max-width: 499px) {
-                            gap: var(--space--2);
-                            flex-direction: column;
-                          }
-                          @media (min-width: 500px) {
-                            gap: var(--space--4);
-                            align-items: baseline;
-                          }
+                          flex-direction: column;
+                          gap: var(--space--2);
                         `}"
                       >
                         <input
@@ -6406,35 +6400,49 @@ export default async function courselore(
                         <div
                           style="${css`
                             display: flex;
-                            justify-content: space-between;
-                            gap: var(--space--4);
+                            flex-wrap: wrap;
+                            gap: var(--space--2);
                           `}"
                         >
-                          <div class="select">
-                            <select
-                              required
-                              autocomplete="off"
-                              disabled
-                              class="select--tag button button--tight button--tight--inline button--transparent"
-                              data-onmount="${javascript`
-                                this.dataset.forceIsModified = true;
-                                this.disabled = false;
-                                const tag = this.closest(".tag");
-                                this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
-                              `}"
-                            >
-                              <option value="everyone">
-                                Visible by Everyone
-                              </option>
-                              <option value="staff">
-                                Visible by Staff Only
-                              </option>
-                            </select>
-                            <div class="select--chevron">
-                              <i class="bi bi-chevron-down"></i>
+                          <div
+                            style="${css`
+                              width: var(--space--44);
+                              display: flex;
+                              justify-content: flex-start;
+                            `}"
+                          >
+                            <div class="select">
+                              <select
+                                required
+                                autocomplete="off"
+                                disabled
+                                class="select--tag button button--tight button--tight--inline button--transparent"
+                                data-onmount="${javascript`
+                                  this.dataset.forceIsModified = true;
+                                  this.disabled = false;
+                                  const tag = this.closest(".tag");
+                                  this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
+                                `}"
+                              >
+                                <option value="everyone">
+                                  Visible by Everyone
+                                </option>
+                                <option value="staff">
+                                  Visible by Staff Only
+                                </option>
+                              </select>
+                              <div class="select--chevron">
+                                <i class="bi bi-chevron-down"></i>
+                              </div>
                             </div>
                           </div>
-                          <div>
+                          <div
+                            style="${css`
+                              width: var(--space--8);
+                              display: flex;
+                              justify-content: flex-start;
+                            `}"
+                          >
                             <button
                               type="button"
                               class="button button--tight button--tight--inline button--transparent text--rose"
