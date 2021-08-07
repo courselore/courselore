@@ -8867,19 +8867,24 @@ ${value}</textarea
                       <i class="bi bi-chevron-down"></i>
                     </button>
                     <div hidden>
-                      <div class="dropdown-menu">
+                      <div
+                        class="dropdown-menu"
+                        onclick="${javascript`
+                          const value = event.target.dataset.value;
+                          if (value === undefined) return;
+                          const type = this.closest(".type");
+                          type.querySelector("input").value = value;
+                          type.querySelector("span").innerHTML = event.target.innerHTML;
+                          const button = type.querySelector("button");
+                          button.focus();
+                          button.tooltip.hide();
+                        `}"
+                      >
                         <!-- TODO: Only present types that are permissible for the role. -->
                         <button
                           type="button"
                           class="dropdown-menu--item button button--transparent"
-                          onclick="${javascript`
-                            const type = this.closest(".type");
-                            type.querySelector("input").value = "announcement";
-                            type.querySelector("span").innerHTML = this.innerHTML;
-                            const button = type.querySelector("button");
-                            button.focus();
-                            button.tooltip.hide();
-                          `}"
+                          data-value="announcement"
                         >
                           <i class="bi bi-megaphone"></i>
                           Announcement
@@ -8887,14 +8892,7 @@ ${value}</textarea
                         <button
                           type="button"
                           class="dropdown-menu--item button button--transparent"
-                          onclick="${javascript`
-                            const type = this.closest(".type");
-                            type.querySelector("input").value = "question";
-                            type.querySelector("span").innerHTML = this.innerHTML;
-                            const button = type.querySelector("button");
-                            button.focus();
-                            button.tooltip.hide();
-                          `}"
+                          data-value="question"
                         >
                           <i class="bi bi-patch-question"></i>
                           Question
@@ -8902,14 +8900,7 @@ ${value}</textarea
                         <button
                           type="button"
                           class="dropdown-menu--item button button--transparent"
-                          onclick="${javascript`
-                            const type = this.closest(".type");
-                            type.querySelector("input").value = "other";
-                            type.querySelector("span").innerHTML = this.innerHTML;
-                            const button = type.querySelector("button");
-                            button.focus();
-                            button.tooltip.hide();
-                          `}"
+                          data-value="other"
                         >
                           <i class="bi bi-chat-left-text"></i>
                           Other
