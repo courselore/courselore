@@ -7692,27 +7692,18 @@ export default async function courselore(
         style="${css`
           display: flex;
 
-          & > label {
-            display: grid;
-            cursor: pointer;
-
-            & > * {
-              grid-area: 1 / 1;
+          :checked + .button--transparent {
+            background-color: var(--color--gray--medium--100);
             }
-
-            & > span {
-              padding: var(--space--1) var(--space--3) var(--space--3);
-              border-bottom-left-radius: var(--border-radius--0);
-              border-bottom-right-radius: var(--border-radius--0);
-              display: flex;
-              gap: var(--space--2);
+          :focus-within + .button--transparent {
+            background-color: var(--color--gray--medium--200);
             }
-
-            & > :checked + span {
-              background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
+            :checked + .button--transparent {
                 background-color: var(--color--gray--medium--800);
               }
+            :focus-within + .button--transparent {
+              background-color: var(--color--gray--medium--700);
             }
           }
         `}"
@@ -7723,7 +7714,7 @@ export default async function courselore(
             name="text-editor--mode"
             autocomplete="off"
             checked
-            class="text-editor--button--write"
+            class="text-editor--button--write visually-hidden"
             onclick="${javascript`
               this.closest(".text-editor").querySelector(".text-editor--write").hidden = false;
               this.closest(".text-editor").querySelector(".text-editor--loading").hidden = true;
@@ -7740,7 +7731,7 @@ export default async function courselore(
             type="radio"
             name="text-editor--mode"
             autocomplete="off"
-            class="text-editor--button--preview"
+            class="text-editor--button--preview visually-hidden"
             onclick="${javascript`
               (async () => {
                 const write = this.closest(".text-editor").querySelector(".text-editor--write");
@@ -7814,8 +7805,6 @@ export default async function courselore(
             background-color: var(--color--gray--medium--800);
           }
           border-radius: var(--border-radius--lg);
-          position: relative;
-          margin-top: var(--space---2);
         `}"
       >
         <div class="text-editor--write">
