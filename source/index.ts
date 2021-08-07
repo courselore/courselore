@@ -8785,14 +8785,14 @@ ${value}</textarea
                       type="button"
                       class="button button--tight button--tight--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
-                    const element = this.nextElementSibling.firstElementChild;
-                    this.querySelector("span").innerHTML = element.querySelector("button").innerHTML;
-                    this.tooltip = tippy(this, {
-                      content: element,
-                      trigger: "click",
-                      interactive: true,
-                    });
-                  `}"
+                        const element = this.nextElementSibling.firstElementChild;
+                        this.querySelector("span").innerHTML = element.querySelector("button").innerHTML;
+                        this.tooltip = tippy(this, {
+                          content: element,
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
                     >
                       <span
                         style="${css`
@@ -8807,16 +8807,16 @@ ${value}</textarea
                       <div
                         class="dropdown-menu"
                         onclick="${javascript`
-                      const target = event.target;
-                      const value = target.dataset.value;
-                      if (value === undefined) return;
-                      const type = this.closest(".type");
-                      type.querySelector("input").value = value;
-                      type.querySelector("span").innerHTML = target.innerHTML;
-                      const button = type.querySelector("button");
-                      button.focus();
-                      button.tooltip.hide();
-                    `}"
+                          const target = event.target;
+                          const value = target.dataset.value;
+                          if (value === undefined) return;
+                          const type = this.closest(".type");
+                          type.querySelector("input").value = value;
+                          type.querySelector("span").innerHTML = target.innerHTML;
+                          const button = type.querySelector("button");
+                          button.focus();
+                          button.tooltip.hide();
+                        `}"
                       >
                         $${res.locals.conversationTypes.map(
                           (conversationType) => html`
