@@ -8837,20 +8837,16 @@ ${value}</textarea
                     justify-content: flex-start;
                   `}"
                 >
-                  <div class="type label">
+                  <div class="label">
                     <p class="label--text">Type</p>
                     <button
                       type="button"
                       class="button button--tight button--tight--inline button--transparent"
-                      style="${css`
-                        & > span {
-                          display: flex;
-                          gap: var(--space--2);
-                        }
-                      `}"
                       data-ondomcontentloaded="${javascript`
+                        const element = this.nextElementSibling.firstElementChild;
+                        element.button = this;
                         tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
+                          content: element,
                           trigger: "click",
                           interactive: true,
                         });
@@ -8858,68 +8854,35 @@ ${value}</textarea
                     >
                       <!-- TODO: Only present types that are permissible for the role. -->
                       <input
-                        type="radio"
+                        type="text"
                         name="type"
-                        value="announcement"
-                        required
-                        checked
-                        autocomplete="off"
-                        hidden
-                        style="${css`
-                          &:not(:checked) + * {
-                            display: none;
-                          }
-                        `}"
-                      />
-                      <span>
-                        <i class="bi bi-megaphone"></i>
-                        Announcement
-                      </span>
-                      <input
-                        type="radio"
-                        name="type"
-                        value="question"
                         required
                         autocomplete="off"
                         hidden
-                        style="${css`
-                          &:not(:checked) + * {
-                            display: none;
-                          }
-                        `}"
                       />
-                      <span>
-                        <i class="bi bi-patch-question"></i>
-                        Question
-                      </span>
-                      <input
-                        type="radio"
-                        name="type"
-                        value="other"
-                        required
-                        autocomplete="off"
-                        hidden
+                      <span
+                        class="label--content"
                         style="${css`
-                          &:not(:checked) + * {
-                            display: none;
-                          }
+                          display: flex;
+                          gap: var(--space--2);
                         `}"
-                      />
-                      <span>
-                        <i class="bi bi-chat-left-text"></i>
-                        Other
+                      >
                       </span>
                       <i class="bi bi-chevron-down"></i>
                     </button>
                     <div hidden>
-                      <div class="dropdown-menu">
+                      <div class="type dropdown-menu">
                         <button
                           type="button"
                           class="dropdown-menu--item button button--transparent"
+                          data-ondomcontentloaded="${javascript`
+                            this.click();
+                          `}"
                           onclick="${javascript`
-                            const type = this.closest(".type");
-                            type.querySelector('[value="announcement"]').click();
-                            type.querySelector("button").focus();
+                            const button = this.closest(".type").button;
+                            button.querySelector('[name="type"]').value = "announcement";
+                            button.querySelector(".label--content").innerHTML = this.innerHTML;
+                            button.focus();
                           `}"
                         >
                           <i class="bi bi-megaphone"></i>
@@ -8929,9 +8892,10 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
-                            const type = this.closest(".type");
-                            type.querySelector('[value="question"]').click();
-                            type.querySelector("button").focus();
+                            const button = this.closest(".type").button;
+                            button.querySelector('[name="type"]').value = "question";
+                            button.querySelector(".label--content").innerHTML = this.innerHTML;
+                            button.focus();
                           `}"
                         >
                           <i class="bi bi-patch-question"></i>
@@ -8941,9 +8905,10 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
-                            const type = this.closest(".type");
-                            type.querySelector('[value="other"]').click();
-                            type.querySelector("button").focus();
+                            const button = this.closest(".type").button;
+                            button.querySelector('[name="type"]').value = "other";
+                            button.querySelector(".label--content").innerHTML = this.innerHTML;
+                            button.focus();
                           `}"
                         >
                           <i class="bi bi-chat-left-text"></i>
