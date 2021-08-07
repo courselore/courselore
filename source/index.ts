@@ -8789,6 +8789,10 @@ ${value}</textarea
                               autocomplete="off"
                               class="visually-hidden"
                               style="${css`
+                                & ~ * {
+                                  display: flex;
+                                  gap: var(--space--2);
+                                }
                                 &:not(:checked) + * + *,
                                 &:checked + * {
                                   display: none;
