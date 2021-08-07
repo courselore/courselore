@@ -2339,6 +2339,16 @@ export default async function courselore(
     `;
   })();
 
+  interface Partials {
+    conversationTypeIcon: (conversationType: ConversationType) => HTML;
+  }
+  app.locals.partials.conversationTypeIcon = (conversationType) =>
+    ({
+      announcement: html`<i class="bi bi-megaphone"></i>`,
+      question: html`<i class="bi bi-patch-question"></i>`,
+      other: html`<i class="bi bi-chat-left-text"></i>`,
+    }[conversationType]);
+
   app.use(express.static(path.join(__dirname, "../static")));
   app.use(methodOverride("_method"));
   interface Settings {
@@ -8887,17 +8897,9 @@ ${value}</textarea
                               class="dropdown-menu--item button button--transparent"
                               data-value="${conversationType}"
                             >
-                              $${{
-                                announcement: html`
-                                  <i class="bi bi-megaphone"></i>
-                                `,
-                                question: html`
-                                  <i class="bi bi-patch-question"></i>
-                                `,
-                                other: html`
-                                  <i class="bi bi-chat-left-text"></i>
-                                `,
-                              }[conversationType]}
+                              $${app.locals.partials.conversationTypeIcon(
+                                conversationType
+                              )}
                               $${lodash.capitalize(conversationType)}
                             </button>
                           `
