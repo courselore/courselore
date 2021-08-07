@@ -7812,7 +7812,7 @@ export default async function courselore(
           <div
             style="${css`
               padding: var(--space--1) var(--space--0);
-              margin: var(--space--0) var(--space--2);
+              margin: var(--space--0) var(--space--3);
               overflow-x: auto;
               display: flex;
               gap: var(--space--1-5);
