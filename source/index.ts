@@ -8838,13 +8838,20 @@ ${value}</textarea
                 >
                   <div class="type label">
                     <p class="label--text">Type</p>
-                    <input type="text" name="type" hidden />
+                    <input
+                      type="text"
+                      name="type"
+                      value="announcement"
+                      hidden
+                    />
                     <button
                       type="button"
                       class="button button--tight button--tight--inline button--transparent"
                       data-ondomcontentloaded="${javascript`
+                        const element = this.nextElementSibling.firstElementChild;
+                        this.querySelector("span").innerHTML = element.querySelector("button").innerHTML;
                         tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
+                          content: element,
                           trigger: "click",
                           interactive: true,
                         });
