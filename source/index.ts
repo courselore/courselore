@@ -4370,7 +4370,13 @@ export default async function courselore(
         >
           $${res.locals.enrollment.role === "staff"
             ? html`
-                <div>
+                <div
+                  style="${css`
+                    @media (max-width: 699px) {
+                      display: none;
+                    }
+                  `}"
+                >
                   <div
                     style="${css`
                       background-color: var(--color--gray--medium--100);
@@ -4382,9 +4388,6 @@ export default async function courselore(
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
-                      @media (max-width: 699px) {
-                        display: none;
-                      }
                       .dropdown-menu--item {
                         justify-content: flex-start;
                       }
@@ -4832,6 +4835,7 @@ export default async function courselore(
                           style="${css`
                             display: flex;
                             gap: var(--space--2);
+                            align-items: baseline;
                           `}"
                         >
                           $${invitation.email === null
