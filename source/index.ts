@@ -8766,6 +8766,77 @@ ${value}</textarea
                   row-gap: var(--space--4);
                 `}"
               >
+                <div
+                  style="${css`
+                    width: var(--space--44);
+                    display: flex;
+                    justify-content: flex-start;
+                  `}"
+                >
+                  <div class="type label">
+                    <p class="label--text">Type</p>
+                    <input
+                      type="text"
+                      name="type"
+                      value="announcement"
+                      hidden
+                    />
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--transparent"
+                      data-ondomcontentloaded="${javascript`
+                    const element = this.nextElementSibling.firstElementChild;
+                    this.querySelector("span").innerHTML = element.querySelector("button").innerHTML;
+                    this.tooltip = tippy(this, {
+                      content: element,
+                      trigger: "click",
+                      interactive: true,
+                    });
+                  `}"
+                    >
+                      <span
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                      </span>
+                      <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div hidden>
+                      <div
+                        class="dropdown-menu"
+                        onclick="${javascript`
+                      const target = event.target;
+                      const value = target.dataset.value;
+                      if (value === undefined) return;
+                      const type = this.closest(".type");
+                      type.querySelector("input").value = value;
+                      type.querySelector("span").innerHTML = target.innerHTML;
+                      const button = type.querySelector("button");
+                      button.focus();
+                      button.tooltip.hide();
+                    `}"
+                      >
+                        $${res.locals.conversationTypes.map(
+                          (conversationType) => html`
+                            <button
+                              type="button"
+                              class="dropdown-menu--item button button--transparent"
+                              data-value="${conversationType}"
+                            >
+                              $${app.locals.partials.conversationTypeIcon(
+                                conversationType
+                              )}
+                              $${lodash.capitalize(conversationType)}
+                            </button>
+                          `
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 $${res.locals.enrollment.role === "staff"
                   ? html`
                       <div
@@ -8838,77 +8909,6 @@ ${value}</textarea
                       </div>
                     `
                   : html``}
-
-                <div
-                  style="${css`
-                    width: var(--space--28);
-                    display: flex;
-                    justify-content: flex-start;
-                  `}"
-                >
-                  <div class="type label">
-                    <p class="label--text">Type</p>
-                    <input
-                      type="text"
-                      name="type"
-                      value="announcement"
-                      hidden
-                    />
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      data-ondomcontentloaded="${javascript`
-                        const element = this.nextElementSibling.firstElementChild;
-                        this.querySelector("span").innerHTML = element.querySelector("button").innerHTML;
-                        this.tooltip = tippy(this, {
-                          content: element,
-                          trigger: "click",
-                          interactive: true,
-                        });
-                      `}"
-                    >
-                      <span
-                        style="${css`
-                          display: flex;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                      </span>
-                      <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div hidden>
-                      <div
-                        class="dropdown-menu"
-                        onclick="${javascript`
-                          const target = event.target;
-                          const value = target.dataset.value;
-                          if (value === undefined) return;
-                          const type = this.closest(".type");
-                          type.querySelector("input").value = value;
-                          type.querySelector("span").innerHTML = target.innerHTML;
-                          const button = type.querySelector("button");
-                          button.focus();
-                          button.tooltip.hide();
-                        `}"
-                      >
-                        $${res.locals.conversationTypes.map(
-                          (conversationType) => html`
-                            <button
-                              type="button"
-                              class="dropdown-menu--item button button--transparent"
-                              data-value="${conversationType}"
-                            >
-                              $${app.locals.partials.conversationTypeIcon(
-                                conversationType
-                              )}
-                              $${lodash.capitalize(conversationType)}
-                            </button>
-                          `
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               $${res.locals.tags.length === 0
