@@ -8839,16 +8839,29 @@ ${value}</textarea
                 >
                   <div class="label">
                     <p class="label--text">Type</p>
-                    <div>
+                    <div
+                      class="button button--tight button--tight--inline button--transparent"
+                      style="${css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                          width: 100%;
+                          height: 100%;
+                          position: relative;
+                        }
+                      `}"
+                    >
                       <div
-                        class="button button--tight button--tight--inline button--transparent"
                         style="${css`
+                          display: flex;
+                          gap: var(--space--2);
                           & > span {
                             display: flex;
                             gap: var(--space--2);
                           }
                         `}"
                       >
+                        <!-- TODO: Only present types that are permissible for the role. -->
                         <input
                           type="radio"
                           name="type"
@@ -8902,6 +8915,30 @@ ${value}</textarea
                           Other
                         </span>
                         <i class="bi bi-chevron-down"></i>
+                      </div>
+                      <button
+                        type="button"
+                        data-ondomcontentloaded="${javascript`
+                          const element = this.nextElementSibling.firstElementChild;
+                          element.options = this.previousElementSibling;
+                          tippy(this, {
+                            content: element,
+                            trigger: "click",
+                            interactive: true,
+                            appendTo: document.body,
+                          });
+                        `}"
+                      ></button>
+                      <div hidden>
+                        <div class="type dropdown-menu">
+                          <button
+                            onclick="${javascript`
+                              this.closest(".type").options.querySelector('[value="question"]').click();
+                          `}"
+                          >
+                            Hello
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
