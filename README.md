@@ -646,6 +646,8 @@ Insiders Builds are generated on every push. They’re useful for development an
 <details>
 <summary>2021-07-31</summary>
 
+- Styling and user interface.
+- Categories.
 - Custom validation errors:
   - Because the browser validations have some issues and we want more control over them. Examples:
     - The validation of `type="email"` accepts `example@example` (which is technically correct, but practically incorrect).
