@@ -647,13 +647,14 @@ Insiders Builds are generated on every push. They’re useful for development an
 <summary>2021-07-31</summary>
 
 - Styling and user interface.
-- Categories.
 - Custom validation errors:
   - Because the browser validations have some issues and we want more control over them. Examples:
     - The validation of `type="email"` accepts `example@example` (which is technically correct, but practically incorrect).
     - The validation of `required` accepts empty spaces (again, technically correct, but practically incorrect).
   - Because we want to show error messages in a style that’s consistent with the rest of the application, and in our own language, as opposed to the different browsers messages.
   - Because we want to apply validations to elements that the Constraint validation API doesn’t support, for example, `<button type="button">`.
+- Categories.
+- Did a brief research on the space of email senders; played with the SendGrid API.
 
 </details>
 
