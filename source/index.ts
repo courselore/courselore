@@ -8968,6 +8968,10 @@ ${value}</textarea
                               trigger: "click",
                               interactive: true,
                             });
+                            (this.validators ??= []).push(() => {
+                              if (this.closest(".tags").querySelector(".tags--list :checked") === null)
+                                return "Select at least one tag.";
+                            });
                           `}"
                         >
                           <i class="bi bi-tags"></i>
@@ -8998,7 +9002,7 @@ ${value}</textarea
                                 >
                                   <input
                                     type="checkbox"
-                                    name="tags[]"
+                                    name="tagsReferences[]"
                                     value="${tag.reference}"
                                     class="visually-hidden"
                                   />
@@ -9025,151 +9029,6 @@ ${value}</textarea
                           `}"
                         ></div>
                       </div>
-                    </div>
-                    <div
-                      hidden
-                      class="tags"
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--4);
-                        align-items: baseline;
-                      `}"
-                    >
-                      <div
-                        style="${css`
-                          display: grid;
-                          & > * {
-                            grid-area: 1 / 1;
-                          }
-                        `}"
-                      >
-                        <button
-                          type="button"
-                          class="tags--button button"
-                          data-ondomcontentloaded="${javascript`
-                              this.addTag = tippy(this, {
-                                content: "Add Tag",
-                                touch: false,
-                              });
-                              this.noMoreTagsToAdd = tippy(this, {
-                                content: "No more tags to add",
-                                touch: false,
-                              });
-                              this.noMoreTagsToAdd.disable();
-                              this.dropdownContent = this.nextElementSibling.firstElementChild;
-                              this.dropdown = tippy(this, {
-                                content: this.dropdownContent,
-                                trigger: "click",
-                                interactive: true,
-                              });
-                            `}"
-                        >
-                          <span>
-                            <i class="bi bi-tags"></i>
-                            Tags
-                          </span>
-                        </button>
-                        <div hidden>
-                          <div
-                            style="${css`
-                              max-height: var(--space--40);
-                              overflow: auto;
-                              margin: var(--space--0) var(--space---2);
-                            `}"
-                          >
-                            <div
-                              style="${css`
-                                margin: var(--space--0) var(--space--2);
-                              `}"
-                            >
-                              $${res.locals.tags.map(
-                                (tag) =>
-                                  html`
-                                    <button
-                                      type="button"
-                                      class="tag--${tag.reference}--enable dropdown-menu--item button button--transparent"
-                                      onclick="${javascript`
-                                          (async () => {
-                                            const tags = this.closest(".tags");
-                                            const tag = tags.querySelector(".tag--${tag.reference}");
-                                            tag.hidden = false;
-                                            const input = tag.querySelector("input");
-                                            input.disabled = false;
-                                            input.dataset.forceIsModified = true;
-                                            if ([...this.parentElement.children].filter((element) => !element.hidden).length === 1) {
-                                              const tagsButton = tags.querySelector(".tags--button");
-                                              tagsButton.addTag.disable();
-                                              tagsButton.noMoreTagsToAdd.enable();
-                                              tagsButton.dropdown.disable();
-                                              await new Promise((resolve) => window.setTimeout(resolve, tippy.defaultProps.duration));
-                                            }
-                                            this.hidden = true;
-                                          })();
-                                        `}"
-                                    >
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </button>
-                                  `
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <input
-                          type="radio"
-                          data-ondomcontentloaded="${javascript`
-                              (this.validators ??= []).push(() => {
-                                if (this.closest(".tags").querySelector('[name="tagsReferences[]"]:not([disabled])') === null)
-                                  return "Select at least one tag.";
-                              });
-                              this.closest(".tags").querySelector(".tags--button").addEventListener("click", () => { this.click(); });
-                            `}"
-                        />
-                      </div>
-                      $${res.locals.tags.map(
-                        (tag) =>
-                          html`
-                            <div class="tag--${tag.reference}" hidden>
-                              <input
-                                type="hidden"
-                                name="tagsReferences[]"
-                                value="${tag.reference}"
-                                disabled
-                              />
-                              <button
-                                type="button"
-                                class="button"
-                                style="${css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
-                                `}"
-                                data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Remove Tag",
-                                      touch: false,
-                                    });
-                                  `}"
-                                onclick="${javascript`
-                                    const tag = this.closest(".tag--${tag.reference}");
-                                    tag.hidden = true;
-                                    const input = tag.querySelector("input");
-                                    input.disabled = true;
-                                    input.dataset.forceIsModified = false;
-                                    const tagsButton = this.closest(".tags").querySelector(".tags--button")
-                                    tagsButton.addTag.enable();
-                                    tagsButton.noMoreTagsToAdd.disable();
-                                    tagsButton.dropdown.enable();
-                                    tagsButton.dropdownContent.querySelector(".tag--${tag.reference}--enable").hidden = false;
-                                  `}"
-                              >
-                                <span>
-                                  <i class="bi bi-tag"></i>
-                                  ${tag.name}
-                                </span>
-                              </button>
-                            </div>
-                          `
-                      )}
                     </div>
                   `}
 
