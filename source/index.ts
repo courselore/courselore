@@ -8851,12 +8851,7 @@ ${value}</textarea
                         });
                       `}"
                     >
-                      <input
-                        type="text"
-                        name="type"
-                        value="announcement"
-                        hidden
-                      />
+                      <input type="text" name="type" hidden />
                       <span
                         class="label--content"
                         style="${css`
@@ -8874,7 +8869,9 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           data-ondomcontentloaded="${javascript`
-                            this.click();
+                            const button = this.closest(".type").button;
+                            button.querySelector('[name="type"]').defaultValue = "announcement";
+                            button.querySelector(".label--content").innerHTML = this.innerHTML;
                           `}"
                           onclick="${javascript`
                             const button = this.closest(".type").button;
