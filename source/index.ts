@@ -7694,14 +7694,14 @@ export default async function courselore(
 
           :checked + .button--transparent {
             background-color: var(--color--gray--medium--100);
-            }
+          }
           :focus-within + .button--transparent {
             background-color: var(--color--gray--medium--200);
-            }
-              @media (prefers-color-scheme: dark) {
+          }
+          @media (prefers-color-scheme: dark) {
             :checked + .button--transparent {
-                background-color: var(--color--gray--medium--800);
-              }
+              background-color: var(--color--gray--medium--800);
+            }
             :focus-within + .button--transparent {
               background-color: var(--color--gray--medium--700);
             }
