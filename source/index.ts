@@ -7686,6 +7686,8 @@ export default async function courselore(
           gap: var(--space--1);
 
           .button {
+            font-size: var(--font-size--xs);
+            line-height: var(--line-height--xs);
             padding-bottom: var(--space--4);
             margin-bottom: var(--space---3);
           }
