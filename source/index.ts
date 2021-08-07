@@ -4946,6 +4946,12 @@ export default async function courselore(
                                   <div>
                                     <button
                                       class="button button--tight button--tight--inline button--transparent"
+                                      style="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        align-items: flex-start;
+                                        gap: var(--space--0);
+                                      `}"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: this.nextElementSibling.firstElementChild,
@@ -4955,31 +4961,23 @@ export default async function courselore(
                                       `}"
                                     >
                                       <div
+                                        class="strong"
                                         style="${css`
                                           display: flex;
-                                          flex-direction: column;
-                                          align-items: flex-start;
+                                          align-items: baseline;
+                                          gap: var(--space--2);
                                         `}"
                                       >
-                                        <div
-                                          class="strong"
-                                          style="${css`
-                                            display: flex;
-                                            align-items: baseline;
-                                            gap: var(--space--2);
-                                          `}"
-                                        >
-                                          ${invitation.name ?? invitation.email}
-                                          <i class="bi bi-chevron-down"></i>
-                                        </div>
-                                        $${invitation.name !== null
-                                          ? html`
-                                              <div class="secondary">
-                                                ${invitation.email}
-                                              </div>
-                                            `
-                                          : html``}
+                                        ${invitation.name ?? invitation.email}
+                                        <i class="bi bi-chevron-down"></i>
                                       </div>
+                                      $${invitation.name !== null
+                                        ? html`
+                                            <div class="secondary">
+                                              ${invitation.email}
+                                            </div>
+                                          `
+                                        : html``}
                                     </button>
                                     <div hidden>
                                       <div class="dropdown-menu">
