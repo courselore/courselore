@@ -504,50 +504,72 @@ export default async function courselore(
               const elementsToReset = new Map();
 
               for (const element of elementsToValidate) {
-                if (
-                  typeof element.setCustomValidity !== "function" ||
-                  element.closest("[disabled]") !== null
-                )
-                  continue;
-
+                if (element.closest("[disabled]") !== null) continue;
                 const valueInputByUser = element.value;
-                const customValidity = validate(element);
+                const error = validate(element);
                 if (element.value !== valueInputByUser)
                   elementsToReset.set(element, valueInputByUser);
-                if (typeof customValidity === "string") {
-                  element.setCustomValidity(customValidity);
-                  element.addEventListener("click", reset, { once: true });
-                  element.addEventListener("input", reset, { once: true });
-                  function reset() {
-                    element.setCustomValidity("");
-                  }
-                }
-
-                if (!element.reportValidity()) {
-                  for (const [element, valueInputByUser] of elementsToReset)
-                    element.value = valueInputByUser;
-                  return false;
-                }
+                if (typeof error !== "string") continue;
+                element.focus();
+                const tooltip = tippy(element, {
+                  content: error,
+                  theme: "rose",
+                  onHidden: () => {
+                    tooltip.destroy();
+                  },
+                });
+                tooltip.show();
+                for (const [element, valueInputByUser] of elementsToReset)
+                  element.value = valueInputByUser;
+                return false;
               }
               return true;
 
               function validate(element) {
+                if (element.matches("[required]"))
+                  switch (element.type) {
+                    case "radio":
+                      if (
+                        element
+                          .closest("form")
+                          .querySelector(
+                            '[name="' + element.name + '"]:checked'
+                          ) === null
+                      )
+                        return "Please select one of these options.";
+                      break;
+                    case "checkbox":
+                      if (!element.checked)
+                        return "Please check this checkbox.";
+                      break;
+                    default:
+                      if (element.value.trim() === "")
+                        return "Please fill out this field.";
+                      break;
+                  }
+
                 if (
-                  element.matches("[required]") &&
-                  element.value.trim() === ""
+                  element.matches("[minlength]") &&
+                  element.value.trim() !== "" &&
+                  element.value.length <
+                    Number(element.getAttribute("minlength"))
                 )
-                  return "Fill out this field";
+                  return (
+                    "This field must have at least " +
+                    element.getAttribute("minlength") +
+                    " characters."
+                  );
 
                 if (
                   element.matches('[type="email"]') &&
                   element.value.trim() !== "" &&
                   !element.value.match(${app.locals.constants.emailRegExp})
                 )
-                  return "Enter an email address";
+                  return "Please enter an email address.";
 
                 for (const validator of element.validators ?? []) {
-                  const customValidity = validator();
-                  if (typeof customValidity === "string") return customValidity;
+                  const error = validator();
+                  if (typeof error === "string") return error;
                 }
               }
             }
@@ -2692,6 +2714,7 @@ export default async function courselore(
               name: req.query.name,
               email: req.query.email,
             })}"
+            novalidate
             style="${css`
               display: flex;
               flex-direction: column;
@@ -2806,6 +2829,7 @@ export default async function courselore(
               name: req.query.name,
               email: req.query.email,
             })}"
+            novalidate
             style="${css`
               display: flex;
               flex-direction: column;
@@ -3139,6 +3163,7 @@ export default async function courselore(
             <form
               method="POST"
               action="${app.locals.settings.url}/settings?_method=PATCH"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -3473,6 +3498,7 @@ export default async function courselore(
             <form
               method="POST"
               action="${app.locals.settings.url}/courses"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -4444,6 +4470,7 @@ export default async function courselore(
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings?_method=PATCH"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -4572,6 +4599,7 @@ export default async function courselore(
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/invitations"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -5123,6 +5151,7 @@ export default async function courselore(
                                     <form
                                       method="POST"
                                       action="${action}?_method=PATCH"
+                                      novalidate
                                       class="dropdown-menu"
                                       style="${css`
                                         gap: var(--space--2);
@@ -6143,6 +6172,7 @@ export default async function courselore(
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/tags?_method=PUT"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -6601,6 +6631,7 @@ export default async function courselore(
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/settings/your-enrollment?_method=PATCH"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -7132,6 +7163,7 @@ export default async function courselore(
                 `}"
               >
                 <form
+                  novalidate
                   style="${css`
                     display: grid;
                     & > * {
@@ -8702,6 +8734,7 @@ ${value}</textarea
               method="POST"
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/conversations"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
@@ -9825,6 +9858,7 @@ ${value}</textarea
                 action="${app.locals.settings.url}/courses/${res.locals.course
                   .reference}/conversations/${res.locals.conversation
                   .reference}?_method=PATCH"
+                novalidate
                 hidden
                 class="title--edit"
                 style="${css`
@@ -10732,6 +10766,7 @@ ${value}</textarea
                             .locals.course.reference}/conversations/${res.locals
                             .conversation
                             .reference}/messages/${message.reference}?_method=PATCH"
+                          novalidate
                           hidden
                           class="message--edit"
                           style="${css`
@@ -10800,6 +10835,7 @@ ${value}</textarea
               action="${app.locals.settings.url}/courses/${res.locals.course
                 .reference}/conversations/${res.locals.conversation
                 .reference}/messages"
+              novalidate
               style="${css`
                 display: flex;
                 flex-direction: column;
