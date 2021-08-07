@@ -1775,7 +1775,7 @@ export default async function courselore(
                 >
                   $${flash}
                   <button
-                    class="button button--tight button--transparent"
+                    class="button button--tight button--tight--inline button--transparent"
                     style="${css`
                       justify-self: end;
                       align-self: start;
@@ -1919,9 +1919,10 @@ export default async function courselore(
       extraHeaders: html`
         <div
           style="${css`
-            padding: var(--space--1) var(--space--3);
+            padding: var(--space--2) var(--space--4);
             display: flex;
             justify-content: space-between;
+            gap: var(--space--4);
           `}"
         >
           <div
@@ -1930,11 +1931,12 @@ export default async function courselore(
               display: flex;
               align-items: center;
               min-width: var(--width--0);
+              gap: var(--space--4);
             `}"
           >
             <a
               href="${app.locals.settings.url}/"
-              class="button button--tight button--transparent"
+              class="button button--tight button--tight--inline button--transparent"
             >
               $${app.locals.partials.logo}
             </a>
@@ -1949,7 +1951,7 @@ export default async function courselore(
                     `}"
                   >
                     <button
-                      class="button button--transparent strong"
+                      class="button button--tight button--tight--inline button--transparent strong"
                       style="${css`
                         max-width: 100%;
                       `}"
@@ -2071,13 +2073,13 @@ export default async function courselore(
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
               display: flex;
-              gap: var(--space--1);
+              gap: var(--space--4);
               align-items: center;
             `}"
           >
             <div>
               <button
-                class="button button--tight button--transparent"
+                class="button button--tight button--tight--inline button--transparent"
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(
@@ -2167,7 +2169,7 @@ export default async function courselore(
             </div>
             <div>
               <button
-                class="button button--tight button--transparent"
+                class="button button--tight button--tight--inline button--transparent"
                 data-ondomcontentloaded="${javascript`
                   tippy(this, {
                     content: ${JSON.stringify(res.locals.user.name)},
@@ -4948,11 +4950,11 @@ export default async function courselore(
                                               <button
                                                 class="button button--tight button--transparent"
                                                 data-ondomcontentloaded="${javascript`
-                                                    tippy(this, {
-                                                      content: "Copy",
-                                                      touch: false,
-                                                    });
-                                                  `}"
+                                                  tippy(this, {
+                                                    content: "Copy",
+                                                    touch: false,
+                                                  });
+                                                `}"
                                                 onclick="${javascript`
                                                   (async () => {
                                                     await navigator.clipboard.writeText(${JSON.stringify(
