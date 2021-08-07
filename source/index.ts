@@ -8917,11 +8917,31 @@ ${value}</textarea
                           type="button"
                           class="dropdown-menu--item button button--transparent"
                           onclick="${javascript`
+                            this.closest(".type").querySelector('[value="announcement"]').click();
+                          `}"
+                        >
+                          <i class="bi bi-megaphone"></i>
+                          Announcement
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown-menu--item button button--transparent"
+                          onclick="${javascript`
                             this.closest(".type").querySelector('[value="question"]').click();
                           `}"
                         >
                           <i class="bi bi-patch-question"></i>
                           Question
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown-menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".type").querySelector('[value="other"]').click();
+                          `}"
+                        >
+                          <i class="bi bi-chat-left-text"></i>
+                          Other
                         </button>
                       </div>
                     </div>
