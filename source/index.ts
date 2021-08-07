@@ -8853,13 +8853,7 @@ ${value}</textarea
                       `}"
                     >
                       <!-- TODO: Only present types that are permissible for the role. -->
-                      <input
-                        type="text"
-                        name="type"
-                        required
-                        autocomplete="off"
-                        hidden
-                      />
+                      <input type="text" name="type" value="announcement" hidden />
                       <span
                         class="label--content"
                         style="${css`
