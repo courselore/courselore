@@ -8751,7 +8751,9 @@ ${value}</textarea
               <div
                 style="${css`
                   display: flex;
-                  gap: var(--space--8);
+                  flex-wrap: wrap;
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--4);
                 `}"
               >
                 $${res.locals.enrollment.role === "staff"
@@ -8774,37 +8776,27 @@ ${value}</textarea
                         </div>
                         <label
                           class="button button--tight button--tight--inline button--transparent"
-                          style="${css`
-                            display: grid;
-                            & > * {
-                              grid-area: 1 / 1;
-                            }
-                          `}"
                         >
                           <input
                             type="checkbox"
                             name="isPinned"
                             autocomplete="off"
+                            class="visually-hidden"
                             style="${css`
-                              width: 100%;
-                              height: 100%;
-                              position: relative;
                               &:not(:checked) + * + *,
                               &:checked + * {
                                 display: none;
                               }
                             `}"
+                          />
+                          <span
                             data-ondomcontentloaded="${javascript`
-                              this.tooltip = tippy(this, {
+                              tippy(this, {
+                                content: "Pin",
                                 touch: false,
                               });
-                              this.onchange();
                             `}"
-                            onchange="${javascript`
-                              this.tooltip.setContent(this.checked ? "Unpin" : "Pin");
-                            `}"
-                          />
-                          <span>
+                          >
                             <i class="bi bi-pin-angle"></i>
                             Unpinned
                           </span>
