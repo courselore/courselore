@@ -714,7 +714,7 @@ export default async function courselore(
                   line-height: var(--line-height--xs);
                   font-weight: var(--font-weight--bold);
                   display: flex;
-                  gap: var(--space--1);
+                  gap: var(--space--2);
                 }
 
                 .label--radio-or-checkbox {
