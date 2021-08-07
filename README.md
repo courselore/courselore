@@ -216,10 +216,10 @@ Insiders Builds are generated on every push. They’re useful for development an
 | ✅  | 2021-07-10 | Finish basics of threads screen: Editing & deleting posts; Generalized live updates. Tags: Mark posts as answers; Endorsements. |
 | ✅  | 2021-07-17 | Continue the work on tags. User profiles with avatars, and biographies, and so forth. Prepare deployment of HTTP/2.             |
 | ✅  | 2021-07-24 | Finish tags: Create tags; Manage tags in conversations; Filter conversations by tag. Search.                                    |
-|     | 2021-07-31 | Demo class for showing people staring August. Notifications: In-app; via email.                                                 |
-|     | 2021-08-07 | Continue work on notifications.                                                                                                 |
-|     | 2021-08-14 | Access management: Anonymity & private threads.                                                                                 |
-|     | 2021-08-21 | Continued access management.                                                                                                    |
+| ✅  | 2021-07-31 | Demo class for showing people staring August. User interface improvements from early feedback.                                  |
+| ✅  | 2021-08-07 | Conversations categories. User interface improvements from early feedback.                                                      |
+|     | 2021-08-14 | User interface improvements from early feedback. Notifications: In-app; via email.                                              |
+|     | 2021-08-21 | Access management: Anonymity & private threads.                                                                                 |
 |     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                           |
 
 <details>
