@@ -7834,27 +7834,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Heading 1
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Alt+1 or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-alt"></i
-                        ><i class="bi bi-command"></i>1</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Heading 1
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Alt+1 or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>1</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-type-h1"></i>
               </button>
@@ -7862,27 +7862,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Heading 2
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Alt+2 or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-alt"></i
-                        ><i class="bi bi-command"></i>2</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Heading 2
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Alt+2 or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>2</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-type-h2"></i>
               </button>
@@ -7890,27 +7890,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Heading 3
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Alt+3 or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-alt"></i
-                        ><i class="bi bi-command"></i>3</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Heading 3
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Alt+3 or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>3</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-type-h3"></i>
               </button>
@@ -7920,26 +7920,26 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Bold
-                    <span class="keyboard-shortcut">
-                      (Ctrl+B or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-command"></i>B</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Bold
+                      <span class="keyboard-shortcut">
+                        (Ctrl+B or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-command"></i>B</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, "**");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, "**");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-type-bold"></i>
               </button>
@@ -7947,26 +7947,26 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Italic
-                    <span class="keyboard-shortcut">
-                      (Ctrl+I or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-command"></i>I</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Italic
+                      <span class="keyboard-shortcut">
+                        (Ctrl+I or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-command"></i>I</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, "_");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, "_");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-type-italic"></i>
               </button>
@@ -7974,26 +7974,26 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Link
-                    <span class="keyboard-shortcut">
-                      (Ctrl+K or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-command"></i>K</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Link
+                      <span class="keyboard-shortcut">
+                        (Ctrl+K or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-command"></i>K</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-link"></i>
               </button>
@@ -8003,27 +8003,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Bulleted List
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+8 or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>8</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Bulleted List
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+8 or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>8</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-list-ul"></i>
               </button>
@@ -8031,27 +8031,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Numbered List
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+7 or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>7</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Numbered List
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+7 or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>7</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-list-ol"></i>
               </button>
@@ -8059,27 +8059,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Checklist
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+9 or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>9</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Checklist
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+9 or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>9</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-ui-checks"></i>
               </button>
@@ -8089,26 +8089,26 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Quote
-                    <span class="keyboard-shortcut">
-                      (Ctrl+' or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-command"></i>'</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Quote
+                      <span class="keyboard-shortcut">
+                        (Ctrl+' or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-command"></i>'</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-chat-left-quote"></i>
               </button>
@@ -8116,28 +8116,28 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Table
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Alt+T or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-alt"></i
-                        ><i class="bi bi-command"></i>T</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Table
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Alt+T or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>T</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                const gapLength = element.selectionEnd - element.selectionStart + 2;
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  const gapLength = element.selectionEnd - element.selectionStart + 2;
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-table"></i>
               </button>
@@ -8145,27 +8145,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Disclosure
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+D or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>D</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Disclosure
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+D or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>D</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-chevron-bar-expand"></i>
               </button>
@@ -8175,26 +8175,26 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Inline Code
-                    <span class="keyboard-shortcut">
-                      (Ctrl+E or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-command"></i>E</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Inline Code
+                      <span class="keyboard-shortcut">
+                        (Ctrl+E or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, "\`");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, "\`");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-code"></i>
               </button>
@@ -8202,27 +8202,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Code Block
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+E or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>E</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Code Block
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+E or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-code-square"></i>
               </button>
@@ -8232,27 +8232,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Inline Equation
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Alt+E or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-alt"></i
-                        ><i class="bi bi-command"></i>E</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Inline Equation
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Alt+E or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, "$");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, "$");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-calculator"></i>
               </button>
@@ -8260,27 +8260,27 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Equation Block
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Alt+Shift+E or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
-                        ><i class="bi bi-command"></i>E</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Equation Block
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Alt+Shift+E or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
+                          ><i class="bi bi-command"></i>E</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                const element = this.closest(".text-editor").querySelector('[name="content"]');
-                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
-                element.focus();
-              `}"
+                  const element = this.closest(".text-editor").querySelector('[name="content"]');
+                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                  element.focus();
+                `}"
               >
                 <i class="bi bi-calculator-fill"></i>
               </button>
@@ -8290,25 +8290,25 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Mention User
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+U or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>U</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Mention User
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+U or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>U</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                alert("TODO: Mention User");
-              `}"
+                  alert("TODO: Mention User");
+                `}"
               >
                 <i class="bi bi-at"></i>
               </button>
@@ -8316,25 +8316,25 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Refer to Conversation or Message
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+J or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>J</span
-                      >)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Refer to Conversation or Message
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+J or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>J</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                alert("TODO: Refer to Conversation or Message");
-              `}"
+                  alert("TODO: Refer to Conversation or Message");
+                `}"
               >
                 <i class="bi bi-hash"></i>
               </button>
@@ -8344,26 +8344,26 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Image
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+I or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>I</span
-                      >
-                      or drag-and-drop or copy-and-paste)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Image
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+I or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>I</span
+                        >
+                        or drag-and-drop or copy-and-paste)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                this.closest(".text-editor").querySelector(".attachments").click();
-              `}"
+                  this.closest(".text-editor").querySelector(".attachments").click();
+                `}"
               >
                 <i class="bi bi-image"></i>
               </button>
@@ -8371,26 +8371,26 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
-                tippy(this, {
-                  content: ${JSON.stringify(html`
-                    Attachment
-                    <span class="keyboard-shortcut">
-                      (Ctrl+Shift+K or
-                      <span class="keyboard-shortcut--cluster"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>K</span
-                      >
-                      or drag-and-drop or copy-and-paste)
-                    </span>
-                  `)},
-                  touch: false,
-                  allowHTML: true,
-                });
-              `}"
+                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Attachment
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+K or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>K</span
+                        >
+                        or drag-and-drop or copy-and-paste)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
                 onclick="${javascript`
-                this.closest(".text-editor").querySelector(".attachments").click();
-              `}"
+                  this.closest(".text-editor").querySelector(".attachments").click();
+                `}"
               >
                 <i class="bi bi-paperclip"></i>
               </button>
@@ -8401,27 +8401,27 @@ export default async function courselore(
                 hidden
                 data-skip-is-modified="true"
                 data-ondomcontentloaded="${javascript`
-                this.upload = async (fileList) => {
-                  const element = this.closest(".text-editor").querySelector('[name="content"]');
-                  // TODO: Give some visual indication of progress.
-                  element.disabled = true;
-                  const body = new FormData();
-                  for (const file of fileList) body.append("attachments", file);
-                  const response = await (await fetch("${app.locals.settings.url}/text-editor/attachments", {
-                    method: "POST",
-                    body,
-                  })).text();
-                  element.disabled = false;
-                  textFieldEdit.wrapSelection(element, response, "");
-                  element.focus();
-                };
-              `}"
+                  this.upload = async (fileList) => {
+                    const element = this.closest(".text-editor").querySelector('[name="content"]');
+                    // TODO: Give some visual indication of progress.
+                    element.disabled = true;
+                    const body = new FormData();
+                    for (const file of fileList) body.append("attachments", file);
+                    const response = await (await fetch("${app.locals.settings.url}/text-editor/attachments", {
+                      method: "POST",
+                      body,
+                    })).text();
+                    element.disabled = false;
+                    textFieldEdit.wrapSelection(element, response, "");
+                    element.focus();
+                  };
+                `}"
                 onchange="${javascript`
-                (async () => {
-                  await this.upload(this.files);
-                  this.value = "";
-                })();
-              `}"
+                  (async () => {
+                    await this.upload(this.files);
+                    this.value = "";
+                  })();
+                `}"
               />
             </div>
             <div>
@@ -8429,16 +8429,16 @@ export default async function courselore(
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                tippy(this, {
-                  content: "Help",
-                  touch: false,
-                });
-                tippy(this, {
-                  content: this.nextElementSibling.firstElementChild,
-                  trigger: "click",
-                  interactive: true,
-                });
-              `}"
+                  tippy(this, {
+                    content: "Help",
+                    touch: false,
+                  });
+                  tippy(this, {
+                    content: this.nextElementSibling.firstElementChild,
+                    trigger: "click",
+                    interactive: true,
+                  });
+                `}"
               >
                 <i class="bi bi-info-circle"></i>
               </button>
@@ -8480,28 +8480,28 @@ export default async function courselore(
               }
             `}"
             onfocus="${javascript`
-            this.style.height = "var(--space--52)";
-          `}"
+              this.style.height = "var(--space--52)";
+            `}"
             ondragenter="${javascript`
-            this.classList.add("drag");
-          `}"
+              this.classList.add("drag");
+            `}"
             ondragover="${javascript`
-            event.preventDefault(); // TODO: Firefox seems to require this. Investigate more.
-          `}"
+              event.preventDefault(); // TODO: Firefox seems to require this. Investigate more.
+            `}"
             ondrop="${javascript`
-            event.preventDefault();
-            // TODO: I read somewhere that some browsers also need ‘event.stopPropagation()’. Investigate.
-            this.classList.remove("drag");
-            this.closest(".text-editor").querySelector(".attachments").upload(event.dataTransfer.files);
-          `}"
+              event.preventDefault();
+              // TODO: I read somewhere that some browsers also need ‘event.stopPropagation()’. Investigate.
+              this.classList.remove("drag");
+              this.closest(".text-editor").querySelector(".attachments").upload(event.dataTransfer.files);
+            `}"
             ondragleave="${javascript`
-            this.classList.remove("drag");
-          `}"
+              this.classList.remove("drag");
+            `}"
             onpaste="${javascript`
-            if (event.clipboardData.files.length === 0) return;
-            event.preventDefault();
-            this.closest(".text-editor").querySelector(".attachments").upload(event.clipboardData.files);
-          `}"
+              if (event.clipboardData.files.length === 0) return;
+              event.preventDefault();
+              this.closest(".text-editor").querySelector(".attachments").upload(event.clipboardData.files);
+            `}"
           >
 ${value}</textarea
           >
