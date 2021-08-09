@@ -8777,22 +8777,61 @@ ${value}</textarea
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
                           display: flex;
-                          gap: var(--space--6);
+                          flex-wrap: wrap;
+                          column-gap: var(--space--6);
+                          row-gap: var(--space--2);
                         `}"
                       >
                         $${res.locals.tags.map(
                           (tag) => html`
                             <label
                               class="button button--tight button--tight--inline button--transparent"
+                              style="${css`
+                                display: grid;
+                                & > * {
+                                  grid-area: 1 / 1;
+                                }
+                              `}"
                             >
                               <input
                                 type="checkbox"
                                 name="tagsReferences[]"
                                 value="${tag.reference}"
-                                class="input--checkbox"
+                                class="visually-hidden"
+                                style="${css`
+                                  & ~ * {
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  }
+                                  &:not(:checked) + * + *,
+                                  &:checked + * {
+                                    visibility: hidden;
+                                  }
+                                `}"
                               />
-                              <i class="bi bi-tag"></i>
-                              ${tag.name}
+                              <span
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Add Tag",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-tag"></i>
+                                ${tag.name}
+                              </span>
+                              <span
+                                class="strong"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Remove Tag",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-tag-fill"></i>
+                                ${tag.name}
+                              </span>
                             </label>
                           `
                         )}
