@@ -6484,7 +6484,7 @@ export default async function courselore(
                             >
                               <input
                                 type="checkbox"
-                                name="staffOnly"
+                                name="privateToStaff"
                                 class="input--checkbox"
                               />
                               <i class="bi bi-lock"></i> Private to Staff
