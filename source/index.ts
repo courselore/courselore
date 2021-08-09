@@ -818,6 +818,60 @@ export default async function courselore(
                 }
               }
 
+              .input--checkbox {
+                background-color: var(--color--gray--medium--200);
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--gray--medium--300);
+                }
+                &:active {
+                  background-color: var(--color--gray--medium--400);
+                }
+                &:checked {
+                  background-color: var(--color--blue--600);
+                }
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--700);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--600);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--medium--500);
+                  }
+                  &:checked {
+                    background-color: var(--color--blue--700);
+                  }
+                }
+                width: var(--space--8);
+                padding: var(--space--0-5);
+                border-radius: var(--border-radius--full);
+                &::after {
+                  content: "";
+                  background-color: var(--color--gray--medium--50);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--200);
+                  }
+                  width: var(--space--3);
+                  height: var(--space--3);
+                  border-radius: var(--border-radius--circle);
+                  display: block;
+                  transition-property: var(--transition-property--all);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--in-out
+                  );
+                }
+                &:checked::after {
+                  margin-left: var(--space--4);
+                }
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
+              }
+
               .button {
                 padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
@@ -6444,84 +6498,7 @@ export default async function courselore(
                               <input
                                 type="checkbox"
                                 name="staffOnly"
-                                value="true"
-                                style="${css`
-                                  width: var(--space--8);
-                                  padding: var(--space--0-5);
-                                  background-color: var(
-                                    --color--gray--medium--200
-                                  );
-                                  &:hover,
-                                  &:focus-within {
-                                    background-color: var(
-                                      --color--gray--medium--300
-                                    );
-                                  }
-                                  &:active {
-                                    background-color: var(
-                                      --color--gray--medium--400
-                                    );
-                                  }
-                                  &:checked {
-                                    background-color: var(--color--blue--600);
-                                  }
-                                  @media (prefers-color-scheme: dark) {
-                                    background-color: var(
-                                      --color--gray--medium--700
-                                    );
-                                    &:hover,
-                                    &:focus-within {
-                                      background-color: var(
-                                        --color--gray--medium--600
-                                      );
-                                    }
-                                    &:active {
-                                      background-color: var(
-                                        --color--gray--medium--500
-                                      );
-                                    }
-                                    &:checked {
-                                      background-color: var(--color--blue--700);
-                                    }
-                                  }
-                                  border-radius: var(--border-radius--full);
-                                  &::after {
-                                    content: "";
-                                    background-color: var(
-                                      --color--gray--medium--50
-                                    );
-                                    @media (prefers-color-scheme: dark) {
-                                      background-color: var(
-                                        --color--gray--medium--200
-                                      );
-                                    }
-                                    width: var(--space--3);
-                                    height: var(--space--3);
-                                    border-radius: var(--border-radius--circle);
-                                    display: block;
-                                    transition-property: var(
-                                      --transition-property--all
-                                    );
-                                    transition-duration: var(
-                                      --transition-duration--150
-                                    );
-                                    transition-timing-function: var(
-                                      --transition-timing-function--in-out
-                                    );
-                                  }
-                                  &:checked::after {
-                                    margin-left: var(--space--4);
-                                  }
-                                  transition-property: var(
-                                    --transition-property--colors
-                                  );
-                                  transition-duration: var(
-                                    --transition-duration--150
-                                  );
-                                  transition-timing-function: var(
-                                    --transition-timing-function--in-out
-                                  );
-                                `}"
+                                class="input--checkbox"
                               />
                               <i class="bi bi-lock"></i> Private to Staff
                             </label>
