@@ -10601,29 +10601,29 @@ ${value}</textarea
                           <button
                             class="dropdown-menu--item button button--transparent"
                             onclick="${javascript`
-                            tippy.hideAll();
-                            const selection = window.getSelection();
-                            const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                            const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
-                            // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
-                            const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                            const focusPosition = JSON.parse(focusElement.dataset.position);
-                            const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                            const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                            const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                            const newMessage = document.querySelector(".new-message");
-                            newMessage.querySelector(".text-editor--button--write").click();
-                            const element = newMessage.querySelector('[name="content"]');
-                            // TODO: Use something like ‘@Leandro-Facchinetti-2342’
-                            textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                              message.authorEnrollment.reference
-                            )} + " · #" + ${JSON.stringify(
-                              res.locals.conversation.reference
-                            )} + "/" + ${JSON.stringify(
-                              message.reference
-                            )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                            element.focus();
-                          `}"
+                              tippy.hideAll();
+                              const selection = window.getSelection();
+                              const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                              const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
+                              // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
+                              const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                              const focusPosition = JSON.parse(focusElement.dataset.position);
+                              const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                              const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                              const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
+                              const newMessage = document.querySelector(".new-message");
+                              newMessage.querySelector(".text-editor--button--write").click();
+                              const element = newMessage.querySelector('[name="content"]');
+                              // TODO: Use something like ‘@Leandro-Facchinetti-2342’
+                              textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                                message.authorEnrollment.reference
+                              )} + " · #" + ${JSON.stringify(
+                                res.locals.conversation.reference
+                              )} + "/" + ${JSON.stringify(
+                                message.reference
+                              )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                              element.focus();
+                            `}"
                           >
                             <i class="bi bi-chat-left-quote"></i> Quote
                           </button>
