@@ -823,22 +823,6 @@ export default async function courselore(
                 }
               }
 
-              .select {
-                display: grid;
-                & > * {
-                  grid-area: 1 / 1;
-                }
-                .select--tag.select--tag {
-                  padding-right: var(--space--6);
-                }
-                .select--chevron {
-                  justify-self: end;
-                  align-self: center;
-                  margin-right: var(--space--0-5);
-                  pointer-events: none;
-                }
-              }
-
               .button {
                 padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
@@ -6449,30 +6433,53 @@ export default async function courselore(
                               justify-content: flex-start;
                             `}"
                           >
-                            <div class="select">
-                              <select
-                                required
-                                autocomplete="off"
-                                disabled
-                                class="select--tag button button--tight button--tight--inline button--transparent"
-                                data-onmount="${javascript`
-                                  this.dataset.forceIsModified = true;
-                                  this.disabled = false;
-                                  const tag = this.closest(".tag");
-                                  this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][visibleBy]";
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="staffOnly"
+                                value="true"
+                                style="${css`
+                                  width: var(--space--8);
+                                  padding: var(--space--0-5);
+                                  background-color: var(
+                                    --color--gray--medium--200
+                                  );
+                                  @media (prefers-color-scheme: dark) {
+                                    background-color: var(
+                                      --color--gray--medium--700
+                                    );
+                                  }
+                                  border-radius: var(--border-radius--full);
+                                  display: flex;
+                                  justify-content: flex-start;
+                                  align-items: center;
+                                  &::after {
+                                    content: "";
+                                    background-color: var(
+                                      --color--gray--medium--50
+                                    );
+                                    @media (prefers-color-scheme: dark) {
+                                      background-color: var(
+                                        --color--gray--medium--200
+                                      );
+                                    }
+                                    width: var(--space--3);
+                                    height: var(--space--3);
+                                    border-radius: var(--border-radius--circle);
+                                  }
+                                  &:checked {
+                                    background-color: var(--color--blue--500);
+                                    @media (prefers-color-scheme: dark) {
+                                      background-color: var(--color--blue--800);
+                                    }
+                                    justify-content: flex-end;
+                                  }
                                 `}"
-                              >
-                                <option value="everyone">
-                                  Visible by Everyone
-                                </option>
-                                <option value="staff">
-                                  Visible by Staff Only
-                                </option>
-                              </select>
-                              <div class="select--chevron">
-                                <i class="bi bi-chevron-down"></i>
-                              </div>
-                            </div>
+                              />
+                              <i class="bi bi-lock"></i> Private to Staff
+                            </label>
                           </div>
                           <div
                             style="${css`
@@ -10618,10 +10625,10 @@ ${value}</textarea
                               textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                                 message.authorEnrollment.reference
                               )} + " · #" + ${JSON.stringify(
-                                res.locals.conversation.reference
-                              )} + "/" + ${JSON.stringify(
-                                message.reference
-                              )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                              res.locals.conversation.reference
+                            )} + "/" + ${JSON.stringify(
+                              message.reference
+                            )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
                               element.focus();
                             `}"
                           >
