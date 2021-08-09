@@ -4821,13 +4821,7 @@ export default async function courselore(
                     <input
                       type="checkbox"
                       autocomplete="off"
-                      class="input--checkbox input--radio-or-checkbox--multilabel"
-                      style="${css`
-                        & ~ * {
-                          display: flex;
-                          gap: var(--space--2);
-                        }
-                      `}"
+                      class="input--checkbox"
                       onchange="${javascript`
                         const expiresAt = this.closest("form").querySelector(".expires-at");
                         expiresAt.hidden = !this.checked;
@@ -4835,14 +4829,8 @@ export default async function courselore(
                           if (element.disabled !== undefined) element.disabled = !this.checked;
                       `}"
                     />
-                    <span>
-                      <i class="bi bi-calendar-minus"></i>
-                      Doesn’t Expire
-                    </span>
-                    <span>
-                      <i class="bi bi-calendar-plus"></i>
-                      Expires
-                    </span>
+                    <i class="bi bi-calendar-plus"></i>
+                    Expires
                   </label>
                 </div>
               </div>
