@@ -847,7 +847,7 @@ export default async function courselore(
                 padding: var(--space--0-5);
                 border-radius: var(--border-radius--full);
                 position: relative;
-                top: var(--space--0-5);
+                top: calc(var(--space--0-5) * 1.5);
                 &::after {
                   content: "";
                   background-color: var(--color--gray--medium--50);
