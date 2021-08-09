@@ -6446,15 +6446,37 @@ export default async function courselore(
                                   background-color: var(
                                     --color--gray--medium--200
                                   );
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: var(
+                                      --color--gray--medium--300
+                                    );
+                                  }
+                                  &:active {
+                                    background-color: var(
+                                      --color--gray--medium--400
+                                    );
+                                  }
                                   &:checked {
-                                    background-color: var(--color--blue--500);
+                                    background-color: var(--color--blue--600);
                                   }
                                   @media (prefers-color-scheme: dark) {
                                     background-color: var(
                                       --color--gray--medium--700
                                     );
+                                    &:hover,
+                                    &:focus-within {
+                                      background-color: var(
+                                        --color--gray--medium--600
+                                      );
+                                    }
+                                    &:active {
+                                      background-color: var(
+                                        --color--gray--medium--500
+                                      );
+                                    }
                                     &:checked {
-                                      background-color: var(--color--blue--800);
+                                      background-color: var(--color--blue--700);
                                     }
                                   }
                                   border-radius: var(--border-radius--full);
