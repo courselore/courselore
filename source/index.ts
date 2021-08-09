@@ -8774,6 +8774,32 @@ ${value}</textarea
                       </div>
                       <div
                         style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                          display: flex;
+                          gap: var(--space--6);
+                        `}"
+                      >
+                        $${res.locals.tags.map(
+                          (tag) => html`
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="tagsReferences[]"
+                                value="${tag.reference}"
+                                class="input--checkbox"
+                              />
+                              <i class="bi bi-tag"></i>
+                              ${tag.name}
+                            </label>
+                          `
+                        )}
+                      </div>
+                      <div
+                        hidden
+                        style="${css`
                           display: flex;
                           gap: var(--space--6);
                         `}"
