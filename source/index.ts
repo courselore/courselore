@@ -129,12 +129,6 @@ export default async function courselore(
     "other",
   ];
 
-  interface Constants {
-    tagVisibleBy: TagVisibleBy[];
-  }
-  type TagVisibleBy = "everyone" | "staff";
-  app.locals.constants.tagVisibleBy = ["everyone", "staff"];
-
   interface AppLocals {
     database: Database;
   }
@@ -266,7 +260,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "name" TEXT NOT NULL,
-        "visibleBy" TEXT NOT NULL CHECK ("visibleBy" IN ('everyone', 'staff')),
+        "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
 
@@ -3647,7 +3641,7 @@ export default async function courselore(
       id: number;
       reference: string;
       name: string;
-      visibleBy: TagVisibleBy;
+      staffOnlyAt: string | null;
     }[];
     tagFilter?: IsEnrolledInCourseMiddlewareLocals["tags"][number];
     conversations: {
@@ -3698,7 +3692,7 @@ export default async function courselore(
           id: number;
           reference: string;
           name: string;
-          visibleBy: TagVisibleBy;
+          staffOnlyAt: string | null;
         };
       }[];
     }[];
@@ -3718,15 +3712,15 @@ export default async function courselore(
         id: number;
         reference: string;
         name: string;
-        visibleBy: TagVisibleBy;
+        staffOnlyAt: string | null;
       }>(
         sql`
-          SELECT "id", "reference", "name", "visibleBy"
+          SELECT "id", "reference", "name", "staffOnlyAt"
           FROM "tags"
           WHERE "course" = ${res.locals.course.id}
                 $${
                   res.locals.enrollment.role === "student"
-                    ? sql`AND "visibleBy" = 'everyone'`
+                    ? sql`AND "staffOnlyAt" IS NULL`
                     : sql``
                 }
           ORDER BY "id" ASC
@@ -3923,24 +3917,24 @@ export default async function courselore(
               tagId: number;
               tagReference: string;
               tagName: string;
-              tagVisibleBy: TagVisibleBy;
+              tagStaffOnlyAt: string | null;
             }>(
               sql`
-            SELECT "taggings"."id",
-                   "tags"."id" AS "tagId",
-                   "tags"."reference" AS "tagReference",
-                   "tags"."name" AS "tagName",
-                   "tags"."visibleBy" AS "tagVisibleBy"
-            FROM "taggings"
-            JOIN "tags" ON "taggings"."tag" = "tags"."id"
-            WHERE "taggings"."conversation" = ${conversation.id}
-            $${
-              res.locals.enrollment.role === "student"
-                ? sql`AND "tags"."visibleBy" = 'everyone'`
-                : sql``
-            }
-            ORDER BY "tags"."id" ASC
-          `
+                SELECT "taggings"."id",
+                      "tags"."id" AS "tagId",
+                      "tags"."reference" AS "tagReference",
+                      "tags"."name" AS "tagName",
+                      "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+                FROM "taggings"
+                JOIN "tags" ON "taggings"."tag" = "tags"."id"
+                WHERE "taggings"."conversation" = ${conversation.id}
+                $${
+                  res.locals.enrollment.role === "student"
+                    ? sql`AND "tags"."staffOnlyAt" IS NULL`
+                    : sql``
+                }
+                ORDER BY "tags"."id" ASC
+              `
             )
             .map((tagging) => ({
               id: tagging.id,
@@ -3948,7 +3942,7 @@ export default async function courselore(
                 id: tagging.tagId,
                 reference: tagging.tagReference,
                 name: tagging.tagName,
-                visibleBy: tagging.tagVisibleBy,
+                staffOnlyAt: tagging.tagStaffOnlyAt,
               },
             }));
 
@@ -6275,14 +6269,14 @@ export default async function courselore(
                             >
                               <div class="select">
                                 <select
-                                  name="tags[${index}][visibleBy]"
+                                  name="tags[${index}][staffOnlyAt]"
                                   required
                                   autocomplete="off"
                                   class="disable-on-delete select--tag button button--tight button--tight--inline button--transparent"
                                 >
                                   <option
                                     value="everyone"
-                                    $${tag.visibleBy === "everyone"
+                                    $${tag.staffOnlyAt === "everyone"
                                       ? html`selected`
                                       : html``}
                                   >
@@ -6290,7 +6284,7 @@ export default async function courselore(
                                   </option>
                                   <option
                                     value="staff"
-                                    $${tag.visibleBy === "staff"
+                                    $${tag.staffOnlyAt === "staff"
                                       ? html`selected`
                                       : html``}
                                   >
@@ -6545,7 +6539,7 @@ export default async function courselore(
         reference?: string;
         delete?: "true";
         name?: string;
-        visibleBy?: TagVisibleBy;
+        isStaffOnly?: boolean;
       }[];
     },
     {},
@@ -6560,21 +6554,13 @@ export default async function courselore(
         req.body.tags.some(
           (tag) =>
             (tag.reference === undefined &&
-              (typeof tag.name !== "string" ||
-                tag.name.trim() === "" ||
-                typeof tag.visibleBy !== "string" ||
-                !app.locals.constants.tagVisibleBy.includes(tag.visibleBy))) ||
+              (typeof tag.name !== "string" || tag.name.trim() === "")) ||
             (tag.reference !== undefined &&
               (!res.locals.tags.some(
                 (existingTag) => tag.reference === existingTag.reference
               ) ||
                 (tag.delete !== "true" &&
-                  (typeof tag.name !== "string" ||
-                    tag.name.trim() === "" ||
-                    typeof tag.visibleBy !== "string" ||
-                    !app.locals.constants.tagVisibleBy.includes(
-                      tag.visibleBy
-                    )))))
+                  (typeof tag.name !== "string" || tag.name.trim() === ""))))
         )
       )
         return next("validation");
@@ -6583,12 +6569,12 @@ export default async function courselore(
         if (tag.reference === undefined)
           app.locals.database.run(
             sql`
-              INSERT INTO "tags" ("course", "reference", "name", "visibleBy")
+              INSERT INTO "tags" ("course", "reference", "name", "staffOnlyAt")
               VALUES (
                 ${res.locals.course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${tag.name},
-                ${tag.visibleBy}
+                ${tag.isStaffOnly ? new Date().toISOString() : null}
               )
             `
           );
@@ -6602,7 +6588,10 @@ export default async function courselore(
           app.locals.database.run(
             sql`
               UPDATE "tags"
-              SET "name" = ${tag.name}, "visibleBy" = ${tag.visibleBy}
+              SET "name" = ${tag.name},
+                  "staffOnlyAt" = ${
+                    tag.isStaffOnly ? new Date().toISOString() : null
+                  }
               WHERE "reference" = ${tag.reference}
             `
           );
@@ -9305,24 +9294,24 @@ ${value}</textarea
           tagId: number;
           tagReference: string;
           tagName: string;
-          tagVisibleBy: TagVisibleBy;
+          tagStaffOnlyAt: string | null;
         }>(
           sql`
-          SELECT "taggings"."id",
-                 "tags"."id" AS "tagId",
-                 "tags"."reference" AS "tagReference",
-                 "tags"."name" AS "tagName",
-                 "tags"."visibleBy" AS "tagVisibleBy"
-          FROM "taggings"
-          JOIN "tags" ON "taggings"."tag" = "tags"."id"
-          WHERE "taggings"."conversation" = ${conversation.id}
-          $${
-            res.locals.enrollment.role === "student"
-              ? sql`AND "tags"."visibleBy" = 'everyone'`
-              : sql``
-          }
-          ORDER BY "tags"."id" ASC
-        `
+            SELECT "taggings"."id",
+                  "tags"."id" AS "tagId",
+                  "tags"."reference" AS "tagReference",
+                  "tags"."name" AS "tagName",
+                  "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+            FROM "taggings"
+            JOIN "tags" ON "taggings"."tag" = "tags"."id"
+            WHERE "taggings"."conversation" = ${conversation.id}
+            $${
+              res.locals.enrollment.role === "student"
+                ? sql`AND "tags"."staffOnlyAt" IS NULL`
+                : sql``
+            }
+            ORDER BY "tags"."id" ASC
+          `
         )
         .map((tagging) => ({
           id: tagging.id,
@@ -9330,7 +9319,7 @@ ${value}</textarea
             id: tagging.tagId,
             reference: tagging.tagReference,
             name: tagging.tagName,
-            visibleBy: tagging.tagVisibleBy,
+            staffOnlyAt: tagging.tagStaffOnlyAt,
           },
         }));
       res.locals.conversation = {
