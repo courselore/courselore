@@ -6262,13 +6262,14 @@ export default async function courselore(
                           >
                             <div
                               style="${css`
-                                width: var(--space--44);
+                                width: var(--space--52);
                                 display: flex;
                                 justify-content: flex-start;
                               `}"
                             >
                               <div class="select">
                                 <select
+                                  disabled
                                   name="tags[${index}][staffOnlyAt]"
                                   required
                                   autocomplete="off"
@@ -6448,10 +6449,10 @@ export default async function courselore(
                       >
                         <input
                           type="text"
-                          class="input--text"
                           required
                           autocomplete="off"
                           disabled
+                          class="input--text"
                           data-onmount="${javascript`
                             this.dataset.forceIsModified = true;
                             this.disabled = false;
@@ -6478,8 +6479,14 @@ export default async function courselore(
                             >
                               <input
                                 type="checkbox"
-                                name="isStaffOnly"
+                                disabled
                                 class="input--checkbox"
+                                data-onmount="${javascript`
+                                  this.dataset.forceIsModified = true;
+                                  this.disabled = false;
+                                  const tag = this.closest(".tag");
+                                  this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][isStaffOnly]";
+                                `}"
                               />
                               <i class="bi bi-lock"></i>
                               Visible Only to Staff
