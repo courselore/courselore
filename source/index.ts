@@ -785,6 +785,8 @@ export default async function courselore(
                 width: var(--space--3-5);
                 height: var(--space--3-5);
                 border-radius: var(--border-radius--circle);
+                position: relative;
+                top: var(--space---0-5);
                 display: flex;
                 justify-content: center;
                 align-items: center;
