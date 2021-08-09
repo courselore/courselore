@@ -8753,47 +8753,6 @@ ${value}</textarea
                 </div>
               </div>
 
-              $${res.locals.enrollment.role === "staff"
-                ? html`
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <label
-                        class="button button--tight button--tight--inline button--transparent"
-                      >
-                        <input
-                          type="checkbox"
-                          name="isPinned"
-                          autocomplete="off"
-                          class="input--checkbox"
-                          style="${css`
-                            & ~ * {
-                              display: flex;
-                              gap: var(--space--2);
-                            }
-                          `}"
-                        />
-                        <i class="bi bi-pin"></i>
-                        Pin
-                      </label>
-                      <button
-                        type="button"
-                        class="button button--tight button--tight--inline button--transparent"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Pinned conversations are listed first.",
-                            trigger: "click",
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
-                    </div>
-                  `
-                : html``}
               $${res.locals.tags.length === 0
                 ? html``
                 : html`
@@ -8891,6 +8850,47 @@ ${value}</textarea
                       </div>
                     </div>
                   `}
+              $${res.locals.enrollment.role === "staff"
+                ? html`
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <input
+                          type="checkbox"
+                          name="isPinned"
+                          autocomplete="off"
+                          class="input--checkbox"
+                          style="${css`
+                            & ~ * {
+                              display: flex;
+                              gap: var(--space--2);
+                            }
+                          `}"
+                        />
+                        <i class="bi bi-pin"></i>
+                        Pin
+                      </label>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Pinned conversations are listed first.",
+                            trigger: "click",
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </div>
+                  `
+                : html``}
 
               <div>
                 <button
