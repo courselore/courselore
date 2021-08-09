@@ -6388,6 +6388,12 @@ export default async function courselore(
                   <button
                     type="button"
                     class="button button--transparent button--full-width-on-small-screen"
+                    data-ondomcontentloaded="${javascript`
+                      (this.validators ??= []).push(() => {
+                        if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
+                          return "Please add at least one tag.";
+                      });
+                    `}"
                     onclick="${javascript`
                       const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
@@ -6503,12 +6509,6 @@ export default async function courselore(
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
-                  data-ondomcontentloaded="${javascript`
-                    (this.validators ??= []).push(() => {
-                      if (this.closest("form").querySelector(".tags").children.length === 0)
-                        return "Add at least one tag.";
-                    });
-                  `}"
                 >
                   <i class="bi bi-pencil"></i>
                   Update Tags
@@ -9646,6 +9646,7 @@ ${value}</textarea
     },
   ];
 
+  // FIXME: Conversations from different courses are showing up :O
   app.get<
     { courseReference: string; conversationReference: string },
     HTML,
