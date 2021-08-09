@@ -6446,15 +6446,18 @@ export default async function courselore(
                                   background-color: var(
                                     --color--gray--medium--200
                                   );
+                                  &:checked {
+                                    background-color: var(--color--blue--500);
+                                  }
                                   @media (prefers-color-scheme: dark) {
                                     background-color: var(
                                       --color--gray--medium--700
                                     );
+                                    &:checked {
+                                      background-color: var(--color--blue--800);
+                                    }
                                   }
                                   border-radius: var(--border-radius--full);
-                                  display: flex;
-                                  justify-content: flex-start;
-                                  align-items: center;
                                   &::after {
                                     content: "";
                                     background-color: var(
@@ -6468,13 +6471,19 @@ export default async function courselore(
                                     width: var(--space--3);
                                     height: var(--space--3);
                                     border-radius: var(--border-radius--circle);
+                                    display: block;
+                                    transition-property: var(
+                                      --transition-property--all
+                                    );
+                                    transition-duration: var(
+                                      --transition-duration--150
+                                    );
+                                    transition-timing-function: var(
+                                      --transition-timing-function--in-out
+                                    );
                                   }
-                                  &:checked {
-                                    background-color: var(--color--blue--500);
-                                    @media (prefers-color-scheme: dark) {
-                                      background-color: var(--color--blue--800);
-                                    }
-                                    justify-content: flex-end;
+                                  &:checked::after {
+                                    margin-left: var(--space--4);
                                   }
                                   transition-property: var(
                                     --transition-property--colors
