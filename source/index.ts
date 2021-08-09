@@ -926,8 +926,11 @@ export default async function courselore(
                 ${["blue", "green", "rose"].map(
                   (color) => css`
                     &.button--${color} {
+                      color: var(--color--${color}--50);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--${color}--100);
+                      }
                       &:not(:disabled) {
-                        color: var(--color--${color}--50);
                         background-color: var(--color--${color}--600);
                         &:hover,
                         &:focus-within {
@@ -937,7 +940,6 @@ export default async function courselore(
                           background-color: var(--color--${color}--700);
                         }
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--${color}--100);
                           background-color: var(--color--${color}--800);
                           &:hover,
                           &:focus-within {
@@ -946,6 +948,12 @@ export default async function courselore(
                           &:active {
                             background-color: var(--color--${color}--900);
                           }
+                        }
+                      }
+                      &:disabled {
+                        background-color: var(--color--${color}--300);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--${color}--500);
                         }
                       }
                     }
