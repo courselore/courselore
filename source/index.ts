@@ -716,13 +716,6 @@ export default async function courselore(
                   display: flex;
                   gap: var(--space--2);
                 }
-
-                .label--radio-or-checkbox {
-                  cursor: pointer;
-                  display: flex;
-                  gap: var(--space--2);
-                  align-items: center;
-                }
               }
 
               .input--text {
@@ -4600,7 +4593,9 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  <label class="label--radio-or-checkbox">
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <input
                       type="radio"
                       name="type"
@@ -4618,7 +4613,9 @@ export default async function courselore(
                     <i class="bi bi-link"></i>
                     Invitation Link
                   </label>
-                  <label class="label--radio-or-checkbox">
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <input
                       type="radio"
                       name="type"
@@ -4727,7 +4724,9 @@ export default async function courselore(
                   $${app.locals.constants.roles.map(
                     (role) =>
                       html`
-                        <label class="label--radio-or-checkbox">
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
                           <input
                             type="radio"
                             name="role"
@@ -4751,7 +4750,9 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  <label class="label--radio-or-checkbox">
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <input
                       type="radio"
                       name="isExpiresAt"
@@ -4768,7 +4769,9 @@ export default async function courselore(
                     <i class="bi bi-calendar-minus"></i>
                     Doesn’t Expire
                   </label>
-                  <label class="label--radio-or-checkbox">
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <input
                       type="radio"
                       name="isExpiresAt"
