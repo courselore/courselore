@@ -874,6 +874,13 @@ export default async function courselore(
                 );
               }
 
+              .input--radio-or-checkbox--multilabel {
+                &&&&&&&:not(:checked) + * + *,
+                &&&&&&&:checked + * {
+                  display: none;
+                }
+              }
+
               .button {
                 padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
@@ -8886,15 +8893,11 @@ ${value}</textarea
                               type="checkbox"
                               name="isPinned"
                               autocomplete="off"
-                              class="visually-hidden"
+                              class="input--checkbox input--radio-or-checkbox--multilabel"
                               style="${css`
                                 & ~ * {
                                   display: flex;
                                   gap: var(--space--2);
-                                }
-                                &:not(:checked) + * + *,
-                                &:checked + * {
-                                  display: none;
                                 }
                               `}"
                             />
