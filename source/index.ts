@@ -868,13 +868,6 @@ export default async function courselore(
                 );
               }
 
-              .input--radio-or-checkbox--multilabel {
-                &&&&&&&:not(:checked) + * + *,
-                &&&&&&&:checked + * {
-                  display: none;
-                }
-              }
-
               .button {
                 padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
@@ -1955,7 +1948,7 @@ export default async function courselore(
       extraHeaders: html`
         <div
           style="${css`
-            padding: var(--space--2) var(--space--4);
+            padding: var(--space--1) var(--space--4);
             display: flex;
             gap: var(--space--4);
             align-items: center;
@@ -8720,177 +8713,79 @@ ${value}</textarea
 
               $${app.locals.partials.textEditor()}
 
-              <div
-                style="${css`
-                  display: flex;
-                  flex-wrap: wrap;
-                  row-gap: var(--space--4);
-                `}"
-              >
+              <div class="label">
+                <p class="label--text">Type</p>
                 <div
                   style="${css`
-                    width: var(--space--44);
                     display: flex;
-                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                    column-gap: var(--space--4);
+                    row-gap: var(--space--2);
                   `}"
                 >
-                  <div class="label">
-                    <p class="label--text">Type</p>
-                    <div
-                      class="custom-select"
-                      data-ondomcontentloaded="${javascript`
-                        const input = this.querySelector(".custom-select--input");
-                        const button = this.querySelector(".custom-select--button");
-                        const content = this.querySelector(".custom-select--content");
-                        const options = this.querySelector(".custom-select--options");
-                        const update = () => {
-                          const checkedOption = options.querySelector(":checked");
-                          input.value = checkedOption.value;
-                          content.innerHTML = checkedOption.nextElementSibling.innerHTML;
-                          for (const element of options.querySelectorAll('[class~="button"]'))
-                            if (element.querySelector(":checked") === null) {
-                              element.classList.add("button--transparent");
-                              element.classList.remove("button--blue");
-                            }
-                            else {
-                              element.classList.remove("button--transparent");
-                              element.classList.add("button--blue");
-                            }
-                        };
-                        update();
-                        input.defaultValue = input.value;
-                        options.addEventListener("change", update);
-                        tippy(button, {
-                          content: options,
-                          trigger: "click",
-                          interactive: true,
-                        });
-                      `}"
-                    >
-                      <input
-                        type="text"
-                        name="type"
-                        hidden
-                        class="custom-select--input"
-                      />
-                      <button
-                        type="button"
-                        class="custom-select--button button button--tight button--tight--inline button--transparent"
+                  $${res.locals.conversationTypes.map(
+                    (conversationType) => html`
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
                       >
-                        <span
-                          class="custom-select--content"
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                        </span>
-                        <i class="bi bi-chevron-down"></i>
-                      </button>
-                      <div hidden>
-                        <div class="custom-select--options dropdown-menu">
-                          $${res.locals.conversationTypes.map(
-                            (conversationType, index) => html`
-                              <label
-                                class="dropdown-menu--item button button--transparent"
-                              >
-                                <input
-                                  type="radio"
-                                  name="custom-select--radio--type"
-                                  value="${conversationType}"
-                                  class="visually-hidden"
-                                  $${index === 0 ? html`checked` : html``}
-                                />
-                                <div
-                                  style="${css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
-                                  $${app.locals.partials.conversationTypeIcon(
-                                    conversationType
-                                  )}
-                                  $${lodash.capitalize(conversationType)}
-                                </div>
-                              </label>
-                            `
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
-                      <div
-                        style="${css`
-                          width: var(--space--28);
-                          display: flex;
-                          justify-content: flex-start;
-                        `}"
-                      >
-                        <div class="label">
-                          <div class="label--text">
-                            Pin
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Pinned conversations are listed first.",
-                                  trigger: "click",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-info-circle"></i>
-                            </button>
-                          </div>
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="isPinned"
-                              autocomplete="off"
-                              class="input--checkbox input--radio-or-checkbox--multilabel"
-                              style="${css`
-                                & ~ * {
-                                  display: flex;
-                                  gap: var(--space--2);
-                                }
-                              `}"
-                            />
-                            <span
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Pin",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-pin-angle"></i>
-                              Unpinned
-                            </span>
-                            <span
-                              class="strong"
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Unpin",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-pin-fill"></i>
-                              Pinned
-                            </span>
-                          </label>
-                        </div>
-                      </div>
+                        <input
+                          type="radio"
+                          name="type"
+                          value="${conversationType}"
+                          required
+                          class="input--radio"
+                        />
+                        $${app.locals.partials.conversationTypeIcon(
+                          conversationType
+                        )}
+                        $${lodash.capitalize(conversationType)}
+                      </label>
                     `
-                  : html``}
+                  )}
+                </div>
               </div>
 
+              $${res.locals.enrollment.role === "staff"
+                ? html`
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <input
+                          type="checkbox"
+                          name="isPinned"
+                          autocomplete="off"
+                          class="input--checkbox"
+                          style="${css`
+                            & ~ * {
+                              display: flex;
+                              gap: var(--space--2);
+                            }
+                          `}"
+                        />
+                        <i class="bi bi-pin"></i>
+                        Pin
+                      </label>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Pinned conversations are listed first.",
+                            trigger: "click",
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </div>
+                  `
+                : html``}
               $${res.locals.tags.length === 0
                 ? html``
                 : html`
