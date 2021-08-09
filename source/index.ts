@@ -6468,7 +6468,7 @@ export default async function courselore(
                         >
                           <div
                             style="${css`
-                              width: var(--space--44);
+                              width: var(--space--52);
                               display: flex;
                               justify-content: flex-start;
                             `}"
@@ -6478,10 +6478,11 @@ export default async function courselore(
                             >
                               <input
                                 type="checkbox"
-                                name="privateToStaff"
+                                name="isStaffOnly"
                                 class="input--checkbox"
                               />
-                              <i class="bi bi-lock"></i> Private to Staff
+                              <i class="bi bi-lock"></i>
+                              Visible Only to Staff
                             </label>
                           </div>
                           <div
