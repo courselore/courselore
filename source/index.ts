@@ -846,6 +846,8 @@ export default async function courselore(
                 width: var(--space--8);
                 padding: var(--space--0-5);
                 border-radius: var(--border-radius--full);
+                position: relative;
+                top: var(--space--0-5);
                 &::after {
                   content: "";
                   background-color: var(--color--gray--medium--50);
