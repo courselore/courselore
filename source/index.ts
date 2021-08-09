@@ -4819,39 +4819,30 @@ export default async function courselore(
                     class="button button--tight button--tight--inline button--transparent"
                   >
                     <input
-                      type="radio"
-                      name="isExpiresAt"
-                      required
+                      type="checkbox"
                       autocomplete="off"
-                      class="input--radio"
+                      class="input--checkbox input--radio-or-checkbox--multilabel"
+                      style="${css`
+                        & ~ * {
+                          display: flex;
+                          gap: var(--space--2);
+                        }
+                      `}"
                       onchange="${javascript`
                         const expiresAt = this.closest("form").querySelector(".expires-at");
-                        expiresAt.hidden = true;
+                        expiresAt.hidden = !this.checked;
                         for (const element of expiresAt.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = true;
+                          if (element.disabled !== undefined) element.disabled = !this.checked;
                       `}"
                     />
-                    <i class="bi bi-calendar-minus"></i>
-                    Doesn’t Expire
-                  </label>
-                  <label
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
-                    <input
-                      type="radio"
-                      name="isExpiresAt"
-                      required
-                      autocomplete="off"
-                      class="input--radio"
-                      onchange="${javascript`
-                        const expiresAt = this.closest("form").querySelector(".expires-at");
-                        expiresAt.hidden = false;
-                        for (const element of expiresAt.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = false;
-                      `}"
-                    />
-                    <i class="bi bi-calendar-plus"></i>
-                    Expires
+                    <span>
+                      <i class="bi bi-calendar-minus"></i>
+                      Doesn’t Expire
+                    </span>
+                    <span>
+                      <i class="bi bi-calendar-plus"></i>
+                      Expires
+                    </span>
                   </label>
                 </div>
               </div>
