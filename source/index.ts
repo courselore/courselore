@@ -4812,7 +4812,6 @@ export default async function courselore(
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--4);
                   `}"
                 >
                   <label
