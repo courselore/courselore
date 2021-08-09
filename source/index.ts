@@ -6476,6 +6476,15 @@ export default async function courselore(
                                     }
                                     justify-content: flex-end;
                                   }
+                                  transition-property: var(
+                                    --transition-property--colors
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--in-out
+                                  );
                                 `}"
                               />
                               <i class="bi bi-lock"></i> Private to Staff
