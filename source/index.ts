@@ -6267,35 +6267,20 @@ export default async function courselore(
                                 justify-content: flex-start;
                               `}"
                             >
-                              <div class="select">
-                                <select
-                                  disabled
-                                  name="tags[${index}][staffOnlyAt]"
-                                  required
-                                  autocomplete="off"
-                                  class="disable-on-delete select--tag button button--tight button--tight--inline button--transparent"
-                                >
-                                  <option
-                                    value="everyone"
-                                    $${tag.staffOnlyAt === "everyone"
-                                      ? html`selected`
-                                      : html``}
-                                  >
-                                    Visible by Everyone
-                                  </option>
-                                  <option
-                                    value="staff"
-                                    $${tag.staffOnlyAt === "staff"
-                                      ? html`selected`
-                                      : html``}
-                                  >
-                                    Visible by Staff Only
-                                  </option>
-                                </select>
-                                <div class="select--chevron">
-                                  <i class="bi bi-chevron-down"></i>
-                                </div>
-                              </div>
+                              <label
+                                class="button button--tight button--tight--inline button--transparent"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="tags[${index}][isStaffOnly]"
+                                  class="input--checkbox"
+                                  $${tag.staffOnlyAt === null
+                                    ? html``
+                                    : html`checked`}
+                                />
+                                <i class="bi bi-lock"></i>
+                                Visible Only to Staff
+                              </label>
                             </div>
                             <div
                               style="${css`
