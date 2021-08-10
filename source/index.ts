@@ -3976,10 +3976,10 @@ export default async function courselore(
       }>(
         sql`
           SELECT "taggings"."id",
-                "tags"."id" AS "tagId",
-                "tags"."reference" AS "tagReference",
-                "tags"."name" AS "tagName",
-                "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+                 "tags"."id" AS "tagId",
+                 "tags"."reference" AS "tagReference",
+                 "tags"."name" AS "tagName",
+                 "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
           FROM "taggings"
           JOIN "tags" ON "taggings"."tag" = "tags"."id"
           WHERE "taggings"."conversation" = ${conversation.id}
