@@ -534,8 +534,15 @@ export default async function courselore(
                         return "Please select one of these options.";
                       break;
                     case "checkbox":
-                      if (!element.checked)
-                        return "Please check this checkbox.";
+                      const checkboxes = [
+                        ...element
+                          .closest("form")
+                          .querySelectorAll('[name="' + element.name + '"]'),
+                      ];
+                      if (!checkboxes.some((checkbox) => checkbox.checked))
+                        return checkboxes.length === 1
+                          ? "Please check this checkbox."
+                          : "Please select at least one of these options.";
                       break;
                     default:
                       if (element.value.trim() === "")
@@ -8880,13 +8887,8 @@ ${value}</textarea
                                 type="checkbox"
                                 name="tagsReferences[]"
                                 value="${tag.reference}"
+                                required
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                data-ondomcontentloaded="${javascript`
-                                  (this.validators ??= []).push(() => {
-                                    if (this.closest("form").querySelector('[name="tagsReferences[]"]:checked') === null)
-                                      return "Please select at least one tag.";
-                                  });
-                                `}"
                               />
                               <span
                                 data-ondomcontentloaded="${javascript`
