@@ -3677,7 +3677,7 @@ export default async function courselore(
       type: ConversationType;
       pinnedAt: string | null;
       createdAt: string;
-      updatedAt: string;
+      updatedAt: string | null;
       authorEnrollment:
         | {
             id: number;
@@ -3898,10 +3898,10 @@ export default async function courselore(
       updatedAt: string;
     }>(
       sql`
-        SELECT "messages"."updatedAt"
+        SELECT coalesce("messages"."updatedAt", "messages"."createdAt") AS "updatedAt"
         FROM "messages"
         WHERE "messages"."conversation" = ${conversation.id}
-        ORDER BY "messages"."updatedAt" DESC
+        ORDER BY datetime(coalesce("messages"."updatedAt", "messages"."createdAt")) DESC
         LIMIT 1
       `
     )!;
@@ -4009,7 +4009,10 @@ export default async function courselore(
       type: conversation.type,
       pinnedAt: conversation.pinnedAt,
       createdAt: originalMessage.createdAt,
-      updatedAt: mostRecentlyUpdatedMessage.updatedAt,
+      updatedAt:
+        mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
+          ? null
+          : mostRecentlyUpdatedMessage.updatedAt,
       authorEnrollment:
         originalMessage.authorEnrollmentId !== null &&
         originalMessage.authorUserId !== null &&
