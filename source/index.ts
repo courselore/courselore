@@ -1134,6 +1134,8 @@ export default async function courselore(
               }
 
               .stripped {
+                display: flex;
+                flex-direction: column;
                 & > * {
                   &:nth-child(odd) {
                     background-color: var(--color--gray--medium--100);
@@ -7405,17 +7407,7 @@ export default async function courselore(
                     </div>
                   `
                 : html`
-                    <div
-                      class="${req.query
-                        .onlyConversationLayoutSidebarOnSmallScreen === "true"
-                        ? "active--cancel"
-                        : ""}"
-                      style="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
+                    <div class="stripped">
                       $${res.locals.conversations.map(
                         (conversation) => html`
                           <a
@@ -7430,8 +7422,13 @@ export default async function courselore(
                             class="${conversation.id ===
                             res.locals.conversation?.id
                               ? "active"
+                              : ""} ${req.query
+                              .onlyConversationLayoutSidebarOnSmallScreen ===
+                            "true"
+                              ? "active--cancel"
                               : ""}"
                             style="${css`
+                              /*
                               width: calc(100% + 2 * var(--space--2));
                               padding: var(--space--2) var(--space--2);
                               border-radius: var(--border-radius--lg);
@@ -7501,6 +7498,7 @@ export default async function courselore(
                                   }
                                 }
                               }
+                              */
                             `}"
                           >
                             <h3
