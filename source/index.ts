@@ -8845,7 +8845,7 @@ ${value}</textarea
               $${res.locals.tags.length === 0
                 ? html``
                 : html`
-                    <div class="tags label">
+                    <div class="label">
                       <div class="label--text">
                         Tags
                         <button
@@ -8875,18 +8875,18 @@ ${value}</textarea
                           (tag) => html`
                             <label
                               class="button button--tight button--tight--inline button--transparent"
-                              style="${css`
-                                display: grid;
-                                & > * {
-                                  grid-area: 1 / 1;
-                                }
-                              `}"
                             >
                               <input
                                 type="checkbox"
                                 name="tagsReferences[]"
                                 value="${tag.reference}"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
+                                data-ondomcontentloaded="${javascript`
+                                  (this.validators ??= []).push(() => {
+                                    if (this.closest("form").querySelector('[name="tagsReferences[]"]:checked') === null)
+                                      return "Please select at least one tag.";
+                                  });
+                                `}"
                               />
                               <span
                                 data-ondomcontentloaded="${javascript`
@@ -8900,7 +8900,7 @@ ${value}</textarea
                                 ${tag.name}
                               </span>
                               <span
-                                class="strong"
+                                class="text--blue"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
@@ -8915,83 +8915,6 @@ ${value}</textarea
                           `
                         )}
                       </div>
-                      <div
-                        hidden
-                        style="${css`
-                          display: flex;
-                          gap: var(--space--6);
-                        `}"
-                      >
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: this.nextElementSibling.firstElementChild,
-                              trigger: "click",
-                              interactive: true,
-                            });
-                            (this.validators ??= []).push(() => {
-                              if (this.closest(".tags").querySelector(".tags--list :checked") === null)
-                                return "Please select at least one tag.";
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-tags"></i>
-                        </button>
-                        <div hidden>
-                          <div
-                            class="dropdown-menu"
-                            onchange="${javascript`
-                              for (const tag of this.querySelectorAll(".tag"))
-                                if (tag.querySelector(":checked") === null) {
-                                  tag.classList.add("button--transparent");
-                                  tag.classList.remove("button--blue");
-                                }
-                                else {
-                                  tag.classList.remove("button--transparent");
-                                  tag.classList.add("button--blue");
-                                }
-                              const tags = [];
-                              for (const element of this.querySelectorAll(":checked"))
-                                tags.push(element.cloneNode(true), element.nextElementSibling.cloneNode(true));
-                              this.closest(".tags").querySelector(".tags--list").replaceChildren(...tags);
-                            `}"
-                          >
-                            $${res.locals.tags.map(
-                              (tag) => html`
-                                <label
-                                  class="tag dropdown-menu--item button button--transparent"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    name="tagsReferences[]"
-                                    value="${tag.reference}"
-                                    class="visually-hidden"
-                                  />
-                                  <div
-                                    style="${css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <i class="bi bi-tag"></i> ${tag.name}
-                                  </div>
-                                </label>
-                              `
-                            )}
-                          </div>
-                        </div>
-                        <div
-                          class="tags--list"
-                          style="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--6);
-                            row-gap: var(--space--2);
-                          `}"
-                        ></div>
-                      </div>
                     </div>
                   `}
               $${res.locals.enrollment.role === "staff"
@@ -9003,11 +8926,11 @@ ${value}</textarea
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
                           data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Pinned conversations are listed first.",
-                            trigger: "click",
-                          });
-                        `}"
+                            tippy(this, {
+                              content: "Pinned conversations are listed first.",
+                              trigger: "click",
+                            });
+                          `}"
                         >
                           <i class="bi bi-info-circle"></i>
                         </button>
