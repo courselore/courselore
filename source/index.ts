@@ -6518,8 +6518,7 @@ export default async function courselore(
                           data-onmount="${javascript`
                             this.dataset.forceIsModified = true;
                             this.disabled = false;
-                            const tag = this.closest(".tag");
-                            this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][name]";
+                            this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
                           `}"
                         />
                         <div
@@ -6546,8 +6545,7 @@ export default async function courselore(
                                 data-onmount="${javascript`
                                   this.dataset.forceIsModified = true;
                                   this.disabled = false;
-                                  const tag = this.closest(".tag");
-                                  this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][isStaffOnly]";
+                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
                                 `}"
                               />
                               <span
