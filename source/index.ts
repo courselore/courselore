@@ -6506,7 +6506,7 @@ export default async function courselore(
                                 `}"
                               />
                               <span
-                                data-ondomcontentloaded="${javascript`
+                                data-onmount="${javascript`
                                   tippy(this, {
                                     content: "Set as Visible by Staff Only",
                                     touch: false,
@@ -6517,7 +6517,7 @@ export default async function courselore(
                                 Visible by Everyone
                               </span>
                               <span
-                                data-ondomcontentloaded="${javascript`
+                                data-onmount="${javascript`
                                   tippy(this, {
                                     content: "Set as Visible by Everyone",
                                     touch: false,
