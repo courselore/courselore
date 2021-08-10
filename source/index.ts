@@ -7521,15 +7521,14 @@ export default async function courselore(
                                         `}
                                     ${conversation.authorEnrollment.user.name}
                                   </div>
-                                  $${conversation.updatedAt !==
-                                  conversation.createdAt
+                                  $${conversation.updatedAt !== null
                                     ? html`
                                         <div>
                                           and last updated
                                           <time
                                             data-ondomcontentloaded="${javascript`
-                                        relativizeTime(this);
-                                      `}"
+                                              relativizeTime(this);
+                                            `}"
                                           >
                                             ${conversation.updatedAt}
                                           </time>
@@ -9086,7 +9085,7 @@ ${value}</textarea
     messages: {
       id: number;
       createdAt: string;
-      updatedAt: string;
+      updatedAt: string | null;
       reference: string;
       authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
       content: string;
@@ -9132,7 +9131,7 @@ ${value}</textarea
         .all<{
           id: number;
           createdAt: string;
-          updatedAt: string;
+          updatedAt: string | null;
           reference: string;
           authorEnrollmentId: number | null;
           authorUserId: number | null;
@@ -9948,7 +9947,7 @@ ${value}</textarea
                         >
                           ${message.createdAt}
                         </time>
-                        $${message.updatedAt !== message.createdAt
+                        $${message.updatedAt !== null
                           ? html`
                               and last edited
                               <time
