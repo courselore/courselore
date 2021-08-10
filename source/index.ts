@@ -8868,8 +8868,6 @@ ${value}</textarea
                       </div>
                       <div
                         style="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
                           display: flex;
                           flex-wrap: wrap;
                           column-gap: var(--space--6);
