@@ -6316,7 +6316,7 @@ export default async function courselore(
                                 />
                                 <span
                                   data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
+                                    this.tooltip = tippy(this, {
                                       content: "Set as Visible by Staff Only",
                                       touch: false,
                                     });
@@ -6327,7 +6327,7 @@ export default async function courselore(
                                 </span>
                                 <span
                                   data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
+                                    this.tooltip = tippy(this, {
                                       content: "Set as Visible by Everyone",
                                       touch: false,
                                     });
@@ -6402,7 +6402,14 @@ export default async function courselore(
                                         tag.classList.add("deleted");
                                         tag.querySelector(".tag--icon").classList.add("text--rose");
                                         tag.querySelector('[name$="[delete]"]').disabled = false;
-                                        for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = true;
+                                        for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                          element.disabled = true;
+                                          const button = element.closest(".button");
+                                          if (button === null) continue;
+                                          button.classList.add("disabled");
+                                          for (const element of button.querySelectorAll("*"))
+                                            if (element.tooltip !== undefined) element.tooltip.disable();
+                                        }
                                       `}"
                                     >
                                       <i class="bi bi-trash"></i>
@@ -6432,7 +6439,14 @@ export default async function courselore(
                                     tag.classList.remove("deleted");
                                     tag.querySelector(".tag--icon").classList.remove("text--rose");
                                     tag.querySelector('[name$="[delete]"]').disabled = true;
-                                    for (const element of tag.querySelectorAll(".disable-on-delete")) element.disabled = false;
+                                    for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                      element.disabled = false;
+                                      const button = element.closest(".button");
+                                      if (button === null) continue;
+                                      button.classList.remove("disabled");
+                                      for (const element of button.querySelectorAll("*"))
+                                        if (element.tooltip !== undefined) element.tooltip.enable();
+                                    }
                                   `}"
                                 >
                                   <i class="bi bi-recycle"></i>
