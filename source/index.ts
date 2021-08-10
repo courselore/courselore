@@ -4826,7 +4826,7 @@ export default async function courselore(
                     <input
                       type="checkbox"
                       autocomplete="off"
-                      class="input--checkbox"
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
                         const expiresAt = this.closest("form").querySelector(".expires-at");
                         expiresAt.hidden = !this.checked;
@@ -4834,8 +4834,28 @@ export default async function courselore(
                           if (element.disabled !== undefined) element.disabled = !this.checked;
                       `}"
                     />
-                    <i class="bi bi-calendar-plus"></i>
-                    Expires
+                    <span
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Set Invitation as Expiring",
+                          touch: false,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-calendar-minus"></i>
+                      Doesn’t Expire
+                    </span>
+                    <span
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Set Invitation as Not Expiring",
+                          touch: false,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-calendar-plus"></i>
+                      Expires
+                    </span>
                   </label>
                 </div>
               </div>
