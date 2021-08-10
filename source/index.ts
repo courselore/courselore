@@ -4837,7 +4837,7 @@ export default async function courselore(
                     <span
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
-                          content: "Set Invitation as Expiring",
+                          content: "Set as Expiring",
                           touch: false,
                         });
                       `}"
@@ -4848,7 +4848,7 @@ export default async function courselore(
                     <span
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
-                          content: "Set Invitation as Not Expiring",
+                          content: "Set as Not Expiring",
                           touch: false,
                         });
                       `}"
@@ -6486,7 +6486,7 @@ export default async function courselore(
                         >
                           <div
                             style="${css`
-                              width: var(--space--52);
+                              width: var(--space--44);
                               display: flex;
                               justify-content: flex-start;
                             `}"
@@ -6497,7 +6497,7 @@ export default async function courselore(
                               <input
                                 type="checkbox"
                                 disabled
-                                class="input--checkbox"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
                                 data-onmount="${javascript`
                                   this.dataset.forceIsModified = true;
                                   this.disabled = false;
@@ -6505,8 +6505,28 @@ export default async function courselore(
                                   this.name = "tags[" + [...tag.parentElement.children].indexOf(tag) + "][isStaffOnly]";
                                 `}"
                               />
-                              <i class="bi bi-lock"></i>
-                              Visible Only to Staff
+                              <span
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Visible by Staff Only",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-unlock"></i>
+                                Visible by Everyone
+                              </span>
+                              <span
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Visible by Everyone",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-lock"></i>
+                                Visible by Staff Only
+                              </span>
                             </label>
                           </div>
                           <div
