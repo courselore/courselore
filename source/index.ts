@@ -9046,8 +9046,8 @@ ${value}</textarea
       title?: string;
       content?: string;
       type?: ConversationType;
-      isPinned?: boolean;
       tagsReferences?: string[];
+      isPinned?: boolean;
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -9063,17 +9063,19 @@ ${value}</textarea
         req.body.content.trim() === "" ||
         typeof req.body.type !== "string" ||
         !res.locals.conversationTypes.includes(req.body.type) ||
-        (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         !Array.isArray(req.body.tagsReferences) ||
         (res.locals.tags.length > 0 &&
           (req.body.tagsReferences.length === 0 ||
+            new Set(req.body.tagsReferences).size <
+              req.body.tagsReferences.length ||
             req.body.tagsReferences.some(
               (tagReference) =>
                 typeof tagReference !== "string" ||
                 !res.locals.tags.some(
                   (existingTag) => tagReference === existingTag.reference
                 )
-            )))
+            ))) ||
+        (req.body.isPinned && res.locals.enrollment.role !== "staff")
       )
         return next("validation");
 
@@ -9113,7 +9115,7 @@ ${value}</textarea
           )
         `
       );
-      for (const tagReference of new Set(req.body.tagsReferences))
+      for (const tagReference of req.body.tagsReferences)
         app.locals.database.run(
           sql`
             INSERT INTO "taggings" ("conversation", "tag")
