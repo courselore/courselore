@@ -868,6 +868,17 @@ export default async function courselore(
                 );
               }
 
+              .input--radio-or-checkbox--multilabel {
+                & ~ * {
+                  display: flex;
+                  gap: var(--space--2);
+                }
+                &:not(:checked) + * + *,
+                &:checked + * {
+                  display: none;
+                }
+              }
+
               .button {
                 padding: var(--space--1) var(--space--4);
                 border-radius: var(--border-radius--md);
@@ -8797,17 +8808,7 @@ ${value}</textarea
                                 type="checkbox"
                                 name="tagsReferences[]"
                                 value="${tag.reference}"
-                                class="visually-hidden"
-                                style="${css`
-                                  & ~ * {
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  }
-                                  &:not(:checked) + * + *,
-                                  &:checked + * {
-                                    visibility: hidden;
-                                  }
-                                `}"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
                                 data-ondomcontentloaded="${javascript`
