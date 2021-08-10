@@ -80,16 +80,21 @@ export default async function courselore(
   app.locals.partials = {} as Partials;
 
   interface Constants {
-    roles: Role[];
+    enrollmentRoles: EnrollmentRole[];
   }
-  type Role = "student" | "staff";
-  app.locals.constants.roles = ["student", "staff"];
+  type EnrollmentRole = "student" | "staff";
+  app.locals.constants.enrollmentRoles = ["student", "staff"];
 
   interface Constants {
-    accentColors: AccentColor[];
+    enrollmentAccentColors: EnrollmentAccentColor[];
   }
-  type AccentColor = "amber" | "teal" | "blue" | "purple";
-  app.locals.constants.accentColors = ["amber", "teal", "blue", "purple"];
+  type EnrollmentAccentColor = "amber" | "teal" | "blue" | "purple";
+  app.locals.constants.enrollmentAccentColors = [
+    "amber",
+    "teal",
+    "blue",
+    "purple",
+  ];
 
   interface Constants {
     anonymousEnrollment: AnonymousEnrollment;
@@ -2633,7 +2638,7 @@ export default async function courselore(
         name: string;
       };
       reference: string;
-      role: Role;
+      role: EnrollmentRole;
     }[];
     enrollments: {
       id: number;
@@ -2644,8 +2649,8 @@ export default async function courselore(
         nextConversationReference: number;
       };
       reference: string;
-      role: Role;
-      accentColor: AccentColor;
+      role: EnrollmentRole;
+      accentColor: EnrollmentAccentColor;
     }[];
   }
   app.locals.middlewares.isSignedIn = [
@@ -2674,7 +2679,7 @@ export default async function courselore(
           courseReference: string;
           courseName: string;
           reference: string;
-          role: Role;
+          role: EnrollmentRole;
         }>(
           sql`
             SELECT "invitations"."id",
@@ -2712,8 +2717,8 @@ export default async function courselore(
           courseName: string;
           courseNextConversationReference: number;
           reference: string;
-          role: Role;
-          accentColor: AccentColor;
+          role: EnrollmentRole;
+          accentColor: EnrollmentAccentColor;
         }>(
           sql`
             SELECT "enrollments"."id",
@@ -3633,14 +3638,14 @@ export default async function courselore(
   interface Helpers {
     defaultAccentColor: (
       enrollments: IsSignedInMiddlewareLocals["enrollments"]
-    ) => AccentColor;
+    ) => EnrollmentAccentColor;
   }
   app.locals.helpers.defaultAccentColor = (enrollments) => {
-    const accentColorsInUse = new Set<AccentColor>(
+    const accentColorsInUse = new Set<EnrollmentAccentColor>(
       enrollments.map((enrollment) => enrollment.accentColor)
     );
-    const accentColorsAvailable = new Set<AccentColor>(
-      app.locals.constants.accentColors
+    const accentColorsAvailable = new Set<EnrollmentAccentColor>(
+      app.locals.constants.enrollmentAccentColors
     );
     for (const accentColorInUse of accentColorsInUse) {
       accentColorsAvailable.delete(accentColorInUse);
@@ -3689,7 +3694,7 @@ export default async function courselore(
               biography: string | null;
             };
             reference: string;
-            role: Role;
+            role: EnrollmentRole;
           }
         | AnonymousEnrollment;
       messagesCount: number;
@@ -3706,7 +3711,7 @@ export default async function courselore(
                 biography: string | null;
               };
               reference: string;
-              role: Role;
+              role: EnrollmentRole;
             }
           | AnonymousEnrollment;
       }[];
@@ -3871,7 +3876,7 @@ export default async function courselore(
       authorUserAvatar: string | null;
       authorUserBiography: string | null;
       authorEnrollmentReference: string | null;
-      authorEnrollmentRole: Role | null;
+      authorEnrollmentRole: EnrollmentRole | null;
       likesCount: number;
     }>(
       sql`
@@ -3923,7 +3928,7 @@ export default async function courselore(
               userAvatar: string | null;
               userBiography: string | null;
               enrollmentReference: string | null;
-              enrollmentRole: Role | null;
+              enrollmentRole: EnrollmentRole | null;
             }>(
               sql`
                 SELECT "endorsements"."id",
@@ -4161,7 +4166,7 @@ export default async function courselore(
       reference: string;
       email: string | null;
       name: string | null;
-      role: Role;
+      role: EnrollmentRole;
     };
   }
   app.locals.middlewares.invitationExists = [
@@ -4176,7 +4181,7 @@ export default async function courselore(
         reference: string;
         email: string | null;
         name: string | null;
-        role: Role;
+        role: EnrollmentRole;
       }>(
         sql`
           SELECT "invitations"."id",
@@ -4303,7 +4308,7 @@ export default async function courselore(
     managedEnrollment: {
       id: number;
       reference: string;
-      role: Role;
+      role: EnrollmentRole;
       isSelf: boolean;
     };
   }
@@ -4313,7 +4318,7 @@ export default async function courselore(
       const managedEnrollment = app.locals.database.get<{
         id: number;
         reference: string;
-        role: Role;
+        role: EnrollmentRole;
       }>(
         sql`
           SELECT "id", "reference", "role"
@@ -4651,7 +4656,7 @@ export default async function courselore(
         reference: string;
         email: string | null;
         name: string | null;
-        role: Role;
+        role: EnrollmentRole;
       }>(
         sql`
           SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "role"
@@ -4826,7 +4831,7 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  $${app.locals.constants.roles.map(
+                  $${app.locals.constants.enrollmentRoles.map(
                     (role) =>
                       html`
                         <label
@@ -5183,49 +5188,50 @@ export default async function courselore(
                                 </button>
                                 <div hidden>
                                   <div class="dropdown-menu">
-                                    $${app.locals.constants.roles.map((role) =>
-                                      role === invitation.role
-                                        ? html``
-                                        : html`
-                                            <form
-                                              method="POST"
-                                              action="${action}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="role"
-                                                value="${role}"
-                                              />
-                                              <button
-                                                class="dropdown-menu--item button button--transparent"
-                                                $${isUsed
-                                                  ? html`
-                                                      type="button"
-                                                      data-ondomcontentloaded="${javascript`
+                                    $${app.locals.constants.enrollmentRoles.map(
+                                      (role) =>
+                                        role === invitation.role
+                                          ? html``
+                                          : html`
+                                              <form
+                                                method="POST"
+                                                action="${action}?_method=PATCH"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="role"
+                                                  value="${role}"
+                                                />
+                                                <button
+                                                  class="dropdown-menu--item button button--transparent"
+                                                  $${isUsed
+                                                    ? html`
+                                                        type="button"
+                                                        data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
                                                           content: "You may not change the role of this invitation because it’s used.",
                                                           theme: "rose",
                                                           trigger: "click",
                                                         });
                                                       `}"
-                                                    `
-                                                  : isExpired
-                                                  ? html`
-                                                      type="button"
-                                                      data-ondomcontentloaded="${javascript`
+                                                      `
+                                                    : isExpired
+                                                    ? html`
+                                                        type="button"
+                                                        data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
                                                           content: "You may not change the role of this invitation because it’s expired.",
                                                           theme: "rose",
                                                           trigger: "click",
                                                         });
                                                       `}"
-                                                    `
-                                                  : html``}
-                                              >
-                                                ${lodash.capitalize(role)}
-                                              </button>
-                                            </form>
-                                          `
+                                                      `
+                                                    : html``}
+                                                >
+                                                  ${lodash.capitalize(role)}
+                                                </button>
+                                              </form>
+                                            `
                                     )}
                                   </div>
                                 </div>
@@ -5510,7 +5516,7 @@ export default async function courselore(
     HTML,
     {
       type?: "link" | "email";
-      role?: Role;
+      role?: EnrollmentRole;
       expiresAt?: string;
       emails?: string;
     },
@@ -5522,7 +5528,7 @@ export default async function courselore(
     (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
-        !app.locals.constants.roles.includes(req.body.role) ||
+        !app.locals.constants.enrollmentRoles.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             !app.locals.helpers.isDate(req.body.expiresAt) ||
@@ -5656,7 +5662,7 @@ export default async function courselore(
               reference: string;
               email: string | null;
               name: string | null;
-              role: Role;
+              role: EnrollmentRole;
             }>(
               sql`
                 INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
@@ -5699,7 +5705,7 @@ export default async function courselore(
     HTML,
     {
       resend?: "true";
-      role?: Role;
+      role?: EnrollmentRole;
       expiresAt?: string;
       removeExpiration?: "true";
       expire?: "true";
@@ -5735,7 +5741,7 @@ export default async function courselore(
       if (req.body.role !== undefined) {
         if (
           app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
-          !app.locals.constants.roles.includes(req.body.role)
+          !app.locals.constants.enrollmentRoles.includes(req.body.role)
         )
           return next("validation");
 
@@ -5839,7 +5845,7 @@ export default async function courselore(
         userAvatar: string | null;
         userBiography: string | null;
         reference: string;
-        role: Role;
+        role: EnrollmentRole;
       }>(
         sql`
           SELECT "enrollments"."id",
@@ -5965,37 +5971,38 @@ export default async function courselore(
                           </button>
                           <div hidden>
                             <div class="dropdown-menu">
-                              $${app.locals.constants.roles.map((role) =>
-                                role === enrollment.role
-                                  ? html``
-                                  : html`
-                                      <form
-                                        method="POST"
-                                        action="${action}?_method=PATCH"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="role"
-                                          value="${role}"
-                                        />
-                                        <div>
-                                          <button
-                                            class="dropdown-menu--item button button--transparent"
-                                            $${isOnlyStaff
-                                              ? html`
-                                                  type="button"
-                                                  data-ondomcontentloaded="${javascript`
+                              $${app.locals.constants.enrollmentRoles.map(
+                                (role) =>
+                                  role === enrollment.role
+                                    ? html``
+                                    : html`
+                                        <form
+                                          method="POST"
+                                          action="${action}?_method=PATCH"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="role"
+                                            value="${role}"
+                                          />
+                                          <div>
+                                            <button
+                                              class="dropdown-menu--item button button--transparent"
+                                              $${isOnlyStaff
+                                                ? html`
+                                                    type="button"
+                                                    data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "You may not change your own role because you’re the only staff member.",
                                                       theme: "rose",
                                                       trigger: "click",
                                                     });
                                                   `}"
-                                                `
-                                              : isSelf
-                                              ? html`
-                                                  type="button"
-                                                  data-ondomcontentloaded="${javascript`
+                                                  `
+                                                : isSelf
+                                                ? html`
+                                                    type="button"
+                                                    data-ondomcontentloaded="${javascript`
                                                     const element = this.nextElementSibling.firstElementChild;
                                                     element.form = this.closest("form");
                                                     tippy(this, {
@@ -6006,56 +6013,60 @@ export default async function courselore(
                                                       appendTo: document.body,
                                                     });
                                                   `}"
-                                                `
-                                              : html``}
-                                          >
-                                            ${lodash.capitalize(role)}
-                                          </button>
-                                          $${isSelf
-                                            ? html`
-                                                <div hidden>
-                                                  <div
-                                                    class="confirmation"
-                                                    style="${css`
-                                                      padding: var(--space--2);
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--4);
-                                                    `}"
-                                                  >
-                                                    <p>
-                                                      Are you sure you want to
-                                                      change your own role to
-                                                      ${role}?
-                                                    </p>
-                                                    <p>
-                                                      <strong
-                                                        style="${css`
-                                                          font-weight: var(
-                                                            --font-weight--bold
-                                                          );
-                                                        `}"
-                                                      >
-                                                        You may not undo this
-                                                        action!
-                                                      </strong>
-                                                    </p>
-                                                    <button
-                                                      class="button button--rose"
-                                                      onclick="${javascript`
-                                                        this.closest(".confirmation").form.submit();
+                                                  `
+                                                : html``}
+                                            >
+                                              ${lodash.capitalize(role)}
+                                            </button>
+                                            $${isSelf
+                                              ? html`
+                                                  <div hidden>
+                                                    <div
+                                                      class="confirmation"
+                                                      style="${css`
+                                                        padding: var(
+                                                          --space--2
+                                                        );
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--4);
                                                       `}"
                                                     >
-                                                      Change My Own Role to
-                                                      ${lodash.capitalize(role)}
-                                                    </button>
+                                                      <p>
+                                                        Are you sure you want to
+                                                        change your own role to
+                                                        ${role}?
+                                                      </p>
+                                                      <p>
+                                                        <strong
+                                                          style="${css`
+                                                            font-weight: var(
+                                                              --font-weight--bold
+                                                            );
+                                                          `}"
+                                                        >
+                                                          You may not undo this
+                                                          action!
+                                                        </strong>
+                                                      </p>
+                                                      <button
+                                                        class="button button--rose"
+                                                        onclick="${javascript`
+                                                        this.closest(".confirmation").form.submit();
+                                                      `}"
+                                                      >
+                                                        Change My Own Role to
+                                                        ${lodash.capitalize(
+                                                          role
+                                                        )}
+                                                      </button>
+                                                    </div>
                                                   </div>
-                                                </div>
-                                              `
-                                            : html``}
-                                        </div>
-                                      </form>
-                                    `
+                                                `
+                                              : html``}
+                                          </div>
+                                        </form>
+                                      `
                               )}
                             </div>
                           </div>
@@ -6149,7 +6160,7 @@ export default async function courselore(
   app.patch<
     { courseReference: string; enrollmentReference: string },
     HTML,
-    { role?: Role },
+    { role?: EnrollmentRole },
     {},
     MayManageEnrollmentMiddlewareLocals
   >(
@@ -6157,7 +6168,7 @@ export default async function courselore(
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
-        if (!app.locals.constants.roles.includes(req.body.role))
+        if (!app.locals.constants.enrollmentRoles.includes(req.body.role))
           return next("validation");
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
@@ -6780,7 +6791,7 @@ export default async function courselore(
                     gap: var(--space--2);
                   `}"
                 >
-                  $${app.locals.constants.accentColors.map(
+                  $${app.locals.constants.enrollmentAccentColors.map(
                     (accentColor) => html`
                       <input
                         type="radio"
@@ -6839,7 +6850,7 @@ export default async function courselore(
   app.patch<
     { courseReference: string },
     HTML,
-    { accentColor?: AccentColor },
+    { accentColor?: EnrollmentAccentColor },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
@@ -6848,7 +6859,9 @@ export default async function courselore(
     (req, res, next) => {
       if (
         typeof req.body.accentColor !== "string" ||
-        !app.locals.constants.accentColors.includes(req.body.accentColor)
+        !app.locals.constants.enrollmentAccentColors.includes(
+          req.body.accentColor
+        )
       )
         return next("validation");
 
@@ -9139,8 +9152,8 @@ ${value}</textarea
           authorUserName: string | null;
           authorUserAvatar: string | null;
           authorUserBiography: string | null;
-          authorEnrollmentReference: Role | null;
-          authorEnrollmentRole: Role | null;
+          authorEnrollmentReference: EnrollmentRole | null;
+          authorEnrollmentRole: EnrollmentRole | null;
           content: string;
           answerAt: string | null;
         }>(
@@ -9178,7 +9191,7 @@ ${value}</textarea
               userAvatar: string | null;
               userBiography: string | null;
               enrollmentReference: string | null;
-              enrollmentRole: Role | null;
+              enrollmentRole: EnrollmentRole | null;
             }>(
               sql`
                 SELECT "endorsements"."id",
@@ -9230,7 +9243,7 @@ ${value}</textarea
               userAvatar: string | null;
               userBiography: string | null;
               enrollmentReference: string | null;
-              enrollmentRole: Role | null;
+              enrollmentRole: EnrollmentRole | null;
             }>(
               sql`
                 SELECT "likes"."id",
