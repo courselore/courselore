@@ -7489,17 +7489,7 @@ export default async function courselore(
                                 flex: 1;
                               `}"
                             >
-                              <h3
-                                style="${css`
-                                  font-weight: var(--font-weight--bold);
-                                  color: var(--color--gray--medium--100);
-                                  @media (prefers-color-scheme: dark) {
-                                    color: var(--color--gray--medium--100);
-                                  }
-                                `}"
-                              >
-                                ${conversation.title}
-                              </h3>
+                              <h3 class="strong">${conversation.title}</h3>
                               <div
                                 style="${css`
                                   font-size: var(--font-size--xs);
