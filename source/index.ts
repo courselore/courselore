@@ -2676,11 +2676,11 @@ export default async function courselore(
         }>(
           sql`
             SELECT "invitations"."id",
-                  "courses"."id" AS "courseId",
-                  "courses"."reference" AS "courseReference",
-                  "courses"."name" AS "courseName",
-                  "invitations"."reference",
-                  "invitations"."role"
+                   "courses"."id" AS "courseId",
+                   "courses"."reference" AS "courseReference",
+                   "courses"."name" AS "courseName",
+                   "invitations"."reference",
+                   "invitations"."role"
             FROM "invitations"
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
@@ -9097,7 +9097,7 @@ ${value}</textarea
               ${res.locals.course.id},
               ${String(res.locals.course.nextConversationReference)},
               ${req.body.title},
-              ${"2"},
+              ${2},
               ${req.body.type},
               ${req.body.isPinned ? new Date().toISOString() : null}
             )
@@ -9184,7 +9184,8 @@ ${value}</textarea
                  "conversations"."type",
                  "conversations"."pinnedAt"
           FROM "conversations"
-          WHERE "conversations"."reference" = ${req.params.conversationReference}
+          WHERE "conversations"."course" = ${res.locals.course.id} AND
+                "conversations"."reference" = ${req.params.conversationReference}
         `
       );
       if (conversation === undefined) return next("route");
