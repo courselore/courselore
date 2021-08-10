@@ -7453,14 +7453,7 @@ export default async function courselore(
                                 tag: req.query.tag,
                               }
                             )}"
-                            class="button button--transparent ${conversation.id ===
-                            res.locals.conversation?.id
-                              ? "active"
-                              : ""} ${req.query
-                              .onlyConversationLayoutSidebarOnSmallScreen ===
-                            "true"
-                              ? "active--cancel-on-small-screen"
-                              : ""}"
+                            class="button button--transparent"
                             style="${css`
                               width: calc(
                                 var(--space--2) + 100% + var(--space--2)
@@ -7468,14 +7461,28 @@ export default async function courselore(
                               padding: var(--space--2);
                               margin-left: var(--space---2);
                             `}"
-                            data-ondomcontentloaded="${javascript`
-                              window.addEventListener("resize", () => {
-                                if (window.innerWidth < 900)
-                                  this.classList.add("button--blue");
-                                else
-                                  this.classList.remove("button--blue");
-                              });
-                            `}"
+                            $${conversation.id === res.locals.conversation?.id
+                              ? html`
+                                  data-ondomcontentloaded="${javascript`
+                                    const highlight = () => {
+                                      if (window.innerWidth >= 900 || ${JSON.stringify(
+                                        req.query
+                                          .onlyConversationLayoutSidebarOnSmallScreen !==
+                                          "true"
+                                      )}) {
+                                        this.classList.remove("button--transparent");
+                                        this.classList.add("button--blue");
+                                      }
+                                      else {
+                                        this.classList.add("button--transparent");
+                                        this.classList.remove("button--blue");
+                                      }
+                                    };
+                                    highlight();
+                                    window.addEventListener("resize", highlight);
+                                  `}"
+                                `
+                              : html``}
                           >
                             <div
                               style="${css`
