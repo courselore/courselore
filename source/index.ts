@@ -7407,7 +7407,7 @@ export default async function courselore(
                     </div>
                   `
                 : html`
-                    <div class="stripped">
+                    <div>
                       $${res.locals.conversations.map(
                         (conversation) => html`
                           <a
@@ -7419,193 +7419,186 @@ export default async function courselore(
                                 tag: req.query.tag,
                               }
                             )}"
-                            class="${conversation.id ===
+                            class="button button--transparent ${conversation.id ===
                             res.locals.conversation?.id
                               ? "active"
                               : ""} ${req.query
                               .onlyConversationLayoutSidebarOnSmallScreen ===
                             "true"
-                              ? "active--cancel"
+                              ? "active--cancel-on-small-screen"
                               : ""}"
                             style="${css`
-                              /*
-                              width: calc(100% + 2 * var(--space--2));
-                              padding: var(--space--2) var(--space--2);
-                              border-radius: var(--border-radius--lg);
+                              width: calc(
+                                var(--space--2) + 100% + var(--space--2)
+                              );
+                              padding: var(--space--2);
                               margin-left: var(--space---2);
-                              display: block;
-                              transition-property: var(
-                                --transition-property--colors
-                              );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--in-out
-                              );
-
-                              &:hover,
-                              &:focus-within,
-                              &.active:focus {
-                                background-color: var(
-                                  --color--gray--medium--600
-                                );
-                              }
-                              &:active {
-                                background-color: var(
-                                  --color--gray--medium--700
-                                );
-                              }
                               @media (max-width: 899px) {
-                                :not(.active--cancel) > &.active {
-                                  background-color: var(
-                                    --color--gray--medium--700
-                                  );
+                                &.active:not(.active--cancel-on-small-screen) {
+                                  color: var(--color--blue--50);
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--blue--100);
+                                  }
+                                  background-color: var(--color--blue--600);
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: var(--color--blue--500);
+                                  }
+                                  &:active {
+                                    background-color: var(--color--blue--700);
+                                  }
+                                  @media (prefers-color-scheme: dark) {
+                                    background-color: var(--color--blue--800);
+                                    &:hover,
+                                    &:focus-within {
+                                      background-color: var(--color--blue--700);
+                                    }
+                                    &:active {
+                                      background-color: var(--color--blue--900);
+                                    }
+                                  }
                                 }
                               }
                               @media (min-width: 900px) {
                                 &.active {
-                                  background-color: var(
-                                    --color--gray--medium--700
-                                  );
-                                }
-                              }
-                              @media (prefers-color-scheme: dark) {
-                                &:hover,
-                                &:focus-within,
-                                &.active:focus {
-                                  background-color: var(
-                                    --color--gray--medium--600
-                                  );
-                                }
-                                &:active {
-                                  background-color: var(
-                                    --color--gray--medium--700
-                                  );
-                                }
-                                @media (max-width: 899px) {
-                                  :not(.active--cancel) > &.active {
-                                    background-color: var(
-                                      --color--gray--medium--700
-                                    );
+                                  color: var(--color--blue--50);
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--blue--100);
                                   }
-                                }
-                                @media (min-width: 900px) {
-                                  &.active {
-                                    background-color: var(
-                                      --color--gray--medium--700
-                                    );
+                                  background-color: var(--color--blue--600);
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: var(--color--blue--500);
+                                  }
+                                  &:active {
+                                    background-color: var(--color--blue--700);
+                                  }
+                                  @media (prefers-color-scheme: dark) {
+                                    background-color: var(--color--blue--800);
+                                    &:hover,
+                                    &:focus-within {
+                                      background-color: var(--color--blue--700);
+                                    }
+                                    &:active {
+                                      background-color: var(--color--blue--900);
+                                    }
                                   }
                                 }
                               }
-                              */
                             `}"
                           >
-                            <h3
-                              style="${css`
-                                font-weight: var(--font-weight--bold);
-                                color: var(--color--gray--medium--100);
-                                @media (prefers-color-scheme: dark) {
-                                  color: var(--color--gray--medium--100);
-                                }
-                              `}"
-                            >
-                              ${conversation.title}
-                            </h3>
                             <div
                               style="${css`
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--0-5);
+                                flex: 1;
                               `}"
                             >
-                              <div>
-                                <div>
-                                  #${conversation.reference} created
-                                  <time
-                                    data-ondomcontentloaded="${javascript`
-                                  relativizeTime(this);
-                                `}"
-                                  >
-                                    ${conversation.createdAt}
-                                  </time>
-                                  by
-                                  $${conversation.authorEnrollment.user
-                                    .avatar === null
-                                    ? html`<i class="bi bi-person-circle"></i>`
-                                    : html`
-                                        <img
-                                          src="${conversation.authorEnrollment
-                                            .user.avatar}"
-                                          alt="${conversation.authorEnrollment
-                                            .user.name}"
-                                          class="avatar"
-                                          style="${css`
-                                            width: var(--font-size--xs);
-                                            height: var(--font-size--xs);
-                                            vertical-align: -0.125em;
-                                          `}"
-                                        />
-                                      `}
-                                  ${conversation.authorEnrollment.user.name}
-                                </div>
-                                $${conversation.updatedAt !==
-                                conversation.createdAt
-                                  ? html`
-                                      <div>
-                                        and last updated
-                                        <time
-                                          data-ondomcontentloaded="${javascript`
-                                        relativizeTime(this);
-                                      `}"
-                                        >
-                                          ${conversation.updatedAt}
-                                        </time>
-                                      </div>
-                                    `
-                                  : html``}
-                              </div>
-                              <div
+                              <h3
                                 style="${css`
-                                  display: flex;
-                                  gap: var(--space--4);
-
-                                  & > * {
-                                    display: flex;
-                                    gap: var(--space--1);
+                                  font-weight: var(--font-weight--bold);
+                                  color: var(--color--gray--medium--100);
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--gray--medium--100);
                                   }
                                 `}"
                               >
-                                $${conversation.pinnedAt !== null
-                                  ? html`
-                                      <div>
-                                        <i class="bi bi-pin"></i>
-                                        Pinned
-                                      </div>
-                                    `
-                                  : html``}
-                                $${conversation.type === "question"
-                                  ? html`
-                                      <div>
-                                        <i class="bi bi-patch-question"></i>
-                                        Question
-                                      </div>
-                                    `
-                                  : html``}
+                                ${conversation.title}
+                              </h3>
+                              <div
+                                style="${css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--0-5);
+                                `}"
+                              >
                                 <div>
-                                  <i class="bi bi-chat-left-text"></i>
-                                  ${conversation.messagesCount}
-                                  Message${conversation.messagesCount === 1
-                                    ? ""
-                                    : "s"}
+                                  <div>
+                                    #${conversation.reference} created
+                                    <time
+                                      data-ondomcontentloaded="${javascript`
+                                  relativizeTime(this);
+                                `}"
+                                    >
+                                      ${conversation.createdAt}
+                                    </time>
+                                    by
+                                    $${conversation.authorEnrollment.user
+                                      .avatar === null
+                                      ? html`<i
+                                          class="bi bi-person-circle"
+                                        ></i>`
+                                      : html`
+                                          <img
+                                            src="${conversation.authorEnrollment
+                                              .user.avatar}"
+                                            alt="${conversation.authorEnrollment
+                                              .user.name}"
+                                            class="avatar"
+                                            style="${css`
+                                              width: var(--font-size--xs);
+                                              height: var(--font-size--xs);
+                                              vertical-align: -0.125em;
+                                            `}"
+                                          />
+                                        `}
+                                    ${conversation.authorEnrollment.user.name}
+                                  </div>
+                                  $${conversation.updatedAt !==
+                                  conversation.createdAt
+                                    ? html`
+                                        <div>
+                                          and last updated
+                                          <time
+                                            data-ondomcontentloaded="${javascript`
+                                        relativizeTime(this);
+                                      `}"
+                                          >
+                                            ${conversation.updatedAt}
+                                          </time>
+                                        </div>
+                                      `
+                                    : html``}
                                 </div>
-                                $${conversation.endorsements.length === 0
-                                  ? html``
-                                  : html`
-                                      <div
-                                        data-ondomcontentloaded="${javascript`
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                    gap: var(--space--4);
+
+                                    & > * {
+                                      display: flex;
+                                      gap: var(--space--1);
+                                    }
+                                  `}"
+                                >
+                                  $${conversation.pinnedAt !== null
+                                    ? html`
+                                        <div>
+                                          <i class="bi bi-pin"></i>
+                                          Pinned
+                                        </div>
+                                      `
+                                    : html``}
+                                  $${conversation.type === "question"
+                                    ? html`
+                                        <div>
+                                          <i class="bi bi-patch-question"></i>
+                                          Question
+                                        </div>
+                                      `
+                                    : html``}
+                                  <div>
+                                    <i class="bi bi-chat-left-text"></i>
+                                    ${conversation.messagesCount}
+                                    Message${conversation.messagesCount === 1
+                                      ? ""
+                                      : "s"}
+                                  </div>
+                                  $${conversation.endorsements.length === 0
+                                    ? html``
+                                    : html`
+                                        <div
+                                          data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: ${JSON.stringify(
                                         `Endorsed by ${
@@ -7622,39 +7615,40 @@ export default async function courselore(
                                       touch: false,
                                     });
                                   `}"
-                                      >
-                                        <i class="bi bi-award"></i>
-                                        ${conversation.endorsements.length}
-                                        Staff
-                                        Endorsement${conversation.endorsements
-                                          .length === 1
-                                          ? ""
-                                          : "s"}
-                                      </div>
-                                    `}
-                                $${conversation.likesCount === 0
-                                  ? html``
-                                  : html`
-                                      <div>
-                                        <i class="bi bi-hand-thumbs-up"></i>
-                                        ${conversation.likesCount}
-                                        Like${conversation.likesCount === 1
-                                          ? ""
-                                          : "s"}
-                                      </div>
-                                    `}
-                                $${conversation.taggings.length === 0
-                                  ? html``
-                                  : html`
-                                      <div>
-                                        $${conversation.taggings.map(
-                                          (tagging) => html`
-                                            <i class="bi bi-tag"></i>
-                                            ${tagging.tag.name}
-                                          `
-                                        )}
-                                      </div>
-                                    `}
+                                        >
+                                          <i class="bi bi-award"></i>
+                                          ${conversation.endorsements.length}
+                                          Staff
+                                          Endorsement${conversation.endorsements
+                                            .length === 1
+                                            ? ""
+                                            : "s"}
+                                        </div>
+                                      `}
+                                  $${conversation.likesCount === 0
+                                    ? html``
+                                    : html`
+                                        <div>
+                                          <i class="bi bi-hand-thumbs-up"></i>
+                                          ${conversation.likesCount}
+                                          Like${conversation.likesCount === 1
+                                            ? ""
+                                            : "s"}
+                                        </div>
+                                      `}
+                                  $${conversation.taggings.length === 0
+                                    ? html``
+                                    : html`
+                                        <div>
+                                          $${conversation.taggings.map(
+                                            (tagging) => html`
+                                              <i class="bi bi-tag"></i>
+                                              ${tagging.tag.name}
+                                            `
+                                          )}
+                                        </div>
+                                      `}
+                                </div>
                               </div>
                             </div>
                           </a>
