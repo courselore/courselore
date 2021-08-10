@@ -8996,42 +8996,60 @@ ${value}</textarea
                   `}
               $${res.locals.enrollment.role === "staff"
                 ? html`
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <label
-                        class="button button--tight button--tight--inline button--transparent"
-                      >
-                        <input
-                          type="checkbox"
-                          name="isPinned"
-                          autocomplete="off"
-                          class="input--checkbox"
-                          style="${css`
-                            & ~ * {
-                              display: flex;
-                              gap: var(--space--2);
-                            }
-                          `}"
-                        />
-                        <i class="bi bi-pin"></i>
+                    <div class="label">
+                      <div class="label--text">
                         Pin
-                      </label>
-                      <button
-                        type="button"
-                        class="button button--tight button--tight--inline button--transparent"
-                        data-ondomcontentloaded="${javascript`
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          data-ondomcontentloaded="${javascript`
                           tippy(this, {
                             content: "Pinned conversations are listed first.",
                             trigger: "click",
                           });
                         `}"
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                      </div>
+                      <div
+                        style="${css`
+                          display: flex;
+                        `}"
                       >
-                        <i class="bi bi-info-circle"></i>
-                      </button>
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="isPinned"
+                            autocomplete="off"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Pin",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-pin-angle"></i>
+                            Unpinned
+                          </span>
+                          <span
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Unpin",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-pin"></i>
+                            Pinned
+                          </span>
+                        </label>
+                      </div>
                     </div>
                   `
                 : html``}
