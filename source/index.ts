@@ -718,7 +718,8 @@ export default async function courselore(
                 &::placeholder {
                   color: var(--color--gray--medium--400);
                 }
-                &:disabled {
+                &:disabled,
+                &.disabled {
                   color: var(--color--gray--medium--500);
                   -webkit-text-fill-color: var(--color--gray--medium--500);
                   background-color: var(--color--gray--medium--300);
@@ -729,7 +730,8 @@ export default async function courselore(
                   &::placeholder {
                     color: var(--color--gray--medium--500);
                   }
-                  &:disabled {
+                  &:disabled,
+                  &.disabled {
                     color: var(--color--gray--medium--400);
                     -webkit-text-fill-color: var(--color--gray--medium--400);
                     background-color: var(--color--gray--medium--600);
@@ -908,7 +910,7 @@ export default async function courselore(
                 }
 
                 &.button--transparent {
-                  &:not(:disabled) {
+                  &:not(:disabled):not(.disabled) {
                     &:hover,
                     &:focus-within {
                       background-color: var(--color--gray--medium--200);
@@ -926,7 +928,8 @@ export default async function courselore(
                       }
                     }
                   }
-                  &:disabled {
+                  &:disabled,
+                  &.disabled {
                     color: var(--color--gray--medium--500);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--gray--medium--400);
@@ -941,7 +944,7 @@ export default async function courselore(
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--${color}--100);
                       }
-                      &:not(:disabled) {
+                      &:not(:disabled):not(.disabled) {
                         background-color: var(--color--${color}--600);
                         &:hover,
                         &:focus-within {
@@ -961,7 +964,8 @@ export default async function courselore(
                           }
                         }
                       }
-                      &:disabled {
+                      &:disabled,
+                      &.disabled {
                         background-color: var(--color--${color}--300);
                         @media (prefers-color-scheme: dark) {
                           background-color: var(--color--${color}--500);
@@ -1000,8 +1004,8 @@ export default async function courselore(
                 cursor: pointer;
               }
 
-              .disabled,
-              :disabled {
+              :disabled,
+              .disabled {
                 cursor: not-allowed;
               }
 
