@@ -6294,7 +6294,7 @@ export default async function courselore(
                           >
                             <div
                               style="${css`
-                                width: var(--space--52);
+                                width: var(--space--44);
                                 display: flex;
                                 justify-content: flex-start;
                               `}"
@@ -6305,13 +6305,33 @@ export default async function courselore(
                                 <input
                                   type="checkbox"
                                   name="tags[${index}][isStaffOnly]"
-                                  class="input--checkbox"
                                   $${tag.staffOnlyAt === null
                                     ? html``
                                     : html`checked`}
+                                  class="disable-on-delete visually-hidden input--radio-or-checkbox--multilabel"
                                 />
-                                <i class="bi bi-lock"></i>
-                                Visible Only to Staff
+                                <span
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Set as Visible by Staff Only",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-unlock"></i>
+                                  Visible by Everyone
+                                </span>
+                                <span
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Set as Visible by Everyone",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-lock"></i>
+                                  Visible by Staff Only
+                                </span>
                               </label>
                             </div>
                             <div
