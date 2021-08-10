@@ -7138,7 +7138,6 @@ export default async function courselore(
       `,
       body: html`
         <div
-          class="conversation--layout"
           style="${css`
             width: 100%;
             height: 100%;
@@ -7202,11 +7201,6 @@ export default async function courselore(
                   href="${app.locals.settings.url}/courses/${res.locals.course
                     .reference}/conversations/new"
                   class="button button--transparent"
-                  style="${css`
-                    font-weight: var(--font-weight--bold);
-                    display: flex;
-                    gap: var(--space--2);
-                  `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
                   Start a New Conversation
@@ -7225,10 +7219,9 @@ export default async function courselore(
                 <form
                   novalidate
                   style="${css`
-                    display: grid;
-                    & > * {
-                      grid-area: 1 / 1;
-                    }
+                    display: flex;
+                    gap: var(--space--2);
+                    align-items: center;
                   `}"
                 >
                   $${req.query.onlyConversationLayoutSidebarOnSmallScreen ===
@@ -7262,74 +7255,54 @@ export default async function courselore(
                     placeholder="Search…"
                     required
                     class="input--text"
-                    style="${css`
-                      padding-right: var(--space--12);
-                    `}"
                     data-skip-is-modified="true"
                   />
-                  <div
-                    style="${css`
-                      justify-self: end;
-                      margin-right: var(--space--2);
-                      display: flex;
-                      gap: var(--space--2);
-                      align-items: center;
+                  $${req.query.search !== undefined
+                    ? html`
+                        <a
+                          href="?${qs.stringify({
+                            onlyConversationLayoutSidebarOnSmallScreen:
+                              req.query
+                                .onlyConversationLayoutSidebarOnSmallScreen,
+                            conversationLayoutSidebarOpenOnSmallScreen: "true",
+                            tag: req.query.tag,
+                          })}"
+                          class="button button--tight button--tight--inline button--transparent"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Remove Search",
+                              touch: false,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-x-lg"></i>
+                        </a>
+                      `
+                    : html``}
+                  <button
+                    class="button button--tight button--tight--inline button--transparent"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "Search",
+                        touch: false,
+                      });
                     `}"
                   >
-                    $${req.query.search !== undefined
-                      ? html`
-                          <a
-                            href="?${qs.stringify({
-                              onlyConversationLayoutSidebarOnSmallScreen:
-                                req.query
-                                  .onlyConversationLayoutSidebarOnSmallScreen,
-                              conversationLayoutSidebarOpenOnSmallScreen:
-                                "true",
-                              tag: req.query.tag,
-                            })}"
-                            class="button button--transparent"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Remove Search",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-x-lg"></i>
-                          </a>
-                        `
-                      : html``}
-                    <button
-                      class="button button--transparent"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Search",
-                          touch: false,
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-search"></i>
-                    </button>
-                  </div>
+                    <i class="bi bi-search"></i>
+                  </button>
                 </form>
+
                 $${res.locals.tags.length > 0
                   ? html`
                       <div
                         style="${css`
                           display: flex;
-                          gap: var(--space--2);
+                          gap: var(--space--3);
                         `}"
                       >
                         <div>
                           <button
-                            class="button button--transparent"
-                            style="${css`
-                              ${res.locals.tagFilter === undefined
-                                ? css``
-                                : css`
-                                    font-weight: var(--font-weight--bold);
-                                  `}
-                            `}"
+                            class="button button--tight button--tight--inline button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: this.nextElementSibling.firstElementChild,
@@ -7345,47 +7318,46 @@ export default async function courselore(
                                 `
                               : html`
                                   <i class="bi bi-funnel-fill"></i>
-                                  Filtering by <i class="bi bi-tag"></i>
-                                  ${res.locals.tagFilter.name}
+                                  <span>
+                                    Filtering by
+                                    <i class="bi bi-tag"></i>
+                                    ${res.locals.tagFilter.name}
+                                  </span>
                                 `}
                           </button>
                           <div hidden>
                             <div
+                              class="dropdown-menu"
                               style="${css`
                                 max-height: var(--space--40);
                                 overflow: auto;
-                                margin: var(--space--0) var(--space---2);
                               `}"
                             >
-                              <div
-                                style="${css`
-                                  margin: var(--space--0) var(--space--2);
-                                `}"
-                              >
-                                $${res.locals.tags.map((tag) => {
-                                  const isTagFilter =
-                                    tag.id === res.locals.tagFilter?.id;
-                                  return html`
-                                    <a
-                                      href="?${qs.stringify({
-                                        onlyConversationLayoutSidebarOnSmallScreen:
-                                          req.query
-                                            .onlyConversationLayoutSidebarOnSmallScreen,
-                                        conversationLayoutSidebarOpenOnSmallScreen:
-                                          "true",
-                                        search: req.query.search,
-                                        tag: isTagFilter
-                                          ? undefined
-                                          : tag.reference,
-                                      })}"
-                                      class="dropdown-menu--item button ${isTagFilter
-                                        ? "button--blue"
-                                        : "button--transparent"}"
-                                      ><i class="bi bi-tag"></i> ${tag.name}</a
-                                    >
-                                  `;
-                                })}
-                              </div>
+                              $${res.locals.tags.map((tag) => {
+                                const isTagFilter =
+                                  tag.id === res.locals.tagFilter?.id;
+                                return html`
+                                  <a
+                                    href="?${qs.stringify({
+                                      onlyConversationLayoutSidebarOnSmallScreen:
+                                        req.query
+                                          .onlyConversationLayoutSidebarOnSmallScreen,
+                                      conversationLayoutSidebarOpenOnSmallScreen:
+                                        "true",
+                                      search: req.query.search,
+                                      tag: isTagFilter
+                                        ? undefined
+                                        : tag.reference,
+                                    })}"
+                                    class="dropdown-menu--item button ${isTagFilter
+                                      ? "button--blue"
+                                      : "button--transparent"}"
+                                  >
+                                    <i class="bi bi-tag"></i>
+                                    ${tag.name}
+                                  </a>
+                                `;
+                              })}
                             </div>
                           </div>
                         </div>
@@ -7401,7 +7373,7 @@ export default async function courselore(
                                     "true",
                                   search: req.query.search,
                                 })}"
-                                class="button button--transparent"
+                                class="button button--tight button--tight--inline button--transparent"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Filter",
@@ -7421,23 +7393,15 @@ export default async function courselore(
                 ? html`
                     <div
                       style="${css`
-                        color: var(--color--gray--medium--500);
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--2);
                         align-items: center;
                       `}"
                     >
-                      <div
-                        class="decorative-icon"
-                        style="${css`
-                          color: var(--color--gray--medium--600);
-                          background-color: var(--color--gray--medium--800);
-                        `}"
-                      >
+                      <div class="decorative-icon">
                         <i class="bi bi-chat-left-text"></i>
                       </div>
-                      No conversation found.
+                      <p class="secondary">No conversation found.</p>
                     </div>
                   `
                 : html`
