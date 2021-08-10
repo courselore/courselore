@@ -7433,58 +7433,14 @@ export default async function courselore(
                               );
                               padding: var(--space--2);
                               margin-left: var(--space---2);
-                              @media (max-width: 899px) {
-                                &.active:not(.active--cancel-on-small-screen) {
-                                  color: var(--color--blue--50);
-                                  @media (prefers-color-scheme: dark) {
-                                    color: var(--color--blue--100);
-                                  }
-                                  background-color: var(--color--blue--600);
-                                  &:hover,
-                                  &:focus-within {
-                                    background-color: var(--color--blue--500);
-                                  }
-                                  &:active {
-                                    background-color: var(--color--blue--700);
-                                  }
-                                  @media (prefers-color-scheme: dark) {
-                                    background-color: var(--color--blue--800);
-                                    &:hover,
-                                    &:focus-within {
-                                      background-color: var(--color--blue--700);
-                                    }
-                                    &:active {
-                                      background-color: var(--color--blue--900);
-                                    }
-                                  }
-                                }
-                              }
-                              @media (min-width: 900px) {
-                                &.active {
-                                  color: var(--color--blue--50);
-                                  @media (prefers-color-scheme: dark) {
-                                    color: var(--color--blue--100);
-                                  }
-                                  background-color: var(--color--blue--600);
-                                  &:hover,
-                                  &:focus-within {
-                                    background-color: var(--color--blue--500);
-                                  }
-                                  &:active {
-                                    background-color: var(--color--blue--700);
-                                  }
-                                  @media (prefers-color-scheme: dark) {
-                                    background-color: var(--color--blue--800);
-                                    &:hover,
-                                    &:focus-within {
-                                      background-color: var(--color--blue--700);
-                                    }
-                                    &:active {
-                                      background-color: var(--color--blue--900);
-                                    }
-                                  }
-                                }
-                              }
+                            `}"
+                            data-ondomcontentloaded="${javascript`
+                              window.addEventListener("resize", () => {
+                                if (window.innerWidth < 900)
+                                  this.classList.add("button--blue");
+                                else
+                                  this.classList.remove("button--blue");
+                              });
                             `}"
                           >
                             <div
