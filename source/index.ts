@@ -3831,7 +3831,7 @@ export default async function courselore(
           `
         )
         // FIXME: Try to get rid of these n+1 queries.
-        .map(app.locals.helpers.fetchConversationMetadata);
+        .map(app.locals.helpers.getConversationMetadata);
 
       res.locals.conversationTypes = app.locals.constants.conversationTypes.filter(
         (conversationType) =>
@@ -3846,7 +3846,7 @@ export default async function courselore(
   ];
 
   interface Helpers {
-    fetchConversationMetadata: (conversation: {
+    getConversationMetadata: (conversation: {
       id: number;
       reference: string;
       title: string;
@@ -3855,7 +3855,7 @@ export default async function courselore(
       pinnedAt: string | null;
     }) => IsEnrolledInCourseMiddlewareLocals["conversations"][number];
   }
-  app.locals.helpers.fetchConversationMetadata = (conversation) => {
+  app.locals.helpers.getConversationMetadata = (conversation) => {
     const originalMessage = app.locals.database.get<{
       createdAt: string;
       authorEnrollmentId: number | null;
@@ -9113,7 +9113,7 @@ ${value}</textarea
         `
       );
       if (conversation === undefined) return next("route");
-      res.locals.conversation = app.locals.helpers.fetchConversationMetadata(
+      res.locals.conversation = app.locals.helpers.getConversationMetadata(
         conversation
       );
 
