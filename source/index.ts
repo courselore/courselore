@@ -8876,40 +8876,63 @@ ${value}</textarea
                       >
                         $${res.locals.tags.map(
                           (tag) => html`
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
+                            <div
+                              style="${css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `}"
                             >
-                              <input
-                                type="checkbox"
-                                name="tagsReferences[]"
-                                value="${tag.reference}"
-                                required
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Add Tag",
-                                    touch: false,
-                                  });
-                                `}"
+                              <label
+                                class="button button--tight button--tight--inline button--transparent"
                               >
-                                <i class="bi bi-tag"></i>
-                                ${tag.name}
-                              </span>
-                              <span
-                                class="text--blue"
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Remove Tag",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-tag-fill"></i>
-                                ${tag.name}
-                              </span>
-                            </label>
+                                <input
+                                  type="checkbox"
+                                  name="tagsReferences[]"
+                                  value="${tag.reference}"
+                                  required
+                                  class="visually-hidden input--radio-or-checkbox--multilabel"
+                                />
+                                <span
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Add Tag",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-tag"></i>
+                                  ${tag.name}
+                                </span>
+                                <span
+                                  class="text--blue"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Remove Tag",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-tag-fill"></i>
+                                  ${tag.name}
+                                </span>
+                              </label>
+                              $${tag.staffOnlyAt !== null
+                                ? html`
+                                    <button
+                                      type="button"
+                                      class="button button--tight button--tight--inline button--transparent"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: "This tag is visible by staff only.",
+                                          trigger: "click",
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-lock"></i>
+                                    </button>
+                                  `
+                                : html``}
+                            </div>
                           `
                         )}
                       </div>
