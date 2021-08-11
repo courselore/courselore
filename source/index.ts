@@ -10052,6 +10052,7 @@ ${value}</textarea
                           style="${css`
                             font-size: var(--font-size--xs);
                             line-height: var(--line-height--xs);
+                            display: inline;
                           `}"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
