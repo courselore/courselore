@@ -9981,7 +9981,6 @@ ${value}</textarea
                     @media (prefers-color-scheme: dark) {
                       border-color: var(--color--gray--medium--700);
                     }
-                    margin: var(--space--4) var(--space--0);
                   `}"
                 >
                   <div
@@ -10049,7 +10048,7 @@ ${value}</textarea
                             .course.reference}/conversations/${res.locals
                             .conversation
                             .reference}#message--${message.reference}"
-                          class="button button--transparent"
+                          class="button button--tight button--tight--inline button--transparent"
                           style="${css`
                             font-size: var(--font-size--xs);
                             line-height: var(--line-height--xs);
@@ -10077,7 +10076,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button button--transparent button--rose"
+                                class="button button--tight button--tight--inline button--transparent text--rose"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Remove Message",
@@ -10122,7 +10121,9 @@ ${value}</textarea
                                       You may not undo this action!
                                     </strong>
                                   </p>
-                                  <button class="button button--rose">
+                                  <button
+                                    class="button button--tight button--tight--inline text--rose"
+                                  >
                                     <i class="bi bi-trash"></i>
                                     Remove Message
                                   </button>
@@ -10135,7 +10136,7 @@ ${value}</textarea
                         ? html`
                             <div>
                               <button
-                                class="button button--transparent"
+                                class="button button--tight button--tight--inline button--transparent"
                                 data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Edit Message",
@@ -10155,7 +10156,7 @@ ${value}</textarea
 
                       <div>
                         <button
-                          class="button button--transparent"
+                          class="button button--tight button--tight--inline button--transparent"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Reply",
@@ -10209,7 +10210,7 @@ ${value}</textarea
                                     value="true"
                                   />
                                   <button
-                                    class="button"
+                                    class="button button--tight button--tight--inline button--transparent"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "Mark as Answer",
@@ -10228,7 +10229,7 @@ ${value}</textarea
                                     value="false"
                                   />
                                   <button
-                                    class="button strong"
+                                    class="button button--tight button--tight--inline button--transparent"
                                     data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "Mark as Not an Answer",
@@ -10280,7 +10281,7 @@ ${value}</textarea
                                     value="false"
                                   />
                                   <button
-                                    class="button strong"
+                                    class="button button--tight button--tight--inline"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: ${JSON.stringify(
@@ -10327,7 +10328,7 @@ ${value}</textarea
                                     value="true"
                                   />
                                   <button
-                                    class="button"
+                                    class="button button--tight button--tight--inline button--transparent"
                                     $${message.endorsements.length === 0
                                       ? html``
                                       : html`
@@ -10517,9 +10518,9 @@ ${value}</textarea
                             `}"
                           >
                             <button
-                              class="button button--transparent ${isLiked
-                                ? "strong"
-                                : ""}"
+                              class="button button--tight button--tight--inline ${isLiked
+                                ? "button--blue"
+                                : "button--transparent"}"
                               $${likesCount === 0
                                 ? html``
                                 : html`
@@ -10606,7 +10607,7 @@ ${value}</textarea
                             </button>
                             <button
                               type="reset"
-                              class="button"
+                              class="button button--tight button--tight--inline button--transparent"
                               onclick="${javascript`
                                 this.closest(".message").querySelector(".message--show").hidden = false;
                                 this.closest(".message").querySelector(".message--edit").hidden = true;
