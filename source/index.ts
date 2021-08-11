@@ -9498,7 +9498,7 @@ ${value}</textarea
                       style="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
-                        display: inline;
+                        display: inline-flex;
                       `}"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
@@ -10052,11 +10052,11 @@ ${value}</textarea
                               .locals.course.reference}/conversations/${res
                               .locals.conversation
                               .reference}#message--${message.reference}"
-                            class="button button--tight button--tight--inline button--transparent secondary"
+                            class="button button--tight button--tight--inline button--transparent"
                             style="${css`
                               font-size: var(--font-size--xs);
                               line-height: var(--line-height--xs);
-                              display: inline;
+                              display: inline-flex;
                             `}"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
