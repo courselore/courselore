@@ -9825,7 +9825,14 @@ ${value}</textarea
                       </div>
                     `}
 
-                <div>
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-wrap: wrap;
+                    column-gap: var(--space--6);
+                    row-gap: var(--space--1);
+                  `}"
+                >
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <form
@@ -9877,15 +9884,88 @@ ${value}</textarea
                       `
                     : res.locals.conversation.pinnedAt !== null
                     ? html`
-                        <div>
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
                           <i class="bi bi-pin"></i>
                           Pinned
                         </div>
                       `
                     : html``}
+                  $${app.locals.helpers.mayEditConversation(req, res)
+                    ? html`
+                        <div>
+                          <button
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Change Conversation Type",
+                                touch: false,
+                              });
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                trigger: "click",
+                                interactive: true,
+                              });
+                            `}"
+                          >
+                            $${app.locals.partials.conversationTypeIcon(
+                              res.locals.conversation.type
+                            )}
+                            $${lodash.capitalize(res.locals.conversation.type)}
+                          </button>
+                          <div hidden>
+                            <div class="dropdown-menu">
+                              $${res.locals.conversationTypes.map(
+                                (conversationType) => html`
+                                  <form
+                                    method="POST"
+                                    action="${app.locals.settings
+                                      .url}/courses/${res.locals.course
+                                      .reference}/conversations/${res.locals
+                                      .conversation.reference}?_method=PATCH"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="type"
+                                      value="${conversationType}"
+                                    />
+                                    <button
+                                      class="dropdown-menu--item button ${conversationType ===
+                                      res.locals.conversation.type
+                                        ? "button--blue"
+                                        : "button--transparent"}"
+                                    >
+                                      $${app.locals.partials.conversationTypeIcon(
+                                        conversationType
+                                      )}
+                                      $${lodash.capitalize(conversationType)}
+                                    </button>
+                                  </form>
+                                `
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      `
+                    : html`
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          $${app.locals.partials.conversationTypeIcon(
+                            res.locals.conversation.type
+                          )}
+                          $${lodash.capitalize(res.locals.conversation.type)}
+                        </div>
+                      `}
                 </div>
               </div>
-              <!-- TODO: type -->
             </div>
 
             $${(() => {
