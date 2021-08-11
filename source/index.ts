@@ -9484,8 +9484,9 @@ ${value}</textarea
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
                       `}"
-                      >${res.locals.conversation.title}</span
                     >
+                      ${res.locals.conversation.title}
+                    </span>
 
                     <a
                       href="${app.locals.settings.url}/courses/${res.locals
@@ -10019,51 +10020,54 @@ ${value}</textarea
                               `}"
                             />
                           `}
-                      <div>
+                      <h3>
                         <span class="strong">
                           ${message.authorEnrollment.user.name}
                         </span>
-                        said
-                        <time
-                          data-ondomcontentloaded="${javascript`
-                            relativizeTime(this);
-                          `}"
-                        >
-                          ${message.createdAt}
-                        </time>
-                        $${message.updatedAt !== null
-                          ? html`
-                              and last edited
-                              <time
-                                data-ondomcontentloaded="${javascript`
-                                  relativizeTime(this);
-                                `}"
-                              >
-                                ${message.updatedAt}
-                              </time>
-                            `
-                          : html``}
-                        <a
-                          href="${app.locals.settings.url}/courses/${res.locals
-                            .course.reference}/conversations/${res.locals
-                            .conversation
-                            .reference}#message--${message.reference}"
-                          class="button button--tight button--tight--inline button--transparent"
-                          style="${css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                            display: inline;
-                          `}"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Permanent Link to Message",
-                              touch: false,
-                            });
-                          `}"
-                          >#${res.locals.conversation
-                            .reference}/${message.reference}</a
-                        >
-                      </div>
+                        <span class="secondary">
+                          said
+                          <time
+                            data-ondomcontentloaded="${javascript`
+                              relativizeTime(this);
+                            `}"
+                          >
+                            ${message.createdAt}
+                          </time>
+                          $${message.updatedAt !== null
+                            ? html`
+                                and last edited
+                                <time
+                                  data-ondomcontentloaded="${javascript`
+                                    relativizeTime(this);
+                                  `}"
+                                >
+                                  ${message.updatedAt}
+                                </time>
+                              `
+                            : html``}
+                          <a
+                            href="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation
+                              .reference}#message--${message.reference}"
+                            class="button button--tight button--tight--inline button--transparent secondary"
+                            style="${css`
+                              font-size: var(--font-size--xs);
+                              line-height: var(--line-height--xs);
+                              display: inline;
+                            `}"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Permanent Link to Message",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            #${res.locals.conversation
+                              .reference}/${message.reference}
+                          </a>
+                        </span>
+                      </h3>
                     </div>
 
                     <div
