@@ -6052,8 +6052,8 @@ export default async function courselore(
                                                       <button
                                                         class="button button--rose"
                                                         onclick="${javascript`
-                                                        this.closest(".confirmation").form.submit();
-                                                      `}"
+                                                          this.closest(".confirmation").form.submit();
+                                                        `}"
                                                       >
                                                         Change My Own Role to
                                                         ${lodash.capitalize(
@@ -9471,16 +9471,22 @@ ${value}</textarea
                 `}"
               >
                 <h2>
-                  <span class="heading">${res.locals.conversation.title}</span>
+                  <span
+                    class="strong"
+                    style="${css`
+                      font-size: var(--font-size--lg);
+                      line-height: var(--line-height--lg);
+                    `}"
+                    >${res.locals.conversation.title}</span
+                  >
 
                   <a
                     href="${app.locals.settings.url}/courses/${res.locals.course
                       .reference}/conversations/${res.locals.conversation
                       .reference}"
-                    class="button button--transparent"
+                    class="button button--tight button--transparent secondary"
                     style="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
+                      display: inline;
                     `}"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
@@ -9488,21 +9494,22 @@ ${value}</textarea
                         touch: false,
                       });
                     `}"
-                    >#${res.locals.conversation.reference}</a
                   >
+                    #${res.locals.conversation.reference}
+                  </a>
                 </h2>
 
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--2);
+                    gap: var(--space--4);
                   `}"
                 >
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <div>
                           <button
-                            class="button button--transparent button--rose"
+                            class="button button--tight button--tight--inline button--transparent text--rose"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Conversation",
@@ -9526,7 +9533,7 @@ ${value}</textarea
                                 .locals.course.reference}/conversations/${res
                                 .locals.conversation.reference}?_method=DELETE"
                               style="${css`
-                                padding: var(--space--2) var(--space--0);
+                                padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--4);
@@ -9557,7 +9564,7 @@ ${value}</textarea
                   $${app.locals.helpers.mayEditConversation(req, res)
                     ? html`
                         <button
-                          class="button button--transparent"
+                          class="button button--tight button--tight--inline button--transparent"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
                               content: "Edit Title",
@@ -9585,12 +9592,9 @@ ${value}</textarea
                 hidden
                 class="title--edit"
                 style="${css`
-                  padding-bottom: var(--space--4);
                   display: flex;
-                  gap: var(--space--2);
-                  @media (max-width: 400px) {
-                    flex-direction: column;
-                  }
+                  gap: var(--space--4);
+                  align-items: center;
                 `}"
               >
                 <input
@@ -9600,43 +9604,39 @@ ${value}</textarea
                   required
                   autocomplete="off"
                   class="input--text"
+                />
+                <button
+                  class="button button--tight button--tight--inline button--transparent text--green"
                   style="${css`
                     flex: 1;
                   `}"
-                />
-                <div
-                  style="${css`
-                    display: flex;
-                    gap: var(--space--2);
+                  data-ondomcontentloaded="${javascript`
+                    tippy(this, {
+                      content: "Update Title",
+                      theme: "green",
+                      touch: false,
+                    });
                   `}"
                 >
-                  <button
-                    class="button button--blue"
-                    style="${css`
-                      flex: 1;
-                    `}"
-                  >
-                    <i class="bi bi-pencil"></i>
-                    Update Title
-                  </button>
-                  <button
-                    type="reset"
-                    class="button button--transparent button--rose"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Cancel",
-                        theme: "rose",
-                        touch: false,
-                      });
-                    `}"
-                    onclick="${javascript`
-                      this.closest(".title").querySelector(".title--show").hidden = false;
-                      this.closest(".title").querySelector(".title--edit").hidden = true;
-                    `}"
-                  >
-                    <i class="bi bi-x-lg"></i>
-                  </button>
-                </div>
+                  <i class="bi bi-check-lg"></i>
+                </button>
+                <button
+                  type="reset"
+                  class="button button--tight button--tight--inline button--transparent text--rose"
+                  data-ondomcontentloaded="${javascript`
+                    tippy(this, {
+                      content: "Cancel",
+                      theme: "rose",
+                      touch: false,
+                    });
+                  `}"
+                  onclick="${javascript`
+                    this.closest(".title").querySelector(".title--show").hidden = false;
+                    this.closest(".title").querySelector(".title--edit").hidden = true;
+                  `}"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
               </form>
             </div>
 
