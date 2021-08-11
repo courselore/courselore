@@ -9676,115 +9676,134 @@ ${value}</textarea
                         row-gap: var(--space--2);
                       `}"
                     >
-                      $${res.locals.tags.length >
-                      res.locals.conversation.taggings.length
+                      $${app.locals.helpers.mayEditConversation(req, res)
                         ? html`
-                            <div>
-                              <button
-                                class="button button--tight button--tight--inline button--transparent"
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Add Tag",
-                                    touch: false,
-                                  });
-                                  tippy(this, {
-                                    content: this.nextElementSibling.firstElementChild,
-                                    trigger: "click",
-                                    interactive: true,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-tags"></i>
-                              </button>
-                              <div hidden>
-                                <div
-                                  class="dropdown-menu"
-                                  style="${css`
-                                    max-height: var(--space--40);
-                                    overflow: auto;
-                                  `}"
-                                >
-                                  $${res.locals.tags
-                                    .filter(
-                                      (tag) =>
-                                        !res.locals.conversation.taggings.some(
-                                          (tagging) => tagging.tag.id === tag.id
-                                        )
-                                    )
-                                    .map(
-                                      (tag) => html`
-                                        <form
-                                          method="POST"
-                                          action="${app.locals.settings
-                                            .url}/courses/${res.locals.course
-                                            .reference}/conversations/${res
-                                            .locals.conversation
-                                            .reference}/taggings"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="reference"
-                                            value="${tag.reference}"
-                                          />
-                                          <button
-                                            class="dropdown-menu--item button button--transparent"
-                                          >
-                                            <i class="bi bi-tag"></i>
-                                            ${tag.name}
-                                          </button>
-                                        </form>
-                                      `
-                                    )}
-                                </div>
-                              </div>
-                            </div>
-                          `
-                        : html``}
-                      $${res.locals.conversation.taggings.length === 1
-                        ? html`
-                            <div
-                              tabindex="0"
-                              class="button button--tight button--tight--inline disabled"
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "You may not remove this tag because a conversation must have at least one tag.",
-                                  theme: "rose",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-tag"></i>
-                              ${res.locals.conversation.taggings[0].tag.name}
-                            </div>
+                            $${res.locals.tags.length >
+                            res.locals.conversation.taggings.length
+                              ? html`
+                                  <div>
+                                    <button
+                                      class="button button--tight button--tight--inline button--transparent"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: "Add Tag",
+                                          touch: false,
+                                        });
+                                        tippy(this, {
+                                          content: this.nextElementSibling.firstElementChild,
+                                          trigger: "click",
+                                          interactive: true,
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-tags"></i>
+                                    </button>
+                                    <div hidden>
+                                      <div
+                                        class="dropdown-menu"
+                                        style="${css`
+                                          max-height: var(--space--40);
+                                          overflow: auto;
+                                        `}"
+                                      >
+                                        $${res.locals.tags
+                                          .filter(
+                                            (tag) =>
+                                              !res.locals.conversation.taggings.some(
+                                                (tagging) =>
+                                                  tagging.tag.id === tag.id
+                                              )
+                                          )
+                                          .map(
+                                            (tag) => html`
+                                              <form
+                                                method="POST"
+                                                action="${app.locals.settings
+                                                  .url}/courses/${res.locals
+                                                  .course
+                                                  .reference}/conversations/${res
+                                                  .locals.conversation
+                                                  .reference}/taggings"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="reference"
+                                                  value="${tag.reference}"
+                                                />
+                                                <button
+                                                  class="dropdown-menu--item button button--transparent"
+                                                >
+                                                  <i class="bi bi-tag"></i>
+                                                  ${tag.name}
+                                                </button>
+                                              </form>
+                                            `
+                                          )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                `
+                              : html``}
+                            $${res.locals.conversation.taggings.length === 1
+                              ? html`
+                                  <div
+                                    class="button button--tight button--tight--inline disabled"
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "You may not remove this tag because a conversation must have at least one tag.",
+                                        theme: "rose",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-tag"></i>
+                                    ${res.locals.conversation.taggings[0].tag
+                                      .name}
+                                  </div>
+                                `
+                              : res.locals.conversation.taggings.map(
+                                  (tagging) => html`
+                                    <form
+                                      method="POST"
+                                      action="${app.locals.settings
+                                        .url}/courses/${res.locals.course
+                                        .reference}/conversations/${res.locals
+                                        .conversation
+                                        .reference}/taggings?_method=DELETE"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="reference"
+                                        value="${tagging.tag.reference}"
+                                      />
+                                      <button
+                                        class="button button--tight button--tight--inline button--transparent"
+                                        data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: "Remove Tag",
+                                            theme: "rose",
+                                            touch: false,
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-tag"></i>
+                                        ${tagging.tag.name}
+                                      </button>
+                                    </form>
+                                  `
+                                )}
                           `
                         : res.locals.conversation.taggings.map(
                             (tagging) => html`
-                              <form
-                                method="POST"
-                                action="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/conversations/${res
-                                  .locals.conversation
-                                  .reference}/taggings?_method=DELETE"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="reference"
-                                  value="${tagging.tag.reference}"
-                                />
-                                <button
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Remove Tag",
-                                    theme: "rose",
-                                    touch: false,
-                                  });
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  gap: var(--space--2);
                                 `}"
-                                >
-                                  <i class="bi bi-tag"></i>
-                                  ${tagging.tag.name}
-                                </button>
-                              </form>
+                              >
+                                <i class="bi bi-tag"></i>
+                                ${tagging.tag.name}
+                              </div>
                             `
                           )}
                     </div>
