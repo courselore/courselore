@@ -10670,23 +10670,15 @@ ${value}</textarea
                 $${app.locals.partials.textEditor()}
               </div>
 
-              $${res.locals.conversation.type !== "question"
-                ? html``
-                : html`
+              $${res.locals.conversation.type === "question"
+                ? html`
                     <div
                       style="${css`
                         display: flex;
                       `}"
                     >
                       <label
-                        style="${css`
-                          display: grid;
-                          cursor: pointer;
-
-                          & > * {
-                            grid-area: 1 / 1;
-                          }
-                        `}"
+                        class="button button--tight button--tight--inline button--transparent"
                       >
                         <input
                           type="checkbox"
@@ -10695,44 +10687,34 @@ ${value}</textarea
                           $${res.locals.enrollment.role === "staff"
                             ? `checked`
                             : ``}
+                          class="visually-hidden input--radio-or-checkbox--multilabel"
                         />
                         <span
-                          class="button button--transparent"
-                          style="${css`
-                            :checked + & {
-                              display: none;
-                            }
-                          `}"
                           data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Mark as Answer",
-                            touch: false,
-                          });
-                        `}"
+                            tippy(this, {
+                              content: "Set This Message as an Answer",
+                              touch: false,
+                            });
+                          `}"
                         >
                           <i class="bi bi-patch-check"></i>
-                          Not an Answer
+                          This Message Is Not an Answer
                         </span>
                         <span
-                          class="button button--transparent strong"
-                          style="${css`
-                            :not(:checked) + * + & {
-                              display: none;
-                            }
-                          `}"
                           data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Mark as Not an Answer",
-                            touch: false,
-                          });
-                        `}"
+                            tippy(this, {
+                              content: "Set This Message as Not an Answer",
+                              touch: false,
+                            });
+                          `}"
                         >
                           <i class="bi bi-patch-check-fill"></i>
-                          Answer
+                          This Message Is an Answer
                         </span>
                       </label>
                     </div>
-                  `}
+                  `
+                : html``}
 
               <div>
                 <button
