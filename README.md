@@ -248,6 +248,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - `heading--2` needs `flex-wrap`, for example, `/settings/your-enrollment` at 320px wide.
   - The Search box doesn’t align with the highlighted conversation.
 - Test that pins are working…
+- Test interface with weird data: Long text, long words, too many tags, and so forth.
 
 ### Authentication
 
