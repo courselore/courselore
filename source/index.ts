@@ -7727,6 +7727,7 @@ export default async function courselore(
             name="text-editor--mode"
             autocomplete="off"
             checked
+            data-skip-is-modified="true"
             class="text-editor--button--write visually-hidden"
             onclick="${javascript`
               this.closest(".text-editor").querySelector(".text-editor--write").hidden = false;
@@ -7744,6 +7745,7 @@ export default async function courselore(
             type="radio"
             name="text-editor--mode"
             autocomplete="off"
+            data-skip-is-modified="true"
             class="text-editor--button--preview visually-hidden"
             onclick="${javascript`
               (async () => {
