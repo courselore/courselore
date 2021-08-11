@@ -10942,7 +10942,7 @@ ${value}</textarea
       messageReference: string;
     },
     any,
-    { content?: string },
+    {},
     {},
     IsCourseStaffMiddlewareLocals & MessageExistsMiddlewareLocals
   >(
