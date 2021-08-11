@@ -7493,7 +7493,13 @@ export default async function courselore(
                                 `
                               : html``}
                           >
-                            <h3 class="strong">${conversation.title}</h3>
+                            <h3
+                              style="${css`
+                                font-weight: var(--font-weight--bold);
+                              `}"
+                            >
+                              ${conversation.title}
+                            </h3>
                             <div
                               style="${css`
                                 font-size: var(--font-size--xs);
