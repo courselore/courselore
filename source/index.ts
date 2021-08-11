@@ -915,6 +915,10 @@ export default async function courselore(
                   }
                 }
 
+                &.button--tight-gap {
+                  gap: var(--space--1);
+                }
+
                 &.button--full-width-on-small-screen {
                   @media (max-width: 400px) {
                     width: 100%;
@@ -7339,7 +7343,7 @@ export default async function courselore(
                       >
                         <div>
                           <button
-                            class="button button--tight button--tight--inline button--transparent"
+                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: this.nextElementSibling.firstElementChild,
@@ -7355,11 +7359,9 @@ export default async function courselore(
                                 `
                               : html`
                                   <i class="bi bi-tag-fill"></i>
-                                  <span>
-                                    Filtering by
-                                    <i class="bi bi-tag"></i>
-                                    ${res.locals.tagFilter.name}
-                                  </span>
+                                  Filtering by
+                                  <i class="bi bi-tag"></i>
+                                  ${res.locals.tagFilter.name}
                                 `}
                           </button>
                           <div hidden>
@@ -9673,7 +9675,7 @@ ${value}</textarea
                   gap: var(--space--1);
                 `}"
               >
-                $${res.locals.conversation.taggings.length === 0
+                $${res.locals.tags.length === 0
                   ? html``
                   : html`
                       <div
@@ -9753,7 +9755,7 @@ ${value}</textarea
                               $${res.locals.conversation.taggings.length === 1
                                 ? html`
                                     <button
-                                      class="button button--tight button--tight--inline disabled"
+                                      class="button button--tight button--tight--inline button--tight-gap disabled"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "You may not remove this tag because a conversation must have at least one tag.",
@@ -9792,7 +9794,7 @@ ${value}</textarea
                                               value="${tagging.tag.reference}"
                                             />
                                             <button
-                                              class="button button--tight button--tight--inline button--transparent"
+                                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                               data-ondomcontentloaded="${javascript`
                                                 tippy(this, {
                                                   content: "Remove Tag",
@@ -9850,7 +9852,7 @@ ${value}</textarea
                                   value="true"
                                 />
                                 <button
-                                  class="button button--tight button--tight--inline button--transparent"
+                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Pin",
@@ -9869,7 +9871,7 @@ ${value}</textarea
                                   value="false"
                                 />
                                 <button
-                                  class="button button--tight button--tight--inline button--transparent"
+                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Unpin",
@@ -9900,7 +9902,7 @@ ${value}</textarea
                     ? html`
                         <div>
                           <button
-                            class="button button--tight button--tight--inline button--transparent"
+                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Change Conversation Type",
