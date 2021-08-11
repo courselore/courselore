@@ -7441,7 +7441,13 @@ export default async function courselore(
                     </div>
                   `
                 : html`
-                    <div>
+                    <div
+                      style="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--1);
+                      `}"
+                    >
                       $${res.locals.conversations.map(
                         (conversation) => html`
                           <a
@@ -7494,6 +7500,17 @@ export default async function courselore(
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--0-5);
+                                .badges-list {
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--0-5);
+
+                                  & > * {
+                                    display: flex;
+                                    gap: var(--space--1);
+                                  }
+                                }
                               `}"
                             >
                               <div>
@@ -7542,19 +7559,7 @@ export default async function courselore(
                                     `
                                   : html``}
                               </div>
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
-                                  row-gap: var(--space--0-5);
-
-                                  & > * {
-                                    display: flex;
-                                    gap: var(--space--1);
-                                  }
-                                `}"
-                              >
+                              <div class="badges-list">
                                 $${conversation.taggings.length === 0
                                   ? html``
                                   : html`
@@ -7568,19 +7573,7 @@ export default async function courselore(
                                       </div>
                                     `}
                               </div>
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
-                                  row-gap: var(--space--0-5);
-
-                                  & > * {
-                                    display: flex;
-                                    gap: var(--space--1);
-                                  }
-                                `}"
-                              >
+                              <div class="badges-list">
                                 $${conversation.pinnedAt !== null
                                   ? html`
                                       <div>
