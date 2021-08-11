@@ -9508,147 +9508,159 @@ ${value}</textarea
                     </a>
                   </h2>
 
-                  <div
-                    style="${css`
-                      display: flex;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    $${res.locals.enrollment.role === "staff"
-                      ? html`
-                          <div>
-                            <button
-                              class="button button--tight button--tight--inline button--transparent text--rose"
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Remove Conversation",
-                                  theme: "rose",
-                                  touch: false,
-                                });
-                                tippy(this, {
-                                  content: this.nextElementSibling.firstElementChild,
-                                  theme: "rose",
-                                  trigger: "click",
-                                  interactive: true,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-trash"></i>
-                            </button>
-                            <div hidden>
-                              <form
-                                method="POST"
-                                action="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/conversations/${res
-                                  .locals.conversation
-                                  .reference}?_method=DELETE"
-                                style="${css`
-                                  padding: var(--space--2);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `}"
-                              >
-                                <p>
-                                  Are you sure you want to remove this
-                                  conversation?
-                                </p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--bold);
-                                    `}"
-                                  >
-                                    You may not undo this action!
-                                  </strong>
-                                </p>
-                                <button class="button button--rose">
-                                  <i class="bi bi-trash"></i>
-                                  Remove Conversation
-                                </button>
-                              </form>
-                            </div>
-                          </div>
-                        `
-                      : html``}
-                    $${app.locals.helpers.mayEditConversation(req, res)
-                      ? html`
+                  $${(() => {
+                    const content: HTML[] = [];
+
+                    if (res.locals.enrollment.role === "staff")
+                      content.push(html`
+                        <div>
                           <button
-                            class="button button--tight button--tight--inline button--transparent"
+                            class="button button--tight button--tight--inline button--transparent text--rose"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
-                                content: "Edit Title",
+                                content: "Remove Conversation",
+                                theme: "rose",
                                 touch: false,
                               });
-                            `}"
-                            onclick="${javascript`
-                              this.closest(".title").querySelector(".title--show").hidden = true;
-                              this.closest(".title").querySelector(".title--edit").hidden = false;
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                theme: "rose",
+                                trigger: "click",
+                                interactive: true,
+                              });
                             `}"
                           >
-                            <i class="bi bi-pencil"></i>
+                            <i class="bi bi-trash"></i>
                           </button>
-                        `
-                      : html``}
-                  </div>
+                          <div hidden>
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation.reference}?_method=DELETE"
+                              style="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                Are you sure you want to remove this
+                                conversation?
+                              </p>
+                              <p>
+                                <strong
+                                  style="${css`
+                                    font-weight: var(--font-weight--bold);
+                                  `}"
+                                >
+                                  You may not undo this action!
+                                </strong>
+                              </p>
+                              <button class="button button--rose">
+                                <i class="bi bi-trash"></i>
+                                Remove Conversation
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      `);
+
+                    if (app.locals.helpers.mayEditConversation(req, res))
+                      content.push(html`
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Edit Title",
+                              touch: false,
+                            });
+                          `}"
+                          onclick="${javascript`
+                            this.closest(".title").querySelector(".title--show").hidden = true;
+                            this.closest(".title").querySelector(".title--edit").hidden = false;
+                          `}"
+                        >
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                      `);
+
+                    return content.length === 0
+                      ? html``
+                      : html`
+                          <div
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            $${content}
+                          </div>
+                        `;
+                  })()}
                 </div>
 
-                <form
-                  method="POST"
-                  action="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/conversations/${res.locals.conversation
-                    .reference}?_method=PATCH"
-                  novalidate
-                  hidden
-                  class="title--edit"
-                  style="${css`
-                    margin-bottom: var(--space--2);
-                    display: flex;
-                    gap: var(--space--4);
-                    align-items: center;
-                  `}"
-                >
-                  <input
-                    type="text"
-                    name="title"
-                    value="${res.locals.conversation.title}"
-                    required
-                    autocomplete="off"
-                    class="input--text"
-                  />
-                  <button
-                    class="button button--tight button--tight--inline button--transparent text--green"
-                    style="${css`
-                      flex: 1;
-                    `}"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Update Title",
-                        theme: "green",
-                        touch: false,
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-check-lg"></i>
-                  </button>
-                  <button
-                    type="reset"
-                    class="button button--tight button--tight--inline button--transparent text--rose"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Cancel",
-                        theme: "rose",
-                        touch: false,
-                      });
-                    `}"
-                    onclick="${javascript`
-                      this.closest(".title").querySelector(".title--show").hidden = false;
-                      this.closest(".title").querySelector(".title--edit").hidden = true;
-                    `}"
-                  >
-                    <i class="bi bi-x-lg"></i>
-                  </button>
-                </form>
+                $${app.locals.helpers.mayEditConversation(req, res)
+                  ? html`
+                      <form
+                        method="POST"
+                        action="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/conversations/${res.locals
+                          .conversation.reference}?_method=PATCH"
+                        novalidate
+                        hidden
+                        class="title--edit"
+                        style="${css`
+                          margin-bottom: var(--space--2);
+                          display: flex;
+                          gap: var(--space--4);
+                          align-items: center;
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          name="title"
+                          value="${res.locals.conversation.title}"
+                          required
+                          autocomplete="off"
+                          class="input--text"
+                        />
+                        <button
+                          class="button button--tight button--tight--inline button--transparent text--green"
+                          style="${css`
+                            flex: 1;
+                          `}"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Update Title",
+                              theme: "green",
+                              touch: false,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-check-lg"></i>
+                        </button>
+                        <button
+                          type="reset"
+                          class="button button--tight button--tight--inline button--transparent text--rose"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Cancel",
+                              theme: "rose",
+                              touch: false,
+                            });
+                          `}"
+                          onclick="${javascript`
+                            this.closest(".title").querySelector(".title--show").hidden = false;
+                            this.closest(".title").querySelector(".title--edit").hidden = true;
+                          `}"
+                        >
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      </form>
+                    `
+                  : html``}
               </div>
 
               $${res.locals.conversation.taggings.length === 0
