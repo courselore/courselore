@@ -7555,6 +7555,32 @@ export default async function courselore(
                                   }
                                 `}"
                               >
+                                $${conversation.taggings.length === 0
+                                  ? html``
+                                  : html`
+                                      <div>
+                                        $${conversation.taggings.map(
+                                          (tagging) => html`
+                                            <i class="bi bi-tag"></i>
+                                            ${tagging.tag.name}
+                                          `
+                                        )}
+                                      </div>
+                                    `}
+                              </div>
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--0-5);
+
+                                  & > * {
+                                    display: flex;
+                                    gap: var(--space--1);
+                                  }
+                                `}"
+                              >
                                 $${conversation.pinnedAt !== null
                                   ? html`
                                       <div>
@@ -7581,22 +7607,23 @@ export default async function courselore(
                                   : html`
                                       <div
                                         data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: ${JSON.stringify(
-                                        `Endorsed by ${
-                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                            "en"
-                                          ).format(
-                                            conversation.endorsements.map(
-                                              (endorsement) =>
-                                                endorsement.enrollment.user.name
-                                            )
-                                          )
-                                        }`
-                                      )},
-                                      touch: false,
-                                    });
-                                  `}"
+                                          tippy(this, {
+                                            content: ${JSON.stringify(
+                                              `Endorsed by ${
+                                                /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                                  "en"
+                                                ).format(
+                                                  conversation.endorsements.map(
+                                                    (endorsement) =>
+                                                      endorsement.enrollment
+                                                        .user.name
+                                                  )
+                                                )
+                                              }`
+                                            )},
+                                            touch: false,
+                                          });
+                                        `}"
                                       >
                                         <i class="bi bi-award"></i>
                                         ${conversation.endorsements.length}
@@ -7616,18 +7643,6 @@ export default async function courselore(
                                         Like${conversation.likesCount === 1
                                           ? ""
                                           : "s"}
-                                      </div>
-                                    `}
-                                $${conversation.taggings.length === 0
-                                  ? html``
-                                  : html`
-                                      <div>
-                                        $${conversation.taggings.map(
-                                          (tagging) => html`
-                                            <i class="bi bi-tag"></i>
-                                            ${tagging.tag.name}
-                                          `
-                                        )}
                                       </div>
                                     `}
                               </div>
