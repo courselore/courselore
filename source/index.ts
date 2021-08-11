@@ -9728,6 +9728,36 @@ ${value}</textarea
                             </div>
                           `
                         : html``}
+                      $${res.locals.conversation.taggings.map(
+                        (tagging) => html`
+                          <form
+                            method="POST"
+                            action="${app.locals.settings.url}/courses/${res
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation
+                              .reference}/taggings?_method=DELETE"
+                          >
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Remove Tag",
+                                  theme: "rose",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <input
+                                type="hidden"
+                                name="reference"
+                                value="${tagging.tag.reference}"
+                              />
+                              <i class="bi bi-tag"></i>
+                              ${tagging.tag.name}
+                            </button>
+                          </form>
+                        `
+                      )}
                     </div>
                   `}
 
