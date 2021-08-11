@@ -10109,7 +10109,7 @@ ${value}</textarea
                                     .conversation
                                     .reference}/messages/${message.reference}?_method=DELETE"
                                   style="${css`
-                                    padding: var(--space--2) var(--space--0);
+                                    padding: var(--space--2);
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--4);
@@ -10128,9 +10128,7 @@ ${value}</textarea
                                       You may not undo this action!
                                     </strong>
                                   </p>
-                                  <button
-                                    class="button button--tight button--tight--inline text--rose"
-                                  >
+                                  <button class="button button--rose">
                                     <i class="bi bi-trash"></i>
                                     Remove Message
                                   </button>
@@ -10141,54 +10139,50 @@ ${value}</textarea
                         : html``}
                       $${app.locals.helpers.mayEditMessage(req, res, message)
                         ? html`
-                            <div>
-                              <button
-                                class="button button--tight button--tight--inline button--transparent"
-                                data-ondomcontentloaded="${javascript`
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              data-ondomcontentloaded="${javascript`
                                   tippy(this, {
                                     content: "Edit Message",
                                     touch: false,
                                   });
                                 `}"
-                                onclick="${javascript`
-                                  this.closest(".message").querySelector(".message--show").hidden = true;
-                                  this.closest(".message").querySelector(".message--edit").hidden = false;
-                                `}"
-                              >
-                                <i class="bi bi-pencil"></i>
-                              </button>
-                            </div>
+                              onclick="${javascript`
+                                this.closest(".message").querySelector(".message--show").hidden = true;
+                                this.closest(".message").querySelector(".message--edit").hidden = false;
+                              `}"
+                            >
+                              <i class="bi bi-pencil"></i>
+                            </button>
                           `
                         : html``}
 
-                      <div>
-                        <button
-                          class="button button--tight button--tight--inline button--transparent"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Reply",
-                              touch: false,
-                            });
+                      <button
+                        class="button button--tight button--tight--inline button--transparent"
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Reply",
+                            touch: false,
+                          });
+                        `}"
+                        onclick="${javascript`
+                          const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                          const newMessage = document.querySelector(".new-message");
+                          newMessage.querySelector(".text-editor--button--write").click();
+                          const element = newMessage.querySelector('[name="content"]');
+                          // TODO: Use something like ‘@Leandro-Facchinetti-2342’
+                          textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                            message.authorEnrollment.reference
+                          )} + " · #" + ${JSON.stringify(
+                          res.locals.conversation.reference
+                        )} + "/" + ${JSON.stringify(
+                          message.reference
+                        )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                          element.focus();
                           `}"
-                          onclick="${javascript`
-                            const content = JSON.parse(this.closest("[data-content]").dataset.content);
-                            const newMessage = document.querySelector(".new-message");
-                            newMessage.querySelector(".text-editor--button--write").click();
-                            const element = newMessage.querySelector('[name="content"]');
-                            // TODO: Use something like ‘@Leandro-Facchinetti-2342’
-                            textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                              message.authorEnrollment.reference
-                            )} + " · #" + ${JSON.stringify(
-                            res.locals.conversation.reference
-                          )} + "/" + ${JSON.stringify(
-                            message.reference
-                          )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                            element.focus();
-                            `}"
-                        >
-                          <i class="bi bi-reply"></i>
-                        </button>
-                      </div>
+                      >
+                        <i class="bi bi-reply"></i>
+                      </button>
                     </div>
                   </div>
 
