@@ -9809,60 +9809,70 @@ ${value}</textarea
                     </div>
                   `}
 
-              <!-- TODO: pinned, type -->
+              <div>
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <form
+                        method="POST"
+                        action="${app.locals.settings.url}/courses/${res.locals
+                          .course.reference}/conversations/${res.locals
+                          .conversation.reference}?_method=PATCH"
+                      >
+                        $${res.locals.conversation.pinnedAt === null
+                          ? html`
+                              <input
+                                type="hidden"
+                                name="isPinned"
+                                value="true"
+                              />
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Pin",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin-angle"></i>
+                                Unpinned
+                              </button>
+                            `
+                          : html`
+                              <input
+                                type="hidden"
+                                name="isPinned"
+                                value="false"
+                              />
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Unpin",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin"></i>
+                                Pinned
+                              </button>
+                            `}
+                      </form>
+                    `
+                  : res.locals.conversation.pinnedAt !== null
+                  ? html`
+                      <div>
+                        <i class="bi bi-pin"></i>
+                        Pinned
+                      </div>
+                    `
+                  : html``}
+              </div>
+              <!-- TODO: type -->
             </div>
 
             $${(() => {
               const content: HTML[] = [];
-
-              if (res.locals.enrollment.role === "staff")
-                content.push(html`
-                  <form
-                    method="POST"
-                    action="${app.locals.settings.url}/courses/${res.locals
-                      .course.reference}/conversations/${res.locals.conversation
-                      .reference}?_method=PATCH"
-                  >
-                    $${res.locals.conversation.pinnedAt === null
-                      ? html`
-                          <input type="hidden" name="isPinned" value="true" />
-                          <button
-                            class="button"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Pin",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-pin-angle"></i>
-                            Unpinned
-                          </button>
-                        `
-                      : html`
-                          <input type="hidden" name="isPinned" value="false" />
-                          <button
-                            class="button strong"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Unpin",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-pin-fill"></i>
-                            Pinned
-                          </button>
-                        `}
-                  </form>
-                `);
-              else if (res.locals.conversation.pinnedAt !== null)
-                content.push(html`
-                  <div>
-                    <i class="bi bi-pin-fill"></i>
-                    Pinned
-                  </div>
-                `);
 
               if (app.locals.helpers.mayEditConversation(req, res))
                 content.push(html`
@@ -9921,6 +9931,7 @@ ${value}</textarea
                 ? html``
                 : html`
                     <div
+                      hidden
                       style="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
