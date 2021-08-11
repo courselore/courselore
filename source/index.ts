@@ -9592,7 +9592,7 @@ ${value}</textarea
                           <div
                             style="${css`
                               display: flex;
-                              gap: var(--space--4);
+                              gap: var(--space--2);
                             `}"
                           >
                             $${content}
