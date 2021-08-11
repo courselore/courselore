@@ -9991,37 +9991,47 @@ ${value}</textarea
                       display: flex;
                       gap: var(--space--4);
                       justify-content: space-between;
-                      align-items: center;
+                      align-items: baseline;
                     `}"
                   >
                     <div
                       style="${css`
                         display: flex;
                         gap: var(--space--2);
-                        align-items: center;
+                        align-items: baseline;
                       `}"
                     >
-                      $${message.authorEnrollment.user.avatar === null
-                        ? html`
-                            <div
-                              style="${css`
-                                font-size: var(--font-size--2xl);
-                              `}"
-                            >
-                              <i class="bi bi-person-circle"></i>
-                            </div>
-                          `
-                        : html`
-                            <img
-                              src="${message.authorEnrollment.user.avatar}"
-                              alt="${message.authorEnrollment.user.name}"
-                              class="avatar"
-                              style="${css`
-                                width: var(--font-size--2xl);
-                                height: var(--font-size--2xl);
-                              `}"
-                            />
-                          `}
+                      <div
+                        style="${css`
+                          position: relative;
+                          bottom: var(--space---1-5);
+                        `}"
+                      >
+                        $${message.authorEnrollment.user.avatar === null
+                          ? html`
+                              <div
+                                style="${css`
+                                  font-size: var(--font-size--2xl);
+                                  & > *::before {
+                                    vertical-align: baseline;
+                                  }
+                                `}"
+                              >
+                                <i class="bi bi-person-circle"></i>
+                              </div>
+                            `
+                          : html`
+                              <img
+                                src="${message.authorEnrollment.user.avatar}"
+                                alt="${message.authorEnrollment.user.name}"
+                                class="avatar"
+                                style="${css`
+                                  width: var(--font-size--2xl);
+                                  height: var(--font-size--2xl);
+                                `}"
+                              />
+                            `}
+                      </div>
                       <h3>
                         <span class="strong">
                           ${message.authorEnrollment.user.name}
