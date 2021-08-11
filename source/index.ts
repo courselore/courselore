@@ -7566,20 +7566,20 @@ export default async function courselore(
                                     `
                                   : html``}
                               </div>
-                              <div class="badges-list">
-                                $${conversation.taggings.length === 0
-                                  ? html``
-                                  : html`
-                                      <div>
-                                        $${conversation.taggings.map(
-                                          (tagging) => html`
+                              $${conversation.taggings.length === 0
+                                ? html``
+                                : html`
+                                    <div class="badges-list">
+                                      $${conversation.taggings.map(
+                                        (tagging) => html`
+                                          <div>
                                             <i class="bi bi-tag"></i>
                                             ${tagging.tag.name}
-                                          `
-                                        )}
-                                      </div>
-                                    `}
-                              </div>
+                                          </div>
+                                        `
+                                      )}
+                                    </div>
+                                  `}
                               <div class="badges-list">
                                 $${conversation.pinnedAt !== null
                                   ? html`
