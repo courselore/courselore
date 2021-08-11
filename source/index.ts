@@ -9433,7 +9433,6 @@ ${value}</textarea
     },
   ];
 
-  // FIXME: Conversations from different courses are showing up :O
   app.get<
     { courseReference: string; conversationReference: string },
     HTML,
