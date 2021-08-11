@@ -9664,7 +9664,70 @@ ${value}</textarea
                         row-gap: var(--space--2);
                       `}"
                     >
-                      Hello
+                      $${res.locals.tags.length >
+                      res.locals.conversation.taggings.length
+                        ? html`
+                            <div>
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Add Tag",
+                                    touch: false,
+                                  });
+                                  tippy(this, {
+                                    content: this.nextElementSibling.firstElementChild,
+                                    trigger: "click",
+                                    interactive: true,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-tags"></i>
+                              </button>
+                              <div hidden>
+                                <div
+                                  class="dropdown-menu"
+                                  style="${css`
+                                    max-height: var(--space--40);
+                                    overflow: auto;
+                                  `}"
+                                >
+                                  $${res.locals.tags
+                                    .filter(
+                                      (tag) =>
+                                        !res.locals.conversation.taggings.some(
+                                          (tagging) => tagging.tag.id === tag.id
+                                        )
+                                    )
+                                    .map(
+                                      (tag) => html`
+                                        <form
+                                          method="POST"
+                                          action="${app.locals.settings
+                                            .url}/courses/${res.locals.course
+                                            .reference}/conversations/${res
+                                            .locals.conversation
+                                            .reference}/taggings"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="reference"
+                                            value="${tag.reference}"
+                                          />
+                                          <button
+                                            class="dropdown-menu--item button button--transparent"
+                                          >
+                                            <i class="bi bi-tag"></i>
+                                            ${tag.name}
+                                          </button>
+                                        </form>
+                                      `
+                                    )}
+                                </div>
+                              </div>
+                            </div>
+                          `
+                        : html``}
                     </div>
                   `}
 
