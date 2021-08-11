@@ -9493,6 +9493,8 @@ ${value}</textarea
                         .conversation.reference}"
                       class="button button--tight button--transparent secondary"
                       style="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
                         display: inline;
                       `}"
                       data-ondomcontentloaded="${javascript`
@@ -9649,7 +9651,24 @@ ${value}</textarea
                 </form>
               </div>
 
-              <div>Hello</div>
+              $${res.locals.conversation.taggings.length === 0
+                ? html``
+                : html`
+                    <div
+                      style="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                        display: flex;
+                        flex-wrap: wrap;
+                        column-gap: var(--space--6);
+                        row-gap: var(--space--2);
+                      `}"
+                    >
+                      Hello
+                    </div>
+                  `}
+
+              <!-- TODO: Tags, pinned, type -->
             </div>
 
             $${(() => {
