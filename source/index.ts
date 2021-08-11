@@ -10692,24 +10692,24 @@ ${value}</textarea
                         <span
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
-                              content: "Set This Message as an Answer",
+                              content: "Set as an Answer",
                               touch: false,
                             });
                           `}"
                         >
                           <i class="bi bi-patch-check"></i>
-                          This Message Is Not an Answer
+                          Not an Answer
                         </span>
                         <span
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
-                              content: "Set This Message as Not an Answer",
+                              content: "Set as Not an Answer",
                               touch: false,
                             });
                           `}"
                         >
                           <i class="bi bi-patch-check-fill"></i>
-                          This Message Is an Answer
+                          Answer
                         </span>
                       </label>
                     </div>
