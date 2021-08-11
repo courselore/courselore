@@ -7349,11 +7349,11 @@ export default async function courselore(
                           >
                             $${res.locals.tagFilter === undefined
                               ? html`
-                                  <i class="bi bi-funnel"></i>
+                                  <i class="bi bi-tag"></i>
                                   Filter by Tag
                                 `
                               : html`
-                                  <i class="bi bi-funnel-fill"></i>
+                                  <i class="bi bi-tag-fill"></i>
                                   <span>
                                     Filtering by
                                     <i class="bi bi-tag"></i>
@@ -7545,7 +7545,9 @@ export default async function courselore(
                               <div
                                 style="${css`
                                   display: flex;
-                                  gap: var(--space--4);
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--0-5);
 
                                   & > * {
                                     display: flex;
@@ -7561,14 +7563,12 @@ export default async function courselore(
                                       </div>
                                     `
                                   : html``}
-                                $${conversation.type === "question"
-                                  ? html`
-                                      <div>
-                                        <i class="bi bi-patch-question"></i>
-                                        Question
-                                      </div>
-                                    `
-                                  : html``}
+                                <div>
+                                  $${app.locals.partials.conversationTypeIcon(
+                                    conversation.type
+                                  )}
+                                  ${lodash.capitalize(conversation.type)}
+                                </div>
                                 <div>
                                   <i class="bi bi-chat-left-text"></i>
                                   ${conversation.messagesCount}
