@@ -10752,8 +10752,8 @@ ${value}</textarea
     HTML,
     {
       title?: string;
+      type?: ConversationType;
       isPinned?: "true" | "false";
-      isQuestion?: "true" | "false";
     },
     {},
     MayEditConversationMiddlewareLocals
@@ -10766,6 +10766,18 @@ ${value}</textarea
         else
           app.locals.database.run(
             sql`UPDATE "conversations" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.conversation.id}`
+          );
+
+      if (typeof req.body.type === "string")
+        if (!res.locals.conversationTypes.includes(req.body.type))
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "conversations"
+              SET "type" = ${req.body.type}
+              WHERE "id" = ${res.locals.conversation.id}
+            `
           );
 
       if (typeof req.body.isPinned === "string")
@@ -10784,26 +10796,6 @@ ${value}</textarea
               UPDATE "conversations"
               SET "pinnedAt" = ${
                 req.body.isPinned === "true" ? new Date().toISOString() : null
-              }
-              WHERE "id" = ${res.locals.conversation.id}
-            `
-          );
-
-      if (typeof req.body.isQuestion === "string")
-        if (
-          !["true", "false"].includes(req.body.isQuestion) ||
-          (req.body.isQuestion === "true" &&
-            res.locals.conversation.type === "question") ||
-          (req.body.isQuestion === "false" &&
-            res.locals.conversation.type !== "question")
-        )
-          return next("validation");
-        else
-          app.locals.database.run(
-            sql`
-              UPDATE "conversations"
-              SET "type" = ${
-                req.body.isQuestion === "true" ? "question" : "other"
               }
               WHERE "id" = ${res.locals.conversation.id}
             `
