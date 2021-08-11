@@ -9746,7 +9746,7 @@ ${value}</textarea
                               : html``}
                             $${res.locals.conversation.taggings.length === 1
                               ? html`
-                                  <div
+                                  <button
                                     class="button button--tight button--tight--inline disabled"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
@@ -9759,7 +9759,7 @@ ${value}</textarea
                                     <i class="bi bi-tag"></i>
                                     ${res.locals.conversation.taggings[0].tag
                                       .name}
-                                  </div>
+                                  </button>
                                 `
                               : res.locals.conversation.taggings.map(
                                   (tagging) => html`
