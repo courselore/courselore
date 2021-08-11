@@ -6706,6 +6706,7 @@ export default async function courselore(
               DELETE FROM "tags" WHERE "reference" = ${tag.reference}
             `
           );
+        // FIXME: Don’t update ‘staffOnlyAt’ unless necessary.
         else
           app.locals.database.run(
             sql`
