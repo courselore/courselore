@@ -9984,6 +9984,9 @@ ${value}</textarea
                     @media (prefers-color-scheme: dark) {
                       border-color: var(--color--gray--medium--700);
                     }
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
                   `}"
                 >
                   <div
@@ -10196,7 +10199,14 @@ ${value}</textarea
                     </div>
                   </div>
 
-                  <div class="message--show">
+                  <div
+                    class="message--show"
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--4);
+                    `}"
+                  >
                     $${(() => {
                       const content: HTML[] = [];
 
