@@ -9678,9 +9678,7 @@ ${value}</textarea
                       <div
                         style="${css`
                           display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--6);
-                          row-gap: var(--space--1);
+                          gap: var(--space--4);
                         `}"
                       >
                         $${app.locals.helpers.mayEditConversation(req, res)
@@ -9768,37 +9766,48 @@ ${value}</textarea
                                         .name}
                                     </button>
                                   `
-                                : res.locals.conversation.taggings.map(
-                                    (tagging) => html`
-                                      <form
-                                        method="POST"
-                                        action="${app.locals.settings
-                                          .url}/courses/${res.locals.course
-                                          .reference}/conversations/${res.locals
-                                          .conversation
-                                          .reference}/taggings?_method=DELETE"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="reference"
-                                          value="${tagging.tag.reference}"
-                                        />
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent"
-                                          data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: "Remove Tag",
-                                              theme: "rose",
-                                              touch: false,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-tag"></i>
-                                          ${tagging.tag.name}
-                                        </button>
-                                      </form>
-                                    `
-                                  )}
+                                : html`
+                                    <div
+                                      style="${css`
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                        column-gap: var(--space--6);
+                                        row-gap: var(--space--1);
+                                      `}"
+                                    >
+                                      $${res.locals.conversation.taggings.map(
+                                        (tagging) => html`
+                                          <form
+                                            method="POST"
+                                            action="${app.locals.settings
+                                              .url}/courses/${res.locals.course
+                                              .reference}/conversations/${res
+                                              .locals.conversation
+                                              .reference}/taggings?_method=DELETE"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="reference"
+                                              value="${tagging.tag.reference}"
+                                            />
+                                            <button
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              data-ondomcontentloaded="${javascript`
+                                                tippy(this, {
+                                                  content: "Remove Tag",
+                                                  theme: "rose",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-tag"></i>
+                                              ${tagging.tag.name}
+                                            </button>
+                                          </form>
+                                        `
+                                      )}
+                                    </div>
+                                  `}
                             `
                           : res.locals.conversation.taggings.map(
                               (tagging) => html`
