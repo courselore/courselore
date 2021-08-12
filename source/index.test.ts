@@ -151,7 +151,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img
 
 <img class="fit-picture"
-     src="/splash.png"
+     src="https://placekitten.com/500/300"
      alt="Grapefruit slice atop a pile of other slices">
 
 ---
@@ -167,7 +167,7 @@ The telnet client should display: <tt>Local Echo is on</tt></p>
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div
 
 <div class="warning">
-    <img src="/splash.png"
+    <img src="https://placekitten.com/500/300"
          alt="An intimidating leopard.">
     <p>Beware of the leopard</p>
 </div>
@@ -460,7 +460,7 @@ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure
 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption
 
 <figure>
-    <img src="/splash.png"
+    <img src="https://placekitten.com/500/300"
          alt="Elephant at sunset">
     <figcaption>An elephant at sunset</figcaption>
 </figure>
