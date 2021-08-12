@@ -1226,7 +1226,19 @@ export default async function courselore(
                 )}
               }
 
-              .text {
+              .dark {
+                display: none;
+              }
+              @media (prefers-color-scheme: dark) {
+                .light {
+                  display: none;
+                }
+                .dark {
+                  display: block;
+                }
+              }
+
+              .markdown {
                 h1,
                 h2,
                 h3,
@@ -1611,18 +1623,6 @@ export default async function courselore(
 
                 .katex {
                   overflow: auto;
-                }
-              }
-
-              .dark {
-                display: none;
-              }
-              @media (prefers-color-scheme: dark) {
-                .light {
-                  display: none;
-                }
-                .dark {
-                  display: block;
                 }
               }
             }
@@ -8660,11 +8660,13 @@ ${value}</textarea
         res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
       } = {}
     ) => {
-      const processedMarkdown = markdownProcessor.processSync(text).toString();
+      const processedMarkdown = html`
+        <div class="markdown">
+          $${markdownProcessor.processSync(text).toString()}
+        </div>
+      `;
       if (res === undefined) return processedMarkdown;
-      const document = JSDOM.fragment(
-        html`<div class="text">$${processedMarkdown}</div>`
-      );
+      const document = JSDOM.fragment(processedMarkdown);
       (function traverse(node: Node): void {
         switch (node.nodeType) {
           case node.TEXT_NODE:
