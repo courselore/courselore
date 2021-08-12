@@ -10271,7 +10271,12 @@ ${value}</textarea
                         message.answerAt !== null
                       )
                         content.push(html`
-                          <div>
+                          <div
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--2);
+                            `}"
+                          >
                             <i class="bi bi-patch-check-fill"></i>
                             Answer
                           </div>
@@ -10304,7 +10309,7 @@ ${value}</textarea
                                     value="false"
                                   />
                                   <button
-                                    class="button button--tight button--tight--inline"
+                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: ${JSON.stringify(
@@ -10351,7 +10356,7 @@ ${value}</textarea
                                     value="true"
                                   />
                                   <button
-                                    class="button button--tight button--tight--inline button--transparent"
+                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                     $${message.endorsements.length === 0
                                       ? html``
                                       : html`
@@ -10545,7 +10550,7 @@ ${value}</textarea
                             `}"
                           >
                             <button
-                              class="button button--tight button--tight--inline ${isLiked
+                              class="button button--tight button--tight--inline button--tight-gap ${isLiked
                                 ? "button--blue"
                                 : "button--transparent"}"
                               $${likesCount === 0
