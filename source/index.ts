@@ -10309,7 +10309,7 @@ ${value}</textarea
                                     value="false"
                                   />
                                   <button
-                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                    class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: ${JSON.stringify(
@@ -10399,6 +10399,10 @@ ${value}</textarea
                       )
                         content.push(html`
                           <div
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--1);
+                            `}"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: ${JSON.stringify(
