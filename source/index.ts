@@ -7197,7 +7197,7 @@ export default async function courselore(
                 & > * {
                   flex: 1;
                   min-width: var(--width--0);
-                  max-width: var(--width--2xl);
+                  max-width: var(--width--prose);
                 }
               }
               & > .single-column--hidden {
@@ -7674,7 +7674,7 @@ export default async function courselore(
                 flex-direction: column;
                 gap: var(--space--4);
                 @media (min-width: 900px) {
-                  max-width: var(--width--2xl);
+                  max-width: var(--width--prose);
                   margin-left: var(--space--8);
                 }
               `}"
@@ -10450,7 +10450,7 @@ ${value}</textarea
                     <div>
                       <div
                         data-ondomcontentloaded="${javascript`
-                          this.tippy = tippy(this, {
+                          this.dropdownMenu = tippy(this, {
                             content: this.nextElementSibling.firstElementChild,
                             trigger: "manual",
                             interactive: true,
@@ -10469,7 +10469,7 @@ ${value}</textarea
                             anchorElement.dataset.position === undefined ||
                             focusElement.dataset.position === undefined
                           ) return;
-                          this.tippy.setProps({
+                          this.dropdownMenu.setProps({
                             getReferenceClientRect: () => ({
                               width: 0,
                               height: 0,
@@ -10479,7 +10479,7 @@ ${value}</textarea
                               left: event.clientX,
                             }),
                           });
-                          this.tippy.show();
+                          this.dropdownMenu.show();
                         `}"
                       >
                         $${app.locals.partials.textProcessor(message.content, {
@@ -10488,7 +10488,7 @@ ${value}</textarea
                         })}
                       </div>
                       <div hidden>
-                        <div>
+                        <div class="dropdown-menu">
                           <button
                             class="dropdown-menu--item button button--transparent"
                             onclick="${javascript`
