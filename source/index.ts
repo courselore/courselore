@@ -10550,9 +10550,9 @@ ${value}</textarea
                             `}"
                           >
                             <button
-                              class="button button--tight button--tight--inline button--tight-gap ${isLiked
-                                ? "button--blue"
-                                : "button--transparent"}"
+                              class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                ? "text--blue"
+                                : ""}"
                               $${likesCount === 0
                                 ? html``
                                 : html`
