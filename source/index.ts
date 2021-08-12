@@ -9819,7 +9819,7 @@ ${value}</textarea
                                 <div
                                   style="${css`
                                     display: flex;
-                                    gap: var(--space--2);
+                                    gap: var(--space--1);
                                   `}"
                                 >
                                   <i class="bi bi-tag"></i>
@@ -9892,7 +9892,7 @@ ${value}</textarea
                         <div
                           style="${css`
                             display: flex;
-                            gap: var(--space--2);
+                            gap: var(--space--1);
                           `}"
                         >
                           <i class="bi bi-pin"></i>
@@ -9960,7 +9960,7 @@ ${value}</textarea
                         <div
                           style="${css`
                             display: flex;
-                            gap: var(--space--2);
+                            gap: var(--space--1);
                           `}"
                         >
                           $${app.locals.partials.conversationTypeIcon(
@@ -10274,7 +10274,7 @@ ${value}</textarea
                           <div
                             style="${css`
                               display: flex;
-                              gap: var(--space--2);
+                              gap: var(--space--1);
                             `}"
                           >
                             <i class="bi bi-patch-check-fill"></i>
