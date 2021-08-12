@@ -10585,7 +10585,6 @@ ${value}</textarea
                           hidden
                           class="message--edit"
                           style="${css`
-                            padding-top: var(--space--2);
                             display: flex;
                             flex-direction: column;
                             gap: var(--space--2);
@@ -10628,7 +10627,7 @@ ${value}</textarea
                             </button>
                             <button
                               type="reset"
-                              class="button button--tight button--tight--inline button--transparent"
+                              class="button button--transparent"
                               onclick="${javascript`
                                 this.closest(".message").querySelector(".message--show").hidden = false;
                                 this.closest(".message").querySelector(".message--edit").hidden = true;
