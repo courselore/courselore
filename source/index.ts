@@ -9978,7 +9978,7 @@ ${value}</textarea
                   data-content="${JSON.stringify(message.content)}"
                   class="message"
                   style="${css`
-                    padding-bottom: var(--space--4);
+                    padding-bottom: var(--space--2);
                     border-bottom: var(--border-width--4) solid
                       var(--color--gray--medium--200);
                     @media (prefers-color-scheme: dark) {
