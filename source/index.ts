@@ -2410,6 +2410,35 @@ export default async function courselore(
   })();
 
   interface Partials {
+    loading: HTML;
+  }
+  app.locals.partials.loading = html`
+    <svg
+      width="20"
+      height="20"
+      style="${css`
+        animation: var(--animation--spin);
+      `}"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="4"
+    >
+      <path
+        d="M 2 10, A 8 8, 0, 0, 0, 18 10, A 8 8, 0, 0, 0, 2 10"
+        style="${css`
+          opacity: var(--opacity--25);
+        `}"
+      />
+      <path
+        d="M 2 10, A 8 8, 0, 0, 0, 15.5 15.5"
+        style="${css`
+          opacity: var(--opacity--75);
+        `}"
+      />
+    </svg>
+  `;
+
+  interface Partials {
     conversationTypeIcon: (conversationType: ConversationType) => HTML;
   }
   app.locals.partials.conversationTypeIcon = (conversationType) =>
@@ -8532,7 +8561,7 @@ ${value}</textarea
             gap: var(--space--2);
           `}"
         >
-          $${app.locals.partials.logo} Loading…
+          $${app.locals.partials.loading} Loading…
         </div>
 
         <div
