@@ -9681,7 +9681,9 @@ ${value}</textarea
                       <div
                         style="${css`
                           display: flex;
-                          gap: var(--space--4);
+                          flex-wrap: wrap;
+                          column-gap: var(--space--6);
+                          row-gap: var(--space--1);
                         `}"
                       >
                         $${app.locals.helpers.mayEditConversation(req, res)
@@ -9986,7 +9988,7 @@ ${value}</textarea
                     }
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--4);
+                    gap: var(--space--2);
                   `}"
                 >
                   <div
@@ -10231,10 +10233,10 @@ ${value}</textarea
                                     value="true"
                                   />
                                   <button
-                                    class="button button--tight button--tight--inline button--transparent"
+                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
-                                        content: "Mark as Answer",
+                                        content: "Set as an Answer",
                                         touch: false,
                                       });
                                     `}"
@@ -10250,10 +10252,10 @@ ${value}</textarea
                                     value="false"
                                   />
                                   <button
-                                    class="button button--tight button--tight--inline button--transparent"
+                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                     data-ondomcontentloaded="${javascript`
                                         tippy(this, {
-                                          content: "Mark as Not an Answer",
+                                          content: "Set as Not an Answer",
                                           touch: false,
                                         });
                                       `}"
@@ -10426,7 +10428,9 @@ ${value}</textarea
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
-                                gap: var(--space--4);
+                                flex-wrap: wrap;
+                                column-gap: var(--space--6);
+                                row-gap: var(--space--1);
                               `}"
                             >
                               $${content}
@@ -10514,7 +10518,9 @@ ${value}</textarea
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         display: flex;
-                        gap: var(--space--4);
+                        flex-wrap: wrap;
+                        column-gap: var(--space--6);
+                        row-gap: var(--space--1);
                       `}"
                     >
                       $${(() => {
