@@ -2345,7 +2345,7 @@ export default async function courselore(
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
-              padding: var(--space--4);
+              margin: var(--space--4);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -4794,7 +4794,6 @@ export default async function courselore(
                   class="input--text"
                   style="${css`
                     height: var(--space--32);
-                    padding-right: var(--space--7);
                   `}"
                   data-ondomcontentloaded="${javascript`
                     (this.validators ??= []).push(() => {
@@ -7838,7 +7837,7 @@ export default async function courselore(
               margin: var(--space--0) var(--space--3);
               overflow-x: auto;
               display: flex;
-              gap: var(--space--1-5);
+              gap: var(--space--2-5);
               & > * {
                 display: flex;
               }
