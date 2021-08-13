@@ -1636,6 +1636,9 @@ export default async function courselore(
             flex-direction: column;
             overflow: hidden;
           `}"
+          onscroll="${javascript`
+            this.scroll(0, 0);
+          `}"
         >
           <div
             style="${css`
