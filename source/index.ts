@@ -763,6 +763,9 @@ export default async function courselore(
                 transition-timing-function: var(
                   --transition-timing-function--in-out
                 );
+                &.input--text--textarea {
+                  border-radius: var(--border-radius--lg);
+                }
               }
 
               .input--radio {
@@ -1153,7 +1156,7 @@ export default async function courselore(
                     }
                   }
                   padding: var(--space--2);
-                  border-radius: var(--border-radius--md);
+                  border-radius: var(--border-radius--lg);
                 }
               }
 
@@ -4764,7 +4767,7 @@ export default async function courselore(
                   name="emails"
                   required
                   disabled
-                  class="input--text"
+                  class="input--text input--text--textarea"
                   style="${css`
                     height: var(--space--32);
                   `}"
@@ -8454,7 +8457,7 @@ export default async function courselore(
           <textarea
             name="${name}"
             $${required ? html`required` : html``}
-            class="input--text"
+            class="input--text input--text--textarea"
             style="${css`
               height: var(--space--20);
               transition-property: var(--transition-property--all);
