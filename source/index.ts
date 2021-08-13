@@ -651,11 +651,10 @@ export default async function courselore(
                           new Function(element.dataset.ondomcontentloaded).call(
                             element
                           );
-
-                        morphdom(
-                          document.documentElement,
-                          refreshedDocument.documentElement
+                        document.head.append(
+                          ...refreshedDocument.head.querySelectorAll("style")
                         );
+                        morphdom(document.body, refreshedDocument.body);
                         break;
 
                       case 404:
