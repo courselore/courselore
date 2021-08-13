@@ -42,7 +42,7 @@
     "faker": "^5.5.3",
     "fs-extra": "^8.1.0",
     "hast-util-sanitize": "^3.0.2",
-    "jsdom": "^16.6.0",
+    "jsdom": "^16.7.0",
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "qrcode": "^1.4.4",
@@ -68,7 +68,7 @@
     "@types/express-fileupload": "^1.1.6",
     "@types/faker": "^5.5.7",
     "@types/fs-extra": "^9.0.7",
-    "@types/jsdom": "^16.2.12",
+    "@types/jsdom": "^16.2.13",
     "@types/lodash": "^4.14.168",
     "@types/method-override": "^0.0.31",
     "@types/node": "^15.0.0",
@@ -83,7 +83,7 @@
     "tough-cookie": "^4.0.0",
     "ts-jest": "^26.4.4",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.3.5"
   },
   "jest": {
     "rootDir": "source",

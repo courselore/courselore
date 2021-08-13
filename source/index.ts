@@ -1496,8 +1496,11 @@ export default async function courselore(
                       margin-right: var(--space--2);
                     }
                   }
-                  &[open] > summary::before {
-                    content: "\\f273";
+                  &[open] > summary {
+                    margin-bottom: var(--space--4);
+                    &::before {
+                      content: "\\f273";
+                    }
                   }
                 }
 
@@ -8629,46 +8632,74 @@ ${value}</textarea
         res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
       } = {}
     ) => {
-      const processedMarkdown = html`
+      const document = JSDOM.fragment(html`
         <div class="markdown">
           $${markdownProcessor.processSync(text).toString()}
         </div>
-      `;
-      if (res === undefined) return processedMarkdown;
-      const document = JSDOM.fragment(processedMarkdown);
-      (function traverse(node: Node): void {
-        switch (node.nodeType) {
-          case node.TEXT_NODE:
-            const parentElement = node.parentElement;
-            if (
-              parentElement === null ||
-              parentElement.closest("a, code") !== null
-            )
-              return;
-            const textContent = node.textContent;
-            if (textContent === null) return;
-            let newNodeHTML = html`${textContent}`;
-            newNodeHTML = newNodeHTML.replace(
-              /#(\d+)(?:\/(\d+))?/g,
-              (match, conversation, message) => {
-                // TODO: Check that the conversation/message is accessible by user.
-                // TODO: Do a tooltip to reveal what would be under the link.
-                return html`<a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/conversations/${conversation}${message ===
-                  undefined
-                    ? ""
-                    : `#message--${message}`}"
-                  >${match}</a
-                >`;
-              }
+      `);
+      for (const element of document.querySelectorAll("li, td, th, dt, dd"))
+        element.innerHTML = html`<div>$${element.innerHTML}</div>`;
+      for (const element of document.querySelectorAll("details")) {
+        const summaries: Node[] = [];
+        const rest: Node[] = [];
+        for (const child of element.childNodes)
+          (child.nodeType === child.ELEMENT_NODE &&
+          (child as Element).tagName.toLowerCase() === "summary"
+            ? summaries
+            : rest
+          ).push(child);
+        switch (summaries.length) {
+          case 0:
+            summaries.push(
+              JSDOM.fragment(html`<summary>Details</summary>`)
+                .firstElementChild!
             );
-            parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
             break;
+          case 1:
+            break;
+          default:
+            continue;
         }
-        if (node.hasChildNodes())
-          for (const childNode of node.childNodes) traverse(childNode);
-      })(document);
+        const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
+        // FIXME: When this gets released https://github.com/microsoft/TypeScript/blob/6cdbf98a6f945b7e498b7cb44c8d4132b370b1ea/lib/lib.dom.d.ts#L10948-L10953
+        (wrapper as any).replaceChildren(...rest);
+        (element as any).replaceChildren(summaries[0], wrapper);
+      }
+      if (res !== undefined)
+        (function processReferencesAndMentions(node: Node): void {
+          switch (node.nodeType) {
+            case node.TEXT_NODE:
+              const parentElement = node.parentElement;
+              if (
+                parentElement === null ||
+                parentElement.closest("a, code") !== null
+              )
+                return;
+              const textContent = node.textContent;
+              if (textContent === null) return;
+              let newNodeHTML = html`${textContent}`;
+              newNodeHTML = newNodeHTML.replace(
+                /#(\d+)(?:\/(\d+))?/g,
+                (match, conversation, message) => {
+                  // TODO: Check that the conversation/message exists and is accessible by user.
+                  // TODO: Do a tooltip to reveal what would be under the link.
+                  return html`<a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/conversations/${conversation}${message ===
+                    undefined
+                      ? ""
+                      : `#message--${message}`}"
+                    >${match}</a
+                  >`;
+                }
+              );
+              parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
+              break;
+          }
+          if (node.hasChildNodes())
+            for (const childNode of node.childNodes)
+              processReferencesAndMentions(childNode);
+        })(document);
       return document.firstElementChild!.outerHTML;
     };
   })();
