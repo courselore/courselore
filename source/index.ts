@@ -8638,7 +8638,12 @@ ${value}</textarea
         </div>
       `);
       for (const element of document.querySelectorAll("li, td, th, dt, dd"))
-        element.innerHTML = html`<div>$${element.innerHTML}</div>`;
+        element.innerHTML = [...element.childNodes].some(
+          (node) =>
+            node.nodeType === node.TEXT_NODE && node.textContent!.trim() !== ""
+        )
+          ? html`<div><p>$${element.innerHTML}</p></div>`
+          : html`<div>$${element.innerHTML}</div>`;
       for (const element of document.querySelectorAll("details")) {
         const summaries: Node[] = [];
         const rest: Node[] = [];
