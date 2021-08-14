@@ -11542,81 +11542,83 @@ ${value}</textarea
           ),
         ];
 
-        //     for (const conversationReference of lodash
-        //       .range(1, conversationsCount + 1)
-        //       .map(String)) {
-        //       const messagesCount = faker.datatype.number({ min: 1, max: 25 });
-        //       // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-        //       const conversationId = Number(
-        //         app.locals.database.run(
-        //           sql`
-        //           INSERT INTO "conversations" (
-        //             "course",
-        //             "reference",
-        //             "title",
-        //             "nextMessageReference",
-        //             "pinnedAt",
-        //             "questionAt"
-        //           )
-        //           VALUES (
-        //             ${course.id},
-        //             ${conversationReference},
-        //             ${lodash.capitalize(faker.lorem.words())},
-        //             ${String(messagesCount + 1)},
-        //             ${
-        //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
-        //             },
-        //             ${
-        //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
-        //             }
-        //           )
-        //         `
-        //         ).lastInsertRowid
-        //       );
-        //       let createdAt = faker.date.past(0.3);
-        //       for (const messageReference of lodash
-        //         .range(1, messagesCount + 1)
-        //         .map(String)) {
-        //         createdAt = faker.date.between(createdAt, new Date());
-        //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-        //         const messageId = Number(
-        //           app.locals.database.run(
-        //             sql`
-        //             INSERT INTO "messages" (
-        //               "createdAt",
-        //               "updatedAt",
-        //               "conversation",
-        //               "reference",
-        //               "authorEnrollment",
-        //               "content",
-        //               "answerAt"
-        //             )
-        //             VALUES (
-        //               ${createdAt.toISOString()},
-        //               ${
-        //                 Math.random() < 0.1
-        //                   ? faker.date.between(createdAt, new Date()).toISOString()
-        //                   : createdAt.toISOString()
-        //               },
-        //               ${conversationId},
-        //               ${messageReference},
-        //               ${faker.helpers.randomize(enrollments).id},
-        //               ${faker.lorem.paragraphs(
-        //                 faker.datatype.number({ min: 1, max: 10 }),
-        //                 "\n\n"
-        //               )},
-        //               ${
-        //                 Math.random() < 0.05
-        //                   ? faker.date.past(0.2).toISOString()
-        //                   : null
-        //               }
-        //             )
-        //           `
-        //           ).lastInsertRowid
-        //         );
-        //         // TODO: endorsements, likes, tags, taggings
-        //       }
-        //     }
+        for (
+          let conversationReference = 1;
+          conversationReference < course.nextConversationReference;
+          conversationReference++
+        ) {
+          //       const messagesCount = faker.datatype.number({ min: 1, max: 25 });
+          //       // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+          //       const conversationId = Number(
+          //         app.locals.database.run(
+          //           sql`
+          //           INSERT INTO "conversations" (
+          //             "course",
+          //             "reference",
+          //             "title",
+          //             "nextMessageReference",
+          //             "pinnedAt",
+          //             "questionAt"
+          //           )
+          //           VALUES (
+          //             ${course.id},
+          //             ${conversationReference},
+          //             ${lodash.capitalize(faker.lorem.words())},
+          //             ${String(messagesCount + 1)},
+          //             ${
+          //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
+          //             },
+          //             ${
+          //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
+          //             }
+          //           )
+          //         `
+          //         ).lastInsertRowid
+          //       );
+          //       let createdAt = faker.date.past(0.3);
+          //       for (const messageReference of lodash
+          //         .range(1, messagesCount + 1)
+          //         .map(String)) {
+          //         createdAt = faker.date.between(createdAt, new Date());
+          //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+          //         const messageId = Number(
+          //           app.locals.database.run(
+          //             sql`
+          //             INSERT INTO "messages" (
+          //               "createdAt",
+          //               "updatedAt",
+          //               "conversation",
+          //               "reference",
+          //               "authorEnrollment",
+          //               "content",
+          //               "answerAt"
+          //             )
+          //             VALUES (
+          //               ${createdAt.toISOString()},
+          //               ${
+          //                 Math.random() < 0.1
+          //                   ? faker.date.between(createdAt, new Date()).toISOString()
+          //                   : createdAt.toISOString()
+          //               },
+          //               ${conversationId},
+          //               ${messageReference},
+          //               ${faker.helpers.randomize(enrollments).id},
+          //               ${faker.lorem.paragraphs(
+          //                 faker.datatype.number({ min: 1, max: 10 }),
+          //                 "\n\n"
+          //               )},
+          //               ${
+          //                 Math.random() < 0.05
+          //                   ? faker.date.past(0.2).toISOString()
+          //                   : null
+          //               }
+          //             )
+          //           `
+          //           ).lastInsertRowid
+          //         );
+          //         // TODO: endorsements, likes, tags, taggings
+          //       }
+        }
       }
 
       app.locals.helpers.session.open(req, res, demonstrationUser.id);
