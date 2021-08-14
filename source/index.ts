@@ -11448,18 +11448,6 @@ ${value}</textarea
             Math.random() < 0.2
               ? users[Math.floor(Math.random() * users.length)]
               : null;
-          const usedAt =
-            user === null
-              ? null
-              : expiresAt !== null
-              ? new Date(
-                  new Date(expiresAt).getTime() -
-                    Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
-                ).toISOString()
-              : new Date(
-                  Date.now() +
-                    Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
-                ).toISOString();
           app.locals.database.run(
             sql`
               INSERT INTO "invitations" (
@@ -11473,7 +11461,19 @@ ${value}</textarea
               )
               VALUES (
                 ${expiresAt},
-                ${usedAt},
+                ${
+                  user === null
+                    ? null
+                    : expiresAt !== null
+                    ? new Date(
+                        new Date(expiresAt).getTime() -
+                          Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+                      ).toISOString()
+                    : new Date(
+                        Date.now() +
+                          Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+                      ).toISOString()
+                },
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${user?.email},
