@@ -3741,6 +3741,7 @@ export default async function courselore(
           }
         | AnonymousEnrollment;
       messagesCount: number;
+      readingsCount: number;
       endorsements: {
         id: number;
         enrollment:
@@ -3958,6 +3959,15 @@ export default async function courselore(
     }>(
       sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
     )!.messagesCount;
+    const readingsCount = app.locals.database.get<{ readingsCount: number }>(
+      sql`
+        SELECT COUNT(*) AS "readingsCount"
+        FROM "readings"
+        JOIN "messages" ON "readings"."message" = "messages"."id"
+        WHERE "messages"."conversation" = ${conversation.id} AND
+              "readings"."enrollment" = ${res.locals.enrollment.id}
+      `
+    )!.readingsCount;
     const endorsements =
       conversation.type !== "question"
         ? []
@@ -4082,6 +4092,7 @@ export default async function courselore(
             }
           : app.locals.constants.anonymousEnrollment,
       messagesCount,
+      readingsCount,
       endorsements,
       likesCount: originalMessage.likesCount,
       taggings,
