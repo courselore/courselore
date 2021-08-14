@@ -11459,11 +11459,9 @@ ${value}</textarea
           const expiresAt =
             Math.random() < 0.3
               ? new Date(
-                  Date.now() +
-                    Math.floor(
-                      Math.random() * 60 * 24 * 60 * 60 * 1000 -
-                        30 * 24 * 60 * 60 * 1000
-                    )
+                  Date.now() -
+                    30 * 24 * 60 * 60 * 1000 +
+                    Math.floor(Math.random() * 60 * 24 * 60 * 60 * 1000)
                 ).toISOString()
               : null;
           const user =
@@ -11573,57 +11571,61 @@ ${value}</textarea
               `
             ).lastInsertRowid
           );
-          const conversation = app.locals.database.get<{ id: number }>(sql`
-            SELECT * FROM "conversations" WHERE "id" = ${conversationId}
-          `);
+          const conversation = app.locals.database.get<{
+            id: number;
+            nextMessageReference: number;
+          }>(
+            sql`SELECT * FROM "conversations" WHERE "id" = ${conversationId}`
+          )!;
           let createdAt = new Date(
             Date.now() -
-              Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000) -
-              Math.floor(30 * 24 * 60 * 60 * 1000)
+              Math.floor(30 * 24 * 60 * 60 * 1000) -
+              Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
           ).toISOString();
-          //       let createdAt = faker.date.past(0.3);
-          //       for (const messageReference of lodash
-          //         .range(1, messagesCount + 1)
-          //         .map(String)) {
-          //         createdAt = faker.date.between(createdAt, new Date());
-          //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-          //         const messageId = Number(
-          //           app.locals.database.run(
-          //             sql`
-          //             INSERT INTO "messages" (
-          //               "createdAt",
-          //               "updatedAt",
-          //               "conversation",
-          //               "reference",
-          //               "authorEnrollment",
-          //               "content",
-          //               "answerAt"
-          //             )
-          //             VALUES (
-          //               ${createdAt.toISOString()},
-          //               ${
-          //                 Math.random() < 0.1
-          //                   ? faker.date.between(createdAt, new Date()).toISOString()
-          //                   : createdAt.toISOString()
-          //               },
-          //               ${conversationId},
-          //               ${messageReference},
-          //               ${faker.helpers.randomize(enrollments).id},
-          //               ${faker.lorem.paragraphs(
-          //                 faker.datatype.number({ min: 1, max: 10 }),
-          //                 "\n\n"
-          //               )},
-          //               ${
-          //                 Math.random() < 0.05
-          //                   ? faker.date.past(0.2).toISOString()
-          //                   : null
-          //               }
-          //             )
-          //           `
-          //           ).lastInsertRowid
-          //         );
-          //         // TODO: endorsements, likes, tags, taggings
-          //       }
+          for (
+            let messageReference = 1;
+            messageReference < conversation.nextMessageReference;
+            messageReference++
+          ) {
+            //         createdAt = faker.date.between(createdAt, new Date());
+            //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+            //         const messageId = Number(
+            //           app.locals.database.run(
+            //             sql`
+            //             INSERT INTO "messages" (
+            //               "createdAt",
+            //               "updatedAt",
+            //               "conversation",
+            //               "reference",
+            //               "authorEnrollment",
+            //               "content",
+            //               "answerAt"
+            //             )
+            //             VALUES (
+            //               ${createdAt.toISOString()},
+            //               ${
+            //                 Math.random() < 0.1
+            //                   ? faker.date.between(createdAt, new Date()).toISOString()
+            //                   : createdAt.toISOString()
+            //               },
+            //               ${conversationId},
+            //               ${messageReference},
+            //               ${faker.helpers.randomize(enrollments).id},
+            //               ${faker.lorem.paragraphs(
+            //                 faker.datatype.number({ min: 1, max: 10 }),
+            //                 "\n\n"
+            //               )},
+            //               ${
+            //                 Math.random() < 0.05
+            //                   ? faker.date.past(0.2).toISOString()
+            //                   : null
+            //               }
+            //             )
+            //           `
+            //           ).lastInsertRowid
+            //         );
+            //         // TODO: endorsements, likes, tags, taggings
+          }
         }
       }
 
