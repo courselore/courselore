@@ -7715,6 +7715,10 @@ export default async function courselore(
                                 : html`
                                     <div
                                       class="button button--tight button--tight--inline button--blue"
+                                      style="${css`
+                                        font-size: var(--font-size--2xs);
+                                        line-height: var(--line-height--2xs);
+                                      `}"
                                     >
                                       ${unreadCount}
                                     </div>
