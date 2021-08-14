@@ -11432,7 +11432,7 @@ ${value}</textarea
             VALUES (
               ${cryptoRandomString({ length: 10, type: "numeric" })},
               ${name},
-              ${Math.floor(Math.random() * 20 + 30)}
+              ${30 + Math.floor(Math.random() * 20)}
             )
             RETURNING *
           `
@@ -11570,7 +11570,7 @@ ${value}</textarea
                   ${course.id},
                   ${String(conversationReference)},
                   ${lodash.capitalize(faker.lorem.words())},
-                  ${Math.floor(Math.random() * 10 + 1)},
+                  ${Math.floor(Math.random() * 10) + 1},
                   ${
                     app.locals.constants.conversationTypes[
                       Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
