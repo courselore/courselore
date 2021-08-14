@@ -88,42 +88,12 @@ export default async function courselore(
   interface Constants {
     enrollmentAccentColors: EnrollmentAccentColor[];
   }
-  type EnrollmentAccentColor =
-    | "red"
-    | "orange"
-    | "amber"
-    | "yellow"
-    | "lime"
-    | "green"
-    | "emerald"
-    | "teal"
-    | "cyan"
-    | "sky"
-    | "blue"
-    | "indigo"
-    | "violet"
-    | "purple"
-    | "fuchsia"
-    | "pink"
-    | "rose";
+  type EnrollmentAccentColor = "amber" | "emerald" | "blue" | "fuchsia";
   app.locals.constants.enrollmentAccentColors = [
-    "red",
-    "orange",
     "amber",
-    "yellow",
-    "lime",
-    "green",
     "emerald",
-    "teal",
-    "cyan",
-    "sky",
     "blue",
-    "indigo",
-    "violet",
-    "purple",
     "fuchsia",
-    "pink",
-    "rose",
   ];
 
   interface Constants {
@@ -209,7 +179,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('amber', 'emerald', 'blue', 'fuchsia')),
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
@@ -1645,17 +1615,6 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
-            ${res.locals.enrollment === undefined
-              ? css``
-              : css`
-                  border-top: var(--border-width--8) solid
-                    var(--color--${res.locals.enrollment.accentColor}--500);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(
-                      --color--${res.locals.enrollment.accentColor}--600
-                    );
-                  }
-                `}
             position: absolute;
             top: 0;
             right: 0;
@@ -1669,6 +1628,70 @@ export default async function courselore(
             this.scroll(0, 0);
           `}"
         >
+          $${res.locals.enrollment === undefined
+            ? html``
+            : html`
+                <div
+                  style="${css`
+                    height: var(--border-width--8);
+                    display: flex;
+                  `}"
+                >
+                  <button
+                    class="button"
+                    style="${css`
+                      background-color: var(
+                        --color--${res.locals.enrollment.accentColor}--500
+                      );
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(
+                          --color--${res.locals.enrollment.accentColor}--600
+                        );
+                      }
+                      border-radius: var(--border-radius--none);
+                      flex: 1;
+                    `}"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "What’s This?",
+                        touch: false,
+                      });
+                      tippy(this, {
+                        content: this.nextElementSibling.firstElementChild,
+                        trigger: "click",
+                        interactive: true,
+                      });
+                    `}"
+                  ></button>
+                  <div hidden>
+                    <div
+                      style="${css`
+                        padding: var(--space--2);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <p>
+                        This bar with an accent color appears at the top of
+                        pages related to this course to help you differentiate
+                        between courses.
+                      </p>
+                      <a
+                        class="button button--blue"
+                        href="${app.locals.settings.url}/courses/${res.locals
+                          .course!.reference}/settings/your-enrollment"
+                        style="${css`
+                          width: 100%;
+                        `}"
+                      >
+                        <i class="bi bi-palette"></i>
+                        Change Accent Color
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              `}
           <div
             style="${css`
               background-color: var(--color--gray--medium--100);
