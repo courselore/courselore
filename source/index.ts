@@ -11373,7 +11373,7 @@ ${value}</textarea
         `
       )!;
 
-      const users = [...new Array(500)].map((_) => {
+      const users = [...new Array(400)].map((_) => {
         const card = faker.helpers.contextualCard();
         return app.locals.database.get<{
           id: number;
@@ -11397,26 +11397,30 @@ ${value}</textarea
         )!;
       });
 
-      for (const { name, role, accentColor } of [
+      for (const { name, role, accentColor, enrollmentsUsers } of [
         {
           name: "Pharmacology",
           role: app.locals.constants.enrollmentRoles[0],
           accentColor: app.locals.constants.enrollmentAccentColors[3],
+          enrollmentsUsers: users.slice(0, 100),
         },
         {
           name: "Advanced Harmony",
           role: app.locals.constants.enrollmentRoles[1],
           accentColor: app.locals.constants.enrollmentAccentColors[2],
+          enrollmentsUsers: users.slice(100, 200),
         },
         {
           name: "Introduction to Statistics",
           role: app.locals.constants.enrollmentRoles[1],
           accentColor: app.locals.constants.enrollmentAccentColors[1],
+          enrollmentsUsers: users.slice(200, 300),
         },
         {
           name: "Principles of Programming Languages",
           role: app.locals.constants.enrollmentRoles[1],
           accentColor: app.locals.constants.enrollmentAccentColors[0],
+          enrollmentsUsers: users.slice(300, 400),
         },
       ]) {
         const course = app.locals.database.get<{
@@ -11497,39 +11501,47 @@ ${value}</textarea
                 ${user?.email},
                 ${Math.random() < 0.5 ? user?.name : null},
                 ${
-                  app.locals.constants.enrollmentRoles[
-                    Math.floor(
-                      Math.random() *
-                        app.locals.constants.enrollmentRoles.length
-                    )
-                  ]
+                  Math.random() < 0.1
+                    ? app.locals.constants.enrollmentRoles[1]
+                    : app.locals.constants.enrollmentRoles[0]
                 }
               )
             `
           );
         }
 
-        //     const enrollments: { id: number }[] = [];
-        //     const staff: { id: number }[] = [];
-        //     enrollments.push(enrollment);
-        //     if (enrollment.role === "staff") staff.push(enrollment);
-        //     for (const user of faker.random.arrayElements(users, 99)) {
-        //       const enrollment = app.locals.database.get<{ id: number; role: Role }>(
-        //         sql`
-        //           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-        //           VALUES (
-        //             ${user.id},
-        //             ${course.id},
-        //             ${cryptoRandomString({ length: 10, type: "numeric" })},
-        //             ${Math.random() < 1 / 10 ? "staff" : "student"},
-        //             ${faker.helpers.randomize(app.locals.constants.accentColors)}
-        //           )
-        //           RETURNING *
-        //         `
-        //       )!;
-        //       enrollments.push(enrollment);
-        //       if (enrollment.role === "staff") staff.push(enrollment);
-        //     }
+        const enrollments: { id: number; role: EnrollmentRole }[] = [
+          enrollment,
+          ...enrollmentsUsers.map(
+            (enrollmentUser) =>
+              app.locals.database.get<{
+                id: number;
+                role: EnrollmentRole;
+              }>(
+                sql`
+                  INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+                  VALUES (
+                    ${enrollmentUser.id},
+                    ${course.id},
+                    ${cryptoRandomString({ length: 10, type: "numeric" })},
+                    ${
+                      Math.random() < 0.1
+                        ? app.locals.constants.enrollmentRoles[1]
+                        : app.locals.constants.enrollmentRoles[0]
+                    },
+                    ${
+                      app.locals.constants.enrollmentAccentColors[
+                        Math.random() *
+                          app.locals.constants.enrollmentAccentColors.length
+                      ]
+                    }
+                  )
+                  RETURNING *
+                `
+              )!
+          ),
+        ];
+
         //     for (const conversationReference of lodash
         //       .range(1, conversationsCount + 1)
         //       .map(String)) {
