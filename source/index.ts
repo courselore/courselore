@@ -248,7 +248,7 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        UNIQUE ("message", "enrollment")
+        UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
       );
 
       CREATE TABLE "endorsements" (
@@ -9527,6 +9527,13 @@ ${value}</textarea
     ...app.locals.middlewares.isConversationAccessible,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
+      for (const message of res.locals.messages)
+        app.locals.database.run(
+          sql`
+            INSERT INTO "readings" ("message", "enrollment")
+            VALUES (${message.id}, ${res.locals.enrollment.id})
+          `
+        );
       res.send(
         app.locals.layouts.conversation({
           req,
