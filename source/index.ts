@@ -11539,11 +11539,21 @@ ${value}</textarea
           ),
         ];
 
+        let conversationCreatedAt = new Date(
+          Date.now() -
+            Math.floor(30 * 24 * 60 * 60 * 1000) -
+            Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+        ).toISOString();
         for (
           let conversationReference = 1;
           conversationReference < course.nextConversationReference;
           conversationReference++
         ) {
+          conversationCreatedAt = new Date(
+            new Date(conversationCreatedAt).getTime() +
+              6 * 60 * 60 * 1000 +
+              Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+          ).toISOString();
           // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
           const conversationId = Number(
             app.locals.database.run(
@@ -11577,58 +11587,53 @@ ${value}</textarea
           }>(
             sql`SELECT * FROM "conversations" WHERE "id" = ${conversationId}`
           )!;
-          let createdAt = new Date(
-            Date.now() -
-              Math.floor(30 * 24 * 60 * 60 * 1000) -
-              Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
-          ).toISOString();
+          let messageCreatedAt = conversationCreatedAt;
           for (
             let messageReference = 1;
             messageReference < conversation.nextMessageReference;
             messageReference++
           ) {
-            createdAt = new Date(
-              new Date(createdAt).getTime() +
-                6 * 60 * 60 * 1000 +
+            messageCreatedAt = new Date(
+              new Date(messageCreatedAt).getTime() +
                 Math.floor(Math.random() * 12 * 60 * 60 * 1000)
             ).toISOString();
-            //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-            //         const messageId = Number(
-            //           app.locals.database.run(
-            //             sql`
-            //             INSERT INTO "messages" (
-            //               "createdAt",
-            //               "updatedAt",
-            //               "conversation",
-            //               "reference",
-            //               "authorEnrollment",
-            //               "content",
-            //               "answerAt"
-            //             )
-            //             VALUES (
-            //               ${createdAt.toISOString()},
-            //               ${
-            //                 Math.random() < 0.1
-            //                   ? faker.date.between(createdAt, new Date()).toISOString()
-            //                   : createdAt.toISOString()
-            //               },
-            //               ${conversationId},
-            //               ${messageReference},
-            //               ${faker.helpers.randomize(enrollments).id},
-            //               ${faker.lorem.paragraphs(
-            //                 faker.datatype.number({ min: 1, max: 10 }),
-            //                 "\n\n"
-            //               )},
-            //               ${
-            //                 Math.random() < 0.05
-            //                   ? faker.date.past(0.2).toISOString()
-            //                   : null
-            //               }
-            //             )
-            //           `
-            //           ).lastInsertRowid
-            //         );
-            //         // TODO: endorsements, likes, tags, taggings
+            app.locals.database.run(
+              sql`
+                INSERT INTO "messages" (
+                  "createdAt",
+                  "updatedAt",
+                  "conversation",
+                  "reference",
+                  "authorEnrollment",
+                  "content",
+                  "answerAt"
+                )
+                VALUES (
+                  ${messageCreatedAt},
+                  ${
+                    Math.random() < 0.8
+                      ? null
+                      : new Date(
+                          new Date(messageCreatedAt).getTime() +
+                            5 * 60 * 60 * 1000 +
+                            Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+                        ).toISOString()
+                  },
+                  ${conversation.id},
+                  ${String(messageReference)},
+                  ${
+                    enrollments[Math.floor(Math.random() * enrollments.length)]
+                      .id
+                  },
+                  ${faker.lorem.paragraphs(
+                    1 + Math.floor(Math.random() * 5),
+                    "\n\n"
+                  )},
+                  ${Math.random() < 0.5 ? new Date().toISOString() : null}
+                )
+              `
+            );
+            // TODO: endorsements, likes, tags, taggings
           }
         }
       }
