@@ -11484,15 +11484,12 @@ ${value}</textarea
               VALUES (
                 ${expiresAt},
                 ${
-                  user === null
+                  user === null || Math.random() < 0.4
                     ? null
-                    : expiresAt !== null
-                    ? new Date(
-                        new Date(expiresAt).getTime() -
-                          Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
-                      ).toISOString()
                     : new Date(
-                        Date.now() +
+                        (expiresAt === null
+                          ? Date.now()
+                          : new Date(expiresAt).getTime()) -
                           Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
                       ).toISOString()
                 },
@@ -11501,9 +11498,9 @@ ${value}</textarea
                 ${user?.email},
                 ${Math.random() < 0.5 ? user?.name : null},
                 ${
-                  Math.random() < 0.1
-                    ? app.locals.constants.enrollmentRoles[1]
-                    : app.locals.constants.enrollmentRoles[0]
+                  app.locals.constants.enrollmentRoles[
+                    Math.random() < 0.1 ? 1 : 0
+                  ]
                 }
               )
             `
@@ -11525,9 +11522,9 @@ ${value}</textarea
                     ${course.id},
                     ${cryptoRandomString({ length: 10, type: "numeric" })},
                     ${
-                      Math.random() < 0.1
-                        ? app.locals.constants.enrollmentRoles[1]
-                        : app.locals.constants.enrollmentRoles[0]
+                      app.locals.constants.enrollmentRoles[
+                        Math.random() < 0.1 ? 1 : 0
+                      ]
                     },
                     ${
                       app.locals.constants.enrollmentAccentColors[
@@ -11567,11 +11564,9 @@ ${value}</textarea
                   ${lodash.capitalize(faker.lorem.words())},
                   ${Math.floor(Math.random() * 10 + 1)},
                   ${
-                    Math.random() < 0.7
-                      ? app.locals.constants.conversationTypes[1]
-                      : Math.random() < 0.7
-                      ? app.locals.constants.conversationTypes[0]
-                      : app.locals.constants.conversationTypes[2]
+                    app.locals.constants.conversationTypes[
+                      Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
+                    ]
                   },
                   ${Math.random() < 0.05 ? new Date().toISOString() : null}
                 )
@@ -11581,6 +11576,11 @@ ${value}</textarea
           const conversation = app.locals.database.get<{ id: number }>(sql`
             SELECT * FROM "conversations" WHERE "id" = ${conversationId}
           `);
+          let createdAt = new Date(
+            Date.now() -
+              Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000) -
+              Math.floor(30 * 24 * 60 * 60 * 1000)
+          ).toISOString();
           //       let createdAt = faker.date.past(0.3);
           //       for (const messageReference of lodash
           //         .range(1, messagesCount + 1)
