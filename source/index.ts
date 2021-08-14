@@ -9534,6 +9534,7 @@ ${value}</textarea
             VALUES (${message.id}, ${res.locals.enrollment.id})
           `
         );
+
       res.send(
         app.locals.layouts.conversation({
           req,
