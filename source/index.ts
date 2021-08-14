@@ -11399,24 +11399,24 @@ ${value}</textarea
 
       for (const { name, role, accentColor } of [
         {
-          name: "Introduction to Statistics",
+          name: "Pharmacology",
           role: app.locals.constants.enrollmentRoles[0],
-          accentColor: app.locals.constants.enrollmentAccentColors[0],
+          accentColor: app.locals.constants.enrollmentAccentColors[3],
         },
         {
           name: "Advanced Harmony",
           role: app.locals.constants.enrollmentRoles[1],
-          accentColor: app.locals.constants.enrollmentAccentColors[1],
-        },
-        {
-          name: "Computer Graphics",
-          role: app.locals.constants.enrollmentRoles[0],
           accentColor: app.locals.constants.enrollmentAccentColors[2],
         },
         {
-          name: "Pharmacology",
-          role: app.locals.constants.enrollmentRoles[0],
-          accentColor: app.locals.constants.enrollmentAccentColors[3],
+          name: "Introduction to Statistics",
+          role: app.locals.constants.enrollmentRoles[1],
+          accentColor: app.locals.constants.enrollmentAccentColors[1],
+        },
+        {
+          name: "Principles of Programming Languages",
+          role: app.locals.constants.enrollmentRoles[1],
+          accentColor: app.locals.constants.enrollmentAccentColors[0],
         },
       ]) {
         const course = app.locals.database.get<{
@@ -11433,6 +11433,24 @@ ${value}</textarea
             RETURNING *
           `
         )!;
+
+        const enrollment = app.locals.database.get<{
+          id: number;
+          role: EnrollmentRole;
+        }>(
+          sql`
+            INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+            VALUES (
+              ${demonstrationUser.id},
+              ${course.id},
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${role},
+              ${accentColor}
+            )
+            RETURNING *
+          `
+        )!;
+
         for (const _ of new Array(20)) {
           const expiresAt =
             Math.random() < 0.3
@@ -11490,21 +11508,9 @@ ${value}</textarea
             `
           );
         }
+
         //     const enrollments: { id: number }[] = [];
         //     const staff: { id: number }[] = [];
-        //     const enrollment = app.locals.database.get<{ id: number; role: Role }>(
-        //       sql`
-        //         INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-        //         VALUES (
-        //           ${demonstrationUser.id},
-        //           ${course.id},
-        //           ${cryptoRandomString({ length: 10, type: "numeric" })},
-        //           ${role},
-        //           ${accentColor}
-        //         )
-        //         RETURNING *
-        //       `
-        //     )!;
         //     enrollments.push(enrollment);
         //     if (enrollment.role === "staff") staff.push(enrollment);
         //     for (const user of faker.random.arrayElements(users, 99)) {
