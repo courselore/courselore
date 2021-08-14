@@ -9224,6 +9224,7 @@ ${value}</textarea
       authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
       content: string;
       answerAt: string | null;
+      reading: { id: number } | null;
       endorsements: IsConversationAccessibleMiddlewareLocals["conversation"]["endorsements"];
       likes: {
         id: number;
@@ -9277,6 +9278,7 @@ ${value}</textarea
           authorEnrollmentRole: EnrollmentRole | null;
           content: string;
           answerAt: string | null;
+          readingId: number | null;
         }>(
           sql`
             SELECT "messages"."id",
@@ -9292,10 +9294,13 @@ ${value}</textarea
                    "authorEnrollment"."reference" AS "authorEnrollmentReference",
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
                    "messages"."content",
-                   "messages"."answerAt"
+                   "messages"."answerAt",
+                   "readings"."id" AS "readingId"
             FROM "messages"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+            LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
+                                    "readings"."enrollment" = ${res.locals.enrollment.id}
             WHERE "messages"."conversation" = ${conversation.id}
             ORDER BY "messages"."id" ASC
           `
@@ -9434,6 +9439,8 @@ ${value}</textarea
                 : app.locals.constants.anonymousEnrollment,
             content: message.content,
             answerAt: message.answerAt,
+            reading:
+              message.readingId === null ? null : { id: message.readingId },
             endorsements,
             likes,
           };
