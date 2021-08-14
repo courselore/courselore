@@ -234,6 +234,7 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 ### Minor Improvements
 
+- Add search by user name.
 - Get rid of fitTextarea & position sticky.
 - Generalize conversation category: Question, Announcement, Other.
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
