@@ -243,6 +243,14 @@ export default async function courselore(
         VALUES ('delete', "old"."id", "old"."content");
       END;
 
+      CREATE TABLE "readings" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
+        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+        UNIQUE ("message", "enrollment")
+      );
+
       CREATE TABLE "endorsements" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
