@@ -5580,10 +5580,7 @@ export default async function courselore(
               VALUES (
                 ${req.body.expiresAt},
                 ${res.locals.course.id},
-                ${cryptoRandomString({
-                  length: 10,
-                  type: "numeric",
-                })},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${req.body.role}
               )
               RETURNING *
@@ -11403,79 +11400,96 @@ ${value}</textarea
       for (const { name, role, accentColor } of [
         {
           name: "Introduction to Statistics",
-          role: "staff",
-          accentColor: "purple",
+          role: app.locals.constants.enrollmentRoles[0],
+          accentColor: app.locals.constants.enrollmentAccentColors[0],
         },
         {
           name: "Advanced Harmony",
-          role: "student",
-          accentColor: "fuchsia",
+          role: app.locals.constants.enrollmentRoles[1],
+          accentColor: app.locals.constants.enrollmentAccentColors[1],
         },
         {
           name: "Computer Graphics",
-          role: "staff",
-          accentColor: "pink",
+          role: app.locals.constants.enrollmentRoles[0],
+          accentColor: app.locals.constants.enrollmentAccentColors[2],
         },
         {
           name: "Pharmacology",
-          role: "staff",
-          accentColor: "rose",
-        },
-        {
-          name: "Macroeconomy",
-          role: "student",
-          accentColor: "red",
+          role: app.locals.constants.enrollmentRoles[0],
+          accentColor: app.locals.constants.enrollmentAccentColors[3],
         },
       ]) {
-        //     const conversationsCount = faker.datatype.number({ min: 30, max: 50 });
-        //     const course = app.locals.database.get<{ id: number }>(
-        //       sql`
-        //         INSERT INTO "courses" ("reference", "name", "nextConversationReference")
-        //         VALUES (
-        //           ${cryptoRandomString({ length: 10, type: "numeric" })},
-        //           ${name},
-        //           ${String(conversationsCount + 1)}
-        //         )
-        //         RETURNING *
-        //       `
-        //     )!;
-        //     for (const _ of new Array(20)) {
-        //       const expiresAt = faker.helpers.randomize([
-        //         faker.date.past(0.3),
-        //         faker.date.future(0.3),
-        //         null,
-        //       ]);
-        //       const user = faker.helpers.randomize([
-        //         faker.helpers.randomize(users),
-        //         null,
-        //       ]);
-        //       const usedAt =
-        //         user === null
-        //           ? null
-        //           : faker.helpers.randomize([faker.date.past(0.1, new Date()), null]);
-        //       app.locals.database.run(
-        //         sql`
-        //           INSERT INTO "invitations" (
-        //             "expiresAt",
-        //             "usedAt",
-        //             "course",
-        //             "reference",
-        //             "email",
-        //             "name",
-        //             "role"
-        //           )
-        //           VALUES (
-        //             ${expiresAt === null ? null : expiresAt.toISOString()},
-        //             ${usedAt === null ? null : usedAt.toISOString()},
-        //             ${course.id},
-        //             ${cryptoRandomString({ length: 10, type: "numeric" })},
-        //             ${user?.email},
-        //             ${faker.helpers.randomize([user?.name, null])},
-        //             ${faker.helpers.randomize(app.locals.constants.roles)}
-        //           )
-        //         `
-        //       );
-        //     }
+        const course = app.locals.database.get<{
+          id: number;
+          nextConversationReference: number;
+        }>(
+          sql`
+            INSERT INTO "courses" ("reference", "name", "nextConversationReference")
+            VALUES (
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${name},
+              ${Math.floor(Math.random() * 20 + 30)}
+            )
+            RETURNING *
+          `
+        )!;
+        for (const _ of new Array(20)) {
+          const expiresAt =
+            Math.random() < 0.3
+              ? new Date(
+                  Date.now() +
+                    Math.floor(
+                      Math.random() * 60 * 24 * 60 * 60 * 1000 -
+                        30 * 24 * 60 * 60 * 1000
+                    )
+                ).toISOString()
+              : null;
+          const user =
+            Math.random() < 0.2
+              ? users[Math.floor(Math.random() * users.length)]
+              : null;
+          const usedAt =
+            user === null
+              ? null
+              : expiresAt !== null
+              ? new Date(
+                  new Date(expiresAt).getTime() -
+                    Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+                ).toISOString()
+              : new Date(
+                  Date.now() +
+                    Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+                ).toISOString();
+          app.locals.database.run(
+            sql`
+              INSERT INTO "invitations" (
+                "expiresAt",
+                "usedAt",
+                "course",
+                "reference",
+                "email",
+                "name",
+                "role"
+              )
+              VALUES (
+                ${expiresAt},
+                ${usedAt},
+                ${course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${user?.email},
+                ${Math.random() < 0.5 ? user?.name : null},
+                ${
+                  app.locals.constants.enrollmentRoles[
+                    Math.floor(
+                      Math.random() *
+                        app.locals.constants.enrollmentRoles.length
+                    )
+                  ]
+                }
+              )
+            `
+          );
+        }
         //     const enrollments: { id: number }[] = [];
         //     const staff: { id: number }[] = [];
         //     const enrollment = app.locals.database.get<{ id: number; role: Role }>(
@@ -11587,18 +11601,22 @@ ${value}</textarea
         //     }
       }
 
-      //   app.locals.helpers.session.open(req, res, demonstrationUser.id);
-      //   app.locals.helpers.flash.set(
-      //     req,
-      //     res,
-      //     html`
-      //       <div class="flash--green">
-      //         Demonstration data including users, courses, conversations, and so
-      //         forth, have been created and you’ve been signed in as a demonstration
-      //         user to give you a better idea of what CourseLore looks like in use.
-      //       </div>
-      //     `
-      //   );
+      app.locals.helpers.session.open(req, res, demonstrationUser.id);
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div class="flash--green">
+            <p>
+              Demonstration data including users, courses, conversations, and so
+              forth, have been created and you’ve been signed in as a
+              demonstration user to give you a better idea of what CourseLore
+              looks like in use. If you wish to sign in as another one of the
+              demonstration users, their password is “courselore”.
+            </p>
+          </div>
+        `
+      );
       res.redirect(app.locals.settings.url);
     })
   );
