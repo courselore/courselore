@@ -88,12 +88,42 @@ export default async function courselore(
   interface Constants {
     enrollmentAccentColors: EnrollmentAccentColor[];
   }
-  type EnrollmentAccentColor = "amber" | "teal" | "blue" | "purple";
+  type EnrollmentAccentColor =
+    | "red"
+    | "orange"
+    | "amber"
+    | "yellow"
+    | "lime"
+    | "green"
+    | "emerald"
+    | "teal"
+    | "cyan"
+    | "sky"
+    | "blue"
+    | "indigo"
+    | "violet"
+    | "purple"
+    | "fuchsia"
+    | "pink"
+    | "rose";
   app.locals.constants.enrollmentAccentColors = [
+    "red",
+    "orange",
     "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
     "teal",
+    "cyan",
+    "sky",
     "blue",
+    "indigo",
+    "violet",
     "purple",
+    "fuchsia",
+    "pink",
+    "rose",
   ];
 
   interface Constants {
@@ -179,7 +209,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('amber', 'teal', 'blue', 'purple')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose')),
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
@@ -11294,256 +11324,261 @@ ${value}</textarea
     // TODO: The worker that sends emails on non-Demonstration Mode. Kick the worker to wake up from here (as well as periodically just in case…)
   };
 
-  app.post<{}, any, {}, {}, {}>("/demonstration-data", (req, res, next) => {
-    //   if (!app.locals.settings.demonstration) return next();
+  app.post<{}, any, {}, {}, {}>(
+    "/demonstration-data",
+    asyncHandler(async (req, res, next) => {
+      if (!app.locals.settings.demonstration) return next();
 
-    //   const card = faker.helpers.contextualCard();
-    //   const demonstrationUser = app.locals.database.get<{ id: number }>(
-    //     sql`
-    //       INSERT INTO "users" ("email", "name", "avatar", "biography")
-    //       VALUES (
-    //         ${`${card.username.toLowerCase()}--${cryptoRandomString({
-    //           length: 10,
-    //           type: "numeric",
-    //         })}@courselore.org`},
-    //         ${card.name},
-    //         ${card.avatar},
-    //         ${faker.lorem.paragraph()}
-    //       )
-    //       RETURNING *
-    //     `
-    //   )!;
+      const password = await argon2.hash("courselore", {
+        type: argon2.argon2id,
+        memoryCost: 15 * 2 ** 10,
+        timeCost: 2,
+        parallelism: 1,
+      });
+      const card = faker.helpers.contextualCard();
+      const demonstrationUser = app.locals.database.get<{ id: number }>(
+        sql`
+          INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
+          VALUES (
+            ${`${card.username.toLowerCase()}--${cryptoRandomString({
+              length: 10,
+              type: "numeric",
+            })}@courselore.org`},
+            ${password},
+            ${card.name},
+            ${card.avatar},
+            ${faker.lorem.paragraph()}
+          )
+          RETURNING *
+        `
+      )!;
 
-    //   const users = [...new Array(500)].map((_) => {
-    //     const card = faker.helpers.contextualCard();
-    //     return app.locals.database.get<{
-    //       id: number;
-    //       email: string;
-    //       name: string | null;
-    //     }>(
-    //       sql`
-    //         INSERT INTO "users" ("email", "name", "avatar", "biography")
-    //         VALUES (
-    //           ${`${card.username}--${cryptoRandomString({
-    //             length: 10,
-    //             type: "numeric",
-    //           })}@courselore.org`},
-    //           ${faker.helpers.randomize([card.name, null])},
-    //           ${faker.helpers.randomize([card.avatar, null])},
-    //           ${faker.helpers.randomize([faker.lorem.paragraph(), null])}
-    //         )
-    //         RETURNING *
-    //       `
-    //     )!;
-    //   });
+      const users = [...new Array(500)].map((_) => {
+        const card = faker.helpers.contextualCard();
+        return app.locals.database.get<{
+          id: number;
+          email: string;
+          name: string;
+        }>(
+          sql`
+            INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
+            VALUES (
+              ${`${card.username}--${cryptoRandomString({
+                length: 10,
+                type: "numeric",
+              })}@courselore.org`},
+              ${password},
+              ${card.name},
+              ${Math.random() < 0.6 ? card.avatar : null},
+              ${Math.random() < 0.3 ? faker.lorem.paragraph() : null}
+            )
+            RETURNING *
+          `
+        )!;
+      });
 
-    //   for (const { name, role, accentColor } of [
-    //     {
-    //       name: "Introduction to Statistics",
-    //       role: "staff",
-    //       accentColor: "purple",
-    //     },
-    //     {
-    //       name: "Advanced Harmony",
-    //       role: "student",
-    //       accentColor: "fuchsia",
-    //     },
-    //     {
-    //       name: "Computer Graphics",
-    //       role: "staff",
-    //       accentColor: "pink",
-    //     },
-    //     {
-    //       name: "Pharmacology",
-    //       role: "staff",
-    //       accentColor: "rose",
-    //     },
-    //     {
-    //       name: "Macroeconomy",
-    //       role: "student",
-    //       accentColor: "red",
-    //     },
-    //   ]) {
-    //     const conversationsCount = faker.datatype.number({ min: 30, max: 50 });
-    //     const course = app.locals.database.get<{ id: number }>(
-    //       sql`
-    //         INSERT INTO "courses" ("reference", "name", "nextConversationReference")
-    //         VALUES (
-    //           ${cryptoRandomString({ length: 10, type: "numeric" })},
-    //           ${name},
-    //           ${String(conversationsCount + 1)}
-    //         )
-    //         RETURNING *
-    //       `
-    //     )!;
+      for (const { name, role, accentColor } of [
+        {
+          name: "Introduction to Statistics",
+          role: "staff",
+          accentColor: "purple",
+        },
+        {
+          name: "Advanced Harmony",
+          role: "student",
+          accentColor: "fuchsia",
+        },
+        {
+          name: "Computer Graphics",
+          role: "staff",
+          accentColor: "pink",
+        },
+        {
+          name: "Pharmacology",
+          role: "staff",
+          accentColor: "rose",
+        },
+        {
+          name: "Macroeconomy",
+          role: "student",
+          accentColor: "red",
+        },
+      ]) {
+        //     const conversationsCount = faker.datatype.number({ min: 30, max: 50 });
+        //     const course = app.locals.database.get<{ id: number }>(
+        //       sql`
+        //         INSERT INTO "courses" ("reference", "name", "nextConversationReference")
+        //         VALUES (
+        //           ${cryptoRandomString({ length: 10, type: "numeric" })},
+        //           ${name},
+        //           ${String(conversationsCount + 1)}
+        //         )
+        //         RETURNING *
+        //       `
+        //     )!;
+        //     for (const _ of new Array(20)) {
+        //       const expiresAt = faker.helpers.randomize([
+        //         faker.date.past(0.3),
+        //         faker.date.future(0.3),
+        //         null,
+        //       ]);
+        //       const user = faker.helpers.randomize([
+        //         faker.helpers.randomize(users),
+        //         null,
+        //       ]);
+        //       const usedAt =
+        //         user === null
+        //           ? null
+        //           : faker.helpers.randomize([faker.date.past(0.1, new Date()), null]);
+        //       app.locals.database.run(
+        //         sql`
+        //           INSERT INTO "invitations" (
+        //             "expiresAt",
+        //             "usedAt",
+        //             "course",
+        //             "reference",
+        //             "email",
+        //             "name",
+        //             "role"
+        //           )
+        //           VALUES (
+        //             ${expiresAt === null ? null : expiresAt.toISOString()},
+        //             ${usedAt === null ? null : usedAt.toISOString()},
+        //             ${course.id},
+        //             ${cryptoRandomString({ length: 10, type: "numeric" })},
+        //             ${user?.email},
+        //             ${faker.helpers.randomize([user?.name, null])},
+        //             ${faker.helpers.randomize(app.locals.constants.roles)}
+        //           )
+        //         `
+        //       );
+        //     }
+        //     const enrollments: { id: number }[] = [];
+        //     const staff: { id: number }[] = [];
+        //     const enrollment = app.locals.database.get<{ id: number; role: Role }>(
+        //       sql`
+        //         INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+        //         VALUES (
+        //           ${demonstrationUser.id},
+        //           ${course.id},
+        //           ${cryptoRandomString({ length: 10, type: "numeric" })},
+        //           ${role},
+        //           ${accentColor}
+        //         )
+        //         RETURNING *
+        //       `
+        //     )!;
+        //     enrollments.push(enrollment);
+        //     if (enrollment.role === "staff") staff.push(enrollment);
+        //     for (const user of faker.random.arrayElements(users, 99)) {
+        //       const enrollment = app.locals.database.get<{ id: number; role: Role }>(
+        //         sql`
+        //           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+        //           VALUES (
+        //             ${user.id},
+        //             ${course.id},
+        //             ${cryptoRandomString({ length: 10, type: "numeric" })},
+        //             ${Math.random() < 1 / 10 ? "staff" : "student"},
+        //             ${faker.helpers.randomize(app.locals.constants.accentColors)}
+        //           )
+        //           RETURNING *
+        //         `
+        //       )!;
+        //       enrollments.push(enrollment);
+        //       if (enrollment.role === "staff") staff.push(enrollment);
+        //     }
+        //     for (const conversationReference of lodash
+        //       .range(1, conversationsCount + 1)
+        //       .map(String)) {
+        //       const messagesCount = faker.datatype.number({ min: 1, max: 25 });
+        //       // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+        //       const conversationId = Number(
+        //         app.locals.database.run(
+        //           sql`
+        //           INSERT INTO "conversations" (
+        //             "course",
+        //             "reference",
+        //             "title",
+        //             "nextMessageReference",
+        //             "pinnedAt",
+        //             "questionAt"
+        //           )
+        //           VALUES (
+        //             ${course.id},
+        //             ${conversationReference},
+        //             ${lodash.capitalize(faker.lorem.words())},
+        //             ${String(messagesCount + 1)},
+        //             ${
+        //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
+        //             },
+        //             ${
+        //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
+        //             }
+        //           )
+        //         `
+        //         ).lastInsertRowid
+        //       );
+        //       let createdAt = faker.date.past(0.3);
+        //       for (const messageReference of lodash
+        //         .range(1, messagesCount + 1)
+        //         .map(String)) {
+        //         createdAt = faker.date.between(createdAt, new Date());
+        //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+        //         const messageId = Number(
+        //           app.locals.database.run(
+        //             sql`
+        //             INSERT INTO "messages" (
+        //               "createdAt",
+        //               "updatedAt",
+        //               "conversation",
+        //               "reference",
+        //               "authorEnrollment",
+        //               "content",
+        //               "answerAt"
+        //             )
+        //             VALUES (
+        //               ${createdAt.toISOString()},
+        //               ${
+        //                 Math.random() < 0.1
+        //                   ? faker.date.between(createdAt, new Date()).toISOString()
+        //                   : createdAt.toISOString()
+        //               },
+        //               ${conversationId},
+        //               ${messageReference},
+        //               ${faker.helpers.randomize(enrollments).id},
+        //               ${faker.lorem.paragraphs(
+        //                 faker.datatype.number({ min: 1, max: 10 }),
+        //                 "\n\n"
+        //               )},
+        //               ${
+        //                 Math.random() < 0.05
+        //                   ? faker.date.past(0.2).toISOString()
+        //                   : null
+        //               }
+        //             )
+        //           `
+        //           ).lastInsertRowid
+        //         );
+        //         // TODO: endorsements, likes, tags, taggings
+        //       }
+        //     }
+      }
 
-    //     for (const _ of new Array(20)) {
-    //       const expiresAt = faker.helpers.randomize([
-    //         faker.date.past(0.3),
-    //         faker.date.future(0.3),
-    //         null,
-    //       ]);
-    //       const user = faker.helpers.randomize([
-    //         faker.helpers.randomize(users),
-    //         null,
-    //       ]);
-    //       const usedAt =
-    //         user === null
-    //           ? null
-    //           : faker.helpers.randomize([faker.date.past(0.1, new Date()), null]);
-    //       app.locals.database.run(
-    //         sql`
-    //           INSERT INTO "invitations" (
-    //             "expiresAt",
-    //             "usedAt",
-    //             "course",
-    //             "reference",
-    //             "email",
-    //             "name",
-    //             "role"
-    //           )
-    //           VALUES (
-    //             ${expiresAt === null ? null : expiresAt.toISOString()},
-    //             ${usedAt === null ? null : usedAt.toISOString()},
-    //             ${course.id},
-    //             ${cryptoRandomString({ length: 10, type: "numeric" })},
-    //             ${user?.email},
-    //             ${faker.helpers.randomize([user?.name, null])},
-    //             ${faker.helpers.randomize(app.locals.constants.roles)}
-    //           )
-    //         `
-    //       );
-    //     }
-
-    //     const enrollments: { id: number }[] = [];
-    //     const staff: { id: number }[] = [];
-    //     const enrollment = app.locals.database.get<{ id: number; role: Role }>(
-    //       sql`
-    //         INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-    //         VALUES (
-    //           ${demonstrationUser.id},
-    //           ${course.id},
-    //           ${cryptoRandomString({ length: 10, type: "numeric" })},
-    //           ${role},
-    //           ${accentColor}
-    //         )
-    //         RETURNING *
-    //       `
-    //     )!;
-    //     enrollments.push(enrollment);
-    //     if (enrollment.role === "staff") staff.push(enrollment);
-
-    //     for (const user of faker.random.arrayElements(users, 99)) {
-    //       const enrollment = app.locals.database.get<{ id: number; role: Role }>(
-    //         sql`
-    //           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-    //           VALUES (
-    //             ${user.id},
-    //             ${course.id},
-    //             ${cryptoRandomString({ length: 10, type: "numeric" })},
-    //             ${Math.random() < 1 / 10 ? "staff" : "student"},
-    //             ${faker.helpers.randomize(app.locals.constants.accentColors)}
-    //           )
-    //           RETURNING *
-    //         `
-    //       )!;
-    //       enrollments.push(enrollment);
-    //       if (enrollment.role === "staff") staff.push(enrollment);
-    //     }
-
-    //     for (const conversationReference of lodash
-    //       .range(1, conversationsCount + 1)
-    //       .map(String)) {
-    //       const messagesCount = faker.datatype.number({ min: 1, max: 25 });
-    //       // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-    //       const conversationId = Number(
-    //         app.locals.database.run(
-    //           sql`
-    //           INSERT INTO "conversations" (
-    //             "course",
-    //             "reference",
-    //             "title",
-    //             "nextMessageReference",
-    //             "pinnedAt",
-    //             "questionAt"
-    //           )
-    //           VALUES (
-    //             ${course.id},
-    //             ${conversationReference},
-    //             ${lodash.capitalize(faker.lorem.words())},
-    //             ${String(messagesCount + 1)},
-    //             ${
-    //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
-    //             },
-    //             ${
-    //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
-    //             }
-    //           )
-    //         `
-    //         ).lastInsertRowid
-    //       );
-
-    //       let createdAt = faker.date.past(0.3);
-    //       for (const messageReference of lodash
-    //         .range(1, messagesCount + 1)
-    //         .map(String)) {
-    //         createdAt = faker.date.between(createdAt, new Date());
-    //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-    //         const messageId = Number(
-    //           app.locals.database.run(
-    //             sql`
-    //             INSERT INTO "messages" (
-    //               "createdAt",
-    //               "updatedAt",
-    //               "conversation",
-    //               "reference",
-    //               "authorEnrollment",
-    //               "content",
-    //               "answerAt"
-    //             )
-    //             VALUES (
-    //               ${createdAt.toISOString()},
-    //               ${
-    //                 Math.random() < 0.1
-    //                   ? faker.date.between(createdAt, new Date()).toISOString()
-    //                   : createdAt.toISOString()
-    //               },
-    //               ${conversationId},
-    //               ${messageReference},
-    //               ${faker.helpers.randomize(enrollments).id},
-    //               ${faker.lorem.paragraphs(
-    //                 faker.datatype.number({ min: 1, max: 10 }),
-    //                 "\n\n"
-    //               )},
-    //               ${
-    //                 Math.random() < 0.05
-    //                   ? faker.date.past(0.2).toISOString()
-    //                   : null
-    //               }
-    //             )
-    //           `
-    //           ).lastInsertRowid
-    //         );
-
-    //         // TODO: endorsements, likes, tags, taggings
-    //       }
-    //     }
-    //   }
-
-    //   app.locals.helpers.session.open(req, res, demonstrationUser.id);
-    //   app.locals.helpers.flash.set(
-    //     req,
-    //     res,
-    //     html`
-    //       <div class="flash--green">
-    //         Demonstration data including users, courses, conversations, and so
-    //         forth, have been created and you’ve been signed in as a demonstration
-    //         user to give you a better idea of what CourseLore looks like in use.
-    //       </div>
-    //     `
-    //   );
-    res.redirect(app.locals.settings.url);
-  });
+      //   app.locals.helpers.session.open(req, res, demonstrationUser.id);
+      //   app.locals.helpers.flash.set(
+      //     req,
+      //     res,
+      //     html`
+      //       <div class="flash--green">
+      //         Demonstration data including users, courses, conversations, and so
+      //         forth, have been created and you’ve been signed in as a demonstration
+      //         user to give you a better idea of what CourseLore looks like in use.
+      //       </div>
+      //     `
+      //   );
+      res.redirect(app.locals.settings.url);
+    })
+  );
 
   app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res, next) => {
     if (
