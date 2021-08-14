@@ -11587,7 +11587,11 @@ ${value}</textarea
             messageReference < conversation.nextMessageReference;
             messageReference++
           ) {
-            //         createdAt = faker.date.between(createdAt, new Date());
+            createdAt = new Date(
+              new Date(createdAt).getTime() +
+                6 * 60 * 60 * 1000 +
+                Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+            ).toISOString();
             //         // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
             //         const messageId = Number(
             //           app.locals.database.run(
