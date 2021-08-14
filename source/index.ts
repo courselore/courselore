@@ -11569,7 +11569,9 @@ ${value}</textarea
                 VALUES (
                   ${course.id},
                   ${String(conversationReference)},
-                  ${lodash.capitalize(faker.lorem.words())},
+                  ${lodash.capitalize(
+                    faker.lorem.words(1 + Math.floor(Math.random() * 10))
+                  )},
                   ${Math.floor(Math.random() * 10) + 2},
                   ${
                     app.locals.constants.conversationTypes[
