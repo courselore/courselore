@@ -11531,8 +11531,10 @@ ${value}</textarea
                     },
                     ${
                       app.locals.constants.enrollmentAccentColors[
-                        Math.random() *
-                          app.locals.constants.enrollmentAccentColors.length
+                        Math.floor(
+                          Math.random() *
+                            app.locals.constants.enrollmentAccentColors.length
+                        )
                       ]
                     }
                   )
@@ -11547,34 +11549,38 @@ ${value}</textarea
           conversationReference < course.nextConversationReference;
           conversationReference++
         ) {
-          //       const messagesCount = faker.datatype.number({ min: 1, max: 25 });
-          //       // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-          //       const conversationId = Number(
-          //         app.locals.database.run(
-          //           sql`
-          //           INSERT INTO "conversations" (
-          //             "course",
-          //             "reference",
-          //             "title",
-          //             "nextMessageReference",
-          //             "pinnedAt",
-          //             "questionAt"
-          //           )
-          //           VALUES (
-          //             ${course.id},
-          //             ${conversationReference},
-          //             ${lodash.capitalize(faker.lorem.words())},
-          //             ${String(messagesCount + 1)},
-          //             ${
-          //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
-          //             },
-          //             ${
-          //               Math.random() < 0.05 ? faker.date.past(0.2).toISOString() : null
-          //             }
-          //           )
-          //         `
-          //         ).lastInsertRowid
-          //       );
+          // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+          const conversationId = Number(
+            app.locals.database.run(
+              sql`
+                INSERT INTO "conversations" (
+                  "course",
+                  "reference",
+                  "title",
+                  "nextMessageReference",
+                  "type",
+                  "pinnedAt"
+                )
+                VALUES (
+                  ${course.id},
+                  ${String(conversationReference)},
+                  ${lodash.capitalize(faker.lorem.words())},
+                  ${Math.floor(Math.random() * 10 + 1)},
+                  ${
+                    Math.random() < 0.7
+                      ? app.locals.constants.conversationTypes[1]
+                      : Math.random() < 0.7
+                      ? app.locals.constants.conversationTypes[0]
+                      : app.locals.constants.conversationTypes[2]
+                  },
+                  ${Math.random() < 0.05 ? new Date().toISOString() : null}
+                )
+              `
+            ).lastInsertRowid
+          );
+          const conversation = app.locals.database.get<{ id: number }>(sql`
+            SELECT * FROM "conversations" WHERE "id" = ${conversationId}
+          `);
           //       let createdAt = faker.date.past(0.3);
           //       for (const messageReference of lodash
           //         .range(1, messagesCount + 1)
