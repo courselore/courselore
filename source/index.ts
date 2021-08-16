@@ -139,6 +139,7 @@ export default async function courselore(
   }
   await fs.ensureDir(rootDirectory);
   app.locals.database = new Database(path.join(rootDirectory, "courselore.db"));
+  // TODO: WAL.
   app.locals.database.migrate(
     sql`
       CREATE TABLE "users" (
