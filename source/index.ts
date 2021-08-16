@@ -7707,7 +7707,8 @@ export default async function courselore(
                               const unreadCount =
                                 conversation.messagesCount -
                                 conversation.readingsCount;
-                              return unreadCount === 0
+                              return unreadCount === 0 ||
+                                conversation.id === res.locals.conversation?.id
                                 ? html``
                                 : html`
                                     <div
@@ -7715,9 +7716,6 @@ export default async function courselore(
                                       style="${css`
                                         font-size: var(--font-size--2xs);
                                         line-height: var(--line-height--2xs);
-                                        .button--blue & {
-                                          display: none;
-                                        }
                                       `}"
                                     >
                                       ${unreadCount}
