@@ -4123,7 +4123,11 @@ export default async function courselore(
     { courseReference: string },
     HTML,
     {},
-    {},
+    {
+      conversationLayoutSidebarOpenOnSmallScreen?: "true";
+      search?: string;
+      tag?: string;
+    },
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference",
@@ -4213,6 +4217,7 @@ export default async function courselore(
               <p class="secondary">No conversation selected.</p>
             </div>
           `,
+          onlyConversationLayoutSidebarOnSmallScreen: true,
         })
       );
     }
@@ -7199,15 +7204,22 @@ export default async function courselore(
       >;
       head: HTML;
       body: HTML;
+      onlyConversationLayoutSidebarOnSmallScreen?: boolean;
     }) => HTML;
   }
-  app.locals.layouts.conversation = ({ req, res, head, body }) =>
+  app.locals.layouts.conversation = ({
+    req,
+    res,
+    head,
+    body,
+    onlyConversationLayoutSidebarOnSmallScreen = false,
+  }) =>
     app.locals.layouts.application({
       req,
       res,
       head,
       extraHeaders: html`
-        $${req.query.onlyConversationLayoutSidebarOnSmallScreen === "true"
+        $${onlyConversationLayoutSidebarOnSmallScreen
           ? html``
           : html`
               <div
@@ -7273,8 +7285,7 @@ export default async function courselore(
           `}"
         >
           <div
-            class="conversation--layout--sidebar ${req.query
-              .onlyConversationLayoutSidebarOnSmallScreen === "true" ||
+            class="conversation--layout--sidebar ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? ""
               : "single-column--hidden"}"
@@ -7306,7 +7317,10 @@ export default async function courselore(
               >
                 <a
                   href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/conversations/new"
+                    .reference}/conversations/new?${qs.stringify({
+                    search: req.query.search,
+                    tag: req.query.tag,
+                  })}"
                   class="button button--transparent"
                 >
                   <i class="bi bi-chat-left-text"></i>
@@ -7331,16 +7345,6 @@ export default async function courselore(
                     align-items: center;
                   `}"
                 >
-                  $${req.query.onlyConversationLayoutSidebarOnSmallScreen ===
-                  "true"
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="onlyConversationLayoutSidebarOnSmallScreen"
-                          value="true"
-                        />
-                      `
-                    : html``}
                   <input
                     type="hidden"
                     name="conversationLayoutSidebarOpenOnSmallScreen"
@@ -7368,10 +7372,8 @@ export default async function courselore(
                     ? html`
                         <a
                           href="?${qs.stringify({
-                            onlyConversationLayoutSidebarOnSmallScreen:
-                              req.query
-                                .onlyConversationLayoutSidebarOnSmallScreen,
                             conversationLayoutSidebarOpenOnSmallScreen: "true",
+                            search: undefined,
                             tag: req.query.tag,
                           })}"
                           class="button button--tight button--tight--inline button--transparent"
@@ -7444,9 +7446,6 @@ export default async function courselore(
                                 return html`
                                   <a
                                     href="?${qs.stringify({
-                                      onlyConversationLayoutSidebarOnSmallScreen:
-                                        req.query
-                                          .onlyConversationLayoutSidebarOnSmallScreen,
                                       conversationLayoutSidebarOpenOnSmallScreen:
                                         "true",
                                       search: req.query.search,
@@ -7471,12 +7470,10 @@ export default async function courselore(
                           : html`
                               <a
                                 href="?${qs.stringify({
-                                  onlyConversationLayoutSidebarOnSmallScreen:
-                                    req.query
-                                      .onlyConversationLayoutSidebarOnSmallScreen,
                                   conversationLayoutSidebarOpenOnSmallScreen:
                                     "true",
                                   search: req.query.search,
+                                  tag: undefined,
                                 })}"
                                 class="button button--tight button--tight--inline button--transparent"
                                 data-ondomcontentloaded="${javascript`
@@ -7528,7 +7525,10 @@ export default async function courselore(
                                 tag: req.query.tag,
                               }
                             )}"
-                            class="button button--transparent"
+                            class="button ${conversation.id ===
+                            res.locals.conversation?.id
+                              ? "button--blue"
+                              : "button--transparent"}"
                             style="${css`
                               width: calc(
                                 var(--space--2) + 100% + var(--space--2)
@@ -7538,28 +7538,6 @@ export default async function courselore(
                               justify-content: space-between;
                               align-items: center;
                             `}"
-                            $${conversation.id === res.locals.conversation?.id
-                              ? html`
-                                  data-ondomcontentloaded="${javascript`
-                                    const highlight = () => {
-                                      if (window.innerWidth >= 900 || ${JSON.stringify(
-                                        req.query
-                                          .onlyConversationLayoutSidebarOnSmallScreen !==
-                                          "true"
-                                      )}) {
-                                        this.classList.remove("button--transparent");
-                                        this.classList.add("button--blue");
-                                      }
-                                      else {
-                                        this.classList.add("button--transparent");
-                                        this.classList.remove("button--blue");
-                                      }
-                                    };
-                                    highlight();
-                                    window.addEventListener("resize", highlight);
-                                  `}"
-                                `
-                              : html``}
                           >
                             <div
                               style="${css`
@@ -7754,8 +7732,7 @@ export default async function courselore(
             </div>
           </div>
           <div
-            class="conversation--layout--main ${req.query
-              .onlyConversationLayoutSidebarOnSmallScreen === "true" ||
+            class="conversation--layout--main ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? "single-column--hidden"
               : ""}"
@@ -8853,7 +8830,11 @@ ${value}</textarea
     { courseReference: string },
     HTML,
     {},
-    { search?: string; tag?: string },
+    {
+      conversationLayoutSidebarOpenOnSmallScreen?: "true";
+      search?: string;
+      tag?: string;
+    },
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
@@ -9587,7 +9568,6 @@ ${value}</textarea
     HTML,
     {},
     {
-      onlyConversationLayoutSidebarOnSmallScreen?: "true";
       conversationLayoutSidebarOpenOnSmallScreen?: "true";
       search?: string;
       tag?: string;
