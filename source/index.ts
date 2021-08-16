@@ -4129,7 +4129,7 @@ export default async function courselore(
     "/courses/:courseReference",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
-      if (res.locals.conversations.length === 0)
+      if (res.locals.course.nextConversationReference === 1)
         return res.send(
           app.locals.layouts.main({
             req,
@@ -4193,8 +4193,27 @@ export default async function courselore(
           })
         );
 
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversations[0].reference}?onlyConversationLayoutSidebarOnSmallScreen=true`
+      res.send(
+        app.locals.layouts.conversation({
+          req,
+          res,
+          head: html`<title>${res.locals.course.name} · CourseLore</title>`,
+          body: html`
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                align-items: center;
+              `}"
+            >
+              <div class="decorative-icon">
+                <i class="bi bi-chat-left-text"></i>
+              </div>
+              <p class="secondary">No conversation selected.</p>
+            </div>
+          `,
+        })
       );
     }
   );
@@ -8841,236 +8860,237 @@ ${value}</textarea
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
-      const isFirst = res.locals.course.nextConversationReference === 1;
+      const newCourse = res.locals.course.nextConversationReference === 1;
 
       res.send(
-        (isFirst ? app.locals.layouts.main : app.locals.layouts.conversation)({
-          req,
-          res,
-          head: html`
-            <title>
-              Start ${isFirst ? "the First" : "a New"} Conversation ·
-              ${res.locals.course.name} · CourseLore
-            </title>
-          `,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-chat-left-text"></i>
-              Start ${isFirst ? "the First" : "a New"} Conversation
-            </h2>
+        (newCourse ? app.locals.layouts.main : app.locals.layouts.conversation)(
+          {
+            req,
+            res,
+            head: html`
+              <title>
+                Start ${newCourse ? "the First" : "a New"} Conversation ·
+                ${res.locals.course.name} · CourseLore
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-chat-left-text"></i>
+                Start ${newCourse ? "the First" : "a New"} Conversation
+              </h2>
 
-            <form
-              method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/conversations"
-              novalidate
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <div class="label">
-                <p class="label--text">Title</p>
-                <input
-                  type="text"
-                  name="title"
-                  required
-                  autocomplete="off"
-                  autofocus
-                  class="input--text"
-                />
-              </div>
-
-              $${app.locals.partials.textEditor()}
-
-              <div class="label">
-                <p class="label--text">Type</p>
-                <div
-                  style="${css`
-                    display: flex;
-                    flex-wrap: wrap;
-                    column-gap: var(--space--4);
-                    row-gap: var(--space--2);
-                  `}"
-                >
-                  $${res.locals.conversationTypes.map(
-                    (conversationType) => html`
-                      <label
-                        class="button button--tight button--tight--inline button--transparent"
-                      >
-                        <input
-                          type="radio"
-                          name="type"
-                          value="${conversationType}"
-                          required
-                          class="input--radio"
-                        />
-                        $${app.locals.partials.conversationTypeIcon(
-                          conversationType
-                        )}
-                        $${lodash.capitalize(conversationType)}
-                      </label>
-                    `
-                  )}
+              <form
+                method="POST"
+                action="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/conversations"
+                novalidate
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <div class="label">
+                  <p class="label--text">Title</p>
+                  <input
+                    type="text"
+                    name="title"
+                    required
+                    autocomplete="off"
+                    autofocus
+                    class="input--text"
+                  />
                 </div>
-              </div>
 
-              $${res.locals.tags.length === 0
-                ? html``
-                : html`
-                    <div class="label">
-                      <div class="label--text">
-                        Tags
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Tags help to organize conversations. You must select at least one tag.",
-                              trigger: "click",
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-info-circle"></i>
-                        </button>
-                      </div>
-                      <div
-                        style="${css`
-                          display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--6);
-                          row-gap: var(--space--2);
-                        `}"
-                      >
-                        $${res.locals.tags.map(
-                          (tag) => html`
-                            <div
-                              style="${css`
-                                display: flex;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <label
-                                class="button button--tight button--tight--inline button--transparent"
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="tagsReferences[]"
-                                  value="${tag.reference}"
-                                  required
-                                  class="visually-hidden input--radio-or-checkbox--multilabel"
-                                />
-                                <span
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Add Tag",
-                                      touch: false,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-tag"></i>
-                                  ${tag.name}
-                                </span>
-                                <span
-                                  class="text--blue"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Remove Tag",
-                                      touch: false,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-tag-fill"></i>
-                                  ${tag.name}
-                                </span>
-                              </label>
-                              $${tag.staffOnlyAt !== null
-                                ? html`
-                                    <button
-                                      type="button"
-                                      class="button button--tight button--tight--inline button--transparent"
-                                      data-ondomcontentloaded="${javascript`
-                                        tippy(this, {
-                                          content: "This tag is visible by staff only.",
-                                          trigger: "click",
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-lock"></i>
-                                    </button>
-                                  `
-                                : html``}
-                            </div>
-                          `
-                        )}
-                      </div>
-                    </div>
-                  `}
-              $${res.locals.enrollment.role === "staff"
-                ? html`
-                    <div class="label">
-                      <div class="label--text">
-                        Pin
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Pinned conversations are listed first.",
-                              trigger: "click",
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-info-circle"></i>
-                        </button>
-                      </div>
-                      <div
-                        style="${css`
-                          display: flex;
-                        `}"
-                      >
+                $${app.locals.partials.textEditor()}
+
+                <div class="label">
+                  <p class="label--text">Type</p>
+                  <div
+                    style="${css`
+                      display: flex;
+                      flex-wrap: wrap;
+                      column-gap: var(--space--4);
+                      row-gap: var(--space--2);
+                    `}"
+                  >
+                    $${res.locals.conversationTypes.map(
+                      (conversationType) => html`
                         <label
                           class="button button--tight button--tight--inline button--transparent"
                         >
                           <input
-                            type="checkbox"
-                            name="isPinned"
-                            autocomplete="off"
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            type="radio"
+                            name="type"
+                            value="${conversationType}"
+                            required
+                            class="input--radio"
                           />
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Pin",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-pin-angle"></i>
-                            Unpinned
-                          </span>
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Unpin",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-pin"></i>
-                            Pinned
-                          </span>
+                          $${app.locals.partials.conversationTypeIcon(
+                            conversationType
+                          )}
+                          $${lodash.capitalize(conversationType)}
                         </label>
-                      </div>
-                    </div>
-                  `
-                : html``}
+                      `
+                    )}
+                  </div>
+                </div>
 
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                  data-ondomcontentloaded="${javascript`
+                $${res.locals.tags.length === 0
+                  ? html``
+                  : html`
+                      <div class="label">
+                        <div class="label--text">
+                          Tags
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Tags help to organize conversations. You must select at least one tag.",
+                                trigger: "click",
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
+                        <div
+                          style="${css`
+                            display: flex;
+                            flex-wrap: wrap;
+                            column-gap: var(--space--6);
+                            row-gap: var(--space--2);
+                          `}"
+                        >
+                          $${res.locals.tags.map(
+                            (tag) => html`
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="tagsReferences[]"
+                                    value="${tag.reference}"
+                                    required
+                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                  />
+                                  <span
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "Add Tag",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-tag"></i>
+                                    ${tag.name}
+                                  </span>
+                                  <span
+                                    class="text--blue"
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "Remove Tag",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-tag-fill"></i>
+                                    ${tag.name}
+                                  </span>
+                                </label>
+                                $${tag.staffOnlyAt !== null
+                                  ? html`
+                                      <button
+                                        type="button"
+                                        class="button button--tight button--tight--inline button--transparent"
+                                        data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: "This tag is visible by staff only.",
+                                            trigger: "click",
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-lock"></i>
+                                      </button>
+                                    `
+                                  : html``}
+                              </div>
+                            `
+                          )}
+                        </div>
+                      </div>
+                    `}
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <div class="label">
+                        <div class="label--text">
+                          Pin
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Pinned conversations are listed first.",
+                                trigger: "click",
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isPinned"
+                              autocomplete="off"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Pin",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-pin-angle"></i>
+                              Unpinned
+                            </span>
+                            <span
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Unpin",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-pin"></i>
+                              Pinned
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    `
+                  : html``}
+
+                <div>
+                  <button
+                    class="button button--full-width-on-small-screen button--blue"
+                    data-ondomcontentloaded="${javascript`
                     Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
                     tippy(this, {
                       content: ${JSON.stringify(html`
@@ -9086,14 +9106,15 @@ ${value}</textarea
                       allowHTML: true,
                     });
                   `}"
-                >
-                  <i class="bi bi-chat-left-text"></i>
-                  Start Conversation
-                </button>
-              </div>
-            </form>
-          `,
-        })
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Start Conversation
+                  </button>
+                </div>
+              </form>
+            `,
+          }
+        )
       );
     }
   );
