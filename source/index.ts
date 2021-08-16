@@ -7559,8 +7559,8 @@ export default async function courselore(
                                   #${conversation.reference} created
                                   <time
                                     data-ondomcontentloaded="${javascript`
-                                    relativizeTime(this);
-                                  `}"
+                                      relativizeTime(this);
+                                    `}"
                                   >
                                     ${conversation.createdAt}
                                   </time>
@@ -7593,8 +7593,8 @@ export default async function courselore(
                                         and last updated
                                         <time
                                           data-ondomcontentloaded="${javascript`
-                                              relativizeTime(this);
-                                            `}"
+                                            relativizeTime(this);
+                                          `}"
                                         >
                                           ${conversation.updatedAt}
                                         </time>
