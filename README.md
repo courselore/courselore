@@ -646,6 +646,19 @@ Insiders Builds are generated on every push. They’re useful for development an
 <summary><strong>Meetings</strong></summary>
 
 <details>
+<summary>2021-08-14</summary>
+
+- Finished conversations screen:
+  - Fixed bug of messages from different threads showing up.
+  - Finished Types (as opposed to just question).
+  - Finished styles (including things like user-generated Markdown).
+  - Fixed weirds styling issues, for example, scrolling when Tippy was activated.
+  - Brought Demonstration Data up to date with the schema.
+- Implemented read indicators.
+
+</details>
+
+<details>
 <summary>2021-08-07</summary>
 
 - Styling and user interface.
