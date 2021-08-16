@@ -7549,111 +7549,114 @@ export default async function courselore(
                               >
                                 ${conversation.title}
                               </h3>
-                              <div>
-                                #${conversation.reference} created
-                                <time
-                                  data-ondomcontentloaded="${javascript`
-                                    relativizeTime(this);
-                                  `}"
-                                >
-                                  ${conversation.createdAt}
-                                </time>
-                                by
-                                $${conversation.authorEnrollment.user.avatar ===
-                                null
-                                  ? html` <i class="bi bi-person-circle"></i> `
-                                  : html`
-                                      <img
-                                        src="${conversation.authorEnrollment
-                                          .user.avatar}"
-                                        alt="${conversation.authorEnrollment
-                                          .user.name}"
-                                        class="avatar"
-                                        style="${css`
-                                          width: var(--font-size--xs);
-                                          height: var(--font-size--xs);
-                                          position: relative;
-                                          top: var(--space--0-5);
-                                        `}"
-                                      />
-                                    `}
-                                ${conversation.authorEnrollment.user.name}
-                              </div>
-                              $${conversation.updatedAt !== null
-                                ? html`
-                                    <div>
-                                      and last updated
-                                      <time
-                                        data-ondomcontentloaded="${javascript`
-                                              relativizeTime(this);
-                                            `}"
-                                      >
-                                        ${conversation.updatedAt}
-                                      </time>
-                                    </div>
-                                  `
-                                : html``}
                               <div
                                 style="${css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--0-5);
-                                  & > * {
-                                    display: flex;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--space--4);
-                                    row-gap: var(--space--0-5);
-
-                                    & > * {
-                                      display: flex;
-                                      gap: var(--space--1);
-                                    }
-                                  }
                                 `}"
                               >
-                                $${conversation.taggings.length === 0
-                                  ? html``
-                                  : html`
-                                      <div>
-                                        $${conversation.taggings.map(
-                                          (tagging) => html`
-                                            <div>
-                                              <i class="bi bi-tag"></i>
-                                              ${tagging.tag.name}
-                                            </div>
-                                          `
-                                        )}
-                                      </div>
-                                    `}
                                 <div>
-                                  $${conversation.pinnedAt !== null
+                                  #${conversation.reference} created
+                                  <time
+                                    data-ondomcontentloaded="${javascript`
+                                    relativizeTime(this);
+                                  `}"
+                                  >
+                                    ${conversation.createdAt}
+                                  </time>
+                                  by
+                                  $${conversation.authorEnrollment.user
+                                    .avatar === null
                                     ? html`
-                                        <div>
-                                          <i class="bi bi-pin"></i>
-                                          Pinned
-                                        </div>
+                                        <i class="bi bi-person-circle"></i>
                                       `
-                                    : html``}
-                                  <div>
-                                    $${app.locals.partials.conversationTypeIcon(
-                                      conversation.type
-                                    )}
-                                    ${lodash.capitalize(conversation.type)}
-                                  </div>
-                                  <div>
-                                    <i class="bi bi-chat-left-text"></i>
-                                    ${conversation.messagesCount}
-                                    Message${conversation.messagesCount === 1
-                                      ? ""
-                                      : "s"}
-                                  </div>
-                                  $${conversation.endorsements.length === 0
+                                    : html`
+                                        <img
+                                          src="${conversation.authorEnrollment
+                                            .user.avatar}"
+                                          alt="${conversation.authorEnrollment
+                                            .user.name}"
+                                          class="avatar"
+                                          style="${css`
+                                            width: var(--font-size--xs);
+                                            height: var(--font-size--xs);
+                                            position: relative;
+                                            top: var(--space--0-5);
+                                          `}"
+                                        />
+                                      `}
+                                  ${conversation.authorEnrollment.user.name}
+                                </div>
+                                $${conversation.updatedAt !== null
+                                  ? html`
+                                      <div>
+                                        and last updated
+                                        <time
+                                          data-ondomcontentloaded="${javascript`
+                                              relativizeTime(this);
+                                            `}"
+                                        >
+                                          ${conversation.updatedAt}
+                                        </time>
+                                      </div>
+                                    `
+                                  : html``}
+                                <div
+                                  style="${css`
+                                    & > * {
+                                      display: flex;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--space--4);
+                                      row-gap: var(--space--0-5);
+
+                                      & > * {
+                                        display: flex;
+                                        gap: var(--space--1);
+                                      }
+                                    }
+                                  `}"
+                                >
+                                  $${conversation.taggings.length === 0
                                     ? html``
                                     : html`
-                                        <div
-                                          data-ondomcontentloaded="${javascript`
+                                        <div>
+                                          $${conversation.taggings.map(
+                                            (tagging) => html`
+                                              <div>
+                                                <i class="bi bi-tag"></i>
+                                                ${tagging.tag.name}
+                                              </div>
+                                            `
+                                          )}
+                                        </div>
+                                      `}
+                                  <div>
+                                    $${conversation.pinnedAt !== null
+                                      ? html`
+                                          <div>
+                                            <i class="bi bi-pin"></i>
+                                            Pinned
+                                          </div>
+                                        `
+                                      : html``}
+                                    <div>
+                                      $${app.locals.partials.conversationTypeIcon(
+                                        conversation.type
+                                      )}
+                                      ${lodash.capitalize(conversation.type)}
+                                    </div>
+                                    <div>
+                                      <i class="bi bi-chat-left-text"></i>
+                                      ${conversation.messagesCount}
+                                      Message${conversation.messagesCount === 1
+                                        ? ""
+                                        : "s"}
+                                    </div>
+                                    $${conversation.endorsements.length === 0
+                                      ? html``
+                                      : html`
+                                          <div
+                                            data-ondomcontentloaded="${javascript`
                                               tippy(this, {
                                                 content: ${JSON.stringify(
                                                   `Endorsed by ${
@@ -7671,27 +7674,28 @@ export default async function courselore(
                                                 touch: false,
                                               });
                                             `}"
-                                        >
-                                          <i class="bi bi-award"></i>
-                                          ${conversation.endorsements.length}
-                                          Staff
-                                          Endorsement${conversation.endorsements
-                                            .length === 1
-                                            ? ""
-                                            : "s"}
-                                        </div>
-                                      `}
-                                  $${conversation.likesCount === 0
-                                    ? html``
-                                    : html`
-                                        <div>
-                                          <i class="bi bi-hand-thumbs-up"></i>
-                                          ${conversation.likesCount}
-                                          Like${conversation.likesCount === 1
-                                            ? ""
-                                            : "s"}
-                                        </div>
-                                      `}
+                                          >
+                                            <i class="bi bi-award"></i>
+                                            ${conversation.endorsements.length}
+                                            Staff
+                                            Endorsement${conversation
+                                              .endorsements.length === 1
+                                              ? ""
+                                              : "s"}
+                                          </div>
+                                        `}
+                                    $${conversation.likesCount === 0
+                                      ? html``
+                                      : html`
+                                          <div>
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                            ${conversation.likesCount}
+                                            Like${conversation.likesCount === 1
+                                              ? ""
+                                              : "s"}
+                                          </div>
+                                        `}
+                                  </div>
                                 </div>
                               </div>
                             </div>
