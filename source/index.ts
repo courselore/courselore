@@ -7534,15 +7534,14 @@ export default async function courselore(
                               );
                               padding: var(--space--2);
                               margin-left: var(--space---2);
-                              justify-content: space-between;
                               align-items: center;
                             `}"
                           >
                             <div
                               style="${css`
+                                flex: 1;
                                 display: flex;
                                 flex-direction: column;
-                                gap: var(--space--0);
                               `}"
                             >
                               <h3
@@ -7559,17 +7558,6 @@ export default async function courselore(
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--0-5);
-                                  .badges-list {
-                                    display: flex;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--space--4);
-                                    row-gap: var(--space--0-5);
-
-                                    & > * {
-                                      display: flex;
-                                      gap: var(--space--1);
-                                    }
-                                  }
                                 `}"
                               >
                                 <div>
@@ -7620,85 +7608,105 @@ export default async function courselore(
                                       `
                                     : html``}
                                 </div>
-                                $${conversation.taggings.length === 0
-                                  ? html``
-                                  : html`
-                                      <div class="badges-list">
-                                        $${conversation.taggings.map(
-                                          (tagging) => html`
-                                            <div>
-                                              <i class="bi bi-tag"></i>
-                                              ${tagging.tag.name}
-                                            </div>
-                                          `
-                                        )}
-                                      </div>
-                                    `}
-                                <div class="badges-list">
-                                  $${conversation.pinnedAt !== null
-                                    ? html`
-                                        <div>
-                                          <i class="bi bi-pin"></i>
-                                          Pinned
-                                        </div>
-                                      `
-                                    : html``}
-                                  <div>
-                                    $${app.locals.partials.conversationTypeIcon(
-                                      conversation.type
-                                    )}
-                                    ${lodash.capitalize(conversation.type)}
-                                  </div>
-                                  <div>
-                                    <i class="bi bi-chat-left-text"></i>
-                                    ${conversation.messagesCount}
-                                    Message${conversation.messagesCount === 1
-                                      ? ""
-                                      : "s"}
-                                  </div>
-                                  $${conversation.endorsements.length === 0
+
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--0-5);
+                                    & > * {
+                                      display: flex;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--space--4);
+                                      row-gap: var(--space--0-5);
+
+                                      & > * {
+                                        display: flex;
+                                        gap: var(--space--1);
+                                      }
+                                    }
+                                  `}"
+                                >
+                                  $${conversation.taggings.length === 0
                                     ? html``
                                     : html`
-                                        <div
-                                          data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: ${JSON.stringify(
-                                                `Endorsed by ${
-                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                                    "en"
-                                                  ).format(
-                                                    conversation.endorsements.map(
-                                                      (endorsement) =>
-                                                        endorsement.enrollment
-                                                          .user.name
+                                        <div>
+                                          $${conversation.taggings.map(
+                                            (tagging) => html`
+                                              <div>
+                                                <i class="bi bi-tag"></i>
+                                                ${tagging.tag.name}
+                                              </div>
+                                            `
+                                          )}
+                                        </div>
+                                      `}
+                                  <div>
+                                    $${conversation.pinnedAt !== null
+                                      ? html`
+                                          <div>
+                                            <i class="bi bi-pin"></i>
+                                            Pinned
+                                          </div>
+                                        `
+                                      : html``}
+                                    <div>
+                                      $${app.locals.partials.conversationTypeIcon(
+                                        conversation.type
+                                      )}
+                                      ${lodash.capitalize(conversation.type)}
+                                    </div>
+                                    <div>
+                                      <i class="bi bi-chat-left-text"></i>
+                                      ${conversation.messagesCount}
+                                      Message${conversation.messagesCount === 1
+                                        ? ""
+                                        : "s"}
+                                    </div>
+                                    $${conversation.endorsements.length === 0
+                                      ? html``
+                                      : html`
+                                          <div
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: ${JSON.stringify(
+                                                  `Endorsed by ${
+                                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                                      "en"
+                                                    ).format(
+                                                      conversation.endorsements.map(
+                                                        (endorsement) =>
+                                                          endorsement.enrollment
+                                                            .user.name
+                                                      )
                                                     )
-                                                  )
-                                                }`
-                                              )},
-                                              touch: false,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-award"></i>
-                                          ${conversation.endorsements.length}
-                                          Staff
-                                          Endorsement${conversation.endorsements
-                                            .length === 1
-                                            ? ""
-                                            : "s"}
-                                        </div>
-                                      `}
-                                  $${conversation.likesCount === 0
-                                    ? html``
-                                    : html`
-                                        <div>
-                                          <i class="bi bi-hand-thumbs-up"></i>
-                                          ${conversation.likesCount}
-                                          Like${conversation.likesCount === 1
-                                            ? ""
-                                            : "s"}
-                                        </div>
-                                      `}
+                                                  }`
+                                                )},
+                                                touch: false,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-award"></i>
+                                            ${conversation.endorsements.length}
+                                            Staff
+                                            Endorsement${conversation
+                                              .endorsements.length === 1
+                                              ? ""
+                                              : "s"}
+                                          </div>
+                                        `}
+                                    $${conversation.likesCount === 0
+                                      ? html``
+                                      : html`
+                                          <div>
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                            ${conversation.likesCount}
+                                            Like${conversation.likesCount === 1
+                                              ? ""
+                                              : "s"}
+                                          </div>
+                                        `}
+                                  </div>
                                 </div>
                               </div>
                             </div>
