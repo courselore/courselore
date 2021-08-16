@@ -218,8 +218,8 @@ Insiders Builds are generated on every push. They’re useful for development an
 | ✅  | 2021-07-24 | Finish tags: Create tags; Manage tags in conversations; Filter conversations by tag. Search.                                                                                    |
 | ✅  | 2021-07-31 | Demo class for showing people staring August. Authentication with email & passwords instead of Magic Authentication Links. User interface improvements based on early feedback. |
 | ✅  | 2021-08-07 | Conversations categories. User interface improvements based on early feedback.                                                                                                  |
-|     | 2021-08-14 | User interface improvements based on early feedback. Notifications: In-app; via email.                                                                                          |
-|     | 2021-08-21 | Access management: Anonymity & private threads.                                                                                                                                 |
+| ✅  | 2021-08-14 | User interface improvements based on early feedback. Read indicators.                                                                                                           |
+|     | 2021-08-21 | Email notifications. Access management: Anonymity & private threads.                                                                                                            |
 |     | 2021-08-28 | Buffer for things that’ll take longer than we expect.                                                                                                                           |
 
 <details>
