@@ -7187,7 +7187,6 @@ export default async function courselore(
         HTML,
         {},
         {
-          onlyConversationLayoutSidebarOnSmallScreen?: "true";
           conversationLayoutSidebarOpenOnSmallScreen?: "true";
           search?: string;
           tag?: string;
@@ -7242,8 +7241,8 @@ export default async function courselore(
                 <button
                   class="button button--transparent"
                   onclick="${javascript`
-                    document.querySelector(".conversation--layout--sidebar").classList.toggle("single-column--hidden");
-                    document.querySelector(".conversation--layout--main").classList.toggle("single-column--hidden");
+                    document.querySelector(".conversation--layout--sidebar").classList.toggle("hidden-on-small-screen");
+                    document.querySelector(".conversation--layout--main").classList.toggle("hidden-on-small-screen");
                     this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
                     this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
                   `}"
@@ -7278,7 +7277,7 @@ export default async function courselore(
                   max-width: var(--width--prose);
                 }
               }
-              & > .single-column--hidden {
+              & > .hidden-on-small-screen {
                 display: none;
               }
             }
@@ -7288,7 +7287,7 @@ export default async function courselore(
             class="conversation--layout--sidebar ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? ""
-              : "single-column--hidden"}"
+              : "hidden-on-small-screen"}"
             style="${css`
               background-color: var(--color--gray--medium--100);
               border-top: var(--border-width--1) solid
@@ -7732,7 +7731,7 @@ export default async function courselore(
           <div
             class="conversation--layout--main ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
-              ? "single-column--hidden"
+              ? "hidden-on-small-screen"
               : ""}"
             style="${css`
               @media (min-width: 900px) {
