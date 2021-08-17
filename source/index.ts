@@ -7715,6 +7715,7 @@ export default async function courselore(
                                         style="${css`
                                           font-size: var(--font-size--2xs);
                                           line-height: var(--line-height--2xs);
+                                          pointer-events: none;
                                         `}"
                                       >
                                         ${unreadCount}
