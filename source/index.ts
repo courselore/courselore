@@ -7492,15 +7492,17 @@ export default async function courselore(
                     </div>
                   `
                 : html`
-                    <div
-                      style="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--1);
-                      `}"
-                    >
-                      $${res.locals.conversations.map(
-                        (conversation) => html`
+                    <div>
+                      $${res.locals.conversations.map((conversation) => {
+                        const isSelected =
+                          conversation.id === res.locals.conversation?.id;
+                        return html`
+                          <hr
+                            class="separator"
+                            style="${css`
+                              margin: var(--space---px) var(--space--0);
+                            `}"
+                          />
                           <a
                             href="${app.locals.settings.url}/courses/${res
                               .locals.course
@@ -7510,8 +7512,7 @@ export default async function courselore(
                                 tag: req.query.tag,
                               }
                             )}"
-                            class="button ${conversation.id ===
-                            res.locals.conversation?.id
+                            class="button ${isSelected
                               ? "button--blue"
                               : "button--transparent"}"
                             style="${css`
@@ -7520,7 +7521,15 @@ export default async function courselore(
                               );
                               padding: var(--space--2);
                               margin-left: var(--space---2);
+                              position: relative;
                               align-items: center;
+                              ${isSelected
+                                ? css`
+                                    & + * {
+                                      margin-bottom: var(--space--0);
+                                    }
+                                  `
+                                : css``}
                             `}"
                           >
                             <div
@@ -7687,7 +7696,7 @@ export default async function courselore(
                             </div>
                             <div
                               style="${css`
-                                width: var(--space--2);
+                                width: var(--space--4);
                                 display: flex;
                                 justify-content: flex-end;
                               `}"
@@ -7702,7 +7711,7 @@ export default async function courselore(
                                   ? html``
                                   : html`
                                       <div
-                                        class="button button--tight button--tight--inline button--blue"
+                                        class="button button--tight button--blue"
                                         style="${css`
                                           font-size: var(--font-size--2xs);
                                           line-height: var(--line-height--2xs);
@@ -7714,8 +7723,8 @@ export default async function courselore(
                               })()}
                             </div>
                           </a>
-                        `
-                      )}
+                        `;
+                      })}
                     </div>
                   `}
             </div>
