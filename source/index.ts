@@ -7255,22 +7255,6 @@ export default async function courselore(
                 display: none;
               }
             }
-            /*
-            @media (max-width: 899px) {
-              min-height: 100%;
-              & > * {
-                min-height: 100%;
-                
-                & > * {
-                  
-                  
-                }
-              }
-              & > .hidden-on-small-screen {
-                display: none;
-              }
-            }
-            */
           `}"
         >
           <div
