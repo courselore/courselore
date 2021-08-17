@@ -10118,7 +10118,12 @@ ${value}</textarea
                             width: var(--space--2);
                             height: var(--space--2);
                             margin-top: var(--space--3-5);
-                            margin-left: var(--space---4);
+                            @media (max-width: 629px) {
+                              margin-left: var(--space---3);
+                            }
+                            @media (min-width: 630px) {
+                              margin-left: var(--space---4);
+                            }
                           `}"
                           data-ondomcontentloaded="${javascript`
                             tippy(this, {
