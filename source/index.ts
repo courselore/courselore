@@ -7243,7 +7243,11 @@ export default async function courselore(
             @media (max-width: 899px) {
               & > * {
                 flex: 1;
+                display: flex;
+                justify-content: center;
                 & > * {
+                  flex: 1;
+                  min-width: var(--width--0);
                   max-width: var(--width--prose);
                 }
               }
@@ -7256,11 +7260,9 @@ export default async function courselore(
               min-height: 100%;
               & > * {
                 min-height: 100%;
-                display: flex;
-                justify-content: center;
+                
                 & > * {
-                  flex: 1;
-                  min-width: var(--width--0);
+                  
                   
                 }
               }
