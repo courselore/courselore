@@ -7237,6 +7237,11 @@ export default async function courselore(
             & > * {
               overflow: auto;
             }
+            @media (max-width: 899px) {
+              & > .hidden-on-small-screen {
+                display: none;
+              }
+            }
             /*
             & > * > * {
               margin: var(--space--4);
