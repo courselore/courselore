@@ -10104,675 +10104,720 @@ ${value}</textarea
                     @media (prefers-color-scheme: dark) {
                       border-color: var(--color--gray--medium--700);
                     }
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
                   `}"
                 >
+                  $${message.reading === null
+                    ? html`
+                        <button
+                          class="button button--tight button--tight--inline button--blue"
+                          style="${css`
+                            width: var(--space--2);
+                            height: var(--space--2);
+                            margin-top: var(--space--3-5);
+                            margin-left: var(--space---4);
+                          `}"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Unread Message",
+                              touch: false,
+                            });
+                          `}"
+                          onclick="${javascript`
+                            this.remove();
+                          `}"
+                        ></button>
+                      `
+                    : html``}
                   <div
                     style="${css`
                       display: flex;
-                      gap: var(--space--4);
-                      align-items: baseline;
+                      flex-direction: column;
+                      gap: var(--space--2);
                     `}"
                   >
                     <div
                       style="${css`
-                        flex: 1;
                         display: flex;
-                        gap: var(--space--2);
+                        gap: var(--space--4);
                         align-items: baseline;
                       `}"
                     >
                       <div
                         style="${css`
-                          position: relative;
-                          bottom: var(--space---1-5);
+                          flex: 1;
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: baseline;
                         `}"
                       >
-                        $${message.authorEnrollment.user.avatar === null
-                          ? html`
-                              <div
-                                style="${css`
-                                  font-size: var(--font-size--2xl);
-                                  & > *::before {
-                                    vertical-align: baseline;
-                                  }
-                                `}"
-                              >
-                                <i class="bi bi-person-circle"></i>
-                              </div>
-                            `
-                          : html`
-                              <img
-                                src="${message.authorEnrollment.user.avatar}"
-                                alt="${message.authorEnrollment.user.name}"
-                                class="avatar"
-                                style="${css`
-                                  width: var(--font-size--2xl);
-                                  height: var(--font-size--2xl);
-                                `}"
-                              />
-                            `}
-                      </div>
-                      <h3>
-                        <span class="strong">
-                          ${message.authorEnrollment.user.name}
-                        </span>
-                        <span class="secondary">
-                          said
-                          <time
-                            data-ondomcontentloaded="${javascript`
-                              relativizeTime(this);
-                            `}"
-                          >
-                            ${message.createdAt}
-                          </time>
-                          $${message.updatedAt !== null
+                        <div
+                          style="${css`
+                            position: relative;
+                            bottom: var(--space---1-5);
+                          `}"
+                        >
+                          $${message.authorEnrollment.user.avatar === null
                             ? html`
-                                and last edited
-                                <time
-                                  data-ondomcontentloaded="${javascript`
-                                    relativizeTime(this);
+                                <div
+                                  style="${css`
+                                    font-size: var(--font-size--2xl);
+                                    & > *::before {
+                                      vertical-align: baseline;
+                                    }
                                   `}"
                                 >
-                                  ${message.updatedAt}
-                                </time>
+                                  <i class="bi bi-person-circle"></i>
+                                </div>
                               `
-                            : html``}
-                          <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/conversations/${res
-                              .locals.conversation
-                              .reference}#message--${message.reference}"
-                            class="button button--tight button--tight--inline button--transparent"
-                            style="${css`
-                              font-size: var(--font-size--xs);
-                              line-height: var(--line-height--xs);
-                              display: inline-flex;
+                            : html`
+                                <img
+                                  src="${message.authorEnrollment.user.avatar}"
+                                  alt="${message.authorEnrollment.user.name}"
+                                  class="avatar"
+                                  style="${css`
+                                    width: var(--font-size--2xl);
+                                    height: var(--font-size--2xl);
+                                  `}"
+                                />
+                              `}
+                        </div>
+                        <h3>
+                          <span class="strong">
+                            ${message.authorEnrollment.user.name}
+                          </span>
+                          <span class="secondary">
+                            said
+                            <time
+                              data-ondomcontentloaded="${javascript`
+                                relativizeTime(this);
+                              `}"
+                            >
+                              ${message.createdAt}
+                            </time>
+                            $${message.updatedAt !== null
+                              ? html`
+                                  and last edited
+                                  <time
+                                    data-ondomcontentloaded="${javascript`
+                                      relativizeTime(this);
+                                    `}"
+                                  >
+                                    ${message.updatedAt}
+                                  </time>
+                                `
+                              : html``}
+                            <a
+                              href="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation
+                                .reference}#message--${message.reference}"
+                              class="button button--tight button--tight--inline button--transparent"
+                              style="${css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                                display: inline-flex;
+                              `}"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Permanent Link to Message",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              #${res.locals.conversation
+                                .reference}/${message.reference}
+                            </a>
+                          </span>
+                        </h3>
+                      </div>
+
+                      <div
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${res.locals.enrollment.role === "staff" &&
+                        message.reference !== "1"
+                          ? html`
+                              <div>
+                                <button
+                                  class="button button--tight button--tight--inline button--transparent text--rose"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Remove Message",
+                                      theme: "rose",
+                                      touch: false,
+                                    });
+                                    tippy(this, {
+                                      content: this.nextElementSibling.firstElementChild,
+                                      theme: "rose",
+                                      trigger: "click",
+                                      interactive: true,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                                <div hidden>
+                                  <form
+                                    method="POST"
+                                    action="${app.locals.settings
+                                      .url}/courses/${res.locals.course
+                                      .reference}/conversations/${res.locals
+                                      .conversation
+                                      .reference}/messages/${message.reference}?_method=DELETE"
+                                    style="${css`
+                                      padding: var(--space--2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <p>
+                                      Are you sure you want to remove this
+                                      message?
+                                    </p>
+                                    <p>
+                                      <strong
+                                        style="${css`
+                                          font-weight: var(--font-weight--bold);
+                                        `}"
+                                      >
+                                        You may not undo this action!
+                                      </strong>
+                                    </p>
+                                    <button class="button button--rose">
+                                      <i class="bi bi-trash"></i>
+                                      Remove Message
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            `
+                          : html``}
+                        $${app.locals.helpers.mayEditMessage(req, res, message)
+                          ? html`
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Edit Message",
+                                      touch: false,
+                                    });
+                                  `}"
+                                onclick="${javascript`
+                                  this.closest(".message").querySelector(".message--show").hidden = true;
+                                  this.closest(".message").querySelector(".message--edit").hidden = false;
+                                `}"
+                              >
+                                <i class="bi bi-pencil"></i>
+                              </button>
+                            `
+                          : html``}
+
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Reply",
+                              touch: false,
+                            });
+                          `}"
+                          onclick="${javascript`
+                            const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                            const newMessage = document.querySelector(".new-message");
+                            newMessage.querySelector(".text-editor--button--write").click();
+                            const element = newMessage.querySelector('[name="content"]');
+                            // TODO: Use something like ‘@Leandro-Facchinetti-2342’
+                            textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                              message.authorEnrollment.reference
+                            )} + " · #" + ${JSON.stringify(
+                            res.locals.conversation.reference
+                          )} + "/" + ${JSON.stringify(
+                            message.reference
+                          )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                            element.focus();
                             `}"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Permanent Link to Message",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            #${res.locals.conversation
-                              .reference}/${message.reference}
-                          </a>
-                        </span>
-                      </h3>
+                        >
+                          <i class="bi bi-reply"></i>
+                        </button>
+                      </div>
                     </div>
 
                     <div
+                      class="message--show"
                       style="${css`
                         display: flex;
-                        gap: var(--space--2);
+                        flex-direction: column;
+                        gap: var(--space--4);
                       `}"
                     >
-                      $${res.locals.enrollment.role === "staff" &&
-                      message.reference !== "1"
-                        ? html`
-                            <div>
-                              <button
-                                class="button button--tight button--tight--inline button--transparent text--rose"
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Remove Message",
-                                    theme: "rose",
-                                    touch: false,
-                                  });
-                                  tippy(this, {
-                                    content: this.nextElementSibling.firstElementChild,
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-trash"></i>
-                              </button>
-                              <div hidden>
-                                <form
-                                  method="POST"
-                                  action="${app.locals.settings
-                                    .url}/courses/${res.locals.course
-                                    .reference}/conversations/${res.locals
-                                    .conversation
-                                    .reference}/messages/${message.reference}?_method=DELETE"
-                                  style="${css`
-                                    padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
-                                  `}"
-                                >
-                                  <p>
-                                    Are you sure you want to remove this
-                                    message?
-                                  </p>
-                                  <p>
-                                    <strong
-                                      style="${css`
-                                        font-weight: var(--font-weight--bold);
+                      $${(() => {
+                        const content: HTML[] = [];
+
+                        if (
+                          app.locals.helpers.mayEditMessage(
+                            req,
+                            res,
+                            message
+                          ) &&
+                          message.reference !== "1" &&
+                          res.locals.conversation.type === "question"
+                        )
+                          content.push(html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation
+                                .reference}/messages/${message.reference}?_method=PATCH"
+                            >
+                              $${message.answerAt === null
+                                ? html`
+                                    <input
+                                      type="hidden"
+                                      name="isAnswer"
+                                      value="true"
+                                    />
+                                    <button
+                                      class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: "Set as an Answer",
+                                          touch: false,
+                                        });
                                       `}"
                                     >
-                                      You may not undo this action!
-                                    </strong>
-                                  </p>
-                                  <button class="button button--rose">
-                                    <i class="bi bi-trash"></i>
-                                    Remove Message
-                                  </button>
-                                </form>
-                              </div>
-                            </div>
-                          `
-                        : html``}
-                      $${app.locals.helpers.mayEditMessage(req, res, message)
-                        ? html`
-                            <button
-                              class="button button--tight button--tight--inline button--transparent"
-                              data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Edit Message",
-                                    touch: false,
-                                  });
-                                `}"
-                              onclick="${javascript`
-                                this.closest(".message").querySelector(".message--show").hidden = true;
-                                this.closest(".message").querySelector(".message--edit").hidden = false;
+                                      <i class="bi bi-patch-check"></i>
+                                      Not an Answer
+                                    </button>
+                                  `
+                                : html`
+                                    <input
+                                      type="hidden"
+                                      name="isAnswer"
+                                      value="false"
+                                    />
+                                    <button
+                                      class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                      data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: "Set as Not an Answer",
+                                            touch: false,
+                                          });
+                                        `}"
+                                    >
+                                      <i class="bi bi-patch-check-fill"></i>
+                                      Answer
+                                    </button>
+                                  `}
+                            </form>
+                          `);
+                        else if (
+                          res.locals.conversation.type === "question" &&
+                          message.answerAt !== null
+                        )
+                          content.push(html`
+                            <div
+                              style="${css`
+                                display: flex;
+                                gap: var(--space--1);
                               `}"
                             >
-                              <i class="bi bi-pencil"></i>
-                            </button>
-                          `
-                        : html``}
+                              <i class="bi bi-patch-check-fill"></i>
+                              Answer
+                            </div>
+                          `);
 
-                      <button
-                        class="button button--tight button--tight--inline button--transparent"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Reply",
-                            touch: false,
-                          });
-                        `}"
-                        onclick="${javascript`
-                          const content = JSON.parse(this.closest("[data-content]").dataset.content);
-                          const newMessage = document.querySelector(".new-message");
-                          newMessage.querySelector(".text-editor--button--write").click();
-                          const element = newMessage.querySelector('[name="content"]');
-                          // TODO: Use something like ‘@Leandro-Facchinetti-2342’
-                          textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                            message.authorEnrollment.reference
-                          )} + " · #" + ${JSON.stringify(
-                          res.locals.conversation.reference
-                        )} + "/" + ${JSON.stringify(
-                          message.reference
-                        )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                          element.focus();
+                        if (
+                          app.locals.helpers.mayEndorseMessage(
+                            req,
+                            res,
+                            message
+                          )
+                        ) {
+                          const isEndorsed = message.endorsements.some(
+                            (endorsement) =>
+                              endorsement.enrollment.id ===
+                              res.locals.enrollment.id
+                          );
+
+                          content.push(html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation
+                                .reference}/messages/${message.reference}/endorsements${isEndorsed
+                                ? "?_method=DELETE"
+                                : ""}"
+                            >
+                              $${isEndorsed
+                                ? html`
+                                    <input
+                                      type="hidden"
+                                      name="isEndorsed"
+                                      value="false"
+                                    />
+                                    <button
+                                      class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: ${JSON.stringify(
+                                            `Remove Endorsement${
+                                              message.endorsements.length > 1
+                                                ? ` (Also endorsed by ${
+                                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                                      "en"
+                                                    ).format(
+                                                      message.endorsements
+                                                        .filter(
+                                                          (endorsement) =>
+                                                            endorsement
+                                                              .enrollment.id !==
+                                                            res.locals
+                                                              .enrollment.id
+                                                        )
+                                                        .map(
+                                                          (endorsement) =>
+                                                            endorsement
+                                                              .enrollment.user
+                                                              .name
+                                                        )
+                                                    )
+                                                  })`
+                                                : ``
+                                            }`
+                                          )},
+                                          touch: false,
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-award-fill"></i>
+                                      ${message.endorsements.length} Staff
+                                      Endorsement${message.endorsements
+                                        .length === 1
+                                        ? ""
+                                        : "s"}
+                                    </button>
+                                  `
+                                : html`
+                                    <input
+                                      type="hidden"
+                                      name="isEndorsed"
+                                      value="true"
+                                    />
+                                    <button
+                                      class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                      $${message.endorsements.length === 0
+                                        ? html``
+                                        : html`
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: ${JSON.stringify(
+                                                  `Endorse (Already endorsed by ${
+                                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                                      "en"
+                                                    ).format(
+                                                      message.endorsements.map(
+                                                        (endorsement) =>
+                                                          endorsement.enrollment
+                                                            .user.name
+                                                      )
+                                                    )
+                                                  })`
+                                                )},
+                                                touch: false,
+                                              });
+                                            `}"
+                                          `}
+                                    >
+                                      <i class="bi bi-award"></i>
+                                      ${message.endorsements.length === 0
+                                        ? `Endorse`
+                                        : `${message.endorsements.length}
+                                          Staff Endorsement${
+                                            message.endorsements.length === 1
+                                              ? ""
+                                              : "s"
+                                          }`}
+                                    </button>
+                                  `}
+                            </form>
+                          `);
+                        } else if (
+                          res.locals.conversation.type === "question" &&
+                          message.endorsements.length > 0
+                        )
+                          content.push(html`
+                            <div
+                              style="${css`
+                                display: flex;
+                                gap: var(--space--1);
+                              `}"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: ${JSON.stringify(
+                                    `Endorsed by ${
+                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                        "en"
+                                      ).format(
+                                        message.endorsements.map(
+                                          (endorsement) =>
+                                            endorsement.enrollment.user.name
+                                        )
+                                      )
+                                    }`
+                                  )},
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-award"></i>
+                              ${message.endorsements.length} Staff
+                              Endorsement${message.endorsements.length === 1
+                                ? ""
+                                : "s"}
+                            </div>
+                          `);
+
+                        return content.length === 0
+                          ? html``
+                          : html`
+                              <div
+                                style="${css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--6);
+                                  row-gap: var(--space--1);
+                                `}"
+                              >
+                                $${content}
+                              </div>
+                            `;
+                      })()}
+
+                      <div>
+                        <div
+                          data-ondomcontentloaded="${javascript`
+                            this.dropdownMenu = tippy(this, {
+                              content: this.nextElementSibling.firstElementChild,
+                              trigger: "manual",
+                              interactive: true,
+                              offset: [0, 20],
+                              touch: false,
+                            });
                           `}"
+                          onpointerup="${javascript`
+                            const selection = window.getSelection();
+                            const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                            const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
+                            if (
+                              selection.isCollapsed ||
+                              !this.contains(anchorElement) ||
+                              !this.contains(focusElement) ||
+                              anchorElement.dataset.position === undefined ||
+                              focusElement.dataset.position === undefined
+                            ) return;
+                            this.dropdownMenu.setProps({
+                              getReferenceClientRect: () => ({
+                                width: 0,
+                                height: 0,
+                                top: event.clientY,
+                                right: event.clientX,
+                                bottom: event.clientY,
+                                left: event.clientX,
+                              }),
+                            });
+                            this.dropdownMenu.show();
+                          `}"
+                        >
+                          $${app.locals.partials.textProcessor(
+                            message.content,
+                            {
+                              req,
+                              res,
+                            }
+                          )}
+                        </div>
+                        <div hidden>
+                          <div class="dropdown-menu">
+                            <button
+                              class="dropdown-menu--item button button--transparent"
+                              onclick="${javascript`
+                                tippy.hideAll();
+                                const selection = window.getSelection();
+                                const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                                const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
+                                // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
+                                const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                                const focusPosition = JSON.parse(focusElement.dataset.position);
+                                const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
+                                const newMessage = document.querySelector(".new-message");
+                                newMessage.querySelector(".text-editor--button--write").click();
+                                const element = newMessage.querySelector('[name="content"]');
+                                // TODO: Use something like ‘@Leandro-Facchinetti-2342’
+                                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                                  message.authorEnrollment.reference
+                                )} + " · #" + ${JSON.stringify(
+                                res.locals.conversation.reference
+                              )} + "/" + ${JSON.stringify(
+                                message.reference
+                              )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                element.focus();
+                              `}"
+                            >
+                              <i class="bi bi-chat-left-quote"></i> Quote
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--6);
+                          row-gap: var(--space--1);
+                        `}"
                       >
-                        <i class="bi bi-reply"></i>
-                      </button>
+                        $${(() => {
+                          const isLiked = message.likes.some(
+                            (like) =>
+                              like.enrollment.id === res.locals.enrollment.id
+                          );
+                          const likesCount = message.likes.length;
+
+                          return html`
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation
+                                .reference}/messages/${message.reference}/likes${isLiked
+                                ? "?_method=DELETE"
+                                : ""}"
+                              onsubmit="${javascript`
+                                event.preventDefault();
+                                fetch(this.action, { method: this.method });
+                              `}"
+                            >
+                              <button
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                  ? "text--blue"
+                                  : ""}"
+                                $${likesCount === 0
+                                  ? html``
+                                  : html`
+                                      data-ondomcontentloaded="${javascript`
+                                        tippy(this, {
+                                          content: ${JSON.stringify(
+                                            isLiked ? "Remove Like" : "Like"
+                                          )},
+                                          touch: false,
+                                        });
+                                      `}"
+                                    `}
+                              >
+                                $${isLiked
+                                  ? html`
+                                      <i class="bi bi-hand-thumbs-up-fill"></i>
+                                    `
+                                  : html`<i class="bi bi-hand-thumbs-up"></i>`}
+                                $${likesCount === 0
+                                  ? html`Like`
+                                  : html`
+                                      ${likesCount}
+                                      Like${likesCount === 1 ? "" : "s"}
+                                    `}
+                              </button>
+                            </form>
+                          `;
+                        })()}
+                      </div>
                     </div>
-                  </div>
 
-                  <div
-                    class="message--show"
-                    style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    $${(() => {
-                      const content: HTML[] = [];
-
-                      if (
-                        app.locals.helpers.mayEditMessage(req, res, message) &&
-                        message.reference !== "1" &&
-                        res.locals.conversation.type === "question"
-                      )
-                        content.push(html`
+                    $${app.locals.helpers.mayEditMessage(req, res, message)
+                      ? html`
                           <form
                             method="POST"
                             action="${app.locals.settings.url}/courses/${res
                               .locals.course.reference}/conversations/${res
                               .locals.conversation
                               .reference}/messages/${message.reference}?_method=PATCH"
-                          >
-                            $${message.answerAt === null
-                              ? html`
-                                  <input
-                                    type="hidden"
-                                    name="isAnswer"
-                                    value="true"
-                                  />
-                                  <button
-                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "Set as an Answer",
-                                        touch: false,
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-patch-check"></i>
-                                    Not an Answer
-                                  </button>
-                                `
-                              : html`
-                                  <input
-                                    type="hidden"
-                                    name="isAnswer"
-                                    value="false"
-                                  />
-                                  <button
-                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                    data-ondomcontentloaded="${javascript`
-                                        tippy(this, {
-                                          content: "Set as Not an Answer",
-                                          touch: false,
-                                        });
-                                      `}"
-                                  >
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    Answer
-                                  </button>
-                                `}
-                          </form>
-                        `);
-                      else if (
-                        res.locals.conversation.type === "question" &&
-                        message.answerAt !== null
-                      )
-                        content.push(html`
-                          <div
+                            novalidate
+                            hidden
+                            class="message--edit"
                             style="${css`
                               display: flex;
-                              gap: var(--space--1);
+                              flex-direction: column;
+                              gap: var(--space--2);
                             `}"
                           >
-                            <i class="bi bi-patch-check-fill"></i>
-                            Answer
-                          </div>
-                        `);
+                            $${app.locals.partials.textEditor({
+                              value: message.content,
+                            })}
 
-                      if (
-                        app.locals.helpers.mayEndorseMessage(req, res, message)
-                      ) {
-                        const isEndorsed = message.endorsements.some(
-                          (endorsement) =>
-                            endorsement.enrollment.id ===
-                            res.locals.enrollment.id
-                        );
-
-                        content.push(html`
-                          <form
-                            method="POST"
-                            action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/conversations/${res
-                              .locals.conversation
-                              .reference}/messages/${message.reference}/endorsements${isEndorsed
-                              ? "?_method=DELETE"
-                              : ""}"
-                          >
-                            $${isEndorsed
-                              ? html`
-                                  <input
-                                    type="hidden"
-                                    name="isEndorsed"
-                                    value="false"
-                                  />
-                                  <button
-                                    class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: ${JSON.stringify(
-                                          `Remove Endorsement${
-                                            message.endorsements.length > 1
-                                              ? ` (Also endorsed by ${
-                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                                    "en"
-                                                  ).format(
-                                                    message.endorsements
-                                                      .filter(
-                                                        (endorsement) =>
-                                                          endorsement.enrollment
-                                                            .id !==
-                                                          res.locals.enrollment
-                                                            .id
-                                                      )
-                                                      .map(
-                                                        (endorsement) =>
-                                                          endorsement.enrollment
-                                                            .user.name
-                                                      )
-                                                  )
-                                                })`
-                                              : ``
-                                          }`
-                                        )},
-                                        touch: false,
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-award-fill"></i>
-                                    ${message.endorsements.length} Staff
-                                    Endorsement${message.endorsements.length ===
-                                    1
-                                      ? ""
-                                      : "s"}
-                                  </button>
-                                `
-                              : html`
-                                  <input
-                                    type="hidden"
-                                    name="isEndorsed"
-                                    value="true"
-                                  />
-                                  <button
-                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                    $${message.endorsements.length === 0
-                                      ? html``
-                                      : html`
-                                          data-ondomcontentloaded="${javascript`
-                                            tippy(this, {
-                                              content: ${JSON.stringify(
-                                                `Endorse (Already endorsed by ${
-                                                  /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                                    "en"
-                                                  ).format(
-                                                    message.endorsements.map(
-                                                      (endorsement) =>
-                                                        endorsement.enrollment
-                                                          .user.name
-                                                    )
-                                                  )
-                                                })`
-                                              )},
-                                              touch: false,
-                                            });
-                                          `}"
-                                        `}
-                                  >
-                                    <i class="bi bi-award"></i>
-                                    ${message.endorsements.length === 0
-                                      ? `Endorse`
-                                      : `${message.endorsements.length}
-                                        Staff Endorsement${
-                                          message.endorsements.length === 1
-                                            ? ""
-                                            : "s"
-                                        }`}
-                                  </button>
-                                `}
-                          </form>
-                        `);
-                      } else if (
-                        res.locals.conversation.type === "question" &&
-                        message.endorsements.length > 0
-                      )
-                        content.push(html`
-                          <div
-                            style="${css`
-                              display: flex;
-                              gap: var(--space--1);
-                            `}"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: ${JSON.stringify(
-                                  `Endorsed by ${
-                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                      "en"
-                                    ).format(
-                                      message.endorsements.map(
-                                        (endorsement) =>
-                                          endorsement.enrollment.user.name
-                                      )
-                                    )
-                                  }`
-                                )},
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-award"></i>
-                            ${message.endorsements.length} Staff
-                            Endorsement${message.endorsements.length === 1
-                              ? ""
-                              : "s"}
-                          </div>
-                        `);
-
-                      return content.length === 0
-                        ? html``
-                        : html`
                             <div
                               style="${css`
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
                                 display: flex;
-                                flex-wrap: wrap;
-                                column-gap: var(--space--6);
-                                row-gap: var(--space--1);
+                                gap: var(--space--2);
+                                @media (max-width: 400px) {
+                                  flex-direction: column;
+                                }
                               `}"
                             >
-                              $${content}
+                              <button
+                                class="button button--blue"
+                                data-ondomcontentloaded="${javascript`
+                                  Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                                  tippy(this, {
+                                    content: ${JSON.stringify(html`
+                                      <span class="keyboard-shortcut">
+                                        Ctrl+Enter or
+                                        <span class="keyboard-shortcut--cluster"
+                                          ><i class="bi bi-command"></i
+                                          ><i
+                                            class="bi bi-arrow-return-left"
+                                          ></i
+                                        ></span>
+                                      </span>
+                                    `)},
+                                    touch: false,
+                                    allowHTML: true,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pencil"></i>
+                                Update Message
+                              </button>
+                              <button
+                                type="reset"
+                                class="button button--transparent"
+                                onclick="${javascript`
+                                  this.closest(".message").querySelector(".message--show").hidden = false;
+                                  this.closest(".message").querySelector(".message--edit").hidden = true;
+                              `}"
+                              >
+                                <i class="bi bi-x-lg"></i>
+                                Cancel
+                              </button>
                             </div>
-                          `;
-                    })()}
-
-                    <div>
-                      <div
-                        data-ondomcontentloaded="${javascript`
-                          this.dropdownMenu = tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
-                            trigger: "manual",
-                            interactive: true,
-                            offset: [0, 20],
-                            touch: false,
-                          });
-                        `}"
-                        onpointerup="${javascript`
-                          const selection = window.getSelection();
-                          const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                          const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
-                          if (
-                            selection.isCollapsed ||
-                            !this.contains(anchorElement) ||
-                            !this.contains(focusElement) ||
-                            anchorElement.dataset.position === undefined ||
-                            focusElement.dataset.position === undefined
-                          ) return;
-                          this.dropdownMenu.setProps({
-                            getReferenceClientRect: () => ({
-                              width: 0,
-                              height: 0,
-                              top: event.clientY,
-                              right: event.clientX,
-                              bottom: event.clientY,
-                              left: event.clientX,
-                            }),
-                          });
-                          this.dropdownMenu.show();
-                        `}"
-                      >
-                        $${app.locals.partials.textProcessor(message.content, {
-                          req,
-                          res,
-                        })}
-                      </div>
-                      <div hidden>
-                        <div class="dropdown-menu">
-                          <button
-                            class="dropdown-menu--item button button--transparent"
-                            onclick="${javascript`
-                              tippy.hideAll();
-                              const selection = window.getSelection();
-                              const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                              const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
-                              // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
-                              const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                              const focusPosition = JSON.parse(focusElement.dataset.position);
-                              const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                              const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                              const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                              const newMessage = document.querySelector(".new-message");
-                              newMessage.querySelector(".text-editor--button--write").click();
-                              const element = newMessage.querySelector('[name="content"]');
-                              // TODO: Use something like ‘@Leandro-Facchinetti-2342’
-                              textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
-                                message.authorEnrollment.reference
-                              )} + " · #" + ${JSON.stringify(
-                              res.locals.conversation.reference
-                            )} + "/" + ${JSON.stringify(
-                              message.reference
-                            )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                              element.focus();
-                            `}"
-                          >
-                            <i class="bi bi-chat-left-quote"></i> Quote
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      style="${css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                        display: flex;
-                        flex-wrap: wrap;
-                        column-gap: var(--space--6);
-                        row-gap: var(--space--1);
-                      `}"
-                    >
-                      $${(() => {
-                        const isLiked = message.likes.some(
-                          (like) =>
-                            like.enrollment.id === res.locals.enrollment.id
-                        );
-                        const likesCount = message.likes.length;
-
-                        return html`
-                          <form
-                            method="POST"
-                            action="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/conversations/${res
-                              .locals.conversation
-                              .reference}/messages/${message.reference}/likes${isLiked
-                              ? "?_method=DELETE"
-                              : ""}"
-                            onsubmit="${javascript`
-                              event.preventDefault();
-                              fetch(this.action, { method: this.method });
-                            `}"
-                          >
-                            <button
-                              class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                ? "text--blue"
-                                : ""}"
-                              $${likesCount === 0
-                                ? html``
-                                : html`
-                                    data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: ${JSON.stringify(
-                                          isLiked ? "Remove Like" : "Like"
-                                        )},
-                                        touch: false,
-                                      });
-                                    `}"
-                                  `}
-                            >
-                              $${isLiked
-                                ? html`
-                                    <i class="bi bi-hand-thumbs-up-fill"></i>
-                                  `
-                                : html`<i class="bi bi-hand-thumbs-up"></i>`}
-                              $${likesCount === 0
-                                ? html`Like`
-                                : html`
-                                    ${likesCount}
-                                    Like${likesCount === 1 ? "" : "s"}
-                                  `}
-                            </button>
                           </form>
-                        `;
-                      })()}
-                    </div>
+                        `
+                      : html``}
                   </div>
-
-                  $${app.locals.helpers.mayEditMessage(req, res, message)
-                    ? html`
-                        <form
-                          method="POST"
-                          action="${app.locals.settings.url}/courses/${res
-                            .locals.course.reference}/conversations/${res.locals
-                            .conversation
-                            .reference}/messages/${message.reference}?_method=PATCH"
-                          novalidate
-                          hidden
-                          class="message--edit"
-                          style="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          $${app.locals.partials.textEditor({
-                            value: message.content,
-                          })}
-
-                          <div
-                            style="${css`
-                              display: flex;
-                              gap: var(--space--2);
-                              @media (max-width: 400px) {
-                                flex-direction: column;
-                              }
-                            `}"
-                          >
-                            <button
-                              class="button button--blue"
-                              data-ondomcontentloaded="${javascript`
-                                Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
-                                tippy(this, {
-                                  content: ${JSON.stringify(html`
-                                    <span class="keyboard-shortcut">
-                                      Ctrl+Enter or
-                                      <span class="keyboard-shortcut--cluster"
-                                        ><i class="bi bi-command"></i
-                                        ><i class="bi bi-arrow-return-left"></i
-                                      ></span>
-                                    </span>
-                                  `)},
-                                  touch: false,
-                                  allowHTML: true,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-pencil"></i>
-                              Update Message
-                            </button>
-                            <button
-                              type="reset"
-                              class="button button--transparent"
-                              onclick="${javascript`
-                                this.closest(".message").querySelector(".message--show").hidden = false;
-                                this.closest(".message").querySelector(".message--edit").hidden = true;
-                            `}"
-                            >
-                              <i class="bi bi-x-lg"></i>
-                              Cancel
-                            </button>
-                          </div>
-                        </form>
-                      `
-                    : html``}
                 </div>
               `
             )}
