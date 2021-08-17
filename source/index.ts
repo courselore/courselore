@@ -1709,6 +1709,13 @@ export default async function courselore(
               }
               display: flex;
               flex-direction: column;
+              & > * {
+                border-bottom: var(--border-width--1) solid
+                  var(--color--gray--medium--200);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--gray--medium--700);
+                }
+              }
             `}"
           >
             $${app.locals.settings.demonstration
@@ -1717,11 +1724,6 @@ export default async function courselore(
                     style="${css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
-                      border-bottom: var(--border-width--1) solid
-                        var(--color--gray--medium--200);
-                      @media (prefers-color-scheme: dark) {
-                        border-color: var(--color--gray--medium--700);
-                      }
                       padding: var(--space--0) var(--space--4);
                       display: flex;
                       justify-content: center;
@@ -4509,11 +4511,6 @@ export default async function courselore(
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   padding: var(--space--0) var(--space--4);
-                  border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
                   display: flex;
                   justify-content: center;
                   @media (min-width: 700px) {
@@ -7212,13 +7209,6 @@ export default async function courselore(
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   padding: var(--space--0) var(--space--4);
-                  border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  border-bottom: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
                   display: flex;
                   justify-content: center;
                   @media (min-width: 900px) {
@@ -7291,11 +7281,6 @@ export default async function courselore(
               }
               @media (min-width: 900px) {
                 width: var(--width--sm);
-                border-top: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
-                }
               }
             `}"
           >
