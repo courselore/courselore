@@ -4202,21 +4202,7 @@ export default async function courselore(
           req,
           res,
           head: html`<title>${res.locals.course.name} · CourseLore</title>`,
-          body: html`
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-                align-items: center;
-              `}"
-            >
-              <div class="decorative-icon">
-                <i class="bi bi-chat-left-text"></i>
-              </div>
-              <p class="secondary">No conversation selected.</p>
-            </div>
-          `,
+          body: html`<p class="secondary">No conversation selected.</p>`,
           onlyConversationLayoutSidebarOnSmallScreen: true,
         })
       );
