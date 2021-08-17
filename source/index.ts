@@ -10113,12 +10113,12 @@ ${value}</textarea
                     style="${css`
                       display: flex;
                       gap: var(--space--4);
-                      justify-content: space-between;
                       align-items: baseline;
                     `}"
                   >
                     <div
                       style="${css`
+                        flex: 1;
                         display: flex;
                         gap: var(--space--2);
                         align-items: baseline;
