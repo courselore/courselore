@@ -7253,6 +7253,9 @@ export default async function courselore(
                 display: none;
               }
             }
+            @media (min-width: 900px) {
+              display: flex;
+            }
           `}"
         >
           <div
