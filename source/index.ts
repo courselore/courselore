@@ -1169,6 +1169,8 @@ export default async function courselore(
               }
 
               .tippy-box {
+                font-size: var(--font-size--sm);
+                line-height: var(--line-height--sm);
                 --background-color: var(--color--gray--medium--100);
                 --border-color: var(--color--gray--medium--400);
                 @media (prefers-color-scheme: dark) {
@@ -1703,6 +1705,8 @@ export default async function courselore(
               `}
           <div
             style="${css`
+              font-size: var(--font-size--xs);
+              line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -1710,11 +1714,13 @@ export default async function courselore(
               display: flex;
               flex-direction: column;
               & > * {
+                padding: var(--space--0) var(--space--4);
                 border-bottom: var(--border-width--1) solid
                   var(--color--gray--medium--200);
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--gray--medium--700);
                 }
+                display: flex;
               }
             `}"
           >
@@ -1722,10 +1728,6 @@ export default async function courselore(
               ? html`
                   <div
                     style="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      padding: var(--space--0) var(--space--4);
-                      display: flex;
                       justify-content: center;
                       flex-wrap: wrap;
                     `}"
@@ -2002,8 +2004,8 @@ export default async function courselore(
       extraHeaders: html`
         <div
           style="${css`
-            padding: var(--space--1) var(--space--4);
-            display: flex;
+            padding-top: var(--space--1);
+            padding-bottom: var(--space--1);
             gap: var(--space--4);
             align-items: center;
           `}"
@@ -2017,6 +2019,8 @@ export default async function courselore(
 
           <div
             style="${css`
+              font-size: var(--font-size--sm);
+              line-height: var(--line-height--sm);
               flex: 1;
               min-width: var(--width--0);
             `}"
@@ -4508,10 +4512,6 @@ export default async function courselore(
           ? html`
               <div
                 style="${css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  padding: var(--space--0) var(--space--4);
-                  display: flex;
                   justify-content: center;
                   @media (min-width: 700px) {
                     display: none;
@@ -7206,10 +7206,6 @@ export default async function courselore(
           : html`
               <div
                 style="${css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  padding: var(--space--0) var(--space--4);
-                  display: flex;
                   justify-content: center;
                   @media (min-width: 900px) {
                     display: none;
