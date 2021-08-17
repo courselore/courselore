@@ -7231,6 +7231,12 @@ export default async function courselore(
       body: html`
         <div
           style="${css`
+            width: 100%;
+            height: 100%;
+            display: flex;
+            & > * {
+              overflow: auto;
+            }
             /*
             & > * > * {
               margin: var(--space--4);
@@ -7251,11 +7257,10 @@ export default async function courselore(
                 display: none;
               }
             }
-            width: 100%;
-            height: 100%;
+            
             display: flex;
             & > * {
-              overflow: auto;
+              
               & > * > * {
                 padding: var(--space--4) var(--space--0);
                 margin: var(--space--0) var(--space--4);
@@ -7277,6 +7282,11 @@ export default async function courselore(
               }
               @media (min-width: 900px) {
                 width: var(--width--sm);
+                border-right: var(--border-width--1) solid
+                  var(--color--gray--medium--200);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--gray--medium--700);
+                }
               }
             `}"
           >
