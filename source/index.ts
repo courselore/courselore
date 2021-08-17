@@ -7710,16 +7710,21 @@ export default async function courselore(
                                     res.locals.conversation?.id
                                   ? html``
                                   : html`
-                                      <div
+                                      <button
                                         class="button button--tight button--blue"
                                         style="${css`
                                           font-size: var(--font-size--2xs);
                                           line-height: var(--line-height--2xs);
-                                          pointer-events: none;
+                                        `}"
+                                        data-ondomcontentloaded="${javascript`
+                                          tippy(this, {
+                                            content: "Unread Messages",
+                                            touch: false,
+                                          });
                                         `}"
                                       >
                                         ${unreadCount}
-                                      </div>
+                                      </button>
                                     `;
                               })()}
                             </div>
