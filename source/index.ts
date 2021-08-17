@@ -7233,6 +7233,7 @@ export default async function courselore(
           style="${css`
             width: 100%;
             height: 100%;
+            display: flex;
             & > * {
               overflow: auto;
               & > * {
@@ -7240,6 +7241,7 @@ export default async function courselore(
               }
             }
             @media (max-width: 899px) {
+              /*
               & > * {
                 display: flex;
                 justify-content: center;
@@ -7249,12 +7251,10 @@ export default async function courselore(
                   max-width: var(--width--prose);
                 }
               }
+              */
               & > .hidden-on-small-screen {
                 display: none;
               }
-            }
-            @media (min-width: 900px) {
-              display: flex;
             }
           `}"
         >
