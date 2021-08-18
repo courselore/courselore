@@ -7238,20 +7238,25 @@ export default async function courselore(
               overflow: auto;
               & > * {
                 margin: var(--space--4);
+                & > * {
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                }
               }
             }
             @media (max-width: 899px) {
               & > * {
                 flex: 1;
-                /*
-                display: flex;
-                justify-content: center;
                 & > * {
-                  flex: 1;
-                  min-width: var(--width--0);
-                  max-width: var(--width--prose);
+                  display: flex;
+                  justify-content: center;
+                  & > * {
+                    flex: 1;
+                    min-width: var(--width--0);
+                    max-width: var(--width--prose);
+                  }
                 }
-                */
               }
               & > .hidden-on-small-screen {
                 display: none;
@@ -7279,452 +7284,457 @@ export default async function courselore(
               }
             `}"
           >
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <div
-                style="${css`
-                  display: flex;
-                  justify-content: center;
-                `}"
-              >
-                <a
-                  href="${app.locals.settings.url}/courses/${res.locals.course
-                    .reference}/conversations/new?${qs.stringify({
-                    search: req.query.search,
-                    tag: req.query.tag,
-                  })}"
-                  class="button button--transparent"
-                >
-                  <i class="bi bi-chat-left-text"></i>
-                  Start a New Conversation
-                </a>
-              </div>
-
-              <div
-                style="${css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                <form
-                  novalidate
+            <div>
+              <div>
+                <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--2);
-                    align-items: center;
+                    justify-content: center;
                   `}"
                 >
-                  <input
-                    type="hidden"
-                    name="conversationLayoutSidebarOpenOnSmallScreen"
-                    value="true"
-                  />
-                  $${req.query.tag !== undefined
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="tag"
-                          value="${req.query.tag}"
-                        />
-                      `
-                    : html``}
-                  <input
-                    type="text"
-                    name="search"
-                    value="${req.query.search ?? ""}"
-                    placeholder="Search…"
-                    required
-                    class="input--text"
-                    data-skip-is-modified="true"
-                  />
-                  $${req.query.search !== undefined
-                    ? html`
-                        <a
-                          href="?${qs.stringify({
-                            conversationLayoutSidebarOpenOnSmallScreen: "true",
-                            search: undefined,
-                            tag: req.query.tag,
-                          })}"
-                          class="button button--tight button--tight--inline button--transparent"
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Remove Search",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-x-lg"></i>
-                        </a>
-                      `
-                    : html``}
-                  <button
-                    class="button button--tight button--tight--inline button--transparent"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Search",
-                        touch: false,
-                      });
+                  <a
+                    href="${app.locals.settings.url}/courses/${res.locals.course
+                      .reference}/conversations/new?${qs.stringify({
+                      search: req.query.search,
+                      tag: req.query.tag,
+                    })}"
+                    class="button button--transparent"
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Start a New Conversation
+                  </a>
+                </div>
+
+                <div
+                  style="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  <form
+                    novalidate
+                    style="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: center;
                     `}"
                   >
-                    <i class="bi bi-search"></i>
-                  </button>
-                </form>
+                    <input
+                      type="hidden"
+                      name="conversationLayoutSidebarOpenOnSmallScreen"
+                      value="true"
+                    />
+                    $${req.query.tag !== undefined
+                      ? html`
+                          <input
+                            type="hidden"
+                            name="tag"
+                            value="${req.query.tag}"
+                          />
+                        `
+                      : html``}
+                    <input
+                      type="text"
+                      name="search"
+                      value="${req.query.search ?? ""}"
+                      placeholder="Search…"
+                      required
+                      class="input--text"
+                      data-skip-is-modified="true"
+                    />
+                    $${req.query.search !== undefined
+                      ? html`
+                          <a
+                            href="?${qs.stringify({
+                              conversationLayoutSidebarOpenOnSmallScreen:
+                                "true",
+                              search: undefined,
+                              tag: req.query.tag,
+                            })}"
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Remove Search",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-x-lg"></i>
+                          </a>
+                        `
+                      : html``}
+                    <button
+                      class="button button--tight button--tight--inline button--transparent"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "Search",
+                          touch: false,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </form>
 
-                $${res.locals.tags.length > 0
+                  $${res.locals.tags.length > 0
+                    ? html`
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--3);
+                          `}"
+                        >
+                          <div>
+                            <button
+                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: this.nextElementSibling.firstElementChild,
+                                  trigger: "click",
+                                  interactive: true,
+                                });
+                              `}"
+                            >
+                              $${res.locals.tagFilter === undefined
+                                ? html`
+                                    <i class="bi bi-tag"></i>
+                                    Filter by Tag
+                                  `
+                                : html`
+                                    <i class="bi bi-tag-fill"></i>
+                                    Filtering by
+                                    <i class="bi bi-tag"></i>
+                                    ${res.locals.tagFilter.name}
+                                  `}
+                            </button>
+                            <div hidden>
+                              <div
+                                class="dropdown-menu"
+                                style="${css`
+                                  max-height: var(--space--40);
+                                  overflow: auto;
+                                `}"
+                              >
+                                $${res.locals.tags.map((tag) => {
+                                  const isTagFilter =
+                                    tag.id === res.locals.tagFilter?.id;
+                                  return html`
+                                    <a
+                                      href="?${qs.stringify({
+                                        conversationLayoutSidebarOpenOnSmallScreen:
+                                          "true",
+                                        search: req.query.search,
+                                        tag: isTagFilter
+                                          ? undefined
+                                          : tag.reference,
+                                      })}"
+                                      class="dropdown-menu--item button ${isTagFilter
+                                        ? "button--blue"
+                                        : "button--transparent"}"
+                                    >
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </a>
+                                  `;
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                          $${res.locals.tagFilter === undefined
+                            ? html``
+                            : html`
+                                <a
+                                  href="?${qs.stringify({
+                                    conversationLayoutSidebarOpenOnSmallScreen:
+                                      "true",
+                                    search: req.query.search,
+                                    tag: undefined,
+                                  })}"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  data-ondomcontentloaded="${javascript`
+                                    tippy(this, {
+                                      content: "Remove Filter",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-x-lg"></i>
+                                </a>
+                              `}
+                        </div>
+                      `
+                    : html``}
+                </div>
+
+                $${res.locals.conversations.length === 0
                   ? html`
                       <div
                         style="${css`
                           display: flex;
-                          gap: var(--space--3);
+                          flex-direction: column;
+                          align-items: center;
                         `}"
                       >
-                        <div>
-                          <button
-                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: this.nextElementSibling.firstElementChild,
-                                trigger: "click",
-                                interactive: true,
-                              });
-                            `}"
-                          >
-                            $${res.locals.tagFilter === undefined
-                              ? html`
-                                  <i class="bi bi-tag"></i>
-                                  Filter by Tag
-                                `
-                              : html`
-                                  <i class="bi bi-tag-fill"></i>
-                                  Filtering by
-                                  <i class="bi bi-tag"></i>
-                                  ${res.locals.tagFilter.name}
-                                `}
-                          </button>
-                          <div hidden>
-                            <div
-                              class="dropdown-menu"
-                              style="${css`
-                                max-height: var(--space--40);
-                                overflow: auto;
-                              `}"
-                            >
-                              $${res.locals.tags.map((tag) => {
-                                const isTagFilter =
-                                  tag.id === res.locals.tagFilter?.id;
-                                return html`
-                                  <a
-                                    href="?${qs.stringify({
-                                      conversationLayoutSidebarOpenOnSmallScreen:
-                                        "true",
-                                      search: req.query.search,
-                                      tag: isTagFilter
-                                        ? undefined
-                                        : tag.reference,
-                                    })}"
-                                    class="dropdown-menu--item button ${isTagFilter
-                                      ? "button--blue"
-                                      : "button--transparent"}"
-                                  >
-                                    <i class="bi bi-tag"></i>
-                                    ${tag.name}
-                                  </a>
-                                `;
-                              })}
-                            </div>
-                          </div>
+                        <div class="decorative-icon">
+                          <i class="bi bi-chat-left-text"></i>
                         </div>
-                        $${res.locals.tagFilter === undefined
-                          ? html``
-                          : html`
-                              <a
-                                href="?${qs.stringify({
-                                  conversationLayoutSidebarOpenOnSmallScreen:
-                                    "true",
-                                  search: req.query.search,
-                                  tag: undefined,
-                                })}"
-                                class="button button--tight button--tight--inline button--transparent"
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Remove Filter",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-x-lg"></i>
-                              </a>
-                            `}
+                        <p class="secondary">No conversation found.</p>
                       </div>
                     `
-                  : html``}
-              </div>
-
-              $${res.locals.conversations.length === 0
-                ? html`
-                    <div
-                      style="${css`
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                      `}"
-                    >
-                      <div class="decorative-icon">
-                        <i class="bi bi-chat-left-text"></i>
-                      </div>
-                      <p class="secondary">No conversation found.</p>
-                    </div>
-                  `
-                : html`
-                    <div>
-                      $${res.locals.conversations.map((conversation) => {
-                        const isSelected =
-                          conversation.id === res.locals.conversation?.id;
-                        return html`
-                          <hr
-                            class="separator"
-                            style="${css`
-                              margin: var(--space---px) var(--space--0);
-                            `}"
-                          />
-                          <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course
-                              .reference}/conversations/${conversation.reference}?${qs.stringify(
-                              {
-                                search: req.query.search,
-                                tag: req.query.tag,
-                              }
-                            )}"
-                            class="button ${isSelected
-                              ? "button--blue"
-                              : "button--transparent"}"
-                            style="${css`
-                              width: calc(
-                                var(--space--2) + 100% + var(--space--2)
-                              );
-                              padding: var(--space--2);
-                              margin-left: var(--space---2);
-                              position: relative;
-                              align-items: center;
-                              ${isSelected
-                                ? css`
-                                    & + * {
-                                      margin-bottom: var(--space--0);
-                                    }
-                                  `
-                                : css``}
-                            `}"
-                          >
-                            <div
+                  : html`
+                      <div>
+                        $${res.locals.conversations.map((conversation) => {
+                          const isSelected =
+                            conversation.id === res.locals.conversation?.id;
+                          return html`
+                            <hr
+                              class="separator"
                               style="${css`
-                                flex: 1;
+                                margin: var(--space---px) var(--space--0);
+                              `}"
+                            />
+                            <a
+                              href="${app.locals.settings.url}/courses/${res
+                                .locals.course
+                                .reference}/conversations/${conversation.reference}?${qs.stringify(
+                                {
+                                  search: req.query.search,
+                                  tag: req.query.tag,
+                                }
+                              )}"
+                              class="button ${isSelected
+                                ? "button--blue"
+                                : "button--transparent"}"
+                              style="${css`
+                                width: calc(
+                                  var(--space--2) + 100% + var(--space--2)
+                                );
+                                padding: var(--space--2);
+                                margin-left: var(--space---2);
+                                position: relative;
+                                align-items: center;
+                                ${isSelected
+                                  ? css`
+                                      & + * {
+                                        margin-bottom: var(--space--0);
+                                      }
+                                    `
+                                  : css``}
                               `}"
                             >
-                              <h3
-                                style="${css`
-                                  font-weight: var(--font-weight--bold);
-                                `}"
-                              >
-                                ${conversation.title}
-                              </h3>
                               <div
                                 style="${css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
+                                  flex: 1;
                                 `}"
                               >
-                                <div>
-                                  #${conversation.reference} created
-                                  <time
-                                    data-ondomcontentloaded="${javascript`
-                                      relativizeTime(this);
-                                    `}"
-                                  >
-                                    ${conversation.createdAt}
-                                  </time>
-                                  by
-                                  $${conversation.authorEnrollment.user
-                                    .avatar === null
-                                    ? html`
-                                        <i class="bi bi-person-circle"></i>
-                                      `
-                                    : html`
-                                        <img
-                                          src="${conversation.authorEnrollment
-                                            .user.avatar}"
-                                          alt="${conversation.authorEnrollment
-                                            .user.name}"
-                                          class="avatar"
-                                          style="${css`
-                                            width: var(--font-size--xs);
-                                            height: var(--font-size--xs);
-                                            position: relative;
-                                            top: var(--space--0-5);
-                                          `}"
-                                        />
-                                      `}
-                                  ${conversation.authorEnrollment.user.name}
-                                </div>
-                                $${conversation.updatedAt !== null
-                                  ? html`
-                                      <div>
-                                        and last updated
-                                        <time
-                                          data-ondomcontentloaded="${javascript`
-                                            relativizeTime(this);
-                                          `}"
-                                        >
-                                          ${conversation.updatedAt}
-                                        </time>
-                                      </div>
-                                    `
-                                  : html``}
-                                <div
+                                <h3
                                   style="${css`
-                                    & > * {
-                                      display: flex;
-                                      flex-wrap: wrap;
-                                      column-gap: var(--space--4);
-                                      row-gap: var(--space--0-5);
-
-                                      & > * {
-                                        display: flex;
-                                        gap: var(--space--1);
-                                      }
-                                    }
+                                    font-weight: var(--font-weight--bold);
                                   `}"
                                 >
-                                  $${conversation.taggings.length === 0
-                                    ? html``
-                                    : html`
-                                        <div>
-                                          $${conversation.taggings.map(
-                                            (tagging) => html`
-                                              <div>
-                                                <i class="bi bi-tag"></i>
-                                                ${tagging.tag.name}
-                                              </div>
-                                            `
-                                          )}
-                                        </div>
-                                      `}
+                                  ${conversation.title}
+                                </h3>
+                                <div
+                                  style="${css`
+                                    font-size: var(--font-size--xs);
+                                    line-height: var(--line-height--xs);
+                                  `}"
+                                >
                                   <div>
-                                    $${conversation.pinnedAt !== null
+                                    #${conversation.reference} created
+                                    <time
+                                      data-ondomcontentloaded="${javascript`
+                                        relativizeTime(this);
+                                      `}"
+                                    >
+                                      ${conversation.createdAt}
+                                    </time>
+                                    by
+                                    $${conversation.authorEnrollment.user
+                                      .avatar === null
                                       ? html`
-                                          <div>
-                                            <i class="bi bi-pin"></i>
-                                            Pinned
-                                          </div>
+                                          <i class="bi bi-person-circle"></i>
                                         `
-                                      : html``}
-                                    <div>
-                                      $${app.locals.partials.conversationTypeIcon(
-                                        conversation.type
-                                      )}
-                                      ${lodash.capitalize(conversation.type)}
-                                    </div>
-                                    <div>
-                                      <i class="bi bi-chat-left-text"></i>
-                                      ${conversation.messagesCount}
-                                      Message${conversation.messagesCount === 1
-                                        ? ""
-                                        : "s"}
-                                    </div>
-                                    $${conversation.endorsements.length === 0
-                                      ? html``
                                       : html`
-                                          <div
+                                          <img
+                                            src="${conversation.authorEnrollment
+                                              .user.avatar}"
+                                            alt="${conversation.authorEnrollment
+                                              .user.name}"
+                                            class="avatar"
+                                            style="${css`
+                                              width: var(--font-size--xs);
+                                              height: var(--font-size--xs);
+                                              position: relative;
+                                              top: var(--space--0-5);
+                                            `}"
+                                          />
+                                        `}
+                                    ${conversation.authorEnrollment.user.name}
+                                  </div>
+                                  $${conversation.updatedAt !== null
+                                    ? html`
+                                        <div>
+                                          and last updated
+                                          <time
                                             data-ondomcontentloaded="${javascript`
-                                              tippy(this, {
-                                                content: ${JSON.stringify(
-                                                  `Endorsed by ${
-                                                    /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                                      "en"
-                                                    ).format(
-                                                      conversation.endorsements.map(
-                                                        (endorsement) =>
-                                                          endorsement.enrollment
-                                                            .user.name
-                                                      )
-                                                    )
-                                                  }`
-                                                )},
-                                                touch: false,
-                                              });
+                                              relativizeTime(this);
                                             `}"
                                           >
-                                            <i class="bi bi-award"></i>
-                                            ${conversation.endorsements.length}
-                                            Staff
-                                            Endorsement${conversation
-                                              .endorsements.length === 1
-                                              ? ""
-                                              : "s"}
-                                          </div>
-                                        `}
-                                    $${conversation.likesCount === 0
+                                            ${conversation.updatedAt}
+                                          </time>
+                                        </div>
+                                      `
+                                    : html``}
+                                  <div
+                                    style="${css`
+                                      & > * {
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                        column-gap: var(--space--4);
+                                        row-gap: var(--space--0-5);
+
+                                        & > * {
+                                          display: flex;
+                                          gap: var(--space--1);
+                                        }
+                                      }
+                                    `}"
+                                  >
+                                    $${conversation.taggings.length === 0
                                       ? html``
                                       : html`
                                           <div>
-                                            <i class="bi bi-hand-thumbs-up"></i>
-                                            ${conversation.likesCount}
-                                            Like${conversation.likesCount === 1
-                                              ? ""
-                                              : "s"}
+                                            $${conversation.taggings.map(
+                                              (tagging) => html`
+                                                <div>
+                                                  <i class="bi bi-tag"></i>
+                                                  ${tagging.tag.name}
+                                                </div>
+                                              `
+                                            )}
                                           </div>
                                         `}
+                                    <div>
+                                      $${conversation.pinnedAt !== null
+                                        ? html`
+                                            <div>
+                                              <i class="bi bi-pin"></i>
+                                              Pinned
+                                            </div>
+                                          `
+                                        : html``}
+                                      <div>
+                                        $${app.locals.partials.conversationTypeIcon(
+                                          conversation.type
+                                        )}
+                                        ${lodash.capitalize(conversation.type)}
+                                      </div>
+                                      <div>
+                                        <i class="bi bi-chat-left-text"></i>
+                                        ${conversation.messagesCount}
+                                        Message${conversation.messagesCount ===
+                                        1
+                                          ? ""
+                                          : "s"}
+                                      </div>
+                                      $${conversation.endorsements.length === 0
+                                        ? html``
+                                        : html`
+                                            <div
+                                              data-ondomcontentloaded="${javascript`
+                                                tippy(this, {
+                                                  content: ${JSON.stringify(
+                                                    `Endorsed by ${
+                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
+                                                        "en"
+                                                      ).format(
+                                                        conversation.endorsements.map(
+                                                          (endorsement) =>
+                                                            endorsement
+                                                              .enrollment.user
+                                                              .name
+                                                        )
+                                                      )
+                                                    }`
+                                                  )},
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-award"></i>
+                                              ${conversation.endorsements
+                                                .length}
+                                              Staff
+                                              Endorsement${conversation
+                                                .endorsements.length === 1
+                                                ? ""
+                                                : "s"}
+                                            </div>
+                                          `}
+                                      $${conversation.likesCount === 0
+                                        ? html``
+                                        : html`
+                                            <div>
+                                              <i
+                                                class="bi bi-hand-thumbs-up"
+                                              ></i>
+                                              ${conversation.likesCount}
+                                              Like${conversation.likesCount ===
+                                              1
+                                                ? ""
+                                                : "s"}
+                                            </div>
+                                          `}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div
-                              style="${css`
-                                width: var(--space--4);
-                                display: flex;
-                                justify-content: flex-end;
-                              `}"
-                            >
-                              $${(() => {
-                                const unreadCount =
-                                  conversation.messagesCount -
-                                  conversation.readingsCount;
-                                return unreadCount === 0 ||
-                                  conversation.id ===
-                                    res.locals.conversation?.id
-                                  ? html``
-                                  : html`
-                                      <button
-                                        class="button button--tight button--blue"
-                                        style="${css`
-                                          font-size: var(--font-size--2xs);
-                                          line-height: var(--line-height--2xs);
-                                        `}"
-                                        data-ondomcontentloaded="${javascript`
-                                          tippy(this, {
-                                            content: "Unread Messages",
-                                            touch: false,
-                                          });
-                                        `}"
-                                      >
-                                        ${unreadCount}
-                                      </button>
-                                    `;
-                              })()}
-                            </div>
-                          </a>
-                        `;
-                      })}
-                    </div>
-                  `}
+                              <div
+                                style="${css`
+                                  width: var(--space--4);
+                                  display: flex;
+                                  justify-content: flex-end;
+                                `}"
+                              >
+                                $${(() => {
+                                  const unreadCount =
+                                    conversation.messagesCount -
+                                    conversation.readingsCount;
+                                  return unreadCount === 0 ||
+                                    conversation.id ===
+                                      res.locals.conversation?.id
+                                    ? html``
+                                    : html`
+                                        <button
+                                          class="button button--tight button--blue"
+                                          style="${css`
+                                            font-size: var(--font-size--2xs);
+                                            line-height: var(
+                                              --line-height--2xs
+                                            );
+                                          `}"
+                                          data-ondomcontentloaded="${javascript`
+                                            tippy(this, {
+                                              content: "Unread Messages",
+                                              touch: false,
+                                            });
+                                          `}"
+                                        >
+                                          ${unreadCount}
+                                        </button>
+                                      `;
+                                })()}
+                              </div>
+                            </a>
+                          `;
+                        })}
+                      </div>
+                    `}
+              </div>
             </div>
           </div>
           <div
@@ -7738,18 +7748,17 @@ export default async function courselore(
               }
             `}"
           >
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-                @media (min-width: 900px) {
-                  max-width: var(--width--prose);
-                  margin-left: var(--space--8);
-                }
-              `}"
-            >
-              $${body}
+            <div>
+              <div
+                style="${css`
+                  @media (min-width: 900px) {
+                    max-width: var(--width--prose);
+                    margin-left: var(--space--4);
+                  }
+                `}"
+              >
+                $${body}
+              </div>
             </div>
           </div>
         </div>
