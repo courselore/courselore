@@ -2386,6 +2386,113 @@ export default async function courselore(
       `,
     });
 
+  interface Layouts {
+    settings: (_: {
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+      >;
+      res: express.Response<
+        any,
+        IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+      >;
+      head: HTML;
+      menuButton: HTML;
+      menu: HTML;
+      body: HTML;
+    }) => HTML;
+  }
+  app.locals.layouts.settings = ({ req, res, head, menuButton, menu, body }) =>
+    app.locals.layouts.application({
+      req,
+      res,
+      head,
+      extraHeaders:
+        menu === html``
+          ? html``
+          : html`
+              <div
+                style="${css`
+                  justify-content: center;
+                  @media (min-width: 700px) {
+                    display: none;
+                  }
+                `}"
+              >
+                <button
+                  class="button button--transparent"
+                  data-ondomcontentloaded="${javascript`
+                    tippy(this, {
+                      content: this.nextElementSibling.firstElementChild,
+                      trigger: "click",
+                      interactive: true,
+                    });
+                  `}"
+                >
+                  $${menuButton}
+                  <i class="bi bi-chevron-down"></i>
+                </button>
+                <div hidden><div class="dropdown-menu">$${menu}</div></div>
+              </div>
+            `,
+      body: html`
+        <div
+          style="${css`
+            padding: var(--space--4);
+            display: flex;
+            justify-content: center;
+            gap: var(--space--8);
+          `}"
+        >
+          $${menu === html``
+            ? html``
+            : html`
+                <div
+                  style="${css`
+                    @media (max-width: 699px) {
+                      display: none;
+                    }
+                  `}"
+                >
+                  <div
+                    style="${css`
+                      background-color: var(--color--gray--medium--100);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--gray--medium--800);
+                      }
+                      padding: var(--space--2);
+                      border-radius: var(--border-radius--lg);
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      .dropdown-menu--item {
+                        justify-content: flex-start;
+                      }
+                    `}"
+                  >
+                    $${menu}
+                  </div>
+                </div>
+              `}
+          <div
+            style="${css`
+              flex: 1;
+              min-width: var(--width--0);
+              max-width: var(--width--prose);
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `}"
+          >
+            $${body}
+          </div>
+        </div>
+      `,
+    });
+
   interface Partials {
     logo: HTML;
   }
@@ -4471,160 +4578,82 @@ export default async function courselore(
       body: HTML;
     }) => HTML;
   }
-  app.locals.layouts.courseSettings = ({ req, res, head, body }) => {
-    const menu =
-      res.locals.enrollment.role === "staff"
-        ? html`
-            <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings"
-              class="dropdown-menu--item button ${req.path.endsWith("/settings")
-                ? "button--blue"
-                : "button--transparent"}"
-            >
-              <i class="bi bi-sliders"></i>
-              Course Settings
-            </a>
-            <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/invitations"
-              class="dropdown-menu--item button ${req.path.endsWith(
-                "/settings/invitations"
-              )
-                ? "button--blue"
-                : "button--transparent"}"
-            >
-              <i class="bi bi-person-plus"></i>
-              Invitations
-            </a>
-            <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/enrollments"
-              class="dropdown-menu--item button ${req.path.endsWith(
-                "/settings/enrollments"
-              )
-                ? "button--blue"
-                : "button--transparent"}"
-            >
-              <i class="bi bi-people"></i>
-              Enrollments
-            </a>
-            <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/tags"
-              class="dropdown-menu--item button ${req.path.endsWith(
-                "/settings/tags"
-              )
-                ? "button--blue"
-                : "button--transparent"}"
-            >
-              <i class="bi bi-tags"></i>
-              Tags
-            </a>
-            <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/your-enrollment"
-              class="dropdown-menu--item button ${req.path.endsWith(
-                "/settings/your-enrollment"
-              )
-                ? "button--blue"
-                : "button--transparent"}"
-            >
-              <i class="bi bi-person"></i>
-              Your Enrollment
-            </a>
-          `
-        : html``;
-
-    return app.locals.layouts.application({
+  app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
+    app.locals.layouts.settings({
       req,
       res,
       head,
-      extraHeaders: html`
-        $${res.locals.enrollment.role === "staff"
+      menuButton: html`
+        <i class="bi bi-sliders"></i>
+        Course Settings
+      `,
+      menu:
+        res.locals.enrollment.role === "staff"
           ? html`
-              <div
-                style="${css`
-                  justify-content: center;
-                  @media (min-width: 700px) {
-                    display: none;
-                  }
-                `}"
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings"
+                class="dropdown-menu--item button ${req.path.endsWith(
+                  "/settings"
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
               >
-                <button
-                  class="button button--transparent"
-                  data-ondomcontentloaded="${javascript`
-                    tippy(this, {
-                      content: this.nextElementSibling.firstElementChild,
-                      trigger: "click",
-                      interactive: true,
-                    });
-                  `}"
-                >
-                  <i class="bi bi-sliders"></i>
-                  Course Settings
-                  <i class="bi bi-chevron-down"></i>
-                </button>
-                <div hidden><div class="dropdown-menu">$${menu}</div></div>
-              </div>
+                <i class="bi bi-sliders"></i>
+                Course Settings
+              </a>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/invitations"
+                class="dropdown-menu--item button ${req.path.endsWith(
+                  "/settings/invitations"
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                <i class="bi bi-person-plus"></i>
+                Invitations
+              </a>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/enrollments"
+                class="dropdown-menu--item button ${req.path.endsWith(
+                  "/settings/enrollments"
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                <i class="bi bi-people"></i>
+                Enrollments
+              </a>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/tags"
+                class="dropdown-menu--item button ${req.path.endsWith(
+                  "/settings/tags"
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                <i class="bi bi-tags"></i>
+                Tags
+              </a>
+              <a
+                href="${app.locals.settings.url}/courses/${res.locals.course
+                  .reference}/settings/your-enrollment"
+                class="dropdown-menu--item button ${req.path.endsWith(
+                  "/settings/your-enrollment"
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                <i class="bi bi-person"></i>
+                Your Enrollment
+              </a>
             `
-          : html``}
-      `,
-      body: html`
-        <div
-          style="${css`
-            padding: var(--space--4);
-            display: flex;
-            justify-content: center;
-            gap: var(--space--8);
-          `}"
-        >
-          $${res.locals.enrollment.role === "staff"
-            ? html`
-                <div
-                  style="${css`
-                    @media (max-width: 699px) {
-                      display: none;
-                    }
-                  `}"
-                >
-                  <div
-                    style="${css`
-                      background-color: var(--color--gray--medium--100);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--gray--medium--800);
-                      }
-                      padding: var(--space--2);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                      .dropdown-menu--item {
-                        justify-content: flex-start;
-                      }
-                    `}"
-                  >
-                    $${menu}
-                  </div>
-                </div>
-              `
-            : html``}
-          <div
-            style="${css`
-              flex: 1;
-              min-width: var(--width--0);
-              max-width: var(--width--prose);
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            $${body}
-          </div>
-        </div>
-      `,
+          : html``,
+      body,
     });
-  };
 
   app.get<
     { courseReference: string },
@@ -7689,7 +7718,7 @@ export default async function courselore(
                                         ? html``
                                         : html`
                                             <div
-                                            class="text--green"
+                                              class="text--green"
                                               data-ondomcontentloaded="${javascript`
                                                 tippy(this, {
                                                   content: ${JSON.stringify(
