@@ -3300,7 +3300,7 @@ export default async function courselore(
                       class="button button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
-                      Fill in Your User Profile
+                      Fill in Your Profile
                     </a>
                     <a
                       href="${app.locals.settings.url}/courses/new"
@@ -3433,8 +3433,19 @@ export default async function courselore(
                 ? "button--blue"
                 : "button--transparent"}"
             >
-              <i class="bi bi-sliders"></i>
-              User Settings
+              <i class="bi bi-person-circle"></i>
+              Profile
+            </a>
+            <a
+              href="${app.locals.settings.url}/settings/notifications"
+              class="dropdown-menu--item button ${req.path.endsWith(
+                "/settings/notifications"
+              )
+                ? "button--blue"
+                : "button--transparent"}"
+            >
+              <i class="bi bi-bell"></i>
+              Notifications
             </a>
           `,
           body: html`
