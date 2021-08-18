@@ -2133,7 +2133,19 @@ export default async function courselore(
                                       >
                                         <i class="bi bi-journal-text"></i>
                                       </div>
-                                      ${enrollment.course.name}
+                                      <span>
+                                        ${enrollment.course.name}
+                                        <span
+                                          class="secondary"
+                                          style="${css`
+                                            font-size: var(--font-size--xs);
+                                            line-height: var(--line-height--xs);
+                                          `}"
+                                        >
+                                          ·
+                                          ${lodash.capitalize(enrollment.role)}
+                                        </span>
+                                      </span>
                                     </a>
                                   `
                                 )}
@@ -3250,7 +3262,18 @@ export default async function courselore(
                             >
                               <i class="bi bi-journal-text"></i>
                             </div>
-                            ${enrollment.course.name}
+                            <span>
+                              ${enrollment.course.name}
+                              <span
+                                class="secondary"
+                                style="${css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                `}"
+                              >
+                                · ${lodash.capitalize(enrollment.role)}
+                              </span>
+                            </span>
                           </a>
                         `
                     )}
