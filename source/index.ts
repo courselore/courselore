@@ -3418,10 +3418,25 @@ export default async function courselore(
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        app.locals.layouts.main({
+        app.locals.layouts.settings({
           req,
           res,
           head: html`<title>User Settings · CourseLore</title>`,
+          menuButton: html`
+            <i class="bi bi-sliders"></i>
+            User Settings
+          `,
+          menu: html`
+            <a
+              href="${app.locals.settings.url}/settings"
+              class="dropdown-menu--item button ${req.path.endsWith("/settings")
+                ? "button--blue"
+                : "button--transparent"}"
+            >
+              <i class="bi bi-sliders"></i>
+              User Settings
+            </a>
+          `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
