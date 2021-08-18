@@ -2050,6 +2050,15 @@ export default async function courselore(
                       `}"
                     >
                       ${res.locals.course.name}
+                      <span
+                        class="secondary"
+                        style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                        `}"
+                      >
+                        · ${lodash.capitalize(res.locals.enrollment!.role)}
+                      </span>
                     </span>
                     <i class="bi bi-chevron-down"></i>
                   </button>
