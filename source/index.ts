@@ -1076,7 +1076,7 @@ export default async function courselore(
                 }
               }
 
-              ${["blue", "green", "rose", "amber"].map(
+              ${["blue", "green", "rose", "amber", "fuchsia"].map(
                 (color) => css`
                   .text--${color} {
                     color: var(--color--${color}--600);
@@ -2475,6 +2475,16 @@ export default async function courselore(
       announcement: html`<i class="bi bi-megaphone"></i>`,
       question: html`<i class="bi bi-patch-question"></i>`,
       other: html`<i class="bi bi-chat-left-text"></i>`,
+    }[conversationType]);
+
+  interface Partials {
+    conversationTypeTextColor: (conversationType: ConversationType) => HTML;
+  }
+  app.locals.partials.conversationTypeTextColor = (conversationType) =>
+    ({
+      announcement: "text--fuchsia",
+      question: "text--rose",
+      other: "",
     }[conversationType]);
 
   app.use(express.static(path.join(__dirname, "../static")));
@@ -7651,13 +7661,17 @@ export default async function courselore(
                                     <div>
                                       $${conversation.pinnedAt !== null
                                         ? html`
-                                            <div>
+                                            <div class="text--amber">
                                               <i class="bi bi-pin"></i>
                                               Pinned
                                             </div>
                                           `
                                         : html``}
-                                      <div>
+                                      <div
+                                        class="${app.locals.partials.conversationTypeTextColor(
+                                          conversation.type
+                                        )}"
+                                      >
                                         $${app.locals.partials.conversationTypeIcon(
                                           conversation.type
                                         )}
@@ -7675,6 +7689,7 @@ export default async function courselore(
                                         ? html``
                                         : html`
                                             <div
+                                            class="text--green"
                                               data-ondomcontentloaded="${javascript`
                                                 tippy(this, {
                                                   content: ${JSON.stringify(
