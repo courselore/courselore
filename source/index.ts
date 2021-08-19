@@ -3764,9 +3764,7 @@ export default async function courselore(
     app.locals.helpers.flash.set(
       req,
       res,
-      html`
-        <div class="flash--green">User settings updated successfully.</div>
-      `
+      html`<div class="flash--green">Profile updated successfully.</div>`
     );
 
     res.redirect(`${app.locals.settings.url}/settings`);
