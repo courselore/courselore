@@ -80,6 +80,16 @@ export default async function courselore(
   app.locals.partials = {} as Partials;
 
   interface Constants {
+    userEmailNotifications: UserEmailNotifications[];
+  }
+  type UserEmailNotifications = "disabled" | "essentials" | "everything";
+  app.locals.constants.userEmailNotifications = [
+    "disabled",
+    "essentials",
+    "everything",
+  ];
+
+  interface Constants {
     enrollmentRoles: EnrollmentRole[];
   }
   type EnrollmentRole = "student" | "staff";
@@ -149,7 +159,8 @@ export default async function courselore(
         "password" TEXT NOT NULL,
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
-        "biography" TEXT NULL
+        "biography" TEXT NULL,
+        "emailNotifications" TEXT NOT NULL CHECK ("emailNotifications" IN ('disabled', 'essentials', 'everything')),
       );
 
       CREATE TABLE "courses" (
