@@ -3463,9 +3463,9 @@ export default async function courselore(
           Profile
         </a>
         <a
-          href="${app.locals.settings.url}/settings/notifications"
+          href="${app.locals.settings.url}/settings/notifications-preferences"
           class="dropdown-menu--item button ${req.path.endsWith(
-            "/settings/notifications"
+            "/settings/notifications-preferences"
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -3812,7 +3812,7 @@ export default async function courselore(
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/settings/notifications",
+    "/settings/notifications-preferences",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
@@ -3833,7 +3833,7 @@ export default async function courselore(
             <form
               method="POST"
               action="${app.locals.settings
-                .url}/settings/notifications?_method=PATCH"
+                .url}/settings/notifications-preferences?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -3957,6 +3957,48 @@ export default async function courselore(
             </form>
           `,
         })
+      );
+    }
+  );
+
+  app.patch<
+    {},
+    any,
+    { emailNotifications?: UserEmailNotifications },
+    {},
+    IsSignedInMiddlewareLocals
+  >(
+    "/settings/notifications-preferences",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (
+        typeof req.body.emailNotifications !== "string" ||
+        !app.locals.constants.userEmailNotifications.includes(
+          req.body.emailNotifications
+        )
+      )
+        return next("validation");
+
+      app.locals.database.run(
+        sql`
+          UPDATE "users"
+          SET "emailNotifications" = ${req.body.emailNotifications}\
+          WHERE "id" = ${res.locals.user.id}
+        `
+      );
+
+      app.locals.helpers.flash.set(
+        req,
+        res,
+        html`
+          <div class="flash--green">
+            Notifications preferences updated successfully.
+          </div>
+        `
+      );
+
+      res.redirect(
+        `${app.locals.settings.url}/settings/notifications-preferences`
       );
     }
   );
