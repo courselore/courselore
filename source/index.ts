@@ -82,9 +82,9 @@ export default async function courselore(
   interface Constants {
     userEmailNotifications: UserEmailNotifications[];
   }
-  type UserEmailNotifications = "disabled" | "essentials" | "everything";
+  type UserEmailNotifications = "none" | "essentials" | "everything";
   app.locals.constants.userEmailNotifications = [
-    "disabled",
+    "none",
     "essentials",
     "everything",
   ];
@@ -160,7 +160,7 @@ export default async function courselore(
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL,
-        "emailNotifications" TEXT NOT NULL DEFAULT 'essentials' CHECK ("emailNotifications" IN ('disabled', 'essentials', 'everything'))
+        "emailNotifications" TEXT NOT NULL DEFAULT 'essentials' CHECK ("emailNotifications" IN ('none', 'essentials', 'everything'))
       );
 
       CREATE TABLE "courses" (
@@ -3857,12 +3857,15 @@ export default async function courselore(
                     <input
                       type="radio"
                       name="emailNotifications"
-                      value="disabled"
+                      value="none"
                       required
                       autocomplete="off"
+                      $${res.locals.user.emailNotifications === "none"
+                        ? html`checked`
+                        : html``}
                       class="input--radio"
                     />
-                    Disabled
+                    None
                   </label>
                 </div>
                 <div
@@ -3883,6 +3886,9 @@ export default async function courselore(
                       value="essentials"
                       required
                       autocomplete="off"
+                      $${res.locals.user.emailNotifications === "essentials"
+                        ? html`checked`
+                        : html``}
                       class="input--radio"
                     />
                     Essentials
@@ -3918,6 +3924,9 @@ export default async function courselore(
                       value="everything"
                       required
                       autocomplete="off"
+                      $${res.locals.user.emailNotifications === "everything"
+                        ? html`checked`
+                        : html``}
                       class="input--radio"
                     />
                     Everything
