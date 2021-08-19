@@ -160,7 +160,7 @@ export default async function courselore(
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL,
-        "emailNotifications" TEXT NOT NULL CHECK ("emailNotifications" IN ('disabled', 'essentials', 'everything')),
+        "emailNotifications" TEXT NOT NULL DEFAULT 'essentials' CHECK ("emailNotifications" IN ('disabled', 'essentials', 'everything'))
       );
 
       CREATE TABLE "courses" (
@@ -2828,6 +2828,7 @@ export default async function courselore(
       name: string;
       avatar: string | null;
       biography: string | null;
+      emailNotifications: UserEmailNotifications;
     };
     invitations: {
       id: number;
@@ -2863,9 +2864,10 @@ export default async function courselore(
         name: string;
         avatar: string | null;
         biography: string | null;
+        emailNotifications: UserEmailNotifications;
       }>(
         sql`
-          SELECT "id", "email", "name", "avatar", "biography"
+          SELECT "id", "email", "name", "avatar", "biography", "emailNotifications"
           FROM "users"
           WHERE "id" = ${userId}
         `
