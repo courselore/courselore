@@ -3854,7 +3854,7 @@ export default async function courselore(
                   >
                     <input
                       type="radio"
-                      name="type"
+                      name="emailNotifications"
                       value="disabled"
                       required
                       autocomplete="off"
@@ -3877,8 +3877,8 @@ export default async function courselore(
                   >
                     <input
                       type="radio"
-                      name="type"
-                      value="disabled"
+                      name="emailNotifications"
+                      value="essentials"
                       required
                       autocomplete="off"
                       class="input--radio"
@@ -3912,8 +3912,8 @@ export default async function courselore(
                   >
                     <input
                       type="radio"
-                      name="type"
-                      value="disabled"
+                      name="emailNotifications"
+                      value="everything"
                       required
                       autocomplete="off"
                       class="input--radio"
