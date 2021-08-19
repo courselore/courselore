@@ -3476,7 +3476,9 @@ export default async function courselore(
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              User Settings
+              User Settings ·
+              <i class="bi bi-person-circle"></i>
+              Profile
             </h2>
 
             <form
