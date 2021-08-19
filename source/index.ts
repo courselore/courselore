@@ -3472,7 +3472,7 @@ export default async function courselore(
         app.locals.layouts.userSettings({
           req,
           res,
-          head: html`<title>User Settings · CourseLore</title>`,
+          head: html`<title>Profile · User Settings · CourseLore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
@@ -4856,7 +4856,7 @@ export default async function courselore(
           res,
           head: html`
             <title>
-              Invitations · Course Settings · ${res.locals.course.name} ·
+              Invitations · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
@@ -6049,7 +6049,7 @@ export default async function courselore(
           res,
           head: html`
             <title>
-              Enrollments · Course Settings · ${res.locals.course.name} ·
+              Enrollments · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
@@ -6422,7 +6422,7 @@ export default async function courselore(
           res,
           head: html`
             <title>
-              Tags · Course Settings · ${res.locals.course.name} · CourseLore
+              Tags · Course Settings · ${res.locals.course.name} · CourseLore
             </title>
           `,
           body: html`
@@ -6927,7 +6927,7 @@ export default async function courselore(
           res,
           head: html`
             <title>
-              Your Enrollment · Course Settings · ${res.locals.course.name} ·
+              Your Enrollment · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
