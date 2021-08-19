@@ -3881,7 +3881,7 @@ export default async function courselore(
                     class="button button--tight button--tight--inline button--transparent"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
-                        content: "Only receive email notifications for staff announcements and @mentions.",
+                        content: "Receive email notifications only for staff announcements or when someone @mentions you.",
                         trigger: "click",
                       });
                     `}"
