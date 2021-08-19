@@ -3835,7 +3835,6 @@ export default async function courselore(
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--4);
                   `}"
                 >
                   <label
@@ -3854,6 +3853,13 @@ export default async function courselore(
                     />
                     Disabled
                   </label>
+                </div>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                >
                   <label
                     class="button button--tight button--tight--inline button--transparent"
                     style="${css`
@@ -3870,6 +3876,53 @@ export default async function courselore(
                     />
                     Essentials
                   </label>
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "Only receive email notifications for staff announcements and @mentions.",
+                        trigger: "click",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </div>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                    style="${css`
+                      justify-content: flex-start;
+                    `}"
+                  >
+                    <input
+                      type="radio"
+                      name="type"
+                      value="disabled"
+                      required
+                      autocomplete="off"
+                      class="input--radio"
+                    />
+                    Everything
+                  </label>
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    data-ondomcontentloaded="${javascript`
+                      tippy(this, {
+                        content: "Receive email notifications for all messages.",
+                        trigger: "click",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
+                  </button>
                 </div>
               </div>
 
