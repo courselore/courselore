@@ -3458,7 +3458,7 @@ export default async function courselore(
             : "button--transparent"}"
         >
           <i class="bi bi-bell"></i>
-          Notifications
+          Notifications Preferences
         </a>
       `,
       body,
@@ -3722,7 +3722,7 @@ export default async function courselore(
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil"></i>
-                  Update User Settings
+                  Update Profile
                 </button>
               </div>
             </form>
@@ -3798,6 +3798,94 @@ export default async function courselore(
         .toFile(path.join(rootDirectory, relativePathAvatar));
       res.send(`${app.locals.settings.url}/${relativePathAvatar}`);
     })
+  );
+
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/settings/notifications",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res) => {
+      res.send(
+        app.locals.layouts.userSettings({
+          req,
+          res,
+          head: html`<title>
+            Notifications Preferences · User Settings · CourseLore
+          </title>`,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              User Settings ·
+              <i class="bi bi-bell"></i>
+              Notifications Preferences
+            </h2>
+
+            <form
+              method="POST"
+              action="${app.locals.settings
+                .url}/settings/notifications?_method=PATCH"
+              novalidate
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <div class="label">
+                <p class="label--text">Email Notifications</p>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                    style="${css`
+                      justify-content: flex-start;
+                    `}"
+                  >
+                    <input
+                      type="radio"
+                      name="type"
+                      value="disabled"
+                      required
+                      autocomplete="off"
+                      class="input--radio"
+                    />
+                    Disabled
+                  </label>
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                    style="${css`
+                      justify-content: flex-start;
+                    `}"
+                  >
+                    <input
+                      type="radio"
+                      name="type"
+                      value="disabled"
+                      required
+                      autocomplete="off"
+                      class="input--radio"
+                    />
+                    Essentials
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update Notifications Preferences
+                </button>
+              </div>
+            </form>
+          `,
+        })
+      );
+    }
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
