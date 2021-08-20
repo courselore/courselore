@@ -169,7 +169,7 @@ export default async function courselore(
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL,
         "nextConversationReference" INTEGER NOT NULL DEFAULT 1,
-        "allowAnonymityAt" TEXT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ'))
+        "allowAnonymityAt" TEXT NULL
       );
 
       CREATE TABLE "invitations" (
@@ -4011,6 +4011,35 @@ export default async function courselore(
                   autofocus
                 />
               </label>
+              <div class="label">
+                <p class="label--text">Anonymity</p>
+                <div
+                  style="${css`
+                    display: flex;
+                  `}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
+                    <div>
+                      <input
+                        type="checkbox"
+                        name="isAllowAnonymity"
+                        autocomplete="off"
+                        checked
+                        class="input--checkbox"
+                      />
+                    </div>
+                    <span>
+                      Students may post messages anonymously with respect to
+                      other students
+                      <span class="secondary">
+                        (students are never anonymous to staff)
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
@@ -4026,41 +4055,44 @@ export default async function courselore(
     }
   );
 
-  app.post<{}, any, { name?: string }, {}, IsSignedInMiddlewareLocals>(
-    "/courses",
-    ...app.locals.middlewares.isSignedIn,
-    (req, res, next) => {
-      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
-        return next("validation");
+  app.post<
+    {},
+    any,
+    { name?: string; isAllowAnonymity?: boolean },
+    {},
+    IsSignedInMiddlewareLocals
+  >("/courses", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
+    if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+      return next("validation");
 
-      const course = app.locals.database.get<{
-        id: number;
-        reference: string;
-      }>(
-        sql`
-          INSERT INTO "courses" ("reference", "name")
-          VALUES (
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${req.body.name}
-          )
-          RETURNING *
-        `
-      )!;
-      app.locals.database.run(
-        sql`
-          INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-          VALUES (
-            ${res.locals.user.id},
-            ${course.id},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${"staff"},
-            ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
-          )
-        `
-      );
-      res.redirect(`${app.locals.settings.url}/courses/${course.reference}`);
-    }
-  );
+    const course = app.locals.database.get<{
+      id: number;
+      reference: string;
+    }>(
+      sql`
+        INSERT INTO "courses" ("reference", "name", "allowAnonymityAt")
+        VALUES (
+          ${cryptoRandomString({ length: 10, type: "numeric" })},
+          ${req.body.name},
+          ${req.body.isAllowAnonymity ? new Date().toISOString() : null}
+        )
+        RETURNING *
+      `
+    )!;
+    app.locals.database.run(
+      sql`
+        INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+        VALUES (
+          ${res.locals.user.id},
+          ${course.id},
+          ${cryptoRandomString({ length: 10, type: "numeric" })},
+          ${"staff"},
+          ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
+        )
+      `
+    );
+    res.redirect(`${app.locals.settings.url}/courses/${course.reference}`);
+  });
 
   interface Helpers {
     defaultAccentColor: (
