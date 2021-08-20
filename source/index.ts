@@ -168,8 +168,7 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL,
-        "nextConversationReference" INTEGER NOT NULL DEFAULT 1,
-        "allowAnonymityAt" TEXT NULL
+        "nextConversationReference" INTEGER NOT NULL DEFAULT 1
       );
 
       CREATE TABLE "invitations" (
@@ -2850,7 +2849,6 @@ export default async function courselore(
         reference: string;
         name: string;
         nextConversationReference: number;
-        allowAnonymityAt: string | null;
       };
       reference: string;
       role: EnrollmentRole;
@@ -2921,7 +2919,6 @@ export default async function courselore(
           courseReference: string;
           courseName: string;
           courseNextConversationReference: number;
-          courseAllowAnonymityAt: string | null;
           reference: string;
           role: EnrollmentRole;
           accentColor: EnrollmentAccentColor;
@@ -2932,7 +2929,6 @@ export default async function courselore(
                    "courses"."reference" AS "courseReference",
                    "courses"."name" AS "courseName",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
-                   "courses"."allowAnonymityAt" AS "courseAllowAnonymityAt",
                    "enrollments"."reference",
                    "enrollments"."role",
                    "enrollments"."accentColor"
@@ -2950,7 +2946,6 @@ export default async function courselore(
             name: enrollment.courseName,
             nextConversationReference:
               enrollment.courseNextConversationReference,
-            allowAnonymityAt: enrollment.courseAllowAnonymityAt,
           },
           reference: enrollment.reference,
           role: enrollment.role,
@@ -4011,35 +4006,6 @@ export default async function courselore(
                   autofocus
                 />
               </label>
-              <div class="label">
-                <p class="label--text">Anonymity</p>
-                <div
-                  style="${css`
-                    display: flex;
-                  `}"
-                >
-                  <label
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
-                    <div>
-                      <input
-                        type="checkbox"
-                        name="isAllowAnonymity"
-                        autocomplete="off"
-                        checked
-                        class="input--checkbox"
-                      />
-                    </div>
-                    <span>
-                      Students may post messages anonymously with respect to
-                      other students
-                      <span class="secondary">
-                        (students are never anonymous to staff)
-                      </span>
-                    </span>
-                  </label>
-                </div>
-              </div>
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
@@ -4055,44 +4021,41 @@ export default async function courselore(
     }
   );
 
-  app.post<
-    {},
-    any,
-    { name?: string; isAllowAnonymity?: boolean },
-    {},
-    IsSignedInMiddlewareLocals
-  >("/courses", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
-    if (typeof req.body.name !== "string" || req.body.name.trim() === "")
-      return next("validation");
+  app.post<{}, any, { name?: string }, {}, IsSignedInMiddlewareLocals>(
+    "/courses",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+        return next("validation");
 
-    const course = app.locals.database.get<{
-      id: number;
-      reference: string;
-    }>(
-      sql`
-        INSERT INTO "courses" ("reference", "name", "allowAnonymityAt")
-        VALUES (
-          ${cryptoRandomString({ length: 10, type: "numeric" })},
-          ${req.body.name},
-          ${req.body.isAllowAnonymity ? new Date().toISOString() : null}
-        )
-        RETURNING *
-      `
-    )!;
-    app.locals.database.run(
-      sql`
-        INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-        VALUES (
-          ${res.locals.user.id},
-          ${course.id},
-          ${cryptoRandomString({ length: 10, type: "numeric" })},
-          ${"staff"},
-          ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
-        )
-      `
-    );
-    res.redirect(`${app.locals.settings.url}/courses/${course.reference}`);
-  });
+      const course = app.locals.database.get<{
+        id: number;
+        reference: string;
+      }>(
+        sql`
+          INSERT INTO "courses" ("reference", "name")
+          VALUES (
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${req.body.name}
+          )
+          RETURNING *
+        `
+      )!;
+      app.locals.database.run(
+        sql`
+          INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+          VALUES (
+            ${res.locals.user.id},
+            ${course.id},
+            ${cryptoRandomString({ length: 10, type: "numeric" })},
+            ${"staff"},
+            ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
+          )
+        `
+      );
+      res.redirect(`${app.locals.settings.url}/courses/${course.reference}`);
+    }
+  );
 
   interface Helpers {
     defaultAccentColor: (
@@ -4975,37 +4938,6 @@ export default async function courselore(
                   class="input--text"
                 />
               </label>
-              <div class="label">
-                <p class="label--text">Anonymity</p>
-                <div
-                  style="${css`
-                    display: flex;
-                  `}"
-                >
-                  <label
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
-                    <div>
-                      <input
-                        type="checkbox"
-                        name="isAllowAnonymity"
-                        autocomplete="off"
-                        $${res.locals.course.allowAnonymityAt === null
-                          ? html``
-                          : html`checked`}
-                        class="input--checkbox"
-                      />
-                    </div>
-                    <span>
-                      Students may post messages anonymously with respect to
-                      other students
-                      <span class="secondary">
-                        (students are never anonymous to staff)
-                      </span>
-                    </span>
-                  </label>
-                </div>
-              </div>
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
@@ -5024,7 +4956,7 @@ export default async function courselore(
   app.patch<
     { courseReference: string },
     HTML,
-    { name?: string; isAllowAnonymity?: boolean },
+    { name?: string },
     {},
     IsCourseStaffMiddlewareLocals
   >(
@@ -5034,14 +4966,10 @@ export default async function courselore(
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      // FIXME: Update ‘allowAnonymityAt’ timestamp only when necessary.
       app.locals.database.run(
         sql`
           UPDATE "courses"
-          SET "name" = ${req.body.name},
-              "allowAnonymityAt" = ${
-                req.body.isAllowAnonymity ? new Date().toISOString() : null
-              }
+          SET "name" = ${req.body.name}
           WHERE "id" = ${res.locals.course.id}
         `
       );
@@ -12173,20 +12101,17 @@ ${value}</textarea
         const course = app.locals.database.get<{
           id: number;
           nextConversationReference: number;
-          allowAnonymityAt: string | null;
         }>(
           sql`
             INSERT INTO "courses" (
               "reference",
               "name",
-              "nextConversationReference",
-              "allowAnonymityAt"
+              "nextConversationReference"
             )
             VALUES (
               ${cryptoRandomString({ length: 10, type: "numeric" })},
               ${name},
-              ${30 + Math.floor(Math.random() * 20)},
-              ${new Date().toISOString()}
+              ${30 + Math.floor(Math.random() * 20)}
             )
             RETURNING *
           `
