@@ -9648,9 +9648,9 @@ ${value}</textarea
         (res.locals.enrollment.role === "staff" &&
           req.body.isAnonymous !== undefined) ||
         (res.locals.enrollment.role === "student" &&
+          !req.body.isStaffOnly &&
           (typeof req.body.isAnonymous !== "string" ||
-            !["true", "false"].includes(req.body.isAnonymous) ||
-            req.body.isStaffOnly))
+            !["true", "false"].includes(req.body.isAnonymous)))
       )
         return next("validation");
 
