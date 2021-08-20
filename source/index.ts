@@ -10787,7 +10787,23 @@ ${value}</textarea
                               bottom: var(--space---1-5);
                             `}"
                           >
-                            $${message.authorEnrollment.user.avatar === null
+                            $${message.anonymousAt !== null &&
+                            res.locals.enrollment.role !== "staff" &&
+                            message.authorEnrollment.id !==
+                              res.locals.enrollment.id
+                              ? html`
+                                  <div
+                                    style="${css`
+                                      font-size: var(--font-size--2xl);
+                                      & > *::before {
+                                        vertical-align: baseline;
+                                      }
+                                    `}"
+                                  >
+                                    <i class="bi bi-sunglasses"></i>
+                                  </div>
+                                `
+                              : message.authorEnrollment.user.avatar === null
                               ? html`
                                   <div
                                     style="${css`
@@ -10815,7 +10831,28 @@ ${value}</textarea
                           </div>
                           <h3>
                             <span class="strong">
-                              ${message.authorEnrollment.user.name}
+                              $${message.anonymousAt !== null &&
+                              res.locals.enrollment.role !== "staff" &&
+                              message.authorEnrollment.id !==
+                                res.locals.enrollment.id
+                                ? html`Anonymous`
+                                : html`
+                                    ${message.authorEnrollment.user.name}
+                                    $${message.anonymousAt !== null
+                                      ? html`
+                                          <span
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Anonymous to other students.",
+                                                touch: false,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-sunglasses"></i>
+                                          </span>
+                                        `
+                                      : html``}
+                                  `}
                             </span>
                             <span class="secondary">
                               said
