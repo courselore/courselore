@@ -9645,7 +9645,7 @@ ${value}</textarea
                 )
             ))) ||
         (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
-        (res.locals.enrollment.role === "staff" &&
+        ((res.locals.enrollment.role === "staff" || req.body.isStaffOnly) &&
           req.body.isAnonymous !== undefined) ||
         (res.locals.enrollment.role === "student" &&
           !req.body.isStaffOnly &&
@@ -11920,9 +11920,11 @@ ${value}</textarea
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
         (req.body.isAnswer && res.locals.conversation.type !== "question") ||
-        (res.locals.enrollment.role === "staff" &&
+        ((res.locals.enrollment.role === "staff" ||
+          res.locals.conversation.staffOnlyAt !== null) &&
           req.body.isAnonymous !== undefined) ||
         (res.locals.enrollment.role === "student" &&
+          res.locals.conversation.staffOnlyAt === null &&
           (typeof req.body.isAnonymous !== "string" ||
             !["true", "false"].includes(req.body.isAnonymous)))
       )
