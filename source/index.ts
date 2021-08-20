@@ -3857,9 +3857,6 @@ export default async function courselore(
                 >
                   <label
                     class="button button--tight button--tight--inline button--transparent"
-                    style="${css`
-                      justify-content: flex-start;
-                    `}"
                   >
                     <input
                       type="radio"
@@ -3878,14 +3875,10 @@ export default async function courselore(
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--2);
                   `}"
                 >
                   <label
                     class="button button--tight button--tight--inline button--transparent"
-                    style="${css`
-                      justify-content: flex-start;
-                    `}"
                   >
                     <input
                       type="radio"
@@ -3898,32 +3891,21 @@ export default async function courselore(
                         : html``}
                       class="input--radio"
                     />
-                    Essentials
+                    <span>
+                      Essentials
+                      <span class="secondary"
+                        >(staff announcements and @mentions)</span
+                      >
+                    </span>
                   </label>
-                  <button
-                    type="button"
-                    class="button button--tight button--tight--inline button--transparent"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Receive email notifications only for staff announcements or when someone @mentions you.",
-                        trigger: "click",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-info-circle"></i>
-                  </button>
                 </div>
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--2);
                   `}"
                 >
                   <label
                     class="button button--tight button--tight--inline button--transparent"
-                    style="${css`
-                      justify-content: flex-start;
-                    `}"
                   >
                     <input
                       type="radio"
@@ -3936,20 +3918,11 @@ export default async function courselore(
                         : html``}
                       class="input--radio"
                     />
-                    Everything
+                    <span>
+                      Everything
+                      <span class="secondary">(all messages)</span>
+                    </span>
                   </label>
-                  <button
-                    type="button"
-                    class="button button--tight button--tight--inline button--transparent"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "Receive email notifications for all messages.",
-                        trigger: "click",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-info-circle"></i>
-                  </button>
                 </div>
               </div>
 
