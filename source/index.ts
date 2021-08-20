@@ -3891,12 +3891,7 @@ export default async function courselore(
                         : html``}
                       class="input--radio"
                     />
-                    <span>
-                      Essentials
-                      <span class="secondary"
-                        >(staff announcements and @mentions)</span
-                      >
-                    </span>
+                    Staff announcements and @mentions
                   </label>
                 </div>
                 <div
@@ -3918,10 +3913,7 @@ export default async function courselore(
                         : html``}
                       class="input--radio"
                     />
-                    <span>
-                      Everything
-                      <span class="secondary">(all messages)</span>
-                    </span>
+                    All messages
                   </label>
                 </div>
               </div>
