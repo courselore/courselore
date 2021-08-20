@@ -10459,7 +10459,69 @@ ${value}</textarea
                       `
                     : html``}
                   $${res.locals.conversation.staffOnlyAt === null
-                    ? html``
+                    ? res.locals.enrollment.role === "staff"
+                      ? html`
+                          <button
+                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Set as Visible by Staff Only",
+                                touch: false,
+                              });
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                theme: "rose",
+                                trigger: "click",
+                                interactive: true,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-unlock"></i>
+                            Visible by Everyone
+                          </button>
+                          <div hidden>
+                            <form
+                              method="POST"
+                              action="${app.locals.settings.url}/courses/${res
+                                .locals.course.reference}/conversations/${res
+                                .locals.conversation.reference}?_method=PATCH"
+                              style="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <input
+                                type="hidden"
+                                name="isStaffOnly"
+                                value="true"
+                              />
+                              <p>
+                                Are you sure you want to set this conversation
+                                as visible by staff only?
+                              </p>
+                              <p>
+                                Students who already participated in the
+                                conversation will continue to have access to it.
+                              </p>
+                              <p>
+                                <strong
+                                  style="${css`
+                                    font-weight: var(--font-weight--bold);
+                                  `}"
+                                >
+                                  You may not undo this action!
+                                </strong>
+                              </p>
+                              <button class="button button--rose">
+                                <i class="bi bi-lock"></i>
+                                Set as Visible by Staff Only
+                              </button>
+                            </form>
+                          </div>
+                        `
+                      : html``
                     : html`
                         <div
                           style="${css`
@@ -11438,6 +11500,7 @@ ${value}</textarea
       title?: string;
       type?: ConversationType;
       isPinned?: "true" | "false";
+      isStaffOnly?: "true";
     },
     {},
     MayEditConversationMiddlewareLocals
@@ -11481,6 +11544,22 @@ ${value}</textarea
               SET "pinnedAt" = ${
                 req.body.isPinned === "true" ? new Date().toISOString() : null
               }
+              WHERE "id" = ${res.locals.conversation.id}
+            `
+          );
+
+      if (typeof req.body.isStaffOnly === "string")
+        if (
+          req.body.isStaffOnly !== "true" ||
+          res.locals.enrollment.role !== "staff" ||
+          res.locals.conversation.staffOnlyAt !== null
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "conversations"
+              SET "staffOnlyAt" = ${new Date().toISOString()}
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
