@@ -235,6 +235,7 @@ export default async function courselore(
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "content" TEXT NOT NULL,
         "answerAt" TEXT NULL,
+        "anonymousAt" TEXT NULL,
         UNIQUE ("conversation", "reference")
       );
       CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
@@ -9656,6 +9657,7 @@ ${value}</textarea
       authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
       content: string;
       answerAt: string | null;
+      anonymousAt: string | null;
       reading: { id: number } | null;
       endorsements: IsConversationAccessibleMiddlewareLocals["conversation"]["endorsements"];
       likes: {
@@ -9712,6 +9714,7 @@ ${value}</textarea
           authorEnrollmentRole: EnrollmentRole | null;
           content: string;
           answerAt: string | null;
+          anonymousAt: string | null;
           readingId: number | null;
         }>(
           sql`
@@ -9729,6 +9732,7 @@ ${value}</textarea
                    "authorEnrollment"."role" AS "authorEnrollmentRole",
                    "messages"."content",
                    "messages"."answerAt",
+                   "messages"."anonymousAt",
                    "readings"."id" AS "readingId"
             FROM "messages"
             LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
@@ -9873,6 +9877,7 @@ ${value}</textarea
                 : app.locals.constants.ghostEnrollment,
             content: message.content,
             answerAt: message.answerAt,
+            anonymousAt: message.anonymousAt,
             reading:
               message.readingId === null ? null : { id: message.readingId },
             endorsements,
@@ -11598,7 +11603,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { content?: string; isAnswer?: boolean },
+    { content?: string; isAnswer?: boolean, isAnonymous?: boolean },
     {},
     IsConversationAccessibleMiddlewareLocals
   >(
@@ -11608,7 +11613,8 @@ ${value}</textarea
       if (
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
-        (req.body.isAnswer && res.locals.conversation.type !== "question")
+        (req.body.isAnswer && res.locals.conversation.type !== "question") ||
+        (req.body.isAnonymous && res.locals.enrollment.role === "staff")
       )
         return next("validation");
 
@@ -11623,13 +11629,21 @@ ${value}</textarea
       );
       app.locals.database.run(
         sql`
-          INSERT INTO "messages" ("conversation", "reference", "authorEnrollment", "content", "answerAt")
+          INSERT INTO "messages" (
+            "conversation",
+            "reference",
+            "authorEnrollment",
+            "content",
+            "answerAt",
+            "anonymousAt"
+          )
           VALUES (
             ${res.locals.conversation.id},
             ${String(res.locals.conversation.nextMessageReference)},
             ${res.locals.enrollment.id},
             ${req.body.content},
-            ${req.body.isAnswer ? new Date().toISOString() : null}
+            ${req.body.isAnswer ? new Date().toISOString() : null},
+            ${req.body.isAnonymous ? new Date().toISOString() : null}
           )
         `
       );
@@ -11649,7 +11663,7 @@ ${value}</textarea
       messageReference: string;
     },
     any,
-    { content?: string; isAnswer?: "true" | "false" },
+    { content?: string; isAnswer?: "true" | "false"; isAnonymous?: "true" | "false" },
     {},
     MayEditMessageMiddlewareLocals
   >(
@@ -11670,8 +11684,8 @@ ${value}</textarea
 
       if (typeof req.body.isAnswer === "string")
         if (
-          res.locals.message.reference === "1" ||
           !["true", "false"].includes(req.body.isAnswer) ||
+          res.locals.message.reference === "1" ||
           res.locals.conversation.type !== "question" ||
           (req.body.isAnswer === "true" &&
             res.locals.message.answerAt !== null) ||
@@ -11685,6 +11699,27 @@ ${value}</textarea
               UPDATE "messages"
               SET "answerAt" = ${
                 req.body.isAnswer === "true" ? new Date().toISOString() : null
+              }
+              WHERE "id" = ${res.locals.message.id}
+            `
+          );
+
+      if (typeof req.body.isAnonymous === "string")
+        if (
+          !["true", "false"].includes(req.body.isAnonymous) ||
+          res.locals.message.authorEnrollment.role === "staff" ||
+          (req.body.isAnonymous === "true" &&
+            res.locals.message.anonymousAt !== null) ||
+          (req.body.isAnonymous === "false" &&
+            res.locals.message.anonymousAt === null)
+        )
+          return next("validation");
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "messages"
+              SET "anonymousAt" = ${
+                req.body.isAnonymous === "true" ? new Date().toISOString() : null
               }
               WHERE "id" = ${res.locals.message.id}
             `
@@ -12275,7 +12310,8 @@ ${value}</textarea
                   "reference",
                   "authorEnrollment",
                   "content",
-                  "answerAt"
+                  "answerAt",
+                  "anonymousAt"
                 )
                 VALUES (
                   ${messageCreatedAt},
@@ -12298,7 +12334,8 @@ ${value}</textarea
                     1 + Math.floor(Math.random() * 5),
                     "\n\n"
                   )},
-                  ${Math.random() < 0.5 ? new Date().toISOString() : null}
+                  ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                  ${Math.random() < 0.25 ? new Date().toISOString() : null}
                 )
               `
             );
