@@ -9576,6 +9576,7 @@ ${value}</textarea
       tagsReferences?: string[];
       isPinned?: boolean;
       isStaffOnly?: boolean;
+      isAnonymous?: "true" | "false";
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -9603,7 +9604,11 @@ ${value}</textarea
                   (existingTag) => tagReference === existingTag.reference
                 )
             ))) ||
-        (req.body.isPinned && res.locals.enrollment.role !== "staff")
+        (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
+        (typeof req.body.isAnonymous === "string" &&
+          (!["true", "false"].includes(req.body.isAnonymous) ||
+            res.locals.enrollment.role === "staff" ||
+            req.body.isStaffOnly))
       )
         return next("validation");
 
@@ -9643,12 +9648,19 @@ ${value}</textarea
       );
       app.locals.database.run(
         sql`
-          INSERT INTO "messages" ("conversation", "reference", "authorEnrollment", "content")
+          INSERT INTO "messages" (
+            "conversation",
+            "reference",
+            "authorEnrollment",
+            "content",
+            "anonymousAt"
+          )
           VALUES (
             ${conversationId},
             ${"1"},
             ${res.locals.enrollment.id},
-            ${req.body.content}
+            ${req.body.content},
+            ${req.body.isAnonymous === "true" ? new Date().toISOString() : null}
           )
         `
       );
