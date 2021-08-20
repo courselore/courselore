@@ -10906,6 +10906,103 @@ ${value}</textarea
                             gap: var(--space--2);
                           `}"
                         >
+                          $${message.authorEnrollment.id ===
+                            res.locals.enrollment.id &&
+                          res.locals.enrollment.role === "student"
+                            ? html`
+                                <div>
+                                  <button
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    data-ondomcontentloaded="${javascript`
+                                      tippy(this, {
+                                        content: "Change Identity",
+                                        touch: false,
+                                      });
+                                      tippy(this, {
+                                        content: this.nextElementSibling.firstElementChild,
+                                        theme: "rose",
+                                        trigger: "click",
+                                        interactive: true,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-sunglasses"></i>
+                                  </button>
+                                  <div hidden>
+                                    <form
+                                      method="POST"
+                                      action="${app.locals.settings
+                                        .url}/courses/${res.locals.course
+                                        .reference}/conversations/${res.locals
+                                        .conversation
+                                        .reference}/messages/${message.reference}?_method=PATCH"
+                                      style="${css`
+                                        padding: var(--space--2);
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--4);
+                                      `}"
+                                    >
+                                      $${message.anonymousAt === null
+                                        ? html`
+                                            <input
+                                              type="hidden"
+                                              name="isAnonymous"
+                                              value="true"
+                                            />
+                                            <p>
+                                              Other students may see that you’re
+                                              the author of this message.
+                                            </p>
+                                            <button class="button button--rose">
+                                              <i class="bi bi-sunglasses"></i>
+                                              Go Anonymous to Other Students
+                                            </button>
+                                          `
+                                        : html`
+                                            <input
+                                              type="hidden"
+                                              name="isAnonymous"
+                                              value="false"
+                                            />
+                                            <p>
+                                              Other students see this message as
+                                              anonymous.
+                                            </p>
+                                            <button class="button button--rose">
+                                              $${res.locals.user.avatar === null
+                                                ? html`<i
+                                                    class="bi bi-person-circle"
+                                                  ></i>`
+                                                : html`
+                                                    <img
+                                                      src="${res.locals.user
+                                                        .avatar}"
+                                                      alt="${res.locals.user
+                                                        .name}"
+                                                      class="avatar"
+                                                      style="${css`
+                                                        width: var(
+                                                          --font-size--sm
+                                                        );
+                                                        height: var(
+                                                          --font-size--sm
+                                                        );
+                                                        position: relative;
+                                                        bottom: var(
+                                                          --space---0-5
+                                                        );
+                                                      `}"
+                                                    />
+                                                  `}
+                                              Go Public to Other Students
+                                            </button>
+                                          `}
+                                    </form>
+                                  </div>
+                                </div>
+                              `
+                            : html``}
                           $${res.locals.enrollment.role === "staff" &&
                           message.reference !== "1"
                             ? html`
