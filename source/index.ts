@@ -11650,46 +11650,49 @@ ${value}</textarea
 
               $${res.locals.conversation.type === "question"
                 ? html`
-                    <div
-                      style="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <label
-                        class="button button--tight button--tight--inline button--transparent"
+                    <div class="label">
+                      <p class="label--text">Type</p>
+                      <div
+                        style="${css`
+                          display: flex;
+                        `}"
                       >
-                        <input
-                          type="checkbox"
-                          name="isAnswer"
-                          autocomplete="off"
-                          $${res.locals.enrollment.role === "staff"
-                            ? `checked`
-                            : ``}
-                          class="visually-hidden input--radio-or-checkbox--multilabel"
-                        />
-                        <span
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Set as an Answer",
-                              touch: false,
-                            });
-                          `}"
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
                         >
-                          <i class="bi bi-patch-check"></i>
-                          Not an Answer
-                        </span>
-                        <span
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Set as Not an Answer",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-patch-check-fill"></i>
-                          Answer
-                        </span>
-                      </label>
+                          <input
+                            type="checkbox"
+                            name="isAnswer"
+                            autocomplete="off"
+                            $${res.locals.enrollment.role === "staff"
+                              ? `checked`
+                              : ``}
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Set as an Answer",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-patch-check"></i>
+                            Not an Answer
+                          </span>
+                          <span
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Set as Not an Answer",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-patch-check-fill"></i>
+                            Answer
+                          </span>
+                        </label>
+                      </div>
                     </div>
                   `
                 : html``}
