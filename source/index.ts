@@ -204,6 +204,7 @@ export default async function courselore(
         "nextMessageReference" INTEGER NOT NULL DEFAULT 1,
         "type" TEXT NOT NULL CHECK ("type" IN ('announcement', 'question', 'other')),
         "pinnedAt" TEXT NULL,
+        "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
       CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
@@ -4136,6 +4137,7 @@ export default async function courselore(
       nextMessageReference: number;
       type: ConversationType;
       pinnedAt: string | null;
+      staffOnlyAt: string | null;
       createdAt: string;
       updatedAt: string | null;
       authorEnrollment:
@@ -4234,6 +4236,7 @@ export default async function courselore(
           nextMessageReference: number;
           type: ConversationType;
           pinnedAt: string | null;
+          staffOnlyAt: string | null;
         }>(
           sql`
             SELECT "conversations"."id",
@@ -4241,7 +4244,8 @@ export default async function courselore(
                    "conversations"."title",
                    "conversations"."nextMessageReference",
                    "conversations"."type",
-                   "conversations"."pinnedAt"
+                   "conversations"."pinnedAt",
+                   "conversations"."staffOnlyAt"
             FROM "conversations"
             $${
               search === undefined
@@ -4319,6 +4323,7 @@ export default async function courselore(
         nextMessageReference: number;
         type: ConversationType;
         pinnedAt: string | null;
+        staffOnlyAt: string | null;
       }
     ) => IsEnrolledInCourseMiddlewareLocals["conversations"][number];
   }
@@ -4478,6 +4483,7 @@ export default async function courselore(
       nextMessageReference: conversation.nextMessageReference,
       type: conversation.type,
       pinnedAt: conversation.pinnedAt,
+      staffOnlyAt: conversation.staffOnlyAt,
       createdAt: originalMessage.createdAt,
       updatedAt:
         mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
@@ -7961,6 +7967,14 @@ export default async function courselore(
                                             </div>
                                           `
                                         : html``}
+                                      $${conversation.staffOnlyAt !== null
+                                        ? html`
+                                            <div>
+                                              <i class="bi bi-lock"></i>
+                                              Staff
+                                            </div>
+                                          `
+                                        : html``}
                                       <div
                                         class="${app.locals.partials.conversationTypeTextColor(
                                           conversation.type
@@ -9352,65 +9366,124 @@ ${value}</textarea
                         </div>
                       </div>
                     `}
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
-                      <div class="label">
-                        <div class="label--text">
-                          Pin
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Pinned conversations are listed first.",
-                                trigger: "click",
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                        </div>
+                <div
+                  style="${css`
+                    display: flex;
+                    flex-wrap: wrap;
+                    row-gap: var(--space--4);
+                  `}"
+                >
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
                         <div
+                          class="label"
                           style="${css`
-                            display: flex;
+                            width: var(--space--28);
                           `}"
                         >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
+                          <div class="label--text">
+                            Pin
+                            <button
+                              type="button"
+                              class="button button--tight button--tight--inline button--transparent"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Pinned conversations are listed first.",
+                                  trigger: "click",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-info-circle"></i>
+                            </button>
+                          </div>
+                          <div
+                            style="${css`
+                              display: flex;
+                            `}"
                           >
-                            <input
-                              type="checkbox"
-                              name="isPinned"
-                              autocomplete="off"
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                            />
-                            <span
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Pin",
-                                  touch: false,
-                                });
-                              `}"
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
                             >
-                              <i class="bi bi-pin-angle"></i>
-                              Unpinned
-                            </span>
-                            <span
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Unpin",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-pin"></i>
-                              Pinned
-                            </span>
-                          </label>
+                              <input
+                                type="checkbox"
+                                name="isPinned"
+                                autocomplete="off"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                              />
+                              <span
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Pin",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin-angle"></i>
+                                Unpinned
+                              </span>
+                              <span
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Unpin",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin"></i>
+                                Pinned
+                              </span>
+                            </label>
+                          </div>
                         </div>
-                      </div>
-                    `
-                  : html``}
+                      `
+                    : html``}
+                  <div
+                    class="label"
+                    style="${css`
+                      width: var(--space--44);
+                    `}"
+                  >
+                    <p class="label--text">Visibility</p>
+                    <div
+                      style="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <input
+                          type="checkbox"
+                          name="isStaffOnly"
+                          autocomplete="off"
+                          class="visually-hidden input--radio-or-checkbox--multilabel"
+                        />
+                        <span
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Set as Visible by Staff Only",
+                              touch: false,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-unlock"></i>
+                          Visible by Everyone
+                        </span>
+                        <span
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: "Set as Visible by Everyone",
+                              touch: false,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-lock"></i>
+                          Visible by Staff Only
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
 
                 <div>
                   <button
@@ -9463,6 +9536,7 @@ ${value}</textarea
       type?: ConversationType;
       tagsReferences?: string[];
       isPinned?: boolean;
+      isStaffOnly?: boolean;
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -9507,14 +9581,23 @@ ${value}</textarea
       const conversationId = Number(
         app.locals.database.run(
           sql`
-            INSERT INTO "conversations" ("course", "reference", "title", "nextMessageReference", "type", "pinnedAt")
+            INSERT INTO "conversations" (
+              "course",
+              "reference",
+              "title",
+              "nextMessageReference",
+              "type",
+              "pinnedAt",
+              "staffOnlyAt"
+            )
             VALUES (
               ${res.locals.course.id},
               ${String(res.locals.course.nextConversationReference)},
               ${req.body.title},
               ${2},
               ${req.body.type},
-              ${req.body.isPinned ? new Date().toISOString() : null}
+              ${req.body.isPinned ? new Date().toISOString() : null},
+              ${req.body.isStaffOnly ? new Date().toISOString() : null}
             )
           `
         ).lastInsertRowid
@@ -9591,6 +9674,7 @@ ${value}</textarea
         nextMessageReference: number;
         type: ConversationType;
         pinnedAt: string | null;
+        staffOnlyAt: string | null;
       }>(
         sql`
           SELECT "conversations"."id",
@@ -9598,7 +9682,8 @@ ${value}</textarea
                  "conversations"."title",
                  "conversations"."nextMessageReference",
                  "conversations"."type",
-                 "conversations"."pinnedAt"
+                 "conversations"."pinnedAt",
+                 "conversations"."staffOnlyAt"
           FROM "conversations"
           WHERE "conversations"."course" = ${res.locals.course.id} AND
                 "conversations"."reference" = ${req.params.conversationReference}
@@ -10373,6 +10458,19 @@ ${value}</textarea
                         </div>
                       `
                     : html``}
+                  $${res.locals.conversation.staffOnlyAt === null
+                    ? html``
+                    : html`
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--1);
+                          `}"
+                        >
+                          <i class="bi bi-lock"></i>
+                          Staff
+                        </div>
+                      `}
                   $${app.locals.helpers.mayEditConversation(req, res)
                     ? html`
                         <div>
@@ -12052,7 +12150,8 @@ ${value}</textarea
                   "title",
                   "nextMessageReference",
                   "type",
-                  "pinnedAt"
+                  "pinnedAt",
+                  "staffOnlyAt"
                 )
                 VALUES (
                   ${course.id},
@@ -12066,7 +12165,8 @@ ${value}</textarea
                       Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
                     ]
                   },
-                  ${Math.random() < 0.05 ? new Date().toISOString() : null}
+                  ${Math.random() < 0.05 ? new Date().toISOString() : null},
+                  ${Math.random() < 0.25 ? new Date().toISOString() : null}
                 )
               `
             ).lastInsertRowid
