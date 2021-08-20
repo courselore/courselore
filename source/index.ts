@@ -9336,198 +9336,179 @@ ${value}</textarea
                         </div>
                       </div>
                     `}
-
-                <div
-                  style="${css`
-                    display: flex;
-                    flex-wrap: wrap;
-                    row-gap: var(--space--4);
-                  `}"
-                >
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <div class="label">
+                        <div class="label--text">
+                          Pin
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Pinned conversations are listed first.",
+                                trigger: "click",
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
                         <div
-                          class="label"
                           style="${css`
-                            width: var(--space--28);
+                            display: flex;
                           `}"
                         >
-                          <div class="label--text">
-                            Pin
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isPinned"
+                              autocomplete="off"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
                               data-ondomcontentloaded="${javascript`
                                 tippy(this, {
-                                  content: "Pinned conversations are listed first.",
-                                  trigger: "click",
+                                  content: "Pin",
+                                  touch: false,
                                 });
                               `}"
                             >
-                              <i class="bi bi-info-circle"></i>
-                            </button>
-                          </div>
-                          <div
-                            style="${css`
-                              display: flex;
-                            `}"
-                          >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
+                              <i class="bi bi-pin-angle"></i>
+                              Unpinned
+                            </span>
+                            <span
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Unpin",
+                                  touch: false,
+                                });
+                              `}"
                             >
-                              <input
-                                type="checkbox"
-                                name="isPinned"
-                                autocomplete="off"
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Pin",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin-angle"></i>
-                                Unpinned
-                              </span>
-                              <span
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Unpin",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin"></i>
-                                Pinned
-                              </span>
-                            </label>
-                          </div>
+                              <i class="bi bi-pin"></i>
+                              Pinned
+                            </span>
+                          </label>
                         </div>
-                      `
-                    : html``}
+                      </div>
+                    `
+                  : html``}
 
+                <div class="label">
+                  <p class="label--text">Visibility</p>
                   <div
-                    class="label"
                     style="${css`
-                      width: var(--space--44);
+                      display: flex;
                     `}"
                   >
-                    <p class="label--text">Visibility</p>
-                    <div
-                      style="${css`
-                        display: flex;
-                      `}"
+                    <label
+                      class="button button--tight button--tight--inline button--transparent"
                     >
-                      <label
-                        class="button button--tight button--tight--inline button--transparent"
+                      <input
+                        type="checkbox"
+                        name="isStaffOnly"
+                        autocomplete="off"
+                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                        onchange="${javascript`
+                          const identity = this.closest("form").querySelector(".identity");
+                          if (identity === null) return;
+                          identity.hidden = this.checked;
+                          for (const element of identity.querySelectorAll("*"))
+                            if (element.disabled !== null) element.disabled = this.checked;
+                        `}"
+                      />
+                      <span
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Set as Visible by Staff Only",
+                            touch: false,
+                          });
+                        `}"
                       >
-                        <input
-                          type="checkbox"
-                          name="isStaffOnly"
-                          autocomplete="off"
-                          class="visually-hidden input--radio-or-checkbox--multilabel"
-                          onchange="${javascript`
-                            const identity = this.closest("form").querySelector(".identity");
-                            if (identity === null) return;
-                            identity.hidden = this.checked;
-                            for (const element of identity.querySelectorAll("*"))
-                              if (element.disabled !== null) element.disabled = this.checked;
-                          `}"
-                        />
-                        <span
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Set as Visible by Staff Only",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-eye"></i>
-                          Visible by Everyone
-                        </span>
-                        <span
-                          data-ondomcontentloaded="${javascript`
-                            tippy(this, {
-                              content: "Set as Visible by Everyone",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-eye-slash"></i>
-                          Visible by Staff Only
-                        </span>
-                      </label>
-                    </div>
+                        <i class="bi bi-eye"></i>
+                        Visible by Everyone
+                      </span>
+                      <span
+                        data-ondomcontentloaded="${javascript`
+                          tippy(this, {
+                            content: "Set as Visible by Everyone",
+                            touch: false,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-eye-slash"></i>
+                        Visible by Staff Only
+                      </span>
+                    </label>
                   </div>
+                </div>
 
-                  $${res.locals.enrollment.role === "staff"
-                    ? html``
-                    : html`
+                $${res.locals.enrollment.role === "staff"
+                  ? html``
+                  : html`
+                      <div
+                        class="identity label"
+                        style="${css`
+                          width: var(--space--40);
+                        `}"
+                      >
+                        <p class="label--text">Identity</p>
                         <div
-                          class="identity label"
                           style="${css`
-                            width: var(--space--40);
+                            display: flex;
                           `}"
                         >
-                          <p class="label--text">Identity</p>
-                          <div
-                            style="${css`
-                              display: flex;
-                            `}"
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
                           >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
+                            <input
+                              type="checkbox"
+                              name="isAnonymous"
+                              autocomplete="off"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <div
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Set as Anonymous",
+                                  touch: false,
+                                });
+                              `}"
                             >
-                              <input
-                                type="checkbox"
-                                name="isAnonymous"
-                                autocomplete="off"
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <div
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Anonymous",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                $${res.locals.user.avatar === null
-                                  ? html`<i class="bi bi-person-circle"></i>`
-                                  : html`
-                                      <img
-                                        src="${res.locals.user.avatar}"
-                                        alt="${res.locals.user.name}"
-                                        class="avatar"
-                                        style="${css`
-                                          width: var(--font-size--sm);
-                                          height: var(--font-size--sm);
-                                          position: relative;
-                                          bottom: var(--space---0-5);
-                                        `}"
-                                      />
-                                    `}
-                                ${res.locals.user.name}
-                              </div>
-                              <span
-                                data-ondomcontentloaded="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Visible by Everyone",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-sunglasses"></i>
-                                Anonymous
-                              </span>
-                            </label>
-                          </div>
+                              $${res.locals.user.avatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`
+                                    <img
+                                      src="${res.locals.user.avatar}"
+                                      alt="${res.locals.user.name}"
+                                      class="avatar"
+                                      style="${css`
+                                        width: var(--font-size--sm);
+                                        height: var(--font-size--sm);
+                                        position: relative;
+                                        bottom: var(--space---0-5);
+                                      `}"
+                                    />
+                                  `}
+                              ${res.locals.user.name}
+                            </div>
+                            <span
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Set as Visible by Everyone",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-sunglasses"></i>
+                              Anonymous
+                            </span>
+                          </label>
                         </div>
-                      `}
-                </div>
+                      </div>
+                    `}
 
                 <div>
                   <button
