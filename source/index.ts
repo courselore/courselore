@@ -7981,7 +7981,7 @@ export default async function courselore(
                                         ? html`
                                             <div>
                                               <i class="bi bi-eye-slash"></i>
-                                              Staff
+                                              Visible by Staff Only
                                             </div>
                                           `
                                         : html``}
@@ -11593,6 +11593,84 @@ ${value}</textarea
                     </div>
                   `
                 : html``}
+              $${res.locals.enrollment.role === "staff"
+                ? html``
+                : html`
+                    <div class="identity label">
+                      <p class="label--text">Identity</p>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--4);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="radio"
+                            name="isAnonymous"
+                            value="false"
+                            autocomplete="off"
+                            required
+                            checked
+                            class="input--radio"
+                          />
+                          $${res.locals.user.avatar === null
+                            ? html`<i class="bi bi-person-circle"></i>`
+                            : html`
+                                <img
+                                  src="${res.locals.user.avatar}"
+                                  alt="${res.locals.user.name}"
+                                  class="avatar"
+                                  style="${css`
+                                    width: var(--font-size--sm);
+                                    height: var(--font-size--sm);
+                                    position: relative;
+                                    bottom: var(--space---0-5);
+                                  `}"
+                                />
+                              `}
+                          ${res.locals.user.name}
+                        </label>
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="isAnonymous"
+                              value="true"
+                              autocomplete="off"
+                              required
+                              class="input--radio"
+                            />
+                            <i class="bi bi-sunglasses"></i>
+                            Anonymous
+                          </label>
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
+                              tippy(this, {
+                                content: "Anonymity is only with respect to other students, not staff.",
+                                trigger: "click",
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  `}
 
               <div>
                 <button
