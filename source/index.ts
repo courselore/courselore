@@ -107,28 +107,28 @@ export default async function courselore(
   ];
 
   interface Constants {
-    anonymousEnrollment: AnonymousEnrollment;
+    ghostEnrollment: GhostEnrollment;
   }
-  interface AnonymousEnrollment {
+  interface GhostEnrollment {
     id: null;
     user: {
       id: null;
       email: null;
-      name: "Anonymous";
+      name: "Ghost";
       avatar: null;
-      biography: null;
+      biography: string;
     };
     reference: null;
     role: null;
   }
-  app.locals.constants.anonymousEnrollment = {
+  app.locals.constants.ghostEnrollment = {
     id: null,
     user: {
       id: null,
       email: null,
-      name: "Anonymous",
+      name: "Ghost",
       avatar: null,
-      biography: null,
+      biography: "I’m no longer enrolled in the course.",
     },
     reference: null,
     role: null,
@@ -4153,7 +4153,7 @@ export default async function courselore(
             reference: string;
             role: EnrollmentRole;
           }
-        | AnonymousEnrollment;
+        | GhostEnrollment;
       messagesCount: number;
       readingsCount: number;
       endorsements: {
@@ -4171,7 +4171,7 @@ export default async function courselore(
               reference: string;
               role: EnrollmentRole;
             }
-          | AnonymousEnrollment;
+          | GhostEnrollment;
       }[];
       likesCount: number;
       taggings: {
@@ -4439,7 +4439,7 @@ export default async function courselore(
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
                     }
-                  : app.locals.constants.anonymousEnrollment,
+                  : app.locals.constants.ghostEnrollment,
             }));
     const taggings = app.locals.database
       .all<{
@@ -4508,7 +4508,7 @@ export default async function courselore(
               reference: originalMessage.authorEnrollmentReference,
               role: originalMessage.authorEnrollmentRole,
             }
-          : app.locals.constants.anonymousEnrollment,
+          : app.locals.constants.ghostEnrollment,
       messagesCount,
       readingsCount,
       endorsements,
@@ -9791,7 +9791,7 @@ ${value}</textarea
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
                     }
-                  : app.locals.constants.anonymousEnrollment,
+                  : app.locals.constants.ghostEnrollment,
             }));
           const likes = app.locals.database
             .all<{
@@ -9843,7 +9843,7 @@ ${value}</textarea
                       reference: like.enrollmentReference,
                       role: like.enrollmentRole,
                     }
-                  : app.locals.constants.anonymousEnrollment,
+                  : app.locals.constants.ghostEnrollment,
             }));
 
           return {
@@ -9870,7 +9870,7 @@ ${value}</textarea
                     reference: message.authorEnrollmentReference,
                     role: message.authorEnrollmentRole,
                   }
-                : app.locals.constants.anonymousEnrollment,
+                : app.locals.constants.ghostEnrollment,
             content: message.content,
             answerAt: message.answerAt,
             reading:
