@@ -9487,20 +9487,39 @@ ${value}</textarea
                                 `}
                             ${res.locals.user.name}
                           </label>
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
+                          <div
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--2);
+                            `}"
                           >
-                            <input
-                              type="radio"
-                              name="isAnonymous"
-                              value="true"
-                              autocomplete="off"
-                              required
-                              class="input--radio"
-                            />
-                            <i class="bi bi-sunglasses"></i>
-                            Anonymous
-                          </label>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="isAnonymous"
+                                value="true"
+                                autocomplete="off"
+                                required
+                                class="input--radio"
+                              />
+                              <i class="bi bi-sunglasses"></i>
+                              Anonymous
+                            </label>
+                            <button
+                              type="button"
+                              class="button button--tight button--tight--inline button--transparent"
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Anonymity is only with respect to other students, not staff.",
+                                  trigger: "click",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-info-circle"></i>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     `}
