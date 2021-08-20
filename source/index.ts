@@ -12027,6 +12027,7 @@ ${value}</textarea
         if (
           !["true", "false"].includes(req.body.isAnonymous) ||
           res.locals.message.authorEnrollment.role === "staff" ||
+          res.locals.conversation.staffOnlyAt !== null ||
           (req.body.isAnonymous === "true" &&
             res.locals.message.anonymousAt !== null) ||
           (req.body.isAnonymous === "false" &&
