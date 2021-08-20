@@ -168,7 +168,8 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL,
-        "nextConversationReference" INTEGER NOT NULL DEFAULT 1
+        "nextConversationReference" INTEGER NOT NULL DEFAULT 1,
+        "allowAnonymityAt" TEXT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ'))
       );
 
       CREATE TABLE "invitations" (
@@ -2849,6 +2850,7 @@ export default async function courselore(
         reference: string;
         name: string;
         nextConversationReference: number;
+        allowAnonymityAt: string | null;
       };
       reference: string;
       role: EnrollmentRole;
@@ -2919,6 +2921,7 @@ export default async function courselore(
           courseReference: string;
           courseName: string;
           courseNextConversationReference: number;
+          courseAllowAnonymityAt: string | null;
           reference: string;
           role: EnrollmentRole;
           accentColor: EnrollmentAccentColor;
@@ -2929,6 +2932,7 @@ export default async function courselore(
                    "courses"."reference" AS "courseReference",
                    "courses"."name" AS "courseName",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
+                   "courses"."allowAnonymityAt" AS "courseAllowAnonymityAt",
                    "enrollments"."reference",
                    "enrollments"."role",
                    "enrollments"."accentColor"
@@ -2946,6 +2950,7 @@ export default async function courselore(
             name: enrollment.courseName,
             nextConversationReference:
               enrollment.courseNextConversationReference,
+            allowAnonymityAt: enrollment.courseAllowAnonymityAt,
           },
           reference: enrollment.reference,
           role: enrollment.role,
@@ -11603,7 +11608,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { content?: string; isAnswer?: boolean, isAnonymous?: boolean },
+    { content?: string; isAnswer?: boolean; isAnonymous?: boolean },
     {},
     IsConversationAccessibleMiddlewareLocals
   >(
@@ -11663,7 +11668,11 @@ ${value}</textarea
       messageReference: string;
     },
     any,
-    { content?: string; isAnswer?: "true" | "false"; isAnonymous?: "true" | "false" },
+    {
+      content?: string;
+      isAnswer?: "true" | "false";
+      isAnonymous?: "true" | "false";
+    },
     {},
     MayEditMessageMiddlewareLocals
   >(
@@ -11719,7 +11728,9 @@ ${value}</textarea
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
-                req.body.isAnonymous === "true" ? new Date().toISOString() : null
+                req.body.isAnonymous === "true"
+                  ? new Date().toISOString()
+                  : null
               }
               WHERE "id" = ${res.locals.message.id}
             `
@@ -12126,13 +12137,20 @@ ${value}</textarea
         const course = app.locals.database.get<{
           id: number;
           nextConversationReference: number;
+          allowAnonymityAt: string | null;
         }>(
           sql`
-            INSERT INTO "courses" ("reference", "name", "nextConversationReference")
+            INSERT INTO "courses" (
+              "reference",
+              "name",
+              "nextConversationReference",
+              "allowAnonymityAt"
+            )
             VALUES (
               ${cryptoRandomString({ length: 10, type: "numeric" })},
               ${name},
-              ${30 + Math.floor(Math.random() * 20)}
+              ${30 + Math.floor(Math.random() * 20)},
+              ${new Date().toISOString()}
             )
             RETURNING *
           `
