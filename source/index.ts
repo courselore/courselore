@@ -9429,6 +9429,13 @@ ${value}</textarea
                           name="isStaffOnly"
                           autocomplete="off"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
+                          onchange="${javascript`
+                            const anonymity = this.closest("form").querySelector(".anonymity");
+                            if (anonymity === null) return;
+                            anonymity.hidden = this.checked;
+                            for (const element of anonymity.querySelectorAll("*"))
+                              if (element.disabled !== null) element.disabled = this.checked;
+                          `}"
                         />
                         <span
                           data-ondomcontentloaded="${javascript`
@@ -9460,7 +9467,7 @@ ${value}</textarea
                     ? html``
                     : html`
                         <div
-                          class="label"
+                          class="anonymity label"
                           style="${css`
                             width: var(--space--40);
                           `}"
