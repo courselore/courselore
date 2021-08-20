@@ -9645,9 +9645,11 @@ ${value}</textarea
                 )
             ))) ||
         (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
-        (typeof req.body.isAnonymous === "string" &&
-          (!["true", "false"].includes(req.body.isAnonymous) ||
-            res.locals.enrollment.role === "staff" ||
+        (res.locals.enrollment.role === "staff" &&
+          req.body.isAnonymous !== undefined) ||
+        (res.locals.enrollment.role === "student" &&
+          (typeof req.body.isAnonymous !== "string" ||
+            !["true", "false"].includes(req.body.isAnonymous) ||
             req.body.isStaffOnly))
       )
         return next("validation");
