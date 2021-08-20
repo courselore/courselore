@@ -10625,7 +10625,7 @@ ${value}</textarea
                           `}"
                         >
                           <i class="bi bi-eye-slash"></i>
-                          Staff
+                          Visible by Staff Only
                         </div>
                       `}
                   $${app.locals.helpers.mayEditConversation(req, res)
