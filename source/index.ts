@@ -4105,6 +4105,7 @@ export default async function courselore(
       pinnedAt: string | null;
       staffOnlyAt: string | null;
       createdAt: string;
+      anonymousAt: string | null;
       updatedAt: string | null;
       authorEnrollment:
         | {
@@ -4296,6 +4297,7 @@ export default async function courselore(
   app.locals.helpers.getConversationMetadata = (req, res, conversation) => {
     const originalMessage = app.locals.database.get<{
       createdAt: string;
+      anonymousAt: string | null;
       authorEnrollmentId: number | null;
       authorUserId: number | null;
       authorUserEmail: string | null;
@@ -4308,6 +4310,7 @@ export default async function courselore(
     }>(
       sql`
         SELECT "messages"."createdAt",
+               "messages"."anonymousAt",
                "authorEnrollment"."id" AS "authorEnrollmentId",
                "authorUser"."id" AS "authorUserId",
                "authorUser"."email" AS "authorUserEmail",
@@ -4451,6 +4454,7 @@ export default async function courselore(
       pinnedAt: conversation.pinnedAt,
       staffOnlyAt: conversation.staffOnlyAt,
       createdAt: originalMessage.createdAt,
+      anonymousAt: originalMessage.anonymousAt,
       updatedAt:
         mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
           ? null
