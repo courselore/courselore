@@ -9430,10 +9430,10 @@ ${value}</textarea
                           autocomplete="off"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           onchange="${javascript`
-                            const anonymity = this.closest("form").querySelector(".anonymity");
-                            if (anonymity === null) return;
-                            anonymity.hidden = this.checked;
-                            for (const element of anonymity.querySelectorAll("*"))
+                            const identity = this.closest("form").querySelector(".identity");
+                            if (identity === null) return;
+                            identity.hidden = this.checked;
+                            for (const element of identity.querySelectorAll("*"))
                               if (element.disabled !== null) element.disabled = this.checked;
                           `}"
                         />
@@ -9467,12 +9467,12 @@ ${value}</textarea
                     ? html``
                     : html`
                         <div
-                          class="anonymity label"
+                          class="identity label"
                           style="${css`
                             width: var(--space--40);
                           `}"
                         >
-                          <p class="label--text">Anonymity</p>
+                          <p class="label--text">Identity</p>
                           <div
                             style="${css`
                               display: flex;
@@ -9510,7 +9510,7 @@ ${value}</textarea
                                         `}"
                                       />
                                     `}
-                                Post as yourself
+                                ${res.locals.user.name}
                               </div>
                               <span
                                 data-ondomcontentloaded="${javascript`
@@ -9521,7 +9521,7 @@ ${value}</textarea
                                 `}"
                               >
                                 <i class="bi bi-sunglasses"></i>
-                                Post anonymously
+                                Anonymous
                               </span>
                             </label>
                           </div>
