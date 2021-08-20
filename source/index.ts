@@ -4978,6 +4978,37 @@ export default async function courselore(
                   class="input--text"
                 />
               </label>
+              <div class="label">
+                <p class="label--text">Anonymity</p>
+                <div
+                  style="${css`
+                    display: flex;
+                  `}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
+                    <div>
+                      <input
+                        type="checkbox"
+                        name="isAllowAnonymity"
+                        autocomplete="off"
+                        $${res.locals.course.allowAnonymityAt === null
+                          ? html``
+                          : html`checked`}
+                        class="input--checkbox"
+                      />
+                    </div>
+                    <span>
+                      Students may post messages anonymously with respect to
+                      other students
+                      <span class="secondary">
+                        (students are never anonymous to staff)
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </div>
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
@@ -4996,7 +5027,7 @@ export default async function courselore(
   app.patch<
     { courseReference: string },
     HTML,
-    { name?: string },
+    { name?: string; isAllowAnonymity?: boolean },
     {},
     IsCourseStaffMiddlewareLocals
   >(
@@ -5006,8 +5037,16 @@ export default async function courselore(
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
+      // FIXME: Update ‘allowAnonymityAt’ timestamp only when necessary.
       app.locals.database.run(
-        sql`UPDATE "courses" SET "name" = ${req.body.name} WHERE "id" = ${res.locals.course.id}`
+        sql`
+          UPDATE "courses"
+          SET "name" = ${req.body.name},
+              "allowAnonymityAt" = ${
+                req.body.isAllowAnonymity ? new Date().toISOString() : null
+              }
+          WHERE "id" = ${res.locals.course.id}
+        `
       );
 
       app.locals.helpers.flash.set(
