@@ -9448,63 +9448,58 @@ ${value}</textarea
                 $${res.locals.enrollment.role === "staff"
                   ? html``
                   : html`
-                      <div
-                        class="identity label"
-                        style="${css`
-                          width: var(--space--40);
-                        `}"
-                      >
+                      <div class="identity label">
                         <p class="label--text">Identity</p>
                         <div
                           style="${css`
                             display: flex;
+                            flex-wrap: wrap;
+                            column-gap: var(--space--4);
+                            row-gap: var(--space--2);
                           `}"
                         >
                           <label
                             class="button button--tight button--tight--inline button--transparent"
                           >
                             <input
-                              type="checkbox"
+                              type="radio"
                               name="isAnonymous"
+                              value="false"
                               autocomplete="off"
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                              required
+                              checked
+                              class="input--radio"
                             />
-                            <div
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Set as Anonymous",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              $${res.locals.user.avatar === null
-                                ? html`<i class="bi bi-person-circle"></i>`
-                                : html`
-                                    <img
-                                      src="${res.locals.user.avatar}"
-                                      alt="${res.locals.user.name}"
-                                      class="avatar"
-                                      style="${css`
-                                        width: var(--font-size--sm);
-                                        height: var(--font-size--sm);
-                                        position: relative;
-                                        bottom: var(--space---0-5);
-                                      `}"
-                                    />
-                                  `}
-                              ${res.locals.user.name}
-                            </div>
-                            <span
-                              data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Set as Visible by Everyone",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-sunglasses"></i>
-                              Anonymous
-                            </span>
+                            $${res.locals.user.avatar === null
+                              ? html`<i class="bi bi-person-circle"></i>`
+                              : html`
+                                  <img
+                                    src="${res.locals.user.avatar}"
+                                    alt="${res.locals.user.name}"
+                                    class="avatar"
+                                    style="${css`
+                                      width: var(--font-size--sm);
+                                      height: var(--font-size--sm);
+                                      position: relative;
+                                      bottom: var(--space---0-5);
+                                    `}"
+                                  />
+                                `}
+                            ${res.locals.user.name}
+                          </label>
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="isAnonymous"
+                              value="true"
+                              autocomplete="off"
+                              required
+                              class="input--radio"
+                            />
+                            <i class="bi bi-sunglasses"></i>
+                            Anonymous
                           </label>
                         </div>
                       </div>
@@ -9514,21 +9509,21 @@ ${value}</textarea
                   <button
                     class="button button--full-width-on-small-screen button--blue"
                     data-ondomcontentloaded="${javascript`
-                    Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
-                    tippy(this, {
-                      content: ${JSON.stringify(html`
-                        <span class="keyboard-shortcut">
-                          Ctrl+Enter or
-                          <span class="keyboard-shortcut--cluster"
-                            ><i class="bi bi-command"></i
-                            ><i class="bi bi-arrow-return-left"></i
-                          ></span>
-                        </span>
-                      `)},
-                      touch: false,
-                      allowHTML: true,
-                    });
-                  `}"
+                      Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                      tippy(this, {
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            Ctrl+Enter or
+                            <span class="keyboard-shortcut--cluster"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `)},
+                        touch: false,
+                        allowHTML: true,
+                      });
+                    `}"
                   >
                     <i class="bi bi-chat-left-text"></i>
                     Start Conversation
