@@ -11808,7 +11808,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { content?: string; isAnswer?: boolean; isAnonymous?: boolean },
+    { content?: string; isAnswer?: boolean; isAnonymous?: "true" | "false" },
     {},
     IsConversationAccessibleMiddlewareLocals
   >(
@@ -11819,7 +11819,11 @@ ${value}</textarea
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
         (req.body.isAnswer && res.locals.conversation.type !== "question") ||
-        (req.body.isAnonymous && res.locals.enrollment.role === "staff")
+        (res.locals.enrollment.role === "staff" &&
+          req.body.isAnonymous !== undefined) ||
+        (res.locals.enrollment.role === "student" &&
+          (typeof req.body.isAnonymous !== "string" ||
+            !["true", "false"].includes(req.body.isAnonymous)))
       )
         return next("validation");
 
@@ -11848,7 +11852,7 @@ ${value}</textarea
             ${res.locals.enrollment.id},
             ${req.body.content},
             ${req.body.isAnswer ? new Date().toISOString() : null},
-            ${req.body.isAnonymous ? new Date().toISOString() : null}
+            ${req.body.isAnonymous === "true" ? new Date().toISOString() : null}
           )
         `
       );
