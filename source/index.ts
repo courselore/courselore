@@ -9336,6 +9336,7 @@ ${value}</textarea
                         </div>
                       </div>
                     `}
+
                 <div
                   style="${css`
                     display: flex;
@@ -9407,6 +9408,7 @@ ${value}</textarea
                         </div>
                       `
                     : html``}
+
                   <div
                     class="label"
                     style="${css`
@@ -9453,6 +9455,71 @@ ${value}</textarea
                       </label>
                     </div>
                   </div>
+
+                  $${res.locals.enrollment.role === "staff"
+                    ? html``
+                    : html`
+                        <div
+                          class="label"
+                          style="${css`
+                            width: var(--space--40);
+                          `}"
+                        >
+                          <p class="label--text">Anonymity</p>
+                          <div
+                            style="${css`
+                              display: flex;
+                            `}"
+                          >
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="isAnonymous"
+                                autocomplete="off"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                              />
+                              <div
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Anonymous",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                $${res.locals.user.avatar === null
+                                  ? html`<i class="bi bi-person-circle"></i>`
+                                  : html`
+                                      <img
+                                        src="${res.locals.user.avatar}"
+                                        alt="${res.locals.user.name}"
+                                        class="avatar"
+                                        style="${css`
+                                          width: var(--font-size--sm);
+                                          height: var(--font-size--sm);
+                                          position: relative;
+                                          bottom: var(--space---0-5);
+                                        `}"
+                                      />
+                                    `}
+                                Post as yourself
+                              </div>
+                              <span
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Visible by Everyone",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-sunglasses"></i>
+                                Post anonymously
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      `}
                 </div>
 
                 <div>
