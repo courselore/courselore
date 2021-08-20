@@ -10910,7 +10910,8 @@ ${value}</textarea
                         >
                           $${message.authorEnrollment.id ===
                             res.locals.enrollment.id &&
-                          res.locals.enrollment.role === "student"
+                          res.locals.enrollment.role === "student" &&
+                          res.locals.conversation.staffOnlyAt === null
                             ? html`
                                 <div>
                                   <button
@@ -11692,7 +11693,8 @@ ${value}</textarea
                     </div>
                   `
                 : html``}
-              $${res.locals.enrollment.role === "staff"
+              $${res.locals.enrollment.role === "staff" ||
+              res.locals.conversation.staffOnlyAt !== null
                 ? html``
                 : html`
                     <div class="identity label">
