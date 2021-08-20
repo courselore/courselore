@@ -7867,27 +7867,63 @@ export default async function courselore(
                                       ${conversation.createdAt}
                                     </time>
                                     by
-                                    $${conversation.authorEnrollment.user
-                                      .avatar === null
+                                    $${conversation.anonymousAt === null ||
+                                    res.locals.enrollment.role === "staff" ||
+                                    conversation.authorEnrollment.id ===
+                                      res.locals.enrollment.id
                                       ? html`
-                                          <i class="bi bi-person-circle"></i>
+                                          $${conversation.authorEnrollment.user
+                                            .avatar === null
+                                            ? html`
+                                                <i
+                                                  class="bi bi-person-circle"
+                                                ></i>
+                                              `
+                                            : html`
+                                                <img
+                                                  src="${conversation
+                                                    .authorEnrollment.user
+                                                    .avatar}"
+                                                  alt="${conversation
+                                                    .authorEnrollment.user
+                                                    .name}"
+                                                  class="avatar"
+                                                  style="${css`
+                                                    width: var(--font-size--xs);
+                                                    height: var(
+                                                      --font-size--xs
+                                                    );
+                                                    position: relative;
+                                                    top: var(--space--0-5);
+                                                  `}"
+                                                />
+                                              `}
+                                          ${conversation.authorEnrollment.user
+                                            .name}
+                                        `
+                                      : html``}
+                                    $${conversation.anonymousAt === null
+                                      ? html``
+                                      : res.locals.enrollment.role ===
+                                          "staff" ||
+                                        conversation.authorEnrollment.id ===
+                                          res.locals.enrollment.id
+                                      ? html`
+                                          <span
+                                            data-ondomcontentloaded="${javascript`
+                                              tippy(this, {
+                                                content: "Anonymous to other students.",
+                                                touch: false,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-sunglasses"></i>
+                                          </span>
                                         `
                                       : html`
-                                          <img
-                                            src="${conversation.authorEnrollment
-                                              .user.avatar}"
-                                            alt="${conversation.authorEnrollment
-                                              .user.name}"
-                                            class="avatar"
-                                            style="${css`
-                                              width: var(--font-size--xs);
-                                              height: var(--font-size--xs);
-                                              position: relative;
-                                              top: var(--space--0-5);
-                                            `}"
-                                          />
+                                          <i class="bi bi-sunglasses"></i>
+                                          Anonymous
                                         `}
-                                    ${conversation.authorEnrollment.user.name}
                                   </div>
                                   $${conversation.updatedAt !== null
                                     ? html`
