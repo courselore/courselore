@@ -6796,7 +6796,7 @@ export default async function courselore(
                                     });
                                   `}"
                                 >
-                                  <i class="bi bi-unlock"></i>
+                                  <i class="bi bi-eye"></i>
                                   Visible by Everyone
                                 </span>
                                 <span
@@ -6807,7 +6807,7 @@ export default async function courselore(
                                     });
                                   `}"
                                 >
-                                  <i class="bi bi-lock"></i>
+                                  <i class="bi bi-eye-slash"></i>
                                   Visible by Staff Only
                                 </span>
                               </label>
@@ -7023,7 +7023,7 @@ export default async function courselore(
                                   });
                                 `}"
                               >
-                                <i class="bi bi-unlock"></i>
+                                <i class="bi bi-eye"></i>
                                 Visible by Everyone
                               </span>
                               <span
@@ -7034,7 +7034,7 @@ export default async function courselore(
                                   });
                                 `}"
                               >
-                                <i class="bi bi-lock"></i>
+                                <i class="bi bi-eye-slash"></i>
                                 Visible by Staff Only
                               </span>
                             </label>
@@ -8012,7 +8012,7 @@ export default async function courselore(
                                       $${conversation.staffOnlyAt !== null
                                         ? html`
                                             <div>
-                                              <i class="bi bi-lock"></i>
+                                              <i class="bi bi-eye-slash"></i>
                                               Staff
                                             </div>
                                           `
@@ -9398,7 +9398,7 @@ ${value}</textarea
                                           });
                                         `}"
                                       >
-                                        <i class="bi bi-lock"></i>
+                                        <i class="bi bi-eye-slash"></i>
                                       </button>
                                     `
                                   : html``}
@@ -9508,7 +9508,7 @@ ${value}</textarea
                             });
                           `}"
                         >
-                          <i class="bi bi-unlock"></i>
+                          <i class="bi bi-eye"></i>
                           Visible by Everyone
                         </span>
                         <span
@@ -9519,7 +9519,7 @@ ${value}</textarea
                             });
                           `}"
                         >
-                          <i class="bi bi-lock"></i>
+                          <i class="bi bi-eye-slash"></i>
                           Visible by Staff Only
                         </span>
                       </label>
@@ -10522,7 +10522,7 @@ ${value}</textarea
                               });
                             `}"
                           >
-                            <i class="bi bi-unlock"></i>
+                            <i class="bi bi-eye"></i>
                             Visible by Everyone
                           </button>
                           <div hidden>
@@ -10561,7 +10561,7 @@ ${value}</textarea
                                 </strong>
                               </p>
                               <button class="button button--rose">
-                                <i class="bi bi-lock"></i>
+                                <i class="bi bi-eye-slash"></i>
                                 Set as Visible by Staff Only
                               </button>
                             </form>
@@ -10575,7 +10575,7 @@ ${value}</textarea
                             gap: var(--space--1);
                           `}"
                         >
-                          <i class="bi bi-lock"></i>
+                          <i class="bi bi-eye-slash"></i>
                           Staff
                         </div>
                       `}
