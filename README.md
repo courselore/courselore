@@ -250,6 +250,7 @@ Insiders Builds are generated on every push. They’re useful for development an
   - The Search box doesn’t align with the highlighted conversation.
 - Test that pins are working…
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
+- Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 
 ### Authentication
 
