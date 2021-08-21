@@ -9785,7 +9785,16 @@ ${value}</textarea
                  "conversations"."staffOnlyAt"
           FROM "conversations"
           WHERE "conversations"."course" = ${res.locals.course.id} AND
-                "conversations"."reference" = ${req.params.conversationReference}
+                "conversations"."reference" = ${
+                  req.params.conversationReference
+                }
+                $${
+                  res.locals.enrollment.role !== "staff"
+                    ? sql`
+                        AND "conversations"."staffOnlyAt" IS NULL
+                      `
+                    : sql``
+                }
         `
       );
       if (conversation === undefined) return next("route");
