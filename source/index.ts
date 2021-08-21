@@ -4250,6 +4250,13 @@ export default async function courselore(
                     AND "taggings"."tag" = ${res.locals.tagFilter.id}
                   `
             }
+            $${
+              res.locals.enrollment.role !== "staff"
+                ? sql`
+                    AND "conversations"."staffOnlyAt" IS NULL
+                  `
+                : sql``
+            }
             GROUP BY "conversations"."id"
             ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
                      $${
