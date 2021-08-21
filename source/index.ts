@@ -39,6 +39,7 @@ import argon2 from "argon2";
 import sharp from "sharp";
 import lodash from "lodash";
 import QRCode from "qrcode";
+import nodemailer from "nodemailer";
 import faker from "faker";
 
 export default async function courselore(
@@ -9757,6 +9758,46 @@ ${value}</textarea
       res.redirect(
         `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${conversationReference}`
       );
+
+      // TODO:
+      // - ‘everything’
+      // - ‘essentials’
+      //   - Announcements
+      //   - ‘@mentions’
+      // - Check that user is allowed to see this message (with respect to staffOnly)
+      // - Include author (say Anonymous when necessary)
+      // - Don’t notify the author themselves
+      // - Messages
+      // - NOT EDITS
+      // - Have a queue
+      app.locals.helpers.emailTransporter.sendMail({
+        to: app.locals.database
+          .all<{ email: string }>(
+            sql`
+              SELECT "users"."email" AS "email"
+              FROM "users"
+              JOIN "enrollments" ON "users"."id" = "enrollments"."user"
+              WHERE "users"."emailNotifications" = 'everything' AND
+                    "enrollments"."course" = ${res.locals.course.id}
+            `
+          )
+          .map((user) => user.email)
+          .join(", "),
+        subject: `${res.locals.course.name} · ${req.body.title}`,
+        html: html`
+          ${app.locals.partials.textProcessor(req.body.content)}
+
+          <hr />
+
+          <p>
+            <a
+              href="${app.locals.settings
+                .url}/settings/notifications-preferences"
+              >Change Email Preferences</a
+            >
+          </p>
+        `,
+      });
     }
   );
 
@@ -12379,6 +12420,16 @@ ${value}</textarea
       );
     }
   );
+
+  // FIXME: Types.
+  interface Helpers {
+    emailTransporter: any;
+  }
+  app.locals.helpers.emailTransporter = {
+    sendMail(mail: any) {
+      console.log(mail);
+    },
+  };
 
   interface Helpers {
     sendEmail: ({
