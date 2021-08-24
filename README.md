@@ -176,6 +176,8 @@ The following are detailed instructions on how to install these tools in differe
 
 </details>
 
+<!-- TODO: Make Firefox use system trust store: security.enterprise_roots.enabled = true -->
+
 After setting up your development machine, clone and install CourseLore locally:
 
 ```console
@@ -645,6 +647,35 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-08-21</summary>
+
+- Progress.
+  - Anonymity.
+  - Staff-only conversations.
+  - Email notifications.
+    - Settings.
+    - Haven’t finished interaction with other features (staff-only conversations, for example).
+  - Polished read indicators:
+    - They weren’t showing up for the current message on small screens (because of fake conversations list presenting).
+    - On the side of messages.
+  - Polished messages list:
+    - Borders.
+    - Colors on badges.
+  - Several small fixes:
+    - Padding bottom scrolling bug.
+    - Scroll to unread message.
+- We decided to not launch on the fall, but wait for the next spring. Show CourseLore to more people along the way and work on their feedback.
+- Things we want for the spring:
+  - 1-1 conversations.
+  - Chat.
+  - demo.courselore.org or try.courselore.org
+  - Speed
+  - More strategic marketing.
+  - Maybe hire a designer to do a marketing page and add a wow factor to the project.
+
+</details>
 
 <details>
 <summary>2021-08-14</summary>
