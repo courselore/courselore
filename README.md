@@ -178,6 +178,33 @@ The following are detailed instructions on how to install these tools in differe
 
 <!-- TODO: Make Firefox use system trust store: security.enterprise_roots.enabled = true -->
 
+<!--
+
+TODO: Document open files limit on macOS
+
+https://gist.github.com/abernix/a7619b07b687bb97ab573b0dc30928a0
+
+$ echo kern.maxfiles=65536 | sudo tee -a /etc/sysctl.conf
+$ echo kern.maxfilesperproc=65536 | sudo tee -a /etc/sysctl.conf
+$ sudo sysctl -w kern.maxfiles=65536
+$ sudo sysctl -w kern.maxfilesperproc=65536
+$ ulimit -n 65536 65536
+
+https://docs.reactioncommerce.com/docs/requirements
+https://github.com/meteor/meteor/issues/8057
+https://stackoverflow.com/questions/45004352/error-enfile-file-table-overflow-scandir-while-run-reaction-on-mac
+http://blog.mact.me/2014/10/22/yosemite-upgrade-changes-open-file-limit
+
+Higher limit of 10485760 https://facebook.github.io/watchman/docs/install.html
+
+$ sudo sysctl -w kern.maxfiles=10485760
+$ sudo sysctl -w kern.maxfilesperproc=1048576
+kern.maxfiles=10485760
+kern.maxfilesperproc=1048576
+
+
+-->
+
 After setting up your development machine, clone and install CourseLore locally:
 
 ```console
@@ -226,6 +253,28 @@ Insiders Builds are generated on every push. They’re useful for development an
 
 <details>
 <summary><strong>Backlog</strong></summary>
+
+### To Organize
+
+- Red trashcan.
+- Consistent colors.
+- Change the presentation of anonymity.
+- Counter of private messages.
+- Private to public.
+
+- Things we want for the spring:
+
+  - 1-1 conversations.
+  - Chat.
+  - demo.courselore.org or try.courselore.org
+  - Speed
+  - More strategic marketing.
+  - Maybe hire a designer to do a marketing page and add a wow factor to the project.
+
+- [ ] Use function input for settings
+- [ ] Email notifications
+- [ ] Private questions from students to staff
+- [ ] Add colors everywhere else? (Things like pins, types, and so forth) (Currently it’s only messages list)
 
 ### Demonstration Fixtures
 
