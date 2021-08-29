@@ -9115,8 +9115,11 @@ ${value}</textarea
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(() => (tree) => {
         unistUtilVisit(tree, (node) => {
-          if (node.properties !== undefined && node.position !== undefined)
-            (node.properties as any).dataPosition = JSON.stringify(
+          if (
+            (node as any).properties !== undefined &&
+            node.position !== undefined
+          )
+            (node as any).properties.dataPosition = JSON.stringify(
               node.position
             );
         });
