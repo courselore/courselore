@@ -1065,6 +1065,7 @@ export default async function courselore(
                 }
                 display: flex;
                 gap: var(--space--1);
+                flex-wrap: wrap;
               }
 
               .heading--display {
