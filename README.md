@@ -39,6 +39,7 @@
 - `heading` needs `flex-wrap: wrap`. See, for example, `/settings/your-enrollment` at 300px wide.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
+- Update to `@types/node@16.0.0`.
 
 ### Users
 
@@ -140,9 +141,48 @@
 
 ### Infrastructure
 
+- `try.courselore.org` (reference https://moodle.org/demo)
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
 - Rate limiting.
+- Database transactions:
+  - One transaction per request?
+  - Considerations:
+    - We shouldn’t keep the transaction open across ticks of the event loop, which entails that all request handlers would have to be synchronous.
+    - Moreover, as far as I can tell the only way to run a middle **after** the router is to listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
+    - Maybe I can just call `next()` and then look at the `res.statusCode`?
+    - I think that transactions are only relevant if you’re running in cluster mode, because otherwise Node.js is single-threaded and queries are serialized, anyway.
+  - References:
+    - https://goenning.net/2017/06/20/session-per-request-pattern-go/
+    - https://stackoverflow.com/questions/24258782/node-express-4-middleware-after-routes
+    - https://www.lunchbadger.com/blog/tracking-the-performance-of-express-js-routes-and-middleware/
+    - https://stackoverflow.com/questions/27484361/is-it-possible-to-use-some-sort-of-middleware-after-sending-the-response-with
+    - https://stackoverflow.com/questions/44647617/middleware-after-all-route-in-nodejs
+    - https://github.com/jshttp/on-finished
+    - https://github.com/pillarjs/router/issues/18
+- ESM:
+  - ts-node (https://github.com/TypeStrong/ts-node/issues/1007)
+  - Jest (https://jestjs.io/docs/en/ecmascript-modules).
+- Use `Cache-control: no-store`.
+- Database indices.
+- Graceful HTTP shutdown
+  ```js
+  process.on("SIGTERM", () => {
+    debug("SIGTERM signal received: closing HTTP server");
+    server.close(() => {
+      debug("HTTP server closed");
+    });
+  });
+  ```
+  - https://github.com/gajus/http-terminator
+- Helmet.
+- csurf.
+- Auto-updater for self-hosted.
+- Backups.
+  - For us, as system administrators.
+  - For users, who may want to migrate data from a hosted version to another.
+    - Rewrite URLs in messages.
+
 
 ### API
 
@@ -162,6 +202,19 @@
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
 - Test screen readers.
 
+### Documentation
+
+- How to self-host.
+  - Create `download.courselore.org`.
+  - “One-click deployment”
+    - DigitalOcean.
+    - Linode.
+    - Amazon.
+    - Google Cloud.
+    - Microsoft Azure.
+    - https://sandstorm.io.
+- How to contribute to the project.
+
 ### Marketing
 
 - Newsletter.
@@ -176,76 +229,6 @@
 
 <details>
 <summary><strong>Implementation Notes</strong></summary>
-
-### Code Base Improvements
-
-- Consider using **session per request** middleware for database transactions.
-  - Considerations:
-    - We shouldn’t keep the transaction open across ticks of the event loop, which entails that all request handlers would have to be synchronous.
-    - Moreover, as far as I can tell the only way to run a middle **after** the router is to listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
-    - Maybe I can just call `next()` and then look at the `res.statusCode`?
-    - I think that transactions are only relevant if you’re running in cluster mode, because otherwise Node.js is single-threaded and queries are serialized, anyway.
-  - References:
-    - https://goenning.net/2017/06/20/session-per-request-pattern-go/
-    - https://stackoverflow.com/questions/24258782/node-express-4-middleware-after-routes
-    - https://www.lunchbadger.com/blog/tracking-the-performance-of-express-js-routes-and-middleware/
-    - https://stackoverflow.com/questions/27484361/is-it-possible-to-use-some-sort-of-middleware-after-sending-the-response-with
-    - https://stackoverflow.com/questions/44647617/middleware-after-all-route-in-nodejs
-    - https://github.com/jshttp/on-finished
-    - https://github.com/pillarjs/router/issues/18
-- Produce native ESM:
-  - It’s too fresh, assess again starting 2021-08.
-  - Blocked by experimental support in ts-node-dev (https://github.com/TypeStrong/ts-node/issues/1007) & Jest (https://jestjs.io/docs/en/ecmascript-modules).
-  - ESM unlocks top-level await, which is cool, but I don’t we’d need.
-- <https://github.com/wclr/ts-node-dev/issues/243>: Stop using `--pool` when calling `ts-node-dev`.
-- Use `Cache-control: no-store`.
-- Use database indices where necessary.
-- Graceful HTTP shutdown
-  ```js
-  process.on("SIGTERM", () => {
-    debug("SIGTERM signal received: closing HTTP server");
-    server.close(() => {
-      debug("HTTP server closed");
-    });
-  });
-  ```
-  - https://github.com/gajus/http-terminator
-- Helmet.
-- csurf.
-- Compression.
-- HTTP/2:
-  - <https://github.com/expressjs/express/issues/3388>: Express doesn’t work with Node’s http/2 implementation, because the `req` and `res` aren’t compatible.
-  - Use the spdy package (seems abandoned, and people said it doesn’t work with recent versions of node: https://github.com/spdy-http2/node-spdy/issues/380)
-  - Try express 5.
-  - <https://gist.github.com/studentIvan/6c78886c140067936ff379031fd12e14>
-  - <https://www.npmjs.com/package/http2-express-bridge>
-  - Frameworks that seem to support it out of the box:
-    - koa
-    - Hapi
-    - tinyhttp
-- Auto-updater
-- Make a redirect `download.courselore.org` that points to installer.
-- Make a demo version that self destructs every hour (like Moodle: https://moodle.org/demo)
-- “One-click deployment” for different platforms like DigitalOcean, Linode, and so forth.
-  - DigitalOcean
-  - Linode
-  - Amazon
-  - Google Cloud
-  - https://sandstorm.io
-- Page transitions & prefetching
-  - https://hotwire.dev
-  - https://docs.stimulusreflex.com
-  - https://barba.js.org
-  - https://swup.js.org/getting-started
-  - https://unpoly.com
-  - https://youtube.github.io/spfjs/
-  - https://getquick.link/
-  - https://github.com/defunkt/jquery-pjax
-- Backups.
-  - For us, as system administrators.
-  - For users, who may want to migrate data from a hosted version to another.
-    - Rewrite URLs in messages.
-- Update to `@types/node@16.0.0`.
 
 ### References
 
