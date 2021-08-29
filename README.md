@@ -6,134 +6,6 @@
 <a href="https://github.com/courselore/courselore/actions"><img src="https://github.com/courselore/courselore/workflows/.github/workflows/main.yml/badge.svg" alt="Continuous Integration"></a>
 </p>
 
-## To Organize
-
-### Notifications
-
-- **How:**
-  - Via email.
-  - In CourseLore as **read indicators**.
-  - In CourseLore as a dedicated alerts kind of thing.
-- **What:**
-  - Subscribe to whole courses to be notified of everything.
-    - Unsubscribe from certain conversations.
-  - For people who aren’t subscribe to the whole course, give an option to subscribe to threads.
-    - Give option to automatically subscribe them when they post.
-  - Regardless of notification preferences, staff may send messages that are notified to everyone.
-- **When:** Real-time vs digest.
-- **Mentions:**
-  - We’ll use automatically-generated usernames, for example, `@leandro-facchinetti--27348`.
-  - We won’t have a user profile page yet (maybe in the future), so the `@mentions` will not link to anywhere. They just exist for the benefit of the notification system.
-  - Also support things like `@staff` / `@students` / `@channel` / `@group-3`.
-- **Nice-to-have in the future:**
-  - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
-  - Snooze.
-
-### Anonymity
-
-- Allow people to create Personas.
-- Have a completely anonymous mode in which not even the staff has access to that information.
-
-### API
-
-- To integrate with other platforms, like, LMSs.
-  - Learning Tools Interoperability (LTI).
-- To build extensions, for example, ask a question from within the text editor.
-
-### Users
-
-- Avatars.
-  - Gravatar.
-- Multiple emails? Probably not, just the one institutional email (which is the account identifier). If people are affiliated with many institutions it’s likely that these institutions will be using different CourseLore instances anyway…
-- Allow people to remove their accounts.
-- User profile pages:
-  - A little bio.
-  - Accessible to other students, but not to the general public.
-  - Make `@mentions` link to the user profile page.
-- Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
-
-### Text Editor Niceties
-
-- Templates for questions (like GitHub Issues).
-- Reuse answers.
-- Paste tables from Excel and have them formatted as Markdown tables.
-- Give the fit-textarea a max-height: https://github.com/fregante/fit-textarea/issues/17
-
-### Text Processor
-
-- Emoji with the `:smile:` form.
-- Proxy insecure content: https://github.com/atmos/camo
-- Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
-- Polls.
-- Lightbox modal for resized images.
-- Add support for videos: Sanitization, dimensions, and so forth.
-
-### File Management
-
-- Let people configure other storage engines (for example, S3).
-- Create a **garbage collection** routine for attachments.
-- Clean geolocation from images.
-
-### Search
-
-- In contents of a course (for example, search for `NullPointerException` to find that thread that helped you out).
-  - Search within the scope of a course.
-  - Search in all courses you’re taking (for example, search for `deadline extension`).
-  - Reference: GitHub let’s you search in different scopes like that.
-- Filter by tags.
-- Dropdown helpers to pick mentions & references.
-  - https://github.com/zurb/tribute
-- Include snippets of search results. This is challenging because the contents of messages are Markdown, and the snippet must be aware of the parsing structure.
-
-### Forms Niceties
-
-- Use `maxlength`.
-- Keep the buttons disabled while the form isn’t in a valid state.
-- Use date pickers:
-  - https://github.com/jcgertig/date-input-polyfill
-  - https://github.com/Pikaday/Pikaday
-
-### Statistics
-
-- How many questions & how fast they were answered.
-- Student engagement for courses in which participation is graded.
-
-### Landing Page
-
-- Try to make animation consume less resources. (Currently it’s making the “this tab is consuming too much energy” warning pop up in Safari.)
-  - Maybe it has to do with computing the sine of large numbers? Clamp the values between 0–2π to see if that helps… Or maybe just cache a bunch results…
-
-### Live Course Communication during the Lectures
-
-- References:
-  - https://www.sli.do
-  - https://pigeonholelive.com/features-qna/
-
-### Native Applications
-
-- Can we get away with not having native applications? How much does it hinder our ability to do things like notifications?
-- Desktop with Electron & mobile with web views? Maybe React Native?
-- Have registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
-
-### Translate to Other Languages
-
-### Design & Accessibility
-
-- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
-- Test screen readers.
-
-### Marketing
-
-- Newsletter
-- Create CourseLore Gravatar
-  - Use in npm
-- Create accounts on:
-  - Patreon
-  - PayPal
-  - Facebook
-  - Instagram
-  - Reddit
-
 <details>
 <summary><strong>Backlog</strong></summary>
 
@@ -168,10 +40,13 @@
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 
-### Infrastructure
+### Users
 
-- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
-- Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
+- Gravatar as a fallback to avatar.
+- Change email.
+- Multiple emails.
+- Allow people to remove their accounts.
+- Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
 
 ### Authentication
 
@@ -198,6 +73,102 @@
 - Different modes: Forum vs Chat.
 - Different states: Open vs archived.
 - Flag messages to answer later.
+
+### Anonymity
+
+- Allow people to create Personas.
+- Have a completely anonymous mode in which not even the staff has access to the identity.
+
+### Notifications
+
+- Add support for things like `@staff` / `@students` / `@channel` / `@group-3`.
+- A list of unread messages and other things that require your attention.
+- More granular control over what to be notified about.
+  - Course-level configuration.
+  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
+  - Receive notifications from conversations you’ve participated in.
+- Digests that accumulate notifications over a period.
+- Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
+- Snooze.
+
+### Search
+
+- Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
+- Dropdown helpers to pick mentions & references (consider using https://github.com/zurb/tribute).
+- Include snippets of search results. This is challenging because the contents of messages are Markdown, and the snippet must be aware of the parsing structure. Maybe the solution is to store the parsed Markdown `.textContent` instead of the Markdown itself on the search tables.
+
+### Text Editor
+
+- Templates for questions (like GitHub Issues).
+- Reuse answers.
+- Paste tables from Excel and have them formatted as Markdown tables.
+
+### Text Processor
+
+- Emoji with the `:smile:` form.
+- Proxy insecure content: https://github.com/atmos/camo
+- Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
+- Polls.
+- Resize images & lightbox modal for resized images.
+- Add support for videos: Sanitization, dimensions, and so forth.
+
+### File Management
+
+- Let people configure other storage engines (for example, S3).
+- Create a garbage collection routine for attachments.
+- Clean geolocation from images.
+
+### Forms
+
+- Use `maxlength`.
+- Keep the buttons disabled while the form isn’t in a valid state.
+- Use date pickers:
+  - https://github.com/jcgertig/date-input-polyfill
+  - https://github.com/Pikaday/Pikaday
+
+### Statistics
+
+- How many questions & how fast they were answered.
+- Student engagement for courses in which participation is graded.
+
+### Live Course Communication during the Lectures
+
+- References:
+  - https://www.sli.do
+  - https://pigeonholelive.com/features-qna/
+
+### Infrastructure
+
+- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
+- Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
+
+### API
+
+- Integrate with other platforms, for example, LMSs.
+  - Learning Tools Interoperability (LTI).
+- To build extensions, for example, ask a question from within the text editor.
+
+### Native Applications
+
+- Can we get away with not having native applications? How much does it hinder our ability to do things like notifications?
+- Desktop with Electron & mobile with web views? Maybe React Native?
+- Have registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+
+### Design & Accessibility
+
+- Translate to other languages.
+- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
+- Test screen readers.
+
+### Marketing
+
+- Newsletter.
+- Create CourseLore Gravatar.
+  - Use in npm.
+- Create accounts on:
+  - Facebook.
+  - Instagram.
+  - Reddit.
 
 </details>
 
