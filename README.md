@@ -1,5 +1,10 @@
 <p align="center">
-<a href="https://courselore.org"><img src="public/splash.png" width="600" alt="CourseLore · Communication Platform for Education" /></a>
+<a href="https://courselore.org">
+<svg width="20" height="20">
+<path d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+CourseLore · Communication Platform for Education
+</a>
 </p>
 <p align="center">
 <a href="https://github.com/courselore/courselore"><img src="https://img.shields.io/badge/Source---" alt="Source"></a>
