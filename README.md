@@ -1,11 +1,5 @@
-<p align="center">
-<a href="https://courselore.org">
-<svg width="20" height="20">
-<path d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-CourseLore · Communication Platform for Education
-</a>
-</p>
+<h1 align="center"><a href="https://courselore.org">CourseLore</a></h1>
+<h3 align="center">Communication Platform for Education</h3>
 <p align="center">
 <a href="https://github.com/courselore/courselore"><img src="https://img.shields.io/badge/Source---" alt="Source"></a>
 <a href="https://www.npmjs.com/package/courselore"><img alt="Package" src="https://badge.fury.io/js/courselore.svg"></a>
