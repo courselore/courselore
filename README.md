@@ -8,44 +8,6 @@
 
 ## To Organize
 
-- Invitation links could limit the domains of the emails that could be used with them.
-- Live updates
-  - Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place
-
-### Courses
-
-- Different course states, for example, archived.
-- Remove course entirely.
-- Create custom roles (beyond “staff” and “student”) and manage fine-grained permissions.
-- Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
-- Control who’s able to create courses, which makes sense for people who self-host.
-
-### Invitations
-
-- Limit invitation links to certain domains.
-- Have an option to require approval of enrollment.
-- Have a public listing of courses in the system and allow people to request to join.
-
-### Conversations
-
-- Tags:
-  - Special:
-    - Pin.
-    - Question & Answer.
-      - Answers by staff or endorsed by staff are presented with a badge.
-  - User-generated, for organizational purposes, for example, “Assignment 3”:
-    - Created & managed by staff.
-    - Give option to make them mandatory to students when creating a conversation (not necessarily when posting).
-    - Tags attach to conversations as well as to entries.
-    - These tags may be private to instructors to allow for tags like “Change for Next Semester”.
-    - Tags may have dependencies, for example, an entry tagged “Patch to Handout” may only occur in a conversation tagged with “Assignment”.
-    - Good-to-have: Actions in the system triggered by tags. This idea is still a bit vague.
-- Likes.
-- Different modes: Forum vs Chat.
-- Different states: Open vs archived.
-- Different visibility: All, staff, or students. A student + staff, for private questions.
-- Flag messages to answer later.
-
 ### Notifications
 
 - **How:**
@@ -206,14 +168,36 @@
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 
-### Deployment
+### Infrastructure
 
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
+- Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
 
 ### Authentication
 
 - Forgot password.
 - Email confirmation.
+
+### Courses
+
+- Different course states, for example, archived.
+- Remove course entirely.
+- Create custom roles (beyond “staff” and “student”) and manage fine-grained permissions.
+- Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
+- Control who’s able to create courses, which makes sense for people who self-host.
+
+### Invitations
+
+- Limit invitation links to certain domains.
+- Have an option to require approval of enrollment.
+- Have a public listing of courses in the system and allow people to request to join.
+
+### Conversations
+
+- More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
+- Different modes: Forum vs Chat.
+- Different states: Open vs archived.
+- Flag messages to answer later.
 
 </details>
 
