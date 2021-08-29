@@ -6481,7 +6481,7 @@ export default async function courselore(
                           `}"
                         >
                           <button
-                            class="button button--tight button--tight--inline button--transparent text--rose"
+                            class="button button--tight button--tight--inline button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove from the Course",
@@ -6796,7 +6796,7 @@ export default async function courselore(
                               >
                                 <button
                                   type="button"
-                                  class="button button--tight button--tight--inline button--transparent text--rose"
+                                  class="button button--tight button--tight--inline button--transparent"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
                                       content: "Remove Tag",
@@ -7016,7 +7016,7 @@ export default async function courselore(
                           >
                             <button
                               type="button"
-                              class="button button--tight button--tight--inline button--transparent text--rose"
+                              class="button button--tight button--tight--inline button--transparent"
                               data-onmount="${javascript`
                                 tippy(this, {
                                   content: "Remove Tag",
@@ -10264,7 +10264,7 @@ ${value}</textarea
                       content.push(html`
                         <div>
                           <button
-                            class="button button--tight button--tight--inline button--transparent text--rose"
+                            class="button button--tight button--tight--inline button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Remove Conversation",
@@ -11102,7 +11102,7 @@ ${value}</textarea
                             ? html`
                                 <div>
                                   <button
-                                    class="button button--tight button--tight--inline button--transparent text--rose"
+                                    class="button button--tight button--tight--inline button--transparent"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
                                         content: "Remove Message",
