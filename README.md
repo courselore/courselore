@@ -15,7 +15,17 @@
 <details>
 <summary><strong>Backlog</strong></summary>
 
-### Minor Things We May Do Right Away
+### Spring 2022 Milestones
+
+- More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
+- Chat.
+- Performance.
+- More strategic marketing
+  - User groups.
+  - Marketing page.
+  - Maybe hire a designer.
+
+### Minor Things We Should Do Right Away
 
 - Make trashcan icon not red so it doesn’t stand out.
 - Consistent colors on things like pins.
@@ -29,45 +39,16 @@
 - Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
 - Mathematics, code, and possibly other things are overflowing in small screens.
 - Improve display of endorsements.
+- Manage answer badges more intelligently (answered at all, answered by staff).
 - Let original question asker approve an answer.
 - Test sliding session (touch).
-
-### Spring 2022 Milestones
-
-- More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
-- Chat.
-- Performance.
-- More strategic marketing
-  - User groups.
-  - Marketing page.
-  - Maybe hire a designer.
-
-### Demonstration Fixtures
-
-- https://github.com/Marak/Faker.js
-- https://github.com/chancejs/chancejs
-- https://github.com/boo1ean/casual
-- https://github.com/rosiejs/rosie
-
-### Minor Improvements
-
-- Add search by user name.
-- Get rid of fitTextarea & position sticky.
-- Generalize conversation category: Question, Announcement, Other.
-- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
-- Manage answer tags more intelligently:
-  - Answered at all.
-  - Answered by staff.
-- Styles issues.
-  - Simplify icons in sidebar (they’re wrapping now).
-  - Tippy & live reload.
-    - Reset Tippy somehow?
-  - Don’t breakpoint Demonstration Mode bar on phone if “Turn off” doesn’t show up.
-  - `heading--2` needs `flex-wrap`, for example, `/settings/your-enrollment` at 320px wide.
-  - The Search box doesn’t align with the highlighted conversation.
-- Test that pins are working…
+- `heading` needs `flex-wrap: wrap`. See, for example, `/settings/your-enrollment` at 300px wide.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
+
+### Deployment
+
+- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 
 ### Authentication
 
