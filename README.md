@@ -6,49 +6,41 @@
 <a href="https://github.com/courselore/courselore/actions"><img src="https://github.com/courselore/courselore/workflows/.github/workflows/main.yml/badge.svg" alt="Continuous Integration"></a>
 </p>
 
+### To Organize
+
+- Invitation links could limit the domains of the emails that could be used with them.
+- Live updates
+  - Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place
+
 <details>
 <summary><strong>Backlog</strong></summary>
 
-### To Organize
+### Minor Things We May Do Right Away
 
-- Red trashcan.
-- Consistent colors.
-- Change the presentation of anonymity.
-- Counter of private messages.
-- Private to public.
-- search by author name
-- [ ] Favicon
-  - SVG
-  - Notification indicator
-- [ ] Splash on README
-
-- Things we want for the spring:
-
-  - 1-1 conversations.
-  - Chat.
-  - demo.courselore.org or try.courselore.org
-  - Speed
-  - More strategic marketing.
-  - Maybe hire a designer to do a marketing page and add a wow factor to the project.
-
-- [ ] Use function input for settings
-- [ ] Email notifications
-- [ ] Private questions from students to staff
-- [ ] Add colors everywhere else? (Things like pins, types, and so forth) (Currently it’s only messages list)
-
+- Make trashcan icon not red so it doesn’t stand out.
+- Consistent colors on things like pins.
+- Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
+- Let staff-only conversations use the same global counter as regular conversations.
+- Let staff change the conversation from staff-only to regular.
+- Make search include author name.
+- Favicon (SVG & notification indicator).
+- Don’t centralize flashes.
+- Instead of calling `await courselore()` and then updating the settings, use function arguments.
+- Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
 - Mathematics, code, and possibly other things are overflowing in small screens.
-
 - Improve display of endorsements.
-- Let original question asker to approve an answer.
+- Let original question asker approve an answer.
+- Test sliding session (touch).
 
-- [ ] Invitation links could limit the domains of the emails that could be used with them
+### Spring 2022 Milestones
 
-- Live updates
-
-  - [ ] Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place
-  - https://laravel-livewire.com
-
-- Test sliding session (touch)
+- More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
+- Chat.
+- Performance.
+- More strategic marketing
+  - User groups.
+  - Marketing page.
+  - Maybe hire a designer.
 
 ### Demonstration Fixtures
 
