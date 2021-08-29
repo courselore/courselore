@@ -21,7 +21,6 @@
 
 ### Minor Things We Should Do Right Away
 
-- Make trashcan icon not red so it doesn’t stand out.
 - `heading` needs `flex-wrap: wrap`. See, for example, `/settings/your-enrollment` at 300px wide.
 - Update to `@types/node@16.0.0`.
 - Let staff-only conversations use the same global counter as regular conversations.
