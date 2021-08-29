@@ -1,7 +1,7 @@
 {
   "name": "courselore",
   "version": "0.0.8",
-  "description": "The Open-Source Student Forum",
+  "description": "Communication Platform for Education",
   "main": "distribution/index.js",
   "types": "distribution/index.d.ts",
   "bin": {
@@ -9,10 +9,12 @@
   },
   "repository": "courselore/courselore",
   "keywords": [
-    "forum",
     "education",
     "students",
-    "university"
+    "instructors",
+    "university",
+    "forum",
+    "chat"
   ],
   "author": "CourseLore <npm@courselore.org> (https://courselore.org)",
   "license": "GPL",

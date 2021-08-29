@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://courselore.org"><img src="public/splash.png" width="600" alt="CourseLore · The Open-Source Student Forum" /></a>
+<a href="https://courselore.org"><img src="public/splash.png" width="600" alt="CourseLore · Communication Platform for Education" /></a>
 </p>
 <p align="center">
 <a href="https://github.com/courselore/courselore"><img src="https://img.shields.io/badge/Source---" alt="Source"></a>

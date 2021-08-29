@@ -355,7 +355,7 @@ export default async function courselore(
             name="viewport"
             content="width=device-width, initial-scale=1, maximum-scale=1"
           />
-          <meta name="description" content="The Open-Source Student Forum" />
+          <meta name="description" content="Communication Platform for Education" />
 
           <link
             rel="icon"
@@ -2977,7 +2977,7 @@ export default async function courselore(
         req,
         res,
         head: html`
-          <title>Sign in · CourseLore · The Open-Source Student Forum</title>
+          <title>Sign in · CourseLore · Communication Platform for Education</title>
         `,
         body: html`
           <form
@@ -3092,7 +3092,7 @@ export default async function courselore(
         req,
         res,
         head: html`
-          <title>Sign up · CourseLore · The Open-Source Student Forum</title>
+          <title>Sign up · CourseLore · Communication Platform for Education</title>
         `,
         body: html`
           <form
