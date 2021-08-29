@@ -22,13 +22,14 @@
 ### Minor Things We Should Do Right Away
 
 - Make trashcan icon not red so it doesn’t stand out.
+- `heading` needs `flex-wrap: wrap`. See, for example, `/settings/your-enrollment` at 300px wide.
+- Update to `@types/node@16.0.0`.
+- Let staff-only conversations use the same global counter as regular conversations.
 - Consistent colors on things like pins.
 - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
-- Let staff-only conversations use the same global counter as regular conversations.
 - Let staff change the conversation from staff-only to regular.
 - Make search include author name.
 - Favicon (SVG & notification indicator).
-- Don’t centralize flashes.
 - Instead of calling `await courselore()` and then updating the settings, use function arguments.
 - Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
 - Mathematics, code, and possibly other things are overflowing in small screens.
@@ -36,10 +37,8 @@
 - Manage answer badges more intelligently (answered at all, answered by staff).
 - Let original question asker approve an answer.
 - Test sliding session (touch).
-- `heading` needs `flex-wrap: wrap`. See, for example, `/settings/your-enrollment` at 300px wide.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
-- Update to `@types/node@16.0.0`.
 
 ### Users
 
