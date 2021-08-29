@@ -157,8 +157,9 @@
     - https://github.com/jshttp/on-finished
     - https://github.com/pillarjs/router/issues/18
 - ESM:
-  - ts-node (https://github.com/TypeStrong/ts-node/issues/1007)
-  - Jest (https://jestjs.io/docs/en/ecmascript-modules).
+  - https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+  - https://github.com/TypeStrong/ts-node/issues/1007
+  - https://jestjs.io/docs/en/ecmascript-modules
 - Use `Cache-control: no-store`.
 - Database indices.
 - Graceful HTTP shutdown
