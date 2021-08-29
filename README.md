@@ -21,7 +21,6 @@
 
 ### Minor Things We Should Do Right Away
 
-- Update to `@types/node@16.0.0`.
 - Let staff-only conversations use the same global counter as regular conversations.
 - Consistent colors on things like pins.
 - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
