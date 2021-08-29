@@ -202,6 +202,19 @@ $ sudo sysctl -w kern.maxfilesperproc=1048576
 kern.maxfiles=10485760
 kern.maxfilesperproc=1048576
 
+-->
+
+<!--
+
+TODO: Document local tunnel:
+
+ssh -NR 4001:localhost:4000 root@courselore.org
+
+/etc/ssh/sshd_config
+GatewayPorts yes
+
+ssh -NR 0.0.0.0:4001:localhost:4000 root@courselore.org
+
 
 -->
 
@@ -261,6 +274,11 @@ Insiders Builds are generated on every push. They’re useful for development an
 - Change the presentation of anonymity.
 - Counter of private messages.
 - Private to public.
+- search by author name
+- [ ] Favicon
+  - SVG
+  - Notification indicator
+- [ ] Splash on README
 
 - Things we want for the spring:
 
@@ -275,6 +293,19 @@ Insiders Builds are generated on every push. They’re useful for development an
 - [ ] Email notifications
 - [ ] Private questions from students to staff
 - [ ] Add colors everywhere else? (Things like pins, types, and so forth) (Currently it’s only messages list)
+
+- Mathematics, code, and possibly other things are overflowing in small screens.
+
+- Improve display of endorsements.
+- Let original question asker to approve an answer.
+
+- [ ] Invitation links could limit the domains of the emails that could be used with them
+
+- Live updates
+  - [ ] Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place
+  - https://laravel-livewire.com
+
+- Test sliding session (touch)
 
 ### Demonstration Fixtures
 
@@ -672,6 +703,9 @@ Insiders Builds are generated on every push. They’re useful for development an
 - <https://glacial-plateau-47269.herokuapp.com/>
   - <https://glacial-plateau-47269.herokuapp.com/jhu/login>
 - <https://www.acadly.com/>
+- <https://github.com/zulip/zulip>
+- <https://github.com/mattermost/mattermost-server>
+- <https://github.com/RocketChat/Rocket.Chat>
 - References in self-hosting
   - https://www.reddit.com/r/selfhosted/
   - Discourse
