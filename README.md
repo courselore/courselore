@@ -52,6 +52,7 @@
 
 - Forgot password.
 - Email confirmation.
+- SSO with Hopkins ID (SAML).
 
 ### Courses
 
@@ -141,6 +142,7 @@
 
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
+- Rate limiting.
 
 ### API
 
@@ -174,114 +176,6 @@
 
 <details>
 <summary><strong>Implementation Notes</strong></summary>
-
-### Email
-
-- Have options to use third-parties, but also provide our own email delivery solution. Why?
-  - To really protect everyone’s privacy, instead of potentially leaking sensitive information to the third-party who’s delivering the email.
-  - More moving parts that may go down.
-  - Cost.
-- Requirements for good deliverability:
-  - IPv6.
-  - DNS:
-    - MX DNS record
-      - Check with <https://toolbox.googleapps.com/apps/checkmx/>
-    - PTR DNS record
-      - IPv4 & IPv6
-      - Check with <https://intodns.com/>
-    - SPF
-      - <https://support.google.com/a/answer/33786#zippy=>
-    - DMARC
-      - <https://support.google.com/a/topic/2759254>
-  - DKIM
-    - <https://support.google.com/a/answer/174124?visit_id=637457136864921918-3619574292&ref_topic=2752442&rd=1#zippy=>
-    - Key of 1024 bits or longer (recommended is 2048 bits)
-  - TLS
-  - MTA-STS??
-  - ARC??
-    - http://arc-spec.org
-  - Blacklists
-    - Check with
-      - https://support.google.com/mail/answer/9981691?visit_id=637457136864921918-3619574292&rd=1
-      - https://transparencyreport.google.com/safe-browsing/search
-  - Unsubscribe
-    - “Use one-click unsubscribe”:
-      - <https://support.google.com/mail/answer/81126?hl=en>
-        - <https://tools.ietf.org/html/rfc2369>
-        - <https://tools.ietf.org/html/rfc8058>
-    - Generic troubleshooter
-      - <https://support.google.com/mail/troubleshooter/2696779>
-  - VERP
-    - <https://meta.discourse.org/t/handling-bouncing-e-mails/45343>
-- Third-parties:
-  - SendGrid
-  - SES
-  - https://blog.mailtrap.io/free-smtp-servers/
-- Libraries
-  - https://www.npmjs.com/package/sendmail
-  - Nodemailer direct transport (https://github.com/nodemailer/nodemailer/issues/1227)
-  - https://www.npmjs.com/package/sendmail
-  - https://nodemailer.com/extras/smtp-connection/
-  - https://github.com/andris9/mailauth
-  - https://www.npmjs.com/package/usemail
-  - Haraka
-  - https://github.com/substack/node-smtp-protocol
-  - https://github.com/zone-eu/zone-mta
-- Boxed solutions
-  - https://mailinabox.email
-  - https://www.iredmail.org
-  - https://modoboa.org/en/
-  - https://github.com/sovereign/sovereign
-  - https://mailu.io/1.7/
-  - https://mailcow.email
-    - https://www.servermania.com/kb/articles/setup-your-own-email-server/
-- Howtos
-  - <https://medium.com/@stoyanov.veseline/self-hosting-a-mail-server-in-2019-6d29542dadd4>
-  - https://sealedabstract.com/code/nsa-proof-your-e-mail-in-2-hours/
-  - https://blog.mailtrap.io/setup-smtp-server/
-  - https://arstechnica.com/information-technology/2014/02/how-to-run-your-own-e-mail-server-with-your-own-domain-part-1/
-- Testing
-  - https://mailtrap.io/
-  - https://mailslurper.com
-
-### Authentication
-
-- Passwordless authentication (Magic Authentication Links)
-  - https://github.com/nickbalestra/zero
-  - https://github.com/mxstbr/passport-magic-login
-  - https://github.com/vinialbano/passport-magic-link
-  - http://www.passportjs.org/packages/passport-passwordless/
-  - https://github.com/florianheinemann/passwordless
-  - https://hacks.mozilla.org/2014/10/passwordless-authentication-secure-simple-and-fast-to-deploy/
-  - https://reallifeprogramming.com/how-to-implement-magic-link-authentication-using-jwt-in-node-8193196bcd78?gi=10747bc1322e
-  - Don’t say whether the user is on the database: https://www.linkedin.com/pulse/dont-do-you-implement-magic-links-authentication-adrian-oprea
-  - https://blog.jacksonbates.com/passwordless
-  - https://www.freecodecamp.org/news/360-million-reasons-to-destroy-all-passwords-9a100b2b5001/
-  - https://www.npmjs.com/package/passport-jwt#extracting-the-jwt-from-the-request
-  - https://www.youtube.com/watch?v=KiYfWaGRHTc
-  - https://softwareontheroad.com/nodejs-jwt-authentication-oauth/
-  - https://medium.com/@aleksandrasays/sending-magic-links-with-nodejs-765a8686996
-  - https://hackernoon.com/expressjs-integration-guide-for-passwordless-authentication-with-didapp-y55p3yss
-  - https://github.com/alsmola/nopassword
-  - https://www.wired.com/2016/06/hey-stop-using-texts-two-factor-authentication/
-  - https://medium.com/@ninjudd/lets-boycott-passwords-680d97eddb01
-  - https://medium.com/@ninjudd/passwords-are-obsolete-9ed56d483eb
-  - https://notes.xoxco.com/post/27999787765/is-it-time-for-password-less-login
-  - https://notes.xoxco.com/post/28288684632/more-on-password-less-login
-  - Let’s not use JWT, because you have to check if a token has already been used anyway; at that point, just give a plain token that you stored in the database.
-    - https://www.youtube.com/watch?v=dgg1dvs0Bn4
-- Prevent people from trying to brute-force login. Put a limit on the amount of magic links you may generate in a period. Though I think that’ll be covered by the general rate-limiting solution we end up using.
-- Good-to-have in the future: SSO with Hopkins ID
-  - SAML.
-
-### Queues
-
-- For background tasks, such as sending email.
-- Consider following the supposedly **bad practice** of using a database (SQLite, in this case) as a queue, because it’s simpler.
-  - http://sqlite.1065341.n5.nabble.com/SQLite-is-perfect-for-FILE-based-MESSAGE-QUEUE-td57343.html
-  - https://rdrr.io/cran/liteq/man/liteq.html
-  - https://github.com/kd0kfo/smq/wiki/About-SMQ
-  - https://github.com/damoclark/node-persistent-queue
 
 ### Code Base Improvements
 
