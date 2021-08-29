@@ -53,7 +53,7 @@
 
 - Forgot password.
 - Email confirmation.
-- SSO with Hopkins ID (SAML).
+- SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
 
 ### Courses
 
@@ -182,7 +182,7 @@
   - For us, as system administrators.
   - For users, who may want to migrate data from a hosted version to another.
     - Rewrite URLs in messages.
-
+- Automated tests.
 
 ### API
 
@@ -225,54 +225,44 @@
   - Instagram.
   - Reddit.
 
-</details>
-
-<details>
-<summary><strong>Implementation Notes</strong></summary>
-
 ### References
 
-- GitHub
-- Slack
-- <https://campuswire.com>
-- <https://piazza.com/>
-- <https://discourse.org>
-- <https://us.edstem.org>
-- <https://aula.education>
-- <https://yellowdig.com>
-- <https://moodle.org>
-- Canvas
-- <https://www.reddit.com>
-- Basecamp
-- <https://www.codegrade.com/>
-  - <https://app.codegra.de/login>
-  - <https://github.com/CodeGra-de>
-  - <https://github.com/CodeGrade/bottlenose>
-- <https://glacial-plateau-47269.herokuapp.com/>
-  - <https://glacial-plateau-47269.herokuapp.com/jhu/login>
-- <https://www.acadly.com/>
-- <https://github.com/zulip/zulip>
-- <https://github.com/mattermost/mattermost-server>
-- <https://github.com/RocketChat/Rocket.Chat>
-- References in self-hosting
-  - https://www.reddit.com/r/selfhosted/
-  - Discourse
-  - Mattermost
-  - Moodle
-  - GitLab
-  - WordPress
-  - https://github.com/RocketChat/Rocket.Chat
-  - https://gitea.io/
-  - https://gogs.io/
-  - https://hub.balena.io
-  - https://github.com/awesome-selfhosted/awesome-selfhosted
-  - https://selfhosted.show
-- <https://github.com/npm/roadmap/projects/1>: A meta-reference on how to present the roadmap moving forward.
-- References on text editors:
+- Communication platforms for education
+  - <https://piazza.com>
+  - <https://campuswire.com>
+  - <https://edstem.org>
+  - <https://aula.education>
+  - <https://yellowdig.com>
+  - <https://moodle.org>
+  - <https://canvaslms.com>
+  - <https://www.acadly.com/>
+- General-purpose communication platforms
+  - <https://github.com>
+  - <https://slack.com>
+  - <https://discourse.org>
+  - <https://basecamp.com>
+  - <https://reddit.com>
+- Open-source communication platforms
+  - <https://github.com/zulip/zulip>
+  - <https://github.com/RocketChat/Rocket.Chat>
+  - <https://github.com/mattermost/mattermost-server>
+- Graders
+  - <https://www.codegrade.com/>
+    - <https://app.codegra.de/login>
+    - <https://github.com/CodeGra-de>
+    - <https://github.com/CodeGrade/bottlenose>
+- Self-hosting
+  - <https://www.reddit.com/r/selfhosted/>
+  - <https://selfhosted.show>
+  - <https://github.com/awesome-selfhosted/awesome-selfhosted>
+  - <https://gitlab.com>
+  - <https://wordpress.org>
+  - <https://gitea.io/>
+  - <https://gogs.io/>
+- Text editors
   - https://typora.io
   - https://www.notion.so
   - https://marktext.app
-- Write more automated tests
 
 </details>
 
