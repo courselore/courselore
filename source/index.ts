@@ -805,6 +805,13 @@ export default async function courselore(
                 }
                 &:checked {
                   background-color: var(--color--blue--600);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--blue--500);
+                  }
+                  &:active {
+                    background-color: var(--color--blue--700);
+                  }
                 }
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--700);
@@ -817,6 +824,13 @@ export default async function courselore(
                   }
                   &:checked {
                     background-color: var(--color--blue--700);
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--blue--600);
+                    }
+                    &:active {
+                      background-color: var(--color--blue--800);
+                    }
                   }
                 }
                 width: var(--space--3-5);
