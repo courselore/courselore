@@ -3892,7 +3892,7 @@ export default async function courselore(
                   `}"
                 >
                   <label
-                    class="button button--tight button--tight--inline button--transparent"
+                    class="button button--tight button--tight--inline"
                   >
                     <input
                       type="radio"
@@ -3914,7 +3914,7 @@ export default async function courselore(
                   `}"
                 >
                   <label
-                    class="button button--tight button--tight--inline button--transparent"
+                    class="button button--tight button--tight--inline"
                   >
                     <input
                       type="radio"
@@ -3936,7 +3936,7 @@ export default async function courselore(
                   `}"
                 >
                   <label
-                    class="button button--tight button--tight--inline button--transparent"
+                    class="button button--tight button--tight--inline"
                   >
                     <input
                       type="radio"
@@ -5140,7 +5140,7 @@ export default async function courselore(
                   `}"
                 >
                   <label
-                    class="button button--tight button--tight--inline button--transparent"
+                    class="button button--tight button--tight--inline"
                   >
                     <input
                       type="radio"
@@ -5160,7 +5160,7 @@ export default async function courselore(
                     Invitation Link
                   </label>
                   <label
-                    class="button button--tight button--tight--inline button--transparent"
+                    class="button button--tight button--tight--inline"
                   >
                     <input
                       type="radio"
