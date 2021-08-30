@@ -866,6 +866,13 @@ export default async function courselore(
                 }
                 &:checked {
                   background-color: var(--color--blue--600);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--blue--500);
+                  }
+                  &:active {
+                    background-color: var(--color--blue--700);
+                  }
                 }
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--700);
@@ -878,6 +885,13 @@ export default async function courselore(
                   }
                   &:checked {
                     background-color: var(--color--blue--700);
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--blue--600);
+                    }
+                    &:active {
+                      background-color: var(--color--blue--800);
+                    }
                   }
                 }
                 width: var(--space--8);
@@ -5266,13 +5280,11 @@ export default async function courselore(
                     display: flex;
                   `}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
                       autocomplete="off"
-                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                      class="input--checkbox"
                       onchange="${javascript`
                         const expiresAt = this.closest("form").querySelector(".expires-at");
                         expiresAt.hidden = !this.checked;
@@ -5280,28 +5292,8 @@ export default async function courselore(
                           if (element.disabled !== undefined) element.disabled = !this.checked;
                       `}"
                     />
-                    <span
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Set as Expiring",
-                          touch: false,
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-calendar-minus"></i>
-                      Doesn’t Expire
-                    </span>
-                    <span
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Set as Not Expiring",
-                          touch: false,
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-calendar-plus"></i>
-                      Expires
-                    </span>
+                    <i class="bi bi-calendar-plus"></i>
+                    Expires
                   </label>
                 </div>
               </div>
