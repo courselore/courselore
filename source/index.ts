@@ -9697,20 +9697,15 @@ ${value}</textarea
       )
         return next("validation");
 
-      const conversationReference = req.body.isStaffOnly
-        ? cryptoRandomString({ length: 10, type: "numeric" })
-        : (() => {
-            app.locals.database.run(
-              sql`
-              UPDATE "courses"
-              SET "nextConversationReference" = ${
-                res.locals.course.nextConversationReference + 1
-              }
-              WHERE "id" = ${res.locals.course.id}
-            `
-            );
-            return String(res.locals.course.nextConversationReference);
-          })();
+      app.locals.database.run(
+        sql`
+          UPDATE "courses"
+          SET "nextConversationReference" = ${
+            res.locals.course.nextConversationReference + 1
+          }
+          WHERE "id" = ${res.locals.course.id}
+        `
+      );
       // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
       const conversationId = Number(
         app.locals.database.run(
@@ -9726,7 +9721,7 @@ ${value}</textarea
             )
             VALUES (
               ${res.locals.course.id},
-              ${conversationReference},
+              ${String(res.locals.course.nextConversationReference)},
               ${req.body.title},
               ${2},
               ${req.body.type},
@@ -9772,7 +9767,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${conversationReference}`
+        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
       );
 
       // TODO:
