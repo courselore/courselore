@@ -3891,9 +3891,7 @@ export default async function courselore(
                     display: flex;
                   `}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
                       name="emailNotifications"
@@ -3913,9 +3911,7 @@ export default async function courselore(
                     display: flex;
                   `}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
                       name="emailNotifications"
@@ -3935,9 +3931,7 @@ export default async function courselore(
                     display: flex;
                   `}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
                       name="emailNotifications"
@@ -5139,9 +5133,7 @@ export default async function courselore(
                     gap: var(--space--4);
                   `}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
                       name="type"
@@ -5159,9 +5151,7 @@ export default async function courselore(
                     <i class="bi bi-link"></i>
                     Invitation Link
                   </label>
-                  <label
-                    class="button button--tight button--tight--inline"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="radio"
                       name="type"
@@ -5270,7 +5260,7 @@ export default async function courselore(
                     (role) =>
                       html`
                         <label
-                          class="button button--tight button--tight--inline button--transparent"
+                          class="button button--tight button--tight--inline"
                         >
                           <input
                             type="radio"
@@ -6749,13 +6739,13 @@ export default async function courselore(
                           >
                             <div
                               style="${css`
-                                width: var(--space--44);
+                                width: var(--space--52);
                                 display: flex;
                                 justify-content: flex-start;
                               `}"
                             >
                               <label
-                                class="button button--tight button--tight--inline button--transparent"
+                                class="button button--tight button--tight--inline"
                               >
                                 <input
                                   type="checkbox"
@@ -6763,30 +6753,10 @@ export default async function courselore(
                                   $${tag.staffOnlyAt === null
                                     ? html``
                                     : html`checked`}
-                                  class="disable-on-delete visually-hidden input--radio-or-checkbox--multilabel"
+                                  class="input--checkbox"
                                 />
-                                <span
-                                  data-ondomcontentloaded="${javascript`
-                                    this.tooltip = tippy(this, {
-                                      content: "Set as Visible by Staff Only",
-                                      touch: false,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-eye"></i>
-                                  Visible by Everyone
-                                </span>
-                                <span
-                                  data-ondomcontentloaded="${javascript`
-                                    this.tooltip = tippy(this, {
-                                      content: "Set as Visible by Everyone",
-                                      touch: false,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-eye-slash"></i>
-                                  Visible by Staff Only
-                                </span>
+                                <i class="bi bi-eye-slash"></i>
+                                Visible by Staff Only
                               </label>
                             </div>
                             <div
@@ -6974,46 +6944,26 @@ export default async function courselore(
                         >
                           <div
                             style="${css`
-                              width: var(--space--44);
+                              width: var(--space--52);
                               display: flex;
                               justify-content: flex-start;
                             `}"
                           >
                             <label
-                              class="button button--tight button--tight--inline button--transparent"
+                              class="button button--tight button--tight--inline"
                             >
                               <input
                                 type="checkbox"
                                 disabled
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                class="input--checkbox"
                                 data-onmount="${javascript`
                                   this.dataset.forceIsModified = true;
                                   this.disabled = false;
                                   this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
                                 `}"
                               />
-                              <span
-                                data-onmount="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Visible by Staff Only",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-eye"></i>
-                                Visible by Everyone
-                              </span>
-                              <span
-                                data-onmount="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Visible by Everyone",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-eye-slash"></i>
-                                Visible by Staff Only
-                              </span>
+                              <i class="bi bi-eye-slash"></i>
+                              Visible by Staff Only
                             </label>
                           </div>
                           <div
