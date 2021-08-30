@@ -9275,7 +9275,7 @@ ${value}</textarea
                   $${res.locals.conversationTypes.map(
                     (conversationType) => html`
                       <label
-                        class="button button--tight button--tight--inline button--transparent"
+                        class="button button--tight button--tight--inline"
                       >
                         <input
                           type="radio"
