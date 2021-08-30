@@ -667,10 +667,11 @@ export default async function courselore(
                     const response = await fetch(window.location.href);
                     switch (response.status) {
                       case 200:
-                        const refreshedDocument = new DOMParser().parseFromString(
-                          await response.text(),
-                          "text/html"
-                        );
+                        const refreshedDocument =
+                          new DOMParser().parseFromString(
+                            await response.text(),
+                            "text/html"
+                          );
                         for (const element of refreshedDocument.querySelectorAll(
                           "[data-ondomcontentloaded]"
                         ))
@@ -4304,13 +4305,14 @@ export default async function courselore(
         `
       )!.count;
 
-      res.locals.conversationTypes = app.locals.constants.conversationTypes.filter(
-        (conversationType) =>
-          !(
-            conversationType === "announcement" &&
-            res.locals.enrollment.role !== "staff"
-          )
-      );
+      res.locals.conversationTypes =
+        app.locals.constants.conversationTypes.filter(
+          (conversationType) =>
+            !(
+              conversationType === "announcement" &&
+              res.locals.enrollment.role !== "staff"
+            )
+        );
 
       next();
     },
@@ -8049,9 +8051,9 @@ export default async function courselore(
                                                 tippy(this, {
                                                   content: ${JSON.stringify(
                                                     `Endorsed by ${
-                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                                        "en"
-                                                      ).format(
+                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                        Intl as any
+                                                      ).ListFormat("en").format(
                                                         conversation.endorsements.map(
                                                           (endorsement) =>
                                                             endorsement
@@ -11338,9 +11340,9 @@ ${value}</textarea
                                               `Remove Endorsement${
                                                 message.endorsements.length > 1
                                                   ? ` (Also endorsed by ${
-                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                                        "en"
-                                                      ).format(
+                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                        Intl as any
+                                                      ).ListFormat("en").format(
                                                         message.endorsements
                                                           .filter(
                                                             (endorsement) =>
@@ -11388,9 +11390,9 @@ ${value}</textarea
                                                 tippy(this, {
                                                   content: ${JSON.stringify(
                                                     `Endorse (Already endorsed by ${
-                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                                        "en"
-                                                      ).format(
+                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                        Intl as any
+                                                      ).ListFormat("en").format(
                                                         message.endorsements.map(
                                                           (endorsement) =>
                                                             endorsement
@@ -11432,9 +11434,9 @@ ${value}</textarea
                                   tippy(this, {
                                     content: ${JSON.stringify(
                                       `Endorsed by ${
-                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (Intl as any).ListFormat(
-                                          "en"
-                                        ).format(
+                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                          Intl as any
+                                        ).ListFormat("en").format(
                                           message.endorsements.map(
                                             (endorsement) =>
                                               endorsement.enrollment.user.name
