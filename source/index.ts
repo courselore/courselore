@@ -99,12 +99,20 @@ export default async function courselore(
   interface Constants {
     enrollmentAccentColors: EnrollmentAccentColor[];
   }
-  type EnrollmentAccentColor = "amber" | "emerald" | "blue" | "fuchsia";
+  type EnrollmentAccentColor =
+    | "red"
+    | "yellow"
+    | "emerald"
+    | "sky"
+    | "violet"
+    | "pink";
   app.locals.constants.enrollmentAccentColors = [
-    "amber",
+    "red",
+    "yellow",
     "emerald",
-    "blue",
-    "fuchsia",
+    "sky",
+    "violet",
+    "pink",
   ];
 
   interface Constants {
@@ -192,7 +200,7 @@ export default async function courselore(
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('amber', 'emerald', 'blue', 'fuchsia')),
+        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('red', 'yellow', 'emerald', 'sky', 'violet', 'pink')),
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
