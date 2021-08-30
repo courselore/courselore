@@ -9274,9 +9274,7 @@ ${value}</textarea
                 >
                   $${res.locals.conversationTypes.map(
                     (conversationType) => html`
-                      <label
-                        class="button button--tight button--tight--inline"
-                      >
+                      <label class="button button--tight button--tight--inline">
                         <input
                           type="radio"
                           name="type"
@@ -9330,38 +9328,17 @@ ${value}</textarea
                               `}"
                             >
                               <label
-                                class="button button--tight button--tight--inline button--transparent"
+                                class="button button--tight button--tight--inline"
                               >
                                 <input
                                   type="checkbox"
                                   name="tagsReferences[]"
                                   value="${tag.reference}"
                                   required
-                                  class="visually-hidden input--radio-or-checkbox--multilabel"
+                                  class="input--checkbox"
                                 />
-                                <span
-                                  data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "Add Tag",
-                                        touch: false,
-                                      });
-                                    `}"
-                                >
-                                  <i class="bi bi-tag"></i>
-                                  ${tag.name}
-                                </span>
-                                <span
-                                  class="text--blue"
-                                  data-ondomcontentloaded="${javascript`
-                                      tippy(this, {
-                                        content: "Remove Tag",
-                                        touch: false,
-                                      });
-                                    `}"
-                                >
-                                  <i class="bi bi-tag-fill"></i>
-                                  ${tag.name}
-                                </span>
+                                <i class="bi bi-tag"></i>
+                                ${tag.name}
                               </label>
                               $${tag.staffOnlyAt !== null
                                 ? html`
