@@ -6925,6 +6925,7 @@ export default async function courselore(
                       >
                         <input
                           type="text"
+                          placeholder=" "
                           required
                           autocomplete="off"
                           disabled
