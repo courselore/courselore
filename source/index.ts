@@ -8284,7 +8284,7 @@ export default async function courselore(
               margin: var(--space--0) var(--space--3);
               overflow-x: auto;
               display: flex;
-              gap: var(--space--2-5);
+              gap: var(--space--2);
               & > * {
                 display: flex;
               }
@@ -9392,30 +9392,10 @@ ${value}</textarea
                             type="checkbox"
                             name="isPinned"
                             autocomplete="off"
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            class="input--checkbox"
                           />
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Pin",
-                                  touch: false,
-                                });
-                              `}"
-                          >
-                            <i class="bi bi-pin-angle"></i>
-                            Unpinned
-                          </span>
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Unpin",
-                                  touch: false,
-                                });
-                              `}"
-                          >
-                            <i class="bi bi-pin"></i>
-                            Pinned
-                          </span>
+                          <i class="bi bi-pin"></i>
+                          Pinned
                         </label>
                       </div>
                     </div>
@@ -9429,14 +9409,12 @@ ${value}</textarea
                     display: flex;
                   `}"
                 >
-                  <label
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
+                  <label class="button button--tight button--tight--inline">
                     <input
                       type="checkbox"
                       name="isStaffOnly"
                       autocomplete="off"
-                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                      class="input--checkbox"
                       onchange="${javascript`
                           const identity = this.closest("form").querySelector(".identity");
                           if (identity === null) return;
@@ -9445,28 +9423,8 @@ ${value}</textarea
                             if (element.disabled !== null) element.disabled = this.checked;
                         `}"
                     />
-                    <span
-                      data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Set as Visible by Staff Only",
-                            touch: false,
-                          });
-                        `}"
-                    >
-                      <i class="bi bi-eye"></i>
-                      Visible by Everyone
-                    </span>
-                    <span
-                      data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: "Set as Visible by Everyone",
-                            touch: false,
-                          });
-                        `}"
-                    >
-                      <i class="bi bi-eye-slash"></i>
-                      Visible by Staff Only
-                    </span>
+                    <i class="bi bi-eye-slash"></i>
+                    Visible by Staff Only
                   </label>
                 </div>
               </div>
