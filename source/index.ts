@@ -11558,72 +11558,83 @@ ${value}</textarea
                 $${app.locals.partials.textEditor()}
               </div>
 
-              $${res.locals.conversation.type === "question"
-                ? html`
-                    <div class="label">
-                      <p class="label--text">Type</p>
-                      <div
-                        style="${css`
-                          display: flex;
-                        `}"
-                      >
+              <div
+                style="${css`
+                  display: flex;
+                  flex-wrap: wrap;
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--4);
+                `}"
+              >
+                $${res.locals.conversation.type === "question"
+                  ? html`
+                      <div class="label">
+                        <p class="label--text">Type</p>
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isAnswer"
+                              autocomplete="off"
+                              $${res.locals.enrollment.role === "staff"
+                                ? `checked`
+                                : ``}
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Set as an Answer",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-patch-check"></i>
+                              Not an Answer
+                            </span>
+                            <span
+                              data-ondomcontentloaded="${javascript`
+                                tippy(this, {
+                                  content: "Set as Not an Answer",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-patch-check-fill"></i>
+                              Answer
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    `
+                  : html``}
+                $${res.locals.enrollment.role === "staff" ||
+                res.locals.conversation.staffOnlyAt !== null
+                  ? html``
+                  : html`
+                      <div class="identity label">
+                        <p class="label--text">Anonymity</p>
                         <label
-                          class="button button--tight button--tight--inline button--transparent"
+                          class="button button--tight button--tight--inline"
                         >
                           <input
                             type="checkbox"
-                            name="isAnswer"
+                            name="isAnonymous"
                             autocomplete="off"
-                            $${res.locals.enrollment.role === "staff"
-                              ? `checked`
-                              : ``}
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            class="input--checkbox"
                           />
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Set as an Answer",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-patch-check"></i>
-                            Not an Answer
-                          </span>
-                          <span
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Set as Not an Answer",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-patch-check-fill"></i>
-                            Answer
-                          </span>
+                          <i class="bi bi-sunglasses"></i>
+                          Anonymous to Other Students
                         </label>
                       </div>
-                    </div>
-                  `
-                : html``}
-              $${res.locals.enrollment.role === "staff" ||
-              res.locals.conversation.staffOnlyAt !== null
-                ? html``
-                : html`
-                    <div class="identity label">
-                      <p class="label--text">Anonymity</p>
-                      <label class="button button--tight button--tight--inline">
-                        <input
-                          type="checkbox"
-                          name="isAnonymous"
-                          autocomplete="off"
-                          class="input--checkbox"
-                        />
-                        <i class="bi bi-sunglasses"></i>
-                        Anonymous to Other Students
-                      </label>
-                    </div>
-                  `}
+                    `}
+              </div>
 
               <div>
                 <button
