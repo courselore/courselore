@@ -11611,78 +11611,17 @@ ${value}</textarea
                 ? html``
                 : html`
                     <div class="identity label">
-                      <p class="label--text">Identity</p>
-                      <div
-                        style="${css`
-                          display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
-                        `}"
-                      >
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
-                        >
-                          <input
-                            type="radio"
-                            name="isAnonymous"
-                            value="false"
-                            autocomplete="off"
-                            required
-                            checked
-                            class="input--radio"
-                          />
-                          $${res.locals.user.avatar === null
-                            ? html`<i class="bi bi-person-circle"></i>`
-                            : html`
-                                <img
-                                  src="${res.locals.user.avatar}"
-                                  alt="${res.locals.user.name}"
-                                  class="avatar"
-                                  style="${css`
-                                    width: var(--font-size--sm);
-                                    height: var(--font-size--sm);
-                                    position: relative;
-                                    bottom: var(--space---0-5);
-                                  `}"
-                                />
-                              `}
-                          ${res.locals.user.name}
-                        </label>
-                        <div
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="isAnonymous"
-                              value="true"
-                              autocomplete="off"
-                              required
-                              class="input--radio"
-                            />
-                            <i class="bi bi-sunglasses"></i>
-                            Anonymous
-                          </label>
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            data-ondomcontentloaded="${javascript`
-                              tippy(this, {
-                                content: "Anonymity is only with respect to other students, not staff.",
-                                trigger: "click",
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                        </div>
-                      </div>
+                      <p class="label--text">Anonymity</p>
+                      <label class="button button--tight button--tight--inline">
+                        <input
+                          type="checkbox"
+                          name="isAnonymous"
+                          autocomplete="off"
+                          class="input--checkbox"
+                        />
+                        <i class="bi bi-sunglasses"></i>
+                        Anonymous to Other Students
+                      </label>
                     </div>
                   `}
 
@@ -11822,7 +11761,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { content?: string; isAnswer?: boolean; isAnonymous?: "true" | "false" },
+    { content?: string; isAnswer?: boolean; isAnonymous?: boolean },
     {},
     IsConversationAccessibleMiddlewareLocals
   >(
@@ -11835,11 +11774,7 @@ ${value}</textarea
         (req.body.isAnswer && res.locals.conversation.type !== "question") ||
         ((res.locals.enrollment.role === "staff" ||
           res.locals.conversation.staffOnlyAt !== null) &&
-          req.body.isAnonymous !== undefined) ||
-        (res.locals.enrollment.role === "student" &&
-          res.locals.conversation.staffOnlyAt === null &&
-          (typeof req.body.isAnonymous !== "string" ||
-            !["true", "false"].includes(req.body.isAnonymous)))
+          req.body.isAnonymous)
       )
         return next("validation");
 
@@ -11868,7 +11803,7 @@ ${value}</textarea
             ${res.locals.enrollment.id},
             ${req.body.content},
             ${req.body.isAnswer ? new Date().toISOString() : null},
-            ${req.body.isAnonymous === "true" ? new Date().toISOString() : null}
+            ${req.body.isAnonymous ? new Date().toISOString() : null}
           )
         `
       );
