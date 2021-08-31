@@ -6661,28 +6661,31 @@ export default async function courselore(
               Tags
             </h2>
 
-            $${res.locals.tags.length === 0
-              ? html`
-                  <div
-                    style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                      align-items: center;
-                    `}"
-                  >
-                    <div class="decorative-icon">
-                      <i class="bi bi-tags"></i>
+            $${
+              res.locals.tags.length === 0
+                ? html`
+                    <div
+                      style="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                        align-items: center;
+                      `}"
+                    >
+                      <div class="decorative-icon">
+                        <i class="bi bi-tags"></i>
+                      </div>
+                      <p class="secondary">Organize conversations with tags.</p>
                     </div>
-                    <p class="secondary">Organize conversations with tags.</p>
-                  </div>
-                `
-              : html``}
+                  `
+                : html``
+            }
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}/settings/tags?_method=PUT"
+              action="${app.locals.settings.url}/courses/${
+            res.locals.course.reference
+          }/settings/tags?_method=PUT"
               novalidate
               style="${css`
                 display: flex;
@@ -6742,145 +6745,130 @@ export default async function courselore(
                             style="${css`
                               display: flex;
                               flex-wrap: wrap;
-                              gap: var(--space--2);
+                              column-gap: var(--space--4);
+                              row-gap: var(--space--2);
                             `}"
                           >
+                            <label
+                              class="button button--tight button--tight--inline"
+                            >
+                              <input
+                                type="checkbox"
+                                name="tags[${index}][isStaffOnly]"
+                                $${tag.staffOnlyAt === null
+                                  ? html``
+                                  : html`checked`}
+                                class="input--checkbox"
+                              />
+                              <i class="bi bi-eye-slash"></i>
+                              Visible by Staff Only
+                            </label>
                             <div
                               style="${css`
-                                width: var(--space--52);
-                                display: flex;
-                                justify-content: flex-start;
+                                .tag.deleted & {
+                                  display: none;
+                                }
                               `}"
                             >
-                              <label
-                                class="button button--tight button--tight--inline"
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Remove Tag",
+                                    theme: "rose",
+                                    touch: false,
+                                  });
+                                  tippy(this, {
+                                    content: this.nextElementSibling.firstElementChild,
+                                    theme: "rose",
+                                    trigger: "click",
+                                    interactive: true,
+                                  });
+                                `}"
                               >
-                                <input
-                                  type="checkbox"
-                                  name="tags[${index}][isStaffOnly]"
-                                  $${tag.staffOnlyAt === null
-                                    ? html``
-                                    : html`checked`}
-                                  class="input--checkbox"
-                                />
-                                <i class="bi bi-eye-slash"></i>
-                                Visible by Staff Only
-                              </label>
+                                <i class="bi bi-trash"></i>
+                              </button>
+                              <div hidden>
+                                <div
+                                  style="${css`
+                                    padding: var(--space--2) var(--space--0);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `}"
+                                >
+                                  <p>
+                                    Are you sure you want to remove this tag?
+                                  </p>
+                                  <p>
+                                    <strong
+                                      style="${css`
+                                        font-weight: var(--font-weight--bold);
+                                      `}"
+                                    >
+                                      The tag will be removed from all
+                                      conversations and you may not undo this
+                                      action!
+                                    </strong>
+                                  </p>
+                                  <button
+                                    type="button"
+                                    class="button button--rose"
+                                    onclick="${javascript`
+                                      const tag = this.closest(".tag");
+                                      tag.classList.add("deleted");
+                                      tag.querySelector(".tag--icon").classList.add("text--rose");
+                                      tag.querySelector('[name$="[delete]"]').disabled = false;
+                                      for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                        element.disabled = true;
+                                        const button = element.closest(".button");
+                                        if (button === null) continue;
+                                        button.classList.add("disabled");
+                                        for (const element of button.querySelectorAll("*"))
+                                          if (element.tooltip !== undefined) element.tooltip.disable();
+                                      }
+                                    `}"
+                                  >
+                                    <i class="bi bi-trash"></i>
+                                    Remove Tag
+                                  </button>
+                                </div>
+                              </div>
                             </div>
                             <div
                               style="${css`
-                                width: var(--space--8);
-                                display: flex;
-                                justify-content: flex-start;
+                                .tag:not(.deleted) & {
+                                  display: none;
+                                }
                               `}"
                             >
-                              <div
-                                style="${css`
-                                  .tag.deleted & {
-                                    display: none;
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                data-ondomcontentloaded="${javascript`
+                                  tippy(this, {
+                                    content: "Don’t Remove Tag",
+                                    touch: false,
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  const tag = this.closest(".tag");
+                                  tag.classList.remove("deleted");
+                                  tag.querySelector(".tag--icon").classList.remove("text--rose");
+                                  tag.querySelector('[name$="[delete]"]').disabled = true;
+                                  for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                    element.disabled = false;
+                                    const button = element.closest(".button");
+                                    if (button === null) continue;
+                                    button.classList.remove("disabled");
+                                    for (const element of button.querySelectorAll("*"))
+                                      if (element.tooltip !== undefined) element.tooltip.enable();
                                   }
                                 `}"
                               >
-                                <button
-                                  type="button"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Remove Tag",
-                                      theme: "rose",
-                                      touch: false,
-                                    });
-                                    tippy(this, {
-                                      content: this.nextElementSibling.firstElementChild,
-                                      theme: "rose",
-                                      trigger: "click",
-                                      interactive: true,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                </button>
-                                <div hidden>
-                                  <div
-                                    style="${css`
-                                      padding: var(--space--2) var(--space--0);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
-                                    `}"
-                                  >
-                                    <p>
-                                      Are you sure you want to remove this tag?
-                                    </p>
-                                    <p>
-                                      <strong
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                        `}"
-                                      >
-                                        The tag will be removed from all
-                                        conversations and you may not undo this
-                                        action!
-                                      </strong>
-                                    </p>
-                                    <button
-                                      type="button"
-                                      class="button button--rose"
-                                      onclick="${javascript`
-                                        const tag = this.closest(".tag");
-                                        tag.classList.add("deleted");
-                                        tag.querySelector(".tag--icon").classList.add("text--rose");
-                                        tag.querySelector('[name$="[delete]"]').disabled = false;
-                                        for (const element of tag.querySelectorAll(".disable-on-delete")) {
-                                          element.disabled = true;
-                                          const button = element.closest(".button");
-                                          if (button === null) continue;
-                                          button.classList.add("disabled");
-                                          for (const element of button.querySelectorAll("*"))
-                                            if (element.tooltip !== undefined) element.tooltip.disable();
-                                        }
-                                      `}"
-                                    >
-                                      <i class="bi bi-trash"></i>
-                                      Remove Tag
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                style="${css`
-                                  .tag:not(.deleted) & {
-                                    display: none;
-                                  }
-                                `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Don’t Remove Tag",
-                                      touch: false,
-                                    });
-                                  `}"
-                                  onclick="${javascript`
-                                    const tag = this.closest(".tag");
-                                    tag.classList.remove("deleted");
-                                    tag.querySelector(".tag--icon").classList.remove("text--rose");
-                                    tag.querySelector('[name$="[delete]"]').disabled = true;
-                                    for (const element of tag.querySelectorAll(".disable-on-delete")) {
-                                      element.disabled = false;
-                                      const button = element.closest(".button");
-                                      if (button === null) continue;
-                                      button.classList.remove("disabled");
-                                      for (const element of button.querySelectorAll("*"))
-                                        if (element.tooltip !== undefined) element.tooltip.enable();
-                                    }
-                                  `}"
-                                >
-                                  <i class="bi bi-recycle"></i>
-                                </button>
-                              </div>
+                                <i class="bi bi-recycle"></i>
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -6948,60 +6936,44 @@ export default async function courselore(
                           style="${css`
                             display: flex;
                             flex-wrap: wrap;
-                            gap: var(--space--2);
+                            column-gap: var(--space--4);
+                            row-gap: var(--space--2);
                           `}"
                         >
-                          <div
-                            style="${css`
-                              width: var(--space--52);
-                              display: flex;
-                              justify-content: flex-start;
-                            `}"
+                          <label
+                            class="button button--tight button--tight--inline"
                           >
-                            <label
-                              class="button button--tight button--tight--inline"
-                            >
-                              <input
-                                type="checkbox"
-                                disabled
-                                class="input--checkbox"
-                                data-onmount="${javascript`
-                                  this.dataset.forceIsModified = true;
-                                  this.disabled = false;
-                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
-                                `}"
-                              />
-                              <i class="bi bi-eye-slash"></i>
-                              Visible by Staff Only
-                            </label>
-                          </div>
-                          <div
-                            style="${css`
-                              width: var(--space--8);
-                              display: flex;
-                              justify-content: flex-start;
-                            `}"
-                          >
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
+                            <input
+                              type="checkbox"
+                              disabled
+                              class="input--checkbox"
                               data-onmount="${javascript`
-                                tippy(this, {
-                                  content: "Remove Tag",
-                                  theme: "rose",
-                                  touch: false,
-                                });
+                                this.dataset.forceIsModified = true;
+                                this.disabled = false;
+                                this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
                               `}"
-                              onclick="${javascript`
-                                const tag = this.closest(".tag");
-                                tag.replaceChildren();
-                                tag.hidden = true;
-                              `}"
-                            >
-                              <i class="bi bi-trash"></i>
-                            </button>
-                          </div>
-                        </div>
+                            />
+                            <i class="bi bi-eye-slash"></i>
+                            Visible by Staff Only
+                          </label>
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          data-onmount="${javascript`
+                            tippy(this, {
+                              content: "Remove Tag",
+                              theme: "rose",
+                              touch: false,
+                            });
+                          `}"
+                          onclick="${javascript`
+                            const tag = this.closest(".tag");
+                            tag.replaceChildren();
+                            tag.hidden = true;
+                          `}"
+                        >
+                          <i class="bi bi-trash"></i>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -9362,171 +9334,121 @@ ${value}</textarea
                       </div>
                     </div>
                   `}
-              $${res.locals.enrollment.role === "staff"
-                ? html`
-                    <div class="label">
-                      <div class="label--text">
-                        Pin
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          data-ondomcontentloaded="${javascript`
+              <div
+                style="${css`
+                  display: flex;
+                  flex-wrap: wrap;
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--4);
+                `}"
+              >
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <div class="label">
+                        <div class="label--text">
+                          Pin
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            data-ondomcontentloaded="${javascript`
                               tippy(this, {
                                 content: "Pinned conversations are listed first.",
                                 trigger: "click",
                               });
                             `}"
-                        >
-                          <i class="bi bi-info-circle"></i>
-                        </button>
-                      </div>
-                      <div
-                        style="${css`
-                          display: flex;
-                        `}"
-                      >
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
-                        >
-                          <input
-                            type="checkbox"
-                            name="isPinned"
-                            autocomplete="off"
-                            class="input--checkbox"
-                          />
-                          <i class="bi bi-pin"></i>
-                          Pinned
-                        </label>
-                      </div>
-                    </div>
-                  `
-                : html``}
-
-              <div class="label">
-                <p class="label--text">Visibility</p>
-                <div
-                  style="${css`
-                    display: flex;
-                  `}"
-                >
-                  <label class="button button--tight button--tight--inline">
-                    <input
-                      type="checkbox"
-                      name="isStaffOnly"
-                      autocomplete="off"
-                      class="input--checkbox"
-                      onchange="${javascript`
-                          const identity = this.closest("form").querySelector(".identity");
-                          if (identity === null) return;
-                          identity.hidden = this.checked;
-                          for (const element of identity.querySelectorAll("*"))
-                            if (element.disabled !== null) element.disabled = this.checked;
-                        `}"
-                    />
-                    <i class="bi bi-eye-slash"></i>
-                    Visible by Staff Only
-                  </label>
-                </div>
-              </div>
-
-              $${res.locals.enrollment.role === "staff"
-                ? html``
-                : html`
-                    <div class="identity label">
-                      <p class="label--text">Identity</p>
-                      <div
-                        style="${css`
-                          display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
-                        `}"
-                      >
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
-                        >
-                          <input
-                            type="radio"
-                            name="isAnonymous"
-                            value="false"
-                            autocomplete="off"
-                            required
-                            checked
-                            class="input--radio"
-                          />
-                          $${res.locals.user.avatar === null
-                            ? html`<i class="bi bi-person-circle"></i>`
-                            : html`
-                                <img
-                                  src="${res.locals.user.avatar}"
-                                  alt="${res.locals.user.name}"
-                                  class="avatar"
-                                  style="${css`
-                                    width: var(--font-size--sm);
-                                    height: var(--font-size--sm);
-                                    position: relative;
-                                    bottom: var(--space---0-5);
-                                  `}"
-                                />
-                              `}
-                          ${res.locals.user.name}
-                        </label>
-                        <div
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="isAnonymous"
-                              value="true"
-                              autocomplete="off"
-                              required
-                              class="input--radio"
-                            />
-                            <i class="bi bi-sunglasses"></i>
-                            Anonymous
-                          </label>
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            data-ondomcontentloaded="${javascript`
-                                tippy(this, {
-                                  content: "Anonymity is only with respect to other students, not staff.",
-                                  trigger: "click",
-                                });
-                              `}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
                         </div>
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isPinned"
+                              autocomplete="off"
+                              class="input--checkbox"
+                            />
+                            <i class="bi bi-pin"></i>
+                            Pinned
+                          </label>
+                        </div>
                       </div>
-                    </div>
-                  `}
+                    `
+                  : html``}
+
+                <div class="label">
+                  <p class="label--text">Visibility</p>
+                  <div
+                    style="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <label class="button button--tight button--tight--inline">
+                      <input
+                        type="checkbox"
+                        name="isStaffOnly"
+                        autocomplete="off"
+                        class="input--checkbox"
+                        onchange="${javascript`
+                          const anonymity = this.closest("form").querySelector(".anonymity");
+                          if (anonymity === null) return;
+                          anonymity.hidden = this.checked;
+                          for (const element of anonymity.querySelectorAll("*"))
+                            if (element.disabled !== null) element.disabled = this.checked;
+                        `}"
+                      />
+                      <i class="bi bi-eye-slash"></i>
+                      Visible by Staff Only
+                    </label>
+                  </div>
+                </div>
+
+                $${res.locals.enrollment.role === "staff"
+                  ? html``
+                  : html`
+                      <div class="anonymity label">
+                        <div class="label--text">Anonymity</div>
+                        <label
+                          class="button button--tight button--tight--inline"
+                        >
+                          <input
+                            type="checkbox"
+                            name="isAnonymous"
+                            autocomplete="off"
+                            class="input--checkbox"
+                          />
+                          <i class="bi bi-sunglasses"></i>
+                          Anonymous to Other Students
+                        </label>
+                      </div>
+                    `}
+              </div>
 
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                   data-ondomcontentloaded="${javascript`
-                      Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
-                      tippy(this, {
-                        content: ${JSON.stringify(html`
-                          <span class="keyboard-shortcut">
-                            Ctrl+Enter or
-                            <span class="keyboard-shortcut--cluster"
-                              ><i class="bi bi-command"></i
-                              ><i class="bi bi-arrow-return-left"></i
-                            ></span>
-                          </span>
-                        `)},
-                        touch: false,
-                        allowHTML: true,
-                      });
-                    `}"
+                    Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                    tippy(this, {
+                      content: ${JSON.stringify(html`
+                        <span class="keyboard-shortcut">
+                          Ctrl+Enter or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-command"></i
+                            ><i class="bi bi-arrow-return-left"></i
+                          ></span>
+                        </span>
+                      `)},
+                      touch: false,
+                      allowHTML: true,
+                    });
+                  `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
                   Start Conversation
@@ -9559,7 +9481,7 @@ ${value}</textarea
       tagsReferences?: string[];
       isPinned?: boolean;
       isStaffOnly?: boolean;
-      isAnonymous?: "true" | "false";
+      isAnonymous?: boolean;
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -9589,11 +9511,7 @@ ${value}</textarea
             ))) ||
         (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         ((res.locals.enrollment.role === "staff" || req.body.isStaffOnly) &&
-          req.body.isAnonymous !== undefined) ||
-        (res.locals.enrollment.role === "student" &&
-          !req.body.isStaffOnly &&
-          (typeof req.body.isAnonymous !== "string" ||
-            !["true", "false"].includes(req.body.isAnonymous)))
+          req.body.isAnonymous)
       )
         return next("validation");
 
@@ -9645,7 +9563,7 @@ ${value}</textarea
             ${"1"},
             ${res.locals.enrollment.id},
             ${req.body.content},
-            ${req.body.isAnonymous === "true" ? new Date().toISOString() : null}
+            ${req.body.isAnonymous ? new Date().toISOString() : null}
           )
         `
       );
