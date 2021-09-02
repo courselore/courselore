@@ -3254,15 +3254,11 @@ export default async function courselore(
         !req.body.email.match(app.locals.constants.emailRegExp)
       )
         return next("validation");
-      if (
-        app.locals.database.get<{ exists: number }>(
-          sql`
-            SELECT EXISTS(
-              SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
-            ) AS "exists";
-          `
-        )!.exists === 0
-      ) {
+
+      const user = app.locals.database.get<{ id: number; email: string }>(
+        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
+      );
+      if (user === undefined) {
         app.locals.helpers.flash.set(
           req,
           res,
@@ -3278,13 +3274,13 @@ export default async function courselore(
       }
 
       app.locals.database.run(
-        sql`DELETE FROM "passwordsResets" WHERE "email" = ${req.body.email}`
+        sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`
       );
       const passwordReset = app.locals.database.get<{ nonce: string }>(
         sql`
-          INSERT INTO "passwordResets" ("email", "nonce")
+          INSERT INTO "passwordResets" ("user", "nonce")
           VALUES (
-            ${req.body.email},
+            ${user.id},
             ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
           )
           RETURNING *
@@ -3292,7 +3288,7 @@ export default async function courselore(
       )!;
       const link = `${app.locals.settings.url}/reset-password/${passwordReset.nonce}`;
       app.locals.helpers.sendMail({
-        to: req.body.email,
+        to: user.email,
         subject: "CourseLore · Password Reset Link",
         html: html`
           <p><a href="${link}">${link}</a></p>
@@ -3305,7 +3301,6 @@ export default async function courselore(
           </p>
         `,
       });
-
       res.send(
         app.locals.layouts.box({
           req,
